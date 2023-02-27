@@ -1,0 +1,28 @@
+@use '../../styles/mixins';
+@import  '../../styles/styles.scss';
+
+.navigation {
+  background-color: #1d2024;
+  width: 100%;
+  z-index: 99;
+  margin-bottom: 0;
+  padding:10px;
+
+  .container {
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .navMenu{
+    .navText {
+      &.active {
+        color: $primary-color;
+      }
+      &:hover {
+        color: $primary-color;
+      }
+    }
+  }
+}
+
+
+

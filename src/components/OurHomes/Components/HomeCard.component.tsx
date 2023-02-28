@@ -1,16 +1,19 @@
 import React from 'react'
 import Image from 'react-bootstrap/Image'
+import Card from 'react-bootstrap/Card';
+
 // import './HomeCard.style.scss'
-import '../../../styles/bootstrap.min.css'
+// import '../../../styles/bootstrap.min.css'
+// import '../../../styles/style.css'
 
 import TucanoImg from '../../../assets/images/about/tucano-sm.jpg'
 const HomeCard = () => {
     return (
-        <div className="col-md-3 text-center wow fadeInUp" data-wow-duration="500ms">
+        <Card className="col-md-3 text-center wow fadeInUp" data-wow-duration="500ms">
             <a data-scroll href="#contact-us">
                 <div className="block ">
                     <div className="icon-box center-block">
-                        <img src={TucanoImg} alt="House tucano" className="img-responsive img-rounded our-homes-img-sm our-homes-img-m" />
+                        <Image src={TucanoImg} alt="House tucano" className="img-responsive img-rounded our-homes-img-sm our-homes-img-m" />
                     </div>
                     {/* <!-- Express About Yourself --> */}
                     <div className="content text-center">
@@ -28,7 +31,7 @@ const HomeCard = () => {
                 </div>
             </a>
 
-        </div>
+        </Card>
     )
 }
 export default HomeCard;

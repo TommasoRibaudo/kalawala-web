@@ -1,0 +1,31 @@
+@use '../../styles/mixins';
+@import  '../../styles/styles.scss';
+
+.about-2 {
+  .content-block {
+    padding:40px;
+    .media {
+      .pull-left {
+        padding-right:15px;
+      }
+      margin-top:25px;
+      i {
+        font-size:30px;
+        color:$primary-color;
+      }
+      h4 {
+        font-size:16px;
+        font-weight: 600; 
+      } 
+    }
+  }
+  h2 {
+    font-size: 30px;
+  }
+
+  p {
+    font-family: "Quattrocento Sans", sans-serif;
+    color: #737f8a;
+    font-size: 14px;
+}
+}

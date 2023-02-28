@@ -1,4 +1,9 @@
 import React from 'react';
+import './Discover.style.scss';
+import { Image } from 'react-bootstrap';
+import image from "../../assets/images/about/about-second-page.jpg";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faConciergeBell, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
 
 const  Discover = () => {
   return (
@@ -6,7 +11,7 @@ const  Discover = () => {
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-6 padding-0">
-            <img className="img-responsive" src="images/about/about-second-page.jpg" alt="" />
+            <Image className="img-responsive" src={image}  alt="" />
           </div>
           <div className="col-md-6">
             <div className="content-block">
@@ -19,7 +24,7 @@ const  Discover = () => {
                 <div className="col-md-6">
                   <div className="media">
                     <div className="pull-left">
-                      <i className="fas fa-concierge-bell"></i>
+                      <FontAwesomeIcon icon={faConciergeBell} color='#57cbcc' fontSize={"30px"}/>
                     </div>
                     <div className="media-body" style={{ verticalAlign: "middle" }}>
                       <h4 className="media-heading">Self Check-in</h4>
@@ -30,7 +35,8 @@ const  Discover = () => {
                 <div className="col-md-6">
                   <div className="media">
                     <div className="pull-left">
-                      <i className="fas fa-calendar-check"></i>
+                      <FontAwesomeIcon icon={faCalendarCheck} color='#57cbcc' fontSize={"30px"}/>
+
                     </div>
                     <div className="media-body">
                       <h4 className="media-heading">Flexible Cancellation Policy</h4>

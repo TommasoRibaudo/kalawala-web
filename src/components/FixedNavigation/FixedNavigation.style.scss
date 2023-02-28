@@ -8,12 +8,18 @@
   margin-bottom: 0;
   padding:10px;
 
+  &.navbar{
+    border-radius: 0;
+  }
+
   .container {
     margin-right: auto;
     margin-left: auto;
   }
   .navMenu{
     .navText {
+      font-size: 16px;
+      color: #737f8a;
       &.active {
         color: $primary-color;
       }

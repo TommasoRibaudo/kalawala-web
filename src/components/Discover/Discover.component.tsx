@@ -1,4 +1,7 @@
 import React from 'react';
+import './Discover.style.scss';
+import { Image } from 'react-bootstrap';
+import image from "../../assets/images/about/about-second-page.jpg";
 
 const  Discover = () => {
   return (
@@ -6,7 +9,7 @@ const  Discover = () => {
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-6 padding-0">
-            <img className="img-responsive" src="images/about/about-second-page.jpg" alt="" />
+            <Image className="img-responsive" src={image}  alt="" />
           </div>
           <div className="col-md-6">
             <div className="content-block">

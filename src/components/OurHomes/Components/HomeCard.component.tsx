@@ -9,11 +9,11 @@ import Card from 'react-bootstrap/Card';
 import TucanoImg from '../../../assets/images/about/tucano-sm.jpg'
 const HomeCard = () => {
     return (
-        <Card className="col-md-3 text-center wow fadeInUp" data-wow-duration="500ms">
+        <div className="col-md-3 text-center wow fadeInUp" data-wow-duration="500ms">
             <a data-scroll href="#contact-us">
                 <div className="block ">
                     <div className="icon-box center-block">
-                        <Image src={TucanoImg} alt="House tucano" className="img-responsive img-rounded our-homes-img-sm our-homes-img-m" />
+                        <img src={TucanoImg} alt="House tucano" className="img-responsive img-rounded our-homes-img-sm our-homes-img-m" />
                     </div>
                     {/* <!-- Express About Yourself --> */}
                     <div className="content text-center">
@@ -31,7 +31,7 @@ const HomeCard = () => {
                 </div>
             </a>
 
-        </Card>
+        </div>
     )
 }
 export default HomeCard;

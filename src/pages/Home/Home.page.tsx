@@ -6,6 +6,7 @@ import CallToAction from "../../components/CallToAction/CallToAction.component";
 import Testimonial from "../../components/Testimonial/Testimonial.component";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
+import Portfolio from "../../components/Portfolio/Portfolio.component";
 
 const Home = () => {
   
@@ -16,9 +17,7 @@ const Home = () => {
       <OurHomes />
       <Discover />
       <CallToAction />
-      <div style={{backgroundColor: 'green'}}>
-        Portfolio part
-      </div>
+      <Portfolio />
       <Testimonial />
       <ContactUs />
     </div>

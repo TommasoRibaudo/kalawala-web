@@ -62,6 +62,7 @@ const FixedNavigation: React.FC = () => {
         </Navbar.Collapse>
       </Container>
     </Navbar>
+    
   );
 };
 

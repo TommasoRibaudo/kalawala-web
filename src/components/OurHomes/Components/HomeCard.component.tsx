@@ -1,6 +1,9 @@
 import React from 'react'
 import Image from 'react-bootstrap/Image'
 import Card from 'react-bootstrap/Card';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSnowflake, faUtensils, faWifi, faUser, faParking } from '@fortawesome/free-solid-svg-icons';
+
 
 // import './HomeCard.style.scss'
 // import '../../../styles/bootstrap.min.css'
@@ -19,13 +22,14 @@ const HomeCard = () => {
                     <div className="content text-center">
                         <h3 className="highlight">Tucano</h3>
                         <div style={{ display: "block" }}>
-                            <div className="container-rounded-border border-highlight"><i className="fas fa-user highlight"></i>
-                                <b
-                                    // style="font-size: larger;" 
-                                    className="highlight">X4</b></div>
-                            <i className="fas fa-snowflake fa-lg highlight"></i>
-                            <i className="fas fa-utensils fa-lg highlight"></i>
-                            <i className="fas fa-wifi fa-lg highlight"></i>
+                            <div className="container-rounded-border border-highlight" style={{marginRight:'6px'}}>
+                                <FontAwesomeIcon icon={faUser} fontSize={"18x"} style={{margin:'2px 4px 2px 2px'}} />
+                                <b className="highlight" style={{fontSize:'18px'}}>X4</b>
+                            </div>
+                            <FontAwesomeIcon icon={faSnowflake}  fontSize={"20px"} style={{marginRight:'6px'}} />
+                            <FontAwesomeIcon icon={faUtensils} fontSize={"20px"} style={{marginRight:'6px'}} />
+                            <FontAwesomeIcon icon={faWifi} fontSize={"20px"} />
+                            <FontAwesomeIcon icon={faParking} fontSize={"20px"} style={{marginLeft:'6px'}} />
                         </div>
                     </div>
                 </div>

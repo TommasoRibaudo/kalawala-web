@@ -2,6 +2,8 @@ import React from 'react';
 
 import requireContext from 'require-context.macro';
 import { Image } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 interface IPortfolioImage {
   folderName: string;
@@ -16,8 +18,8 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
     case "Tucano":
       images = requireContext('../../assets/images/portfolio/Tucano', false, /\.(png|jpe?g|svg)$/);
       break;
-    case "gecko":
-      images = requireContext('../../assets/images/portfolio/gecko', false, /\.(png|jpe?g|svg)$/);
+    case "Geco":
+      images = requireContext('../../assets/images/portfolio/Geco', false, /\.(png|jpe?g|svg)$/);
       break;
     case "Pappagallo":
       images = requireContext('../../assets/images/portfolio/Pappagallo', false, /\.(png|jpe?g|svg)$/);
@@ -29,12 +31,24 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
   }
 
   return (
-    <div>
+    // <div className="col-lg-4 filtr-item row">
+
+    <div className="filtr-item row">
       {images.keys().filter((imagePath: string) => !imagePath.includes('-sm')).map((imagePath: string, index: number) => {
         return (
-          <>
-            <Image style={{ height: '260px', padding: '15px 15px' }} key={index} src={images(imagePath)} alt={`Image ${index + 1}`} fluid />
-          </>
+          <div className="portfolio-block col-lg-4 col-md-6">
+            <Image
+              // style={{ height: '260px', padding: '15px 15px' }} 
+              key={index} src={images(imagePath)} alt={`Image ${index + 1}`} fluid />
+            <div className="caption d-flex  align-items-center flex-column">
+              <div className="search-icon image-popup d-flex justify-content-center align-items-center" data-effect="mfp-with-zoom" data-lightbox="image-1">
+                <FontAwesomeIcon icon={faSearch} color='white' fontSize={"20px"} />
+                {/* <i className="bi bi-search"></i> */}
+              </div>
+              <h4>Casa {folderName} - Bathroom</h4>
+              <p>We always provide towels and toiletries.</p>
+            </div>
+          </div>
         )
       })}
     </div>

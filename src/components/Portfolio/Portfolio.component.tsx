@@ -3,30 +3,43 @@ import React, { useState } from 'react';
 // import './WelcomeSlider.style.scss';
 // import Button from 'react-bootstrap/Button';
 import { Button, Image } from 'react-bootstrap';
-import tst from '../../assets/images/portfolio/gecko/gecko-bathroom.jpg';
-import requireContext from 'require-context.macro';
+// import tst from '../../assets/images/portfolio/gecko/gecko-bathroom.jpg';
+// import requireContext from 'require-context.macro';
 import PortfolioImage from '../PortfolioImage/PortfolioImage.component';
 
 const Portfolio = () => {
-  const images = requireContext('../../assets/images/portfolio/gecko', false, /\.(png|jpe?g|svg)$/);
+  // const images = requireContext('../../assets/images/portfolio/gecko', false, /\.(png|jpe?g|svg)$/);
   // const photos = require.context('../../assets/images/portfolio/gecko', false, /\.(png|jpe?g|svg)$/);
-  const [folderName, setFolderName] = useState<string>('Tucano')
+  const [folderName, setFolderName] = useState<string>('Tucano');
+
+  const [activeButton, setActiveButton] = useState<string>('Tucano');
+
+  const handleButtonClick = (houseName: string) => {
+    setActiveButton(houseName);
+    setFolderName(houseName);
+  };
+
+  const houses: string[] = ['Tucano', 'Geco', 'Pappagallo', 'Rana'];
 
   return (
-    <div className="row ">
+    //id="portfolio">//className="row ">
+    <div className="portfolio section">
       <div className="col-lg-12">
         <div className="title text-center">
           <h2>Our <span className="color">Photos</span></h2>
-          <div className="border"></div>
+          <div className="border2"></div>
         </div>
       </div>
       <div className="row">
         <div className="col-md-12">
           <div className="portfolio-filter">
-            <Button className="active" id="first-filter" onClick={()=>setFolderName('Tucano')} >Tucano</Button>
-            <Button onClick={()=>setFolderName('gecko')}  >Geco</Button>
-            <Button onClick={()=>setFolderName('Pappagallo')} >Pappagallo</Button>
-            <Button onClick={()=>setFolderName('Rana')} >Rana</Button>
+            {houses.map((houseName) => {
+              return <Button
+                key={houseName}
+                className={houseName === activeButton ? 'active' : ''}
+                id="first-filter"
+                onClick={() => handleButtonClick(houseName)}>{houseName}</Button>
+            })}
           </div>
         </div>
       </div>

@@ -3,25 +3,21 @@
 ==================================================================*/
 
 @use '../../../styles/mixins';
-@import  '../../../styles//styles.scss';
-
+@import '../../../styles//styles.scss';
 .call-to-action {
-  background-attachment: fixed;
-  h2 {
-    font-weight: 700;
-    color:#444;
-  }
-  p {
-    font-size:16px;
-    color:#666;
-  }
-  .btn-main {
-    margin-top: 20px;
-  }
+    background-attachment: fixed;
+    h2 {
+        font-weight: 700;
+        color: $section-bg;
+    }
+    p {
+        font-size: 16px;
+        color: $section-bg;
+    }
+    .btn-main {
+        margin-top: 20px;
+    }
 }
-
-
-
 
 
 /*=================================================================
@@ -29,18 +25,17 @@
 ==================================================================*/
 
 .call-to-action-2 {
-  padding:100px 0;
-  // background-image: url('../images/call-to-action/call-to-action-bg.jpg');
-  background-size: cover;
-  color: $light;
-  h2 {
-    line-height: 1.5;
-  }
-  p {
+    padding: 100px 0;
+    // background-image: url('../images/call-to-action/call-to-action-bg.jpg');
+    background-size: cover;
     color: $light;
-  }
-  .btn-main {
-    margin-top: 20px;
-  }
-  
+    h2 {
+        line-height: 1.5;
+    }
+    p {
+        color: $light;
+    }
+    .btn-main {
+        margin-top: 20px;
+    }
 }

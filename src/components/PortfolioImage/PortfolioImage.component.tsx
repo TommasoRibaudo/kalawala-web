@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import requireContext from 'require-context.macro';
 import { Image } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions } from '../../utils/constants';
 import { TipCard } from '../TipCard/TipCard.component';
 
@@ -12,7 +10,6 @@ interface IPortfolioImage {
 }
 
 const PortfolioImage = ({ folderName }: IPortfolioImage) => {
-  const path: string = `../../assets/images/portfolio/${folderName}`;
   let images: any;
   type ImageDescriptions = {
     [key: string]: IImageDescription[];
@@ -43,7 +40,7 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
     <div className="filtr-item row">
       {images.keys().filter((imagePath: string) => !imagePath.includes('-sm')).map((imagePath: string, index: number) => {
         return (
-        <div key={index} className="portfolio-block col-lg-4 col-md-6">``
+        <div key={index} className="portfolio-block col-lg-4 col-md-6">
             <Image
               key={index} src={images(imagePath)} alt={`Image ${index + 1}`} fluid />
               {imageDescriptions[folderName][index].roomType && 

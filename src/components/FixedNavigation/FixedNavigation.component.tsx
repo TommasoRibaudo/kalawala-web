@@ -19,7 +19,7 @@ const FixedNavigation: React.FC = () => {
   return (
     <Navbar className="navigation" expand="lg" sticky="top" variant="dark">
       <Container>
-        <Navbar.Brand href="#body">
+        <Navbar.Brand href="#body" className="d-flex align-items-center">
           <svg
             width="40px"
             height="40px"
@@ -52,7 +52,7 @@ const FixedNavigation: React.FC = () => {
           </svg>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={handleClick} />
-        <Navbar.Collapse id="basic-navbar-nav" className={`${isCollapsed && 'd-flex'} justify-content-end`} >
+        <Navbar.Collapse id="basic-navbar-nav" className={`${isCollapsed}`} >
           <Nav className="navMenu" >
             <Nav.Link href="#body" className={`navText ${isActive && 'active'}`} >Home</Nav.Link>
             <Nav.Link href="#portfolio" className="navText" onClick={() => { setIsActive(false) }}>Photos</Nav.Link>
@@ -61,8 +61,7 @@ const FixedNavigation: React.FC = () => {
           </Nav>
         </Navbar.Collapse>
       </Container>
-    </Navbar>
-    
+    </Navbar> 
   );
 };
 

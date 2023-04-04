@@ -18,11 +18,11 @@ interface IHomeCard {
 
 const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image }) => {
     return (
-        <div className="col-md-3 text-center wow fadeInUp" data-wow-duration="500ms">
+        <div className=" col-lg-3 col-md-6 col-sm-12 " data-wow-duration="500ms">
             <a data-scroll href="#contact-us">
                 <div className="block ">
                     <div className="icon-box center-block">
-                        <img src={image} alt={name}className="img-responsive img-rounded our-homes-img-sm our-homes-img-m" />
+                        <img src={image} alt={name}className="img-responsive img-rounded  our-homes-img-m" />
                     </div>
                     <div className="content text-center">
                         <h3 className="highlight">{name}</h3>

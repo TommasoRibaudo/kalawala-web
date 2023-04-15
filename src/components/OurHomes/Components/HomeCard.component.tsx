@@ -3,6 +3,7 @@ import Image from 'react-bootstrap/Image'
 import Card from 'react-bootstrap/Card';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSnowflake, faUtensils, faWifi, faUser, faParking } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from "react-router-dom";
 
 import './HomeCard.style.scss'
 // import '../../../styles/bootstrap.min.css'
@@ -17,9 +18,11 @@ interface IHomeCard {
 
 
 const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image }) => {
+
+    const naviagate = useNavigate()
     return (
-        <div className=" col-lg-3 col-md-6 col-sm-12 " data-wow-duration="500ms">
-            <a data-scroll href="#contact-us">
+        <div className=" col-lg-3 col-md-6 col-sm-12 " data-wow-duration="500ms" onClick={()=>{naviagate(`listing/${name}`)}}>
+            {/* <a data-scroll href="#contact-us"> */}
                 <div className="block ">
                     <div className="icon-box center-block">
                         <img src={image} alt={name}className="img-responsive img-rounded  our-homes-img-m" />
@@ -38,7 +41,7 @@ const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image }) => {
                         </div>
                     </div>
                 </div>
-            </a>
+            {/* </a> */}
 
         </div>
     )

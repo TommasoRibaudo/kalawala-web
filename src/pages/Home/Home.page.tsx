@@ -7,6 +7,7 @@ import Testimonial from "../../components/Testimonial/Testimonial.component";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
+import { Smoobu } from "../../components/Smoobu/Smoobu.component";
 
 const Home = () => {
   
@@ -20,6 +21,7 @@ const Home = () => {
       <Portfolio />
       <Testimonial />
       <ContactUs />
+      <Smoobu />
     </div>
   )
 }

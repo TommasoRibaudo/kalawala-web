@@ -1,0 +1,70 @@
+@use '../../styles/mixins';
+@import  '../../styles/styles.scss';
+
+// #apartmentIframeAll{
+//   background-color: red;
+//  .border-box-container{
+//     background-color: green;
+//  }
+// }
+
+.apartment-frame-loaded {
+  background-color: red;
+  width: 400px
+}
+
+#apartmentIframeAll .border-box-container {
+  background-color: green;
+}
+
+
+/* Customize the font of all Smoobu-generated elements */
+#apartmentIframeAll * {
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Customize the background color of the calendar header */
+#apartmentIframeAll .border-box-header {
+  background-color: #02bd2b;
+}
+
+/* Customize the color of the calendar days */
+#apartmentIframeAll .border-box-day {
+  color: #333;
+}
+
+/* Customize the color of the selected calendar day */
+#apartmentIframeAll .border-box-day.selected {
+  background-color: #007aff;
+  color: #fff;
+}
+
+/* Customize the background color of the booking form */
+#apartmentIframeAll .border-box-booking-form {
+  background-color: #07c579;
+}
+
+/* Customize the border radius of the booking form fields */
+#apartmentIframeAll .border-box-booking-form input[type="text"],
+#apartmentIframeAll .border-box-booking-form input[type="email"],
+#apartmentIframeAll .border-box-booking-form select {
+  border-radius: 5px;
+}
+
+/* Customize the color of the booking form button */
+#apartmentIframeAll .border-box-booking-form button[type="submit"] {
+  background-color: #007aff;
+  color: #fff;
+  border-color: #00ff1a;
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Change the color of the booking form button on hover */
+#apartmentIframeAll .border-box-booking-form button[type="submit"]:hover {
+  background-color: #006e0f;
+  color: #62ff00;
+  border-color: #007aff;
+}

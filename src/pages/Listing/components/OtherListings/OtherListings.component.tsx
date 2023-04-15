@@ -9,7 +9,11 @@ const OtherListings = () => {
     <div className="cont d-flex justify-content-center">
         <Stack gap={5} className=" d-flex align-items-center">
             {listings.map(({name})=>{
-                return <div className="listing">{name}</div>
+                return (
+                <div className="listing d-flex align-items-end">
+                    <div className="name">{name}</div>
+                </div>
+                )
             })}
         </Stack>
     </div>)

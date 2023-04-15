@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import './Smooboo.style.scss';
+import './Smoobu.style.scss';
 declare global {
   interface Window {
     BookingToolIframe: {
@@ -12,9 +12,9 @@ declare global {
   }
 }
 
-export function Smoobu() {
+function Smoobu() {
   useEffect(() => {
-    console.log('test');
+    console.log('test smoobu');
     const script = document.createElement('script');
     script.src = 'https://login.smoobu.com/js/Settings/BookingToolIframe.js';
     script.async = true;
@@ -40,3 +40,5 @@ export function Smoobu() {
     </div>
   );
 }
+
+export default Smoobu;

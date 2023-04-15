@@ -8,7 +8,9 @@ const AppRouter = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path='listing' element={<Listing />}/>
+      <Route path='listing'>
+    <Route path=':listing' element={<Listing />} />
+      </Route>
       {/* <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} /> */}
     </Routes>

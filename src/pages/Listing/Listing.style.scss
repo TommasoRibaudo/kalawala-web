@@ -1,0 +1,38 @@
+@use '../../styles/mixins';
+@import  '../../styles//styles.scss';
+
+
+
+body, html, #root{
+height: 100%;
+}
+
+.listingContainer {
+    width: 100%;
+    height: 100%;
+
+    .row{
+        margin: 0;
+        height: 100%;
+    }
+    .col{
+        padding: 0;
+     }
+    
+}
+
+.otherOptions{
+    // background-color: aqua;
+    height: 100%;
+}
+
+.info {
+    // background-color:brown;
+    height: 100%;
+}
+
+.book{
+    // background-color: chartreuse;
+    height: 100%;
+}
+ 

@@ -1,9 +1,7 @@
 import React, {FC, useEffect, useState} from "react";
-import { Stack } from "react-bootstrap";
 import './OtherListings.style.scss'
 import { ListingType } from "../../../../utils/types";
 import { useNavigate } from "react-router-dom";
-import { log } from "console";
 
 interface IOtherListing {
     currentListing: string

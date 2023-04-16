@@ -1,4 +1,4 @@
-/*!
+/* !
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -1280,9 +1280,9 @@ th {
   content: "\e236"
 }
 
-.glyphicon-modal-window:before {
+/* .glyphicon-modal-window:before {
   content: "\e237"
-}
+} */
 
 .glyphicon-oil:before {
   content: "\e238"
@@ -4089,7 +4089,7 @@ fieldset[disabled] .btn-success:hover {
   background-color: #5cb85c;
   border-color: #4cae4c
 }
-
+/* ! modal below here */
 .btn-success .badge {
   color: #5cb85c;
   background-color: #fff
@@ -4295,7 +4295,7 @@ fieldset[disabled] .btn-danger:hover {
   color: #337ab7;
   border-radius: 0
 }
-
+/* ! modal below here */
 .btn-link,
 .btn-link.active,
 .btn-link:active,
@@ -4335,7 +4335,7 @@ fieldset[disabled] .btn-link:hover {
   line-height: 1.3333333;
   border-radius: 6px
 }
-
+/* !modal below here */
 .btn-group-sm>.btn,
 .btn-sm {
   padding: 5px 10px;
@@ -4366,14 +4366,14 @@ input[type=reset].btn-block,
 input[type=submit].btn-block {
   width: 100%
 }
-
+/* 
 .fade {
   opacity: 0;
   -webkit-transition: opacity .15s linear;
   -o-transition: opacity .15s linear;
   transition: opacity .15s linear
 }
-
+*/
 .fade.in {
   opacity: 1
 }
@@ -4392,8 +4392,8 @@ tr.collapse.in {
 
 tbody.collapse.in {
   display: table-row-group
-}
-
+} 
+/* ! modal above here */
 .collapsing {
   position: relative;
   height: 0;
@@ -4481,7 +4481,7 @@ tbody.collapse.in {
   text-decoration: none;
   background-color: #f5f5f5
 }
-
+/* ! modal above here */
 .dropdown-menu>.active>a,
 .dropdown-menu>.active>a:focus,
 .dropdown-menu>.active>a:hover {
@@ -4647,7 +4647,7 @@ tbody.collapse.in {
 .btn-group>.btn-group:not(:first-child):not(:last-child)>.btn {
   border-radius: 0
 }
-
+/* ! modal above here */
 .btn-group>.btn-group:first-child:not(:last-child)>.btn:last-child,
 .btn-group>.btn-group:first-child:not(:last-child)>.dropdown-toggle {
   border-top-right-radius: 0;
@@ -5849,7 +5849,7 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
   background-color: #f5f5f5;
   border-radius: 4px
 }
-
+/* ! modal above here */
 .breadcrumb>li {
   display: inline-block
 }
@@ -7244,11 +7244,11 @@ button.close {
   border: 0
 }
 
-.modal-open {
+/* .modal-open {
   overflow: hidden
-}
+} */
 
-.modal {
+/* .modal {
   position: fixed;
   top: 0;
   right: 0;
@@ -7259,9 +7259,9 @@ button.close {
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
   outline: 0
-}
+} */
 
-.modal.fade .modal-dialog {
+/* .modal.fade .modal-dialog {
   -webkit-transition: -webkit-transform .3s ease-out;
   -o-transition: -o-transform .3s ease-out;
   transition: transform .3s ease-out;
@@ -7269,27 +7269,27 @@ button.close {
   -ms-transform: translate(0, -25%);
   -o-transform: translate(0, -25%);
   transform: translate(0, -25%)
-}
+} */
 
-.modal.in .modal-dialog {
+/* .modal.in .modal-dialog {
   -webkit-transform: translate(0, 0);
   -ms-transform: translate(0, 0);
   -o-transform: translate(0, 0);
   transform: translate(0, 0)
-}
+} */
 /* !below here */
-.modal-open .modal {
+/* .modal-open .modal {
   overflow-x: hidden;
   overflow-y: auto
-}
+} */
 
-.modal-dialog {
+/* .modal-dialog {
   position: relative;
   width: auto;
   margin: 10px
-}
+} */
 
-.modal-content {
+/* .modal-content {
   position: relative;
   background-color: #fff;
   -webkit-background-clip: padding-box;
@@ -7300,9 +7300,9 @@ button.close {
   outline: 0;
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
   box-shadow: 0 3px 9px rgba(0, 0, 0, .5)
-}
+} */
 
-.modal-backdrop {
+/* .modal-backdrop {
   position: fixed;
   top: 0;
   right: 0;
@@ -7388,7 +7388,7 @@ button.close {
   .modal-lg {
     width: 900px
   }
-}
+} */
 
 .tooltip {
   position: absolute;
@@ -7974,8 +7974,8 @@ button.close {
 .container:after,
 .dl-horizontal dd:after,
 .form-horizontal .form-group:after,
-.modal-footer:after,
-.modal-header:after,
+/* .modal-footer:after,
+.modal-header:after, */
 .nav:after,
 /* .navbar-collapse:after,
 .navbar-header:after,

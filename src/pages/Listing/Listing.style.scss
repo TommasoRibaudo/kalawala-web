@@ -57,7 +57,7 @@ html,
 
         .pictures {
             height: 400px;
-            background-color: rgb(102, 177, 241);
+            background-color: rgb(255, 255, 255);
             // margin-bottom: 25px;
         }
 
@@ -77,9 +77,10 @@ html,
     .book {
         // background-color: chartreuse;
         height: 100%;
-        padding-left: 20px;
+        padding: 0 20px;
+        padding-top: 115px;
     }
 
-
+    
 
 }

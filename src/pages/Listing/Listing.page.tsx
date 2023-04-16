@@ -4,7 +4,7 @@ import './Listing.style.scss'
 import OtherListings from "./components/OtherListings/OtherListings.component";
 import { useParams } from "react-router-dom";
 import { ListingType } from "../../utils/types";
-import { TucanoImage } from "../../assets/images";
+import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from "../../assets/images";
 
 
 const Listing = () => {
@@ -12,9 +12,9 @@ const Listing = () => {
 
     const listings: ListingType[] = [
         {name: 'Tucano', mainImage: TucanoImage },
-        {name: 'Geco', mainImage: TucanoImage},
-        {name: 'Pappagallo', mainImage: TucanoImage},
-        {name: 'Rana', mainImage: TucanoImage},
+        {name: 'Geco', mainImage: GecoImage},
+        {name: 'Pappagallo', mainImage: PappagalloImage},
+        {name: 'Rana', mainImage: RanaImage},
     ]
     return (
     <div className="listingContainer">

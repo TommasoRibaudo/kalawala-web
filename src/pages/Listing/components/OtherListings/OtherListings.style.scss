@@ -1,24 +1,60 @@
-// @use '../../styles/mixins';
-// @import  '../../styles//styles.scss';
+@use '../../../../styles/mixins';
+@import  '../../../../styles/styles.scss';
 
 
 
 .cont{
-    background-color: rgb(155, 46, 46);
     height: 100%;
-    padding: 50px;
+    padding-top: 50px;
+    .listing:hover{
+        cursor: pointer;
+    }
     
 }
 
-.listing{
+.listing {
     background-color:rgb(25, 136, 136);
     height: 170px;
     width:230px;
     border-radius: 5px;
-}
+    flex-direction: row;
+    border: 3px solid $primary-color;
+    background-size: cover;
+    background-position: center center;
+    @media (max-width: 1440px) {
+      width: 100%;
+    }
+    
+  }
 
 .name{
-    background-color: #303233;
-    width: 100%
+    background-color: #303233ab;
+    width: 100%;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    height: 26px;
+    text-align: center;
+    color: white;
+    // font-weight: bold;
+    font-size: 16px;
 }
 
+// .image{
+//     height: 100%;
+// }
+
+// .imageContainer{
+//     background-color: yellow;
+//     width: 100%;
+//     height: 100%;
+//     border-top-right-radius: 5px;
+//     border-top-left-radius: 5px;
+
+//     img {
+//         height: 100%;
+//         width: 100%;
+//         object-fit: fill;
+//         border-top-right-radius: 5px;
+//         border-top-left-radius: 5px
+//       }
+// }

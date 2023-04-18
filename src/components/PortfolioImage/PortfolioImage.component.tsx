@@ -35,10 +35,10 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
       break;
   }
 
-
+ const imageList = images.keys().filter((imagePath: string) => !imagePath.includes('-sm'));
   return (
     <div className="filtr-item row">
-      {images.keys().filter((imagePath: string) => !imagePath.includes('-sm')).map((imagePath: string, index: number) => {
+      {imageList.map((imagePath: string, index: number) => {
         return (
         <div key={index} className="portfolio-block col-lg-4 col-md-6">
             <Image

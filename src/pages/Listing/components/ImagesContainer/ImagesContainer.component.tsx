@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Container, Col, Row, Image, Modal, Button } from "react-bootstrap";
+import { Col, Row, Image, } from "react-bootstrap";
 import './ImagesContainer.style.scss'
-import image from "../../../../assets/images/portfolio/Tucano/tucano-bathroom-2.jpg";
-import { gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions } from '../../../../utils/constants';
 import requireContext from 'require-context.macro';
 
 interface IImagesContainer{
@@ -13,15 +10,6 @@ const ImagesContainer = ({showModal, houseName}: IImagesContainer) => {
 
   
   let images: any;
-  type ImageDescriptions = {
-    [key: string]: IImageDescription[];
-  }
-  const imageDescriptions: ImageDescriptions = {
-    Tucano:tucanoImageDescriptions,
-    Geco:gecoImageDescriptions,
-    Pappagallo:pappagalloImageDescriptions,
-    Rana:ranaImageDescriptions
-  }
   switch (houseName) {
     case "Tucano":
       images = requireContext('../../../.././assets/images/portfolio/Tucano', false, /\.(png|jpe?g|svg)$/);
@@ -65,11 +53,6 @@ const ImagesContainer = ({showModal, houseName}: IImagesContainer) => {
             </Col>
           </Col>
         </Row>
-
-        {/* <Modal show={show} onHide={handleClose} centered >
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-        
-      </Modal> */}
       </div>
       
     </>

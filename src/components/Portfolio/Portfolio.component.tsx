@@ -35,7 +35,7 @@ const Portfolio = () => {
           </div>
         </div>
       </div>
-      <div className="d-flex flex-wrap" style={{ backgroundColor: '' }}>
+      <div className="d-flex flex-wrap">
         <div className="container">
           <PortfolioImage folderName={folderName} />
         </div>

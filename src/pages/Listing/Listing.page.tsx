@@ -34,7 +34,7 @@ const Listing = () => {
                 <Col className="info col" lg={7}>
                     <h1 className="title">Title</h1>
                     <h3 className="location">Location</h3>
-                    <ImagesContainer showModal={handleShow} />
+                    <ImagesContainer showModal={handleShow} houseName={listing!}/>
                     <div className="amenaties">
 
                     </div>
@@ -46,7 +46,7 @@ const Listing = () => {
                     <Smoobu />
                 </Col>
             </Row>
-            {show && <ImagesModal closeModal={handleClose} />}
+            {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
         </div>
     )
 

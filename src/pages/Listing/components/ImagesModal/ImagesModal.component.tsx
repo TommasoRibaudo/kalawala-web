@@ -14,9 +14,7 @@ const ImagesModal = ({ closeModal, houseName }: IIMagesModal) => {
   return (
     <div className="testModal " onClick={closeModal}>
       <div className="d-flex flex-wrap align-items-center h-100">
-        {/* <div className="container"> */}
           <PortfolioImage folderName={houseName} />
-        {/* </div> */}
       </div>
     </div>
   )

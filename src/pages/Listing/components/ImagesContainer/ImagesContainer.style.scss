@@ -1,0 +1,40 @@
+@use '../../../../styles/mixins';
+@import '../../../../styles//styles.scss';
+
+.imagesContainer {
+  // height: 100%;
+  img{
+    padding: 5px;
+  }
+  :hover{
+    cursor: pointer;
+  }
+
+  .mainImage {
+    // height: 400px;
+    // height: 100%;
+  }
+
+  .secondaryImages {
+    // height: 180px;
+    // padding-left: 10px;
+
+    // &.bottom {
+    //   padding-top: 13px;
+    // }
+  }
+
+  .row {
+    // height: 50%;
+    // max-height: 400px;
+  }
+
+  .col {
+    // height: 400px;
+    // max-height: 400px;
+
+  }
+
+  
+}
+

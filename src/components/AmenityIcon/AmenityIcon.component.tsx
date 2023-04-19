@@ -1,15 +1,15 @@
 import React, {FC} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBath, faKitchenSet, faSnowflake, faSquareParking, faWifi, faPaw } from '@fortawesome/free-solid-svg-icons';
+import { faBath, faKitchenSet, faSnowflake, faSquareParking, faWifi, faPaw, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import './AmenityIcon.style.scss'
+import { AmenityType } from "../../utils/types";
 
-interface IAmenityIcon{
-    icon?: string;
-    text?: string;
-}
+const AmenityIcon: FC<AmenityType> = ({icon, text}) => {
 
-const AmenityIcon: FC<IAmenityIcon> = ({icon, text}) => {
-    const iconList = {
+    type IconListType = {
+        [key: string]: IconDefinition
+    }
+    const iconList: IconListType = {
         bath: faBath,
         kitchen: faKitchenSet,
         ac: faSnowflake,
@@ -17,9 +17,10 @@ const AmenityIcon: FC<IAmenityIcon> = ({icon, text}) => {
         wifi: faWifi,
         pet: faPaw
     }
+
     return(
         <div className="iconContainer">
-            <FontAwesomeIcon icon={iconList['pet']} color='#57cbcc' fontSize={"30px"}/>
+            <FontAwesomeIcon icon={iconList[icon]} color='#57cbcc' fontSize={"30px"}/>
             <div>{text || 'tes asdsadsat'}</div>
         </div>)
 }

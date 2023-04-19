@@ -20,6 +20,7 @@ const Home = () => {
       <Portfolio />
       <Testimonial />
       <ContactUs />
+      
     </div>
   )
 }

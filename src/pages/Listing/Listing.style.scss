@@ -1,35 +1,97 @@
 @use '../../styles/mixins';
-@import  '../../styles//styles.scss';
+@import '../../styles//styles.scss';
 
 
 
-body, html, #root{
-height: 100%;
+body,
+html,
+#root {
+    height: 100%;
 }
 
 .listingContainer {
     width: 100%;
     height: 100%;
 
-    .row{
+    .row {
         margin: 0;
         height: 100%;
     }
-    .col{
+
+    .col {
         padding: 0;
-     }
-    
-}
+    }
 
-.otherOptions{
-    height: 100%;
-}
+    .otherOptions {
+        // background-color: aqua;
+        height: 100%;
+    }
 
-.info {
-    height: 100%;
-}
+    .info {
+        // background-color:brown;
+        height: 100%;
 
-.book{
-    height: 100%;
+        .title {
+            // width: 1200px;
+            // height: 113px;
+            // left: 360px;
+            // top: 11px;
+            color: rgba(255, 255, 255, 1);
+            font-family: 'sourcesanspro', sans-serif;
+            padding: 0 // font-style: normal;
+                // font-size: 24px;
+                // font-weight: 400;
+        }
+
+        .location {
+            // width: 1200px;
+            // height: 113px;
+            // left: 360px;
+            // top: 11px;
+            color: rgba(255, 255, 255, 1);
+            font-family: 'sourcesanspro', sans-serif;
+            // font-style: normal;
+            // font-size: 24px;
+            // font-weight: 400;
+        }
+
+        .pictures {
+            height: 400px;
+            background-color: rgb(255, 255, 255);
+            // margin-bottom: 25px;
+        }
+
+        .amenaties {
+            height: 140px;
+            background-color: rgb(21, 123, 212);
+            margin: 25px 0;
+
+        }
+
+        .description {
+            height: 500px;
+            background-color: rgb(21, 199, 212);
+        }
+    }
+
+    .book {
+        // background-color: chartreuse;
+        height: 100%;
+        padding: 0 20px;
+        padding-top: 115px;
+    }
+
+
+
+    .otherOptions {
+        height: 100%;
+    }
+
+    .info {
+        height: 100%;
+    }
+
+    .book {
+        height: 100%;
+    }
 }
- 

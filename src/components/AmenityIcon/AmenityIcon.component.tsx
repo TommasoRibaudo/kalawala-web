@@ -21,7 +21,7 @@ const AmenityIcon: FC<AmenityType> = ({icon, text}) => {
     return(
         <div className="iconContainer">
             <FontAwesomeIcon icon={iconList[icon]} color='#57cbcc' fontSize={"30px"}/>
-            <div>{text || 'tes asdsadsat'}</div>
+            <div>{text}</div>
         </div>)
 }
 

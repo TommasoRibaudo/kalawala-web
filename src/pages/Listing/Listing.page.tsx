@@ -6,10 +6,11 @@ import Smoobu from "../../components/Smoobu/Smoobu.component";
 import ImagesContainer from "./components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "./components/ImagesModal/ImagesModal.component";
 import { useParams } from "react-router-dom";
-import { ListingType } from "../../utils/types";
+import { HouseDataType, ListingType } from "../../utils/types";
 import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from "../../assets/images";
 import Amenities from "./components/Amenities/Amenities.component";
 import { AmenityType } from "../../utils/types";
+import { houseDataList } from "../../utils/constants";
 
 
 const Listing = () => {
@@ -32,22 +33,27 @@ const Listing = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.name === listing);
+
     useEffect(() => {
         console.log('test')
     }, []);
+    const description = houseData?.description.split('<br/>');
+    const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
         <div className="listingContainer">
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={{ order: 'first', span: 2 }} xs={{ order: 'last', span: 12 }}><OtherListings listings={listings} currentListing={listing || ''} /></Col>
                 <Col className="info col" lg={7}>
-                    <h1 className="title">Title</h1>
-                    <h3 className="location">Location</h3>
-                    <ImagesContainer showModal={handleShow} houseName={listing!}/>
-                    <div className="amenities">
-                        <Amenities amenities={amenities} />
+                    <h1 className="title">{houseData?.name}</h1>
+                    <h3 className="location">{houseData?.location}</h3>
+                    <ImagesContainer showModal={handleShow} houseName={listing!} />
+                    <div className="amenaties">
+
                     </div>
                     <div className="description">
-
+                        {description!.map((p, i) => ( <><p key={i}>{p}</p> <br/></>))}
+                        {neighborhood!.map((p, i) => ( <><p key={i}>{p}</p> <br/></>))}
                     </div>
                     
                 </Col>

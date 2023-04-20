@@ -12,6 +12,8 @@ html,
 .listingContainer {
     width: 100%;
     height: 100%;
+    
+
 
     .row {
         margin: 0;
@@ -25,11 +27,13 @@ html,
     .otherOptions {
         // background-color: aqua;
         height: 100%;
+        padding: 0 0 0 20px;
     }
 
     .info {
         // background-color:brown;
         height: 100%;
+        padding: 0 20px;
 
         .title {
             // width: 1200px;
@@ -73,14 +77,17 @@ html,
 
         .description {
             height: 500px;
-            background-color: rgb(21, 199, 212);
+            // background-color: rgb(21, 199, 212);
+            color: white;
+            font-size: 20px;
+            font-family: sans-serif;
         }
     }
 
     .book {
         // background-color: chartreuse;
         height: 100%;
-        padding: 0 20px;
+        padding: 0 20px 0 0;
         padding-top: 115px;
     }
 

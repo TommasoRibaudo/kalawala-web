@@ -5,7 +5,7 @@ export type ListingType = {
 
 export type AmenityType = {
     icon: string
-    text: string
+    name: string
 }
 export type HouseDataType = {
     name: string;

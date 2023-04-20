@@ -17,9 +17,9 @@ const Listing = () => {
     const { listing } = useParams()
 
     const amenities: AmenityType[] = [
-        {icon: 'ac', text: '2 A/C Units'},
-        {icon: 'ac', text: '2 A/C Units'},
-        {icon: 'ac', text: '2 A/C Units'}
+        {icon: 'ac', name: '2 A/C Units'},
+        {icon: 'ac', name: '2 A/C Units'},
+        {icon: 'ac', name: '2 A/C Units'}
     ]
 
     const listings: ListingType[] = [
@@ -49,7 +49,7 @@ const Listing = () => {
                     <h3 className="location">{houseData?.location}</h3>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     <div className="amenaties">
-
+                    <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
                     <div className="description">
                         {description!.map((p, i) => ( <><p key={i}>{p}</p> <br/></>))}

@@ -4,7 +4,7 @@ import { faBath, faKitchenSet, faSnowflake, faSquareParking, faWifi, faPaw, Icon
 import './AmenityIcon.style.scss'
 import { AmenityType } from "../../utils/types";
 
-const AmenityIcon: FC<AmenityType> = ({icon, text}) => {
+const AmenityIcon: FC<AmenityType> = ({icon, name}) => {
 
     type IconListType = {
         [key: string]: IconDefinition
@@ -21,7 +21,7 @@ const AmenityIcon: FC<AmenityType> = ({icon, text}) => {
     return(
         <div className="iconContainer">
             <FontAwesomeIcon icon={iconList[icon]} color='#57cbcc' fontSize={"30px"}/>
-            <div>{text}</div>
+            <div>{name}</div>
         </div>)
 }
 

@@ -11,8 +11,8 @@ const Amenities: FC<IAmenities> = ({ amenities }) => {
     return (
         <div className="hstack amenitiesCont d-flex justify-content-center">
             {
-                amenities.map(({ icon, text }) => {
-                    return <AmenityIcon icon={icon} text={text} />
+                amenities.map(({ icon, name }) => {
+                    return <AmenityIcon icon={icon} name={name} />
                 })
             }
         </div>

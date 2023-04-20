@@ -30,6 +30,8 @@ const Listing = () => {
     useEffect(() => {
         console.log('test')
     }, []);
+    const description = houseData?.description.split('<br/>');
+    const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
         <div className="listingContainer">
             <Row className="subContainer">
@@ -42,7 +44,8 @@ const Listing = () => {
 
                     </div>
                     <div className="description">
-                        {houseData?.description}
+                        {description!.map((p, i) => ( <><p key={i}>{p}</p> <br/></>))}
+                        {neighborhood!.map((p, i) => ( <><p key={i}>{p}</p> <br/></>))}
                     </div>
                 </Col>
                 <Col className="book col" lg={3}>

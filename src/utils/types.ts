@@ -3,6 +3,10 @@ export type ListingType = {
     mainImage: string
 }
 
+export type AmenityType = {
+    icon: string
+    name: string
+}
 export type HouseDataType = {
     name: string;
     guestNumber: number;

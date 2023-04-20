@@ -35,20 +35,22 @@ const Listing = () => {
     return (
         <div className="listingContainer">
             <Row className="subContainer">
-                <Col className="otherOptions col" lg={{ order: 'first', span: 2 }} xs={{ order: 'last', span: 12 }}><OtherListings listings={listings} currentListing={listing || ''} /></Col>
-                <Col className="info col" lg={7}>
-                    <h1 className="title">{houseData?.name}</h1>
-                    <h3 className="location">{houseData?.location}</h3>
+                <Col className="otherOptions col" lg={{ order: 'first', span: 2 }} md={{ order: 'last', span: 2 }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}><OtherListings listings={listings} currentListing={listing || ''} /></Col>
+                <Col className="info col" lg={7} md={{ order: 'first', span: 7 }} sm={8} xs={8}>
+                    <div className="heading">
+                        <h1 className="title">{houseData?.name}</h1>
+                        <h3 className="location">{houseData?.location}</h3>
+                    </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     <div className="amenaties">
 
                     </div>
                     <div className="description">
-                        {description!.map((p, i) => ( <><p key={i}>{p}</p> <br/></>))}
-                        {neighborhood!.map((p, i) => ( <><p key={i}>{p}</p> <br/></>))}
+                        {description!.map((p, i) => (<><p key={i}>{p}</p> <br /></>))}
+                        {neighborhood!.map((p, i) => (<><p key={i}>{p}</p> <br /></>))}
                     </div>
                 </Col>
-                <Col className="book col" lg={3}>
+                <Col className="book col" lg={3} md={3} sm={4} xs={4}>
                     <Smoobu />
                 </Col>
             </Row>

@@ -8,11 +8,19 @@ import ImagesModal from "./components/ImagesModal/ImagesModal.component";
 import { useParams } from "react-router-dom";
 import { HouseDataType, ListingType } from "../../utils/types";
 import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from "../../assets/images";
+import Amenities from "./components/Amenities/Amenities.component";
+import { AmenityType } from "../../utils/types";
 import { houseDataList } from "../../utils/constants";
 
 
 const Listing = () => {
     const { listing } = useParams()
+
+    const amenities: AmenityType[] = [
+        {icon: 'ac', name: '2 A/C Units'},
+        {icon: 'ac', name: '2 A/C Units'},
+        {icon: 'ac', name: '2 A/C Units'}
+    ]
 
     const listings: ListingType[] = [
         { name: 'Tucano', mainImage: TucanoImage },
@@ -43,12 +51,13 @@ const Listing = () => {
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     <div className="amenaties">
-
+                    <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
                     <div className="description">
                         {description!.map((p, i) => (<><p key={i}>{p}</p> <br /></>))}
                         {neighborhood!.map((p, i) => (<><p key={i}>{p}</p> <br /></>))}
                     </div>
+                    
                 </Col>
                 <Col className="book col" lg={3} md={3} sm={4} xs={4}>
                     <Smoobu />

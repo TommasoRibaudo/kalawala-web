@@ -7,6 +7,7 @@ body,
 html,
 #root {
     height: 100%;
+    overflow: hidden;
 }
 
 .listingContainer {
@@ -47,6 +48,10 @@ html,
 
         .heading {
             height: 100px;
+            @media (max-width: 804px) {
+                height: fit-content;
+    
+            }
         }
 
         .title {

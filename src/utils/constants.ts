@@ -158,27 +158,27 @@ export const houseDataList = [
         amenities: [
             {
                 name: "Private Equipped Bathroom",
-                icon: ""
+                icon: "bath"
             },
             {
                 name: "Private Equipped Kitchen",
-                icon: ""
+                icon: "kitchen"
             },
             {
                 name: "A/C",
-                icon: ""
+                icon: "ac"
             },
             {
                 name: "Private Fenced Parking",
-                icon: ""
+                icon: "parking"
             },
             {
                 name: "100Mbps WiFi",
-                icon: ""
+                icon: "wifi"
             },
             {
                 name: "Pet Friendly",
-                icon: ""
+                icon: "pet"
             }
         ],
     },
@@ -191,27 +191,27 @@ export const houseDataList = [
         amenities: [
             {
                 name: "Private Equipped Bathroom",
-                icon: ""
+                icon: "bath"
             },
             {
                 name: "Private Equipped Kitchen",
-                icon: ""
+                icon: "kitchen"
             },
             {
                 name: "A/C",
-                icon: ""
+                icon: "ac"
             },
             {
                 name: "Private Fenced Parking",
-                icon: ""
+                icon: "parking"
             },
             {
                 name: "100Mbps WiFi",
-                icon: ""
+                icon: "wifi"
             },
             {
                 name: "Pet Friendly",
-                icon: ""
+                icon: "pet"
             }
         ],
     },
@@ -224,19 +224,19 @@ export const houseDataList = [
         amenities: [
             {
                 name: "Private Equipped Bathroom",
-                icon: ""
+                icon: "bath"
             },
             {
                 name: "Private Equipped Kitchen",
-                icon: ""
+                icon: "kitchen"
             },
             {
                 name: "A/C",
-                icon: ""
+                icon: "ac"
             },
             {
                 name: "Private Outside Parking",
-                icon: ""
+                icon: "parking"
             }
         ],
     },
@@ -250,19 +250,19 @@ export const houseDataList = [
         amenities: [
             {
                 name: "Private Equipped Bathroom",
-                icon: ""
+                icon: "bath"
             },
             {
                 name: "Private Equipped Kitchen",
-                icon: ""
+                icon: "kitchen"
             },
             {
                 name: "A/C",
-                icon: ""
+                icon: "ac"
             },
             {
                 name: "Private Outside Parking",
-                icon: ""
+                icon: "parking"
             }
         ],
     }

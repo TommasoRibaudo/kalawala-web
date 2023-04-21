@@ -33,7 +33,7 @@ const Listing = () => {
     const description = houseData?.description.split('<br/>');
     const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
-        <div className="listingContainer">
+        <div className={`listingContainer ${show && 'modal-open'}`}>
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={{ order: 'first', span: 2 }} md={{ order: 'last', span: 2 }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}><OtherListings listings={listings} currentListing={listing || ''} /></Col>
                 <Col className="info col" lg={7} md={{ order: 'first', span: 7 }} sm={8} xs={8}>

@@ -1,18 +1,23 @@
 import React from 'react';
 import background from '../../assets/images/backgrounds/bg-1.jpg';
+import Smoobu from '../Smoobu/Smoobu.component';
+import './CallToAction.style.scss'
 
 const CallToAction = () => {
   return (
-    <section className="call-to-action section-sm bg-1 overly" style={{ backgroundImage: `url(${background})`}}>
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12 text-center" >
-            <h2>Check Availability and Prices</h2>
-            <p>discover our discounts.</p>
-            <a href="#contact-us" className="btn btn-main">Reserve Now</a>
+    <section id="callToAction" className="call-to-action  bg-1 overly " style={{ backgroundImage: `url(${background})` }}>
+      <div className="test section-sm">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12 text-center" >
+              <h2>Check Availability and Prices</h2>
+              <p>discover our discounts.</p>
+              <Smoobu />
+            </div>
           </div>
         </div>
       </div>
+
     </section>
   );
 }

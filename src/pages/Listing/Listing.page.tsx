@@ -11,6 +11,7 @@ import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from "../../assets
 import Amenities from "./components/Amenities/Amenities.component";
 import { AmenityType } from "../../utils/types";
 import { houseDataList } from "../../utils/constants";
+import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
 
 
 const Listing = () => {
@@ -44,6 +45,7 @@ const Listing = () => {
     const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
         <div className={`listingContainer ${show && 'modal-open'}`}>
+            <FixedNavigation />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
                     <OtherListings listings={listings} currentListing={listing || ''} />

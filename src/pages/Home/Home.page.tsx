@@ -9,7 +9,7 @@ import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.componen
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 
 const Home = () => {
-  
+
   return (
     <div id="body">
       <WelcomeSlider />
@@ -18,9 +18,8 @@ const Home = () => {
       <Discover />
       <CallToAction />
       <Portfolio />
-      <Testimonial />
+      {/* <Testimonial /> */}
       <ContactUs />
-      
     </div>
   )
 }

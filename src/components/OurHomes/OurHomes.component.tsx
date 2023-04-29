@@ -8,7 +8,7 @@ const OurHomes: FC = () => {
     const homes = [
         {
             name: 'Tucano',
-            gusestNumber: 4,
+            gusestNumber: 5,
             parking: false,
             image: TucanoImage
         },
@@ -20,13 +20,13 @@ const OurHomes: FC = () => {
         },
         {
             name: 'Pappagallo',
-            gusestNumber: 4,
+            gusestNumber: 5,
             parking: false,
             image: PappagalloImage
         },
         {
             name: 'Rana',
-            gusestNumber: 4,
+            gusestNumber: 5,
             parking: true,
             image: RanaImage
         },

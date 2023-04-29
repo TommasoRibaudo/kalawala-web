@@ -68,7 +68,7 @@ export const pappagalloImageDescriptions: IImageDescription[] = [
     },
     {
         roomType: "Livingroom",
-        roomDescription: "Shh... Secret discount! Include #5off in your message to get a 5% off one booking!"
+        roomDescription: "Shh... Secret discount! Use discount code #5off to get an additional discount!"
     }
 ]
 export const ranaImageDescriptions: IImageDescription[] = [

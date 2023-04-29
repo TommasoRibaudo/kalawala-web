@@ -46,15 +46,15 @@ const ImagesContainer = ({showModal, houseName}: IImagesContainer) => {
     <>
       <div className="imagesContainer" onClick={showAllImages}>
         <Row>
-          <Col className="col" lg={6} sm={12} md={12}>
+          <Col className="col" lg={6} sm={12} md={12} xs={12}>
             <Image className="mainImage" fluid src={images(imageList[imageSnippet[0]])} alt="" />
           </Col>
-          <Col className="col" lg={6} sm={12} md={12}>
-            <Col className="col" lg={6} sm={12} md={12}>
+          <Col className="col" lg={6} sm={12} md={12} xs={12}>
+            <Col className="col" lg={6} sm={6} xs={6} md={6}>
               <Image className="secondaryImages" fluid src={images(imageList[imageSnippet[1]])} alt="" />
               <Image className="secondaryImages bottom" fluid src={images(imageList[imageSnippet[2]])} alt="" />
             </Col>
-            <Col className="col" lg={6} sm={12} md={12}>
+            <Col className="col" lg={6} sm={6} xs={6} md={6}>
               <Image className="secondaryImages" fluid src={images(imageList[imageSnippet[3]])} alt="" />
 
               <Image className="secondaryImages bottom" fluid src={images(imageList[imageSnippet[4]])} alt="" />

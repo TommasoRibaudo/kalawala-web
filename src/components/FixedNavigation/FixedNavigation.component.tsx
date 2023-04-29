@@ -3,12 +3,13 @@ import './FixedNavigation.style.scss';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import { useNavigate } from "react-router-dom";
 
 const FixedNavigation: React.FC = () => {
   const [isActive, setIsActive] = useState<boolean>(true);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
-  const handleClick = (event: any) => {
+  const handleToggleClick = (event: any) => {
     if (event.currentTarget.classList.contains('collapsed')) {
       setIsCollapsed(true);
     } else {
@@ -16,10 +17,17 @@ const FixedNavigation: React.FC = () => {
     }
   };
 
+  const navigate = useNavigate();
+
+  const handleLinkClick = (url: string) => {
+    navigate(`/${url}`);
+    setIsActive(false);
+  };
+
   return (
     <Navbar className="navigation" expand="lg" sticky="top" variant="dark">
       <Container>
-        <Navbar.Brand href="#body" className="d-flex align-items-center">
+        <Navbar.Brand href="/#body" className="d-flex align-items-center">
           <svg
             width="40px"
             height="40px"
@@ -51,17 +59,17 @@ const FixedNavigation: React.FC = () => {
             </g>
           </svg>
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={handleClick} />
+        <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={handleToggleClick} />
         <Navbar.Collapse id="basic-navbar-nav" className={`${isCollapsed}`} >
           <Nav className="navMenu" >
-            <Nav.Link href="#body" className={`navText ${isActive && 'active'}`} >Home</Nav.Link>
-            <Nav.Link href="#portfolio" className="navText" onClick={() => { setIsActive(false) }}>Photos</Nav.Link>
-            <Nav.Link href="#testimonial" className="navText" onClick={() => { setIsActive(false) }}>Reviews</Nav.Link>
-            <Nav.Link href="#contact-us" className="navText" onClick={() => { setIsActive(false) }}>Contact</Nav.Link>
+            <Nav.Link href="/#body" className={`navText ${isActive && 'active'}`} >Home</Nav.Link>
+            <Nav.Link href="/#callToAction" className="navText" onClick={() => { handleLinkClick("#callToAction") }}>Availability</Nav.Link>
+            <Nav.Link href="/#portfolio" className="navText" onClick={() => { handleLinkClick("#portfolio") }}>Photos</Nav.Link>
+            <Nav.Link href="/#contact-us" className="navText" onClick={() => { handleLinkClick("#contact-us") }}>Contact</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
-    </Navbar> 
+    </Navbar>
   );
 };
 

@@ -9,15 +9,19 @@ interface IAmenities {
 
 const Amenities: FC<IAmenities> = ({ amenities }) => {
     return (
-        <div className="hstack amenitiesCont d-flex justify-content-center">
-            {
-                amenities.map(({ icon, name }) => {
-                    return <AmenityIcon icon={icon} name={name} />
-                })
-            }
+        <div className="amenitiesCont d-flex justify-content-center">
+            <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+                {
+                    amenities.map(({ icon, name }) => {
+                        return (
+                            <div className="col" key={name}>
+                                <AmenityIcon icon={icon} name={name} />
+                            </div>
+                        );
+                    })
+                }
+            </div>
         </div>
-
-
     )
 }
 

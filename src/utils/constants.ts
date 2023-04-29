@@ -180,7 +180,8 @@ export const houseDataList = [
             {
                 name: "Pet Friendly",
                 icon: "pet"
-            }
+            },
+            
         ],
     },
     {
@@ -238,9 +239,18 @@ export const houseDataList = [
                 icon: "ac"
             },
             {
+                name: "100Mbps WiFi",
+                icon: "wifi"
+            },
+            {
                 name: "Private Outside Parking",
                 icon: "parking"
+            },
+            {
+                name: "Pet Friendly",
+                icon: "pet"
             }
+            
         ],
     },
 
@@ -265,8 +275,16 @@ export const houseDataList = [
                 icon: "ac"
             },
             {
+                name: "100Mbps WiFi",
+                icon: "wifi"
+            },
+            {
                 name: "Private Outside Parking",
                 icon: "parking"
+            },
+            {
+                name: "Pet Friendly",
+                icon: "pet"
             }
         ],
     }

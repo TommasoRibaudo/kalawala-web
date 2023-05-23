@@ -66,7 +66,7 @@ const Listing = () => {
 
                 </Col>
                 <Col className="book col" lg={3} md={windowWidth <= 991 ?{ span: 12 } : { order: 'first', span: 4 }} sm={{  span: 12 }} xs={{ span: 12 }}>
-                    <Smoobu />
+                    <Smoobu homeCode={houseData!.houseCode} />
                 </Col>
             </Row>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}

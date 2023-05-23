@@ -13,6 +13,7 @@ export type HouseDataType = {
     location: string;
     description: string;
     neighborhood: string;
+    houseCode: number;
     amenities: {
         name: string;
         icon: string;

@@ -1,3 +1,5 @@
+import { HouseDataType } from "./types";
+
 export interface IImageDescription {
     roomType: string;
     roomDescription: string;
@@ -148,7 +150,7 @@ export const tucanoImageDescriptions: IImageDescription[] = [
     }
 ]
 
-export const houseDataList = [
+export const houseDataList: HouseDataType[] = [
     {
         name: "Geco",
         guestNumber: 5,

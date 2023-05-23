@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './Smoobu.style.scss';
 declare global {
   interface Window {
@@ -12,33 +12,52 @@ declare global {
   }
 }
 
-function Smoobu() {
-  useEffect(() => {
-    console.log('test smoobu');
-    const script = document.createElement('script');
-    script.src = 'https://login.smoobu.com/js/Settings/BookingToolIframe.js';
-    script.async = true;
-    script.onload = () => {
-      window.BookingToolIframe.initialize({
-        url: 'https://login.smoobu.com/en/booking-tool/iframe/89210',
-        baseUrl: 'https://login.smoobu.com/',
-        target: '#apartmentIframeAll'
-      });
-      const apartmentFrame = document.getElementById('apartmentIframeAll');
-      apartmentFrame!.classList.add('apartment-frame-loaded');
-    };
-    document.body.appendChild(script);
+interface ISmoobu {
+  homeCode?: number;
+}
 
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+function Smoobu({ homeCode }: ISmoobu) {
+  const [key, setKey] = useState(0); // Add key state
+  const smoobuUrl: string = 'https://login.smoobu.com/en/booking-tool/iframe/89210/';
+  const url: string = homeCode ? smoobuUrl + homeCode : smoobuUrl;
+
+  useEffect(() => {
+    if (homeCode) {
+      console.log('test smoobu');
+      const script = document.createElement('script');
+      script.src = 'https://login.smoobu.com/js/Settings/BookingToolIframe.js';
+      script.async = true;
+      script.onload = () => {
+        window.BookingToolIframe.initialize({
+          url: url,
+          baseUrl: 'https://login.smoobu.com/',
+          target: '#apartmentIframeAll'
+        });
+        const apartmentFrame = document.getElementById('apartmentIframeAll');
+        apartmentFrame!.classList.add('apartment-frame-loaded');
+      };
+      document.body.appendChild(script);
+
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  }, [homeCode]);
+
+  useEffect(() => {
+    setKey(prevKey => prevKey + 1); // Increment key to trigger component re-render
+  }, [homeCode]);
+
+  if (!homeCode) {
+    return null; // Return null if homeCode is not provided to unmount the component
+  }
 
   return (
-    <div id="apartmentIframeAll">
+    <div key={key} id="apartmentIframeAll">
       {/* Placeholder for the Smoobu Booking Tool */}
     </div>
   );
 }
 
 export default Smoobu;
+

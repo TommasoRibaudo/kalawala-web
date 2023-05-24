@@ -75,8 +75,14 @@ const Blog = () => {
                     </div>
                     {/* <ImagesContainer showModal={handleShow} houseName={listing!} /> */}
                     <div className="description">
-                        {/* {description!.map((p, i) => (<><p key={i}>{p}</p> <br /></>))} */}
-                        {description}
+                        {description!.map((p, i) => {
+                            if(p.charAt(0) === "["){
+                                return (<><img key={i} src={p.replace("[", "")}/> <br/><br/></>)
+                            }else{
+                                return (<><p key={i}>{p}</p> <br /></>)
+                            }
+                            })}
+                        {/* {description} */}
                     </div>
 
                 </Col>

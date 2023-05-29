@@ -63,7 +63,7 @@ const Blog = () => {
     return (
         
         <div className={`listingContainer ${show && 'modal-open'}`}>
-            <FixedNavigation />
+            <FixedNavigation isBlog={true}/>
             <div>{blogId}</div>
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>

@@ -17,7 +17,7 @@ const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image }) => {
 
     const navigate = useNavigate();
     const handleClick = () => {
-        navigate(`listing/${name}`);
+        navigate(`/listing/${name}`);
         setTimeout(() => {
             window.scrollTo(0, 0);
         }, 0);

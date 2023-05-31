@@ -4,8 +4,11 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from "react-router-dom";
-
-const FixedNavigation: React.FC = () => {
+import { getHighestId } from "../../assets/blogs/blogs";
+interface IFixedNavigation {
+  isBlog: boolean
+}
+const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
   const [isActive, setIsActive] = useState<boolean>(true);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -22,6 +25,12 @@ const FixedNavigation: React.FC = () => {
   const handleLinkClick = (url: string) => {
     navigate(`/${url}`);
     setIsActive(false);
+  };
+  const handleBlogClick = () => {
+    navigate(`blog/` + getHighestId());
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
   };
 
   return (
@@ -62,10 +71,11 @@ const FixedNavigation: React.FC = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={handleToggleClick} />
         <Navbar.Collapse id="basic-navbar-nav" className={`${isCollapsed}`} >
           <Nav className="navMenu" >
-            <Nav.Link href="/#body" className={`navText ${isActive && 'active'}`} >Home</Nav.Link>
+            <Nav.Link href="/#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`} >Home</Nav.Link>
             <Nav.Link href="/#callToAction" className="navText" onClick={() => { handleLinkClick("#callToAction") }}>Availability</Nav.Link>
             <Nav.Link href="/#portfolio" className="navText" onClick={() => { handleLinkClick("#portfolio") }}>Photos</Nav.Link>
             <Nav.Link href="/#contact-us" className="navText" onClick={() => { handleLinkClick("#contact-us") }}>Contact</Nav.Link>
+            <Nav.Link className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={() => { handleBlogClick() }}>Blog</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

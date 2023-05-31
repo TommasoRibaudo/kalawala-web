@@ -24,3 +24,11 @@ export const blogs = [
         pictures: ["", ""]
     }
 ]
+
+
+export function getHighestId() {
+    return blogs.reduce((highestId, blog) => {
+      const id = parseInt(blog.id);
+      return id > highestId ? id : highestId;
+    }, 0);
+  }

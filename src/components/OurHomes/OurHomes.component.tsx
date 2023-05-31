@@ -3,7 +3,11 @@ import HomeCard from './Components/HomeCard.component';
 import './OurHomes.style.scss'
 import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from '../../assets/images'
 
-const OurHomes: FC = () => {
+interface IOurHomes{
+    style?: any;
+}
+
+const OurHomes = ({style}:IOurHomes) => {
 
     const homes = [
         {
@@ -32,7 +36,7 @@ const OurHomes: FC = () => {
         },
     ]
     return (
-        <section id="house-list" className="bg-one about section">
+        <section id="house-list" className="bg-one about section" style={style}>
             <div className="container">
                 <div className="row">
                     <div className="title text-center wow fadeIn" data-wow-duration="1500ms">

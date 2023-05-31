@@ -13,7 +13,7 @@ const Home = () => {
   return (
     <div id="body">
       <WelcomeSlider />
-      <FixedNavigation isBlog={false} />
+      <FixedNavigation isBlog={false}/>
       <OurHomes />
       <Discover />
       <CallToAction />

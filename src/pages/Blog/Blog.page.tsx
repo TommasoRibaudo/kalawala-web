@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { blogs } from "../../assets/blogs/blogs";
 import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
 import OurHomes from "../../components/OurHomes/OurHomes.component";
+import ContactUs from "../../components/ContactUs/ContactUs.component";
 
 
 const Blog = () => {
@@ -44,6 +45,7 @@ const Blog = () => {
 
                 </Col>
             </Row>
+            <ContactUs />
         </div>
     )
 

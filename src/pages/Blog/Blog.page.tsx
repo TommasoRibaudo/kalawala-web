@@ -24,14 +24,14 @@ const Blog = () => {
         <div className={`listingContainer`}>
             <FixedNavigation />
             <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
+                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
                     {/* <OtherListings listings={listings} currentListing={listing || ''} /> */}
                 </Col>
-                <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ?{  order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
-                    <div className="heading">
+                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ?{  order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+                    <div className="heading" style={{height: 50}}>
                         <h1 className="title">{blogData?.title}</h1>
                     </div>
-                    <OurHomes />
+                    <OurHomes style={{padding: 0}}/>
                     <div className="description">
                         {description!.map((p, i) => {
                             if(p.charAt(0) === "["){

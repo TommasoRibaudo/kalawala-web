@@ -2,6 +2,7 @@ import React from 'react';
 import background from '../../assets/images/backgrounds/bg-1.jpg';
 import Smoobu from '../Smoobu/Smoobu.component';
 import './CallToAction.style.scss'
+import Smoobu2 from '../Smoobu2/Smoobu2.component';
 
 const CallToAction = () => {
   return (
@@ -12,7 +13,7 @@ const CallToAction = () => {
             <div className="col-md-12 text-center" >
               <h2>Check Availability and Prices</h2>
               <p>discover our discounts.</p>
-              <Smoobu />
+              <Smoobu2 />
             </div>
           </div>
         </div>

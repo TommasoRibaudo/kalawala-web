@@ -22,13 +22,14 @@ import { useParams } from "react-router-dom";
 import { HouseDataType, ListingType } from "../../utils/types";
 import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from "../../assets/images";
 // import Amenities from "./components/Amenities/Amenities.component";
-import { AmenityType } from "../../utils/types";
+import { AmenityType, BlogType } from "../../utils/types";
 import { blogs } from "../../assets/blogs/blogs";
 import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
-import OtherListings from "../Listing/components/OtherListings/OtherListings.component";
+// import OtherListings from "../Listing/components/OtherListings/OtherListings.component";
 import ImagesContainer from "../Listing/components/ImagesContainer/ImagesContainer.component";
 import Amenities from "../Listing/components/Amenities/Amenities.component";
 import ImagesModal from "../Listing/components/ImagesModal/ImagesModal.component";
+import OtherBlogs from "./Components/OtherBlogs.Component";
 
 
 const Blog = () => {
@@ -68,6 +69,7 @@ const Blog = () => {
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
                     {/* <OtherListings listings={listings} currentListing={listing || ''} /> */}
+                    <OtherBlogs currentBlog={blogId || ''} blogs={blogs}  />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ?{  order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">

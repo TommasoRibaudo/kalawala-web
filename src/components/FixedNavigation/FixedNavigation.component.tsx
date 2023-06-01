@@ -27,7 +27,7 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
     setIsActive(false);
   };
   const handleBlogClick = () => {
-    navigate(`blog/` + getHighestId());
+    navigate(`/blog/` + getHighestId());
     setTimeout(() => {
       window.scrollTo(0, 0);
     }, 0);

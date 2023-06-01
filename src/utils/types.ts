@@ -19,3 +19,10 @@ export type HouseDataType = {
         icon: string;
     }[];
 }
+
+export type BlogType = {
+    id: string;
+    title: string;
+    text: string;
+    pictures: string[]
+}

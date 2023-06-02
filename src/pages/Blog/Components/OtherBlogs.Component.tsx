@@ -19,12 +19,12 @@ const OtherBlogs: FC<IOtherListing> = ({ currentBlog, blogs }) => {
   return (
     <>
       <div className="cont d-flex justify-content-center">
-        <div className="header">Check out our other options!</div>
+        <div className="header">Check out our other blogs!</div>
         <div className={`${windowWidth <= 1199 ? 'hstack' : 'vstack'} gap-5 subCont`}>
-          {blogs.map(({ title, pictures, id }) => {
+          {blogs.map(({ title, thumbnail, id }) => {
             return title !== currentBlog ? (
               <div
-                style={{ backgroundImage: `url(${pictures[1]})`, }}
+                style={{ backgroundImage: `url(${thumbnail})`, }}
                 className="listing d-flex align-items-end"
                 onClick={() => { navigate(`/blog/${id}`) }}
               >

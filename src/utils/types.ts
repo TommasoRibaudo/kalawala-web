@@ -25,4 +25,5 @@ export type BlogType = {
     title: string;
     text: string;
     pictures: string[]
+    thumbnail: string
 }

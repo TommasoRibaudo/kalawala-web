@@ -14,6 +14,8 @@ export type HouseDataType = {
     description: string;
     neighborhood: string;
     houseCode: number;
+    image: string;
+    parking: boolean;
     amenities: {
         name: string;
         icon: string;

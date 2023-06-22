@@ -8,18 +8,23 @@ import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from "../../assets
 import { AmenityType, BlogType } from "../../utils/types";
 import { blogs } from "../../assets/blogs/blogs";
 import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
-// import OtherListings from "../Listing/components/OtherListings/OtherListings.component";
 import ImagesContainer from "../Listing/components/ImagesContainer/ImagesContainer.component";
 import Amenities from "../Listing/components/Amenities/Amenities.component";
 import ImagesModal from "../Listing/components/ImagesModal/ImagesModal.component";
 import OtherBlogs from "./Components/OtherBlogs.Component";
 import OurHomes from "../../components/OurHomes/OurHomes.component";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
+import ListingAd from "./Components/ListingAd/ListingAd.component";
 
 
 const Blog = () => {
     const { blogId } = useParams();
-
+    const listings: ListingType[] = [
+        { name: 'Tucano', mainImage: TucanoImage },
+        { name: 'Geco', mainImage: GecoImage },
+        { name: 'Pappagallo', mainImage: PappagalloImage },
+        { name: 'Rana', mainImage: RanaImage },
+    ]
     const blogData = blogs.find((blog) => blog.id === blogId);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -35,14 +40,13 @@ const Blog = () => {
             <FixedNavigation isBlog={true}/>
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    {/* <OtherListings listings={listings} currentListing={listing || ''} /> */}
-                    <OtherBlogs currentBlog={blogId || ''} blogs={blogs}  />
+                    <ListingAd listings={listings}/> 
+                   {/**/}
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ?{  order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading" style={{height: 50}}>
                         <h1 className="title">{blogData?.title}</h1>
                     </div>
-                    <OurHomes style={{padding: 0}}/>
                     <div className="description">
                         {description!.map((p, i) => {
                             if(p.charAt(0) === "["){
@@ -52,7 +56,7 @@ const Blog = () => {
                             }
                             })}
                     </div>
-
+                    <OtherBlogs currentBlog={blogId || ''} blogs={blogs}  />
                 </Col>
             </Row>
             <ContactUs />

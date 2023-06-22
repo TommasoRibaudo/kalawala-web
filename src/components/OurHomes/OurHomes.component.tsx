@@ -2,7 +2,7 @@ import { FC } from 'react';
 import HomeCard from './Components/HomeCard.component';
 import './OurHomes.style.scss'
 import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from '../../assets/images'
-
+import { houseDataList } from '../../utils/constants';
 interface IOurHomes{
     style?: any;
 }
@@ -43,7 +43,7 @@ const OurHomes = ({style}:IOurHomes) => {
                         <h2>Our <span className="color">Homes</span> </h2>
                         <div className="border"></div>
                     </div>
-                    {homes.map(({ name, gusestNumber, parking, image }) => <HomeCard guestNumber={gusestNumber} parking={parking} name={name} image={image} />)}
+                    {houseDataList.map(({ name, guestNumber, parking, image }) => <HomeCard guestNumber={guestNumber} parking={parking} name={name} image={image} />)}
                 </div>
             </div>
         </section>

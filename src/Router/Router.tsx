@@ -21,7 +21,7 @@ const AppRouter = () => (
       <Route path='/Pappagallo'  element={<ListingPappagallo />}/>
       {/* <Route path='blog'>
         <Route path=':blogId' element={<Blog />} />
-      </Route> */}
+      </Route> */} 
       {/* <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} /> */}
     </Routes>

@@ -15,10 +15,10 @@ const AppRouter = () => (
       {/* <Route path='listing'>
         <Route path=':listing' element={<Listing />} />
       </Route> */}
-      <Route path='Geco'  element={<ListingGeco />}/>
-      <Route path='Rana'  element={<ListingRana />}/>
-      <Route path='Tucano'  element={<ListingTucano />}/>
-      <Route path='Pappagallo'  element={<ListingPappagallo />}/>
+      <Route path='/Geco'  element={<ListingGeco />}/>
+      <Route path='/Rana'  element={<ListingRana />}/>
+      <Route path='/Tucano'  element={<ListingTucano />}/>
+      <Route path='/Pappagallo'  element={<ListingPappagallo />}/>
       {/* <Route path='blog'>
         <Route path=':blogId' element={<Blog />} />
       </Route> */}

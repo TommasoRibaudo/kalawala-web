@@ -7,7 +7,7 @@ const WelcomeSlider = () => {
   return (
     <section className="hero-area overlay" style={{ backgroundImage: `url(${banner})`}}>
       <div className = "block" >
-        <h1>RESERVAS KALAWALA</h1>
+        <h1>RESERVAS KALAMALA</h1>
         <p id="short-description">Fully equipped vacation homes in the heart of Puerto Viejo.</p>
         <Button variant="outline-light" className='btn-transparent' href="#house-list">Explore</Button>
         {/* <a data-scroll href="#house-list" className="btn btn-transparent">Explore Us</a> */}

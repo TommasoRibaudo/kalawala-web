@@ -5,6 +5,7 @@ import ListingGeco from '../pages/Listing/staticPages/ListingGeco.page';
 import ListingRana from '../pages/Listing/staticPages/ListingRana.page';
 import ListingTucano from '../pages/Listing/staticPages/ListingTucano.page';
 import ListingPappagallo from '../pages/Listing/staticPages/ListingPappagallo.page';
+import TwoDaysInPV from '../pages/Blog/staticPages/TwoDaysInPV';
 // import About from './About';
 // import Contact from './Contact';
 
@@ -19,6 +20,7 @@ const AppRouter = () => (
       <Route path='/Rana'  element={<ListingRana />}/>
       <Route path='/Tucano'  element={<ListingTucano />}/>
       <Route path='/Pappagallo'  element={<ListingPappagallo />}/>
+      <Route path='/blog/2' element={<TwoDaysInPV />} />
       {/* <Route path='blog'>
         <Route path=':blogId' element={<Blog />} />
       </Route> */} 

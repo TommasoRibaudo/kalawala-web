@@ -27,7 +27,8 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
     setIsActive(false);
   };
   const handleBlogClick = () => {
-    navigate(`/blog/` + getHighestId());
+    navigate(`/blog/` + `2`);
+      //getHighestId());
     setTimeout(() => {
       window.scrollTo(0, 0);
     }, 0);
@@ -37,7 +38,7 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
     <Navbar className="navigation" expand="lg" sticky="top" variant="dark">
       <Container>
         <Navbar.Brand href="/#body" className="d-flex align-items-center">
-          <svg
+          {/* <svg
             width="40px"
             height="40px"
             viewBox="0 0 45 44"
@@ -66,7 +67,8 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
                 ></path>
               </g>
             </g>
-          </svg>
+          </svg> */}
+          <img src="https://i.imgur.com/hGGgOuQ.png" alt="logo" className="logo" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={handleToggleClick} />
         <Navbar.Collapse id="basic-navbar-nav" className={`${isCollapsed}`} >
@@ -75,6 +77,7 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
             <Nav.Link href="/#callToAction" className="navText" onClick={() => { handleLinkClick("#callToAction") }}>Availability</Nav.Link>
             <Nav.Link href="/#portfolio" className="navText" onClick={() => { handleLinkClick("#portfolio") }}>Photos</Nav.Link>
             <Nav.Link href="/#contact-us" className="navText" onClick={() => { handleLinkClick("#contact-us") }}>Contact</Nav.Link>
+            <Nav.Link  className="navText" onClick={() => { handleBlogClick() }}>Blog</Nav.Link>
             {/* <Nav.Link className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={() => { handleBlogClick() }}>Blog</Nav.Link> Blog is currently unavailable*/}
           </Nav>
         </Navbar.Collapse>

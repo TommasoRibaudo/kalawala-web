@@ -77,7 +77,7 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
             <Nav.Link href="/#callToAction" className="navText" onClick={() => { handleLinkClick("#callToAction") }}>Availability</Nav.Link>
             <Nav.Link href="/#portfolio" className="navText" onClick={() => { handleLinkClick("#portfolio") }}>Photos</Nav.Link>
             <Nav.Link href="/#contact-us" className="navText" onClick={() => { handleLinkClick("#contact-us") }}>Contact</Nav.Link>
-            <Nav.Link  className="navText" onClick={() => { handleBlogClick() }}>Blog</Nav.Link>
+            <Nav.Link  className="navText" href="/blog/twodaysinpuertoviejo">Blog</Nav.Link>
             {/* <Nav.Link className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={() => { handleBlogClick() }}>Blog</Nav.Link> Blog is currently unavailable*/}
           </Nav>
         </Navbar.Collapse>

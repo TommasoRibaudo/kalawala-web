@@ -12,6 +12,7 @@ import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
 import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
+import { Helmet } from "react-helmet";
 
 
 const ListingPappagallo = () => {
@@ -45,6 +46,12 @@ const ListingPappagallo = () => {
     //const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
         <div className={`listingContainer ${show && 'modal-open'}`}>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>House Pappagallo - Fully equipped Home in Puerto Viejo</title>
+                <meta name="description" content="Welcome to Kalawala, a charming complex of two apartments located in the heart of Puerto Viejo. Each apartment is built entirely of wood and is situated above a delightful Italian bakery and are equipped with everything you need for a comfortable stay." />
+                <link rel="canonical" href="https://www.reservaskalawala.com/Pappagallo" />
+            </Helmet>
             <FixedNavigation isBlog={false}/>
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>

@@ -12,6 +12,7 @@ import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
 import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
+import {Helmet} from "react-helmet";
 
 
 const ListingRana = () => {
@@ -46,6 +47,12 @@ const ListingRana = () => {
     //const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
         <div className={`listingContainer ${show && 'modal-open'}`}>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>House Rana - Puerto Viejo Vacation Home Rental</title>
+                <meta name="description" content="Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space." />
+                <link rel="canonical" href="https://www.reservaskalawala.com/Rana" />
+            </Helmet>
             <FixedNavigation isBlog={false}/>
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>

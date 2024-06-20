@@ -12,6 +12,7 @@ import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
 import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
+import { Helmet } from "react-helmet";
 
 
 const ListingTucano = () => {
@@ -45,6 +46,12 @@ const ListingTucano = () => {
     //const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
         <div className={`listingContainer ${show && 'modal-open'}`}>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>House Tucano - Like Nothing Else in Puerto Viejo</title>
+                <meta name="description" content="This house offers a delightful experience in the heart of Puerto Viejo with a charming wooden apartment located above an Italian bakery. The apartment features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and two A/C units." />
+                <link rel="canonical" href="https://www.reservaskalawala.com/Tucano" />
+            </Helmet>
             <FixedNavigation isBlog={false}/>
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>

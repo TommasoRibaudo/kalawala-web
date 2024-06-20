@@ -15,6 +15,7 @@ import OtherBlogs from "../Components/OtherBlogs.Component";
 import OurHomes from "../../../components/OurHomes/OurHomes.component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import ListingAd from "../Components/ListingAd/ListingAd.component";
+import {Helmet} from "react-helmet";
 
 
 const TwoDaysInPV = () => {
@@ -36,8 +37,14 @@ const TwoDaysInPV = () => {
     console.log("data:", blogData);
     const description = blogData?.text.split('<br/>');
     return (
-
+        
         <div className={`listingContainer`}>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>2 Days One Night in Puerto Viejo</title>
+                <meta name="description" content="Do you only have a couple of days to visit Puerto Viejo? So did we! We only had 1 night coming from Tortuguero and wanted to make the best out of the time we had in this charming beach town located on the southern Caribbean coast of Costa Rica." />
+                <link rel="canonical" href="https://www.reservaskalawala.com/blog/twodaysinpuertoviejo" />
+            </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>

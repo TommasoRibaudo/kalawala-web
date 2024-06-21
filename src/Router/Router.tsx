@@ -20,7 +20,7 @@ const AppRouter = () => (
       <Route path='/Rana'  element={<ListingRana />}/>
       <Route path='/Tucano'  element={<ListingTucano />}/>
       <Route path='/Pappagallo'  element={<ListingPappagallo />}/>
-      <Route path='/blog/twodaysinpuertoviejo' element={<TwoDaysInPV />} />
+      <Route path='/twodaysinpuertoviejo' element={<TwoDaysInPV />} />
       {/* <Route path='blog'>
         <Route path=':blogId' element={<Blog />} />
       </Route> */} 

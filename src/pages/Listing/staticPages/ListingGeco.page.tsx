@@ -40,6 +40,7 @@ const ListingGeco = () => {
 
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
     }, [])
     //const description = houseData?.description.split('<br/>');

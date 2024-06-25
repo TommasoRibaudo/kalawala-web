@@ -40,6 +40,7 @@ const ListingTucano = () => {
 
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
     }, [])
     //const description = houseData?.description.split('<br/>');
@@ -95,7 +96,7 @@ const ListingTucano = () => {
 
                 </Col>
                 <Col className="book col" lg={3} md={windowWidth <= 991 ?{ span: 12 } : { order: 'first', span: 4 }} sm={{  span: 12 }} xs={{ span: 12 }}>
-                    {/* <Smoobu homeCode={houseData!.houseCode} /> */}
+                    <Smoobu homeCode={houseData!.houseCode} />
                 </Col>
             </Row>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}

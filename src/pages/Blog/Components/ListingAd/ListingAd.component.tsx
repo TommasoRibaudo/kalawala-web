@@ -20,8 +20,10 @@ const ListingAd: FC<IOtherListing> = ({ listings }) => {
     return (
         <>
 
-            <div className="cont d-flex justify-content-center">
-                <div className="header">Travelling to Puerto Viejo? We offer fully equipped homes in the center of town.</div>
+            <div className="cont d-flex justify-content-center adContainer">
+                <div className="header">Travelling to Puerto Viejo? We offer fully equipped homes in the center of town.
+                    <br />
+                </div>
                 <div className={`${windowWidth <= 1199 ? 'hstack' : 'vstack'} gap-5 subCont`}>
                     {listings.map(({ name, mainImage }) => {
                         return (

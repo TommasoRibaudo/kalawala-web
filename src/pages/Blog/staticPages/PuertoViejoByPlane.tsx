@@ -18,9 +18,9 @@ import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
 
 
-const TwoDaysInPV = () => {
+const PuertoViejoByPlane = () => {
     // const { blogId } = useParams();
-    const blogId = 'twodaysinpuertoviejo'
+    const blogId = 'puertoviejobyplane'
     const listings: ListingType[] = [
         { name: 'Tucano', mainImage: TucanoImage },
         { name: 'Geco', mainImage: GecoImage },
@@ -35,6 +35,7 @@ const TwoDaysInPV = () => {
         window.scrollTo(0, 0);
         window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
     }, [])
+    
     console.log("data:", blogData);
     const description = blogData?.text.split('<br/>');
     return (
@@ -42,7 +43,7 @@ const TwoDaysInPV = () => {
         <div className={`listingContainer`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>2 Days One Night in Puerto Viejo</title>
+                <title>Puerto Viejo </title>
                 <meta name="description" content="Do you only have a couple of days to visit Puerto Viejo? So did we! We only had 1 night coming from Tortuguero and wanted to make the best out of the time we had in this charming beach town located on the southern Caribbean coast of Costa Rica." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/blog/twodaysinpuertoviejo" />
             </Helmet>
@@ -56,8 +57,8 @@ const TwoDaysInPV = () => {
                     <br />
                     <div className="heading title-container" style={{ maxWidth: 1000, }}>
 
-                        <h1 className="title blog-title">2 Days One Night in Puerto Viejo</h1>
-                        <br />
+                        <h1 className="title blog-title">Getting to Puerto Viejo By Plane
+                        </h1>
                         <div className="border"></div>
 
                     </div>
@@ -67,26 +68,27 @@ const TwoDaysInPV = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://i.imgur.com/Aogz0HH.jpg" className="responsive-image" style={{ maxWidth: 1000, }} alt="Kayaking in Punta Uva" />
+                            <img src="https://i.imgur.com/Aogz0HH.jpg" style={{ maxWidth: 1000, }} className="responsive-image" alt="Kayaking in Punta Uva" />
                         </div>
                         <br />
-                        <p>Do you only have a couple of days to visit Puerto Viejo? So did we! We only had 1 night coming from Tortuguero and wanted to make the best out of the time we had in this charming beach town located on the southern Caribbean coast of Costa Rica. With its laid-back atmosphere, pristine beaches, and lush tropical jungle, Puerto Viejo is the perfect destination for a quick weekend escape. In this article, we'll share our experience of spending two days in Puerto Viejo, and give you tips on how to make the most out of your trip.</p>
-                        <br />
-                        <p>We arrived in Puerto Viejo early on a Saturday morning, excited to start our adventure. Our Airbnb wasn't ready yet, so we decided to rent a quad nearby and head to Punta Uva to soak up some sun. The beach was stunning, with turquoise and calm waters. We rented Kayaks and explored the coast. For lunch, we stopped by Selvin's, a local Caribbean restaurant, and tried some delicious Caribbean chicken with Rice and Beans.</p>
+                        <p>Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón.</p>
                         <br />
 
-                        <p>Afterward, we checked into our Airbnb, took a refreshing shower, and rested for a while. For dinner, we decided to try Cafe Viejo, an Italian restaurant located in the center of town. The food was fantastic, we tried the “Fritto Misto”, a mix of fried fish and seafood. Later that night, we headed to Salsa Brava, a beachside bar that's known for its reggae nights and chill vibe.</p>
+                        <p>To book your flight, simply visit flysansa.com and select your travel dates and times. You will then be prompted to enter your personal and payment details to complete your booking. It's important to note that Sansa Airlines offers several flight options throughout the day, making it easy to find a flight that fits your schedule.</p>
+                        <br />
+                        <p>The first leg of the journey is to fly to San Jose International Airport, also known as Juan Santamaría (SJO), the largest airport in Costa Rica. SJO is well-connected to many international destinations, making it a convenient starting point for your journey to Puerto Viejo. Once you land in SJO, you will have to pass customs and head to the Domestic Gate: there is a big old airplane outside, so it’s easy to spot.</p>
+                        <br />
+                        <p>The flight takes approximately 40 minutes on a small but safe Cessna, giving you a bird's eye view of Braulio Carrillo National Park.</p>
+                        <br />
+                        <p>Once you arrive in Limón, a private transfer will drive you to Puerto Viejo for approximately $75 USD. A chauffeur will be waiting for you at the airport and will drive you directly to your accommodation, ensuring a stress-free and comfortable journey. Alternatively, you can take a bus or taxi from Limón to Puerto Viejo, but we recommend arranging a private transfer beforehand to save time and avoid any potential scam.</p>
+                        <br />
+                        <p> At this point, all that's left is for you to kick back and enjoy the laid-back vibes of Puerto Viejo. Whether you're looking to relax on the beach, explore the jungle, or indulge in some delicious Caribbean cuisine, Puerto Viejo has something for everyone.</p>
+                        <br />
+                        <p> In conclusion, traveling to Puerto Viejo from any destination is easy and convenient thanks to the domestic flight from San Jose to Limón. With a quick and comfortable flight and the option of arranging a private transfer, you'll be sipping on a tropical cocktail in no time. So what are you waiting for? Book your trip to Puerto Viejo today and experience the magic of this charming beach town for yourself! And don't hesitate to contact us for help organizing your trip or scheduling a private transfer from Limón.</p>
                         <br />
 
-                        <p>The next day, we got up later than we would've liked to, we got coffee and croissants at the Degustibus Bakery and headed off to Cocles. There is a nice and well kept path closeby the bakery that leads to Cocles, where we discovered a nice viewpoint before getting to the beach. </p>
-                        <br />
-
-                        <p>After our hike, we headed back to the house to pack up and check out. We were lucky to leave on a Sunday as we were told that no big trucks on the road are allowed, making our journey back to San José smoother than expected.</p>
-                        <br />
-
-                        <p>Puerto Viejo is an excellent destination for a quick weekend getaway. With its stunning beaches, vibrant nightlife, and natural beauty, you'll never run out of things to do. Whether you're looking for adventure or relaxation, Puerto Viejo has something to offer everyone. So what are you waiting for? Book your trip today and experience the magic of Puerto Viejo for yourself!</p>
                     </div>
-                    <OtherBlogs currentBlog="twodaysinpuertoviejo" blogs={blogs} />
+                    <OtherBlogs currentBlog="puertoviejobyplane" blogs={blogs} />
                 </Col>
             </Row>
             <ContactUs />
@@ -95,4 +97,4 @@ const TwoDaysInPV = () => {
 
 }
 
-export default TwoDaysInPV;
+export default PuertoViejoByPlane;

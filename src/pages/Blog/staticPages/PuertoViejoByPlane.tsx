@@ -43,9 +43,9 @@ const PuertoViejoByPlane = () => {
         <div className={`listingContainer`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Puerto Viejo </title>
-                <meta name="description" content="Do you only have a couple of days to visit Puerto Viejo? So did we! We only had 1 night coming from Tortuguero and wanted to make the best out of the time we had in this charming beach town located on the southern Caribbean coast of Costa Rica." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/blog/twodaysinpuertoviejo" />
+                <title>Getting to Puerto Viejo By Plane</title>
+                <meta name="description" content="Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón." />
+                <link rel="canonical" href="https://www.reservaskalawala.com/blog/puertoviejobyplane" />
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">
@@ -68,8 +68,9 @@ const PuertoViejoByPlane = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://i.imgur.com/Aogz0HH.jpg" style={{ maxWidth: 1000, }} className="responsive-image" alt="Kayaking in Punta Uva" />
+                            <img src="https://i.imgur.com/mmXU8yv.jpeg" style={{ maxWidth: 1000, }} className="responsive-image" alt="Kayaking in Punta Uva" />
                         </div>
+                            <p style={{display:'flex', justifyContent:'right'}}>Image by <a href="http://www.freepik.com/" target="_blank"> Freepik</a></p>
                         <br />
                         <p>Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón.</p>
                         <br />

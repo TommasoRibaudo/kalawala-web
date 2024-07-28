@@ -8,6 +8,7 @@ import ListingPappagallo from '../pages/Listing/staticPages/ListingPappagallo.pa
 import TwoDaysInPV from '../pages/Blog/staticPages/TwoDaysInPV';
 import TravellingToPuerto from '../pages/Blog/staticPages/TravellingToPuerto';
 import PuertoViejoByPlane from '../pages/Blog/staticPages/PuertoViejoByPlane';
+import TenHoursInPuerto from '../pages/Blog/staticPages/TenHoursInPuerto';
 // import About from './About';
 // import Contact from './Contact';
 
@@ -25,6 +26,7 @@ const AppRouter = () => (
       <Route path='/twodaysinpuertoviejo' element={<TwoDaysInPV />} />
       <Route path='/travellingtopuertoviejo' element={<TravellingToPuerto />} />
       <Route path='/puertoviejobyplane' element={<PuertoViejoByPlane />} />
+      <Route path='/TenHoursInPuerto' element={<TenHoursInPuerto />} />
       {/* <Route path='blog'>
         <Route path=':blogId' element={<Blog />} />
       </Route> */} 

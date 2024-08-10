@@ -70,21 +70,29 @@ const TwoDaysInPV = () => {
                             <img src="https://i.imgur.com/Aogz0HH.jpg" className="responsive-image" style={{ maxWidth: 1000, }} alt="Kayaking in Punta Uva" />
                         </div>
                         <br />
-                        <p>Do you only have a couple of days to visit Puerto Viejo? So did we! We only had 1 night coming from Tortuguero and wanted to make the best out of the time we had in this charming beach town located on the southern Caribbean coast of Costa Rica. With its laid-back atmosphere, pristine beaches, and lush tropical jungle, Puerto Viejo is the perfect destination for a quick weekend escape. In this article, we'll share our experience of spending two days in Puerto Viejo, and give you tips on how to make the most out of your trip.</p>
+                        <p>Do you only have a couple of days to visit Puerto Viejo? So did we! We only had 1 night coming from Tortuguero and wanted to make the best out of the time we had in this charming beach town
+                             located on the southern Caribbean coast of Costa Rica. With its laid-back atmosphere, pristine beaches, and lush tropical jungle, Puerto Viejo is the perfect destination for a quick weekend escape.
+                              In this article, we'll share our experience of spending two days in Puerto Viejo, and give you tips on how to make the most out of your trip.</p>
                         <br />
-                        <p>We arrived in Puerto Viejo early on a Saturday morning, excited to start our adventure. Our Airbnb wasn't ready yet, so we decided to rent a quad nearby and head to Punta Uva to soak up some sun. The beach was stunning, with turquoise and calm waters. We rented Kayaks and explored the coast. For lunch, we stopped by Selvin's, a local Caribbean restaurant, and tried some delicious Caribbean chicken with Rice and Beans.</p>
+                        <p>We arrived in Puerto Viejo early on a Saturday morning, excited to start our adventure. Our <a href="https://reservaskalawala.com/Tucano" target="_blank" rel="noopener noreferrer">Airbnb</a> wasn't ready yet, so we decided to rent a quad nearby and head to Punta Uva to soak up some sun.
+                             The beach was stunning, with turquoise and calm waters. We rented Kayaks and explored the coast. For lunch, we stopped by <a href="https://maps.app.goo.gl/TnyD131GeLKYeARSA" target="_blank" rel="noopener noreferrer">Selvin's</a>,
+                              a local Caribbean restaurant, and tried some delicious Caribbean chicken with Rice and Beans.</p>
                         <br />
 
-                        <p>Afterward, we checked into our Airbnb, took a refreshing shower, and rested for a while. For dinner, we decided to try Cafe Viejo, an Italian restaurant located in the center of town. The food was fantastic, we tried the “Fritto Misto”, a mix of fried fish and seafood. Later that night, we headed to Salsa Brava, a beachside bar that's known for its reggae nights and chill vibe.</p>
+                        <p>Afterward, we checked into our Airbnb, took a refreshing shower, and rested for a while. For dinner, we decided to try <a href="https://maps.app.goo.gl/2vNghKagTvPVHnip6" target="_blank" rel="noopener noreferrer">Cafe Viejo</a>,
+                         an Italian restaurant located in the center of town. The food was fantastic, we tried the “Fritto Misto”, a mix of fried fish and seafood. Later that night, we headed to
+                          <a href="https://maps.app.goo.gl/fXnSossA1PqAfkbh9" target="_blank" rel="noopener noreferrer">Salsa Brava</a>, a beachside bar that's known for its reggae nights and chill vibe.</p>
                         <br />
 
-                        <p>The next day, we got up later than we would've liked to, we got coffee and croissants at the Degustibus Bakery and headed off to Cocles. There is a nice and well kept path closeby the bakery that leads to Cocles, where we discovered a nice viewpoint before getting to the beach. </p>
+                        <p>The next day, we got up later than we would've liked to, we got coffee and croissants at the <a href="https://maps.app.goo.gl/UW6EWzA4h9WQTsbX6" target="_blank" rel="noopener noreferrer">Degustibus Bakery</a> and headed off to Cocles. 
+                        There is a nice and well kept path closeby the bakery that leads to Cocles, where we discovered a nice viewpoint before getting to the beach. </p>
                         <br />
 
                         <p>After our hike, we headed back to the house to pack up and check out. We were lucky to leave on a Sunday as we were told that no big trucks on the road are allowed, making our journey back to San José smoother than expected.</p>
                         <br />
 
-                        <p>Puerto Viejo is an excellent destination for a quick weekend getaway. With its stunning beaches, vibrant nightlife, and natural beauty, you'll never run out of things to do. Whether you're looking for adventure or relaxation, Puerto Viejo has something to offer everyone. So what are you waiting for? Book your trip today and experience the magic of Puerto Viejo for yourself!</p>
+                        <p>Puerto Viejo is an excellent destination for a quick weekend getaway. With its stunning beaches, vibrant nightlife, and natural beauty, you'll never run out of things to do. Whether you're looking for adventure or relaxation,
+                             Puerto Viejo has something to offer everyone. So what are you waiting for? Book your trip today and experience the magic of Puerto Viejo for yourself!</p>
                     </div>
                     <OtherBlogs currentBlog="twodaysinpuertoviejo" blogs={blogs} />
                 </Col>

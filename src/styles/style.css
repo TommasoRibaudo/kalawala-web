@@ -12,6 +12,8 @@ Tags: one-page, single-page, portfolio, custom-colors, post-formats, responsive,
 
 @import url("https://fonts.googleapis.com/css?family=Anaheim|Quattrocento+Sans:400,700");
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,700|Open+Sans:300,400,600");
+@import "_variables.css";
+
 html {
     background-color: #353b43;
     color: #737f8a;
@@ -197,9 +199,11 @@ a:hover {
 }
 
 .bg-dark {
-    background: #242930;
+    background: var(--kalawala-light-cream);
 }
-
+.bg-light {
+    background: var(--kalawala-light-cream);
+}
 .parallax-section {
     background-attachment: fixed !important;
     background-position: center center;
@@ -566,11 +570,13 @@ a:hover {
 ==================================================================*/
 
 .navigation {
-    background-color: #1d2024;
+    background-color: var(--kalawala-light-cream); /* background color of menu */
     width: 100%;
     z-index: 99;
     margin-bottom: 0;
-    padding: 10px;
+    padding-bottom: 20px;
+    background-image: linear-gradient(to bottom right, var(--kalawala-opaque-beige) 1%, var(--kalawala-light-cream) 50%, var(--kalawala-light-cream) 100%);
+    background-color: tra;
 }
 
 .navigation .logo {
@@ -584,9 +590,6 @@ a:hover {
     width: 140px;
 }
 
-.navigation .navigation-menu li.active a {
-    color: #57cbcc;
-}
 
 .navigation .navigation-menu li a {
     font-size: 16px;
@@ -718,7 +721,7 @@ a:hover {
 ==================================================================*/
 
 .about .block {
-    background: #242930;
+    background: #006aff;
     padding: 30px;
     border-bottom: 2px solid transparent;
     transition: .5s all;
@@ -731,11 +734,11 @@ a:hover {
 }
 
 .about .block:hover .content .highlight {
-    color: #57cbcc !important;
+    color: var(--kalawala-darker-green) !important;
 }
 
 .about .block:hover .content .border-highlight {
-    border-color: #57cbcc !important;
+    border-color: var(--kalawala-darker-green) !important;
 }
 
 .about .block:hover .icon-box {
@@ -788,7 +791,7 @@ a:hover {
 } */
 
 .about .block .icon-box h3 {
-    color: #afbac4;
+    color: var(--kalawala-darker-gray);
 }
 
 
@@ -810,7 +813,7 @@ a:hover {
 
 .about-2 .content-block .media i {
     font-size: 30px;
-    color: #57cbcc;
+    color: #57cbcc; 
 }
 
 .about-2 .content-block .media h4 {
@@ -2178,7 +2181,7 @@ blockquote {
 }
 
 .highlight {
-    color: #afbac4;
+    color: var(--kalawala-text-gray);
 }
 
 

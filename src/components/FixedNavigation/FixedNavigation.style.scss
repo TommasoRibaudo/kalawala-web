@@ -2,7 +2,6 @@
 @import  '../../styles/styles.scss';
 
 .navigation {
-  background-color: #1d2024;
   width: 100%;
   z-index: 99;
   margin-bottom: 0;
@@ -19,7 +18,7 @@
   .navMenu{
     .navText {
       font-size: 16px;
-      color: #737f8a;
+      color: $kalawala-text-gray;
       &.active {
         color: $primary-color;
       }

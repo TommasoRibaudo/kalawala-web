@@ -570,13 +570,13 @@ a:hover {
 ==================================================================*/
 
 .navigation {
-    background-color: var(--kalawala-light-cream); /* background color of menu */
+    background-color: rgba(189, 169, 109, 0); /* Light cream color with 50% transparency */
     width: 100%;
     z-index: 99;
     margin-bottom: 0;
-    padding-bottom: 20px;
-    background-image: linear-gradient(to bottom right, var(--kalawala-opaque-beige) 1%, var(--kalawala-light-cream) 50%, var(--kalawala-light-cream) 100%);
-    background-color: tra;
+    padding-bottom: 40px;
+    padding-top: 20px;
+    background-image: linear-gradient(to bottom right, var(--kalawala-opaque-beige) 20%, rgba(255, 248, 240, 0) 50%, rgba(255, 248, 240, 0) 100%);/*gradient of the menu*/
 }
 
 .navigation .logo {

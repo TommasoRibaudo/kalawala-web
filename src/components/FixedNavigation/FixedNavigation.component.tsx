@@ -38,7 +38,7 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
     <Navbar className="navigation" expand="lg" sticky="top" variant="dark">
       <Container>
         <Navbar.Brand href="/#body" className="d-flex align-items-center">
-          <img src="https://i.imgur.com/hGGgOuQ.png" alt="logo" className="logo" />
+          <img src="https://i.imgur.com/yo53PM4.png" alt="logo" className="logo" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={handleToggleClick} />
         <Navbar.Collapse id="basic-navbar-nav" className={`${isCollapsed}`} >

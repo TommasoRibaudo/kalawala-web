@@ -33,7 +33,7 @@
 
     h1 {
       font-size: 90px;
-      color: $white;
+      color: $kalawala-light-cream !important;
       text-transform: capitalize;
       font-weight: 700;
       margin-bottom: 20px;
@@ -44,7 +44,7 @@
     }
 
     p {
-      color: $light;
+      color: $kalawala-light-cream !important;
       font-size: 20px;
       width: 70%;
       margin: 0 auto;
@@ -52,7 +52,7 @@
 
     .btn-transparent{
       margin-top: 40px;
-      border-color: $white;
+      border-color: $kalawala-light-cream !important;
       padding: 14px 50px;
       font-size: 18px;
       font-size: 16px;
@@ -62,8 +62,8 @@
       border-radius: 0;
 
       &:hover {
-        background-color: $primary-color;
-        color: $pripmary-darker;
+        background-color: $kalawala-light-cream !important;
+        color: $kalawala-vivid-beige !important;
         border-color: transparent;
       }
     }

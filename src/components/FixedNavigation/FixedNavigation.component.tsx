@@ -5,6 +5,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from "react-router-dom";
 import { getHighestId } from "../../assets/blogs/blogs";
+import SolidBars from "../../assets/images/bars-solid.svg";
 interface IFixedNavigation {
   isBlog: boolean
 }
@@ -27,54 +28,29 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
     setIsActive(false);
   };
   const handleBlogClick = () => {
-    navigate(`/blog/` + getHighestId());
+    navigate(`/blog/` + `twodaysinpuertoviejo`);
+    //getHighestId());
     setTimeout(() => {
       window.scrollTo(0, 0);
     }, 0);
   };
 
   return (
-    <Navbar className="navigation" expand="lg" sticky="top" variant="dark">
+    <Navbar className="navigation" expand="lg" sticky="top" variant="dark " data-bs-theme="dark">
       <Container>
         <Navbar.Brand href="/#body" className="d-flex align-items-center">
-          <svg
-            width="40px"
-            height="40px"
-            viewBox="0 0 45 44"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
-          >
-            <g
-              id="Page-1"
-              stroke="none"
-              strokeWidth="1"
-              fill="none"
-              fillRule="evenodd"
-            >
-              <g id="Group" transform="translate(2.000000, 2.000000)" stroke="#57CBCC" strokeWidth="3">
-                <ellipse id="Oval" cx="20.5" cy="20" rx="20.5" ry="20"></ellipse>
-                <path
-                  d="M6,7 L33.5,34.5"
-                  id="Line-2"
-                  strokeLinecap="square"
-                ></path>
-                <path
-                  d="M21,20 L34,7"
-                  id="Line-3"
-                  strokeLinecap="square"
-                ></path>
-              </g>
-            </g>
-          </svg>
+          <img src="https://i.imgur.com/yo53PM4.png" alt="logo" className="logo" />
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={handleToggleClick} />
+        <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick} >
+          <img src={SolidBars} style={{height:"25px"}}/>
+        </Navbar.Toggle>
         <Navbar.Collapse id="basic-navbar-nav" className={`${isCollapsed}`} >
           <Nav className="navMenu" >
             <Nav.Link href="/#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`} >Home</Nav.Link>
             <Nav.Link href="/#callToAction" className="navText" onClick={() => { handleLinkClick("#callToAction") }}>Availability</Nav.Link>
             <Nav.Link href="/#portfolio" className="navText" onClick={() => { handleLinkClick("#portfolio") }}>Photos</Nav.Link>
             <Nav.Link href="/#contact-us" className="navText" onClick={() => { handleLinkClick("#contact-us") }}>Contact</Nav.Link>
+            <Nav.Link href="/twodaysinpuertoviejo" className={`navText ${(isActive && isBlog) ? 'active' : ''}`} >Blog</Nav.Link>
             {/* <Nav.Link className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={() => { handleBlogClick() }}>Blog</Nav.Link> Blog is currently unavailable*/}
           </Nav>
         </Navbar.Collapse>

@@ -13,7 +13,7 @@ import { AmenityType } from "../../utils/types";
 import { houseDataList } from "../../utils/constants";
 import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
 
-
+/** 
 const Listing = () => {
     const { listing } = useParams()
 
@@ -74,5 +74,5 @@ const Listing = () => {
     )
 
 }
-
 export default Listing;
+*/

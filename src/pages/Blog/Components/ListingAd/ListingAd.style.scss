@@ -1,37 +1,39 @@
 @use '../../../../styles/mixins';
-@import  '../../../../styles/styles.scss';
+@import '../../../../styles/styles.scss';
 
 
 
-.cont{
+.cont {
     height: 100%;
     padding-top: 60px;
     padding-bottom: 20px;
     flex-direction: column;
-    .listing:hover{
+
+    .listing:hover {
         cursor: pointer;
         transform: translateY(-10px);
         box-shadow: 0px 20px 10px rgba(0, 0, 0, 0.363);
     }
-    
+
 }
 
 .listing {
-    background-color:rgb(25, 136, 136);
+    background-color: rgb(25, 136, 136);
     height: 170px;
-    width:230px;
+    width: 230px;
     border-radius: 5px;
     flex-direction: row;
     border: 3px solid $primary-color;
     background-size: cover;
     background-position: center center;
-    @media (max-width: 1440px) {
-      width: 100%;
-    }
-    
-  }
 
-.name{
+    @media (max-width: 1440px) {
+        width: 100%;
+    }
+
+}
+
+.name {
     background-color: #303233ab;
     width: 100%;
     border-bottom-left-radius: 5px;
@@ -42,16 +44,22 @@
     font-size: 16px;
 }
 
-.subCont{
-    width:100%;
+.subCont {
+    width: 100%;
     align-items: center;
 }
 
-.header{
+.header {
     text-align: center;
-    color: white;
+    color: $kalawala-text-gray  ;
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 20px;
 }
 
+.adContainer {
+    padding: 10px;
+    //  border: 2px solid white;
+    //  border-radius: 10px;
+     overflow: hidden;
+ }

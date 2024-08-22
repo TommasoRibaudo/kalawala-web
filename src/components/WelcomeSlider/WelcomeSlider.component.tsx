@@ -14,7 +14,7 @@ const WelcomeSlider = () => {
         <br />
         {/* //TODO: <a href="#" onClick={() => setLanguage('en')}>English</a> | <a href="#" onClick={() => setLanguage('es')}>Spanish</a> */ }
       </div >
-    </section >
+    </section > 
   );
 };
 

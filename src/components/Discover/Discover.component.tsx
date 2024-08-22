@@ -7,7 +7,8 @@ import { faConciergeBell, faCalendarCheck } from '@fortawesome/free-solid-svg-ic
 
 const  Discover = () => {
   return (
-    <section className="section about-2 padding-0 bg-dark" id="about">
+    <section className="section about-2 padding-0 b-light" id="about">
+      
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-6 padding-0">

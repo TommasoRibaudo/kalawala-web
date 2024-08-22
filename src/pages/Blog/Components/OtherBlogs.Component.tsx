@@ -26,7 +26,7 @@ const OtherBlogs: FC<IOtherListing> = ({ currentBlog, blogs }) => {
               <div
                 style={{ backgroundImage: `url(${thumbnail})`, }}
                 className="listing d-flex align-items-end"
-                onClick={() => { navigate(`/blog/${id}`) }}
+                onClick={() => { navigate(`/${id}`) }}
               >
                 <div className="name">{title}</div>
               </div>

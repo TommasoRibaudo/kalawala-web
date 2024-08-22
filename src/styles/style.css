@@ -201,9 +201,11 @@ a:hover {
 .bg-dark {
     background: var(--kalawala-light-cream);
 }
+
 .bg-light {
     background: var(--kalawala-light-cream);
 }
+
 .parallax-section {
     background-attachment: fixed !important;
     background-position: center center;
@@ -388,12 +390,14 @@ a:hover {
 }
 
 @-webkit-keyframes sk-cubeGridScaleDelay {
+
     0%,
     70%,
     100% {
         -webkit-transform: scale3D(1, 1, 1);
         transform: scale3D(1, 1, 1);
     }
+
     35% {
         -webkit-transform: scale3D(0, 0, 1);
         transform: scale3D(0, 0, 1);
@@ -401,12 +405,14 @@ a:hover {
 }
 
 @keyframes sk-cubeGridScaleDelay {
+
     0%,
     70%,
     100% {
         -webkit-transform: scale3D(1, 1, 1);
         transform: scale3D(1, 1, 1);
     }
+
     35% {
         -webkit-transform: scale3D(0, 0, 1);
         transform: scale3D(0, 0, 1);
@@ -570,14 +576,21 @@ a:hover {
 ==================================================================*/
 
 .navigation {
-    background-color: rgba(189, 169, 109, 0); /* Light cream color with 50% transparency */
+    background-color: rgba(189, 169, 109, 0);
+    /* Light cream color with 50% transparency */
     width: 100%;
     z-index: 99;
     margin-bottom: 0;
     padding-bottom: 40px;
     padding-top: 20px;
-    background-image: linear-gradient(to bottom right, var(--kalawala-opaque-beige) 20%, rgba(255, 248, 240, 0) 50%, rgba(255, 248, 240, 0) 100%);/*gradient of the menu*/
+    background-image: linear-gradient(to bottom right, var(--kalawala-opaque-beige) 20%, rgba(255, 248, 240, 0) 50%, rgba(255, 248, 240, 0) 100%);
+    /*gradient of the menu*/
 }
+
+.navbar-toggler {
+    color: var(--kalawala-darker-green) !important;
+}
+
 
 .navigation .logo {
     padding: 0;
@@ -598,12 +611,12 @@ a:hover {
 
 .navigation .navigation-menu li a:hover,
 .navigation .navigation-menu li a:focus {
+    border-color: transparent;
     background: transparent;
     color: #57cbcc;
 }
 
 .navbar-toggle {
-    border: 1px solid #fff;
     border-radius: 0;
 }
 
@@ -813,7 +826,7 @@ a:hover {
 
 .about-2 .content-block .media i {
     font-size: 30px;
-    color: #57cbcc; 
+    color: #57cbcc;
 }
 
 .about-2 .content-block .media h4 {
@@ -2162,6 +2175,7 @@ blockquote {
         display: inline !important;
         margin-top: -10% !important;
     }
+
     .icon-box {
         margin: 46.19px auto 60px !important;
     }

@@ -42,6 +42,7 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
         return (
         <div key={index} className="portfolio-block col-lg-4 col-md-6">
             <Image
+              loading='lazy'
               key={index} src={images(imagePath)} alt={`Image ${index + 1}`} fluid />
               {imageDescriptions[folderName][index].roomType && 
               <TipCard 

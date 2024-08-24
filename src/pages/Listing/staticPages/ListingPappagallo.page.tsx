@@ -13,10 +13,12 @@ import { AmenityType } from "../../../utils/types";
 import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
+import { useMediaQuery } from '@react-hook/media-query';
 
 
 const ListingPappagallo = () => {
     const listing = 'Pappagallo'
+    const isScreenSmall = useMediaQuery('(max-width: 992px)');
 
     const amenities: AmenityType[] = [
         { icon: 'ac', name: '2 A/C Units' },
@@ -55,7 +57,8 @@ const ListingPappagallo = () => {
                     <div className="heading">
                         <h1 className="title">House Pappagallo</h1>
                         <h3 className="location">Puerto Viejo de Talamanca, Limón, Costa Rica</h3>
-                        <div className="col-md-12 text-center" style={{marginBottom:10}} ><Button className='btn-darker' href="#smoobuComp">Book Now Online!</Button></div>
+                        {isScreenSmall && (
+                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Now Online!</Button></div>)}
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     <div className="amenaties">

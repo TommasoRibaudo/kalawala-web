@@ -6,7 +6,7 @@ import Smoobu2 from '../Smoobu2/Smoobu2.component';
 
 const CallToAction = () => {
   return (
-    <section id="callToAction" className="call-to-action overly " style={{ backgroundImage: `url(https://drive.google.com/thumbnail?id=16VEmEiyt0Szm76Zth7MTuOvvHZ689W2f&sz=w1000)` }}>
+    <section id="callToAction" className="call-to-action overly bg-1" style={{ backgroundImage: `url(https://drive.google.com/thumbnail?id=16VEmEiyt0Szm76Zth7MTuOvvHZ689W2f&sz=w1000)` }}>
       <div className="test section-sm">
         <div className="container">
           <div className="row">

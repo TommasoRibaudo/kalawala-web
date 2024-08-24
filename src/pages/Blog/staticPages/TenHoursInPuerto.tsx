@@ -3,7 +3,8 @@ import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 import { useParams } from "react-router-dom";
 import { HouseDataType, ListingType } from "../../../utils/types";
-import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from "../../../assets/images";
+import { homesSnippet } from "../../../utils/constants";
+
 // import Amenities from "./components/Amenities/Amenities.component";
 import { AmenityType, BlogType } from "../../../utils/types";
 import { blogs } from "../../../assets/blogs/blogs";
@@ -21,12 +22,7 @@ import { Helmet } from "react-helmet";
 const TenHoursInPuerto = () => {
     // const { blogId } = useParams();
     const blogId = 'TenHoursInPuerto'
-    const listings: ListingType[] = [
-        { name: 'Tucano', mainImage: TucanoImage },
-        { name: 'Geco', mainImage: GecoImage },
-        { name: 'Pappagallo', mainImage: PappagalloImage },
-        { name: 'Rana', mainImage: RanaImage },
-    ]
+
     const blogData = blogs.find((blog) => blog.id === blogId);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -49,7 +45,7 @@ const TenHoursInPuerto = () => {
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={listings} />
+                    <ListingAd listings={homesSnippet} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
 
@@ -65,7 +61,7 @@ const TenHoursInPuerto = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://i.imgur.com/dW99LAb.jpg" style={{ maxWidth: 1000, }} className="responsive-image" alt="Traveling to Puerto Viejo by bus" />
+                            <img src="https://drive.google.com/thumbnail?id=1H81sxVh2z1VmcbZvVTlhdEINmQ0tQ5Es&sz=w1000" style={{ maxWidth: 1000, }} className="responsive-image" alt="Traveling to Puerto Viejo by bus" />
                         </div>
                         <br />
                         <p>Si tienes solo diez horas para explorar Cahuita, ¡aprovechemos al máximo el tiempo! Empezamos nuestra aventura temprano, despertándonos a las 7 am. Lo primero es tomar un café y disfrutar de un delicioso croissant de jamón y queso recién salido del horno en Degustibus Bakery.</p>

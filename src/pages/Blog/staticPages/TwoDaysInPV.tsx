@@ -3,7 +3,7 @@ import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 import { useParams } from "react-router-dom";
 import { HouseDataType, ListingType } from "../../../utils/types";
-import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from "../../../assets/images";
+
 // import Amenities from "./components/Amenities/Amenities.component";
 import { AmenityType, BlogType } from "../../../utils/types";
 import { blogs } from "../../../assets/blogs/blogs";
@@ -13,6 +13,8 @@ import Amenities from "../../Listing/components/Amenities/Amenities.component";
 import ImagesModal from "../../Listing/components/ImagesModal/ImagesModal.component";
 import OtherBlogs from "../Components/OtherBlogs.Component";
 import OurHomes from "../../../components/OurHomes/OurHomes.component";
+//import constants
+import { homesSnippet} from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
@@ -20,13 +22,8 @@ import { Helmet } from "react-helmet";
 
 const TwoDaysInPV = () => {
     // const { blogId } = useParams();
+    
     const blogId = 'twodaysinpuertoviejo'
-    const listings: ListingType[] = [
-        { name: 'Tucano', mainImage: TucanoImage },
-        { name: 'Geco', mainImage: GecoImage },
-        { name: 'Pappagallo', mainImage: PappagalloImage },
-        { name: 'Rana', mainImage: RanaImage },
-    ]
     const blogData = blogs.find((blog) => blog.id === blogId);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -49,7 +46,7 @@ const TwoDaysInPV = () => {
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={listings} />
+                    <ListingAd listings={homesSnippet} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
 
@@ -67,7 +64,7 @@ const TwoDaysInPV = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://i.imgur.com/Aogz0HH.jpg" className="responsive-image" style={{ maxWidth: 1000, }} alt="Kayaking in Punta Uva" />
+                            <img src="https://drive.google.com/thumbnail?id=13j6FfwVMxVg9lU4SuGST8ljrVkyW7rla&sz=w1000" className="responsive-image" style={{ maxWidth: 1000, }} alt="Kayaking in Punta Uva" />
                         </div>
                         <br />
                         <p>Do you only have a couple of days to visit Puerto Viejo? So did we! We only had 1 night coming from Tortuguero and wanted to make the best out of the time we had in this charming beach town
@@ -80,8 +77,7 @@ const TwoDaysInPV = () => {
                         <br />
 
                         <p>Afterward, we checked into our Airbnb, took a refreshing shower, and rested for a while. For dinner, we decided to try <a href="https://maps.app.goo.gl/2vNghKagTvPVHnip6" target="_blank" rel="noopener noreferrer">Cafe Viejo</a>,
-                         an Italian restaurant located in the center of town. The food was fantastic, we tried the “Fritto Misto”, a mix of fried fish and seafood. Later that night, we headed to
-                          <a href="https://maps.app.goo.gl/fXnSossA1PqAfkbh9" target="_blank" rel="noopener noreferrer">Salsa Brava</a>, a beachside bar that's known for its reggae nights and chill vibe.</p>
+                         an Italian restaurant located in the center of town. The food was fantastic, we tried the “Fritto Misto”, a mix of fried fish and seafood. Later that night, we headed to <a href="https://maps.app.goo.gl/fXnSossA1PqAfkbh9" target="_blank" rel="noopener noreferrer">Salsa Brava</a>, a beachside bar that's known for its reggae nights and chill vibe.</p>
                         <br />
 
                         <p>The next day, we got up later than we would've liked to, we got coffee and croissants at the <a href="https://maps.app.goo.gl/UW6EWzA4h9WQTsbX6" target="_blank" rel="noopener noreferrer">Degustibus Bakery</a> and headed off to Cocles. 

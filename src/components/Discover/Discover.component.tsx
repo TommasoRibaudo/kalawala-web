@@ -12,7 +12,7 @@ const  Discover = () => {
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-6 padding-0">
-            <Image className="img-responsive" src={image}  alt="" />
+            <Image className="img-responsive" src="https://drive.google.com/thumbnail?id=1RIAdGXizO6a6cCoL8ErA881olP-9YGNW&sz=w1000"  alt="" />
           </div>
           <div className="col-md-6">
             <div className="content-block">

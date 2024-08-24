@@ -3,7 +3,7 @@ import { Col, Row } from "react-bootstrap";
 import '../Listing/Listing.style.scss';
 import { useParams } from "react-router-dom";
 import { HouseDataType, ListingType } from "../../utils/types";
-import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from "../../assets/images";
+import { homesSnippet } from "../../utils/constants";
 // import Amenities from "./components/Amenities/Amenities.component";
 import { AmenityType, BlogType } from "../../utils/types";
 import { blogs } from "../../assets/blogs/blogs";
@@ -19,12 +19,7 @@ import ListingAd from "./Components/ListingAd/ListingAd.component";
 
 const Blog = () => {
     const { blogId } = useParams();
-    const listings: ListingType[] = [
-        { name: 'Tucano', mainImage: TucanoImage },
-        { name: 'Geco', mainImage: GecoImage },
-        { name: 'Pappagallo', mainImage: PappagalloImage },
-        { name: 'Rana', mainImage: RanaImage },
-    ]
+
     const blogData = blogs.find((blog) => blog.id === blogId);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -40,7 +35,7 @@ const Blog = () => {
             <FixedNavigation isBlog={true}/>
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={listings}/> 
+                    <ListingAd listings={homesSnippet}/> 
                    {/**/}
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ?{  order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>

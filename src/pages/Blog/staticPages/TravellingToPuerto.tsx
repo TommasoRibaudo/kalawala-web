@@ -3,10 +3,10 @@ import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 import { useParams } from "react-router-dom";
 import { HouseDataType, ListingType } from "../../../utils/types";
-import { TucanoImage, GecoImage, PappagalloImage, RanaImage } from "../../../assets/images";
 // import Amenities from "./components/Amenities/Amenities.component";
 import { AmenityType, BlogType } from "../../../utils/types";
 import { blogs } from "../../../assets/blogs/blogs";
+import { homesSnippet } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ImagesContainer from "../../Listing/components/ImagesContainer/ImagesContainer.component";
 import Amenities from "../../Listing/components/Amenities/Amenities.component";
@@ -21,12 +21,7 @@ import { Helmet } from "react-helmet";
 const TwoDaysInPV = () => {
     // const { blogId } = useParams();
     const blogId = 'travellingtopuertoviejo'
-    const listings: ListingType[] = [
-        { name: 'Tucano', mainImage: TucanoImage },
-        { name: 'Geco', mainImage: GecoImage },
-        { name: 'Pappagallo', mainImage: PappagalloImage },
-        { name: 'Rana', mainImage: RanaImage },
-    ]
+
     const blogData = blogs.find((blog) => blog.id === blogId);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -49,7 +44,7 @@ const TwoDaysInPV = () => {
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={listings} />
+                    <ListingAd listings={homesSnippet} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
 
@@ -65,7 +60,7 @@ const TwoDaysInPV = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://i.imgur.com/Aogz0HH.jpg" style={{ maxWidth: 1000, }} className="responsive-image" alt="Kayaking in Punta Uva" />
+                            <img src="https://drive.google.com/thumbnail?id=1JxE6lYoK9C2maxtGP9rlUp2a47Ce5C9W&sz=w1000" style={{ maxWidth: 1000, }} className="responsive-image" alt="Surqui" />
                         </div>
                         <br />
                         <p>If you're planning a trip to Puerto Viejo, Costa Rica, you may be wondering how to get there using public transportation. Fortunately, there are several options available that can take you to this beautiful Caribbean town in Talamanca.</p>

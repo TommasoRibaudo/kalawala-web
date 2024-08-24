@@ -67,6 +67,12 @@ a:hover {
     color: #ddd;
   }
 }
+.btn-darker {
+  background-color: $kalawala-dark-green;
+  color: $light;
+  padding: 10px 30px;
+  border-radius: 0;
+}
 
 
 .btn-transparent {

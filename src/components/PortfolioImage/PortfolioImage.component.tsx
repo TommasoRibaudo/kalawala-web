@@ -22,32 +22,32 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
   }
   switch (folderName) {
     case "Tucano":
-      images = requireContext('../../assets/images/portfolio/Tucano', false, /\.(png|jpe?g|svg)$/);
+      images = tucanoImageDescriptions;
       break;
     case "Geco":
-      images = requireContext('../../assets/images/portfolio/Geco', false, /\.(png|jpe?g|svg)$/);
+      images = gecoImageDescriptions;
       break;
     case "Pappagallo":
-      images = requireContext('../../assets/images/portfolio/Pappagallo', false, /\.(png|jpe?g|svg)$/);
+      images = pappagalloImageDescriptions;
       break;
     case "Rana":
-      images = requireContext('../../assets/images/portfolio/Rana', false, /\.(png|jpe?g|svg)$/);
+      images = ranaImageDescriptions;
       break;
   }
 
- const imageList = images.keys().filter((imagePath: string) => !imagePath.includes('-sm'));
+ const imageList = images;
   return (
     <div className="filtr-item row">
-      {imageList.map((imagePath: string, index: number) => {
+      {imageList.map(( image: any) => {
         return (
-        <div key={index} className="portfolio-block col-lg-4 col-md-6">
+        <div key={image} className="portfolio-block col-lg-4 col-md-6">
             <Image
               loading='lazy'
-              key={index} src={images(imagePath)} alt={`Image ${index + 1}`} fluid />
-              {imageDescriptions[folderName][index].roomType && 
+              key={image} src={image.imageLink} alt={`Image ${image + 1}`} fluid />
+              {image.roomType && 
               <TipCard 
-                roomType={imageDescriptions[folderName][index].roomType} 
-                roomDescription={imageDescriptions[folderName][index].roomDescription} 
+                roomType={image.roomType} 
+                roomDescription={image.roomDescription} 
                 folderName={folderName}/>}
           </div>
         )

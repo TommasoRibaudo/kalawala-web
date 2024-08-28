@@ -1,12 +1,13 @@
 import { FC } from 'react';
 import HomeCard from './Components/HomeCard.component';
 import './OurHomes.style.scss'
-import { houseDataList } from '../../utils/constants';
+import { HouseDataType } from '../../utils/types';
 interface IOurHomes{
     style?: any;
+    houseDataList:HouseDataType[];
 }
 
-const OurHomes = ({style}:IOurHomes) => {
+const OurHomes = ({style, houseDataList}:IOurHomes) => {
 
     const homes = [
         {
@@ -42,7 +43,7 @@ const OurHomes = ({style}:IOurHomes) => {
                         <h2>Our <span className="color">Homes</span> </h2>
                         <div className="border"></div>
                     </div>
-                    {houseDataList.map(({ name, guestNumber, parking, image }) => <HomeCard guestNumber={guestNumber} parking={parking} name={name} image={image} />)}
+                    {houseDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => <HomeCard guestNumber={guestNumber} parking={parking} name={name} image={image} houseLangCode={houseLangCode}/>)}
                 </div>
             </div>
         </section>

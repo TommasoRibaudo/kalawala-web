@@ -9,6 +9,14 @@ import TwoDaysInPV from '../pages/Blog/staticPages/TwoDaysInPV';
 import TravellingToPuerto from '../pages/Blog/staticPages/TravellingToPuerto';
 import PuertoViejoByPlane from '../pages/Blog/staticPages/PuertoViejoByPlane';
 import TenHoursInPuerto from '../pages/Blog/staticPages/TenHoursInPuerto';
+import ListingGecoES from '../pages/Listing/staticPages_ES/ListingGeco.page_ES';
+import ListingRanaES from '../pages/Listing/staticPages_ES/ListingRana.page_ES';
+import ListingTucanoES from '../pages/Listing/staticPages_ES/ListingTucano.page_ES';
+import ListingPappagalloES from '../pages/Listing/staticPages_ES/ListingPappagallo.page_ES';
+import TwoDaysInPVES from '../pages/Blog/staticPages_ES/TwoDaysInPV_ES';
+import TravellingToPuertoES from '../pages/Blog/staticPages_ES/TravellingToPuerto_ES';
+import PuertoViejoByPlaneES from '../pages/Blog/staticPages_ES/PuertoViejoByPlane_ES';
+import TenHoursInPuertoES from '../pages/Blog/staticPages_ES/TenHoursInPuerto_ES';
 // import About from './About';
 // import Contact from './Contact';
 
@@ -27,6 +35,15 @@ const AppRouter = () => (
       <Route path='/travellingtopuertoviejo' element={<TravellingToPuerto />} />
       <Route path='/puertoviejobyplane' element={<PuertoViejoByPlane />} />
       <Route path='/TenHoursInPuerto' element={<TenHoursInPuerto />} />
+      <Route path='/GecoES'  element={<ListingGecoES />}/>
+      <Route path='/RanaES'  element={<ListingRanaES />}/>
+      <Route path='/TucanoES'  element={<ListingTucanoES />}/>
+      <Route path='/PappagalloES'  element={<ListingPappagalloES />}/>
+      <Route path='/twodaysinpuertoviejoES' element={<TwoDaysInPVES />} />
+      <Route path='/travellingtopuertoviejoES' element={<TravellingToPuertoES />} />
+      <Route path='/puertoviejobyplaneES' element={<PuertoViejoByPlaneES />} />
+      <Route path='/TenHoursInPuertoES' element={<TenHoursInPuertoES />} />
+
       {/* <Route path='blog'>
         <Route path=':blogId' element={<Blog />} />
       </Route> */} 

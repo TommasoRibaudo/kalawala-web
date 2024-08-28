@@ -10,14 +10,15 @@ interface IHomeCard {
     guestNumber: number;
     parking: boolean;
     image: string
+    houseLangCode:string;
 }
 
 
-const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image }) => {
+const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangCode }) => {
 
     const navigate = useNavigate();
     const handleClick = () => {
-        navigate(`/${name}`);
+        navigate(`/${houseLangCode}`);
         setTimeout(() => {
             window.scrollTo(0, 0);
         }, 0);

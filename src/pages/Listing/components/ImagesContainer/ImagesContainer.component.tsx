@@ -32,6 +32,22 @@ const ImagesContainer = ({showModal, houseName}: IImagesContainer) => {
       images = ranaImageDescriptions;
       imageSnippet = [2,3,5,6,7];
       break;
+      case "TucanoES":
+        images = tucanoImageDescriptions;
+        imageSnippet = [2,0,5,3,8];
+        break;
+      case "GecoES":
+        images = gecoImageDescriptions;
+        imageSnippet = [3,4,5,6,0];
+        break;
+      case "PappagalloES":
+        images = pappagalloImageDescriptions;
+        imageSnippet = [0,1,2,4,6];
+        break;
+      case "RanaES":
+        images = ranaImageDescriptions;
+        imageSnippet = [2,3,5,6,7];
+        break;
   }
 
 

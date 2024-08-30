@@ -36,7 +36,7 @@ const OtherBlogs: FC<IOtherListing> = ({ currentBlog, blogs }) => {
           {blogs.map(({ title, thumbnail, id }) => {
             return title !== currentBlog ? (
               <div><div
-                style={{ backgroundImage: `url(${thumbnail})`, width: '95%'}}
+                style={{ backgroundImage: `url(${thumbnail})`,width: '95%', marginTop:'5%'}}
                 className="listing d-flex align-items-end"
                 onClick={() => { navigate(`/${id}`) }}
               >

@@ -30,6 +30,25 @@
     }
   }
 }
+.navbar-flag {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
 
+  svg {
+    width: 32px; /* Adjust the size as needed */
+    height: 24px; /* Adjust the height proportionally */
+  }
+}
 
+@media (max-width: 991.98px) {
+  .navbar-flag {
+    right: 10px; /* Adjust the position for mobile */
+    margin-top: 25px;
+    margin-right: 8.33px;
+  }
+}
 

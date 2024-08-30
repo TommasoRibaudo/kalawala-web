@@ -17,10 +17,10 @@ const  DiscoverES = () => {
           <div className="col-md-6">
             <div className="content-block">
               <h2>Descubre Puerto Viejo desde el confort de nuestras casas.</h2>
-              <p>Reservas Kalawala ofrece 4 casas remodeladas, <b>con una cocina y baño totalmente equipados</b>. Casa casa cuenta con 2 habitaciones y <b>2 unidades de aire acondicionado</b>.</p>
-              <p>Ubicado en el centro de Puerto Viejo, todos los bares y restaurantes estan una a <b>distancia comodamente caminable </b>. Se puede llegar a Playa Cocles en auto en 2 minutos, y hay lugares de renta de bicicletas y motocicletas para que tambien Punta Uva, Cahuita y Manzanillo estén a tu alcance, incluso sin un auto!</p>
-              <p><b>Trabajas desde casa?</b> Ofrecemos <b>WIFI gratis</b>, con una velocidad de hasta <b>100Mbps</b>. We stipulated two different contracts with our internet provider, so your internet connection will be shared between fewer devices, achieving less latency during meetings.</p>
-              <p><b>Pet Friendly!</b> In all ouBr spaces. Casa Rana and Casa Gecko are the perfect options for your pet, as they come with a garden. But a small house pet could comfortably stay in the other houses too!</p>
+              <p>Reservas Kalawala ofrece 4 casas remodeladas, <b>con una cocina y baño totalmente equipados</b>. Cada casa cuenta con 2 habitaciones y <b>2 unidades de aire acondicionado</b>.</p>
+              <p>Ubicado en el centro de Puerto Viejo, todos los bares y restaurantes estan una a <b>distancia comodamente caminable </b>. Se puede llegar a Playa Cocles en auto en 2 minutos. Tambien hay lugares de renta de bicicletas y motocicletas para que tambien Punta Uva, Cahuita y Manzanillo estén a tu alcance, incluso sin un auto!</p>
+              <p><b>Trabajas desde casa?</b> Ofrecemos <b>WIFI gratis</b>, con una velocidad de hasta <b>100Mbps</b>. Estipulamos dos contratos diferentes con nuestro proveedor de internet, por lo que tu conexión a internet será compartida entre menos dispositivos, logrando una menor latencia durante tus reuniones.</p>
+              <p><b>Pet Friendly!</b> En todos nuestros espacios. Casa Rana y Casa Gecko son las opciones perfectas para tu mascota, ya que cuentan con jardín. ¡Pero una pequeña mascota doméstica también podría alojarse cómodamente en las otras casas</p>
               <div className="row">
                 <div className="col-md-6">
                   <div className="media">
@@ -28,8 +28,8 @@ const  DiscoverES = () => {
                       <FontAwesomeIcon icon={faConciergeBell} color='#57cbcc' fontSize={"30px"}/>
                     </div>
                     <div className="media-body" style={{ verticalAlign: "middle" }}>
-                      <h4 className="media-heading">Self Check-in</h4>
-                      <p>Easy to follow, contactless check-in process.</p>
+                      <h4 className="media-heading">Check-in Automatico</h4>
+                      <p>Facil de seguir, check-in sin necesidad de contactar!.</p>
                     </div>
                   </div>
                 </div>
@@ -40,8 +40,8 @@ const  DiscoverES = () => {
 
                     </div>
                     <div className="media-body">
-                      <h4 className="media-heading">Flexible Cancellation Policy</h4>
-                      <p>Full refund up to one day before check-in.</p>
+                      <h4 className="media-heading">Politica de cancelacion flexible</h4>
+                      <p>Devolucion completa hasta un día antes del check-in.</p>
                     </div>
                   </div>
                 </div>

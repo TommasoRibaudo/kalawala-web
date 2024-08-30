@@ -37,7 +37,7 @@ const TenHoursInPuertoES = () => {
         <div className={`listingContainer`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Ten hours to explore Puerto Viejo</title>
+                <title>Diez Horas Para Eplorar Cahuita</title>
                 <meta name="description" content="Si tienes solo diez horas para explorar Cahuita, ¡aprovechemos al máximo el tiempo! Empezamos nuestra aventura temprano, despertándonos a las 7 am. Lo primero es tomar un café y disfrutar de un delicioso croissant de jamón y queso recién salido del horno en Degustibus Bakery." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/blog/travellingtopuertoviejo" />
             </Helmet>
@@ -51,7 +51,7 @@ const TenHoursInPuertoES = () => {
                     <br />
                     <div className="heading title-container" style={{ maxWidth: 1000, }}>
 
-                        <h1 className="title blog-title">Ten hours to explore Puerto Viejo
+                        <h1 className="title blog-title">Diez horas para explorar Cahuita
                         </h1>
 
                         <div className="border"></div>

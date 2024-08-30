@@ -5,6 +5,203 @@ export interface IImageDescription {
     roomDescription: string;
     imageLink?: string;
 }
+export const homesSnippet:ListingType[] = [
+    {
+        name: 'Tucano',
+        mainImage: "https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000"
+    },
+    {
+        name: 'Geco',
+        mainImage: "https://drive.google.com/thumbnail?id=1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF&sz=w1000"
+    },
+    {
+        name: 'Pappagallo',
+        mainImage: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000"
+    },
+    {
+        name: 'Rana',
+        mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+    },
+]
+export const gecoImageDescriptionsES: IImageDescription[] = [
+    {
+        roomType: "Baño",
+        roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
+        imageLink: "https://drive.google.com/thumbnail?id=1ocQCVEUW8VFMUjgb6bByd56EF8cqIZzS&sz=w1000"
+    },
+    {
+        roomType: "Segundo Dormitorio",
+        roomDescription: "Ropa de cama siempre incluida.",
+        imageLink: "https://drive.google.com/thumbnail?id=1pKfUX6k4hl-Idbio56J-QUge0KRrCJ91&sz=w1000"
+    },
+    {
+        roomType: "Cocina",
+        roomDescription: "Microondas, cafetera y licuadora incluidos.",
+        imageLink: "https://drive.google.com/thumbnail?id=1vo3Bcfmjbn3fPhM7dDYvKjbTxSH5jGF2&sz=w1000"
+    },
+    {
+        roomType: "Sala de Estar",
+        roomDescription: "No olvides nuestro 15% de descuento en cada compra en la panadería, hay menús en la casa.",
+        imageLink: "https://drive.google.com/thumbnail?id=1k8mn4I-JrFLiPTACOlIE208QRIsiHOE5&sz=w1000"
+    },
+    {
+        roomType: "Sala de Estar",
+        roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
+        imageLink: "https://drive.google.com/thumbnail?id=1MuQq2qK3AwMDytpS9GG3HO5N60huZH5v&sz=w1000"
+    },
+    {
+        roomType: "Cuarto Principal",
+        roomDescription: "Esta habitación tiene un televisor con un sistema de entretenimiento Roku y puerto HDMI.",
+        imageLink: "https://drive.google.com/thumbnail?id=1fbmZQn38bbH_t5Hu0x_vYfQWIuiIIN9W&sz=w1000"
+    },
+    {
+        roomType: "Jardín",
+        roomDescription: "Hay estacionamiento privado gratuito en este lugar.",
+        imageLink: "https://drive.google.com/thumbnail?id=10brlXHpVyjQmum0BZcobJ6s4huT8My7t&sz=w1000"
+    },
+    {
+        roomType: "Porche",
+        roomDescription: "Todos los espacios mostrados son completamente privados, solo para ti.",
+        imageLink: "https://drive.google.com/thumbnail?id=1ExyU9JUIgahhBykI4ugoJYkS9ybF2F8-&sz=w1000"
+    }
+]
+export const pappagalloImageDescriptionsES: IImageDescription[] = [
+    {
+        roomType: "Baño",
+        roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
+        imageLink: "https://drive.google.com/thumbnail?id=1qocAtWUCMRttBmWa8fP_KtJDW-5QD6jh&sz=w1000"
+    },
+    {
+        roomType: "Cuarto Principal",
+        roomDescription: "Esta habitación tiene un televisor con un sistema de entretenimiento Roku y puerto HDMI.",
+        imageLink: "https://drive.google.com/thumbnail?id=1s3MfwR3l7yme47d7IrqSEDYPNMWRzpPh&sz=w1000"
+    },
+    {
+        roomType: "Segundo Dormitorio",
+        roomDescription: "Ropa de cama siempre incluida.",
+        imageLink: "https://drive.google.com/thumbnail?id=1WGdWpqS0BpOGo6AMhHGocp1jN1OSIPDQ&sz=w1000"
+    },
+    {
+        roomType: "Cocina",
+        roomDescription: "Microondas, cafetera y licuadora incluidos.",
+        imageLink: "https://drive.google.com/thumbnail?id=1bpwpewoUw6CuYg66IcwpbcCm2Ne1Ryth&sz=w1000"
+    },
+    {
+        roomType: "Sala de Estar",
+        roomDescription: "No olvides nuestro 15% de descuento en cada compra en la panadería, hay menús en la casa.",
+        imageLink: "https://drive.google.com/thumbnail?id=1dz1y_lAZTfzvj2862Gahw5QY-w4_FjOX&sz=w1000"
+    },
+    {
+        roomType: "Sala de Estar",
+        roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
+        imageLink: "https://drive.google.com/thumbnail?id=1IGjxWxvODVY5BgAIS21MNxZaCev4qKx5&sz=w1000"
+    },
+    {
+        roomType: "Balcón",
+        roomDescription: "Casa Pappagallo y Casa Tucano fueron remodeladas en el 2021.",
+        imageLink: "https://drive.google.com/thumbnail?id=16GIFWl5alQgk32AkQdJNsyLGMwDtfdsO&sz=w1000"
+    },
+    {
+        roomType: "Sala de Estar",
+        roomDescription: "Shh... ¡No te lo pierdas! ¡Ingresa el codigo #5off para un descuento extra a la hora de reservar con nosotros!",
+        imageLink: "https://drive.google.com/thumbnail?id=1yrtj6UM8z-lCu_8inK_nn37p3kzaFIwY&sz=w1000"
+    }
+]
+export const ranaImageDescriptionsES: IImageDescription[] = [
+    {
+        roomType: "Baño",
+        roomDescription: "We always provide towels and toiletries.",
+        imageLink: "https://drive.google.com/thumbnail?id=1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT&sz=w1000"
+    },
+    {
+        roomType: "Baño",
+        roomDescription: "Siempre estamos disponibles para ayudarte con cualquier pregunta o inquietud que puedas tener.",
+        imageLink: "https://drive.google.com/thumbnail?id=1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27&sz=w1000"
+    },
+    {
+        roomType: "Cuarto Principal",
+        roomDescription: "Esta habitación tiene un televisor con un sistema de entretenimiento Roku y puerto HDMI.",
+        imageLink: "https://drive.google.com/thumbnail?id=1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV&sz=w1000"
+    },
+    {
+        roomType: "Cuarto Principal",
+        roomDescription: "colchones de 10pulgadas/25cm de alto.",
+        imageLink: "https://drive.google.com/thumbnail?id=1Dbna1MUEB126_-QfkRLVVgha6553hQc_&sz=w1000"
+    },
+    {
+        roomType: "Segundo Dormitorio",
+        roomDescription: "Ropa de cama siempre incluida.",
+        imageLink: "https://drive.google.com/thumbnail?id=1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL&sz=w1000"
+    },
+    {
+        roomType: "Cocina",
+        roomDescription: "Microondas, cafetera y licuadora incluidos.",
+        imageLink: "https://drive.google.com/thumbnail?id=1NJPqfxBRHstI8oaEzSNUX4Lr0KwR5F_a&sz=w1000"
+    },
+    {
+        roomType: "Cocina",
+        roomDescription: "Ofrecemos descuentos last-minute para reservas de último minuto.",
+        imageLink: "https://drive.google.com/thumbnail?id=10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G&sz=w1000"
+    },
+    {
+        roomType: "Sala de Estar",
+        roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
+        imageLink: "https://drive.google.com/thumbnail?id=1D7I61hOZ0Tk-5G-8D4WZ088eoEesWKJ_&sz=w1000"
+    },
+    {
+        roomType: "Jardín",	
+        roomDescription: "Parqueo privado gratuito disponible en este lugar.",
+        imageLink: "https://drive.google.com/thumbnail?id=1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO&sz=w1000"
+    }
+]
+export const tucanoImageDescriptionsES: IImageDescription[] = [
+    {
+        roomType: "Bathroom",
+        roomDescription: "We always provide towels and toiletries.",
+        imageLink: "https://drive.google.com/thumbnail?id=1SC7QClrubrzsRyiz9igW5oIDiIgdDmeg&sz=w1000"
+    },
+    {
+        roomType: "Bathroom",
+        roomDescription: "We offer free cleaning services for longer reservations.",
+        imageLink: "https://drive.google.com/thumbnail?id=1aiADCh7t1taZ9yFcNfGg3Gpl-IPVabxA&sz=w1000"
+    },
+    {
+        roomType: "Master Bedroom",
+        roomDescription: "This room has a TV with hundreds of channels and HDMI port.",
+        imageLink: "https://drive.google.com/thumbnail?id=12d5__pqzKjeffa0joFLeZn4kTPvJVXE_&sz=w1000"
+    },
+    {
+        roomType: "Master Bedroom",
+        roomDescription: "10inches/25cm tall matresses in every house.",
+        imageLink: "https://drive.google.com/thumbnail?id=16Gd2y03TpdFCVY2ugTbV3d0R-YrOj2bf&sz=w1000"
+    },
+    {
+        roomType: "Second Bedroom",
+        roomDescription: "Bed Linens always included.",
+        imageLink: "https://drive.google.com/thumbnail?id=1CkNL9edZ-a2LVEZZ4dawAhCAB89d29st&sz=w1000"
+    },
+    {
+        roomType: "Kitchen",
+        roomDescription: "Microwave, coffeemaker and blender also included.",
+        imageLink: "https://drive.google.com/thumbnail?id=17CUhGccaCV33gbEv4Yt3-Co3vCuOiiyx&sz=w1000"
+    },
+    {
+        roomType: "Livingroom",
+        roomDescription: "100Mbps Free Wifi everywhere in your house.",
+        imageLink: "https://drive.google.com/thumbnail?id=16ZLKp3PnfxXbQv_4BD9VbYbr_7_gfyJJ&sz=w1000"
+    },
+    {
+        roomType: "Livingroom",
+        roomDescription: "Don't forget about our 15% discount for every purchase at the bakery, there are menus in the house.",
+        imageLink: "https://drive.google.com/thumbnail?id=1cp4slCoNdbsJhbReAPlKkOOqpvqTDTVy&sz=w1000"
+    },
+    {
+        roomType: "Balcony",
+        roomDescription: "All the spaces shown are completely private, for you only.",
+        imageLink: "https://drive.google.com/thumbnail?id=1ltpPKGHG46Rl_pTpnTtewt2U3YsKwr8W&sz=w1000"
+    }
+]
+
 
 export const gecoImageDescriptions: IImageDescription[] = [
     {
@@ -47,24 +244,6 @@ export const gecoImageDescriptions: IImageDescription[] = [
         roomDescription: "All the spaces shown are completely private, for you only.",
         imageLink: "https://drive.google.com/thumbnail?id=1ExyU9JUIgahhBykI4ugoJYkS9ybF2F8-&sz=w1000"
     }
-]
-export const homesSnippet:ListingType[] = [
-    {
-        name: 'Tucano',
-        mainImage: "https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000"
-    },
-    {
-        name: 'Geco',
-        mainImage: "https://drive.google.com/thumbnail?id=1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF&sz=w1000"
-    },
-    {
-        name: 'Pappagallo',
-        mainImage: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000"
-    },
-    {
-        name: 'Rana',
-        mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
-    },
 ]
 export const pappagalloImageDescriptions: IImageDescription[] = [
     {

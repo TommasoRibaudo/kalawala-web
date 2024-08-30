@@ -17,6 +17,7 @@ import TwoDaysInPVES from '../pages/Blog/staticPages_ES/TwoDaysInPV_ES';
 import TravellingToPuertoES from '../pages/Blog/staticPages_ES/TravellingToPuerto_ES';
 import PuertoViejoByPlaneES from '../pages/Blog/staticPages_ES/PuertoViejoByPlane_ES';
 import TenHoursInPuertoES from '../pages/Blog/staticPages_ES/TenHoursInPuerto_ES';
+import HomeES from '../pages/Home/Home.pageES';
 // import About from './About';
 // import Contact from './Contact';
 
@@ -43,6 +44,8 @@ const AppRouter = () => (
       <Route path='/travellingtopuertoviejoES' element={<TravellingToPuertoES />} />
       <Route path='/puertoviejobyplaneES' element={<PuertoViejoByPlaneES />} />
       <Route path='/TenHoursInPuertoES' element={<TenHoursInPuertoES />} />
+      <Route path='/HomeES' element={<HomeES/>} />
+
 
       {/* <Route path='blog'>
         <Route path=':blogId' element={<Blog />} />

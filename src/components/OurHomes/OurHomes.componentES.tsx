@@ -7,7 +7,7 @@ interface IOurHomes{
     houseDataList:HouseDataType[];
 }
 
-const OurHomes = ({style, houseDataList}:IOurHomes) => {
+const OurHomesES = ({style, houseDataList}:IOurHomes) => {
 
     const homes = [
         {
@@ -40,7 +40,7 @@ const OurHomes = ({style, houseDataList}:IOurHomes) => {
             <div className="container">
                 <div className="row">
                     <div className="title text-center wow fadeIn" data-wow-duration="1500ms">
-                        <h2>Nuestras <span className="color">Casas</span> </h2>
+                        <h2>Our <span className="color">Homes</span> </h2>
                         <div className="border"></div>
                     </div>
                     {houseDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => <HomeCard guestNumber={guestNumber} parking={parking} name={name} image={image} houseLangCode={houseLangCode}/>)}
@@ -50,4 +50,4 @@ const OurHomes = ({style, houseDataList}:IOurHomes) => {
     )
 }
 
-export default OurHomes;
+export default OurHomesES;

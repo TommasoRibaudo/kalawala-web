@@ -6,7 +6,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from "react-router-dom";
 import { getHighestId } from "../../assets/blogs/blogs";
 import SolidBars from "../../assets/images/bars-solid.svg";
-import { ES } from 'country-flag-icons/react/3x2'
+import { ES, US } from 'country-flag-icons/react/3x2'
 
 interface IFixedNavigationES {
   isBlog: boolean
@@ -50,8 +50,8 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
           </Nav>
         </Navbar.Collapse>
         <div className="navbar-flag">
-          <a href="/HomeES">
-            <ES title="Español" />
+          <a href="/Home">
+            <US title="Ingles" />
             </a>
         </div>
       </Container>

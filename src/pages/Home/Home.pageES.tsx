@@ -5,7 +5,7 @@ import OurHomesES from "../../components/OurHomes/OurHomes.component";
 import CallToAction from "../../components/CallToAction/CallToAction.component";
 import Testimonial from "../../components/Testimonial/Testimonial.component";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
-import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
+import WelcomeSliderES from "../../components/WelcomeSlider/WelcomeSlider.componentES";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 import { houseDataEngList } from '../../utils/constants';
 import DiscoverES from "../../components/Discover/Discover.componentES";
@@ -15,7 +15,7 @@ const HomeES = () => {
 
   return (
     <div id="body">
-      <WelcomeSlider />
+      <WelcomeSliderES />
       <FixedNavigationES isBlog={false}/>
       <OurHomesES houseDataList={houseDataEngList}/>
       <DiscoverES />

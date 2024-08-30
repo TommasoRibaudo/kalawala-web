@@ -41,7 +41,7 @@ const  Discover = () => {
                     </div>
                     <div className="media-body">
                       <h4 className="media-heading">Flexible Cancellation Policy</h4>
-                      <p>Full refund up to one day before check-in.</p>
+                      <p>Refund up to one day before check-in.</p>
                     </div>
                   </div>
                 </div>

@@ -10,6 +10,7 @@ import Portfolio from "../../components/Portfolio/Portfolio.component";
 import { houseDataEngList } from '../../utils/constants';
 import DiscoverES from "../../components/Discover/Discover.componentES";
 import FixedNavigationES from "../../components/FixedNavigation/FixedNavigation.componentES";
+import PortfolioES from "../../components/Portfolio/Portfolio.componentES";
 
 const HomeES = () => {
 
@@ -20,7 +21,7 @@ const HomeES = () => {
       <OurHomesES houseDataList={houseDataEngList}/>
       <DiscoverES />
       <CallToAction />
-      <Portfolio />
+      <PortfolioES />
       {/* <Testimonial /> */}
       <ContactUs />
     </div>

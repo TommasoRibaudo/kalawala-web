@@ -16,7 +16,7 @@ const PortfolioES = () => {
   const houses: string[] = ['Tucano', 'Geco', 'Pappagallo', 'Rana'];
 
   return (
-    <div id="portfolio" className="portfolio section">
+    <div id="portfolioES" className="portfolio section">
       <div className="col-lg-12">
         <div className="title text-center">
           <h2>Nuestras <span className="color">Fotos</span></h2>

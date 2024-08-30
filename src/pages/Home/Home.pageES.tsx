@@ -9,13 +9,14 @@ import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.componen
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 import { houseDataEngList } from '../../utils/constants';
 import DiscoverES from "../../components/Discover/Discover.componentES";
+import FixedNavigationES from "../../components/FixedNavigation/FixedNavigation.componentES";
 
 const HomeES = () => {
 
   return (
     <div id="body">
       <WelcomeSlider />
-      <FixedNavigation isBlog={false}/>
+      <FixedNavigationES isBlog={false}/>
       <OurHomesES houseDataList={houseDataEngList}/>
       <DiscoverES />
       <CallToAction />

@@ -42,15 +42,15 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
         </Navbar.Toggle>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
-            <Nav.Link href="/#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`}>Inicio</Nav.Link>
-            <Nav.Link href="/#callToAction" className="navText" onClick={() => { handleLinkClick("#callToAction") }}>Disponibilidad</Nav.Link>
-            <Nav.Link href="/#portfolio" className="navText" onClick={() => { handleLinkClick("#portfolio") }}>Fotos</Nav.Link>
-            <Nav.Link href="/#contact-us" className="navText" onClick={() => { handleLinkClick("#contact-us") }}>Contactanos</Nav.Link>
-            <Nav.Link href="/twodaysinpuertoviejo" className={`navText ${(isActive && isBlog) ? 'active' : ''}`}>Blog</Nav.Link>
+            <Nav.Link href="HomeES#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`}>Inicio</Nav.Link>
+            <Nav.Link href="HomeES#callToActionES" className="navText" onClick={() => { handleLinkClick("HomeES#callToActionES") }}>Disponibilidad</Nav.Link>
+            <Nav.Link href="HomeES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeES#portfolio") }}>Fotos</Nav.Link>
+            <Nav.Link href="HomeES#contact-us" className="navText" onClick={() => { handleLinkClick("HomeES#contact-us") }}>Contactanos</Nav.Link>
+            <Nav.Link href="/twodaysinpuertoviejoES" className={`navText ${(isActive && isBlog) ? 'active' : ''}`}>Blog</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         <div className="navbar-flag">
-          <a href="/Home">
+          <a href="/">
             <US title="Ingles" />
             </a>
         </div>

@@ -19,7 +19,7 @@ const OtherBlogs: FC<IOtherListing> = ({ currentBlog, blogs }) => {
   return (
     <>
       <div className="cont d-flex justify-content-center">
-        <div className="header">Check out our other blogs!</div>
+        <div className="header">Mira nuestros Blogs!</div>
         <div className={`hstack gap-5 subCont`}>
           {blogs.map(({ title, thumbnail, id }) => {
             return title !== currentBlog ? (

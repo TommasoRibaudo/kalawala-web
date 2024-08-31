@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { HouseDataType, ListingType } from "../../../utils/types";
 // import Amenities from "./components/Amenities/Amenities.component";
 import { AmenityType, BlogType } from "../../../utils/types";
-import { blogs } from "../../../assets/blogs/blogs";
+import { blogs, blogsES } from "../../../assets/blogs/blogs";
 import { homesSnippet } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ImagesContainer from "../../Listing/components/ImagesContainer/ImagesContainer.component";
@@ -16,12 +16,14 @@ import OurHomes from "../../../components/OurHomes/OurHomes.component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
+import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
+import ListingAdES from "../Components/ListingAd/ListingAd.componentES";
 
 
 const TravellingToPuertoES = () => {
     // const { blogId } = useParams();
     const blogId = 'travellingtopuertoES'
-    const blogData = blogs.find((blog) => blog.id === blogId);
+    const blogData = blogsES.find((blog) => blog.id === blogId);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -40,10 +42,10 @@ const TravellingToPuertoES = () => {
                 <meta name="description" content="Si estás planeando un viaje a Puerto Viejo, Costa Rica, es posible que te preguntes cómo llegar allí usando transporte público. Afortunadamente, hay varias opciones disponibles que pueden llevarte a este hermoso pueblo caribeño en Talamanca." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/blog/travellingtopuertoviejo" />
             </Helmet>
-            <FixedNavigation isBlog={true} />
+            <FixedNavigationES isBlog={true} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={homesSnippet} />
+                    <ListingAdES listings={homesSnippet} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
 
@@ -103,7 +105,7 @@ const TravellingToPuertoES = () => {
                         </p>
                         <br />
                     </div>
-                    <OtherBlogs currentBlog="travellingtopuertoviejo" blogs={blogs} />
+                    <OtherBlogs currentBlog="travellingtopuertoviejoES" blogs={blogsES} />
                 </Col>
             </Row>
             <ContactUs />

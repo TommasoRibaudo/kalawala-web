@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { getHighestId } from "../../assets/blogs/blogs";
 import SolidBars from "../../assets/images/bars-solid.svg";
 import { ES, US } from 'country-flag-icons/react/3x2'
+import { LanguageSwitcher } from "../FlagComponent/Flag.component";
 
 interface IFixedNavigationES {
   isBlog: boolean
@@ -50,9 +51,7 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
           </Nav>
         </Navbar.Collapse>
         <div className="navbar-flag">
-          <a href="/">
-            <US title="Ingles" />
-            </a>
+            <LanguageSwitcher/>
         </div>
       </Container>
     </Navbar>

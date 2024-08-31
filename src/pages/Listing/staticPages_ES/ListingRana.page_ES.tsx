@@ -59,10 +59,10 @@ const ListingRana = () => {
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ?{  order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">
-                        <h1 className="title">House Rana</h1>
+                        <h1 className="title">Casa Rana</h1>
                         <h3 className="location">Puerto Viejo de Talamanca, Limón, Costa Rica</h3>
                         {isScreenSmall && (
-                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Now Online!</Button></div>)}
+                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Reverva en linea!</Button></div>)}
                     
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />

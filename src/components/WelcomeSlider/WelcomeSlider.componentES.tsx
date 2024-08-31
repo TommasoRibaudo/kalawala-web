@@ -9,7 +9,7 @@ const WelcomeSliderES = () => {
       <div className = "block" >
         <h1>RESERVAS KALAWALA</h1>
         <p id="short-description">Casas completamente equipadas en el corazon de Puerto Viejo.</p>
-        <Button variant="outline-light" className='btn-transparent' href="#callToAction">Reserve en linea Ahora!</Button>
+        <Button variant="outline-light" className='btn-transparent' href="HomeES#callToActionES">Reserve en linea!</Button>
         {/* <a data-scroll href="#house-list" className="btn btn-transparent">Explore Us</a> */}
         <br />
         {/* //TODO: <a href="#" onClick={() => setLanguage('en')}>English</a> | <a href="#" onClick={() => setLanguage('es')}>Spanish</a> */ }

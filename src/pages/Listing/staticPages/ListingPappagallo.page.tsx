@@ -58,7 +58,7 @@ const ListingPappagallo = () => {
                         <h1 className="title">House Pappagallo</h1>
                         <h3 className="location">Puerto Viejo de Talamanca, Limón, Costa Rica</h3>
                         {isScreenSmall && (
-                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Now Online!</Button></div>)}
+                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Online Now!</Button></div>)}
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     <div className="amenaties">

@@ -51,15 +51,47 @@
 
 .header {
     text-align: center;
-    color: $kalawala-text-gray  ;
+    color: $kalawala-text-gray ;
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 20px;
 }
 
 .adContainer {
-    padding: 10px;
-    //  border: 2px solid white;
-    //  border-radius: 10px;
-     overflow: hidden;
- }
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .subCont {
+        width: 100%;
+
+        .houseContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+
+            .listing {
+                background-size: cover;
+                background-position: center;
+                height: 250px; // Ensure this matches the desired height of your images
+                position: relative;
+                margin-bottom: 20px;
+                width: 95%;
+                cursor: pointer;
+                .name {
+                    background-color: rgba(0, 0, 0, 0.5);
+                    color: white;
+                    width: 100%;
+                    text-align: center;
+                    padding: 10px;
+                    font-size: 1.2rem;
+                }
+            }
+        }
+    }
+}

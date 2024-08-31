@@ -11,7 +11,11 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-
+  @media (max-width: 768px) {
+    background-position: center;
+    background-size: cover; // or 'contain' if you want the whole image to fit within the screen
+    height: 100vh; // Adjust the height as needed
+  }
   .block {
     text-align: center;
     z-index: 99;

@@ -14,6 +14,7 @@ Tags: one-page, single-page, portfolio, custom-colors, post-formats, responsive,
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,700|Open+Sans:300,400,600");
 @import "_variables.css";
 
+
 html {
     background-color: #353b43;
     color: #737f8a;

@@ -41,7 +41,7 @@ const  DiscoverES = () => {
                     </div>
                     <div className="media-body">
                       <h4 className="media-heading">Politica de cancelacion flexible</h4>
-                      <p>Devolucion completa hasta un día antes del check-in.</p>
+                      <p>Devolución hasta un día antes del check-in.</p>
                     </div>
                   </div>
                 </div>

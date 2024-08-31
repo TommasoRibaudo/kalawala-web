@@ -110,7 +110,7 @@ export const pappagalloImageDescriptionsES: IImageDescription[] = [
 export const ranaImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Baño",
-        roomDescription: "We always provide towels and toiletries.",
+        roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
         imageLink: "https://drive.google.com/thumbnail?id=1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT&sz=w1000"
     },
     {
@@ -125,7 +125,7 @@ export const ranaImageDescriptionsES: IImageDescription[] = [
     },
     {
         roomType: "Cuarto Principal",
-        roomDescription: "colchones de 10pulgadas/25cm de alto.",
+        roomDescription: "Colchones de 10pulgadas/25cm.",
         imageLink: "https://drive.google.com/thumbnail?id=1Dbna1MUEB126_-QfkRLVVgha6553hQc_&sz=w1000"
     },
     {
@@ -156,48 +156,48 @@ export const ranaImageDescriptionsES: IImageDescription[] = [
 ]
 export const tucanoImageDescriptionsES: IImageDescription[] = [
     {
-        roomType: "Bathroom",
-        roomDescription: "We always provide towels and toiletries.",
+        roomType: "Baño",
+        roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
         imageLink: "https://drive.google.com/thumbnail?id=1SC7QClrubrzsRyiz9igW5oIDiIgdDmeg&sz=w1000"
     },
     {
-        roomType: "Bathroom",
-        roomDescription: "We offer free cleaning services for longer reservations.",
+        roomType: "Baño",
+        roomDescription: "Ofrecemos limpieza gratuita para reservas más largas.",
         imageLink: "https://drive.google.com/thumbnail?id=1aiADCh7t1taZ9yFcNfGg3Gpl-IPVabxA&sz=w1000"
     },
     {
-        roomType: "Master Bedroom",
-        roomDescription: "This room has a TV with hundreds of channels and HDMI port.",
+        roomType: "Cuarto Principal",
+        roomDescription: "Esta habitación tiene un televisor con un sistema de entretenimiento Roku y puerto HDMI.",
         imageLink: "https://drive.google.com/thumbnail?id=12d5__pqzKjeffa0joFLeZn4kTPvJVXE_&sz=w1000"
     },
     {
-        roomType: "Master Bedroom",
-        roomDescription: "10inches/25cm tall matresses in every house.",
+        roomType: "Cuarto Principal",
+        roomDescription: "Colchones de 10pulgadas/25cm.",
         imageLink: "https://drive.google.com/thumbnail?id=16Gd2y03TpdFCVY2ugTbV3d0R-YrOj2bf&sz=w1000"
     },
     {
-        roomType: "Second Bedroom",
-        roomDescription: "Bed Linens always included.",
+        roomType: "Segundo Dormitorio",
+        roomDescription: "Ropa de cama siempre incluida.",
         imageLink: "https://drive.google.com/thumbnail?id=1CkNL9edZ-a2LVEZZ4dawAhCAB89d29st&sz=w1000"
     },
     {
-        roomType: "Kitchen",
-        roomDescription: "Microwave, coffeemaker and blender also included.",
+        roomType: "Cocina",
+        roomDescription: "Microondas, cafetera y licuadora incluidos.",
         imageLink: "https://drive.google.com/thumbnail?id=17CUhGccaCV33gbEv4Yt3-Co3vCuOiiyx&sz=w1000"
     },
     {
-        roomType: "Livingroom",
-        roomDescription: "100Mbps Free Wifi everywhere in your house.",
+        roomType: "Sala de Estar",
+        roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
         imageLink: "https://drive.google.com/thumbnail?id=16ZLKp3PnfxXbQv_4BD9VbYbr_7_gfyJJ&sz=w1000"
     },
     {
-        roomType: "Livingroom",
-        roomDescription: "Don't forget about our 15% discount for every purchase at the bakery, there are menus in the house.",
+        roomType: "Sala de Estar",
+        roomDescription: "No olvides nuestro 15% de descuento en cada compra en la panadería, hay menús en la casa.",
         imageLink: "https://drive.google.com/thumbnail?id=1cp4slCoNdbsJhbReAPlKkOOqpvqTDTVy&sz=w1000"
     },
     {
-        roomType: "Balcony",
-        roomDescription: "All the spaces shown are completely private, for you only.",
+        roomType: "Balcón",
+        roomDescription: "Todos los espacios mostrados son completamente privados, solo para ti.",
         imageLink: "https://drive.google.com/thumbnail?id=1ltpPKGHG46Rl_pTpnTtewt2U3YsKwr8W&sz=w1000"
     }
 ]
@@ -690,7 +690,7 @@ export const houseDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "GecoES",
+        name: "Geco",
         guestNumber: 5,
         location: "AAA Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.<br/>   Most shops and restaurants are just a short walk away, and there is a nearby jungle path that runs along the ocean and leads to natural pools in the coral and to Cocles.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.<br/>   Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.<br/>    If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
@@ -728,7 +728,7 @@ export const houseDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "RanaES",
+        name: "Rana",
         guestNumber: 5,
         location: "AAA Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space. Our prime location ensures easy access to both the town center and the beaches of Puerto Viejo.<br/>     The house offers complete privacy, with all described spaces, including the kitchen and bathroom, exclusively for your use. You'll have all the amenities needed to feel at home.<br/>     You'll find most shops and restaurants within a short walking distance. Additionally, a nearby jungle path along the ocean leads to natural coral pools and Cocles.<br/>     Have a special request? We are happy to accommodate if possible. Please don't hesitate to let us know.<br/>     We strongly recommend this option if you are planning to travel with your pet, as it offers a small, fenced garden.",
@@ -765,7 +765,7 @@ export const houseDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "TucanoES",
+        name: "Tucano",
         guestNumber: 5,
         location: "AAA Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "This house offers a delightful experience in the heart of Puerto Viejo with a charming wooden apartment located above an Italian bakery. The apartment features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and two A/C units, ensuring a cozy stay.<br/>    These apartments provide private spaces, including the kitchen and bathroom, offering everything you need to feel at home. For stays of 5 nights or more, we provide complimentary cleaning services, and our team will coordinate a suitable time with you during your visit.<br/>    If you have any special requests, we're happy to accommodate them whenever possible, so don't hesitate to let us know. Should you need a pack-and-play crib for your stay, please inform us in advance, and we'll ensure it's set up in your room during the cleaning process.",
@@ -804,7 +804,7 @@ export const houseDataList: HouseDataType[] = [
     },
 
     {
-        name: "PappagalloES",
+        name: "Pappagallo",
         guestNumber: 5,
         location: "AAA Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Welcome to Kalawala, a charming complex of two apartments located in the heart of Puerto Viejo. Each apartment is built entirely of wood and is situated above a delightful Italian bakery. The apartments are equipped with everything you need for a comfortable stay, including a fully equipped kitchen, two cozy bedrooms, a lovely terrace, two A/C units, and one well equipped bathroom.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.<br/>    Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.<br/>    If you require a pack - and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",

@@ -35,7 +35,43 @@ export const blogs = [
         pictures: ["", ""]
     }
 ]
-
+export const blogsES = [
+    // {
+    //     id: "1",
+    //     title: "",
+    //     text: "",
+    //     thumbnail:"https://i.imgur.com/Yqa5kBE.png",
+    //     pictures: ["", ""]
+    // },
+    {
+        id: "twodaysinpuertoviejoES",
+        title: "2 Días y Una Noche en Puerto Viejo",
+        text: "",
+        thumbnail:"https://drive.google.com/thumbnail?id=13j6FfwVMxVg9lU4SuGST8ljrVkyW7rla&sz=w1000",
+        pictures: ["", ""]
+    },
+    {
+        id: "puertoviejobyplaneES",
+        title: "Llegar a Puerto Viejo en Avión",
+        text: "",
+        thumbnail:"https://drive.google.com/thumbnail?id=1kE3Zq-IbD47bdiLkW25IKuBncif7J7YR&sz=w1000",
+        pictures: ["", ""]
+    },
+    {
+        id: "travellingtopuertoviejoES",
+        title: "Cómo llegar a Puerto Viejo desde San José",
+        text: "",
+        thumbnail:"https://drive.google.com/thumbnail?id=1JxE6lYoK9C2maxtGP9rlUp2a47Ce5C9W&sz=w1000",
+        pictures: ["", ""]
+    },
+    {
+        id: "TenHoursInPuertoES",
+        title: "Diez Horas Para Eplorar Cahuita",
+        text: "",
+        thumbnail:"https://drive.google.com/thumbnail?id=1H81sxVh2z1VmcbZvVTlhdEINmQ0tQ5Es&sz=w1000",
+        pictures: ["", ""]
+    }
+]
 
 export function getHighestId() {
     return blogs.reduce((highestId, blog) => {

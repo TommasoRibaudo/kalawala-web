@@ -14,6 +14,8 @@ import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
+import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
+import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 
 
 const ListingTucanoES = () => {
@@ -31,7 +33,7 @@ const ListingTucanoES = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.name === listing);
+    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.houseLangCode === listing);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -49,10 +51,10 @@ const ListingTucanoES = () => {
                 <meta name="description" content="This house offers a delightful experience in the heart of Puerto Viejo with a charming wooden apartment located above an Italian bakery. The apartment features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and two A/C units." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Tucano" />
             </Helmet>
-            <FixedNavigation isBlog={false}/>
+            <FixedNavigationES isBlog={false}/>
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <OtherListings listings={homesSnippet} currentListing={listing || ''} />
+                    <OtherListingsES listings={homesSnippet} currentListing={listing || ''} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ?{  order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">

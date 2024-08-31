@@ -6,7 +6,7 @@ import { HouseDataType, ListingType } from "../../../utils/types";
 
 // import Amenities from "./components/Amenities/Amenities.component";
 import { AmenityType, BlogType } from "../../../utils/types";
-import { blogs } from "../../../assets/blogs/blogs";
+import { blogsES } from "../../../assets/blogs/blogs";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ImagesContainer from "../../Listing/components/ImagesContainer/ImagesContainer.component";
 import Amenities from "../../Listing/components/Amenities/Amenities.component";
@@ -18,12 +18,14 @@ import { homesSnippet } from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
+import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
+import ListingAdES from "../Components/ListingAd/ListingAd.componentES";
 
 
 const TwoDaysInPV = () => {
     // const { blogId } = useParams();
     const blogId = 'twodaysinpuertoviejoES'
-    const blogData = blogs.find((blog) => blog.id === blogId);
+    const blogData = blogsES.find((blog) => blog.id === blogId);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -42,10 +44,10 @@ const TwoDaysInPV = () => {
                 <meta name="description" content="¿Solo tienes un par de días para visitar Puerto Viejo? ¡Nosotros también! Solo tuvimos una noche viniendo desde Tortuguero y queríamos aprovechar al máximo el tiempo que teníamos en este encantador pueblo de playa ubicado en la costa caribeña sur de Costa Rica." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/blog/twodaysinpuertoviejo" />
             </Helmet>
-            <FixedNavigation isBlog={true} />
+            <FixedNavigationES isBlog={true} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={homesSnippet} />
+                    <ListingAdES listings={homesSnippet} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
 
@@ -90,7 +92,7 @@ const TwoDaysInPV = () => {
                             Ya sea que busques aventura o descansar, Puerto Viejo tiene algo que ofrecer para todos. ¿Qué estás esperando? ¡Reserva tu viaje hoy y experimenta la magia de Puerto Viejo por ti mismo!
                         </p>
                     </div>
-                    <OtherBlogs currentBlog="twodaysinpuertoviejo" blogs={blogs} />
+                    <OtherBlogs currentBlog="twodaysinpuertoviejoES" blogs={blogsES} />
                 </Col>
             </Row>
             <ContactUs />

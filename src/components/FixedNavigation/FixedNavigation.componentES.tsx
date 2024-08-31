@@ -49,10 +49,10 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
             <Nav.Link href="HomeES#contact-us" className="navText" onClick={() => { handleLinkClick("HomeES#contact-us") }}>Contactanos</Nav.Link>
             <Nav.Link href="/twodaysinpuertoviejoES" className={`navText ${(isActive && isBlog) ? 'active' : ''}`}>Blog</Nav.Link>
           </Nav>
-        </Navbar.Collapse>
         <div className="navbar-flag">
             <LanguageSwitcher/>
         </div>
+        </Navbar.Collapse>
       </Container>
     </Navbar>
   );

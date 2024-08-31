@@ -9,6 +9,14 @@ export const LanguageSwitcher = () => {
     const englishLangUsed = !currentUrl.endsWith("ES");
 
     const handleLanguageChange = () => {
+        //if the url is HomeES, redirect to "/"
+        if (currentUrl === "/HomeES") {
+            navigate("/");
+            return;
+        } else if (currentUrl === "/") {
+            navigate("/HomeES");
+            return;
+        }
         //slice everything after # if present
         if (currentUrl.includes("#")) {
             const hashIndex = currentUrl.indexOf("#");

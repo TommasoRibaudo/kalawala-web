@@ -25,7 +25,7 @@ const ListingAd: FC<IOtherListing> = ({ listings }) => {
         dots: true,
         infinite: true,
         speed: 500,
-        slidesToShow:  windowWidth<881?2 : 4, // Adjust based on screen size
+        slidesToShow:  windowWidth<881?1 : 4, // Adjust based on screen size
         slidesToScroll: 1,
         adaptiveHeight: true, // Ensure the height of the slider adapts to its content
         nextArrow: <SampleNextArrow />,

@@ -12,7 +12,7 @@ const CallToAction = () => {
           <div className="row">
             <div className="col-md-12 text-center" >
               <p style={{fontWeight: 700, fontSize: 28}}>Check Availability and Prices</p>
-              <p>discover our discounts.</p>
+              <p>The cheapest prices online!</p>
               <div 
             className='Smoobo' 
             style={{ 

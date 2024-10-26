@@ -3,17 +3,18 @@ import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.co
 import Discover from "../../components/Discover/Discover.component";
 import OurHomes from "../../components/OurHomes/OurHomes.component";
 import CallToAction from "../../components/CallToAction/CallToAction.component";
+import Testimonial from "../../components/Testimonial/Testimonial.component";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 
 import { houseDataEngList } from '../../utils/constants';
 
-const HomeNam = () => {
+const HomeRib = () => {
 
   return (
     <div id="body">
-      NAMAITAMI PLACE HOLDER ENG
+      RIBHOLDING PLACE HOLDER ENG
       <WelcomeSlider />
       <FixedNavigation isBlog={false}/>
       <OurHomes houseDataList={houseDataEngList}/>
@@ -26,4 +27,4 @@ const HomeNam = () => {
   )
 }
 
-export default HomeNam;
+export default HomeRib;

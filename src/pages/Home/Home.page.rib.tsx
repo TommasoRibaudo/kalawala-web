@@ -9,14 +9,15 @@ import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.componen
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 
 import { houseDataEngList } from '../../utils/constants';
+import WelcomeSliderRib from "../../components/WelcomeSlider/WelcomeSlider.componentRIB";
+import FixedNavigationRib from "../../components/FixedNavigation/FixedNavigation.componentRIB";
 
 const HomeRib = () => {
 
   return (
     <div id="body">
-      RIBHOLDING PLACE HOLDER ENG
-      <WelcomeSlider />
-      <FixedNavigation isBlog={false}/>
+      <WelcomeSliderRib />
+      <FixedNavigationRib isBlog={false}/>
       <OurHomes houseDataList={houseDataEngList}/>
       <Discover />
       <CallToAction />

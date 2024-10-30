@@ -9,17 +9,20 @@ import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.componen
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 
 import { houseDataEngList } from '../../utils/constants';
+import CallToActionES from "../../components/CallToAction/CallToAction.componentES";
+import FixedNavigationRibES from "../../components/FixedNavigation/FixedNavigation.componentRIBES";
+import WelcomeSliderES from "../../components/WelcomeSlider/WelcomeSlider.componentES";
 
 const HomeRibES = () => {
 
   return (
     <div id="body">
       RIBHOLDING PLACE HOLDER ES
-      <WelcomeSlider />
-      <FixedNavigation isBlog={false}/>
+      <WelcomeSliderES />
+      <FixedNavigationRibES isBlog={false}/>
       <OurHomes houseDataList={houseDataEngList}/>
       <Discover />
-      <CallToAction />
+      <CallToActionES />
       <Portfolio />
       {/* <Testimonial /> */}
       <ContactUs />

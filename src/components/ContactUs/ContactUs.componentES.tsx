@@ -2,7 +2,7 @@ import React from "react";
 
 const ContactUsES: React.FC = () => {
   return (
-    <section id="contact-us" className="contact-us section-bg">
+    <section id="contact-usES" className="contact-us section-bg">
       <div className="container">
         <div className="row">
           {/* section title */}

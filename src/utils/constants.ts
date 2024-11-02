@@ -381,6 +381,81 @@ export const tucanoImageDescriptions: IImageDescription[] = [
         imageLink: "https://drive.google.com/thumbnail?id=1ltpPKGHG46Rl_pTpnTtewt2U3YsKwr8W&sz=w1000"
     }
 ]
+export const ribHouseDataEngList: HouseDataType[] = [
+    {
+        name: "Villa Mar",
+        guestNumber: 2,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 5,
+        houseLangCode:"VillaMar",
+        parking: false,
+        image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000",
+        amenities: [
+            {
+                name:"Private Pool, Exclusive for guests of this villa",
+                icon:"pool"
+            },
+            {
+                name: "Private Equipped Bathroom",
+                icon: "bath"
+            },
+            {
+                name: "Private Equipped Kitchen",
+                icon: "kitchen"
+            },
+            {
+                name: "2 A/C Units",
+                icon: "ac"
+            },
+            {
+                name: "Private unfenced Parking",
+                icon: "parking"
+            },
+            {
+                name: "100Mbps WiFi",
+                icon: "wifi"
+            }
+        ],
+    },
+    {
+        name: "Villa Coral",
+        guestNumber: 2,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 6,
+        houseLangCode:"VillaCoral",
+        image: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000",
+        parking: false,
+        amenities: [
+            {
+                name:"Private Pool, Exclusive for guests of this villa",
+                icon:"pool"
+            },
+            {
+                name: "Private Equipped Bathroom",
+                icon: "bath"
+            },
+            {
+                name: "Private Equipped Kitchen",
+                icon: "kitchen"
+            },
+            {
+                name: "2 A/C Units",
+                icon: "ac"
+            },
+            {
+                name: "Private unfenced Parking",
+                icon: "parking"
+            },
+            {
+                name: "100Mbps WiFi",
+                icon: "wifi"
+            }
+        ],
+    }]
 export const houseDataEngList: HouseDataType[] = [
     {
         name: "Geco",

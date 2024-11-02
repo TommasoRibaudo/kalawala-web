@@ -8,7 +8,7 @@ import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 
-import { houseDataEngList } from '../../utils/constants';
+import { houseDataEngList, ribHouseDataEngList } from '../../utils/constants';
 import WelcomeSliderRib from "../../components/WelcomeSlider/WelcomeSlider.componentRIB";
 import FixedNavigationRib from "../../components/FixedNavigation/FixedNavigation.componentRIB";
 
@@ -18,7 +18,7 @@ const HomeRib = () => {
     <div id="body">
       <WelcomeSliderRib />
       <FixedNavigationRib isBlog={false}/>
-      <OurHomes houseDataList={houseDataEngList}/>
+      <OurHomes houseDataList={ribHouseDataEngList}/>
       <Discover />
       <CallToAction />
       <Portfolio />

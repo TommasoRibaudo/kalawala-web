@@ -8,7 +8,7 @@ import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 
-import { houseDataEngList } from '../../utils/constants';
+import {ribHouseDataEngList } from '../../utils/constants';
 import CallToActionES from "../../components/CallToAction/CallToAction.componentES";
 import FixedNavigationRibES from "../../components/FixedNavigation/FixedNavigation.componentRIBES";
 import WelcomeSliderES from "../../components/WelcomeSlider/WelcomeSlider.componentES";
@@ -20,11 +20,10 @@ const HomeRibES = () => {
       RIBHOLDING PLACE HOLDER ES
       <WelcomeSliderES />
       <FixedNavigationRibES isBlog={false}/>
-      <OurHomes houseDataList={houseDataEngList}/>
+      <OurHomes houseDataList={ribHouseDataEngList}/>
       <Discover />
       <CallToActionES />
       <Portfolio />
-      {/* <Testimonial /> */}
       <ContactUs />
     </div>
   )

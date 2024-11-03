@@ -11,6 +11,7 @@ import Portfolio from "../../components/Portfolio/Portfolio.component";
 import { houseDataEngList, ribHouseDataEngList } from '../../utils/constants';
 import WelcomeSliderRib from "../../components/WelcomeSlider/WelcomeSlider.componentRIB";
 import FixedNavigationRib from "../../components/FixedNavigation/FixedNavigation.componentRIB";
+import OurHomesRIB from "../../components/OurHomes/OurHomes.componentRIB";
 
 const HomeRib = () => {
 
@@ -18,7 +19,7 @@ const HomeRib = () => {
     <div id="body">
       <WelcomeSliderRib />
       <FixedNavigationRib isBlog={false}/>
-      <OurHomes houseDataList={ribHouseDataEngList}/>
+      <OurHomesRIB houseDataList={ribHouseDataEngList}/>
       <Discover />
       <CallToAction />
       <Portfolio />

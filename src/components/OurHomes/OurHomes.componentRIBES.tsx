@@ -34,7 +34,7 @@ const OurHomesRIB = ({style, houseDataList}:IOurHomes) => {
                         <h2>Our <span className="color">Villas</span> </h2>
                         <div className="border"></div>
                     </div>
-                    {houseDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => <VillaCard guestNumber={guestNumber} name={name} image={image} houseLangCode={houseLangCode}/>)}
+                    {houseDataList.filter(houseData => houseData.houseLangCode.includes('ES')).map(({ name, guestNumber, parking, image, houseLangCode }) => <VillaCard guestNumber={guestNumber} name={name} image={image} houseLangCode={houseLangCode}/>)}
                 </div>
             </div>
         </section>

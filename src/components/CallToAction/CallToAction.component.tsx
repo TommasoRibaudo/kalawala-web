@@ -23,10 +23,9 @@ const CallToAction = () => {
             }}
             >
               <Smoobu2 />
+              <p style={{color: 'black', fontWeight: 550, fontSize: 12}}>*Showing availability for all available properties in the puerto viejo area, including properties advertised on other pages, make sure you check the name of the house and its photo before booking!</p>
             </div>
-            <p style={{fontWeight: 700, fontSize: 28, marginTop: 10}}>Got any questions?</p>
-            <p style={{fontWeight: 400, fontSize: 20}}>Contact us @ +506 8463-2276</p>
-            <p style={{fontWeight: 400, fontSize: 20}}>Also available on Whatsapp </p>
+            <p style={{fontWeight: 400, fontSize: 20, marginTop: 10}}>Contact us via Whatsapp @ +506 8463-2276</p>
           </div>
           </div>
         </div>

@@ -24,7 +24,7 @@ const CallToAction = () => {
             >
               <Smoobu2 />
             </div>
-            <p style={{fontWeight: 700, fontSize: 28}}>Got any questions?</p>
+            <p style={{fontWeight: 700, fontSize: 28, marginTop: 10}}>Got any questions?</p>
             <p style={{fontWeight: 400, fontSize: 20}}>Contact us +506 84632276</p>
           </div>
             </div>

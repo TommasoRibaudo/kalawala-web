@@ -13,8 +13,20 @@ const CallToActionES = () => {
             <div className="col-md-12 text-center" >
               <p style={{fontWeight: 400, fontSize: 28}}>Revisa la disponibilidad y precios</p>
               <p>Descubre nuestros descuentos.</p>
+              <div 
+            className='Smoobo' 
+            style={{ 
+              backgroundColor: 'rgba(245, 242, 233, 0.86)', 
+              borderRadius: '15px', 
+              padding: '5px', 
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
+            }}
+            >
               <Smoobu2 />
+              <p style={{color: 'black', fontWeight: 550, fontSize: 12}}>*Showing availability for all available properties in the puerto viejo area, including properties advertised on other pages, make sure you check the name of the house and its photo before booking!</p>
             </div>
+            <p style={{fontWeight: 400, fontSize: 20, marginTop: 10}}>Contactanos por Whhatsapp al +506 8463-2276</p>
+          </div>
           </div>
         </div>
       </div>

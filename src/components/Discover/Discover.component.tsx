@@ -1,7 +1,6 @@
 import React from 'react';
 import './Discover.style.scss';
 import { Image } from 'react-bootstrap';
-import image from "../../assets/images/about/about-second-page.jpg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faConciergeBell, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
 

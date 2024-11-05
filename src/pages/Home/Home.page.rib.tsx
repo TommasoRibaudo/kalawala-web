@@ -12,6 +12,7 @@ import { houseDataEngList, ribHouseDataEngList } from '../../utils/constants';
 import WelcomeSliderRib from "../../components/WelcomeSlider/WelcomeSlider.componentRIB";
 import FixedNavigationRib from "../../components/FixedNavigation/FixedNavigation.componentRIB";
 import OurHomesRIB from "../../components/OurHomes/OurHomes.componentRIB";
+import DiscoverRIB from "../../components/Discover/Discover.componentRIB";
 
 const HomeRib = () => {
 
@@ -20,7 +21,7 @@ const HomeRib = () => {
       <WelcomeSliderRib />
       <FixedNavigationRib isBlog={false}/>
       <OurHomesRIB houseDataList={ribHouseDataEngList}/>
-      <Discover />
+      <DiscoverRIB />
       <CallToAction />
       <Portfolio />
       {/* <Testimonial /> */}

@@ -16,19 +16,19 @@ const CallToAction = () => {
               <div 
             className='Smoobo' 
             style={{ 
-              backgroundColor: 'rgba(245, 242, 233, 0.75)', 
+              backgroundColor: 'rgba(245, 242, 233, 0.86)', 
               borderRadius: '15px', 
-              padding: '20px', 
+              padding: '5px', 
               boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
             }}
             >
               <Smoobu2 />
             </div>
             <p style={{fontWeight: 700, fontSize: 28, marginTop: 10}}>Got any questions?</p>
-            <p style={{fontWeight: 400, fontSize: 20}}>Contact us +506 84632276</p>
+            <p style={{fontWeight: 400, fontSize: 20}}>Contact us @ +506 8463-2276</p>
+            <p style={{fontWeight: 400, fontSize: 20}}>Also available on Whatsapp </p>
           </div>
-            </div>
-            
+          </div>
         </div>
       </div>
 

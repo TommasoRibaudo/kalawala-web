@@ -381,6 +381,90 @@ export const tucanoImageDescriptions: IImageDescription[] = [
         imageLink: "https://drive.google.com/thumbnail?id=1ltpPKGHG46Rl_pTpnTtewt2U3YsKwr8W&sz=w1000"
     }
 ]
+export const VillaCoralImageDescriptions: IImageDescription[] = [
+    {
+        roomType: "Private Pool",
+        roomDescription: "Exclusive for your use only.",
+        imageLink: "https://drive.google.com/thumbnail?id=1rTXsdqpCJQd-rNDma56gWuPgUiVkG4q7&sz=w1000"
+    },
+    {
+        roomType: "Living Room and Kitchen",
+        roomDescription: "We offer free cleaning services for longer reservations.",
+        imageLink: "https://drive.google.com/thumbnail?id=13FO4GX8mxrPWVvYxgxZwLSoX562YeZ6o&sz=w1000"
+    },
+    {
+        roomType: "Master Bedroom",
+        roomDescription: "King size bed, 10inches thick mattress.",
+        imageLink: "https://drive.google.com/thumbnail?id=1fbYlrrmzPPi4qUCZcCWRBZI_T-NoT_0f&sz=w1000"
+    },
+    {
+        roomType: "Living Room",
+        roomDescription: "Dedicated workspace with ethernet connection.",
+        imageLink: "https://drive.google.com/thumbnail?id=1jnHMs9RZ2W8v7QbwAUpqTahjSEiGogej&sz=w1000"
+    },
+    {
+        roomType: "Porch",
+        roomDescription: "Bed Linens always included.",
+        imageLink: "https://drive.google.com/thumbnail?id=1iampS1euhTWcvffX6G_4aUCT0tEYBiBZ&sz=w1000"
+    },
+    {
+        roomType: "Kitchen",
+        roomDescription: "Microwave, coffeemaker and blender also included.",
+        imageLink: "https://drive.google.com/thumbnail?id=162NTMOJZh68a3f1OcS3AVi85rx_-gGyQ&sz=w1000"
+    },
+    {
+        roomType: "Bathroom",
+        roomDescription: "100Mbps Free Wifi everywhere in your house.",
+        imageLink: "https://drive.google.com/thumbnail?id=1SvQcVu19OTlW4ShyWYosrgo4d9XLjpUO&sz=w1000"
+    },
+    {
+        roomType: "Livingroom",
+        roomDescription: "Don't forget about our 15% discount for every purchase at the bakery, there are menus in the house.",
+        imageLink: "https://drive.google.com/thumbnail?id=1cp4slCoNdbsJhbReAPlKkOOqpvqTDTVy&sz=w1000"
+    },
+    {
+        roomType: "Terrace And Pool",
+        roomDescription: "All the spaces shown are completely private, for you only.",
+        imageLink: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+    }
+]
+export const VillaMarImageDescriptions: IImageDescription[] = [
+    {
+        roomType: "Private Pool",
+        roomDescription: "Exclusive for your use only.",
+        imageLink: "https://drive.google.com/thumbnail?id=1hDvSUejFzrKK7Kwx_GxG_Wo4FmUMJya7&sz=w1000"
+    },
+    {
+        roomType: "Living Room and Kitchen",
+        roomDescription: "We offer cleaning services for longer reservations.",
+        imageLink: "https://drive.google.com/thumbnail?id=1uCajab8qKPf7u-uCluPMo_mWCB5Ibizd&sz=w1000"
+    },
+    {
+        roomType: "Master Bedroom",
+        roomDescription: "King size bed, 10inches thick mattress.",
+        imageLink: "https://drive.google.com/thumbnail?id=1r0sHB3CvdgpgYxDJ5ZT3GPhsROTTH2cN&sz=w1000"
+    },
+    {
+        roomType: "Kitchen",
+        roomDescription: "Microwave, coffeemaker and blender also included.",
+        imageLink: "https://drive.google.com/thumbnail?id=1yO4pIi_zhNEMUdC21MbfRPM-MYblazLt&sz=w1000"
+    },
+    {
+        roomType: "Porch",
+        roomDescription: "Bed Linens always included.",
+        imageLink: "https://drive.google.com/thumbnail?id=1iampS1euhTWcvffX6G_4aUCT0tEYBiBZ&sz=w1000"
+    },
+    {
+        roomType: "Bathroom",
+        roomDescription: "100Mbps Free Wifi everywhere in your house.",
+        imageLink: "https://drive.google.com/thumbnail?id=1SvQcVu19OTlW4ShyWYosrgo4d9XLjpUO&sz=w1000"
+    },
+    {
+        roomType: "Terrace And Pool",
+        roomDescription: "All the spaces shown are completely private, for you only.",
+        imageLink: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+    }
+]
 export const ribHouseDataEngList: HouseDataType[] = [
     {
         name: "Villa Mar",

@@ -1,6 +1,20 @@
 @use '../../../styles/mixins';
 @import  '../../../styles//styles.scss';
 
+.about .row {
+  display: flex;
+  justify-content: center; /* Centers the villas horizontally */
+  flex-wrap: wrap; /* Ensures items wrap to the next line if needed */
+}
+
+.about .col-lg-3,
+.about .col-md-6,
+.about .col-sm-6,
+.about .col-xs-12 {
+  display: flex;
+  justify-content: center;
+}
+
 .about {
     .block {
       background:#242930;

@@ -2,6 +2,7 @@ import { FC } from 'react';
 import HomeCard from './Components/HomeCard.component';
 import './OurHomes.style.scss'
 import { HouseDataType } from '../../utils/types';
+import React from 'react';
 interface IOurHomes{
     style?: any;
     houseDataList:HouseDataType[];
@@ -9,32 +10,7 @@ interface IOurHomes{
 
 const OurHomesES = ({style, houseDataList}:IOurHomes) => {
 
-    const homes = [
-        {
-            name: 'Tucano',
-            gusestNumber: 5,
-            parking: false,
-            image: "https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000"
-        },
-        {
-            name: 'Geco',
-            gusestNumber: 5,
-            parking: true,
-            image: "https://drive.google.com/thumbnail?id=1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF&sz=w1000"
-        },
-        {
-            name: 'Pappagallo',
-            gusestNumber: 5,
-            parking: false,
-            image: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000"
-        },
-        {
-            name: 'Rana',
-            gusestNumber: 5,
-            parking: true,
-            image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
-        },
-    ]
+    
     return (
         <section id="house-list" className="bg-one about section" style={style}>
             <div className="container">

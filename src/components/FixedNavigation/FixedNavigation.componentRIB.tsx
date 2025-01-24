@@ -6,14 +6,14 @@ import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from "react-router-dom";
 import { getHighestId } from "../../assets/blogs/blogs";
 import SolidBars from "../../assets/images/bars-solid.svg";
-import { ES, US } from 'country-flag-icons/react/3x2'
+import { ES } from 'country-flag-icons/react/3x2'
 import { LanguageSwitcher } from "../FlagComponent/Flag.component";
 
-interface IFixedNavigationES {
+interface IFixedNavigation {
   isBlog: boolean
 }
 
-const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
+const FixedNavigationRib = ({ isBlog }: IFixedNavigation) => {
   const [isActive, setIsActive] = useState<boolean>(true);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -35,7 +35,7 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
   return (
     <Navbar className="navigation" expand="lg" sticky="top" variant="dark" data-bs-theme="dark">
       <Container>
-        <Navbar.Brand href="/HomeES" className="d-flex align-items-center">
+        <Navbar.Brand href="HomeVillas#body" className="d-flex align-items-center">
           <img src="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" alt="logo" className="logo" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick}>
@@ -43,14 +43,14 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
         </Navbar.Toggle>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
-            <Nav.Link href="HomeES#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`}>Inicio</Nav.Link>
-            <Nav.Link href="HomeES#callToActionES" className="navText" onClick={() => { handleLinkClick("HomeES#callToActionES") }}>Disponibilidad</Nav.Link>
-            <Nav.Link href="HomeES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeES#portfolio") }}>Fotos</Nav.Link>
-            <Nav.Link href="HomeES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeES#contact-us") }}>Contactanos</Nav.Link>
-            <Nav.Link href="/twodaysinpuertoviejoES" className={`navText ${(isActive && isBlog) ? 'active' : ''}`}>Blog</Nav.Link>
+            <Nav.Link href="HomeVillas#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`}>Home</Nav.Link>
+            <Nav.Link href="HomeVillas#callToAction" className="navText" onClick={() => { handleLinkClick("HomeVillas#callToAction") }}>Availability</Nav.Link>
+            <Nav.Link href="HomeVillas#portfolio" className="navText" onClick={() => { handleLinkClick("HomeVillas#portfolio") }}>Photos</Nav.Link>
+            <Nav.Link href="HomeVillas#contact-us" className="navText" onClick={() => { handleLinkClick("HomeVillas#contact-us") }}>Contact</Nav.Link>
+            <Nav.Link href="/twodaysinpuertoviejo" className={`navText ${(isActive && isBlog) ? 'active' : ''}`}>Blog</Nav.Link>
           </Nav>
         <div className="navbar-flag">
-            <LanguageSwitcher/>
+            <LanguageSwitcher />
         </div>
         </Navbar.Collapse>
       </Container>
@@ -58,4 +58,4 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
   );
 };
 
-export default FixedNavigationES;
+export default FixedNavigationRib;

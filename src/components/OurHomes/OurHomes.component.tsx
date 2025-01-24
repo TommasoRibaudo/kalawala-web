@@ -2,6 +2,8 @@ import { FC } from 'react';
 import HomeCard from './Components/HomeCard.component';
 import './OurHomes.style.scss'
 import { HouseDataType } from '../../utils/types';
+import React from 'react';
+
 interface IOurHomes{
     style?: any;
     houseDataList:HouseDataType[];

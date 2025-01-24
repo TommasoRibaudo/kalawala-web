@@ -41,8 +41,10 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
         break;
       case "Villa Mar":
         images = VillaMarImageDescriptions;
+        break;
       case "Villa Coral":
         images = VillaCoralImageDescriptions;
+        break;
   }
 
  const imageList = images;

@@ -13,7 +13,7 @@ interface IFixedNavigationES {
   isBlog: boolean
 }
 
-const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
+const FixedNavigationRibES = ({ isBlog }: IFixedNavigationES) => {
   const [isActive, setIsActive] = useState<boolean>(true);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -36,17 +36,17 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
     <Navbar className="navigation" expand="lg" sticky="top" variant="dark" data-bs-theme="dark">
       <Container>
         <Navbar.Brand href="/HomeES" className="d-flex align-items-center">
-          <img src="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" alt="logo" className="logo" />
+          <img src="https://drive.google.com/thumbnail?id=1ffAwVfOSmHVIZEYzZ-ImppJFclZSQlpN&sz=w1000" alt="logo" className="logo" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick}>
           <img src={SolidBars} style={{ height: "25px" }} />
         </Navbar.Toggle>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
-            <Nav.Link href="HomeES#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`}>Inicio</Nav.Link>
-            <Nav.Link href="HomeES#callToActionES" className="navText" onClick={() => { handleLinkClick("HomeES#callToActionES") }}>Disponibilidad</Nav.Link>
-            <Nav.Link href="HomeES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeES#portfolio") }}>Fotos</Nav.Link>
-            <Nav.Link href="HomeES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeES#contact-us") }}>Contactanos</Nav.Link>
+            <Nav.Link href="HomeVillasES#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`}>Inicio</Nav.Link>
+            <Nav.Link href="HomeVillasES#callToActionES" className="navText" onClick={() => { handleLinkClick("HomeVillasES#callToActionES") }}>Disponibilidad</Nav.Link>
+            <Nav.Link href="HomeVillasES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeVillasES#portfolioES") }}>Fotos</Nav.Link>
+            <Nav.Link href="HomeVillasES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeVillasES#contact-usES") }}>Contactanos</Nav.Link>
             <Nav.Link href="/twodaysinpuertoviejoES" className={`navText ${(isActive && isBlog) ? 'active' : ''}`}>Blog</Nav.Link>
           </Nav>
         <div className="navbar-flag">
@@ -58,4 +58,4 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
   );
 };
 
-export default FixedNavigationES;
+export default FixedNavigationRibES;

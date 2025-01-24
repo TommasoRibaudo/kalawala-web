@@ -1,5 +1,4 @@
 import React from 'react';
-import background from '../../assets/images/backgrounds/bg-1.jpg';
 import Smoobu from '../Smoobu/Smoobu.component';
 import './CallToAction.style.scss'
 import Smoobu2 from '../Smoobu2/Smoobu2.component';
@@ -11,9 +10,10 @@ const CallToAction = () => {
         <div className="container">
           <div className="row">
             <div className="col-md-12 text-center" >
-              <p style={{fontWeight: 400, fontSize: 28}}>Check Availability and Prices</p>
-              <p>discover our discounts.</p>
+              <p style={{ fontWeight: 400, fontSize: 28 }}>Explore Availability and Prices Across All Our Properties in Puerto Viejo and Playa Chiquita.</p>
+              <p>Use the code <b>#norefundallowed</b> to enjoy a 10% discount on non-refundable reservations.</p>
               <Smoobu2 />
+              <p>Prefer to pay via bank transfer or SINPE? Book securely with us and send your deposit confirmation to <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> or via WhatsApp at <a href="https://wa.me/50684632276" target="_blank">+506 8463 2276</a> within 6 hours of making your reservation.</p>
             </div>
           </div>
         </div>

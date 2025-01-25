@@ -389,7 +389,7 @@ export const VillaCoralImageDescriptions: IImageDescription[] = [
     },
     {
         roomType: "Living Room and Kitchen",
-        roomDescription: "We offer free cleaning services for longer reservations.",
+        roomDescription: "Microwave, coffeemaker and blender also included.",
         imageLink: "https://drive.google.com/thumbnail?id=13FO4GX8mxrPWVvYxgxZwLSoX562YeZ6o&sz=w1000"
     },
     {
@@ -408,19 +408,9 @@ export const VillaCoralImageDescriptions: IImageDescription[] = [
         imageLink: "https://drive.google.com/thumbnail?id=1iampS1euhTWcvffX6G_4aUCT0tEYBiBZ&sz=w1000"
     },
     {
-        roomType: "Kitchen",
-        roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=162NTMOJZh68a3f1OcS3AVi85rx_-gGyQ&sz=w1000"
-    },
-    {
         roomType: "Bathroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
         imageLink: "https://drive.google.com/thumbnail?id=1SvQcVu19OTlW4ShyWYosrgo4d9XLjpUO&sz=w1000"
-    },
-    {
-        roomType: "Livingroom",
-        roomDescription: "Don't forget about our 15% discount for every purchase at the bakery, there are menus in the house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1cp4slCoNdbsJhbReAPlKkOOqpvqTDTVy&sz=w1000"
     },
     {
         roomType: "Terrace And Pool",
@@ -452,7 +442,7 @@ export const VillaMarImageDescriptions: IImageDescription[] = [
     {
         roomType: "Porch",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1iampS1euhTWcvffX6G_4aUCT0tEYBiBZ&sz=w1000"
+        imageLink: "https://drive.google.com/thumbnail?id=1tDBJjDp1rwG_A7ZmjHFSIQKT6FvRJyx_&sz=w1000"
     },
     {
         roomType: "Bathroom",
@@ -462,7 +452,7 @@ export const VillaMarImageDescriptions: IImageDescription[] = [
     {
         roomType: "Terrace And Pool",
         roomDescription: "All the spaces shown are completely private, for you only.",
-        imageLink: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+        imageLink: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
     }
 ]
 export const ribHouseDataEngList: HouseDataType[] = [

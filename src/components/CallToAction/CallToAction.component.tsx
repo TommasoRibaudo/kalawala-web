@@ -23,7 +23,7 @@ const CallToAction = () => {
             >
               <Smoobu2 />
             </div>
-            <p>Prefer to pay via bank transfer or SINPE? Book securely with us and send your deposit confirmation to <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> or via WhatsApp at <a href="https://wa.me/50684632276" target="_blank">+506 8463 2276</a> within 6 hours of making your reservation.</p>
+            <p style={{marginTop: 10}}>Prefer to pay via bank transfer or SINPE? Book securely with us and send your deposit confirmation to <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> or via WhatsApp at <a href="https://wa.me/50684632276" target="_blank">+506 8463 2276</a> within 6 hours of making your reservation.</p>
           </div>
           </div>
         </div>

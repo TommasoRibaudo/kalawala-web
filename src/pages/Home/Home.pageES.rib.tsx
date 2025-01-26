@@ -7,17 +7,19 @@ import FixedNavigationRibES from "../../components/FixedNavigation/FixedNavigati
 import WelcomeSliderES from "../../components/WelcomeSlider/WelcomeSlider.componentES";
 import OurHomesES from "../../components/OurHomes/OurHomes.componentES";
 import DiscoverRIBES from "../../components/Discover/Discover.componentRIBES";
+import WelcomeSliderRibES from "../../components/WelcomeSlider/WelcomeSlider.componentRIBES";
+import PortfolioRIBES from "../../components/Portfolio/Portfolio.componentRIBES";
 
 const HomeRibES = () => {
 
   return (
     <div id="body">
-      <WelcomeSliderES />
+      <WelcomeSliderRibES />
       <FixedNavigationRibES isBlog={false}/>
       <OurHomesES houseDataList={VillasDataList}/>
       <DiscoverRIBES />
       <CallToActionES />
-      <Portfolio />
+      <PortfolioRIBES />
       <ContactUs />
     </div>
   )

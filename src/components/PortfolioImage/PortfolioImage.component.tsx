@@ -2,7 +2,7 @@ import React from 'react';
 
 import requireContext from 'require-context.macro';
 import { Image } from 'react-bootstrap';
-import { gecoImageDescriptions, gecoImageDescriptionsES, IImageDescription, pappagalloImageDescriptions, pappagalloImageDescriptionsES, ranaImageDescriptions, ranaImageDescriptionsES, tucanoImageDescriptions, tucanoImageDescriptionsES, VillaMarImageDescriptions } from '../../utils/constants';
+import { gecoImageDescriptions, gecoImageDescriptionsES, IImageDescription, pappagalloImageDescriptions, pappagalloImageDescriptionsES, ranaImageDescriptions, ranaImageDescriptionsES, tucanoImageDescriptions, tucanoImageDescriptionsES, VillaCoralImageDescriptions, VillaCoralImageDescriptionsES, VillaMarImageDescriptions, VillaMarImageDescriptionsES } from '../../utils/constants';
 import { TipCard } from '../TipCard/TipCard.component';
 
 interface IPortfolioImage {
@@ -41,6 +41,9 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
         break;
       case "Villa Mar":
         images = VillaMarImageDescriptions;
+        break;
+      case "Villa Coral":
+        images = VillaCoralImageDescriptions;
   }
 
  const imageList = images;

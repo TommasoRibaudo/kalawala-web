@@ -36,7 +36,7 @@ const FixedNavigationRibES = ({ isBlog }: IFixedNavigationES) => {
     <Navbar className="navigation" expand="lg" sticky="top" variant="dark" data-bs-theme="dark">
       <Container>
         <Navbar.Brand href="/HomeES" className="d-flex align-items-center">
-          <img src="https://drive.google.com/thumbnail?id=1ffAwVfOSmHVIZEYzZ-ImppJFclZSQlpN&sz=w1000" alt="logo" className="logo" />
+          <img src="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" alt="logo" className="logo" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick}>
           <img src={SolidBars} style={{ height: "25px" }} />

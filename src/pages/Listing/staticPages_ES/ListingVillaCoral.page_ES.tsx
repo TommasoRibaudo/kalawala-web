@@ -47,7 +47,7 @@ const ListingVillaCoralES = () => {
             <Helmet>
                 <meta charSet="utf-8" />
                 <title>House Geco - Pet Friendly Home in Puerto Viejo</title>
-                <meta name="description" content="Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot." />
+                <meta name="description" content=" " />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Geco" />
             </Helmet>
             <FixedNavigationES isBlog={false} />

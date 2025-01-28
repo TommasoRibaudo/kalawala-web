@@ -1080,7 +1080,7 @@ export const VillasDataList: HouseDataType[] = [
         image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000",
         amenities: [
             {
-                name:"Private Pool, Exclusive for guests of this villa",
+                name:"Private Pool",
                 icon:"pool"
             },
             {
@@ -1106,7 +1106,7 @@ export const VillasDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Villa Mar",
+        name: "Villa MarES",
         guestNumber: 2,
         location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "",
@@ -1117,7 +1117,7 @@ export const VillasDataList: HouseDataType[] = [
         parking: false,
         amenities: [
             {
-                name:"Piscina Privada de uso Exclusivo",
+                name:"Piscina Privada",
                 icon:"pool"
             },
             {
@@ -1143,7 +1143,7 @@ export const VillasDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Villa Coral",
+        name: "Villa CoralES",
         guestNumber: 2,
         location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "",
@@ -1154,7 +1154,7 @@ export const VillasDataList: HouseDataType[] = [
         image: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000",
         amenities: [
             {
-                name:"Piscina Privada de uso Exclusivo",
+                name:"Piscina Privada",
                 icon:"pool"
             },
             {
@@ -1191,7 +1191,7 @@ export const VillasDataList: HouseDataType[] = [
         parking: false,
         amenities: [
             {
-                name:"Private Pool, Exclusive for guests of this villa",
+                name:"Private Pool",
                 icon:"pool"
             },
             {

@@ -10,14 +10,15 @@ import { homesSnippet } from "../../../utils/constants";
 import { HouseDataType, ListingType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
-import { houseDataList } from "../../../utils/constants";
+import { VillasDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
+import FixedNavigationRib from "../../../components/FixedNavigation/FixedNavigation.componentRIB";
 
 
 const ListingVillaMar = () => {
-    const listing = 'Geco'
+    const listing = 'Villa Mar'
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
     const amenities: AmenityType[] = [
         { icon: 'ac', name: '2 A/C Units' },
@@ -30,7 +31,7 @@ const ListingVillaMar = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.name === listing);
+    const houseData: HouseDataType | undefined = VillasDataList.find((house) => house.name === listing);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -44,19 +45,19 @@ const ListingVillaMar = () => {
         <div className={`listingContainer ${show && 'modal-open'}`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>House Geco - Pet Friendly Home in Puerto Viejo</title>
-                <meta name="description" content="Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/Geco" />
+                <title>Villa Mar - Home with private pool in Playa Chiquita</title>
+                <meta name="description" content="Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting." />
+                <link rel="canonical" href="https://www.reservaskalawala.com/VillaMar" />
             </Helmet>
-            <FixedNavigation isBlog={false} />
+            <FixedNavigationRib isBlog={false} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
                     <OtherListings listings={homesSnippet} currentListing={listing || ''} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">
-                        <h1 className="title">House Geco</h1>
-                        <h3 className="location">Puerto Viejo de Talamanca, Limón, Costa Rica</h3>
+                        <h1 className="title">Villa Mar</h1>
+                        <h3 className="location">Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica</h3>
                         {isScreenSmall && (
                             <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Online Now!</Button></div>)}
                     </div>
@@ -66,20 +67,19 @@ const ListingVillaMar = () => {
                     </div>
                     <div className="description">
                         <p>
-                            Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.
+                        Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting.
                             <br />
                         </p>
                         <p>
-                            Most shops and restaurants are just a short walk away, and there is a nearby jungle path that runs along the ocean and leads to natural pools in the coral and to Cocles.
+                        Stay connected with high-speed internet up to 100Mbps and take advantage of the dedicated workspace if you need to attend to tasks during your visit.
                             <br />
                         </p>
                         <p>
-                            All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.
+                        The villa, boasting a private pool, kitchen and bathroom, has been decorated by Puerto Rican Interior designer Lourdes Menéndez
                             <br />
                         </p>
                         <p>
-                            We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.
-                            <br />
+                        Relax and unwind in your own private paradise with a pristine pool just for you. The villa features a spacious main bedroom and living room, both equipped with air conditioning to escape the heat.
                         </p>
                         <p>
                             Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
@@ -90,16 +90,11 @@ const ListingVillaMar = () => {
                             <br />
                         </p>
                         <p>
-                            Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.
-                            <br />
-                        </p>
-                        <p>
-                            The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!
+                        Explore the beauty of Playa Chiquita, Punta Uva and the vibrant culture of Puerto Viejo, all while having a comfortable home base to return to. Make the most of your Costa Rican getaway with this inviting villa as your accommodation.
                             <br />
                         </p>
                         <p>
                             Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.
-                            <br />
                         </p>
                     </div>
 

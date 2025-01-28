@@ -27,22 +27,22 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
     case "Rana":
       images = ranaImageDescriptions;
       break;
-      case "TucanoES":
+    case "TucanoES":
         images = tucanoImageDescriptionsES;
-        break;
-      case "GecoES":
+      break;
+    case "GecoES":
         images = gecoImageDescriptionsES;
-        break;
-      case "PappagalloES":
+      break;
+    case "PappagalloES":
         images = pappagalloImageDescriptionsES;
-        break;
-      case "RanaES":
+      break;
+    case "RanaES":
         images = ranaImageDescriptionsES;
-        break;
-      case "Villa Mar":
+      break;
+     case "Villa Mar":
         images = VillaMarImageDescriptions;
-        break;
-      case "Villa Coral":
+      break;
+    case "Villa Coral":
         images = VillaCoralImageDescriptions;
   }
 

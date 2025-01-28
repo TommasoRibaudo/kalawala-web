@@ -1,58 +1,74 @@
 import { Col, Row, Image, } from "react-bootstrap";
 import './ImagesContainer.style.scss'
 import requireContext from 'require-context.macro';
-import { gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions } from '../../../../utils/constants';
+import { gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions } from '../../../../utils/constants';
 
-interface IImagesContainer{
+interface IImagesContainer {
   showModal?: () => void
   houseName: string
 }
 
 let imageSnippet: number[]; //this is used to change the order of the pictures in the house page
 
-const ImagesContainer = ({showModal, houseName}: IImagesContainer) => {
+const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
 
-  
+
   let images: IImageDescription[] = [];
-  
+
   switch (houseName) {
     case "Tucano":
       images = tucanoImageDescriptions;
-      imageSnippet = [2,0,5,3,8];
+      imageSnippet = [2, 0, 5, 3, 8];
       break;
     case "Geco":
       images = gecoImageDescriptions;
-      imageSnippet = [3,4,5,6,0];
+      imageSnippet = [3, 4, 5, 6, 0];
       break;
     case "Pappagallo":
       images = pappagalloImageDescriptions;
-      imageSnippet = [0,1,2,4,6];
+      imageSnippet = [0, 1, 2, 4, 6];
       break;
     case "Rana":
       images = ranaImageDescriptions;
-      imageSnippet = [2,3,5,6,7];
+      imageSnippet = [2, 3, 5, 6, 7];
       break;
-      case "TucanoES":
-        images = tucanoImageDescriptions;
-        imageSnippet = [2,0,5,3,8];
+    case "Villa Coral":
+      images = VillaCoralImageDescriptions;
+      imageSnippet = [1, 2, 3, 4, 5];
+      break;
+    case "Villa Mar":
+      images = VillaMarImageDescriptions;
+      imageSnippet = [6, 2, 3, 4, 1];
+      break;
+    case "TucanoES":
+      images = tucanoImageDescriptions;
+      imageSnippet = [2, 0, 5, 3, 8];
+      break;
+    case "GecoES":
+      images = gecoImageDescriptions;
+      imageSnippet = [3, 4, 5, 6, 0];
+      break;
+    case "PappagalloES":
+      images = pappagalloImageDescriptions;
+      imageSnippet = [0, 1, 2, 4, 6];
+      break;
+    case "RanaES":
+      images = ranaImageDescriptions;
+      imageSnippet = [2, 3, 5, 6, 7];
+      break;
+      case "Villa CoralES":
+        images = VillaCoralImageDescriptions;
+        imageSnippet = [1,2,3,4,5];
         break;
-      case "GecoES":
-        images = gecoImageDescriptions;
-        imageSnippet = [3,4,5,6,0];
-        break;
-      case "PappagalloES":
-        images = pappagalloImageDescriptions;
-        imageSnippet = [0,1,2,4,6];
-        break;
-      case "RanaES":
-        images = ranaImageDescriptions;
-        imageSnippet = [2,3,5,6,7];
-        break;
+      case "Villa MarES":
+        images = VillaMarImageDescriptions;
+        imageSnippet = [6,2,1,4,5];
+
   }
 
 
   function showAllImages() {
-    if(showModal)
+    if (showModal)
       showModal();
     console.log('show images');
   }
@@ -77,7 +93,7 @@ const ImagesContainer = ({showModal, houseName}: IImagesContainer) => {
           </Col>
         </Row>
       </div>
-      
+
     </>
   )
 }

@@ -1,6 +1,5 @@
 import React from "react";
 import OurHomesES from "../../components/OurHomes/OurHomes.componentES";
-import Testimonial from "../../components/Testimonial/Testimonial.component";
 import WelcomeSliderES from "../../components/WelcomeSlider/WelcomeSlider.componentES";
 import { houseDataList } from '../../utils/constants';
 import DiscoverES from "../../components/Discover/Discover.componentES";
@@ -8,6 +7,7 @@ import FixedNavigationES from "../../components/FixedNavigation/FixedNavigation.
 import PortfolioES from "../../components/Portfolio/Portfolio.componentES";
 import CallToActionES from "../../components/CallToAction/CallToAction.componentES";
 import ContactUsES from "../../components/ContactUs/ContactUs.componentES";
+import OurOtherHomesES from "../../components/OurOtherHomes/OurOtherHomes.ComponentES";
 
 const HomeES = () => {
 
@@ -16,6 +16,7 @@ const HomeES = () => {
       <WelcomeSliderES />
       <FixedNavigationES isBlog={false}/>
       <OurHomesES houseDataList={houseDataList}/>
+      <OurOtherHomesES/>
       <DiscoverES />
       <CallToActionES />
       <PortfolioES />

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import './Smoobu2.style.scss';
+import React from 'react';
 
 declare global {
   interface Window {

@@ -2,16 +2,16 @@ import React from 'react';
 import './Discover.style.scss';
 import { Image } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faConciergeBell, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
+import { faConciergeBell, faCalendarCheck, faCancel, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 
-const  Discover = () => {
+const Discover = () => {
   return (
     <section className="section about-2 padding-0 b-light" id="about">
-      
+
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-6 padding-0">
-            <Image className="img-responsive" src="https://drive.google.com/thumbnail?id=1RIAdGXizO6a6cCoL8ErA881olP-9YGNW&sz=w1000"  alt="" />
+            <Image className="img-responsive" src="https://drive.google.com/thumbnail?id=1RIAdGXizO6a6cCoL8ErA881olP-9YGNW&sz=w1000" alt="" />
           </div>
           <div className="col-md-6">
             <div className="content-block">
@@ -24,7 +24,7 @@ const  Discover = () => {
                 <div className="col-md-6">
                   <div className="media">
                     <div className="pull-left">
-                      <FontAwesomeIcon icon={faConciergeBell} color='#57cbcc' fontSize={"30px"}/>
+                      <FontAwesomeIcon icon={faConciergeBell} color='#57cbcc' fontSize={"30px"} />
                     </div>
                     <div className="media-body" style={{ verticalAlign: "middle" }}>
                       <h4 className="media-heading">Self Check-in</h4>
@@ -35,12 +35,37 @@ const  Discover = () => {
                 <div className="col-md-6">
                   <div className="media">
                     <div className="pull-left">
-                      <FontAwesomeIcon icon={faCalendarCheck} color='#57cbcc' fontSize={"30px"}/>
+                      <FontAwesomeIcon icon={faDollarSign} color='#57cbcc' fontSize={"30px"} />
+
+                    </div>
+                    <div className="media-body">
+                      <h4 className="media-heading">Cheapest Prices</h4>
+                      <p>And extra discounts when booking directly on the website.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="media">
+                    <div className="pull-left">
+                      <FontAwesomeIcon icon={faCancel} color='#57cbcc' fontSize={"30px"} />
+                    </div>
+                    <div className="media-body" style={{ verticalAlign: "middle" }}>
+                      <h4 className="media-heading">Non Refundable Discount</h4>
+                      <p>Include discount code #norefundallowed at checkout to get an extra 10% discount, but you won't be eligible for a cancellation refund.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="media">
+                    <div className="pull-left">
+                      <FontAwesomeIcon icon={faCalendarCheck} color='#57cbcc' fontSize={"30px"} />
 
                     </div>
                     <div className="media-body">
                       <h4 className="media-heading">Flexible Cancellation Policy</h4>
-                      <p>Refund up to one day before check-in.</p>
+                      <p>Full refund up to one day before check-in, for any reservation that does not include the #norefundallowed discount.</p>
                     </div>
                   </div>
                 </div>

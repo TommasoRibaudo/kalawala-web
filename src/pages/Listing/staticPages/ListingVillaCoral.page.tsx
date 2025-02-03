@@ -6,7 +6,7 @@ import Smoobu from "../../../components/Smoobu/Smoobu.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
 import { useParams } from "react-router-dom";
-import { homesSnippet } from "../../../utils/constants";
+import { homesSnippet, VillaSnippet } from "../../../utils/constants";
 import { HouseDataType, ListingType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
@@ -51,7 +51,7 @@ const ListingVillaCoral = () => {
             <FixedNavigationRib isBlog={false} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <OtherListings listings={homesSnippet} currentListing={listing || ''} />
+                    <OtherListings listings={VillaSnippet} currentListing={listing || ''} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">
@@ -66,19 +66,19 @@ const ListingVillaCoral = () => {
                     </div>
                     <div className="description">
                         <p>
-                        Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting.
+                            Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting.
                             <br />
                         </p>
                         <p>
-                        Stay connected with high-speed internet up to 100Mbps and take advantage of the dedicated workspace if you need to attend to tasks during your visit.
+                            Stay connected with high-speed internet up to 100Mbps and take advantage of the dedicated workspace if you need to attend to tasks during your visit.
                             <br />
                         </p>
                         <p>
-                        The villa, boasting a private pool, kitchen and bathroom, has been decorated by Puerto Rican Interior designer Lourdes Menéndez
+                            The villa, boasting a private pool, kitchen and bathroom, has been decorated by Puerto Rican Interior designer Lourdes Menéndez
                             <br />
                         </p>
                         <p>
-                        Relax and unwind in your own private paradise with a pristine pool just for you. The villa features a spacious main bedroom and living room, both equipped with air conditioning to escape the heat.
+                            Relax and unwind in your own private paradise with a pristine pool just for you. The villa features a spacious main bedroom and living room, both equipped with air conditioning to escape the heat.
                         </p>
                         <p>
                             Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
@@ -89,7 +89,7 @@ const ListingVillaCoral = () => {
                             <br />
                         </p>
                         <p>
-                        Explore the beauty of Playa Chiquita, Punta Uva and the vibrant culture of Puerto Viejo, all while having a comfortable home base to return to. Make the most of your Costa Rican getaway with this inviting villa as your accommodation.
+                            Explore the beauty of Playa Chiquita, Punta Uva and the vibrant culture of Puerto Viejo, all while having a comfortable home base to return to. Make the most of your Costa Rican getaway with this inviting villa as your accommodation.
                             <br />
                         </p>
                         <p>

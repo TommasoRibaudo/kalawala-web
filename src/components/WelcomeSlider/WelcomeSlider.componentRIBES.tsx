@@ -9,7 +9,7 @@ const WelcomeSliderRibES = () => {
       <div className = "block" >
         <h1>VILLAS MAR DE CORAL</h1>
         <p id="short-description">Villas completamente equipadas con Piscina Privada, cerca de Playa Chiquita, Puerto Viejo.</p>
-        <Button variant="outline-light" className='btn-transparent' href="HomeES#callToActionES">Reservá Ahora - Los precios más barato!</Button> {/*TODO CHANGE HREF*/}
+        <Button variant="outline-light" className='btn-transparent' href="homeVillasES#callToActionES">Reservá Ahora - Los precios más barato!</Button> {/*TODO CHANGE HREF*/}
         <br />
       </div >
     </section > 

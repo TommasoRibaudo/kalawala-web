@@ -9,6 +9,7 @@ import OurHomesES from "../../components/OurHomes/OurHomes.componentES";
 import DiscoverRIBES from "../../components/Discover/Discover.componentRIBES";
 import WelcomeSliderRibES from "../../components/WelcomeSlider/WelcomeSlider.componentRIBES";
 import PortfolioRIBES from "../../components/Portfolio/Portfolio.componentRIBES";
+import OurOtherHomesRIBES from "../../components/OurOtherHomes/OurOtherHomes.ComponentRIBES";
 
 const HomeRibES = () => {
 
@@ -17,6 +18,7 @@ const HomeRibES = () => {
       <WelcomeSliderRibES />
       <FixedNavigationRibES isBlog={false}/>
       <OurHomesES houseDataList={VillasDataList}/>
+      <OurOtherHomesRIBES/>
       <DiscoverRIBES />
       <CallToActionES />
       <PortfolioRIBES />

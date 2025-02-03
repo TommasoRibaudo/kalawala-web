@@ -28,7 +28,7 @@ const OtherListingsES: FC<IOtherListing> = ({ currentListing, listings }) => {
                 <div className={`${windowWidth <= 1199 ? 'hstack' : 'vstack'} gap-5 subCont`}>
                     {listings.map(({ name, mainImage }) => {
                         return name + 'ES' !== currentListing ? ( //TODO do bootsrtap thing tomake change row/column
-                            <div style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { naviagate(`/${name}ES`) }}>
+                            <div style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { naviagate(`/${name.replace(/\s/g, "")}ES`) }}>
                                 <div className="name">{name}</div>
                             </div>
                         ) : null

@@ -28,7 +28,7 @@ figure {
 }
 
 a {
-  color: $light;
+  color: $kalawala-opaque-beige;
   transition: all .3s ease-in 0s;
 }
 
@@ -66,6 +66,12 @@ a:hover {
   &:focus {
     color: #ddd;
   }
+}
+.btn-darker {
+  background-color: $kalawala-dark-green;
+  color: $light;
+  padding: 10px 30px;
+  border-radius: 0;
 }
 
 
@@ -157,11 +163,16 @@ a:hover {
 }
 
 .bg-one {
-  background-color: $primary-bg;
+  background-color: $primary-bg;   
 }
 
-.bg-dark {
-  background: #242930;
+.b-dark {
+  background: $kalawala-dark-green;
+}
+.b-light {
+  background: $kalawala-light-cream; //backround for discover puerto viejo section
+  background-image: linear-gradient(to top right, var(--kalawala-opaque-beige) .0001%, var(--kalawala-light-cream) 50%, var(--kalawala-light-cream) 100%);
+   
 }
 
 .parallax-section {
@@ -386,10 +397,10 @@ a:hover {
     text-transform: capitalize;
     font-weight: 700;
     font-size: 38px;
-    color: $light;
+    color: $kalawala-opaque-beige;
 
     span {
-      color: $primary-color;
+      color: $kalawala-vivid-beige;
     }
   }
 

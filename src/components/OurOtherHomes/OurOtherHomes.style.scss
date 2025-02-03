@@ -1,0 +1,51 @@
+.our-other-homes-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 2rem; // Added bottom margin
+
+  .section-title {
+    width: 100%;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+  }
+
+  // Flexbox to align the two sections side by side
+  .sections-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px; // Adjust as needed
+    gap: 40px; // Space between sections
+  }
+
+  .section {
+    cursor: pointer;
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px; // Space between cards
+    }
+  }
+
+  // Responsive design: Stack sections on smaller screens
+  @media (max-width: 768px) {
+    .sections-wrapper {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}

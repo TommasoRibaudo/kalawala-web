@@ -23,6 +23,16 @@ export const homesSnippet:ListingType[] = [
         mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
     },
 ]
+export const VillaSnippet:ListingType[] = [
+    {
+        name: 'Villa Mar',
+        mainImage: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
+    },
+    {
+        name: 'Villa Coral',
+        mainImage: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
+    }
+]
 export const gecoImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Baño",

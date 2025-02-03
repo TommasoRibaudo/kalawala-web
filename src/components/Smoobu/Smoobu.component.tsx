@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './Smoobu.style.scss';
+import React from 'react';
 declare global {
   interface Window {
     BookingToolIframe: {
@@ -55,10 +56,19 @@ function Smoobu({ homeCode }: ISmoobu) {
   }
 
   return (
-    <div key={key} id="apartmentIframeAll">
-      {/* Placeholder for the Smoobu Booking Tool */}
+    <div style={{ textAlign: "center" }}>
+      <p style={{ color: 'black', fontWeight: 550, fontSize: 12 }}>
+        Add Discount code: <strong>#norefundallowed</strong> Reservation becomes Non Refundable / Reservación no tiene reembolso
+      </p>
+      <div key={key} id="apartmentIframeAll">
+        {/* Placeholder for the Smoobu Booking Tool */}
+      </div>
+      <p style={{ color: 'black', fontWeight: 550, fontSize: 12 }}>
+        Add Discount code: <strong>#norefundallowed</strong> Reservation becomes Non Refundable / Reservación no tiene reembolso
+      </p>
     </div>
   );
+
 }
 
 export default Smoobu;

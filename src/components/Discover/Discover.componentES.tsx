@@ -2,16 +2,16 @@ import React from 'react';
 import './Discover.style.scss';
 import { Image } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faConciergeBell, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
+import { faConciergeBell, faCalendarCheck, faCancel, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 
-const  DiscoverES = () => {
+const DiscoverES = () => {
   return (
     <section className="section about-2 padding-0 b-light" id="about">
-      
+
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-6 padding-0">
-            <Image className="img-responsive" src="https://drive.google.com/thumbnail?id=1RIAdGXizO6a6cCoL8ErA881olP-9YGNW&sz=w1000"  alt="" />
+            <Image className="img-responsive" src="https://drive.google.com/thumbnail?id=1RIAdGXizO6a6cCoL8ErA881olP-9YGNW&sz=w1000" alt="" />
           </div>
           <div className="col-md-6">
             <div className="content-block">
@@ -24,7 +24,7 @@ const  DiscoverES = () => {
                 <div className="col-md-6">
                   <div className="media">
                     <div className="pull-left">
-                      <FontAwesomeIcon icon={faConciergeBell} color='#57cbcc' fontSize={"30px"}/>
+                      <FontAwesomeIcon icon={faConciergeBell} color='#57cbcc' fontSize={"30px"} />
                     </div>
                     <div className="media-body" style={{ verticalAlign: "middle" }}>
                       <h4 className="media-heading">Check-in Automatico</h4>
@@ -35,12 +35,36 @@ const  DiscoverES = () => {
                 <div className="col-md-6">
                   <div className="media">
                     <div className="pull-left">
-                      <FontAwesomeIcon icon={faCalendarCheck} color='#57cbcc' fontSize={"30px"}/>
+                      <FontAwesomeIcon icon={faDollarSign} color='#57cbcc' fontSize={"30px"} />
+                    </div>
+                    <div className="media-body">
+                      <h4 className="media-heading">Precios Más Económicos</h4>
+                      <p>Y descuentos adicionales al reservar directamente en el sitio web.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="media">
+                    <div className="pull-left">
+                      <FontAwesomeIcon icon={faCancel} color='#57cbcc' fontSize={"30px"} />
+                    </div>
+                    <div className="media-body" style={{ verticalAlign: "middle" }}>
+                      <h4 className="media-heading">Descuento No Reembolsable</h4>
+                      <p>Incluya el código de descuento #norefundallowed al finalizar la compra para obtener un 10% de descuento adicional, pero no será elegible para un reembolso por cancelación.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="media">
+                    <div className="pull-left">
+                      <FontAwesomeIcon icon={faCalendarCheck} color='#57cbcc' fontSize={"30px"} />
 
                     </div>
                     <div className="media-body">
-                      <h4 className="media-heading">Politica de cancelacion flexible</h4>
-                      <p>Devolución hasta un día antes del check-in.</p>
+                      <h4 className="media-heading">Política de Cancelación Flexible</h4>
+                      <p>Reembolso completo hasta un día antes del check-in, para cualquier reserva que no incluya el descuento #norefundallowed.</p>
                     </div>
                   </div>
                 </div>

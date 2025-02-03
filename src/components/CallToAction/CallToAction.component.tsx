@@ -22,6 +22,7 @@ const CallToAction = () => {
             }}
             >
               <Smoobu2 />
+              <p style={{ color: 'black', fontWeight: 550, fontSize: 12 }}>*Showing availability for all available properties in the puerto viejo area, including properties advertised on other pages, make sure you check the name of the house and its photo before booking!</p>
             </div>
             <p style={{marginTop: 10}}>Prefer to pay via bank transfer or SINPE? Book securely with us and send your deposit confirmation to <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> or via WhatsApp at <a href="https://wa.me/50684632276" target="_blank">+506 8463 2276</a> within 6 hours of making your reservation.</p>
           </div>

@@ -9,6 +9,7 @@ import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.componen
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 
 import { houseDataEngList } from '../../utils/constants';
+import OurOtherHomes from "../../components/OurOtherHomes/OurOtherHomes.component";
 
 const Home = () => {
 
@@ -17,6 +18,7 @@ const Home = () => {
       <WelcomeSlider />
       <FixedNavigation isBlog={false}/>
       <OurHomes houseDataList={houseDataEngList}/>
+      <OurOtherHomes/>
       <Discover />
       <CallToAction />
       <Portfolio />

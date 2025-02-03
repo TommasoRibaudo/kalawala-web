@@ -52,7 +52,7 @@ html,
 
         .heading {
             height: 100px;
-            @media (max-width: 804px) {
+            @media (max-width: 992px) {
                 height: fit-content;
     
             }
@@ -63,7 +63,7 @@ html,
             // height: 113px;
             // left: 360px;
             // top: 11px;
-            color: rgba(255, 255, 255, 1);
+            color: $kalawala-text-gray; 
             font-family: 'sourcesanspro', sans-serif;
             padding: 10px 0 0 0; // font-style: normal;
             margin: 0;
@@ -76,17 +76,28 @@ html,
             // height: 113px;
             // left: 360px;
             // top: 11px;
-            color: rgba(255, 255, 255, 1);
+            color: $kalawala-text-gray;
             font-family: 'sourcesanspro', sans-serif;
             // margin: 0;
             // font-style: normal;
             // font-size: 24px;
             // font-weight: 400;
         }
+        
+        .button-hold {
+            height: 50px;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            @media (max-width: 992) {
+                height: fit-content;
+    
+            }
+        }
 
         .pictures {
             height: 400px;
-            background-color: rgb(255, 255, 255);
+            background-color: $kalawala-text-gray;
             // margin-bottom: 25px;
         }
 
@@ -100,7 +111,7 @@ html,
         .description {
             // height: 500px;
             // background-color: rgb(21, 199, 212);
-            color: white;
+            color:  $kalawala-text-gray;
             font-size: 20px;
             font-family: sans-serif;
         }

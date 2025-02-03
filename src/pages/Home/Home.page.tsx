@@ -8,13 +8,17 @@ import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 
+import { houseDataEngList } from '../../utils/constants';
+import OurOtherHomes from "../../components/OurOtherHomes/OurOtherHomes.component";
+
 const Home = () => {
 
   return (
     <div id="body">
       <WelcomeSlider />
       <FixedNavigation isBlog={false}/>
-      <OurHomes />
+      <OurHomes houseDataList={houseDataEngList}/>
+      <OurOtherHomes/>
       <Discover />
       <CallToAction />
       <Portfolio />

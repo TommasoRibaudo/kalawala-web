@@ -2,7 +2,6 @@
 @import  '../../styles/styles.scss';
 
 .navigation {
-  background-color: #1d2024;
   width: 100%;
   z-index: 99;
   margin-bottom: 0;
@@ -19,7 +18,9 @@
   .navMenu{
     .navText {
       font-size: 16px;
-      color: #737f8a;
+      color: $kalawala-text-gray;
+      color: var(--kalawala-light-cream); /* Color del texto principal */
+      text-shadow: 1px 1px 2px var(--kalawala-darker-green); /* Sombra de texto */
       &.active {
         color: $primary-color;
       }
@@ -29,6 +30,24 @@
     }
   }
 }
+.navbar-flag {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
 
+  svg {
+    width: 32px; /* Adjust the size as needed */
+    height: 24px; /* Adjust the height proportionally */
+  }
+}
 
+@media (max-width: 991.98px) {
+  .navbar-flag {
+    right: 10px; /* Adjust the position for mobile */
+   // margin-top: 25px;
+  }
+}
 

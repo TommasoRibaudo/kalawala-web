@@ -21,11 +21,12 @@
   }
   h2 {
     font-size: 30px;
+    color:$kalawala-text-gray;
   }
 
   p {
     font-family: "Quattrocento Sans", sans-serif;
-    color: #737f8a;
+    color: $kalawala-text-gray  !important;
     font-size: 14px;
 }
 }

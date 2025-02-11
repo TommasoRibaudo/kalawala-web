@@ -1122,7 +1122,7 @@ export const VillasDataList: HouseDataType[] = [
         description: "",
         neighborhood: "",
         houseCode: 5,
-        houseLangCode:"VillaMarES",
+        houseLangCode:"Villa Mar",
         image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000",
         parking: false,
         amenities: [
@@ -1159,7 +1159,7 @@ export const VillasDataList: HouseDataType[] = [
         description: "",
         neighborhood: "",
         houseCode: 6,
-        houseLangCode:"VillaCoralES",
+        houseLangCode:"Villa Coral",
         parking: false,
         image: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000",
         amenities: [
@@ -1226,4 +1226,118 @@ export const VillasDataList: HouseDataType[] = [
             }
         ],
     }   
+]
+export const NamDataList: HouseDataType[] = [
+    {
+        name: "Areka",
+        guestNumber: 2,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 7,
+        houseLangCode:"Areka",
+        parking: false,
+        image: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000",
+        amenities: [
+            {
+                name: "Baño Privado Equipado",
+                icon: "bath"
+            },
+            {
+                name: "Cocina Privada Equipada",
+                icon: "kitchen"
+            },
+            {
+                name: "A/C",
+                icon: "ac"
+            },
+            {
+                name: "100Mbps WiFi",
+                icon: "wifi"
+            },
+            {
+                name: "Parqueo Privado Externo",
+                icon: "parking"
+            },
+            {
+                name: "Pet Friendly",
+                icon: "pet"
+            }
+        ],
+    },
+    {
+        name: "Plumeria",
+        guestNumber: 2,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 8,
+        houseLangCode:"Plumeria",
+        image: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000",
+        parking: false,
+        amenities: [
+            {
+                name:"Piscina Privada",
+                icon:"pool"
+            },
+            {
+                name: "Baño Privado Equipado",
+                icon: "bath"
+            },
+            {
+                name: "Cocina Privada Equipada",
+                icon: "kitchen"
+            },
+            {
+                name: "A/C",
+                icon: "ac"
+            },
+            {
+                name: "Parqueo Privado Encerrado",
+                icon: "parking"
+            },
+            {
+                name: "100Mbps WiFi",
+                icon: "wifi"
+            }
+        ],
+    },
+    {
+        name: "Giulia",
+        guestNumber: 2,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 9,
+        houseLangCode:"Giulia",
+        parking: false,
+        image: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000",
+        amenities: [
+            {
+                name:"Piscina Privada",
+                icon:"pool"
+            },
+            {
+                name: "Baño Privado Equipado",
+                icon: "bath"
+            },
+            {
+                name: "Cocina Privada Equipada",
+                icon: "kitchen"
+            },
+            {
+                name: "A/C",
+                icon: "ac"
+            },
+            {
+                name: "Parqueo Privado no Encerrado",
+                icon: "parking"
+            },
+            {
+                name: "100Mbps WiFi",
+                icon: "wifi"
+            }
+        ],
+    },
+    
 ]

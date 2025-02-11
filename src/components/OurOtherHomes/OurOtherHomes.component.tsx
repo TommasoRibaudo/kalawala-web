@@ -23,7 +23,7 @@ const OurOtherHomes = () => {
       <div className="sections-wrapper">
         {/* Left Section - Villas */}
         <div className="section" onClick={handleClick}>
-          <h2>Private Pool Luxury Villas in Playa Chiquita, Puerto Viejo.</h2>
+        <p>Private Pool Luxury Villas in Playa Chiquita, Puerto Viejo.</p>
           <div className="cards-container">
             <OtherHomesCard guestNumber={2} name="Villa Mar" image="https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000" />
             <OtherHomesCard guestNumber={2} name="Villa Coral" image="https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000" />
@@ -32,7 +32,7 @@ const OurOtherHomes = () => {
 
         {/* Right Section - Coming Soon */}
         <div className="section">
-          <h2>Casitas Namaitami Coming Soon...</h2>
+        <p>Casitas Namaitami Coming Soon...</p>
         </div>
       </div>
     </div>

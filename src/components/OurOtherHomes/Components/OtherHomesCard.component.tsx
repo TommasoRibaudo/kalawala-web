@@ -23,7 +23,6 @@ const OtherHomesCard: FC<IOtherHomesCard> = ({ guestNumber, name, image }) => {
                         <FontAwesomeIcon icon={faUser} />
                         <span>X{guestNumber}</span>
                     </div>
-                    <FontAwesomeIcon icon={faSwimmingPool} />
                     <FontAwesomeIcon icon={faSnowflake} />
                     <FontAwesomeIcon icon={faUtensils} />
                     <FontAwesomeIcon icon={faWifi} />

@@ -23,7 +23,7 @@ const OurOtherHomesRIB = () => {
       <div className="sections-wrapper">
         {/* Left Section - Villas */}
         <div className="section" onClick={handleClick}>
-          <h2>Like Nothing Else in Puerto Viejo Centre!</h2>
+          <p>Like Nothing Else in Puerto Viejo Centre!</p>
           <div className="cards-container">
             <OtherHomesCard guestNumber={5} name="Casa Tucano" image="https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000" />
             <OtherHomesCard guestNumber={5} name="Casa Geco" image="https://drive.google.com/thumbnail?id=1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF&sz=w1000" />
@@ -32,7 +32,7 @@ const OurOtherHomesRIB = () => {
 
         {/* Right Section - Coming Soon */}
         <div className="section">
-          <h2>Casitas Namaitami Coming Soon...</h2>
+        <p>Casitas Namaitami Coming Soon...</p>
         </div>
       </div>
     </div>

@@ -1,23 +1,23 @@
 import React from "react";
 import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
-import Discover from "../../components/Discover/Discover.component";
-import OurHomes from "../../components/OurHomes/OurHomes.component";
+import DiscoverNam from "../../components/Discover/Discover.componentNam";
+import OurHomesNam from "../../components/OurHomes/OurHomes.componentNam";
 import CallToAction from "../../components/CallToAction/CallToAction.component";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
-import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
+import WelcomeSliderNam from "../../components/WelcomeSlider/WelcomeSlider.componentNam";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 
-import { houseDataEngList } from '../../utils/constants';
+import { NamDataList } from '../../utils/constants';
+import FixedNavigationNam from "../../components/FixedNavigation/FixedNavigation.componentNam";
 
 const HomeNam = () => {
 
   return (
     <div id="body">
-      NAMAITAMI PLACE HOLDER ENG
-      <WelcomeSlider />
-      <FixedNavigation isBlog={false}/>
-      <OurHomes houseDataList={houseDataEngList}/>
-      <Discover />
+      <WelcomeSliderNam />
+      <FixedNavigationNam isBlog={false}/>
+      <OurHomesNam houseDataList={NamDataList}/>
+      <DiscoverNam />
       <CallToAction />
       <Portfolio />
       {/* <Testimonial /> */}

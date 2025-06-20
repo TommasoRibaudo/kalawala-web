@@ -13,7 +13,11 @@ interface IFixedNavigation {
   isBlog: boolean
 }
 
+<<<<<<< Updated upstream
 const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
+=======
+const FixedNavigationNamES = ({ isBlog }: IFixedNavigation) => {
+>>>>>>> Stashed changes
   const [isActive, setIsActive] = useState<boolean>(true);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -58,4 +62,8 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
   );
 };
 
+<<<<<<< Updated upstream
 export default FixedNavigation;
+=======
+export default FixedNavigationNamES;
+>>>>>>> Stashed changes

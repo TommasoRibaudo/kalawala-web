@@ -35,7 +35,11 @@ const FixedNavigationNam = ({ isBlog }: IFixedNavigation) => {
   return (
     <Navbar className="navigation" expand="lg" sticky="top" variant="dark" data-bs-theme="dark">
       <Container>
+<<<<<<< Updated upstream
         <Navbar.Brand href="/#body" className="d-flex align-items-center">
+=======
+        <Navbar.Brand href="HomeNam#body" className="d-flex align-items-center">
+>>>>>>> Stashed changes
           <img src="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" alt="logo" className="logo" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick}>
@@ -44,9 +48,15 @@ const FixedNavigationNam = ({ isBlog }: IFixedNavigation) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
             <Nav.Link href="HomeNam#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`}>Home</Nav.Link>
+<<<<<<< Updated upstream
             <Nav.Link href="HomeNam#callToAction" className="navText" onClick={() => { handleLinkClick("#callToAction") }}>Availability</Nav.Link>
             <Nav.Link href="HomeNam#portfolio" className="navText" onClick={() => { handleLinkClick("#portfolio") }}>Photos</Nav.Link>
             <Nav.Link href="HomeNam#contact-us" className="navText" onClick={() => { handleLinkClick("#contact-us") }}>Contact</Nav.Link>
+=======
+            <Nav.Link href="/#callToAction" className="navText" onClick={() => { handleLinkClick("#callToAction") }}>Availability</Nav.Link>
+            <Nav.Link href="/#portfolio" className="navText" onClick={() => { handleLinkClick("#portfolio") }}>Photos</Nav.Link>
+            <Nav.Link href="/#contact-us" className="navText" onClick={() => { handleLinkClick("#contact-us") }}>Contact</Nav.Link>
+>>>>>>> Stashed changes
             <Nav.Link href="/twodaysinpuertoviejo" className={`navText ${(isActive && isBlog) ? 'active' : ''}`}>Blog</Nav.Link>
           </Nav>
         <div className="navbar-flag">

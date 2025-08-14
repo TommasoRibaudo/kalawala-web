@@ -35,7 +35,6 @@ const NamCard: FC<IHomeCard> = ({ guestNumber, name, image, houseLangCode }) => 
                             <FontAwesomeIcon icon={faUser} fontSize={"18x"} style={{ margin: '2px 4px 2px 2px' }} />
                             <b className="highlight" style={{ fontSize: '18px' }}>X{guestNumber}</b>
                         </div>
-                        <FontAwesomeIcon icon={faSwimmingPool} fontSize={"20px"} style={{ marginRight: '6px' }} />
                         <FontAwesomeIcon icon={faSnowflake} fontSize={"20px"} style={{ marginRight: '6px' }} />
                         <FontAwesomeIcon icon={faUtensils} fontSize={"20px"} style={{ marginRight: '6px' }} />
                         <FontAwesomeIcon icon={faWifi} fontSize={"20px"} />

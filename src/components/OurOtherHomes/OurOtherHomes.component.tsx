@@ -30,32 +30,21 @@ const OurOtherHomes = () => {
       <div className="sections-wrapper">
         {/* Left Section - Villas */}
         <div className="section" onClick={handleClick}>
-<<<<<<< Updated upstream
-        <p>Private Pool Luxury Villas in Playa Chiquita, Puerto Viejo.</p>
-=======
           <h2>Private Pool Luxury Villas in Playa Chiquita, Puerto jo.</h2>
->>>>>>> Stashed changes
           <div className="cards-container">
             <OtherHomesCardRib guestNumber={2} name="Villa Mar" image="https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000" />
-            <OtherHomesCard guestNumber={2} name="Villa Coral" image="https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000" />
+            <OtherHomesCardRib guestNumber={2} name="Villa Coral" image="https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000" />
           </div>
         </div>
 
         {/* Right Section - Coming Soon */}
-<<<<<<< Updated upstream
-        <div className="section">
-        <p>Casitas Namaitami Coming Soon...</p>
-        </div>
-=======
         <div className="section" onClick={handleClickNam}>
           <h2>Private Retreat in Playa Chiquita, Puerto Viejo</h2>
           <div className="cards-container">
-          <OtherHomesCard guestNumber={2} name="Areka" image="https://drive.google.com/thumbnail?id=1WhqgYtaq3igaScss30mUr9Vm9xF67Sxn&sz=w1000" />
           <OtherHomesCard guestNumber={2} name="Plumeria" image="https://drive.google.com/thumbnail?id=1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-&sz=w1000" />
           <OtherHomesCard guestNumber={4} name="Giulia" image="https://drive.google.com/thumbnail?id=1v3hAHbAjvFf9CYaJx7IV8JqTbDKK__8S&sz=w1000" />
           </div>
        </div>
->>>>>>> Stashed changes
       </div>
     </div>
   );

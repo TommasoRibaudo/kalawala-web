@@ -2,7 +2,6 @@ import React, { FC } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSnowflake, faUtensils, faWifi, faUser, faParking } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
-
 import './HomeCard.style.scss'
 
 interface IHomeCard {
@@ -39,7 +38,7 @@ const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangC
                         <FontAwesomeIcon icon={faSnowflake} fontSize={"20px"} style={{ marginRight: '6px' }} />
                         <FontAwesomeIcon icon={faUtensils} fontSize={"20px"} style={{ marginRight: '6px' }} />
                         <FontAwesomeIcon icon={faWifi} fontSize={"20px"} />
-                        {parking && <FontAwesomeIcon icon={faParking} fontSize={"20px"} style={{ marginLeft: '6px' }} />}
+                        <FontAwesomeIcon icon={faParking} fontSize={"20px"} style={{ marginLeft: '6px' }} />
                     </div>
                 </div>
             </div>

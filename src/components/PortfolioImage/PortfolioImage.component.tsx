@@ -2,7 +2,7 @@ import React from 'react';
 
 import requireContext from 'require-context.macro';
 import { Image } from 'react-bootstrap';
-import { gecoImageDescriptions, gecoImageDescriptionsES, IImageDescription, pappagalloImageDescriptions, pappagalloImageDescriptionsES, ranaImageDescriptions, ranaImageDescriptionsES, tucanoImageDescriptions, tucanoImageDescriptionsES, VillaCoralImageDescriptions, VillaCoralImageDescriptionsES, VillaMarImageDescriptions, VillaMarImageDescriptionsES } from '../../utils/constants';
+import { ArekaImageDescriptions, PlumeriaImageDescriptions, GiuliaImageDescriptions, gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions } from '../../utils/constants';
 import { TipCard } from '../TipCard/TipCard.component';
 
 interface IPortfolioImage {
@@ -27,39 +27,39 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
     case "Rana":
       images = ranaImageDescriptions;
       break;
-    case "TucanoES":
-        images = tucanoImageDescriptionsES;
       break;
-    case "GecoES":
-        images = gecoImageDescriptionsES;
-      break;
-    case "PappagalloES":
-        images = pappagalloImageDescriptionsES;
-      break;
-    case "RanaES":
-        images = ranaImageDescriptionsES;
-      break;
-     case "Villa Mar":
-        images = VillaMarImageDescriptions;
+    case "Villa Mar":
+      images = VillaMarImageDescriptions;
       break;
     case "Villa Coral":
-        images = VillaCoralImageDescriptions;
+      images = VillaCoralImageDescriptions;
+      break;
+    case "Areka":
+      images = ArekaImageDescriptions;
+      break;
+    case "Plumeria":
+      images = PlumeriaImageDescriptions;
+      break;
+    case "Giulia":
+      images = GiuliaImageDescriptions;
+      break;
+   
   }
 
- const imageList = images;
+  const imageList = images;
   return (
     <div className="filtr-item row">
-      {imageList.map(( image: any) => {
+      {imageList.map((image: any) => {
         return (
-        <div key={image} className="portfolio-block col-lg-4 col-md-6">
+          <div key={image} className="portfolio-block col-lg-4 col-md-6">
             <Image
               loading='lazy'
               key={image} src={image.imageLink} alt={`Image ${image + 1}`} fluid />
-              {image.roomType && 
-              <TipCard 
-                roomType={image.roomType} 
-                roomDescription={image.roomDescription} 
-                folderName={folderName}/>}
+            {image.roomType &&
+              <TipCard
+                roomType={image.roomType}
+                roomDescription={image.roomDescription}
+                folderName={folderName} />}
           </div>
         )
       })}

@@ -16,10 +16,11 @@ const DiscoverNam = () => {
           <div className="col-md-6">
             <div className="content-block">
               <h2>Discover Puerto Viejo from the comfort of our homes.</h2>
-              <p>Reservas Kalawala offers 4 remodeled homes, <b>with fully equipped, private kitchen and bathroom</b>. Each house has 2 bedrooms and <b>2 Air Conditioning units</b>.</p>
-              <p>Located in the center of Puerto Viejo, all the bars and restaurants are within <b>walking distance</b>. Cocles beach can be reached by car in 2 minutes, and there are closeby bike and motorbike rentals so that also Punta Uva, Cahuita and Manzanillo are within reach, even without a car!</p>
-              <p><b>Working from home?</b> We offer <b>free WIFI</b>, with a maximum speed of <b>100Mbps</b>. We stipulated two different contracts with our internet provider, so your internet connection will be shared between fewer devices, achieving less latency during meetings.</p>
-              <p><b>Pet Friendly!</b> In all our spaces. Casa Rana and Casa Gecko are the perfect options for your pet, as they come with a garden. But a small house pet could comfortably stay in the other houses too!</p>
+              <p>At Casitas Namaitami, you’ll find two charming private retreats for couples and a spacious house for up to 4 guests all with a <b>fully equipped private kitchen and bathroom</b>. 
+              Each home features a cozy bedroom and <b>air conditioning</b> for your comfort.</p> 
+              <p>Nestled in the heart of Playa Chiquita, we’re just minutes from the stunning beaches of Punta Uva and Cocles, and only a <b>short stroll to Playa Chiquita</b> itself. Bike rentals are close by, making it easy to explore the coastline, no car needed!</p>
+               <p><b>Need to work remotely?</b> Stay connected with our <b>free high-speed Wi-Fi</b>, reaching up to <b>100 Mbps</b>. With two separate internet contracts, our network is shared among fewer devices, giving you smoother video calls and faster browsing.</p> 
+               <p><b>Driving an electric car?</b> We’ve got you covered with charging outlets right at your parking spot. Each house has its own private space for one vehicle. While the parking is open-air, our neighborhood is quiet, safe, and wonderfully peaceful.</p>
               <div className="row">
                 <div className="col-md-6">
                   <div className="media">

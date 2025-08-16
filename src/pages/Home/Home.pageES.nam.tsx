@@ -14,7 +14,6 @@ const HomeNamES = () => {
 
   return (
     <div id="body">
-      NAMAITAMI PLACE HOLDER ES
       <WelcomeSliderNamES />
       <FixedNavigation isBlog={false}/>
       <OurHomes houseDataList={houseDataEngList}/>

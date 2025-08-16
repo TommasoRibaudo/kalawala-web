@@ -6,7 +6,7 @@ import OtherHomesCardRib from './Components/OtherHomesCard.componentRib';
 
 import '../OurHomes/OurHomes.style.scss';
 
-const OurOtherHomes = () => {
+const OurOtherHomesNam = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -51,4 +51,4 @@ const OurOtherHomes = () => {
   );
 };
 
-export default OurOtherHomes;
+export default OurOtherHomesNam;

@@ -1384,80 +1384,6 @@ export const VillasDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Villa MarES",
-        guestNumber: 2,
-        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
-        description: "",
-        neighborhood: "",
-        houseCode: 5,
-        houseLangCode: "Villa Mar",
-        image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000",
-        parking: false,
-        amenities: [
-            {
-                name: "Piscina Privada",
-                icon: "pool"
-            },
-            {
-                name: "Baño Privado Equipado",
-                icon: "bath"
-            },
-            {
-                name: "Cocina Privada Equipada",
-                icon: "kitchen"
-            },
-            {
-                name: "A/C",
-                icon: "ac"
-            },
-            {
-                name: "Parqueo Privado Encerrado",
-                icon: "parking"
-            },
-            {
-                name: "100Mbps WiFi",
-                icon: "wifi"
-            }
-        ],
-    },
-    {
-        name: "Villa CoralES",
-        guestNumber: 2,
-        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
-        description: "",
-        neighborhood: "",
-        houseCode: 6,
-        houseLangCode: "Villa Coral",
-        parking: false,
-        image: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000",
-        amenities: [
-            {
-                name: "Piscina Privada",
-                icon: "pool"
-            },
-            {
-                name: "Baño Privado Equipado",
-                icon: "bath"
-            },
-            {
-                name: "Cocina Privada Equipada",
-                icon: "kitchen"
-            },
-            {
-                name: "A/C",
-                icon: "ac"
-            },
-            {
-                name: "Parqueo Privado no Encerrado",
-                icon: "parking"
-            },
-            {
-                name: "100Mbps WiFi",
-                icon: "wifi"
-            }
-        ],
-    },
-    {
         name: "Villa Coral",
         guestNumber: 2,
         location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
@@ -1494,6 +1420,82 @@ export const VillasDataList: HouseDataType[] = [
             }
         ],
     }
+]
+export const VillasDataListES: HouseDataType[] = [
+    {
+        name: "Villa Mar",
+        guestNumber: 2,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 5,
+        houseLangCode: "Villa Mar",
+        image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000",
+        parking: false,
+        amenities: [
+            {
+                name: "Piscina Privada",
+                icon: "pool"
+            },
+            {
+                name: "Baño Privado Equipado",
+                icon: "bath"
+            },
+            {
+                name: "Cocina Privada Equipada",
+                icon: "kitchen"
+            },
+            {
+                name: "A/C",
+                icon: "ac"
+            },
+            {
+                name: "Parqueo Privado Encerrado",
+                icon: "parking"
+            },
+            {
+                name: "100Mbps WiFi",
+                icon: "wifi"
+            }
+        ],
+    },
+    {
+        name: "Villa Coral",
+        guestNumber: 2,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 6,
+        houseLangCode: "Villa Coral",
+        parking: false,
+        image: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000",
+        amenities: [
+            {
+                name: "Piscina Privada",
+                icon: "pool"
+            },
+            {
+                name: "Baño Privado Equipado",
+                icon: "bath"
+            },
+            {
+                name: "Cocina Privada Equipada",
+                icon: "kitchen"
+            },
+            {
+                name: "A/C",
+                icon: "ac"
+            },
+            {
+                name: "Parqueo Privado no Encerrado",
+                icon: "parking"
+            },
+            {
+                name: "100Mbps WiFi",
+                icon: "wifi"
+            }
+        ],
+    },
 ]
 export const NamDataList: HouseDataType[] = [
     {

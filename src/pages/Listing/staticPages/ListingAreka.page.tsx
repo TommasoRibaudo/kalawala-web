@@ -10,14 +10,14 @@ import { homesSnippet } from "../../../utils/constants";
 import { HouseDataType, ListingType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
-import { houseDataList } from "../../../utils/constants";
+import { NamDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 
 
 const ListingAreka = () => {
-    const listing = 'Geco'
+    const listing = 'Areka'
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
     const amenities: AmenityType[] = [
         { icon: 'ac', name: '2 A/C Units' },
@@ -30,7 +30,7 @@ const ListingAreka = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.name === listing);
+    const houseData: HouseDataType | undefined = NamDataList.find((house) => house.name === listing);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -44,9 +44,9 @@ const ListingAreka = () => {
         <div className={`listingContainer ${show && 'modal-open'}`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>House Geco - Pet Friendly Home in Puerto Viejo</title>
-                <meta name="description" content="Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/Geco" />
+                <title>House Areka - Couples Retreat with A/C</title>
+                <meta name="description" content="New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife." />
+                <link rel="canonical" href="https://www.reservaskalawala.com/Areka" />
             </Helmet>
             <FixedNavigation isBlog={false} />
             <Row className="subContainer">
@@ -55,8 +55,8 @@ const ListingAreka = () => {
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">
-                        <h1 className="title">House Geco</h1>
-                        <h3 className="location">Puerto Viejo de Talamanca, Limón, Costa Rica</h3>
+                        <h1 className="title">House Areka</h1>
+                        <h3 className="location">Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica</h3>
                         {isScreenSmall && (
                             <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Online Now!</Button></div>)}
                     </div>
@@ -66,11 +66,12 @@ const ListingAreka = () => {
                     </div>
                     <div className="description">
                         <p>
-                            Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.
+                            New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife.
                             <br />
                         </p>
                         <p>
-                            Most shops and restaurants are just a short walk away, and there is a nearby jungle path that runs along the ocean and leads to natural pools in the coral and to Cocles.
+                            The space, completely private, has A/C, fully equipped kitchen and a private bathroom with hot water. The parking space is private, spacious and outside of the property. Every house has a small porch for our guests.
+
                             <br />
                         </p>
                         <p>
@@ -78,7 +79,7 @@ const ListingAreka = () => {
                             <br />
                         </p>
                         <p>
-                            We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.
+                            Close by you may find restaurants, supermarkets, and bike rentals. We trust our guests to follow common sense when leaving our house, that's why we have 0 check-out rules and no check-out list.
                             <br />
                         </p>
                         <p>
@@ -86,19 +87,7 @@ const ListingAreka = () => {
                             <br />
                         </p>
                         <p>
-                            If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.
-                            <br />
-                        </p>
-                        <p>
                             Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.
-                            <br />
-                        </p>
-                        <p>
-                            The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!
-                            <br />
-                        </p>
-                        <p>
-                            Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.
                             <br />
                         </p>
                     </div>

@@ -1,7 +1,7 @@
 import { Col, Row, Image, } from "react-bootstrap";
 import './ImagesContainer.style.scss'
 import requireContext from 'require-context.macro';
-import { gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions } from '../../../../utils/constants';
+import { ArekaImageDescriptions, gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions } from '../../../../utils/constants';
 
 interface IImagesContainer {
   showModal?: () => void
@@ -63,7 +63,11 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
       case "Villa MarES":
         images = VillaMarImageDescriptions;
         imageSnippet = [6,2,1,4,5];
-
+        break;
+      case "Areka":
+        images = ArekaImageDescriptions;
+        imageSnippet = [6,2,1,4,5];
+        break;
   }
 
 

@@ -1522,16 +1522,12 @@ export const NamDataList: HouseDataType[] = [
                 icon: "ac"
             },
             {
-                name: "100Mbps WiFi",
+                name: "WiFi",
                 icon: "wifi"
             },
             {
                 name: "Parqueo Privado Externo",
                 icon: "parking"
-            },
-            {
-                name: "Pet Friendly",
-                icon: "pet"
             }
         ],
     },

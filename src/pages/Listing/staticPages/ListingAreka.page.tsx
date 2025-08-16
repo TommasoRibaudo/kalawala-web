@@ -10,14 +10,14 @@ import { homesSnippet } from "../../../utils/constants";
 import { HouseDataType, ListingType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
-import { NamDataList } from "../../../utils/constants";
+import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 
 
 const ListingAreka = () => {
-    const listing = 'Areka'
+    const listing = 'Geco'
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
     const amenities: AmenityType[] = [
         { icon: 'ac', name: '2 A/C Units' },
@@ -30,7 +30,7 @@ const ListingAreka = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = NamDataList.find((house) => house.name === listing);
+    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.name === listing);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -46,7 +46,7 @@ const ListingAreka = () => {
                 <meta charSet="utf-8" />
                 <title>House Geco - Pet Friendly Home in Puerto Viejo</title>
                 <meta name="description" content="Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/Areka" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/Geco" />
             </Helmet>
             <FixedNavigation isBlog={false} />
             <Row className="subContainer">

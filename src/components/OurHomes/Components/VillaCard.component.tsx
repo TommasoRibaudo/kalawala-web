@@ -9,7 +9,7 @@ interface IHomeCard {
     name: string;
     guestNumber: number;
     image: string
-    houseLangCode:string;
+    houseLangCode: string;
 }
 
 
@@ -39,6 +39,7 @@ const VillaCard: FC<IHomeCard> = ({ guestNumber, name, image, houseLangCode }) =
                         <FontAwesomeIcon icon={faSnowflake} fontSize={"20px"} style={{ marginRight: '6px' }} />
                         <FontAwesomeIcon icon={faUtensils} fontSize={"20px"} style={{ marginRight: '6px' }} />
                         <FontAwesomeIcon icon={faWifi} fontSize={"20px"} />
+                        <FontAwesomeIcon icon={faParking} fontSize={"20px"} style={{ marginLeft: '6px' }} />
                     </div>
                 </div>
             </div>

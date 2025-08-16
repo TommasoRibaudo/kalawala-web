@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSnowflake, faUtensils, faWifi, faUser, faSwimmingPool } from '@fortawesome/free-solid-svg-icons';
+import { faSnowflake, faUtensils, faWifi, faUser, faSwimmingPool, faParking } from '@fortawesome/free-solid-svg-icons';
 
 import './OtherHomesCard.style.scss';
 
@@ -27,6 +27,7 @@ const OtherHomesCardRib: FC<IOtherHomesCard> = ({ guestNumber, name, image }) =>
                     <FontAwesomeIcon icon={faSnowflake} />
                     <FontAwesomeIcon icon={faUtensils} />
                     <FontAwesomeIcon icon={faWifi} />
+                    <FontAwesomeIcon icon={faParking} />
                 </div>
             </div>
         </div>

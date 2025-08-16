@@ -14,6 +14,13 @@ const OurOtherHomesRIB = () => {
     }, 0);
   };
 
+  const handleClickNam = () => {
+    navigate('/HomeNam');
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
+  };
+
   return (
     <div className="our-other-homes-container" >
       {/* Section Title - Centered in its own row */}
@@ -23,7 +30,7 @@ const OurOtherHomesRIB = () => {
       <div className="sections-wrapper">
         {/* Left Section - Villas */}
         <div className="section" onClick={handleClick}>
-          <p>Like Nothing Else in Puerto Viejo Centre!</p>
+          <h2>Like Nothing Else in Puerto Viejo Centre!</h2>
           <div className="cards-container">
             <OtherHomesCard guestNumber={5} name="Casa Tucano" image="https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000" />
             <OtherHomesCard guestNumber={5} name="Casa Geco" image="https://drive.google.com/thumbnail?id=1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF&sz=w1000" />
@@ -31,8 +38,12 @@ const OurOtherHomesRIB = () => {
         </div>
 
         {/* Right Section - Coming Soon */}
-        <div className="section">
-        <p>Casitas Namaitami Coming Soon...</p>
+        <div className="section" onClick={handleClickNam}>
+          <h2>Private Retreat in Playa Chiquita, Puerto Viejo</h2>
+          <div className="cards-container">
+            <OtherHomesCard guestNumber={2} name="Plumeria" image="https://drive.google.com/thumbnail?id=1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-&sz=w1000" />
+            <OtherHomesCard guestNumber={4} name="Giulia" image="https://drive.google.com/thumbnail?id=1v3hAHbAjvFf9CYaJx7IV8JqTbDKK__8S&sz=w1000" />
+          </div>
         </div>
       </div>
     </div>

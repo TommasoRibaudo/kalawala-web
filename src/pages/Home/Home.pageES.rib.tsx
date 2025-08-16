@@ -1,11 +1,9 @@
 import React from "react";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
-import Portfolio from "../../components/Portfolio/Portfolio.component";
-import {VillasDataList } from '../../utils/constants';
+import {VillasDataListES } from '../../utils/constants';
 import CallToActionES from "../../components/CallToAction/CallToAction.componentES";
 import FixedNavigationRibES from "../../components/FixedNavigation/FixedNavigation.componentRIBES";
-import WelcomeSliderES from "../../components/WelcomeSlider/WelcomeSlider.componentES";
-import OurHomesES from "../../components/OurHomes/OurHomes.componentES";
+import OurHomesRIBES from "../../components/OurHomes/OurHomes.componentRIBES";
 import DiscoverRIBES from "../../components/Discover/Discover.componentRIBES";
 import WelcomeSliderRibES from "../../components/WelcomeSlider/WelcomeSlider.componentRIBES";
 import PortfolioRIBES from "../../components/Portfolio/Portfolio.componentRIBES";
@@ -17,7 +15,7 @@ const HomeRibES = () => {
     <div id="body">
       <WelcomeSliderRibES />
       <FixedNavigationRibES isBlog={false}/>
-      <OurHomesES houseDataList={VillasDataList}/>
+      <OurHomesRIBES houseDataList={VillasDataListES}/>
       <OurOtherHomesRIBES/>
       <DiscoverRIBES />
       <CallToActionES />

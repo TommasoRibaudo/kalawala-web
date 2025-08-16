@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import './OurOtherHomes.style.scss'; // Importa el archivo SASS
+import './OurOtherHomes.style.scss'; // Import the SASS stylesheet
+import OtherHomesCardRib from './Components/OtherHomesCard.componentRib';
 import OtherHomesCard from './Components/OtherHomesCard.component';
 import '../OurHomes/OurHomes.style.scss';
 
@@ -13,27 +14,37 @@ const OurOtherHomesES = () => {
       window.scrollTo(0, 0);
     }, 0);
   };
+   const handleClickNam = () => {
+    navigate('/HomeNamES');
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
+  };
 
   return (
-    <div className="our-other-homes-container">
-      {/* Título principal - Centrado en su propia fila */}
-      <h2 className="section-title">Descubre otras opciones únicas en Puerto Viejo y Playa Chiquita.</h2>
+    <div className="our-other-homes-container" >
+      {/* Section Title - Centered in its own row */}
+      <h2 className="section-title">Explore otras estadías únicas en Puerto Viejo y Playa Chiquita.</h2>
 
-      {/* Contenedor de secciones en fila */}
+      {/* Wrapper for side-by-side layout */}
       <div className="sections-wrapper">
-        {/* Sección izquierda - Villas */}
+        {/* Left Section - Villas */}
         <div className="section" onClick={handleClick}>
-          <h2>Villas de lujo con piscina privada en Playa Chiquita, Puerto Viejo.</h2>
+          <h2>Villas de Lujo Con Piscina Privada En Playa Chiquita, Puerto Viejo.</h2>
           <div className="cards-container">
-            <OtherHomesCard guestNumber={2} name="Villa Mar" image="https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000" />
-            <OtherHomesCard guestNumber={2} name="Villa Coral" image="https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000" />
+            <OtherHomesCardRib guestNumber={2} name="Villa Mar" image="https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000" />
+            <OtherHomesCardRib guestNumber={2} name="Villa Coral" image="https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000" />
           </div>
         </div>
 
-        {/* Sección derecha - Próximamente */}
-        <div className="section">
-          <h2>Casitas Namaitami - ¡Próximamente!</h2>
-        </div>
+        {/* Right Section*/}
+        <div className="section" onClick={handleClickNam}>
+          <h2>Casitas Privadas A Solo Unos Pasos Playa Chiquita, Puerto Viejo</h2>
+          <div className="cards-container">
+          <OtherHomesCard guestNumber={2} name="Plumeria" image="https://drive.google.com/thumbnail?id=1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-&sz=w1000" />
+          <OtherHomesCard guestNumber={4} name="Giulia" image="https://drive.google.com/thumbnail?id=1v3hAHbAjvFf9CYaJx7IV8JqTbDKK__8S&sz=w1000" />
+          </div>
+       </div>
       </div>
     </div>
   );

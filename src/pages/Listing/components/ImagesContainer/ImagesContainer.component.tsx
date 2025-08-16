@@ -63,6 +63,7 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
       case "Villa MarES":
         images = VillaMarImageDescriptions;
         imageSnippet = [6,2,1,4,5];
+       break;
 
   }
 

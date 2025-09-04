@@ -22,6 +22,21 @@ export const homesSnippet: ListingType[] = [
         name: 'Rana',
         mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
     },
+
+]
+export const NamSnippet: ListingType[] = [
+    {
+        name: 'Areka',
+        mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+    },
+        {
+        name: 'Giulia',
+        mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+    },
+        {
+        name: 'Plumeria',
+        mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+    },
 ]
 export const VillaSnippet: ListingType[] = [
     {
@@ -1497,6 +1512,7 @@ export const VillasDataListES: HouseDataType[] = [
         ],
     },
 ]
+
 export const NamDataList: HouseDataType[] = [
     {
         name: "Areka",
@@ -1506,7 +1522,7 @@ export const NamDataList: HouseDataType[] = [
         neighborhood: "",
         houseCode: 7,
         houseLangCode: "Areka",
-        parking: false,
+        parking: true,
         image: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000",
         amenities: [
             {

@@ -6,7 +6,7 @@ import Smoobu from "../../../components/Smoobu/Smoobu.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
 import { useParams } from "react-router-dom";
-import { homesSnippet } from "../../../utils/constants";
+import { NamSnippet } from "../../../utils/constants";
 import { HouseDataType, ListingType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
@@ -17,12 +17,10 @@ import { useMediaQuery } from '@react-hook/media-query';
 
 
 const ListingAreka = () => {
-    const listing = 'Areka'
+    const listing = "Areka"
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
     const amenities: AmenityType[] = [
-        { icon: 'ac', name: '2 A/C Units' },
-        { icon: 'ac', name: '2 A/C Units' },
-        { icon: 'ac', name: '2 A/C Units' }
+        { icon: 'ac', name: '1 A/C Units' }
     ]
 
     const [show, setShow] = useState(false);
@@ -38,20 +36,23 @@ const ListingAreka = () => {
         window.scrollTo(0, 0);
         window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
     }, [])
+    
     //const description = houseData?.description.split('<br/>');
     //const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
         <div className={`listingContainer ${show && 'modal-open'}`}>
             <Helmet>
+                
                 <meta charSet="utf-8" />
                 <title>House Areka - Couples Retreat with A/C</title>
                 <meta name="description" content="New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Areka" />
             </Helmet>
+            
             <FixedNavigation isBlog={false} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <OtherListings listings={homesSnippet} currentListing={listing || ''} />
+                    <OtherListings listings={NamSnippet} currentListing={listing || ''} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">
@@ -92,6 +93,8 @@ const ListingAreka = () => {
                         </p>
                     </div>
 
+
+    
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={3} md={windowWidth <= 991 ? { span: 12 } : { order: 'first', span: 4 }} sm={{ span: 12 }} xs={{ span: 12 }}>
                     <Smoobu homeCode={houseData!.houseCode} />

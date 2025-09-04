@@ -45,6 +45,7 @@ function Smoobu({ homeCode }: ISmoobu) {
         document.body.removeChild(script);
       };
     }
+
   }, [homeCode]);
 
   useEffect(() => {

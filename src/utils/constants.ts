@@ -27,15 +27,29 @@ export const homesSnippet: ListingType[] = [
 export const NamSnippet: ListingType[] = [
     {
         name: 'Areka',
-        mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+        mainImage: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000"
     },
         {
         name: 'Giulia',
-        mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+        mainImage: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000"
     },
         {
         name: 'Plumeria',
-        mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+        mainImage: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
+    },
+]
+export const NamSnippetES: ListingType[] = [
+    {
+        name: 'ArekaES',
+        mainImage: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000"
+    },
+        {
+        name: 'GiuliaES',
+        mainImage: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000"
+    },
+        {
+        name: 'PlumeriaES',
+        mainImage: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
     },
 ]
 export const VillaSnippet: ListingType[] = [

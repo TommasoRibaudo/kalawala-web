@@ -19,7 +19,7 @@ const DiscoverNam = () => {
               <p>At Casitas Namaitami, you’ll find two charming private retreats for couples and a spacious house for up to 4 guests all with a <b>fully equipped private kitchen and bathroom</b>. 
               Each home features a cozy bedroom and <b>air conditioning</b> for your comfort.</p> 
               <p>Nestled in the heart of Playa Chiquita, we’re just minutes from the stunning beaches of Punta Uva and Cocles, and only a <b>short stroll to Playa Chiquita</b> itself. Bike rentals are close by, making it easy to explore the coastline, no car needed!</p>
-               <p><b>Need to work remotely?</b> Stay connected with our <b>free high-speed Wi-Fi</b>, reaching up to <b>100 Mbps</b>. With two separate internet contracts, our network is shared among fewer devices, giving you smoother video calls and faster browsing.</p> 
+               <p><b>Need to work remotely?</b> Stay connected with our <b>free high-speed Wi-Fi</b>, with two separate internet contracts, our network is shared among fewer devices, giving you smoother video calls and faster browsing, as well as stability in case one of them fails.</p> 
                <p><b>Driving an electric car?</b> We’ve got you covered with charging outlets right at your parking spot. Each house has its own private space for one vehicle. While the parking is open-air, our neighborhood is quiet, safe, and wonderfully peaceful.</p>
               <div className="row">
                 <div className="col-md-6">

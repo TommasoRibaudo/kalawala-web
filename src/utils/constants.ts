@@ -666,11 +666,6 @@ export const ArekaImageDescriptionsES: IImageDescription[] = [
 ]
 export const PlumeriaImageDescriptions: IImageDescription[] = [
     {
-        roomType: "Bathroom",
-        roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1SsDAb6YcODSPd3ByNtoKIOu4R8j28jFK&sz=w1000"
-    },
-    {
         roomType: "Bedroom",
         roomDescription: "We're available 24/7 in case you need any help. ",
         imageLink: "https://drive.google.com/thumbnail?id=1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-&sz=w1000"
@@ -694,6 +689,11 @@ export const PlumeriaImageDescriptions: IImageDescription[] = [
         roomType: "Terrace",
         roomDescription: "Free private parking",
         imageLink: "https://drive.google.com/thumbnail?id=1oR1cdPpg6HHGJOqKGVakPiNNYkK8gBtU&sz=w1000"
+    },
+    {
+        roomType: "Bathroom",
+        roomDescription: "We always provide towels and toiletries.",
+        imageLink: "https://drive.google.com/thumbnail?id=1SsDAb6YcODSPd3ByNtoKIOu4R8j28jFK&sz=w1000"
     }
 ]
 export const PlumeriaImageDescriptionsES: IImageDescription[] = [
@@ -745,19 +745,9 @@ export const PlumeriaImageDescriptionsES: IImageDescription[] = [
 ]
 export const GiuliaImageDescriptions: IImageDescription[] = [
     {
-        roomType: "Bathroom 1",
-        roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1yI3aOb2sL_IiO-6lOUbxi1TBAL650Mvd&sz=w1000"
-    },
-    {
-        roomType: "Bathroom 2",
-        roomDescription: "We're available 24/7 in case you need any help.",
-        imageLink: "https://drive.google.com/thumbnail?id=1LX-7Iic67neRM_w79FdmyrWDxdJiJfBr&sz=w1000"
-    },
-    {
-        roomType: "Master Bedroom",
-        roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
-        imageLink: "https://drive.google.com/thumbnail?id=1HcR7jVW9GqLhV-X5_Luh0OWpZSIMDjHd&sz=w1000"
+        roomType: "Livingroom",
+        roomDescription: "100Mbps Free Wifi everywhere in your house.",
+        imageLink: "https://drive.google.com/thumbnail?id=1yKDSO3SRCADMUeXB3mu4nTmajFdRhRqI&sz=w1000"
     },
     {
         roomType: "Master Bedroom",
@@ -770,25 +760,36 @@ export const GiuliaImageDescriptions: IImageDescription[] = [
         imageLink: "https://drive.google.com/thumbnail?id=1Lp1mJ-Tgwc8WMnMOvKN2oT9wobpNOLqX&sz=w1000"
     },
     {
-        roomType: "Kitchen",
-        roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1xiRDZCWwEnvjnGLEGE1WkrUyo6iwnOHi&sz=w1000"
-    },
-    {
-        roomType: "Kitchen",
-        roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://drive.google.com/thumbnail?id=1PPdoFxDWLSizWhHUIQ7i5W7K1WU09sTm&sz=w1000"
-    },
-    {
-        roomType: "Livingroom",
-        roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1yKDSO3SRCADMUeXB3mu4nTmajFdRhRqI&sz=w1000"
+        roomType: "Bathroom 2",
+        roomDescription: "We're available 24/7 in case you need any help.",
+        imageLink: "https://drive.google.com/thumbnail?id=1LX-7Iic67neRM_w79FdmyrWDxdJiJfBr&sz=w1000"
     },
     {
         roomType: "Terrace",
         roomDescription: "Free private parking.",
         imageLink: "https://drive.google.com/thumbnail?id=1bbRn5NLsJ8cKqm0I697TMNT5z9iDASxF&sz=w1000"
+    },
+    {
+        roomType: "Bathroom 1",
+        roomDescription: "We always provide towels and toiletries.",
+        imageLink: "https://drive.google.com/thumbnail?id=1yI3aOb2sL_IiO-6lOUbxi1TBAL650Mvd&sz=w1000"
+    },
+    {
+        roomType: "Kitchen",
+        roomDescription: "Microwave, coffeemaker and blender also included.",
+        imageLink: "https://drive.google.com/thumbnail?id=1xiRDZCWwEnvjnGLEGE1WkrUyo6iwnOHi&sz=w1000"
+    },
+    {
+        roomType: "Master Bedroom",
+        roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
+        imageLink: "https://drive.google.com/thumbnail?id=1HcR7jVW9GqLhV-X5_Luh0OWpZSIMDjHd&sz=w1000"
+    },
+    {
+        roomType: "Kitchen",
+        roomDescription: "We offer last-minute discounts, prices are updated daily!",
+        imageLink: "https://drive.google.com/thumbnail?id=1PPdoFxDWLSizWhHUIQ7i5W7K1WU09sTm&sz=w1000"
     }
+    
 ]
 export const GiuliaImageDescriptionsES: IImageDescription[] = [
     {
@@ -1573,10 +1574,6 @@ export const NamDataList: HouseDataType[] = [
         parking: false,
         amenities: [
             {
-                name: "Piscina Privada",
-                icon: "pool"
-            },
-            {
                 name: "Baño Privado Equipado",
                 icon: "bath"
             },
@@ -1589,12 +1586,12 @@ export const NamDataList: HouseDataType[] = [
                 icon: "ac"
             },
             {
-                name: "Parqueo Privado Encerrado",
-                icon: "parking"
+                name: "WiFi",
+                icon: "wifi"
             },
             {
-                name: "100Mbps WiFi",
-                icon: "wifi"
+                name: "Parqueo Privado Externo",
+                icon: "parking"
             }
         ],
     },
@@ -1610,10 +1607,6 @@ export const NamDataList: HouseDataType[] = [
         image: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000",
         amenities: [
             {
-                name: "Piscina Privada",
-                icon: "pool"
-            },
-            {
                 name: "Baño Privado Equipado",
                 icon: "bath"
             },
@@ -1622,16 +1615,16 @@ export const NamDataList: HouseDataType[] = [
                 icon: "kitchen"
             },
             {
-                name: "A/C",
+                name: "2 A/C",
                 icon: "ac"
             },
             {
-                name: "Parqueo Privado no Encerrado",
-                icon: "parking"
+                name: "WiFi",
+                icon: "wifi"
             },
             {
-                name: "100Mbps WiFi",
-                icon: "wifi"
+                name: "Parqueo Privado Externo",
+                icon: "parking"
             }
         ],
     },

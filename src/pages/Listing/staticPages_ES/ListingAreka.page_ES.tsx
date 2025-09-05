@@ -16,6 +16,7 @@ import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
+import FixedNavigationNamES from "../../../components/FixedNavigation/FixedNavigation.componentNamES";
 
 
 const ListingArekaES = () => {
@@ -48,7 +49,7 @@ const ListingArekaES = () => {
                 <meta name="description" content="Nuevos bungalows totalmente equipados con A/C ubicados a 200mts de la hermosa playa Playa Chiquita, en uno de los barrios más seguros y tranquilos del Caribe. A pocos minutos de Puerto Viejo y Manzanillo, estamos perfectamente ubicados para visitar la playa Punta Uva y Arrecife." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/ArekaES" />
             </Helmet>
-            <FixedNavigationES isBlog={false} />
+            <FixedNavigationNamES isBlog={false} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
                     <OtherListingsES listings={NamSnippetES} currentListing={listing || ''} />

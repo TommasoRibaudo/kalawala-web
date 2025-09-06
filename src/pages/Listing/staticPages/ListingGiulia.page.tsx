@@ -62,7 +62,12 @@ const ListingGiulia = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
+                    
                     <div className="description">
+                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                        <p ><strong>Check-in:</strong> 3:00 PM</p>
+                        <p ><strong>Check-out:</strong> 12:00 PM (noon)</p>
+                    </div>
                         <p>
                             Escape to Puerto Viejo in our home with A/C, gas kitchen, and a spacious closet. Relax on your private covered patio. Our home is located just 200 meters from the stunning Playa Chiquita beach, in one of the safest and calmest neighborhoods in the Caribbean. Explore nearby attractions like Puerto Viejo, Manzanillo, Punta Uva beach, and Arrecife from our perfect location.<br />
                         </p>

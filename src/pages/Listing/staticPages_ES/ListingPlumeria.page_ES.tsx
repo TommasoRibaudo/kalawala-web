@@ -10,12 +10,13 @@ import { NamSnippetES } from "../../../utils/constants";
 import { HouseDataType, ListingType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
-import { NamDataList } from "../../../utils/constants";
+import { NamDataListES } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
+import FixedNavigationNamES from "../../../components/FixedNavigation/FixedNavigation.componentNamES";
 
 
 const ListingPlumeriaES = () => {
@@ -30,7 +31,7 @@ const ListingPlumeriaES = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = NamDataList.find((house) => house.houseLangCode === "Plumeria");
+    const houseData: HouseDataType | undefined = NamDataListES.find((house) => house.houseLangCode === "PlumeriaES");
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -48,7 +49,7 @@ const ListingPlumeriaES = () => {
                 <meta name="description" content="Nuevos bungalows totalmente equipados con A/C y piscina privada ubicados a 200mts de la hermosa playa Playa Chiquita, en uno de los barrios más seguros y tranquilos del Caribe. A pocos minutos de Puerto Viejo y Manzanillo, estamos perfectamente ubicados para visitar la playa Punta Uva y Arrecife." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/PlumeriaES" />
             </Helmet>
-            <FixedNavigationES isBlog={false} />
+            <FixedNavigationNamES isBlog={false} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
                     <OtherListingsES listings={NamSnippetES} currentListing={listing || ''} />
@@ -65,6 +66,10 @@ const ListingPlumeriaES = () => {
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
                     <div className="description">
+                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                        <p><strong>Entrada:</strong> 3:00 PM</p>
+                        <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
+                    </div>
                         <p>
                             Nuevos bungalows totalmente equipados con A/C y piscina privada ubicados a 200mts de la hermosa playa Playa Chiquita, en uno de los barrios más seguros y tranquilos del Caribe. A pocos minutos de Puerto Viejo y Manzanillo, estamos perfectamente ubicados para visitar la playa Punta Uva y Arrecife.
                             <br />

@@ -65,7 +65,12 @@ const ListingTucano = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
+                   
                     <div className="description">
+                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                        <p ><strong>Check-in:</strong> 3:00 PM</p>
+                        <p ><strong>Check-out:</strong> 11:00 AM</p>
+                    </div>
                         <p>
                         This house offers a delightful experience in the heart of Puerto Viejo with a charming wooden apartment located above an Italian bakery. The apartment features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and two A/C units, ensuring a cozy stay.
                             <br />

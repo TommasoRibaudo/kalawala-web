@@ -64,7 +64,12 @@ const ListingGeco = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
+
                     <div className="description">
+                        <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                            <p ><strong>Check-in:</strong> 2:00 PM</p>
+                            <p ><strong>Check-out:</strong> 11:00 AM</p>
+                        </div>
                         <p>
                             Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.
                             <br />

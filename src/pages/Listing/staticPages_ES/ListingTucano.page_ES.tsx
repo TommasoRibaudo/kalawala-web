@@ -67,7 +67,12 @@ const ListingTucanoES = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
+                    
                     <div className="description">
+                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                        <p><strong>Entrada:</strong> 2:00 PM</p>
+                        <p><strong>Salida:</strong> 11:00 AM</p>
+                    </div>
                         <p>
                         Bienvenido a Kalawala. Esta casa ofrece una experiencia encantadora en el corazón de Puerto Viejo con un encantador apartamento de madera ubicado encima de una panadería italiana. El apartamento cuenta con dos cómodas habitaciones, un baño bien equipado, una cocina totalmente equipada, una hermosa terraza y dos unidades de aire acondicionado, lo que garantiza una estancia acogedora.
                             <br />

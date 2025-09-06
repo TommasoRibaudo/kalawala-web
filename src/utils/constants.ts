@@ -1174,7 +1174,7 @@ export const houseDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Private Outside Parking",
+                name: "Outside Parking",
                 icon: "parking"
             },
             {
@@ -1213,7 +1213,7 @@ export const houseDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Private Outside Parking",
+                name: "Outside Parking",
                 icon: "parking"
             },
             {
@@ -1325,7 +1325,7 @@ export const houseDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Parqueo Privado Externo",
+                name: "Parqueo Externo",
                 icon: "parking"
             },
             {
@@ -1364,7 +1364,7 @@ export const houseDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Parqueo Privado Externo",
+                name: "Parqueo Externo",
                 icon: "parking"
             },
             {
@@ -1480,7 +1480,7 @@ export const VillasDataListES: HouseDataType[] = [
                 icon: "ac"
             },
             {
-                name: "Parqueo Privado Encerrado",
+                name: "Parqueo Externo",
                 icon: "parking"
             },
             {
@@ -1517,7 +1517,7 @@ export const VillasDataListES: HouseDataType[] = [
                 icon: "ac"
             },
             {
-                name: "Parqueo Privado no Encerrado",
+                name: "Parqueo Externo",
                 icon: "parking"
             },
             {
@@ -1541,6 +1541,109 @@ export const NamDataList: HouseDataType[] = [
         image: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000",
         amenities: [
             {
+                name: "Private Equipped Bathroom",
+                icon: "bath"
+            },
+            {
+                name: "Private Equipped Kitchen",
+                icon: "kitchen"
+            },
+            {
+                name: "A/C",
+                icon: "ac"
+            },
+            {
+                name: "WiFi",
+                icon: "wifi"
+            },
+            {
+                name: "Unfenced Parking",
+                icon: "parking"
+            }
+        ],
+    },
+    {
+        name: "Plumeria",
+        guestNumber: 2,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 8,
+        houseLangCode: "Plumeria",
+        image: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000",
+        parking: false,
+        amenities: [
+            {
+                name: "Private Equipped Bathroom",
+                icon: "bath"
+            },
+            {
+                name: "Private Equipped Kitchen",
+                icon: "kitchen"
+            },
+            {
+                name: "A/C",
+                icon: "ac"
+            },
+            {
+                name: "WiFi",
+                icon: "wifi"
+            },
+            {
+                name: "Unfenced Parking",
+                icon: "parking"
+            }
+        ],
+    },
+    {
+        name: "Giulia",
+        guestNumber: 4,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 9,
+        houseLangCode: "Giulia",
+        parking: false,
+        image: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000",
+        amenities: [
+            {
+                name: "Private Equipped Bathroom",
+                icon: "bath"
+            },
+            {
+                name: "Private Equipped Kitchen",
+                icon: "kitchen"
+            },
+            {
+                name: "2 A/C",
+                icon: "ac"
+            },
+            {
+                name: "WiFi",
+                icon: "wifi"
+            },
+            {
+                name: "Unfenced Parking",
+                icon: "parking"
+            }
+        ],
+    },
+
+]
+
+export const NamDataListES: HouseDataType[] = [
+    {
+        name: "Areka",
+        guestNumber: 2,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 7,
+        houseLangCode: "ArekaES",
+        parking: true,
+        image: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000",
+        amenities: [
+            {
                 name: "Baño Privado Equipado",
                 icon: "bath"
             },
@@ -1557,7 +1660,7 @@ export const NamDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Parqueo Privado Externo",
+                name: "Parqueo Externo",
                 icon: "parking"
             }
         ],
@@ -1569,7 +1672,7 @@ export const NamDataList: HouseDataType[] = [
         description: "",
         neighborhood: "",
         houseCode: 8,
-        houseLangCode: "Plumeria",
+        houseLangCode: "PlumeriaES",
         image: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000",
         parking: false,
         amenities: [
@@ -1590,7 +1693,7 @@ export const NamDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Parqueo Privado Externo",
+                name: "Parqueo Externo",
                 icon: "parking"
             }
         ],
@@ -1602,7 +1705,7 @@ export const NamDataList: HouseDataType[] = [
         description: "",
         neighborhood: "",
         houseCode: 9,
-        houseLangCode: "Giulia",
+        houseLangCode: "GiuliaES",
         parking: false,
         image: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000",
         amenities: [
@@ -1623,7 +1726,7 @@ export const NamDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Parqueo Privado Externo",
+                name: "Parqueo Externo",
                 icon: "parking"
             }
         ],

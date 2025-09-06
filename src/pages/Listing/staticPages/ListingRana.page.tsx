@@ -67,7 +67,12 @@ const ListingRana = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
+                    
                     <div className="description">
+                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                        <p ><strong>Check-in:</strong> 2:00 PM</p>
+                        <p ><strong>Check-out:</strong> 11:00 AM</p>
+                    </div>
                         <p>
                         Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space. Our prime location ensures easy access to both the town center and the beaches of Puerto Viejo.
                             <br />

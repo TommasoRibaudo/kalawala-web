@@ -64,7 +64,12 @@ const ListingVillaCoral = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
+                    
                     <div className="description">
+                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                        <p ><strong>Check-in:</strong> 3:00 PM</p>
+                        <p ><strong>Check-out:</strong> 12:00 PM (noon)</p>
+                    </div>
                         <p>
                             Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting.
                             <br />

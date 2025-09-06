@@ -35,7 +35,7 @@ const FixedNavigationNamES = ({ isBlog }: IFixedNavigation) => {
   return (
     <Navbar className="navigation" expand="lg" sticky="top" variant="dark" data-bs-theme="dark">
       <Container>
-        <Navbar.Brand href="/#body" className="d-flex align-items-center">
+        <Navbar.Brand href="/HomeNamES#body" className="d-flex align-items-center">
           <img src="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" alt="logo" className="logo" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick}>
@@ -43,10 +43,10 @@ const FixedNavigationNamES = ({ isBlog }: IFixedNavigation) => {
         </Navbar.Toggle>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
-          <Nav.Link href="HomeVillasES#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`}>Inicio</Nav.Link>
-            <Nav.Link href="HomeVillasES#callToActionES" className="navText" onClick={() => { handleLinkClick("HomeNamES#callToActionES") }}>Disponibilidad</Nav.Link>
-            <Nav.Link href="HomeVillasES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeNamES#portfolioES") }}>Fotos</Nav.Link>
-            <Nav.Link href="HomeVillasES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeNamES#contact-usES") }}>Contactanos</Nav.Link>
+          <Nav.Link href="HomeNamES#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`}>Inicio</Nav.Link>
+            <Nav.Link href="HomeNamES#callToActionES" className="navText" onClick={() => { handleLinkClick("HomeNamES#callToActionES") }}>Disponibilidad</Nav.Link>
+            <Nav.Link href="HomeNamES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeNamES#portfolioES") }}>Fotos</Nav.Link>
+            <Nav.Link href="HomeNamES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeNamES#contact-usES") }}>Contactanos</Nav.Link>
             <Nav.Link href="/twodaysinpuertoviejoES" className={`navText ${(isActive && isBlog) ? 'active' : ''}`}>Blog</Nav.Link>
           </Nav>
         <div className="navbar-flag">

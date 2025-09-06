@@ -67,7 +67,12 @@ const ListingVillaMarES = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
+                    
                     <div className="description">
+                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                        <p><strong>Entrada:</strong> 3:00 PM</p>
+                        <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
+                    </div>
                         <p>
                             Descubre el retiro perfecto en Playa Chiquita, Puerto Viejo. Nuestra villa de lujo construida recientemente ofrece una experiencia vacacional ideal, combinando comodidad y conveniencia en un entorno tropical sereno.
                             <br />

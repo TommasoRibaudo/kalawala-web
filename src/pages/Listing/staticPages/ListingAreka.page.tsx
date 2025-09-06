@@ -67,6 +67,10 @@ const ListingAreka = () => {
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
                     <div className="description">
+                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                        <p ><strong>Check-in:</strong> 3:00 PM</p>
+                        <p ><strong>Check-out:</strong> 12:00 PM (noon)</p>
+                    </div>
                         <p>
                             New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife.
                             <br />

@@ -10,7 +10,7 @@ import { NamSnippetES } from "../../../utils/constants";
 import { HouseDataType, ListingType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
-import { NamDataList } from "../../../utils/constants";
+import { NamDataListES } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
@@ -31,7 +31,7 @@ const ListingArekaES = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = NamDataList.find((house) => house.houseLangCode === "Areka");
+    const houseData: HouseDataType | undefined = NamDataListES.find((house) => house.houseLangCode === "ArekaES");
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -65,7 +65,12 @@ const ListingArekaES = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
+                    
                     <div className="description">
+                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                        <p><strong>Entrada:</strong> 3:00 PM</p>
+                        <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
+                    </div>
                         <p>
                             Nuevos bungalows totalmente equipados con A/C ubicados a 200mts de la hermosa playa Playa Chiquita, en uno de los barrios más seguros y tranquilos del Caribe. A pocos minutos de Puerto Viejo y Manzanillo, estamos perfectamente ubicados para visitar la playa Punta Uva y Arrecife.
                             <br />

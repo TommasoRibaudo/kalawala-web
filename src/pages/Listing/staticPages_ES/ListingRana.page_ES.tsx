@@ -69,7 +69,12 @@ const ListingRana = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
+                    
                     <div className="description">
+                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                        <p><strong>Entrada:</strong> 2:00 PM</p>
+                        <p><strong>Salida:</strong> 11:00 AM</p>
+                    </div>
                     <p>
                         Ubicada en el corazón del pueblo, esta casa tiene espacio para hasta 5 personas y cuenta con cocina totalmente equipada, baño, 2 unidades de aire acondicionado y estacionamiento privado. Nuestra ubicación privilegiada ofrece fácil acceso tanto al centro de la ciudad como a las playas más hermosas que Puerto Viejo tiene para ofrecer.
                             <br />

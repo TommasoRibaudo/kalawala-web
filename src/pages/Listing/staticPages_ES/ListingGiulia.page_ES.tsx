@@ -10,7 +10,7 @@ import { NamSnippetES } from "../../../utils/constants";
 import { HouseDataType, ListingType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
-import { NamDataList } from "../../../utils/constants";
+import { NamDataListES } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
@@ -31,7 +31,7 @@ const ListingGiuliaES = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = NamDataList.find((house) => house.houseLangCode === "Giulia");
+    const houseData: HouseDataType | undefined = NamDataListES.find((house) => house.houseLangCode === "GiuliaES");
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -66,6 +66,10 @@ const ListingGiuliaES = () => {
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
                     <div className="description">
+                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                        <p><strong>Entrada:</strong> 3:00 PM</p>
+                        <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
+                    </div>
                         <p>
                         Escápate a Puerto Viejo en nuestra casa con aire acondicionado, cocina de gas y un amplio clóset. Relájate en tu terraza privada techada. Nuestra casa está ubicada a solo 200 metros de la impresionante playa Chiquita, en uno de los vecindarios más seguros y tranquilos del Caribe. Explora atracciones cercanas como Puerto Viejo, Manzanillo, la playa de Punta Uva y Arrecife desde nuestra ubicación perfecta.
                             <br />

@@ -27,9 +27,9 @@ const OtherListingsES: FC<IOtherListing> = ({ currentListing, listings }) => {
                 <div className="header">¡Revisa nuestras otras opciones!</div>
                 <div className={`${windowWidth <= 1199 ? 'hstack' : 'vstack'} gap-5 subCont`}>
                     {listings.map(({ name, mainImage }) => {
-                        return name + 'ES' !== currentListing ? ( //TODO do bootsrtap thing tomake change row/column
-                            <div style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { naviagate(`/${name.replace(/\s/g, "")}ES`) }}>
-                                <div className="name">{name}</div>
+                        return name !== currentListing ? ( //TODO do bootsrtap thing tomake change row/column
+                            <div style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { naviagate(`/${name.replace(/\s/g, "")}`) }}>
+                                <div className="name">{name.replace('ES', '')}</div>
                             </div>
                         ) : null
                     })}

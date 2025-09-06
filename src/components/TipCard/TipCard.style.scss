@@ -1,4 +1,19 @@
 @import '../../styles/variables';
+
 .tipcard-caption {
     color: $pripmary-darker;
+}
+
+.caption {
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.tip-visible {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.tip-hidden {
+    opacity: 0;
+    visibility: hidden;
 }

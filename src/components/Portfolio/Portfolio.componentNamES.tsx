@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Image } from 'react-bootstrap';
-import PortfolioImageES from '../PortfolioImage/PortfolioImage.componentES';
+import PortfolioImage from '../PortfolioImage/PortfolioImage.componentES';
 
 const PortfolioNamES = () => {
   const [folderName, setFolderName] = useState<string>('Areka');
@@ -37,7 +37,7 @@ const PortfolioNamES = () => {
       </div>
       <div className="d-flex flex-wrap">
         <div className="container">
-          <PortfolioImageES folderName={folderName} />
+          <PortfolioImage folderName={folderName} />
         </div>
       </div>
 

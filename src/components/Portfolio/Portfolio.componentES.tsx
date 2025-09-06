@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Button, Image } from 'react-bootstrap';
-import PortfolioImage from '../PortfolioImage/PortfolioImage.component';
 import PortfolioImageES from '../PortfolioImage/PortfolioImage.componentES';
 
 const PortfolioES = () => {

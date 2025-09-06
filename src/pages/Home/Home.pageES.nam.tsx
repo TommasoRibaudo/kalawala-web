@@ -3,7 +3,7 @@ import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.co
 import OurHomes from "../../components/OurHomes/OurHomes.component";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSliderNamES from "../../components/WelcomeSlider/WelcomeSlider.componentNamES";
-import PortfolioNamES from "../../components/Portfolio/Portfolio.componentNamES";
+import PortfolioNam from "../../components/Portfolio/Portfolio.componentNam";
 
 import { NamDataListES } from '../../utils/constants';
 import DiscoverNamES from "../../components/Discover/Discover.componentNamES";
@@ -20,7 +20,7 @@ const HomeNamES = () => {
       <OurOtherHomesNamES />
       <DiscoverNamES />
       <CallToActionES />
-      <PortfolioNamES />
+      <PortfolioNam />
       {/* <Testimonial /> */}
       <ContactUs />
     </div>

@@ -11,9 +11,9 @@ import { HouseDataType, ListingType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
 import { NamDataList } from "../../../utils/constants";
-import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
+import FixedNavigationNam from "../../../components/FixedNavigation/FixedNavigation.componentNam";
 
 
 const ListingPlumeria = () => {
@@ -46,7 +46,7 @@ const ListingPlumeria = () => {
                 <meta name="description" content="New fully equipped Bungalows with A/C and private pool located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Plumeria" />
             </Helmet>
-            <FixedNavigation isBlog={false} />
+            <FixedNavigationNam isBlog={false} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
                     <OtherListings listings={NamSnippet} currentListing={listing || ''} />
@@ -72,11 +72,7 @@ const ListingPlumeria = () => {
                             <br />
                         </p>
                         <p>
-                            The space, completely private, has A/C, fully equipped kitchen, a private bathroom with hot water, and your own private pool. The parking space is private, spacious and enclosed. Every house has a small porch for our guests.
-                            <br />
-                        </p>
-                        <p>
-                            All of the spaces described here are private, including the fully equipped kitchen, bathroom, and your exclusive pool. You'll have everything you need to make yourself at home and enjoy a refreshing swim whenever you want.
+                            The space, completely private, has A/C, fully equipped kitchen, a private bathroom with hot water. The parking space is private, spacious and enclosed. Every house has a small porch for our guests.
                             <br />
                         </p>
                         <p>

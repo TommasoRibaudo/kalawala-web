@@ -6,7 +6,7 @@ import Smoobu from "../../../components/Smoobu/Smoobu.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
 import { useParams } from "react-router-dom";
-import { homesSnippet, VillaSnippet } from "../../../utils/constants";
+import { homesSnippet, VillaSnippet, VillaCoralSnippet } from "../../../utils/constants";
 import { HouseDataType, ListingType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
@@ -55,7 +55,7 @@ const ListingVillaCoralES = () => {
             <FixedNavigationRibES isBlog={false} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <OtherListingsES listings={VillaSnippet} currentListing={listing || ''} />
+                    <OtherListingsES listings={VillaCoralSnippet} currentListing={listing || ''} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">

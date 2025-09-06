@@ -59,6 +59,20 @@ export const VillaSnippet: ListingType[] = [
     },
     {
         name: 'Villa Coral',
+        mainImage: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+    }
+]
+
+export const VillaMarSnippet: ListingType[] = [
+    {
+        name: 'Villa Coral',
+        mainImage: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+    }
+]
+
+export const VillaCoralSnippet: ListingType[] = [
+    {
+        name: 'Villa Mar',
         mainImage: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
     }
 ]

@@ -59,13 +59,13 @@ function Smoobu({ homeCode }: ISmoobu) {
   return (
     <div style={{ textAlign: "center" }}>
       <p style={{ color: 'black', fontWeight: 550, fontSize: 12 }}>
-        Add Discount code: <strong>#norefundallowed</strong> Reservation becomes Non Refundable / Reservación no tiene reembolso
+        Add Discount code: <strong>#norefundallowed</strong> Reservation becomes Non Refundable / Agrega el codigo para obtener un descuento pero la Reservación no tendrá reembolso
       </p>
       <div key={key} id="apartmentIframeAll">
         {/* Placeholder for the Smoobu Booking Tool */}
       </div>
       <p style={{ color: 'black', fontWeight: 550, fontSize: 12 }}>
-        Add Discount code: <strong>#norefundallowed</strong> Reservation becomes Non Refundable / Reservación no tiene reembolso
+        Add Discount code: <strong>#norefundallowed</strong> Reservation becomes Non Refundable / Agrega el codigo para obtener un descuento pero la Reservación no tendrá reembolso
       </p>
     </div>
   );

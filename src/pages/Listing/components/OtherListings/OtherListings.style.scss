@@ -46,6 +46,19 @@
     align-items: center;
 }
 
+.single-listing-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100%;
+    
+    .listing {
+        width: 230px !important;
+        flex-shrink: 0 !important;
+        max-width: 230px !important;
+    }
+}
+
 .header{
     text-align: center;
     color: white;

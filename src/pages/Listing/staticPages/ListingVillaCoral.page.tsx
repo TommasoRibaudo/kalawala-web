@@ -18,7 +18,7 @@ import FixedNavigationRib from "../../../components/FixedNavigation/FixedNavigat
 
 const ListingVillaCoral = () => {
     const listing = 'Villa Coral'
-    const isScreenSmall = useMediaQuery('(max-width: 1992px)');
+    const isScreenSmall = useMediaQuery('(max-width: 992px)');
     const amenities: AmenityType[] = [
         { icon: 'ac', name: '2 A/C Units' },
         { icon: 'ac', name: '2 A/C Units' },

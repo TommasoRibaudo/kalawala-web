@@ -2,16 +2,15 @@
 @import '../../../../styles/styles.scss';
 
 .imagesModal{
-  position: absolute;
-  z-index: 2;
+  position: fixed;
+  z-index: 1000;
   top: 0;
   bottom: 0;
   right: 0;
   left: 0;
   overflow-y: auto;
-  // width: 100%;
-  // height: 100%;
   background-color: rgba(0, 0, 0, 0.808);
+  cursor: pointer;
 
   .modalImage{
     padding: 10px;
@@ -19,5 +18,13 @@
   }
   .row{
     height: fit-content;
+  }
+  
+  // Ensure content doesn't take full space
+  .d-flex {
+    max-width: 90%;
+    max-height: 90%;
+    margin: auto;
+    cursor: default;
   }
 }

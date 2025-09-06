@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSnowflake, faUtensils, faWifi, faUser, faParking } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 import './OtherHomesCard.style.scss';
 
@@ -8,11 +9,23 @@ interface IOtherHomesCard {
     name: string;
     guestNumber: number;
     image: string;
+    redirectPath?: string;
 }
 
-const OtherHomesCard: FC<IOtherHomesCard> = ({ guestNumber, name, image }) => {
+const OtherHomesCard: FC<IOtherHomesCard> = ({ guestNumber, name, image, redirectPath }) => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        if (redirectPath) {
+            navigate(redirectPath);
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 0);
+        }
+    };
+
     return (
-        <div className="other-homes-card">
+        <div className="other-homes-card" onClick={handleClick} style={{ cursor: redirectPath ? 'pointer' : 'default' }}>
             <div className="image-container">
                 <img src={image} alt={name} className="home-image" />
             </div>

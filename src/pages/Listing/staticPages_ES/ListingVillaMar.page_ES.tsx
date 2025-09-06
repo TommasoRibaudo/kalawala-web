@@ -10,7 +10,7 @@ import { homesSnippet, VillaSnippet } from "../../../utils/constants";
 import { HouseDataType, ListingType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
-import { VillasDataList } from "../../../utils/constants";
+import { VillasDataListES } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
@@ -33,7 +33,7 @@ const ListingVillaMarES = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = VillasDataList.find((house) => house.name === listing);
+    const houseData: HouseDataType | undefined = VillasDataListES.find((house) => house.houseLangCode === "Villa Mar");
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 

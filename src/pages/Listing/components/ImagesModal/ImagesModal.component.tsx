@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import './ImagesModal.style.scss';
 import PortfolioImage from "../../../../components/PortfolioImage/PortfolioImage.component";
 
@@ -9,7 +9,8 @@ interface IIMagesModal {
 }
 const ImagesModal = ({ closeModal, houseName }: IIMagesModal) => {
   useEffect(() => {
-    console.log('test')
+    // Scroll to top when modal opens
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
   return (
     <div className="imagesModal" onClick={closeModal}>

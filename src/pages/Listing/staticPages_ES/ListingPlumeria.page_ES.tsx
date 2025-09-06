@@ -71,15 +71,15 @@ const ListingPlumeriaES = () => {
                         <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
                     </div>
                         <p>
-                            Nuevos bungalows totalmente equipados con A/C y piscina privada ubicados a 200mts de la hermosa playa Playa Chiquita, en uno de los barrios más seguros y tranquilos del Caribe. A pocos minutos de Puerto Viejo y Manzanillo, estamos perfectamente ubicados para visitar la playa Punta Uva y Arrecife.
+                            Nuevos bungalows totalmente equipados con A/C ubicados a 200mts de la hermosa playa Playa Chiquita, en uno de los barrios más seguros y tranquilos del Caribe. A pocos minutos de Puerto Viejo y Manzanillo, estamos perfectamente ubicados para visitar la playa Punta Uva y Arrecife.
                             <br />
                         </p>
                         <p>
-                            El espacio, completamente privado, tiene A/C, cocina totalmente equipada, un baño privado con agua caliente, y tu propia piscina privada. El espacio de estacionamiento es privado, espacioso y encerrado. Cada casa tiene un pequeño porche para nuestros huéspedes.
+                            El espacio, completamente privado, tiene A/C, cocina totalmente equipada, un baño privado con agua caliente. El espacio de estacionamiento es privado, espacioso y encerrado. Cada casa tiene un pequeño porche para nuestros huéspedes.
                             <br />
                         </p>
                         <p>
-                            Todos los espacios descritos aquí son privados, incluida la cocina, el baño totalmente equipado, y tu piscina exclusiva. Tendrás todo lo que necesitas para sentirte como en casa y disfrutar de un refrescante baño cuando quieras.
+                            Todos los espacios descritos aquí son privados, incluida la cocina y el baño totalmente equipado. Tendrás todo lo que necesitas para sentirte como en casa.
                             <br />
                         </p>
                         <p>

@@ -6,20 +6,6 @@ import OtherHomesCard from './Components/OtherHomesCard.component';
 import '../OurHomes/OurHomes.style.scss';
 
 const OurOtherHomes = () => {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate('/homeVillas');
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 0);
-  };
-   const handleClickNam = () => {
-    navigate('/HomeNam');
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 0);
-  };
 
   return (
     <div className="our-other-homes-container" >
@@ -29,20 +15,20 @@ const OurOtherHomes = () => {
       {/* Wrapper for side-by-side layout */}
       <div className="sections-wrapper">
         {/* Left Section - Villas */}
-        <div className="section" onClick={handleClick}>
+        <div className="section">
           <h2>Private Pool Luxury Villas in Playa Chiquita, Puerto Viejo.</h2>
           <div className="cards-container">
-            <OtherHomesCardRib guestNumber={2} name="Villa Mar" image="https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000" />
-            <OtherHomesCardRib guestNumber={2} name="Villa Coral" image="https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000" />
+            <OtherHomesCardRib guestNumber={2} name="Villa Mar" image="https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000" redirectPath="/VillaMar" />
+            <OtherHomesCardRib guestNumber={2} name="Villa Coral" image="https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000" redirectPath="/VillaCoral" />
           </div>
         </div>
 
         {/* Right Section - Coming Soon */}
-        <div className="section" onClick={handleClickNam}>
+        <div className="section">
           <h2>Private Retreat in Playa Chiquita, Puerto Viejo</h2>
           <div className="cards-container">
-          <OtherHomesCard guestNumber={2} name="Plumeria" image="https://drive.google.com/thumbnail?id=1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-&sz=w1000" />
-          <OtherHomesCard guestNumber={4} name="Giulia" image="https://drive.google.com/thumbnail?id=1v3hAHbAjvFf9CYaJx7IV8JqTbDKK__8S&sz=w1000" />
+          <OtherHomesCard guestNumber={2} name="Plumeria" image="https://drive.google.com/thumbnail?id=1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-&sz=w1000" redirectPath="/Plumeria" />
+          <OtherHomesCard guestNumber={4} name="Giulia" image="https://drive.google.com/thumbnail?id=1v3hAHbAjvFf9CYaJx7IV8JqTbDKK__8S&sz=w1000" redirectPath="/Giulia" />
           </div>
        </div>
       </div>

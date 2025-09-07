@@ -14,7 +14,7 @@ import ImagesModal from "../../Listing/components/ImagesModal/ImagesModal.compon
 import OtherBlogs from "../Components/OtherBlogs.Component";
 import OurHomes from "../../../components/OurHomes/OurHomes.component";
 //import constants
-import { homesSnippet } from "../../../utils/constants";
+import { allHomesSnippetES } from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
@@ -47,7 +47,7 @@ const TwoDaysInPV = () => {
             <FixedNavigationES isBlog={true} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAdES listings={homesSnippet} />
+                    <ListingAdES listings={allHomesSnippetES} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
 

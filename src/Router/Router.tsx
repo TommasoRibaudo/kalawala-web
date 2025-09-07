@@ -10,6 +10,7 @@ import GettingToGandoca from '../pages/Blog/staticPages/GettingToGandoca';
 import TravellingToPuerto from '../pages/Blog/staticPages/TravellingToPuerto';
 import PuertoViejoByPlane from '../pages/Blog/staticPages/PuertoViejoByPlane';
 import TenHoursInPuerto from '../pages/Blog/staticPages/TenHoursInPuerto';
+import BusHours from '../pages/Blog/staticPages/BusHours';
 import ListingGecoES from '../pages/Listing/staticPages_ES/ListingGeco.page_ES';
 import ListingRanaES from '../pages/Listing/staticPages_ES/ListingRana.page_ES';
 import ListingTucanoES from '../pages/Listing/staticPages_ES/ListingTucano.page_ES';
@@ -54,6 +55,7 @@ const AppRouter = () => (
       <Route path='/travellingtopuertoviejo' element={<TravellingToPuerto />} />
       <Route path='/puertoviejobyplane' element={<PuertoViejoByPlane />} />
       <Route path='/TenHoursInPuerto' element={<TenHoursInPuerto />} />
+      <Route path='/bushours' element={<BusHours />} />
       <Route path='/GecoES'  element={<ListingGecoES />}/>
       <Route path='/RanaES'  element={<ListingRanaES />}/>
       <Route path='/TucanoES'  element={<ListingTucanoES />}/>

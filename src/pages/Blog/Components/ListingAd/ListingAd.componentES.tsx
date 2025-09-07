@@ -35,32 +35,36 @@ const ListingAdES: FC<IOtherListing> = ({ listings }) => {
     return (
         <>
             <div className="cont d-flex justify-content-center adContainer">
-                <div className="header">¿Buscas hospedaje en Puerto Viejo? Ofrecemos casas completamente equipadas en el centro del Pueblo:
+                <div className="header">¿Buscas hospedaje en Puerto Viejo? Ofrecemos casas completamente equipadas en Puerto Viejo y Playa Chiquita:
                     <br />
                 </div>
                 {windowWidth <= 1199 ?
                     <Slider {...sliderSettings} className="subCont">
-                        {listings.map(({ name, mainImage }) => (
-                            <div key={name} className="houseContainer" ><div
-                                key={name}
-                                style={{
-                                    backgroundImage: `url(${mainImage})`,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center'
-                                }}
-                                className="listing d-flex align-items-end"
-                                onClick={() => { navigate(`/${name}`) }}
+                        {listings.map(({ name, mainImage }) => {
+                            const displayName = name.replace('ES', '');
+                            return (
+                                <div key={name} className="houseContainer" ><div
+                                    key={name}
+                                    style={{
+                                        backgroundImage: `url(${mainImage})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center'
+                                    }}
+                                    className="listing d-flex align-items-end"
+                                    onClick={() => { navigate(`/${name}`) }}
 
-                            >
-                                <div className="name">{name}</div>
-                            </div></div>
-                        ))}
+                                >
+                                    <div className="name">{displayName}</div>
+                                </div></div>
+                            );
+                        })}
                     </Slider> :
                     <div className={`${windowWidth <= 1199 ? 'hstack' : 'vstack'} gap-5 subCont`}>
                         {listings.map(({ name, mainImage }) => {
+                            const displayName = name.replace('ES', '');
                             return (
-                                <div style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { navigate(`/${name}`) }}>
-                                    <div className="name">{name}</div>
+                                <div key={name} style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { navigate(`/${name}`) }}>
+                                    <div className="name">{displayName}</div>
                                 </div>)
                         })} 
                     </div>

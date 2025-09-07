@@ -76,6 +76,52 @@ export const VillaCoralSnippet: ListingType[] = [
         mainImage: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
     }
 ]
+
+export const allHomesSnippet: ListingType[] = [
+    {
+        name: 'Pappagallo',
+        mainImage: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000"
+    },
+    {
+        name: 'Geco',
+        mainImage: "https://drive.google.com/thumbnail?id=1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF&sz=w1000"
+    },
+    {
+        name: 'Plumeria',
+        mainImage: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
+    },
+    {
+        name: 'Giulia',
+        mainImage: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000"
+    },
+    {
+        name: 'Villa Coral',
+        mainImage: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+    }
+]
+
+export const allHomesSnippetES: ListingType[] = [
+    {
+        name: 'PappagalloES',
+        mainImage: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000"
+    },
+    {
+        name: 'GecoES',
+        mainImage: "https://drive.google.com/thumbnail?id=1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF&sz=w1000"
+    },
+    {
+        name: 'PlumeriaES',
+        mainImage: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
+    },
+    {
+        name: 'GiuliaES',
+        mainImage: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000"
+    },
+    {
+        name: 'VillaCoralES',
+        mainImage: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+    }
+]
 export const gecoImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Baño",

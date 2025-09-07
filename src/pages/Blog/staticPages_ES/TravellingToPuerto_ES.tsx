@@ -6,7 +6,7 @@ import { HouseDataType, ListingType } from "../../../utils/types";
 // import Amenities from "./components/Amenities/Amenities.component";
 import { AmenityType, BlogType } from "../../../utils/types";
 import { blogs, blogsES } from "../../../assets/blogs/blogs";
-import { homesSnippet } from "../../../utils/constants";
+import { allHomesSnippetES } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ImagesContainer from "../../Listing/components/ImagesContainer/ImagesContainer.component";
 import Amenities from "../../Listing/components/Amenities/Amenities.component";
@@ -45,7 +45,7 @@ const TravellingToPuertoES = () => {
             <FixedNavigationES isBlog={true} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAdES listings={homesSnippet} />
+                    <ListingAdES listings={allHomesSnippetES} />
                 </Col>
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
 

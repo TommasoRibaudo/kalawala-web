@@ -6,6 +6,7 @@ import ListingRana from '../pages/Listing/staticPages/ListingRana.page';
 import ListingTucano from '../pages/Listing/staticPages/ListingTucano.page';
 import ListingPappagallo from '../pages/Listing/staticPages/ListingPappagallo.page';
 import TwoDaysInPV from '../pages/Blog/staticPages/TwoDaysInPV';
+import GettingToGandoca from '../pages/Blog/staticPages/GettingToGandoca';
 import TravellingToPuerto from '../pages/Blog/staticPages/TravellingToPuerto';
 import PuertoViejoByPlane from '../pages/Blog/staticPages/PuertoViejoByPlane';
 import TenHoursInPuerto from '../pages/Blog/staticPages/TenHoursInPuerto';
@@ -14,6 +15,7 @@ import ListingRanaES from '../pages/Listing/staticPages_ES/ListingRana.page_ES';
 import ListingTucanoES from '../pages/Listing/staticPages_ES/ListingTucano.page_ES';
 import ListingPappagalloES from '../pages/Listing/staticPages_ES/ListingPappagallo.page_ES';
 import TwoDaysInPVES from '../pages/Blog/staticPages_ES/TwoDaysInPV_ES';
+import GettingToGandocaES from '../pages/Blog/staticPages_ES/GettingToGandoca_ES';
 import TravellingToPuertoES from '../pages/Blog/staticPages_ES/TravellingToPuerto_ES';
 import PuertoViejoByPlaneES from '../pages/Blog/staticPages_ES/PuertoViejoByPlane_ES';
 import TenHoursInPuertoES from '../pages/Blog/staticPages_ES/TenHoursInPuerto_ES';
@@ -48,6 +50,7 @@ const AppRouter = () => (
       <Route path='/Tucano'  element={<ListingTucano />}/>
       <Route path='/Pappagallo'  element={<ListingPappagallo />}/>
       <Route path='/twodaysinpuertoviejo' element={<TwoDaysInPV />} />
+      <Route path='/gettingtogandoca' element={<GettingToGandoca />} />
       <Route path='/travellingtopuertoviejo' element={<TravellingToPuerto />} />
       <Route path='/puertoviejobyplane' element={<PuertoViejoByPlane />} />
       <Route path='/TenHoursInPuerto' element={<TenHoursInPuerto />} />
@@ -56,6 +59,7 @@ const AppRouter = () => (
       <Route path='/TucanoES'  element={<ListingTucanoES />}/>
       <Route path='/PappagalloES'  element={<ListingPappagalloES />}/>
       <Route path='/twodaysinpuertoviejoES' element={<TwoDaysInPVES />} />
+      <Route path='/gettingtogandocaES' element={<GettingToGandocaES />} />
       <Route path='/travellingtopuertoviejoES' element={<TravellingToPuertoES />} />
       <Route path='/puertoviejobyplaneES' element={<PuertoViejoByPlaneES />} />
       <Route path='/TenHoursInPuertoES' element={<TenHoursInPuertoES />} />

@@ -14,7 +14,11 @@ declare global {
   }
 }
 
-function Smoobu2() {
+interface Smoobu2Props {
+  targetId?: string;
+}
+
+function Smoobu2({ targetId = 'apartmentIframeAll' }: Smoobu2Props) {
   useEffect(() => {
     console.log('test smoobu');
     
@@ -27,15 +31,15 @@ function Smoobu2() {
       window.BookingToolIframe.initialize({
         url: 'https://login.smoobu.com/en/booking-tool/iframe/89210',
         baseUrl: 'https://login.smoobu.com/',
-        target: '#apartmentIframeAll',
+        target: `#${targetId}`,
       });
 
-      const apartmentFrame = document.getElementById('apartmentIframeAll');
+      const apartmentFrame = document.getElementById(targetId);
       apartmentFrame!.classList.add('apartment-frame-loaded');
 
       // Observar el iframe para detectar cuando el calendario se haya cargado
       const observer = new MutationObserver(() => {
-        const iframe = document.querySelector('#apartmentIframeAll iframe') as HTMLIFrameElement;
+        const iframe = document.querySelector(`#${targetId} iframe`) as HTMLIFrameElement;
         console.log(iframe)
         if (iframe && iframe.contentDocument) {
           const availableDates = iframe.contentDocument.querySelectorAll('.available-date'); // Ajusta el selector a las clases del DOM real
@@ -51,7 +55,7 @@ function Smoobu2() {
         }
       });
 
-      const targetNode = document.getElementById('apartmentIframeAll');
+      const targetNode = document.getElementById(targetId);
       if (targetNode) {
         observer.observe(targetNode, { childList: true, subtree: true });
       }
@@ -65,7 +69,7 @@ function Smoobu2() {
   }, []);
 
   return (
-    <div id="apartmentIframeAll">
+    <div id={targetId}>
       {/* Aquí se cargará el Booking Tool de Smoobu */}
     </div>
   );

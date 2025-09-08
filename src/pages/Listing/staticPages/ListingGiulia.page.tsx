@@ -14,6 +14,7 @@ import { NamDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
+import FixedNavigationNam from "../../../components/FixedNavigation/FixedNavigation.componentNam";
 
 
 const ListingGiulia = () => {
@@ -46,7 +47,7 @@ const ListingGiulia = () => {
                 <meta name="description" content="New fully equipped Bungalows with A/C and private pool located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. Perfect for families up to 4 people." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Giulia" />
             </Helmet>
-            <FixedNavigation isBlog={false} />
+            <FixedNavigationNam isBlog={false} />
             <Row className="subContainer">
                 <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
                     <OtherListings listings={NamSnippet} currentListing={listing || ''} />

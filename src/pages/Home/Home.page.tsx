@@ -20,7 +20,7 @@ const Home = () => {
       <OurHomes houseDataList={houseDataEngList}/>
       <OurOtherHomes/>
       <Discover />
-      <CallToAction />
+      {/* <CallToAction /> */}
       <Portfolio />
       {/* <Testimonial /> */}
       <ContactUs />

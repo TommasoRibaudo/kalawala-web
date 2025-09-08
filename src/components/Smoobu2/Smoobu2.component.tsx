@@ -20,7 +20,6 @@ interface Smoobu2Props {
 
 function Smoobu2({ targetId = 'apartmentIframeAll' }: Smoobu2Props) {
   useEffect(() => {
-    console.log('test smoobu');
     
     // Cargar el script de Smoobu
     const script = document.createElement('script');

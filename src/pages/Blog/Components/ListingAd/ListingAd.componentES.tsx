@@ -35,7 +35,7 @@ const ListingAdES: FC<IOtherListing> = ({ listings }) => {
     return (
         <>
             <div className="cont d-flex justify-content-center adContainer">
-                <div className="header">¿Buscas hospedaje en Puerto Viejo? Ofrecemos casas completamente equipadas en Puerto Viejo y Playa Chiquita:
+                <div className="header">Ofrecemos casas completamente equipadas:
                     <br />
                 </div>
                 {windowWidth <= 1199 ?

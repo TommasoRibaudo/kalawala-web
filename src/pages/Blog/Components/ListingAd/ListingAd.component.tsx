@@ -34,7 +34,7 @@ const ListingAd: FC<IOtherListing> = ({ listings }) => {
     return (
         <>
             <div className="cont d-flex justify-content-center adContainer">
-                <div className="header">Travelling to Puerto Viejo? We offer fully equipped homes in Puerto Viejo and Playa Chiquita:
+                <div className="header">We offer fully equipped homes:
                     <br />
                 </div>
                 {windowWidth <= 1199 ?

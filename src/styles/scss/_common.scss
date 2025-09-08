@@ -28,7 +28,7 @@ figure {
 }
 
 a {
-  color: $kalawala-dark-green;
+  color: #0066cc;
   transition: all .3s ease-in 0s;
 }
 
@@ -45,7 +45,8 @@ a:hover {
 
 a:focus,
 a:hover {
-  color: #6CB670;
+  color: #004499;
+  text-decoration: underline;
 }
 
 .kill-margin-bottom {

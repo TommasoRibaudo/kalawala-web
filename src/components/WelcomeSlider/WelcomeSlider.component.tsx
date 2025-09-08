@@ -19,6 +19,7 @@ const WelcomeSlider = () => {
             borderRadius: '15px',
             padding: '5px',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            overflow: "visible",
           }}
         >
           <Smoobu2 targetId="welcomeSliderSmoobu" />

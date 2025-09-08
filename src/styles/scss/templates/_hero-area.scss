@@ -3,16 +3,21 @@
 @import  '../../../styles//styles.scss';
 .hero-area {
   background-size: cover;
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+  padding: 20vh 0;
+  overflow: visible;
 
   .block {
     text-align: center;
-    z-index: 99;
+    z-index: 100;
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: auto;
+    overflow: visible;
+    padding: 0 20px;
 
     .video-button {
 

@@ -9,7 +9,7 @@ const WelcomeSliderES = () => {
     <section className="hero-area overlay" style={{ backgroundImage: `url(${banner})`}}>
       <div className = "block" >
         <h1>RESERVAS KALAWALA</h1>
-        <p id="short-description">Casas completamente equipadas en el corazon de Puerto Viejo.</p>
+        <p id="short-description">Casas completamente equipadas en el corazon de Puerto Viejo y Playa Chiquita.</p>
         <br />
 
         <div

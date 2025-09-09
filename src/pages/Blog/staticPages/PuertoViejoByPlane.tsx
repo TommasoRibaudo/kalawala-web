@@ -41,7 +41,10 @@ const PuertoViejoByPlane = () => {
                 <meta charSet="utf-8" />
                 <title>Getting to Puerto Viejo By Plane</title>
                 <meta name="description" content="Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/blog/puertoviejobyplane" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/puertoviejobyplane" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/puertoviejobyplane" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/puertoviejobyplaneES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/puertoviejobyplane" />
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">

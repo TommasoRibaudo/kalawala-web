@@ -41,7 +41,10 @@ const TwoDaysInPV = () => {
                 <meta charSet="utf-8" />
                 <title>2 Days One Night in Puerto Viejo</title>
                 <meta name="description" content="Do you only have a couple of days to visit Puerto Viejo? So did we! We only had 1 night coming from Tortuguero and wanted to make the best out of the time we had in this charming beach town located on the southern Caribbean coast of Costa Rica." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/blog/twodaysinpuertoviejo" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/twodaysinpuertoviejo" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/twodaysinpuertoviejo" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/twodaysinpuertoviejoES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/twodaysinpuertoviejo" />
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">

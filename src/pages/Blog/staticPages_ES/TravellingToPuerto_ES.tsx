@@ -40,7 +40,10 @@ const TravellingToPuertoES = () => {
                 <meta charSet="utf-8" />
                 <title>Como llegar a Puerto Viejo desde San Jose</title>
                 <meta name="description" content="Si estás planeando un viaje a Puerto Viejo, Costa Rica, es posible que te preguntes cómo llegar allí usando transporte público. Afortunadamente, hay varias opciones disponibles que pueden llevarte a este hermoso pueblo caribeño en Talamanca." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/blog/travellingtopuertoviejo" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/travellingtopuertoviejoES" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/travellingtopuertoviejo" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/travellingtopuertoviejoES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/travellingtopuertoviejo" />
             </Helmet>
             <FixedNavigationES isBlog={true} />
             <Row className="subContainer">

@@ -40,7 +40,10 @@ const TenHoursInPuerto = () => {
                 <meta charSet="utf-8" />
                 <title>Ten hours to explore Cahuita</title>
                 <meta name="description" content="If you only have ten hours to explore Cahuita, let's make the most of our time! We start our adventure early, waking up at 7 am. The first thing is to have a coffee and enjoy a delicious ham and cheese croissant fresh out of the oven at Degustibus Bakery." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/blog/travellingtopuertoviejo" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/TenHoursInPuerto" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/TenHoursInPuerto" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/TenHoursInPuertoES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/TenHoursInPuerto" />
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">

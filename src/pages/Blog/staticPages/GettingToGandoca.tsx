@@ -41,7 +41,10 @@ const TwoDaysInPV = () => {
                 <meta charSet="utf-8" />
                 <title>How to Get to Gandoca-Manzanillo National Wildlife Refuge from Puerto Viejo, Costa Rica</title>
                 <meta name="description" content="The Gandoca-Manzanillo National Wildlife Refuge, located in the province of Limón, is one of the best-kept secrets of Costa Rica's Southern Caribbean. This impressive wildlife refuge offers a rich variety of ecosystems, from mangroves and coral reefs to pristine beaches." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/blog/gettingtogandoca" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/gettingtogandoca" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/gettingtogandoca" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/gettingtogandocaES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/gettingtogandoca" />
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">

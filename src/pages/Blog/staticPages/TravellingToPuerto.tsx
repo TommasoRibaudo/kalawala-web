@@ -39,7 +39,10 @@ const TwoDaysInPV = () => {
                 <meta charSet="utf-8" />
                 <title>How to get to Puerto Viejo from San Jose</title>
                 <meta name="description" content="If you're planning a trip to Puerto Viejo, Costa Rica, you may be wondering how to get there using public transportation. Fortunately, there are several options available that can take you to this beautiful Caribbean town in Talamanca." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/blog/travellingtopuertoviejo" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/travellingtopuertoviejo" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/travellingtopuertoviejo" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/travellingtopuertoviejoES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/travellingtopuertoviejo" />
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import OurHomesES from "../../components/OurHomes/OurHomes.componentES";
 import WelcomeSliderES from "../../components/WelcomeSlider/WelcomeSlider.componentES";
 import { houseDataList } from '../../utils/constants';
@@ -41,6 +42,15 @@ const HomeES = () => {
 
   return (
     <div id="body">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Reservas Kalawala | Alquiler de Casas en Puerto Viejo</title>
+        <meta name="description" content="¡Descubre nuestras casas, más baratas que cualquier otra plataforma! Bienvenido a Kalawala, ofrecemos casas de vacaciones completamente equipadas ubicadas en el corazón de Puerto Viejo de Talamanca, Costa Rica. Nuestras casas ofrecen espacio para hasta 5 personas, 2 unidades de A/C, baño privado completamente equipado y cocina y conexión gratuita a internet Wi-Fi." />
+        <link rel="canonical" href="https://www.reservaskalawala.com/HomeES" />
+        <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/" />
+        <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/HomeES" />
+        <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/" />
+      </Helmet>
       <WelcomeSliderES />
       <FixedNavigationES isBlog={false}/>
       <OurHomesES houseDataList={houseDataList}/>

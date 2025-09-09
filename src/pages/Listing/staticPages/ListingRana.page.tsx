@@ -49,6 +49,9 @@ const ListingRana = () => {
                 <title>House Rana - Puerto Viejo Vacation Home Rental</title>
                 <meta name="description" content="Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Rana" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Rana" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/RanaES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Rana" />
             </Helmet>
             <FixedNavigation isBlog={false}/>
             <Row className="subContainer">

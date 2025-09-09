@@ -47,6 +47,9 @@ const ListingPappagallo = () => {
                 <title>House Pappagallo - Fully equipped Home in Puerto Viejo</title>
                 <meta name="description" content="Welcome to Kalawala, a charming complex of two apartments located in the heart of Puerto Viejo. Each apartment is built entirely of wood and is situated above a delightful Italian bakery and are equipped with everything you need for a comfortable stay." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Pappagallo" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Pappagallo" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/PappagalloES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Pappagallo" />
             </Helmet>
             <FixedNavigation isBlog={false}/>
             <Row className="subContainer">

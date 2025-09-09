@@ -50,7 +50,10 @@ const ListingVillaCoralES = () => {
                 <meta charSet="utf-8" />
                 <title>Villa Coral - Casa con piscina privada en Playa Chiquita</title>
                 <meta name="description" content="Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/villaCoralES" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/VillaCoralES" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/VillaCoral" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/VillaCoralES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/VillaCoral" />
             </Helmet>
             <FixedNavigationRibES isBlog={false} />
             <Row className="subContainer">

@@ -46,6 +46,9 @@ const ListingGiulia = () => {
                 <title>House Giulia - Family Retreat</title>
                 <meta name="description" content="New fully equipped Bungalows with A/C and private pool located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. Perfect for families up to 4 people." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Giulia" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Giulia" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/GiuliaES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Giulia" />
             </Helmet>
             <FixedNavigationNam isBlog={false} />
             <Row className="subContainer">

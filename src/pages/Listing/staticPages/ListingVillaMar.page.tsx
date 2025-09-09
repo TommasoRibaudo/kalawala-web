@@ -48,6 +48,9 @@ const ListingVillaMar = () => {
                 <title>Villa Mar - Home with private pool in Playa Chiquita</title>
                 <meta name="description" content="Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/VillaMar" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/VillaMar" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/VillaMarES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/VillaMar" />
             </Helmet>
             <FixedNavigationRib isBlog={false} />
             <Row className="subContainer">

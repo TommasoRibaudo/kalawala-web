@@ -43,11 +43,13 @@ const ListingAreka = () => {
     return (
         <div className={`listingContainer ${show && 'modal-open'}`}>
             <Helmet>
-
                 <meta charSet="utf-8" />
                 <title>House Areka - Couples Retreat with A/C</title>
                 <meta name="description" content="New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Areka" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Areka" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/ArekaES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Areka" />
             </Helmet>
 
             <FixedNavigationNam isBlog={false} />

@@ -48,6 +48,9 @@ const ListingGiuliaES = () => {
                 <title>Casa Giulia - Retiro Familiar</title>
                 <meta name="description" content="Nuevos bungalows totalmente equipados con A/C ubicados a 200mts de la hermosa playa Playa Chiquita, en uno de los barrios más seguros y tranquilos del Caribe. Perfecto para familias hasta 4 personas." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/GiuliaES" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Giulia" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/GiuliaES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Giulia" />
             </Helmet>
             <FixedNavigationNamES isBlog={false} />
             <Row className="subContainer">

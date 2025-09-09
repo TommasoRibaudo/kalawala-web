@@ -45,6 +45,9 @@ const ListingPlumeria = () => {
                 <title>House Plumeria - Couples Retreat with Private Pool</title>
                 <meta name="description" content="New fully equipped Bungalows with A/C and private pool located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Plumeria" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Plumeria" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/PlumeriaES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Plumeria" />
             </Helmet>
             <FixedNavigationNam isBlog={false} />
             <Row className="subContainer">

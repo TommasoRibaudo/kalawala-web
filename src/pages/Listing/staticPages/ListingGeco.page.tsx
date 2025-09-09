@@ -47,6 +47,9 @@ const ListingGeco = () => {
                 <title>House Geco - Pet Friendly Home in Puerto Viejo</title>
                 <meta name="description" content="Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Geco" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Geco" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/GecoES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Geco" />
             </Helmet>
             <FixedNavigation isBlog={false} />
             <Row className="subContainer">

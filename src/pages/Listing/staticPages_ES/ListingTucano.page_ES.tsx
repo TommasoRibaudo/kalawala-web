@@ -47,9 +47,12 @@ const ListingTucanoES = () => {
         <div className={`listingContainer ${show && 'modal-open'}`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>House Tucano - Like Nothing Else in Puerto Viejo</title>
-                <meta name="description" content="This house offers a delightful experience in the heart of Puerto Viejo with a charming wooden apartment located above an Italian bakery. The apartment features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and two A/C units." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/Tucano" />
+                <title>Casa Tucano - Como Ninguna Otra en Puerto Viejo</title>
+                <meta name="description" content="Esta casa ofrece una experiencia encantadora en el corazón de Puerto Viejo con un encantador apartamento de madera ubicado encima de una panadería italiana. El apartamento cuenta con dos cómodas habitaciones, un baño bien equipado, una cocina totalmente equipada, una hermosa terraza y dos unidades de aire acondicionado." />
+                <link rel="canonical" href="https://www.reservaskalawala.com/TucanoES" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Tucano" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/TucanoES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Tucano" />
             </Helmet>
             <FixedNavigationES isBlog={false}/>
             <Row className="subContainer">

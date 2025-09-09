@@ -48,6 +48,9 @@ const ListingPlumeriaES = () => {
                 <title>Casa Plumeria - Retiro para Parejas con Piscina Privada</title>
                 <meta name="description" content="Nuevos bungalows totalmente equipados con A/C y piscina privada ubicados a 200mts de la hermosa playa Playa Chiquita, en uno de los barrios más seguros y tranquilos del Caribe. A pocos minutos de Puerto Viejo y Manzanillo, estamos perfectamente ubicados para visitar la playa Punta Uva y Arrecife." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/PlumeriaES" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Plumeria" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/PlumeriaES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Plumeria" />
             </Helmet>
             <FixedNavigationNamES isBlog={false} />
             <Row className="subContainer">

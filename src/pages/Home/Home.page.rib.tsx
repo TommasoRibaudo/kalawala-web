@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
 import Discover from "../../components/Discover/Discover.component";
 import OurHomes from "../../components/OurHomes/OurHomes.component";
@@ -20,6 +21,15 @@ const HomeRib = () => {
 
   return (
     <div id="body">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Luxury Villas in Puerto Viejo - Kalawala</title>
+        <meta name="description" content="Discover our luxury villas in Puerto Viejo, Costa Rica. Fully equipped vacation homes with modern amenities, perfect for families and groups up to 5 people. Book your stay today!" />
+        <link rel="canonical" href="https://www.reservaskalawala.com/HomeVillas" />
+        <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/HomeVillas" />
+        <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/HomeVillasES" />
+        <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/HomeVillas" />
+      </Helmet>
       <WelcomeSliderRib />
       <FixedNavigationRib isBlog={false}/>
       <OurHomesRIB houseDataList={ribHouseDataEngList}/>

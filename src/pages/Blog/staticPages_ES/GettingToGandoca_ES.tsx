@@ -41,7 +41,10 @@ const TwoDaysInPV = () => {
                 <meta charSet="utf-8" />
                 <title>Cómo Llegar al Refugio Nacional Gandoca-Manzanillo desde Puerto Viejo, Costa Rica</title>
                 <meta name="description" content="El Refugio Nacional Gandoca-Manzanillo, ubicado en la provincia de Limón, es uno de los secretos mejor guardados del Caribe Sur de Costa Rica. Este impresionante refugio de vida silvestre ofrece una rica variedad de ecosistemas, desde manglares y arrecifes de coral hasta playas vírgenes." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/blog/gettingtogandocaES" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/gettingtogandocaES" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/gettingtogandoca" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/gettingtogandocaES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/gettingtogandoca" />
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">

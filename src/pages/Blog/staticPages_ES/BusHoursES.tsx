@@ -41,7 +41,10 @@ const BusHoursES = () => {
                 <meta charSet="utf-8" />
                 <title>Horarios Completos de Autobuses desde Puerto Viejo, Costa Rica - Rutas y Horarios MEPE</title>
                 <meta name="description" content="Encuentra los horarios completos de autobuses desde Puerto Viejo hacia San José, Limón, Cahuita, Manzanillo y Sixaola. Horarios MEPE, rutas e información de transporte para la costa caribeña de Costa Rica." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/blog/bushoursES" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/bushoursES" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/bushours" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/bushoursES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/bushours" />
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">

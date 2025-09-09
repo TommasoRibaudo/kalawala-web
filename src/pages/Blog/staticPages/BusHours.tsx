@@ -41,7 +41,10 @@ const BusHours = () => {
                 <meta charSet="utf-8" />
                 <title>Complete Bus Schedule from Puerto Viejo, Costa Rica - MEPE Bus Routes & Timetables</title>
                 <meta name="description" content="Find the complete bus schedule from Puerto Viejo to San Jose, Limón, Cahuita, Manzanillo, and Sixaola. MEPE bus timetables, routes, and transportation information for Costa Rica's Caribbean coast." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/blog/bushours" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/bushours" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/bushours" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/bushoursES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/bushours" />
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer">

@@ -42,7 +42,10 @@ const PuertoViejoByPlaneES = () => {
                 <meta charSet="utf-8" />
                 <title>Llegar a Puerto Viejo en Avión</title>
                 <meta name="description" content="Llegar a Puerto Viejo en avión es más fácil de lo que piensas. En este artículo, te mostraremos cómo viajar desde cualquier destino a Puerto Viejo tomando un vuelo doméstico desde San José a Limón." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/blog/puertoviejobyplaneES" />
+                <link rel="canonical" href="https://www.reservaskalawala.com/puertoviejobyplaneES" />
+                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/puertoviejobyplane" />
+                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/puertoviejobyplaneES" />
+                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/puertoviejobyplane" />
             </Helmet>
             <FixedNavigationES isBlog={true} />
             <Row className="subContainer">

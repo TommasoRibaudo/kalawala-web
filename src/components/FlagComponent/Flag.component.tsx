@@ -36,10 +36,8 @@ export const LanguageSwitcher = () => {
     };
 
     return (
-        <div className="navbar-flag">
-            <button onClick={handleLanguageChange}>
-                {englishLangUsed? <ES title="Español" />:<US title="English" />}
-            </button>
-        </div>
+        <button onClick={handleLanguageChange}>
+            {englishLangUsed? <ES title="Español" />:<US title="English" />}
+        </button>
     );
 };

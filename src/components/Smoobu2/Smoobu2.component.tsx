@@ -39,7 +39,6 @@ function Smoobu2({ targetId = 'apartmentIframeAll' }: Smoobu2Props) {
       // Observar el iframe para detectar cuando el calendario se haya cargado
       const observer = new MutationObserver(() => {
         const iframe = document.querySelector(`#${targetId} iframe`) as HTMLIFrameElement;
-        console.log(iframe)
         if (iframe && iframe.contentDocument) {
           const availableDates = iframe.contentDocument.querySelectorAll('.available-date'); // Ajusta el selector a las clases del DOM real
 
@@ -47,7 +46,6 @@ function Smoobu2({ targetId = 'apartmentIframeAll' }: Smoobu2Props) {
             // Simular un clic en la primera fecha disponible
             const firstAvailableDate = availableDates[0] as HTMLElement;
             firstAvailableDate.click();
-            console.log('Primera fecha disponible seleccionada:', firstAvailableDate);
 
             observer.disconnect(); // Dejar de observar una vez seleccionada la fecha
           }

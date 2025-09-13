@@ -71,7 +71,15 @@ const TwoDaysInPV = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://cdn.pixabay.com/photo/2020/01/07/05/11/beach-4746787_960_720.jpg" className="responsive-image" style={{ maxWidth: 1000, }} alt="Gandoca-Manzanillo National Wildlife Refuge Beach" />
+                            <img 
+                                src="https://cdn.pixabay.com/photo/2020/01/07/05/11/beach-4746787_960_720.jpg" 
+                                className="responsive-image" 
+                                style={{ maxWidth: 1000, }} 
+                                alt="Gandoca-Manzanillo National Wildlife Refuge Beach"
+                                width="1000"
+                                height="600"
+                                loading="lazy"
+                            />
                         </div>
                         <br />
                         <p>The <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Gandoca-Manzanillo National Wildlife Refuge</a>, located in the province of Limón, is one of the best-kept secrets of Costa Rica's Southern Caribbean. This impressive wildlife refuge offers a rich variety of ecosystems, from mangroves and coral reefs to pristine beaches. If you're in Puerto Viejo de Talamanca and looking for a nature getaway, this is an excellent option. In this guide, we show you how to easily get there from Puerto Viejo so you can fully explore this natural paradise.</p>

@@ -32,12 +32,12 @@ const NamCard: FC<IHomeCard> = ({ guestNumber, name, image, houseLangCode }) => 
                     <h3 className="highlight">{name}</h3>
                     <div style={{ display: "block" }}>
                         <div className="container-rounded-border border-highlight" style={{ marginRight: '6px' }}>
-                            <FontAwesomeIcon icon={faUser} fontSize={"18x"} style={{ margin: '2px 4px 2px 2px' }} />
-                            <b className="highlight" style={{ fontSize: '18px' }}>X{guestNumber}</b>
+                            <FontAwesomeIcon icon={faUser} fontSize={"18x"} style={{ margin: '2px 4px 2px 2px', color: '#737f8a' }} />
+                            <b className="highlight" style={{ fontSize: '18px', color: '#737f8a' }}>X{guestNumber}</b>
                         </div>
-                        <FontAwesomeIcon icon={faSnowflake} fontSize={"20px"} style={{ marginRight: '6px' }} />
-                        <FontAwesomeIcon icon={faUtensils} fontSize={"20px"} style={{ marginRight: '6px' }} />
-                        <FontAwesomeIcon icon={faWifi} fontSize={"20px"} />
+                        <FontAwesomeIcon icon={faSnowflake} fontSize={"20px"} style={{ marginRight: '6px', color: '#737f8a' }} />
+                        <FontAwesomeIcon icon={faUtensils} fontSize={"20px"} style={{ marginRight: '6px', color: '#737f8a' }} />
+                        <FontAwesomeIcon icon={faWifi} fontSize={"20px"} style={{ color: '#737f8a' }} />
                     </div>
                 </div>
             </div>

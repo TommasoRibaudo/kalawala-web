@@ -22,6 +22,8 @@
       border-bottom:2px solid transparent;
       transition: .5s all;
       margin-bottom:20px;
+      position: relative;
+      z-index: 1;
       &:hover {
         border-bottom:2px solid $primary-color;
       }

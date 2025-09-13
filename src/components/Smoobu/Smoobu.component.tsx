@@ -21,12 +21,10 @@ function Smoobu({ homeCode }: ISmoobu) {
   const [key, setKey] = useState(0); // Add key state
   const smoobuUrl: string = process.env.REACT_APP_SMOOBU_URL!;
   const houseCodesObject = JSON.parse(process.env.REACT_APP_HOUSE_CODES!);
-  console.log('houseCodesObject: ', houseCodesObject);
   const url: string = homeCode ? smoobuUrl + houseCodesObject[homeCode] : smoobuUrl;
 
   useEffect(() => {
     if (homeCode) {
-      console.log('test smoobu');
       const script = document.createElement('script');
       script.src = 'https://login.smoobu.com/js/Settings/BookingToolIframe.js';
       script.async = true;

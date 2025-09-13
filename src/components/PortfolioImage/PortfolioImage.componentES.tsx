@@ -52,12 +52,12 @@ const PortfolioImageES = ({ folderName }: IPortfolioImage) => {
   const imageList = images;
   return (
     <div className="filtr-item row">
-      {imageList.map((image: any) => {
+      {imageList.map((image: any, index: number) => {
         return (
-          <div key={image} className="portfolio-block col-lg-4 col-md-6">
+          <div key={`${folderName}-${index}`} className="portfolio-block col-lg-4 col-md-6">
             <Image
               loading='lazy'
-              key={image} src={image.imageLink} alt={`Image ${image + 1}`} fluid />
+              src={image.imageLink} alt={`Image ${index + 1}`} fluid />
             {image.roomType &&
               <TipCard
                 roomType={image.roomType}

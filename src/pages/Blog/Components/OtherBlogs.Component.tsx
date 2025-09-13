@@ -33,9 +33,9 @@ const OtherBlogs: FC<IOtherListing> = ({ currentBlog, blogs }) => {
       <div className="cont d-flex justify-content-center">
         <div className="header">Check out our other blogs!</div>
         <Slider {...sliderSettings} className="subCont">
-          {blogs.map(({ title, thumbnail, id }) => {
+          {blogs.map(({ title, thumbnail, id }, index) => {
             return title !== currentBlog ? (
-              <div><div
+              <div key={`${id}-${index}`}><div
                 style={{ backgroundImage: `url(${thumbnail})`,width: '95%', marginTop:'5%'}}
                 className="listing d-flex align-items-end"
                 onClick={() => { navigate(`/${id}`) }}

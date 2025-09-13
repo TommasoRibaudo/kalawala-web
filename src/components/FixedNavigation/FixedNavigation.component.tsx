@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import './FixedNavigation.style.scss';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -16,6 +16,7 @@ interface IFixedNavigation {
 const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
   const [isActive, setIsActive] = useState<boolean>(true);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const navbarRef = useRef<HTMLDivElement>(null);
 
   const handleToggleClick = (event: any) => {
     if (event.currentTarget.classList.contains('collapsed')) {
@@ -30,24 +31,49 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
   const handleLinkClick = (url: string) => {
     navigate(`/${url}`);
     setIsActive(false);
+    closeMenu();
+  };
+
+  const closeMenu = () => {
+    setIsCollapsed(true);
+    // Force close the Bootstrap collapse if it's open
+    const collapseElement = navbarRef.current?.querySelector('.navbar-collapse');
+    if (collapseElement && !collapseElement.classList.contains('collapse')) {
+      const toggleButton = navbarRef.current?.querySelector('.navbar-toggler');
+      if (toggleButton) {
+        (toggleButton as HTMLElement).click();
+      }
+    }
   };
 
   return (
-    <Navbar className="navigation" expand="lg" sticky="top" variant="dark" data-bs-theme="dark">
+    <Navbar ref={navbarRef} className="navigation" expand="lg" sticky="top" variant="dark" data-bs-theme="dark">
       <Container>
         <Navbar.Brand href="/#body" className="d-flex align-items-center">
-          <img src="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" alt="logo" className="logo" />
+          <img 
+            src="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" 
+            alt="logo" 
+            className="logo"
+            height="52"
+            loading="eager"
+          />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick}>
-          <img src={SolidBars} style={{ height: "25px" }} />
+          <img 
+            src={SolidBars} 
+            style={{ height: "25px", width: "25px" }}
+            width="25"
+            height="25"
+            alt="Menu"
+          />
         </Navbar.Toggle>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
-            <Nav.Link href="/#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`}>Home</Nav.Link>
-            <Nav.Link href="/#callToAction" className="navText" onClick={() => { handleLinkClick("#callToAction") }}>Availability</Nav.Link>
+            <Nav.Link href="/#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`} onClick={closeMenu}>Home</Nav.Link>
+            <Nav.Link href="/#body" className="navText" onClick={() => { handleLinkClick("#callToAction") }}>Availability</Nav.Link>
             <Nav.Link href="/#portfolio" className="navText" onClick={() => { handleLinkClick("#portfolio") }}>Photos</Nav.Link>
             <Nav.Link href="/#contact-us" className="navText" onClick={() => { handleLinkClick("#contact-us") }}>Contact</Nav.Link>
-            <Nav.Link href="/twodaysinpuertoviejo" className={`navText ${(isActive && isBlog) ? 'active' : ''}`}>Blog</Nav.Link>
+            <Nav.Link href="/twodaysinpuertoviejo" className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
           </Nav>
         <div className="navbar-flag">
             <LanguageSwitcher />

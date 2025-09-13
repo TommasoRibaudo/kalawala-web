@@ -63,7 +63,15 @@ const TwoDaysInPV = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://drive.google.com/thumbnail?id=1JxE6lYoK9C2maxtGP9rlUp2a47Ce5C9W&sz=w1000" style={{ maxWidth: 1000, }} className="responsive-image" alt="Surqui" />
+                            <img 
+                                src="https://drive.google.com/thumbnail?id=1JxE6lYoK9C2maxtGP9rlUp2a47Ce5C9W&sz=w1000" 
+                                style={{ maxWidth: 1000, }} 
+                                className="responsive-image" 
+                                alt="Surqui"
+                                width="1000"
+                                height="600"
+                                loading="lazy"
+                            />
                         </div>
                         <br />
                         <p>If you're planning a trip to Puerto Viejo, Costa Rica, you may be wondering how to get there using public transportation. Fortunately, there are several options available that can take you to this beautiful Caribbean town in Talamanca.</p>

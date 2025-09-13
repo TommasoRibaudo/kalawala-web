@@ -64,7 +64,15 @@ const TenHoursInPuerto = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://drive.google.com/thumbnail?id=1H81sxVh2z1VmcbZvVTlhdEINmQ0tQ5Es&sz=w1000" style={{ maxWidth: 1000, }} className="responsive-image" alt="Traveling to Puerto Viejo by bus" />
+                            <img 
+                                src="https://drive.google.com/thumbnail?id=1H81sxVh2z1VmcbZvVTlhdEINmQ0tQ5Es&sz=w1000" 
+                                style={{ maxWidth: 1000, }} 
+                                className="responsive-image" 
+                                alt="Traveling to Puerto Viejo by bus"
+                                width="1000"
+                                height="600"
+                                loading="lazy"
+                            />
                         </div>
                         <br />
                         <p>If you only have ten hours to explore Cahuita, let's make the most of our time! We start our adventure early, waking up at 7 am. The first thing is to have a coffee and enjoy a delicious ham and cheese croissant fresh out of the oven at Degustibus Bakery.</p>

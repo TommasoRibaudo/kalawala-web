@@ -67,7 +67,15 @@ const PuertoViejoByPlane = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://drive.google.com/thumbnail?id=1kE3Zq-IbD47bdiLkW25IKuBncif7J7YR&sz=w1000" style={{ maxWidth: 1000, }} className="responsive-image" alt="Kayaking in Punta Uva" />
+                            <img 
+                                src="https://drive.google.com/thumbnail?id=1kE3Zq-IbD47bdiLkW25IKuBncif7J7YR&sz=w1000" 
+                                style={{ maxWidth: 1000, }} 
+                                className="responsive-image" 
+                                alt="Kayaking in Punta Uva"
+                                width="1000"
+                                height="600"
+                                loading="lazy"
+                            />
                         </div>
                         <p style={{ display: 'flex', justifyContent: 'right' }}>Image by <a href="http://www.freepik.com/" target="_blank"> Freepik</a></p>
                         <br />

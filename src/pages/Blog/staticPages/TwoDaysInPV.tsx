@@ -67,7 +67,15 @@ const TwoDaysInPV = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://drive.google.com/thumbnail?id=13j6FfwVMxVg9lU4SuGST8ljrVkyW7rla&sz=w1000" className="responsive-image" style={{ maxWidth: 1000, }} alt="Kayaking in Punta Uva" />
+                            <img 
+                                src="https://drive.google.com/thumbnail?id=13j6FfwVMxVg9lU4SuGST8ljrVkyW7rla&sz=w1000" 
+                                className="responsive-image" 
+                                style={{ maxWidth: 1000, }} 
+                                alt="Kayaking in Punta Uva"
+                                width="1000"
+                                height="600"
+                                loading="lazy"
+                            />
                         </div>
                         <br />
                         <p>Do you only have a couple of days to visit Puerto Viejo? So did we! We only had 1 night coming from Tortuguero and wanted to make the best out of the time we had in this charming beach town

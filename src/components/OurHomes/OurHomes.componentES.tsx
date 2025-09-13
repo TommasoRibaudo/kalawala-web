@@ -19,7 +19,7 @@ const OurHomesES = ({style, houseDataList}:IOurHomes) => {
                         <h2>Nuestras <span className="color">Casas</span> </h2>
                         <div className="border"></div>
                     </div>
-                    {houseDataList.filter(houseData => houseData.houseLangCode.includes('ES')).map(({ name, guestNumber, parking, image, houseLangCode }) => <HomeCard guestNumber={guestNumber} parking={parking} name={name} image={image} houseLangCode={houseLangCode}/>)}
+                    {houseDataList.filter(houseData => houseData.houseLangCode.includes('ES')).map(({ name, guestNumber, parking, image, houseLangCode }, index) => <HomeCard key={`${name}-${index}`} guestNumber={guestNumber} parking={parking} name={name} image={image} houseLangCode={houseLangCode}/>)}
 
                 </div>
             </div>

@@ -15,7 +15,9 @@ const OtherListingsES: FC<IOtherListing> = ({ currentListing, listings }) => {
     const naviagate = useNavigate()
 
     // Filter out the current listing
-    const otherListings = listings.filter(listing => listing.name !== currentListing)
+    // Normalize names by removing 'ES' suffix for comparison
+    const normalizeName = (name: string) => name.replace(/ES$/, '');
+    const otherListings = listings.filter(listing => normalizeName(listing.name) !== normalizeName(currentListing))
 
     useEffect(() => {
         window.addEventListener("resize", () => setWindowWidth(window.innerWidth));

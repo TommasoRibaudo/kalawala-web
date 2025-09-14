@@ -8,7 +8,6 @@ import PortfolioNam from "../../components/Portfolio/Portfolio.componentNam";
 
 import { NamDataListES } from '../../utils/constants';
 import DiscoverNamES from "../../components/Discover/Discover.componentNamES";
-import CallToActionES from "../../components/CallToAction/CallToAction.componentES";
 import OurOtherHomesNamES from "../../components/OurOtherHomes/OurOtherHomes.componentNamES";
 
 const HomeNamES = () => {
@@ -29,7 +28,6 @@ const HomeNamES = () => {
       <OurHomes houseDataList={NamDataListES}/>
       <OurOtherHomesNamES />
       <DiscoverNamES />
-      <CallToActionES />
       <PortfolioNam />
       {/* <Testimonial /> */}
       <ContactUs />

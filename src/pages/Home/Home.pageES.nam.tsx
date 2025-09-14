@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
 import OurHomes from "../../components/OurHomes/OurHomes.component";
@@ -9,8 +9,37 @@ import PortfolioNam from "../../components/Portfolio/Portfolio.componentNam";
 import { NamDataListES } from '../../utils/constants';
 import DiscoverNamES from "../../components/Discover/Discover.componentNamES";
 import OurOtherHomesNamES from "../../components/OurOtherHomes/OurOtherHomes.componentNamES";
+import MessageTipContainer, { useMessageTip } from "../../components/MessageTip/MessageTipContainer.component";
 
 const HomeNamES = () => {
+  const { addMessageTip } = useMessageTip();
+
+  useEffect(() => {
+    
+    const timer = setTimeout(() => {
+      addMessageTip({
+        id: 'welcome-message',
+        text: 'Usa el código #norefundallowed para disfrutar de un 10% de descuento en reservas no reembolsables.',
+        delay: 0,
+        duration: 60000 
+      });
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [addMessageTip]);
+  useEffect(() => {
+   
+    const timer = setTimeout(() => {
+      addMessageTip({
+        id: 'welcome-message-2',
+        text: '¿Prefieres pagar por transferencia bancaria o SINPE? Reserva de forma segura con nosotros y envía tu comprobante de depósito por correo electrónico o WhatsApp.',
+        delay: 0,
+        duration: 54000 
+      });
+    }, 6000);
+
+    return () => clearTimeout(timer);
+  }, [addMessageTip]);
 
   return (
     <div id="body">
@@ -31,6 +60,9 @@ const HomeNamES = () => {
       <PortfolioNam />
       {/* <Testimonial /> */}
       <ContactUs />
+      
+      {/* Message Tip Container */}
+      <MessageTipContainer />
     </div>
   )
 }

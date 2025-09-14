@@ -70,7 +70,7 @@ const FixedNavigationNamES = ({ isBlog }: IFixedNavigation) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
           <Nav.Link href="HomeNamES#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`} onClick={closeMenu}>Inicio</Nav.Link>
-            <Nav.Link href="HomeNamES#body" className="navText" onClick={() => { handleLinkClick("HomeNamES#callToActionES") }}>Disponibilidad</Nav.Link>
+            <Nav.Link href="HomeNamES#body" className="navText" onClick={() => { handleLinkClick("HomeNamES#body") }}>Disponibilidad</Nav.Link>
             <Nav.Link href="HomeNamES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeNamES#portfolioES") }}>Fotos</Nav.Link>
             <Nav.Link href="HomeNamES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeNamES#contact-usES") }}>Contactanos</Nav.Link>
             <Nav.Link href="/twodaysinpuertoviejoES" className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>

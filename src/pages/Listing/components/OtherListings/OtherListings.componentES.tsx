@@ -29,11 +29,15 @@ const OtherListingsES: FC<IOtherListing> = ({ currentListing, listings }) => {
             <div className="cont d-flex justify-content-center">
                 <div className="header">¡Revisa nuestras otras opciones!</div>
                 <div className={`${otherListings.length === 1 ? 'single-listing-container' : (windowWidth <= 1199 ? 'hstack' : 'vstack')} gap-5 subCont`}>
-                    {otherListings.map(({ name, mainImage }) => (
-                        <div key={name} style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { naviagate(`/${name.replace(/\s/g, "")}`) }}>
-                            <div className="name">{name.replace('ES', '')}</div>
-                        </div>
-                    ))}
+                    {otherListings.map(({ name, mainImage }) => {
+                        // For Spanish listings, ensure we route to the correct Spanish page
+                        const routeName = name.includes('ES') ? name.replace(/\s/g, "") : `${name.replace(/\s/g, "")}ES`;
+                        return (
+                            <div key={name} style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { naviagate(`/${routeName}`) }}>
+                                <div className="name">{name.replace('ES', '')}</div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </>)

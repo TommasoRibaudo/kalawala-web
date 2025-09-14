@@ -58,9 +58,14 @@ const FixedNavigationNam = ({ isBlog }: IFixedNavigation) => {
             loading="eager"
           />
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick}>
-          <img src={SolidBars} style={{ height: "25px" }} />
-        </Navbar.Toggle>
+        <div className="mobile-controls">
+          <div className="mobile-flag">
+            <LanguageSwitcher />
+          </div>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick}>
+            <img src={SolidBars} style={{ height: "25px" }} />
+          </Navbar.Toggle>
+        </div>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
             <Nav.Link href="HomeNam#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`} onClick={closeMenu}>Home</Nav.Link>

@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Container, Col, Row, Button } from "react-bootstrap";
+import { Col, Row, Button } from "react-bootstrap";
 import '../Listing.style.scss'
 import OtherListings from "../components/OtherListings/OtherListings.component";
 import Smoobu from "../../../components/Smoobu/Smoobu.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
-import { useParams } from "react-router-dom";
 import { NamSnippet } from "../../../utils/constants";
-import { HouseDataType, ListingType } from "../../../utils/types";
+import { HouseDataType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
 import { NamDataList } from "../../../utils/constants";
-import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import FixedNavigationNam from "../../../components/FixedNavigation/FixedNavigation.componentNam";
@@ -20,9 +18,7 @@ import FixedNavigationNam from "../../../components/FixedNavigation/FixedNavigat
 const ListingAreka = () => {
     const listing = "Areka"
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
-    const amenities: AmenityType[] = [
-        { icon: 'ac', name: '1 A/C Units' }
-    ]
+    // Amenities are handled by the Amenities component
 
     const [show, setShow] = useState(false);
 

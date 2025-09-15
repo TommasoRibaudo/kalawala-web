@@ -1,7 +1,5 @@
 import React from 'react';
-import logo from './logo.jpg';
 import './App.scss';
-import {Home} from './pages'
 import AppRouter from './Router/Router';
 
 

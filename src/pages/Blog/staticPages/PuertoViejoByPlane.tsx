@@ -77,7 +77,7 @@ const PuertoViejoByPlane = () => {
                                 loading="lazy"
                             />
                         </div>
-                        <p style={{ display: 'flex', justifyContent: 'right' }}>Image by <a href="http://www.freepik.com/" target="_blank"> Freepik</a></p>
+                        <p style={{ display: 'flex', justifyContent: 'right' }}>Image by <a href="http://www.freepik.com/" target="_blank" rel="noreferrer"> Freepik</a></p>
                         <br />
                         <p>Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón.</p>
                         <br />

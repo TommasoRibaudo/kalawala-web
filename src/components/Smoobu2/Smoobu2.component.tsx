@@ -63,7 +63,7 @@ function Smoobu2({ targetId = 'apartmentIframeAll' }: Smoobu2Props) {
     return () => {
       document.body.removeChild(script);
     };
-  }, []);
+  }, [targetId]);
 
   return (
     <div id={targetId}>

@@ -70,7 +70,7 @@ const PuertoViejoByPlaneES = () => {
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <img src="https://drive.google.com/thumbnail?id=1kE3Zq-IbD47bdiLkW25IKuBncif7J7YR&sz=w1000" className="responsive-image" alt="Kayaking in Punta Uva" />
                         </div>
-                        <p style={{ display: 'flex', justifyContent: 'right' }}>Image by <a href="http://www.freepik.com/" target="_blank"> Freepik</a></p>
+                        <p style={{ display: 'flex', justifyContent: 'right' }}>Image by <a href="http://www.freepik.com/" target="_blank" rel="noreferrer"> Freepik</a></p>
                         <br />
                         <p>Llegar a Puerto Viejo en avión es más fácil de lo que piensas. En este artículo, te mostraremos cómo viajar desde cualquier destino a Puerto Viejo tomando un vuelo doméstico desde San José a Limón.</p>
                         <br />

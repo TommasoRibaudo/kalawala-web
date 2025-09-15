@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Container, Col, Row, Button } from "react-bootstrap";
+import { Col, Row, Button } from "react-bootstrap";
 import '../Listing.style.scss'
-import OtherListings from "../components/OtherListings/OtherListings.component";
 import Smoobu from "../../../components/Smoobu/Smoobu.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
-import { useParams } from "react-router-dom";
-import { HouseDataType, ListingType } from "../../../utils/types";
+import { HouseDataType } from "../../../utils/types";
 import { homesSnippet } from "../../../utils/constants";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
 import { houseDataList } from "../../../utils/constants";
-import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
@@ -22,11 +19,7 @@ const ListingPappagalloES = () => {
     const listing = 'PappagalloES'
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
 
-    const amenities: AmenityType[] = [
-        { icon: 'ac', name: '2 A/C Units' },
-        { icon: 'ac', name: '2 A/C Units' },
-        { icon: 'ac', name: '2 A/C Units' }
-    ]
+
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);

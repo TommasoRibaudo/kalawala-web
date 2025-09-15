@@ -44,7 +44,7 @@ function Smoobu({ homeCode }: ISmoobu) {
       };
     }
 
-  }, [homeCode]);
+  }, [homeCode, url]);
 
   useEffect(() => {
     setKey(prevKey => prevKey + 1); // Increment key to trigger component re-render

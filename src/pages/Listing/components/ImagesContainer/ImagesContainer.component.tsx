@@ -1,7 +1,6 @@
 import React from "react";
 import { Col, Row, Image, } from "react-bootstrap";
 import './ImagesContainer.style.scss'
-import requireContext from 'require-context.macro';
 import { gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions, ArekaImageDescriptions, ArekaImageDescriptionsES, GiuliaImageDescriptions, GiuliaImageDescriptionsES, PlumeriaImageDescriptions, PlumeriaImageDescriptionsES } from '../../../../utils/constants';
 
 

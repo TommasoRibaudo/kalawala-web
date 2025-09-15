@@ -8,8 +8,7 @@ interface IOurHomes{
     houseDataList:HouseDataType[];
 }
 
-const OurHomes = ({style, houseDataList}:IOurHomes) => {
-
+const OurHomes: React.FC<IOurHomes> = ({ style, houseDataList }) => {
     // Homes data is passed as props
     return (
         <section id="house-list" className="bg-one about section" style={style}>
@@ -19,7 +18,16 @@ const OurHomes = ({style, houseDataList}:IOurHomes) => {
                         <h2>Our <span className="color">Homes</span> </h2>
                         <div className="border"></div>
                     </div>
-                    {houseDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => <HomeCard guestNumber={guestNumber} parking={parking} name={name} image={image} houseLangCode={houseLangCode}/>)}
+                    {houseDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => (
+                        <HomeCard 
+                            key={houseLangCode} 
+                            guestNumber={guestNumber} 
+                            parking={parking} 
+                            name={name} 
+                            image={image} 
+                            houseLangCode={houseLangCode}
+                        />
+                    ))}
                 </div>
             </div>
         </section>

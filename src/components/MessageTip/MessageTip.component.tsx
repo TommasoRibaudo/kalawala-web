@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './MessageTip.style.scss';
 
 export interface MessageTipProps {
@@ -19,14 +19,14 @@ const MessageTip: React.FC<MessageTipProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsVisible(false);
     // Wait for animation to complete before removing from DOM
     setTimeout(() => {
       setShouldRender(false);
       onClose(id);
     }, 300); // Match animation duration
-  };
+  }, [onClose, id]);
 
   useEffect(() => {
     // Show the message after the specified delay

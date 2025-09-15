@@ -27,7 +27,6 @@ const Blog = () => {
     useEffect(() => {
         window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
     }, [])
-    console.log("data:", blogData);
     const description = blogData?.text.split('<br/>');
     return (
         

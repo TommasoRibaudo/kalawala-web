@@ -25,7 +25,6 @@ const BusHoursES = () => {
         window.scrollTo(0, 0);
         window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
     }, [])
-    console.log("data:", blogData);
     return (
 
         <div className={`listingContainer`}>

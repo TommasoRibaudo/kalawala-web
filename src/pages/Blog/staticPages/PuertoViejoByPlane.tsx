@@ -25,7 +25,6 @@ const PuertoViejoByPlane = () => {
         window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
     }, [])
 
-    console.log("data:", blogData);
     return (
 
         <div className={`listingContainer`}>

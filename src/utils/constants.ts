@@ -1519,7 +1519,7 @@ export const VillasDataListES: HouseDataType[] = [
         description: "",
         neighborhood: "",
         houseCode: 5,
-        houseLangCode: "Villa Mar",
+        houseLangCode: "VillaMarES",
         image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000",
         parking: false,
         amenities: [
@@ -1556,7 +1556,7 @@ export const VillasDataListES: HouseDataType[] = [
         description: "",
         neighborhood: "",
         houseCode: 6,
-        houseLangCode: "Villa Coral",
+        houseLangCode: "VillaCoralES",
         parking: false,
         image: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000",
         amenities: [

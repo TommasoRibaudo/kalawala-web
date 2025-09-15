@@ -1,8 +1,6 @@
 import React from 'react';
-
-import requireContext from 'require-context.macro';
 import { Image } from 'react-bootstrap';
-import { GiuliaImageDescriptionsES, PlumeriaImageDescriptionsES, ArekaImageDescriptionsES, gecoImageDescriptionsES, IImageDescription, pappagalloImageDescriptionsES, ranaImageDescriptionsES, tucanoImageDescriptionsES, VillaCoralImageDescriptionsES, VillaMarImageDescriptionsES } from '../../utils/constants';
+import { GiuliaImageDescriptionsES, PlumeriaImageDescriptionsES, ArekaImageDescriptionsES, gecoImageDescriptionsES, pappagalloImageDescriptionsES, ranaImageDescriptionsES, tucanoImageDescriptionsES, VillaCoralImageDescriptionsES, VillaMarImageDescriptionsES } from '../../utils/constants';
 import { TipCard } from '../TipCard/TipCard.component';
 
 interface IPortfolioImage {
@@ -10,16 +8,7 @@ interface IPortfolioImage {
 }
 
 const PortfolioImageES = ({ folderName }: IPortfolioImage) => {
-  let images: any;
-  type ImageDescriptions = {
-    [key: string]: IImageDescription[];
-  }
-  const imageDescriptions: ImageDescriptions = {
-    Tucano: tucanoImageDescriptionsES,
-    Geco: gecoImageDescriptionsES,
-    Pappagallo: pappagalloImageDescriptionsES,
-    Rana: ranaImageDescriptionsES
-  }
+  let images: any;  
   switch (folderName) {
     case "Tucano":
       images = tucanoImageDescriptionsES;

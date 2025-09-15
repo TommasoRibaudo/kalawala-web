@@ -1,24 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
-import { useParams } from "react-router-dom";
-import { HouseDataType, ListingType } from "../../../utils/types";
-import { allHomesSnippetES } from "../../../utils/constants";
 
 // import Amenities from "./components/Amenities/Amenities.component";
-import { AmenityType, BlogType } from "../../../utils/types";
-import { blogs, blogsES } from "../../../assets/blogs/blogs";
-import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
-import ImagesContainer from "../../Listing/components/ImagesContainer/ImagesContainer.component";
-import Amenities from "../../Listing/components/Amenities/Amenities.component";
-import ImagesModal from "../../Listing/components/ImagesModal/ImagesModal.component";
+import { blogsES } from "../../../assets/blogs/blogs";
 import OtherBlogs from "../Components/OtherBlogs.Component";
-import OurHomes from "../../../components/OurHomes/OurHomes.component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
-import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 import ListingAdES from "../Components/ListingAd/ListingAd.componentES";
+import { allHomesSnippetES } from "../../../utils/constants";
 
 
 const PuertoViejoByPlaneES = () => {
@@ -34,7 +25,6 @@ const PuertoViejoByPlaneES = () => {
     }, [])
 
     console.log("data:", blogData);
-    const description = blogData?.text.split('<br/>');
     return (
 
         <div className={`listingContainer`}>

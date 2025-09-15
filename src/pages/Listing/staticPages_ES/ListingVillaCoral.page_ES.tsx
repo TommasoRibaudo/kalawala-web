@@ -1,33 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Container, Col, Row, Button } from "react-bootstrap";
+import { Col, Row, Button } from "react-bootstrap";
 import '../Listing.style.scss'
-import OtherListings from "../components/OtherListings/OtherListings.component";
 import Smoobu from "../../../components/Smoobu/Smoobu.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
-import { useParams } from "react-router-dom";
-import { homesSnippet, VillaSnippet, VillaCoralSnippet } from "../../../utils/constants";
-import { HouseDataType, ListingType } from "../../../utils/types";
+import { VillaCoralSnippet } from "../../../utils/constants";
+import { HouseDataType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
 import { VillasDataListES } from "../../../utils/constants";
-import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
-import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
-import FixedNavigationRib from "../../../components/FixedNavigation/FixedNavigation.componentRIB";
 import FixedNavigationRibES from "../../../components/FixedNavigation/FixedNavigation.componentRIBES";
 
 
 const ListingVillaCoralES = () => {
     const listing = 'Villa CoralES'
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
-    const amenities: AmenityType[] = [
-        { icon: 'ac', name: '2 A/C Units' },
-        { icon: 'ac', name: '2 A/C Units' },
-        { icon: 'ac', name: '2 A/C Units' }
-    ]
 
     const [show, setShow] = useState(false);
 

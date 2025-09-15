@@ -1,6 +1,4 @@
 import React from 'react';
-
-import requireContext from 'require-context.macro';
 import { Image } from 'react-bootstrap';
 import { ArekaImageDescriptions, PlumeriaImageDescriptions, GiuliaImageDescriptions, gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions } from '../../utils/constants';
 import AspectBox from '../AspectBox/AspectBox.component';

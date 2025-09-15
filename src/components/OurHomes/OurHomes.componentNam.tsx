@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import HomeCard from './Components/HomeCard.component';
 import './OurHomes.style.scss'
 import { HouseDataType } from '../../utils/types';
@@ -11,27 +10,7 @@ interface IOurHomes{
 
 const OurHomesNam = ({style, NamDataList}:IOurHomes) => {
 
-    const homes = [
-        {
-            name: 'Areka',
-            gusestNumber: 2,
-            parking: true,
-            image: "https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000"
-        },
-        {
-            name: 'Plumeria',
-            gusestNumber: 2,
-            parking: true,
-            image: "https://drive.google.com/thumbnail?id=1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF&sz=w1000"
-        },
-        {
-            name: 'Giulia',
-            gusestNumber: 4,
-            parking: true,
-            image: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000"
-        },
-
-    ]
+    
     return (
         <section id="house-list" className="bg-one about section" style={style}>
             <div className="container">

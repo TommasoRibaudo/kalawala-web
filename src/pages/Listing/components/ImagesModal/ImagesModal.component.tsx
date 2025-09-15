@@ -38,15 +38,18 @@ const ImagesModal = ({ closeModal, houseName }: IIMagesModal) => {
       }
     };
     
+    // Capture the current ref value for cleanup
+    const currentModalRef = modalRef.current;
+    
     // Add event listeners
     document.addEventListener('keydown', handleKeyDown);
-    modalRef.current?.addEventListener('wheel', handleWheel, { passive: false });
+    currentModalRef?.addEventListener('wheel', handleWheel, { passive: false });
     
     // Cleanup function to restore body scroll when modal closes
     return () => {
       document.body.style.overflow = 'unset';
       document.removeEventListener('keydown', handleKeyDown);
-      modalRef.current?.removeEventListener('wheel', handleWheel);
+      currentModalRef?.removeEventListener('wheel', handleWheel);
     };
   }, [closeModal]);
 

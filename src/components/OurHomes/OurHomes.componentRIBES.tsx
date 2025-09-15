@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import './OurHomes.style.scss'
 import { HouseDataType } from '../../utils/types';
 import React from 'react';
@@ -11,20 +10,6 @@ interface IOurHomes{
 
 const OurHomesRIBES = ({style, houseDataList}:IOurHomes) => {
 
-    const homes = [
-        {
-            name: 'Villa Mar',
-            gusestNumber: 2,
-            parking: false,
-            image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
-        },
-        {
-            name: 'Villa Coral',
-            gusestNumber: 2,
-            parking: false,
-            image: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
-        },
-    ]
       return (
         <section id="house-list" className="bg-one about section" style={style}>
             <div className="container">

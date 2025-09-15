@@ -44,65 +44,65 @@ const AppRouter = () => {
   // Web Vitals CLS tracking - runs on every page
   React.useEffect(() => {
     // Check if script already exists to avoid duplicates
-    if (document.querySelector('script[data-web-vitals]')) {
-      return;
-    }
+    // if (document.querySelector('script[data-web-vitals]')) {
+    //   return;
+    // }
 
-    const script = document.createElement('script');
-    script.type = 'module';
-    script.setAttribute('data-web-vitals', 'true');
-    script.textContent = `
-      import {onCLS, onLCP, onFID, onFCP, onTTFB} from 'https://unpkg.com/web-vitals@4/dist/web-vitals.attribution.js';
+    // const script = document.createElement('script');
+    // script.type = 'module';
+    // script.setAttribute('data-web-vitals', 'true');
+    // script.textContent = `
+    //   import {onCLS, onLCP, onFID, onFCP, onTTFB} from 'https://unpkg.com/web-vitals@4/dist/web-vitals.attribution.js';
       
-      const getPerformanceStatus = (metric, value, threshold) => {
-        const status = value <= threshold ? '✅ GOOD' : '⚠️ NEEDS IMPROVEMENT';
-        const color = value <= threshold ? '#28a745' : '#ffc107';
-        return { status, color };
-      };
+    //   const getPerformanceStatus = (metric, value, threshold) => {
+    //     const status = value <= threshold ? '✅ GOOD' : '⚠️ NEEDS IMPROVEMENT';
+    //     const color = value <= threshold ? '#28a745' : '#ffc107';
+    //     return { status, color };
+    //   };
       
-      // CLS tracking
-      onCLS(({value, id, attribution}) => {
-        const { status, color } = getPerformanceStatus('CLS', value, 0.1);
-        console.log('%c🔍 CLS: ' + status + ' (' + value.toFixed(3) + ')', 'color: ' + color + '; font-weight: bold;');
-        if (value > 0.1) {
-          console.log('   📍 Element causing shift:', attribution.largestShiftTarget);
-        }
-      });
+    //   // CLS tracking
+    //   onCLS(({value, id, attribution}) => {
+    //     const { status, color } = getPerformanceStatus('CLS', value, 0.1);
+    //     console.log('%c🔍 CLS: ' + status + ' (' + value.toFixed(3) + ')', 'color: ' + color + '; font-weight: bold;');
+    //     if (value > 0.1) {
+    //       console.log('   📍 Element causing shift:', attribution.largestShiftTarget);
+    //     }
+    //   });
       
-      // LCP tracking
-      onLCP(({value, id, attribution}) => {
-        const { status, color } = getPerformanceStatus('LCP', value, 2500);
-        console.log('%c⚡ LCP: ' + status + ' (' + Math.round(value) + 'ms)', 'color: ' + color + '; font-weight: bold;');
-        if (value > 2500) {
-          console.log('   📍 Slowest element:', attribution.element);
-        }
-      });
+    //   // LCP tracking
+    //   onLCP(({value, id, attribution}) => {
+    //     const { status, color } = getPerformanceStatus('LCP', value, 2500);
+    //     console.log('%c⚡ LCP: ' + status + ' (' + Math.round(value) + 'ms)', 'color: ' + color + '; font-weight: bold;');
+    //     if (value > 2500) {
+    //       console.log('   📍 Slowest element:', attribution.element);
+    //     }
+    //   });
       
-      // FID tracking
-      onFID(({value, id, attribution}) => {
-        const { status, color } = getPerformanceStatus('FID', value, 100);
-        console.log('%c🖱️ FID: ' + status + ' (' + Math.round(value) + 'ms)', 'color: ' + color + '; font-weight: bold;');
-        if (value > 100) {
-          console.log('   📍 Interactive element:', attribution.eventTarget);
-        }
-      });
+    //   // FID tracking
+    //   onFID(({value, id, attribution}) => {
+    //     const { status, color } = getPerformanceStatus('FID', value, 100);
+    //     console.log('%c🖱️ FID: ' + status + ' (' + Math.round(value) + 'ms)', 'color: ' + color + '; font-weight: bold;');
+    //     if (value > 100) {
+    //       console.log('   📍 Interactive element:', attribution.eventTarget);
+    //     }
+    //   });
       
-      // FCP tracking
-      onFCP(({value, id, attribution}) => {
-        const { status, color } = getPerformanceStatus('FCP', value, 1800);
-        console.log('%c🎨 FCP: ' + status + ' (' + Math.round(value) + 'ms)', 'color: ' + color + '; font-weight: bold;');
-      });
+    //   // FCP tracking
+    //   onFCP(({value, id, attribution}) => {
+    //     const { status, color } = getPerformanceStatus('FCP', value, 1800);
+    //     console.log('%c🎨 FCP: ' + status + ' (' + Math.round(value) + 'ms)', 'color: ' + color + '; font-weight: bold;');
+    //   });
       
-      // TTFB tracking
-      onTTFB(({value, id, attribution}) => {
-        const { status, color } = getPerformanceStatus('TTFB', value, 600);
-        console.log('%c🌐 TTFB: ' + status + ' (' + Math.round(value) + 'ms)', 'color: ' + color + '; font-weight: bold;');
-      });
+    //   // TTFB tracking
+    //   onTTFB(({value, id, attribution}) => {
+    //     const { status, color } = getPerformanceStatus('TTFB', value, 600);
+    //     console.log('%c🌐 TTFB: ' + status + ' (' + Math.round(value) + 'ms)', 'color: ' + color + '; font-weight: bold;');
+    //   });
       
-      console.log('📊 Web Vitals monitoring active - Performance status will appear below:');
-    `;
-    document.head.appendChild(script);
-    console.log('📊 Web Vitals CLS tracking initialized');
+    //   console.log('📊 Web Vitals monitoring active - Performance status will appear below:');
+    // `;
+    // document.head.appendChild(script);
+    // console.log('📊 Web Vitals CLS tracking initialized');
   }, []);
 
   return (

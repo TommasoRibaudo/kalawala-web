@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './Smoobu2.style.scss';
 import React from 'react';
 
@@ -19,56 +19,167 @@ interface Smoobu2Props {
 }
 
 function Smoobu2({ targetId = 'apartmentIframeAll' }: Smoobu2Props) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const iframeLoadedRef = useRef(false);
+
   useEffect(() => {
-    
-    // Cargar el script de Smoobu
-    const script = document.createElement('script');
-    script.src = 'https://login.smoobu.com/js/Settings/BookingToolIframe.js';
-    script.async = true;
 
-    script.onload = () => {
-      window.BookingToolIframe.initialize({
-        url: 'https://login.smoobu.com/en/booking-tool/iframe/89210',
-        baseUrl: 'https://login.smoobu.com/',
-        target: `#${targetId}`,
-      });
+    setIsLoading(true);
+    setIframeLoaded(false);
+    iframeLoadedRef.current = false;
 
-      const apartmentFrame = document.getElementById(targetId);
-      apartmentFrame!.classList.add('apartment-frame-loaded');
-
-      // Observar el iframe para detectar cuando el calendario se haya cargado
-      const observer = new MutationObserver(() => {
-        const iframe = document.querySelector(`#${targetId} iframe`) as HTMLIFrameElement;
-        if (iframe && iframe.contentDocument) {
-          const availableDates = iframe.contentDocument.querySelectorAll('.available-date'); // Ajusta el selector a las clases del DOM real
-
-          if (availableDates.length > 0) {
-            // Simular un clic en la primera fecha disponible
-            const firstAvailableDate = availableDates[0] as HTMLElement;
-            firstAvailableDate.click();
-
-            observer.disconnect(); // Dejar de observar una vez seleccionada la fecha
+    // Load script properly using dynamic script loading
+    const loadScript = () => {
+      return new Promise<void>((resolve, reject) => {
+        // Check if script already exists
+        const existingScript = document.querySelector('script[src="https://login.smoobu.com/js/Settings/BookingToolIframe.js"]');
+        if (existingScript) {
+          if (window.BookingToolIframe) {
+            resolve();
+          } else {
+            existingScript.addEventListener('load', () => resolve());
+            existingScript.addEventListener('error', () => reject());
           }
+          return;
         }
+
+        const script = document.createElement('script');
+        script.src = 'https://login.smoobu.com/js/Settings/BookingToolIframe.js';
+        script.async = true;
+        script.onload = () => {
+          resolve();
+        };
+        script.onerror = () => {
+          reject();
+        };
+        document.head.appendChild(script);
       });
-
-      const targetNode = document.getElementById(targetId);
-      if (targetNode) {
-        observer.observe(targetNode, { childList: true, subtree: true });
-      }
     };
 
-    document.body.appendChild(script);
+    // Load script and then initialize
+    loadScript()
+      .then(() => {
 
-    return () => {
-      document.body.removeChild(script);
-    };
+        if (window.BookingToolIframe) {
+          try {
+            window.BookingToolIframe.initialize({
+              url: 'https://login.smoobu.com/en/booking-tool/iframe/89210',
+              baseUrl: 'https://login.smoobu.com/',
+              target: `#${targetId}`,
+            });
+
+            const apartmentFrame = document.getElementById(targetId);
+            if (apartmentFrame) {
+              apartmentFrame.classList.add('apartment-frame-loaded');
+            }
+
+            // Set up iframe load detection
+            const checkIframeLoaded = () => {
+              const iframe = document.querySelector(`#${targetId} iframe`) as HTMLIFrameElement;
+
+              if (iframe) {
+
+                // Check if iframe has content
+                if (iframe.contentDocument && iframe.contentDocument.body && iframe.contentDocument.body.children.length > 0) {
+                  iframeLoadedRef.current = true;
+                  setIframeLoaded(true);
+                  setIsLoading(false);
+                  return;
+                }
+
+                iframe.onload = () => {
+                  setTimeout(() => {
+                    iframeLoadedRef.current = true;
+                    setIframeLoaded(true);
+                    setIsLoading(false);
+                  }, 500);
+                };
+              } else {
+                setTimeout(checkIframeLoaded, 100);
+              }
+            };
+
+            setTimeout(checkIframeLoaded, 200);
+
+            // Fallback timeout - shorter timeout for better UX
+            setTimeout(() => {
+              if (!iframeLoadedRef.current) {
+                iframeLoadedRef.current = true;
+                setIframeLoaded(true);
+                setIsLoading(false);
+              }
+            }, 5000);
+          } catch (error) {
+            // Force hide skeleton on initialization error
+            setTimeout(() => {
+              iframeLoadedRef.current = true;
+              setIframeLoaded(true);
+              setIsLoading(false);
+            }, 2000);
+          }
+        } else {
+          // Force hide skeleton after script load failure
+          setTimeout(() => {
+            iframeLoadedRef.current = true;
+            setIframeLoaded(true);
+            setIsLoading(false);
+          }, 2000);
+        }
+      })
+      .catch((error) => {
+        // Force hide skeleton on script load failure
+        setTimeout(() => {
+          iframeLoadedRef.current = true;
+          setIframeLoaded(true);
+          setIsLoading(false);
+        }, 2000);
+      });
   }, [targetId]);
 
+  // Debug state changes
+  useEffect(() => {
+  }, [isLoading, iframeLoaded]);
+
+
   return (
-    <div id={targetId}>
-      {/* Aquí se cargará el Booking Tool de Smoobu */}
-    </div>
+    <div 
+      id={targetId} 
+      style={{ 
+        position: 'relative',
+        minHeight: isLoading ? '400px' : 'auto'
+      }}
+      ref={(el) => {
+        if (el && isLoading) {
+          // Only add skeleton when loading and container exists
+          const existingSkeleton = el.querySelector('.smoobu2-skeleton-overlay');
+          if (!existingSkeleton) {
+            const skeletonDiv = document.createElement('div');
+            skeletonDiv.className = 'smoobu2-skeleton-overlay';
+            skeletonDiv.style.cssText = `
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              z-index: 1;
+              background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+              background-size: 200% 100%;
+              animation: shimmer 1.5s infinite;
+              border-radius: 4px;
+              overflow: hidden;
+            `;
+            el.appendChild(skeletonDiv);
+          }
+        } else if (el && !isLoading) {
+          // Remove skeleton when not loading
+          const existingSkeleton = el.querySelector('.smoobu2-skeleton-overlay');
+          if (existingSkeleton) {
+            existingSkeleton.remove();
+          }
+        }
+      }}
+    />
   );
 }
 

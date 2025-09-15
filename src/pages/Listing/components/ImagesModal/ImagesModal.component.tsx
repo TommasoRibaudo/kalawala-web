@@ -56,10 +56,7 @@ const ImagesModal = ({ closeModal, houseName }: IIMagesModal) => {
   const handleModalClick = (e: React.MouseEvent) => {
     // Only close if clicking directly on the modal backdrop
     if (e.target === e.currentTarget) {
-      console.log('Modal backdrop clicked, closing...');
       closeModal();
-    } else {
-      console.log('Modal content clicked, not closing...');
     }
   };
   return (
@@ -75,7 +72,6 @@ const ImagesModal = ({ closeModal, houseName }: IIMagesModal) => {
        <button 
          className="btn btn-danger"
          onClick={() => {
-           console.log('Close button clicked');
            closeModal();
          }}
          style={{ 

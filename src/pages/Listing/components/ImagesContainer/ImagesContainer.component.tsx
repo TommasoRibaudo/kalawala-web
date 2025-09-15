@@ -96,7 +96,6 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
   function showAllImages() {
     if (showModal)
       showModal();
-    console.log('show images');
   }
 
   return (

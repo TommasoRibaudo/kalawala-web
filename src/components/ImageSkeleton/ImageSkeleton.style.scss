@@ -3,13 +3,22 @@
 
 // Base skeleton styles
 .image-skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #d0d0d0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   border-radius: 4px;
   display: block;
   position: relative;
   overflow: hidden;
   width: 100%;
+  min-height: 100px; // Ensure minimum height for visibility
+  animation: shimmer 1.5s infinite; // Add shimmer animation by default
+  
+  // Ensure shimmer animation overrides any base background
+  &[class*="--shimmer"] {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%) !important;
+    background-size: 200% 100% !important;
+    animation: shimmer 1.5s infinite !important;
+  }
 
   // Variants
   &--rectangular {
@@ -35,6 +44,21 @@
 
   &--wave {
     animation: wave 2s infinite;
+  }
+
+  // Ensure shimmer animation is always applied
+  &[class*="--shimmer"],
+  &:not([class*="--pulse"]):not([class*="--wave"]) {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%) !important;
+    background-size: 200% 100% !important;
+    animation: shimmer 1.5s infinite !important;
+  }
+  
+  // Override any dark backgrounds
+  &[class*="--shimmer"] {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%) !important;
+    background-size: 200% 100% !important;
+    animation: shimmer 1.5s infinite !important;
   }
 
   // Responsive variants for different image types
@@ -88,7 +112,7 @@
 // Dark mode support
 @media (prefers-color-scheme: dark) {
   .image-skeleton {
-    background: linear-gradient(90deg, #3a3a3a 25%, #5a5a5a 50%, #3a3a3a 75%);
+    background: linear-gradient(90deg, #2c2c2c 25%, #3a3a3a 50%, #2c2c2c 75%);
     background-size: 200% 100%;
   }
 }
@@ -107,15 +131,29 @@
   }
 }
 
+// Global override to ensure whiteish shimmer background
+.image-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%) !important;
+  background-size: 200% 100% !important;
+  animation: shimmer 1.5s infinite !important;
+}
+
 // Responsive adjustments
 @include mixins.mobile {
   .image-skeleton {
+    min-height: 200px; // Consistent height for all mobile images
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%) !important;
+    background-size: 200% 100% !important;
+    animation: shimmer 1.5s infinite !important;
+    
     &--main {
       aspect-ratio: 4/3;
+      min-height: 200px; // Consistent with container
     }
     
     &--secondary {
       aspect-ratio: 1/1;
+      min-height: 200px; // Consistent with container
     }
   }
 }

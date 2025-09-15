@@ -72,6 +72,7 @@ const ImageWithSkeleton: React.FC<ImageWithSkeletonProps> = ({
       setImageLoaded(true);
       setIsLoading(false);
       setHasError(false);
+  
       onLoad?.();
     }, delay);
   };

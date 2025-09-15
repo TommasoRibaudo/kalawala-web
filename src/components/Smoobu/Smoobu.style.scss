@@ -13,6 +13,16 @@
   // width: 400px
 }
 
+.smoobu-skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
 #apartmentIframeAll .border-box-container {
   background-color: green;
 }

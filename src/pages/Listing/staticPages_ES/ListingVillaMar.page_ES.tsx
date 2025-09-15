@@ -24,7 +24,7 @@ const ListingVillaMarES = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = VillasDataListES.find((house) => house.houseLangCode === "Villa Mar");
+    const houseData: HouseDataType | undefined = VillasDataListES.find((house) => house.houseLangCode === "VillaMarES");
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 

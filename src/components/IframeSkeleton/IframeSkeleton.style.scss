@@ -1,0 +1,125 @@
+@use '../../styles/mixins';
+@import '../../styles/styles.scss';
+
+// Base iframe skeleton styles
+.iframe-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #d0d0d0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 300px;
+
+  // Variants
+  &--booking-widget {
+    border-radius: 8px;
+    min-height: 400px;
+  }
+
+  &--calendar {
+    border-radius: 6px;
+    min-height: 350px;
+  }
+
+  &--form {
+    border-radius: 4px;
+    min-height: 250px;
+  }
+
+  // Animations
+  &--shimmer {
+    animation: shimmer 1.5s infinite;
+  }
+
+  &--pulse {
+    animation: pulse 2s infinite;
+  }
+
+  &--wave {
+    animation: wave 2s infinite;
+  }
+
+  // Responsive behavior
+  &--responsive {
+    @include mixins.tablet {
+      min-height: 300px;
+    }
+
+    @include mixins.mobile {
+      min-height: 250px;
+      border-radius: 6px;
+    }
+  }
+}
+
+// Animation keyframes
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes wave {
+  0% {
+    background-position: -200% 0;
+  }
+  50% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .iframe-skeleton {
+    background: linear-gradient(90deg, #3a3a3a 25%, #5a5a5a 50%, #3a3a3a 75%);
+    background-size: 200% 100%;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .iframe-skeleton {
+    animation: none;
+    background: #f0f0f0;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .iframe-skeleton {
+      background: #2a2a2a;
+    }
+  }
+}
+
+// Responsive adjustments
+@include mixins.mobile {
+  .iframe-skeleton {
+    &--booking-widget {
+      min-height: 300px;
+    }
+    
+    &--calendar {
+      min-height: 250px;
+    }
+    
+    &--form {
+      min-height: 200px;
+    }
+  }
+}

@@ -1,6 +1,22 @@
 @use '../../styles/mixins';
 @import  '../../styles/styles.scss';
 
+.smoobu2-skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+// Shimmer animation for skeleton overlay
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 // #apartmentIframeAll{
 //   background-color: red;
 //  .border-box-container{

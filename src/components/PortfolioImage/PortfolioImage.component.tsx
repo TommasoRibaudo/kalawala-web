@@ -1,7 +1,7 @@
 import React from 'react';
-import { Image } from 'react-bootstrap';
 import { ArekaImageDescriptions, PlumeriaImageDescriptions, GiuliaImageDescriptions, gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions } from '../../utils/constants';
 import AspectBox from '../AspectBox/AspectBox.component';
+import ImageWithSkeleton from '../ImageWithSkeleton/ImageWithSkeleton.component';
 
 interface IPortfolioImage {
   folderName: string;
@@ -82,12 +82,17 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
         return (
           <div key={index} className="portfolio-block col-lg-4 col-md-6">
             <AspectBox ratio="4/3" minHeight={250}>
-              <Image
+              <ImageWithSkeleton
                 loading='lazy'
-                src={image.imageLink} 
-                alt={`Image ${index + 1}`} 
+                src={image.imageLink || ''} 
+                alt={image.roomType || `Image ${index + 1}`}
                 fluid 
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                skeletonProps={{ 
+                  variant: 'rectangular', 
+                  animation: 'shimmer',
+                  aspectRatio: '4/3'
+                }}
               />
             </AspectBox>
           </div>

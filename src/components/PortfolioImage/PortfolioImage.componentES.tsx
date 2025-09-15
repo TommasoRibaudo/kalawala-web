@@ -1,7 +1,7 @@
 import React from 'react';
-import { Image } from 'react-bootstrap';
 import { GiuliaImageDescriptionsES, PlumeriaImageDescriptionsES, ArekaImageDescriptionsES, gecoImageDescriptionsES, pappagalloImageDescriptionsES, ranaImageDescriptionsES, tucanoImageDescriptionsES, VillaCoralImageDescriptionsES, VillaMarImageDescriptionsES } from '../../utils/constants';
 import { TipCard } from '../TipCard/TipCard.component';
+import ImageWithSkeleton from '../ImageWithSkeleton/ImageWithSkeleton.component';
 
 interface IPortfolioImage {
   folderName: string;
@@ -44,9 +44,17 @@ const PortfolioImageES = ({ folderName }: IPortfolioImage) => {
       {imageList.map((image: any, index: number) => {
         return (
           <div key={`${folderName}-${index}`} className="portfolio-block col-lg-4 col-md-6">
-            <Image
+            <ImageWithSkeleton
               loading='lazy'
-              src={image.imageLink} alt={`Image ${index + 1}`} fluid />
+              src={image.imageLink || ''} 
+              alt={image.roomType || `Image ${index + 1}`} 
+              fluid 
+              skeletonProps={{ 
+                variant: 'rectangular', 
+                animation: 'shimmer',
+                aspectRatio: '4/3'
+              }}
+            />
             {image.roomType &&
               <TipCard
                 roomType={image.roomType}

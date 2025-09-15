@@ -1,7 +1,3 @@
-import { faSearch } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { ExecFileSyncOptionsWithBufferEncoding } from "child_process";
-import { IImageDescription } from "../../utils/constants"
 import { useState, useEffect } from "react"
 import './TipCard.style.scss'
 interface ITipCard {

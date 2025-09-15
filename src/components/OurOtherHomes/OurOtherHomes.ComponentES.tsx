@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom";
 import './OurOtherHomes.style.scss'; // Import the SASS stylesheet
 import OtherHomesCardRib from './Components/OtherHomesCard.componentRib';
 import OtherHomesCard from './Components/OtherHomesCard.component';

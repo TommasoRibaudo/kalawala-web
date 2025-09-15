@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import MessageTip, { MessageTipProps } from './MessageTip.component';
+import MessageTip from './MessageTip.component';
 import './MessageTip.style.scss';
 
 export interface MessageTipData {

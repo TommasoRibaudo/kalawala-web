@@ -26,7 +26,7 @@ const CallToActionES = () => {
                   *Mostrando disponibilidad para todas las propiedades disponibles en la zona de Puerto Viejo, incluidas propiedades anunciadas en otras páginas. ¡Asegúrate de verificar el nombre de la casa y su foto antes de reservar!
                 </p>
               </div>
-              <p style={{ marginTop: 10 }}>¿Prefieres pagar mediante transferencia bancaria o SINPE? Reserva de forma segura con nosotros y envía tu confirmación de depósito a <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> o por WhatsApp al <a href="https://wa.me/50684632276" target="_blank">+506 8463 2276</a> dentro de las 6 horas posteriores a realizar tu reserva.</p>
+              <p style={{ marginTop: 10 }}>¿Prefieres pagar mediante transferencia bancaria o SINPE? Reserva de forma segura con nosotros y envía tu confirmación de depósito a <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> o por WhatsApp al <a href="https://wa.me/50684632276" target="_blank" rel="noreferrer">+506 8463 2276</a> dentro de las 6 horas posteriores a realizar tu reserva.</p>
             </div>
           </div>
         </div>

@@ -1,6 +1,5 @@
 import React from 'react';
 import './WelcomeSlider.style.scss';
-import Button from 'react-bootstrap/Button';
 import Smoobu2 from '../Smoobu2/Smoobu2.component';
 
 const WelcomeSlider = () => {

@@ -19,6 +19,15 @@ const MessageTip: React.FC<MessageTipProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
 
+  const handleClose = () => {
+    setIsVisible(false);
+    // Wait for animation to complete before removing from DOM
+    setTimeout(() => {
+      setShouldRender(false);
+      onClose(id);
+    }, 300); // Match animation duration
+  };
+
   useEffect(() => {
     // Show the message after the specified delay
     const showTimer = setTimeout(() => {
@@ -41,16 +50,7 @@ const MessageTip: React.FC<MessageTipProps> = ({
         clearTimeout(autoCloseTimer);
       }
     };
-  }, [delay, duration]);
-
-  const handleClose = () => {
-    setIsVisible(false);
-    // Wait for animation to complete before removing from DOM
-    setTimeout(() => {
-      setShouldRender(false);
-      onClose(id);
-    }, 300); // Match animation duration
-  };
+  }, [delay, duration, handleClose, id, onClose]);
 
   const handleClick = () => {
     handleClose();

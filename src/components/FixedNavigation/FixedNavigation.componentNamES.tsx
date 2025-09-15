@@ -4,9 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from "react-router-dom";
-import { getHighestId } from "../../assets/blogs/blogs";
 import SolidBars from "../../assets/images/bars-solid.svg";
-import { ES } from 'country-flag-icons/react/3x2'
 import { LanguageSwitcher } from "../FlagComponent/Flag.component";
 
 interface IFixedNavigation {
@@ -15,15 +13,10 @@ interface IFixedNavigation {
 
 const FixedNavigationNamES = ({ isBlog }: IFixedNavigation) => {
   const [isActive, setIsActive] = useState<boolean>(true);
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const navbarRef = useRef<HTMLDivElement>(null);
 
   const handleToggleClick = (event: any) => {
-    if (event.currentTarget.classList.contains('collapsed')) {
-      setIsCollapsed(true);
-    } else {
-      setIsCollapsed(false);
-    }
+    // Handle toggle click
   };
 
   const navigate = useNavigate();
@@ -35,7 +28,6 @@ const FixedNavigationNamES = ({ isBlog }: IFixedNavigation) => {
   };
 
   const closeMenu = () => {
-    setIsCollapsed(true);
     // Force close the Bootstrap collapse if it's open
     const collapseElement = navbarRef.current?.querySelector('.navbar-collapse');
     if (collapseElement && !collapseElement.classList.contains('collapse')) {

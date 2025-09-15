@@ -36,6 +36,15 @@
 
   }
 
-  
+  // Ensure skeleton containers maintain original layout
+  .image-with-skeleton {
+    // Remove any extra spacing that might affect layout
+    // Let the skeleton match the actual image dimensions
+    
+    // Only apply padding to skeleton, not loaded images
+    &:not(.image-loaded) {
+      padding: 5px; // Match the img padding to maintain consistent spacing
+    }
+  }
 }
 

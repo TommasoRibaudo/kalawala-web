@@ -1,0 +1,121 @@
+@use '../../styles/mixins';
+@import '../../styles/styles.scss';
+
+// Base skeleton styles
+.image-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #d0d0d0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+
+  // Variants
+  &--rectangular {
+    border-radius: 4px;
+  }
+
+  &--rounded {
+    border-radius: 8px;
+  }
+
+  &--circular {
+    border-radius: 50%;
+  }
+
+  // Animations
+  &--shimmer {
+    animation: shimmer 1.5s infinite;
+  }
+
+  &--pulse {
+    animation: pulse 2s infinite;
+  }
+
+  &--wave {
+    animation: wave 2s infinite;
+  }
+
+  // Responsive variants for different image types
+  &--main {
+    aspect-ratio: 16/9;
+    width: 100%;
+  }
+
+  &--secondary {
+    aspect-ratio: 1/1;
+    width: 100%;
+  }
+
+  &--portfolio {
+    aspect-ratio: 4/3;
+    width: 100%;
+  }
+}
+
+// Animation keyframes
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes wave {
+  0% {
+    background-position: -200% 0;
+  }
+  50% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .image-skeleton {
+    background: linear-gradient(90deg, #3a3a3a 25%, #5a5a5a 50%, #3a3a3a 75%);
+    background-size: 200% 100%;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .image-skeleton {
+    animation: none;
+    background: #f0f0f0;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .image-skeleton {
+      background: #2a2a2a;
+    }
+  }
+}
+
+// Responsive adjustments
+@include mixins.mobile {
+  .image-skeleton {
+    &--main {
+      aspect-ratio: 4/3;
+    }
+    
+    &--secondary {
+      aspect-ratio: 1/1;
+    }
+  }
+}

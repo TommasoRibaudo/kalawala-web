@@ -1,5 +1,6 @@
 import React from "react";
-import { Col, Row, Image, } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
+import ImageWithSkeleton from '../../../../components/ImageWithSkeleton/ImageWithSkeleton.component';
 import './ImagesContainer.style.scss'
 import { gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions, ArekaImageDescriptions, ArekaImageDescriptionsES, GiuliaImageDescriptions, GiuliaImageDescriptionsES, PlumeriaImageDescriptions, PlumeriaImageDescriptionsES } from '../../../../utils/constants';
 
@@ -103,17 +104,71 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
       <div className="imagesContainer" onClick={showAllImages}>
         <Row>
           <Col className="col" lg={6} sm={12} md={12} xs={12}>
-            <Image className="mainImage" fluid src={images[imageSnippet[0]].imageLink} alt="" />
+            <ImageWithSkeleton 
+              className="mainImage" 
+              fluid 
+              src={images[imageSnippet[0]].imageLink || ''} 
+              alt={images[imageSnippet[0]].roomType || "Main property image"}
+              skeletonProps={{ 
+                variant: 'rectangular', 
+                animation: 'shimmer',
+                aspectRatio: '4/3',
+                width: '100%'
+              }}
+            />
           </Col>
           <Col className="col" lg={6} sm={12} md={12} xs={12}>
             <Col className="col" lg={6} sm={6} xs={6} md={6}>
-              <Image className="secondaryImages" fluid src={images[imageSnippet[1]].imageLink} alt="" />
-              <Image className="secondaryImages bottom" fluid src={images[imageSnippet[2]].imageLink} alt="" />
+              <ImageWithSkeleton 
+                className="secondaryImages" 
+                fluid 
+                src={images[imageSnippet[1]].imageLink || ''} 
+                alt={images[imageSnippet[1]].roomType || "Property image"}
+                skeletonProps={{ 
+                  variant: 'rectangular', 
+                  animation: 'shimmer',
+                  aspectRatio: '1/1',
+                  width: '100%'
+                }}
+              />
+              <ImageWithSkeleton 
+                className="secondaryImages bottom" 
+                fluid 
+                src={images[imageSnippet[2]].imageLink || ''} 
+                alt={images[imageSnippet[2]].roomType || "Property image"}
+                skeletonProps={{ 
+                  variant: 'rectangular', 
+                  animation: 'shimmer',
+                  aspectRatio: '1/1',
+                  width: '100%'
+                }}
+              />
             </Col>
             <Col className="col" lg={6} sm={6} xs={6} md={6}>
-              <Image className="secondaryImages" fluid src={images[imageSnippet[3]].imageLink} alt="" />
-
-              <Image className="secondaryImages bottom" fluid src={images[imageSnippet[4]].imageLink} alt="" />
+              <ImageWithSkeleton 
+                className="secondaryImages" 
+                fluid 
+                src={images[imageSnippet[3]].imageLink || ''} 
+                alt={images[imageSnippet[3]].roomType || "Property image"}
+                skeletonProps={{ 
+                  variant: 'rectangular', 
+                  animation: 'shimmer',
+                  aspectRatio: '1/1',
+                  width: '100%'
+                }}
+              />
+              <ImageWithSkeleton 
+                className="secondaryImages bottom" 
+                fluid 
+                src={images[imageSnippet[4]].imageLink || ''} 
+                alt={images[imageSnippet[4]].roomType || "Property image"}
+                skeletonProps={{ 
+                  variant: 'rectangular', 
+                  animation: 'shimmer',
+                  aspectRatio: '1/1',
+                  width: '100%'
+                }}
+              />
             </Col>
           </Col>
         </Row>

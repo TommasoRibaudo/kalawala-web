@@ -49,7 +49,7 @@ const FixedNavigationRibES = ({ isBlog }: IFixedNavigationES) => {
   return (
     <Navbar ref={navbarRef} className="navigation" expand="lg" sticky="top" variant="dark" data-bs-theme="dark">
       <Container>
-        <Navbar.Brand href="/HomeES" className="d-flex align-items-center">
+        <Navbar.Brand href="/HomeVillasES" className="d-flex align-items-center">
           <img 
             src="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" 
             alt="logo" 

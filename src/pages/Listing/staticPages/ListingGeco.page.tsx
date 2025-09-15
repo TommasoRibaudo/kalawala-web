@@ -59,7 +59,11 @@ const ListingGeco = () => {
                 <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">
                         <h1 className="title">House Geco</h1>
-                        <h3 className="location">Puerto Viejo de Talamanca, Limón, Costa Rica</h3>
+                        <h3 className="location">
+                            <a href="https://maps.app.goo.gl/ixZHjG7yYsMF9U2e9" target="_blank" rel="noopener noreferrer">
+                                Puerto Viejo de Talamanca, Limón, Costa Rica
+                            </a>
+                        </h3>
                         {isScreenSmall && (
                             <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Online Now!</Button></div>)}
                     </div>

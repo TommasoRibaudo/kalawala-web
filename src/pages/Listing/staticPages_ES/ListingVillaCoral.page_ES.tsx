@@ -63,7 +63,11 @@ const ListingVillaCoralES = () => {
                 <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">
                         <h1 className="title">Villa Coral</h1>
-                        <h3 className="location">Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica</h3>
+                        <h3 className="location">
+                            <a href="https://maps.app.goo.gl/cJa27cXoXunmuNkf7" target="_blank" rel="noopener noreferrer">
+                                Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica
+                            </a>
+                        </h3>
                         {isScreenSmall && (
                             <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Reverva en linea!</Button></div>)}
                     </div>

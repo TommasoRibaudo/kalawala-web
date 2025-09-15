@@ -60,7 +60,11 @@ const ListingPlumeriaES = () => {
                 <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">
                         <h1 className="title">Casa Plumeria</h1>
-                        <h3 className="location">Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica</h3>
+                        <h3 className="location">
+                            <a href="https://maps.app.goo.gl/cT74qg6iqX35aa5t9" target="_blank" rel="noopener noreferrer">
+                                Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica
+                            </a>
+                        </h3>
                         {isScreenSmall && (
                             <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">¡Reserva en línea!</Button></div>)}
                     </div>

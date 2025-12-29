@@ -15,26 +15,26 @@ const Home = () => {
   const { addMessageTip } = useMessageTip();
 
   useEffect(() => {
-    
+
     const timer = setTimeout(() => {
       addMessageTip({
         id: 'welcome-message',
         text: 'Use the code #norefundallowed to enjoy a 10% discount on non-refundable reservations.',
         delay: 0,
-        duration: 60000 
+        duration: 60000
       });
     }, 3000);
 
     return () => clearTimeout(timer);
   }, [addMessageTip]);
   useEffect(() => {
-   
+
     const timer = setTimeout(() => {
       addMessageTip({
         id: 'welcome-message-2',
         text: 'Prefer to pay via bank transfer or SINPE? Book securely with us and send your deposit confirmation via email or whatsapp',
         delay: 0,
-        duration: 54000 
+        duration: 54000
       });
     }, 6000);
 
@@ -53,15 +53,15 @@ const Home = () => {
         <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/" />
       </Helmet>
       <WelcomeSlider />
-      <FixedNavigation isBlog={false}/>
-      <OurHomes houseDataList={houseDataEngList}/>
-      <OurOtherHomes/>
+      <FixedNavigation isBlog={false} />
+      <OurHomes houseDataList={houseDataEngList} />
+      <OurOtherHomes />
       <Discover />
       {/* <CallToAction /> */}
       <Portfolio />
       {/* <Testimonial /> */}
       <ContactUs />
-      
+
       {/* Message Tip Container */}
       <MessageTipContainer />
     </div>

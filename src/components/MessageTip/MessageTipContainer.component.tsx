@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import MessageTip from './MessageTip.component';
 import './MessageTip.style.scss';
 
@@ -15,6 +15,7 @@ interface MessageTipContainerProps {
 
 const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) => {
   const [messageTips, setMessageTips] = useState<MessageTipData[]>([]);
+  const [isCookieBannerVisible, setIsCookieBannerVisible] = useState(false);
 
   const addMessageTip = useCallback((messageData: MessageTipData) => {
     setMessageTips(prev => [...prev, messageData]);
@@ -24,19 +25,53 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
     setMessageTips(prev => prev.filter(tip => tip.id !== id));
   }, []);
 
+  // Check for cookie banner visibility
+  useEffect(() => {
+    const checkCookieBanner = () => {
+      const cookieBanner = document.querySelector('.cookie-consent-banner');
+      // Use React.startTransition to avoid act() warnings in tests
+      if (typeof React.startTransition === 'function') {
+        React.startTransition(() => {
+          setIsCookieBannerVisible(!!cookieBanner);
+        });
+      } else {
+        setIsCookieBannerVisible(!!cookieBanner);
+      }
+    };
+
+    // Initial check
+    checkCookieBanner();
+
+    // Set up observer to watch for cookie banner changes
+    const observer = new MutationObserver(checkCookieBanner);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'style']
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   // Expose the addMessageTip function globally or through context
   React.useEffect(() => {
     // You can expose this through a context or global function
     (window as any).addMessageTip = addMessageTip;
-    
+
     return () => {
       delete (window as any).addMessageTip;
     };
   }, [addMessageTip]);
 
+  const containerClassName = `message-tip-container ${className || ''} ${isCookieBannerVisible ? 'cookie-banner-visible' : ''
+    }`.trim();
+
   return (
-    <div className={`message-tip-container ${className || ''}`}>
-      {messageTips.map((tip, index) => (
+    <div className={containerClassName}>
+      {messageTips.map((tip) => (
         <MessageTip
           key={tip.id}
           id={tip.id}

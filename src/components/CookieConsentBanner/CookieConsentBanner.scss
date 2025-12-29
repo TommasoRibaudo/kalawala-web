@@ -1,0 +1,346 @@
+/**
+ * Cookie Consent Banner Styles
+ */
+
+.cookie-consent-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(11, 48, 40, 0.9); // Green glassy background
+  backdrop-filter: blur(20px); // Increased blur for better glassy effect
+  border-top: 1px solid rgba(138, 162, 136, 0.3);
+
+  z-index: 10000; // Higher than MessageTip (9999) to avoid conflicts
+  font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  animation: slideUp 0.3s ease-out;
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .cookie-consent-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .cookie-consent-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 15px;
+    }
+  }
+
+  .cookie-consent-text {
+    flex: 1;
+    min-width: 300px;
+
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: white !important; // White title on green background - force override
+      font-family: 'Urbanist', sans-serif;
+    }
+
+    // More specific selector to override any global styles
+    #cookie-banner-title {
+      color: white !important;
+    }
+  }
+
+  // Even more specific selector to override global typography styles
+  &#cookie-banner-title,
+  .cookie-consent-banner h3#cookie-banner-title {
+    color: white !important;
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #cbd5e0; // Light grey text on dark background
+      font-family: 'Urbanist', sans-serif;
+    }
+  }
+
+  .cookie-consent-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      justify-content: center;
+    }
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+
+    &:focus {
+      outline: 2px solid #8AA288; // Light green focus outline on dark background
+      outline-offset: 2px;
+    }
+
+    &.btn-primary {
+      background: #8AA288; // Light green "Accept All" button - prominent on dark background
+      color: #0B3028; // Dark green text for contrast
+      font-family: 'Urbanist', sans-serif;
+      font-weight: 600;
+      border: none;
+      box-shadow: 0 2px 8px rgba(138, 162, 136, 0.3);
+
+      &:hover {
+        background: #a8b8a6;
+        box-shadow: 0 4px 12px rgba(138, 162, 136, 0.4);
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        background: #8AA288;
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(138, 162, 136, 0.3);
+      }
+    }
+
+    &.btn-secondary {
+      background: transparent; // No background for "Reject All" by default
+      color: #cbd5e0; // Light grey text on dark background
+      font-family: 'Urbanist', sans-serif;
+      border: none;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(203, 213, 224, 0.1); // Subtle background on hover
+        color: #cbd5e0;
+        border: 1px solid rgba(203, 213, 224, 0.3); // Show border on hover
+      }
+
+      &:active {
+        background: rgba(203, 213, 224, 0.2);
+        color: #cbd5e0;
+      }
+    }
+
+    &.btn-link {
+      background: transparent;
+      color: #cbd5e0; // Light grey color on dark background
+      text-decoration: underline;
+      min-width: auto;
+      padding: 10px 8px;
+      font-family: 'Urbanist', sans-serif;
+
+      &:hover {
+        color: #8AA288; // Light green on hover
+        text-decoration: none;
+      }
+
+      &:active {
+        color: #8AA288;
+      }
+    }
+  }
+
+  .cookie-consent-details {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(203, 213, 224, 0.2); // Light border on dark background
+    animation: fadeIn 0.2s ease-out;
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  .cookie-categories {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+  }
+
+  .cookie-category {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.1); // Subtle white overlay on dark background
+    backdrop-filter: blur(5px); // Subtle blur for glass effect
+    border-radius: 8px;
+    border: 1px solid rgba(203, 213, 224, 0.2); // Light border on dark background
+  }
+
+  .cookie-category-header {
+    margin-bottom: 8px;
+  }
+
+  .cookie-category-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #8AA288; // Light green text for labels on dark background
+    font-family: 'Urbanist', sans-serif;
+
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #8AA288; // Light green checkboxes
+      cursor: pointer;
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+  }
+
+  .cookie-category-title {
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Urbanist', sans-serif;
+  }
+
+  .cookie-category-required {
+    font-size: 12px;
+    color: #8AA288; // Light green for required text
+    font-weight: normal;
+    font-family: 'Urbanist', sans-serif;
+  }
+
+  .cookie-category-description {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #cbd5e0; // Light grey text for descriptions on dark background
+    font-family: 'Urbanist', sans-serif;
+  }
+
+  .cookie-consent-custom-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  // Dark mode support with glassy effect
+  @media (prefers-color-scheme: dark) {
+    background: rgba(11, 48, 40, 0.9); // Green glassy background in dark mode too
+    backdrop-filter: blur(20px); // Increased blur
+    border-top-color: rgba(203, 213, 224, 0.2);
+
+    .cookie-consent-text {
+      h3 {
+        color: white !important; // White title in dark mode too
+      }
+
+      #cookie-banner-title {
+        color: white !important;
+      }
+
+      p {
+        color: #cbd5e0; // Light grey text in dark mode
+      }
+    }
+
+    .cookie-category {
+      background: rgba(255, 255, 255, 0.1); // Subtle white overlay on dark background
+      backdrop-filter: blur(5px);
+      border-color: rgba(203, 213, 224, 0.2);
+    }
+
+    .cookie-category-label {
+      color: #8AA288; // Light green labels
+    }
+
+    .cookie-category-description {
+      color: #cbd5e0; // Light grey descriptions
+    }
+
+    .cookie-category-required {
+      color: #a0aec0; // Muted grey for required text
+    }
+
+    .btn-primary {
+      background: #8AA288; // Light green for prominence in dark mode
+
+      &:hover {
+        background: #294F44;
+      }
+    }
+
+    .btn-secondary {
+      background: transparent; // Keep transparent like the main style
+
+      &:hover {
+        background: rgba(203, 213, 224, 0.1);
+        border: 1px solid rgba(203, 213, 224, 0.3);
+      }
+    }
+
+    .btn-link {
+      color: #cbd5e0; // Light grey link
+
+      &:hover {
+        color: #8AA288; // Light green on hover
+      }
+    }
+  }
+
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    border-top: 2px solid #000;
+
+    .btn {
+      border: 2px solid currentColor;
+    }
+  }
+
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+
+    .cookie-consent-details {
+      animation: none;
+    }
+  }
+}

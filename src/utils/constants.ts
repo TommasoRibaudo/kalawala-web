@@ -22,18 +22,21 @@ export const homesSnippet: ListingType[] = [
         name: 'Rana',
         mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
     },
-
+    {
+        name: 'Delfin',
+        mainImage: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000"
+    },
 ]
 export const NamSnippet: ListingType[] = [
     {
         name: 'Areka',
         mainImage: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000"
     },
-        {
+    {
         name: 'Giulia',
         mainImage: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000"
     },
-        {
+    {
         name: 'Plumeria',
         mainImage: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
     },
@@ -43,11 +46,11 @@ export const NamSnippetES: ListingType[] = [
         name: 'ArekaES',
         mainImage: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000"
     },
-        {
+    {
         name: 'GiuliaES',
         mainImage: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000"
     },
-        {
+    {
         name: 'PlumeriaES',
         mainImage: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
     },
@@ -253,6 +256,53 @@ export const ranaImageDescriptionsES: IImageDescription[] = [
         imageLink: "https://drive.google.com/thumbnail?id=1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO&sz=w1000"
     }
 ]
+export const delfinImageDescriptionsES: IImageDescription[] = [
+    {
+        roomType: "Terraza",
+        roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
+        imageLink: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000"
+    },
+    {
+        roomType: "Baño",
+        roomDescription: "Siempre estamos disponibles para ayudarte con cualquier pregunta o inquietud que puedas tener.",
+        imageLink: "https://drive.google.com/thumbnail?id=1QxWsMW8dh5m19DGv1ZBKCcifzHMxs9R9&sz=w1000"
+    },
+    {
+        roomType: "Cuarto Principal",
+        roomDescription: "Esta habitación tiene un televisor con un sistema de entretenimiento Roku y puerto HDMI.",
+        imageLink: "https://drive.google.com/thumbnail?id=166BAE3B571U-S2gRWTNideuHdpXE95c7&sz=w1000"
+    },
+    {
+        roomType: "Cuarto Principal",
+        roomDescription: "Colchones de 10pulgadas/25cm.",
+        imageLink: "https://drive.google.com/thumbnail?id=1Vp74GumnGJuxjlJEziS7ktA-Du9UHlov&sz=w1000"
+    },
+    {
+        roomType: "Segundo Dormitorio",
+        roomDescription: "Ropa de cama siempre incluida.",
+        imageLink: "https://drive.google.com/thumbnail?id=14tRFJRifJruesH1iCUCJAeKrQ9wS0cqP&sz=w1000"
+    },
+    {
+        roomType: "Cocina",
+        roomDescription: "Microondas, cafetera y licuadora incluidos.",
+        imageLink: "https://drive.google.com/thumbnail?id=1dLwcs8QzF6YiGWBGhnDpO6hMj1VtMbIh&sz=w1000"
+    },
+    {
+        roomType: "Cocina",
+        roomDescription: "Ofrecemos descuentos last-minute para reservas de último minuto.",
+        imageLink: "https://drive.google.com/thumbnail?id=1fTFQ9jumREu-O6Vs2M_7Q6AlWkCJKjYn&sz=w1000"
+    },
+    {
+        roomType: "Sala de Estar",
+        roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
+        imageLink: "https://drive.google.com/thumbnail?id=1iRP_x0A6BprRBnQ0yWE6a2sa3tPiKIOQ&sz=w1000"
+    },
+    {
+        roomType: "Jardín",
+        roomDescription: "Parqueo privado gratuito disponible en este lugar.",
+        imageLink: "https://drive.google.com/thumbnail?id=1Zm3lah2psnATqL6UcWB2Jwu0IncFjDnX&sz=w1000"
+    }
+]
 export const tucanoImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Baño",
@@ -431,6 +481,53 @@ export const ranaImageDescriptions: IImageDescription[] = [
         roomType: "Garden",
         roomDescription: "Free private parking is available at this location.",
         imageLink: "https://drive.google.com/thumbnail?id=1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO&sz=w1000"
+    }
+]
+export const delfinImageDescriptions: IImageDescription[] = [
+    {
+        roomType: "Bathroom",
+        roomDescription: "We always provide towels and toiletries.",
+        imageLink: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000"
+    },
+    {
+        roomType: "Bathroom",
+        roomDescription: "We're available 24/7 in case you need any help.",
+        imageLink: "https://drive.google.com/thumbnail?id=1QxWsMW8dh5m19DGv1ZBKCcifzHMxs9R9&sz=w1000"
+    },
+    {
+        roomType: "Master Bedroom",
+        roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
+        imageLink: "https://drive.google.com/thumbnail?id=166BAE3B571U-S2gRWTNideuHdpXE95c7&sz=w1000"
+    },
+    {
+        roomType: "Master Bedroom",
+        roomDescription: "10inches/25cm tall matresses in every house.",
+        imageLink: "https://drive.google.com/thumbnail?id=1Vp74GumnGJuxjlJEziS7ktA-Du9UHlov&sz=w1000"
+    },
+    {
+        roomType: "Second Bedroom",
+        roomDescription: "Bed Linens always included.",
+        imageLink: "https://drive.google.com/thumbnail?id=14tRFJRifJruesH1iCUCJAeKrQ9wS0cqP&sz=w1000"
+    },
+    {
+        roomType: "Kitchen",
+        roomDescription: "Microwave, coffeemaker and blender also included.",
+        imageLink: "https://drive.google.com/thumbnail?id=1dLwcs8QzF6YiGWBGhnDpO6hMj1VtMbIh&sz=w1000"
+    },
+    {
+        roomType: "Kitchen",
+        roomDescription: "We offer last-minute discounts, prices are updated daily!",
+        imageLink: "https://drive.google.com/thumbnail?id=1fTFQ9jumREu-O6Vs2M_7Q6AlWkCJKjYn&sz=w1000"
+    },
+    {
+        roomType: "Livingroom",
+        roomDescription: "100Mbps Free Wifi everywhere in your house.",
+        imageLink: "https://drive.google.com/thumbnail?id=1iRP_x0A6BprRBnQ0yWE6a2sa3tPiKIOQ&sz=w1000"
+    },
+    {
+        roomType: "Garden",
+        roomDescription: "Free private parking is available at this location.",
+        imageLink: "https://drive.google.com/thumbnail?id=1Zm3lah2psnATqL6UcWB2Jwu0IncFjDnX&sz=w1000"
     }
 ]
 export const tucanoImageDescriptions: IImageDescription[] = [
@@ -849,7 +946,7 @@ export const GiuliaImageDescriptions: IImageDescription[] = [
         roomDescription: "We offer last-minute discounts, prices are updated daily!",
         imageLink: "https://drive.google.com/thumbnail?id=1PPdoFxDWLSizWhHUIQ7i5W7K1WU09sTm&sz=w1000"
     }
-    
+
 ]
 export const GiuliaImageDescriptionsES: IImageDescription[] = [
     {
@@ -984,7 +1081,7 @@ export const houseDataEngList: HouseDataType[] = [
         houseCode: 1,
         houseLangCode: "Geco",
         parking: true,
-       
+
         image: "https://drive.google.com/thumbnail?id=1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2&sz=w1000",
         amenities: [
             {
@@ -1124,6 +1221,39 @@ export const houseDataEngList: HouseDataType[] = [
             {
                 name: "Pet Friendly",
                 icon: "pet"
+            }
+        ],
+    },
+    {
+        name: "Delfin",
+        guestNumber: 6,
+        location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, bathroom, 2 A/C units (not in kitchen or living room), and private parking. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer Automated check-in and check-out with lockbox key drop-off for your convenience.<br/>    Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.",
+        neighborhood: "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.<br/>    The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!<br/>    Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private fenced parking.",
+        houseCode: 10,
+        houseLangCode: "Delfin",
+        image: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000",
+        parking: true,
+        amenities: [
+            {
+                name: "2 Private Equipped Bathroom",
+                icon: "bath"
+            },
+            {
+                name: "Private Equipped Kitchen",
+                icon: "kitchen"
+            },
+            {
+                name: "Bedrooms with A/C",
+                icon: "ac"
+            },
+            {
+                name: "Private Fenced Parking",
+                icon: "parking"
+            },
+            {
+                name: "100Mbps WiFi",
+                icon: "wifi"
             }
         ],
     }]
@@ -1430,6 +1560,72 @@ export const houseDataList: HouseDataType[] = [
             {
                 name: "Pet Friendly",
                 icon: "pet"
+            }
+        ],
+    },
+    {
+        name: "Delfin",
+        guestNumber: 6,
+        location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, bathroom, 2 A/C units (not in kitchen or living room), and private parking. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer flexible check-out with lockbox key drop-off for your convenience.<br/>    Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.",
+        neighborhood: "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.<br/>    The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!<br/>    Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.",
+        houseCode: 10,
+        houseLangCode: "Delfin",
+        image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000",
+        parking: true,
+        amenities: [
+            {
+                name: "2 Private Equipped Bathrooms",
+                icon: "bath"
+            },
+            {
+                name: "Private Equipped Kitchen",
+                icon: "kitchen"
+            },
+            {
+                name: "Bedrooms with A/C",
+                icon: "ac"
+            },
+            {
+                name: "Private Fenced Parking for 2 Vehicles",
+                icon: "parking"
+            },
+            {
+                name: "100Mbps WiFi",
+                icon: "wifi"
+            }
+        ],
+    },
+    {
+        name: "Delfín",
+        guestNumber: 6,
+        location: "AAA Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "Bienvenido a Reservas Kalawala. Ubicada en el corazón del pueblo, esta casa acomoda hasta 6 huéspedes con cocina totalmente equipada, baño, 2 unidades de aire acondicionado (no en cocina o sala de estar), y estacionamiento privado. Nuestra ubicación privilegiada ofrece fácil acceso tanto al centro del pueblo como a las playas más hermosas que Puerto Viejo tiene para ofrecer.<br/>    Todos los espacios descritos aquí son privados, incluyendo la cocina totalmente equipada y el baño. Tendrás todo lo que necesitas para sentirte como en casa.<br/>    Ofrecemos check-out flexible con entrega de llaves en caja de seguridad para tu conveniencia.<br/>    ¿Tienes alguna solicitud especial? Estaremos más que felices de complacerte si podemos. Por favor no dudes en hacérnoslo saber.",
+        neighborhood: "Puerto Viejo es un destino popular para turistas de todo el mundo, gracias a sus impresionantes alrededores. El pueblo cuenta con playas inmensas rodeadas de selva tropical, así como dos Parques Nacionales (Manzanillo y Cahuita). Por la noche, el pueblo cobra vida con una escena nocturna animada y activa. Cuando te hospedes aquí, podrás sumergirte completamente en todo lo que hace único a Puerto Viejo.<br/>    La casa está ubicada cerca del acceso a la playa que eventualmente lleva a Cocles. En el camino, tendrás la oportunidad de observar una variedad de animales y admirar piscinas naturales en el coral. ¡Incluso hay un lugar de observación oculto esperando ser descubierto!<br/>    Moverse por Puerto Viejo y sus alrededores es más fácil alquilando una bicicleta o un scooter. Sin embargo, también hay un servicio de autobús público confiable disponible que puede llevarte a Cahuita, Manzanillo y Sixaola. Si prefieres conducir, también podemos acomodar autos. Ofrecemos estacionamiento privado, pero por favor avísanos si tienes una camioneta más grande que requiere espacio adicional.",
+        houseCode: 10,
+        houseLangCode: "DelfinES",
+        image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000",
+        parking: true,
+        amenities: [
+            {
+                name: "2 Baños Privado Equipado",
+                icon: "bath"
+            },
+            {
+                name: "Cocina Privada Equipada",
+                icon: "kitchen"
+            },
+            {
+                name: "Cuartos con A/C",
+                icon: "ac"
+            },
+            {
+                name: "Parqueo Privado Encerrado",
+                icon: "parking"
+            },
+            {
+                name: "100Mbps WiFi",
+                icon: "wifi"
             }
         ],
     }

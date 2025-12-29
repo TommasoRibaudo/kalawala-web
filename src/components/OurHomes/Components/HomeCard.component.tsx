@@ -23,7 +23,7 @@ const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangC
         }, 0);
     };
     return (
-        <div className=" col-lg-3 col-md-6 col-sm-6 col-xs-12" data-wow-duration="500ms" onClick={handleClick}>
+        <div className="home-card-item" data-wow-duration="500ms" onClick={handleClick}>
             <div className="block ">
                 <div className="icon-box center-block">
                     <img src={image} alt={name} className="img-responsive img-rounded  our-homes-img-m" />

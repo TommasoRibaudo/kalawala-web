@@ -1,5 +1,5 @@
 import React from 'react';
-import { GiuliaImageDescriptionsES, PlumeriaImageDescriptionsES, ArekaImageDescriptionsES, gecoImageDescriptionsES, pappagalloImageDescriptionsES, ranaImageDescriptionsES, tucanoImageDescriptionsES, VillaCoralImageDescriptionsES, VillaMarImageDescriptionsES } from '../../utils/constants';
+import { GiuliaImageDescriptionsES, PlumeriaImageDescriptionsES, ArekaImageDescriptionsES, gecoImageDescriptionsES, pappagalloImageDescriptionsES, ranaImageDescriptionsES, tucanoImageDescriptionsES, VillaCoralImageDescriptionsES, VillaMarImageDescriptionsES, delfinImageDescriptionsES, IImageDescription } from '../../utils/constants';
 import { TipCard } from '../TipCard/TipCard.component';
 import ImageWithSkeleton from '../ImageWithSkeleton/ImageWithSkeleton.component';
 
@@ -8,7 +8,7 @@ interface IPortfolioImage {
 }
 
 const PortfolioImageES = ({ folderName }: IPortfolioImage) => {
-  let images: any;  
+  let images: IImageDescription[] = [];  
   switch (folderName) {
     case "Tucano":
       images = tucanoImageDescriptionsES;
@@ -36,12 +36,24 @@ const PortfolioImageES = ({ folderName }: IPortfolioImage) => {
       break;
     case "Giulia":
       images = GiuliaImageDescriptionsES;
+      break;
+    case "Delfin":
+      images = delfinImageDescriptionsES;
+      break;
+    default:
+      console.warn(`No images found for folder: ${folderName}`);
+      images = [];
+      break;
   }
 
-  const imageList = images;
+  // Safety check - if images is still undefined or empty, return empty div
+  if (!images || images.length === 0) {
+    return <div>No hay imágenes disponibles</div>;
+  }
+
   return (
     <div className="filtr-item row">
-      {imageList.map((image: any, index: number) => {
+      {images.map((image: IImageDescription, index: number) => {
         return (
           <div key={`${folderName}-${index}`} className="portfolio-block col-lg-4 col-md-6">
             <ImageWithSkeleton

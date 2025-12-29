@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArekaImageDescriptions, PlumeriaImageDescriptions, GiuliaImageDescriptions, gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions } from '../../utils/constants';
+import { ArekaImageDescriptions, PlumeriaImageDescriptions, GiuliaImageDescriptions, gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions, delfinImageDescriptions, delfinImageDescriptionsES } from '../../utils/constants';
 import AspectBox from '../AspectBox/AspectBox.component';
 import ImageWithSkeleton from '../ImageWithSkeleton/ImageWithSkeleton.component';
 
@@ -38,6 +38,9 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
     case "Giulia":
       images = GiuliaImageDescriptions;
       break;
+    case "Delfin":
+      images = delfinImageDescriptions;
+      break;
     // Add Spanish language support
     case "TucanoES":
       images = tucanoImageDescriptions;
@@ -65,6 +68,9 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
       break;
     case "GiuliaES":
       images = GiuliaImageDescriptions;
+      break;
+    case "DelfinES":
+      images = delfinImageDescriptionsES;
       break;
     default:
       console.warn(`No images found for folder: ${folderName}`);

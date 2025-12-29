@@ -19,7 +19,18 @@ const OurHomesNam = ({style, NamDataList}:IOurHomes) => {
                         <h2>Our <span className="color">Home</span> </h2>
                         <div className="border"></div>
                     </div>
-                    {NamDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => <HomeCard guestNumber={guestNumber} parking={parking} name={name} image={image} houseLangCode={houseLangCode}/>)}
+                    <div className="homes-grid">
+                        {NamDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => (
+                            <HomeCard 
+                                key={houseLangCode}
+                                guestNumber={guestNumber} 
+                                parking={parking} 
+                                name={name} 
+                                image={image} 
+                                houseLangCode={houseLangCode}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

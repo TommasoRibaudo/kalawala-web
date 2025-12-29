@@ -37,6 +37,8 @@ import ListingGiuliaES from '../pages/Listing/staticPages_ES/ListingGiulia.page_
 import ListingPlumeriaES from '../pages/Listing/staticPages_ES/ListingPlumeria.page_ES';
 import ListingVillaMarES from '../pages/Listing/staticPages_ES/ListingVillaMar.page_ES';
 import ListingVillaCoralES from '../pages/Listing/staticPages_ES/ListingVillaCoral.page_ES';
+import ListingDelfin from '../pages/Listing/staticPages/ListingDelfin.page';
+import ListingDelfinES from '../pages/Listing/staticPages_ES/ListingDelfin.page_ES';
 // import About from './About';
 // import Contact from './Contact';
 
@@ -116,6 +118,7 @@ const AppRouter = () => {
       <Route path='/Rana'  element={<ListingRana />}/>
       <Route path='/Tucano'  element={<ListingTucano />}/>
       <Route path='/Pappagallo'  element={<ListingPappagallo />}/>
+      <Route path='/Delfin'  element={<ListingDelfin />}/>
       <Route path='/twodaysinpuertoviejo' element={<TwoDaysInPV />} />
       <Route path='/gettingtogandoca' element={<GettingToGandoca />} />
       <Route path='/travellingtopuertoviejo' element={<TravellingToPuerto />} />
@@ -127,6 +130,7 @@ const AppRouter = () => {
       <Route path='/RanaES'  element={<ListingRanaES />}/>
       <Route path='/TucanoES'  element={<ListingTucanoES />}/>
       <Route path='/PappagalloES'  element={<ListingPappagalloES />}/>
+      <Route path='/DelfinES'  element={<ListingDelfinES />}/>
       <Route path='/twodaysinpuertoviejoES' element={<TwoDaysInPVES />} />
       <Route path='/gettingtogandocaES' element={<GettingToGandocaES />} />
       <Route path='/travellingtopuertoviejoES' element={<TravellingToPuertoES />} />

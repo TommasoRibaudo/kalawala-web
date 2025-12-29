@@ -18,16 +18,18 @@ const OurHomes: React.FC<IOurHomes> = ({ style, houseDataList }) => {
                         <h2>Our <span className="color">Homes</span> </h2>
                         <div className="border"></div>
                     </div>
-                    {houseDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => (
-                        <HomeCard 
-                            key={houseLangCode} 
-                            guestNumber={guestNumber} 
-                            parking={parking} 
-                            name={name} 
-                            image={image} 
-                            houseLangCode={houseLangCode}
-                        />
-                    ))}
+                    <div className="homes-grid">
+                        {houseDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => (
+                            <HomeCard 
+                                key={houseLangCode} 
+                                guestNumber={guestNumber} 
+                                parking={parking} 
+                                name={name} 
+                                image={image} 
+                                houseLangCode={houseLangCode}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

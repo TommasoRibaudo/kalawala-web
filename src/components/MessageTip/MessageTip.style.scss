@@ -6,6 +6,15 @@
   z-index: 9999;
   pointer-events: none; // Allow clicks to pass through container
   
+  // Adjust position when cookie banner is visible
+  &.cookie-banner-visible {
+    bottom: 120px; // Adjust based on typical cookie banner height
+    
+    @media (max-width: 768px) {
+      bottom: 140px; // More space on mobile due to banner height
+    }
+  }
+  
   // Mobile adjustments
   @media (max-width: 768px) {
     bottom: 15px;

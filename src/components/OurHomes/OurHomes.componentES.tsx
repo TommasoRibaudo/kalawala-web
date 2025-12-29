@@ -1,15 +1,15 @@
+import React from 'react';
 import HomeCard from './Components/HomeCard.component';
 import './OurHomes.style.scss'
 import { HouseDataType } from '../../utils/types';
-import React from 'react';
-interface IOurHomes{
+interface IOurHomes {
     style?: any;
-    houseDataList:HouseDataType[];
+    houseDataList: HouseDataType[];
 }
 
-const OurHomesES = ({style, houseDataList}:IOurHomes) => {
+const OurHomesES: React.FC<IOurHomes> = ({ style, houseDataList }) => {
 
-    
+
     return (
         <section id="house-list" className="bg-one about section" style={style}>
             <div className="container">
@@ -18,7 +18,18 @@ const OurHomesES = ({style, houseDataList}:IOurHomes) => {
                         <h2>Nuestras <span className="color">Casas</span> </h2>
                         <div className="border"></div>
                     </div>
-                    {houseDataList.filter(houseData => houseData.houseLangCode.includes('ES')).map(({ name, guestNumber, parking, image, houseLangCode }, index) => <HomeCard key={`${name}-${index}`} guestNumber={guestNumber} parking={parking} name={name} image={image} houseLangCode={houseLangCode}/>)}
+                    <div className="homes-grid">
+                        {houseDataList.filter(houseData => houseData.houseLangCode.includes('ES')).map(({ name, guestNumber, parking, image, houseLangCode }, index) => (
+                            <HomeCard
+                                key={`${name}-${index}`}
+                                guestNumber={guestNumber}
+                                parking={parking}
+                                name={name}
+                                image={image}
+                                houseLangCode={houseLangCode}
+                            />
+                        ))}
+                    </div>
 
                 </div>
             </div>

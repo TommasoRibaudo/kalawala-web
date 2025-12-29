@@ -68,7 +68,7 @@ const ListingTucano = () => {
                    
                     <div className="description">
                     <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
-                        <p ><strong>Check-in:</strong> 3:00 PM</p>
+                        <p ><strong>Check-in:</strong> 2:00 PM</p>
                         <p ><strong>Check-out:</strong> 11:00 AM</p>
                     </div>
                         <p>

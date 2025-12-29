@@ -18,7 +18,17 @@ const OurHomesRIBES = ({style, houseDataList}:IOurHomes) => {
                         <h2>Nuestras <span className="color">Villas</span> </h2>
                         <div className="border"></div>
                     </div>
-                    {houseDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => <VillaCard guestNumber={guestNumber} name={name} image={image} houseLangCode={houseLangCode}/>)}
+                    <div className="homes-grid">
+                        {houseDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => (
+                            <VillaCard 
+                                key={houseLangCode}
+                                guestNumber={guestNumber} 
+                                name={name} 
+                                image={image} 
+                                houseLangCode={houseLangCode}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

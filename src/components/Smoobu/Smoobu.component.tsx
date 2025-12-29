@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import './Smoobu.style.scss';
 import React from 'react';
 import IframeSkeleton from '../IframeSkeleton/IframeSkeleton.component';
+import { GA4SmoobuTrackingService, createGA4SmoobuConfig } from '../../services/GA4SmoobuTracking.service';
+import { CookieConsentService } from '../../services/CookieConsent.service';
 declare global {
   interface Window {
     BookingToolIframe: {
@@ -23,9 +25,98 @@ function Smoobu({ homeCode }: ISmoobu) {
   const [isLoading, setIsLoading] = useState(true);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const iframeLoadedRef = useRef(false);
+  const trackingServiceRef = useRef<GA4SmoobuTrackingService | null>(null);
+  const consentCleanupRef = useRef<(() => void) | null>(null);
+  const processingConsentRef = useRef<boolean>(false);
   const smoobuUrl: string = process.env.REACT_APP_SMOOBU_URL!;
   const houseCodesObject = JSON.parse(process.env.REACT_APP_HOUSE_CODES!);
   const url: string = homeCode ? smoobuUrl + houseCodesObject[homeCode] : smoobuUrl;
+
+  // Initialize GA4 tracking service
+  const initializeTracking = (iframe: HTMLIFrameElement) => {
+    try {
+      // Check if user has consented to tracking
+      if (!CookieConsentService.canTrack()) {
+        console.log('[Smoobu] GA4 tracking blocked: user has not consented');
+        return;
+      }
+
+      // Create and initialize tracking service if not already done
+      if (!trackingServiceRef.current) {
+        const config = createGA4SmoobuConfig();
+        trackingServiceRef.current = new GA4SmoobuTrackingService(config);
+        trackingServiceRef.current.initialize();
+      }
+
+      // Start tracking for this iframe
+      if (trackingServiceRef.current && trackingServiceRef.current.isInitialized()) {
+        trackingServiceRef.current.trackPageWithSmoobu(iframe);
+        console.log('[Smoobu] GA4 tracking initialized for iframe');
+      }
+    } catch (error) {
+      console.error('[Smoobu] Failed to initialize GA4 tracking:', error);
+    }
+  };
+
+  // Handle consent changes with debouncing to prevent rapid changes
+  const setupConsentListener = () => {
+    // Clean up existing listener
+    if (consentCleanupRef.current) {
+      consentCleanupRef.current();
+    }
+
+    let debounceTimeout: NodeJS.Timeout;
+
+    // Set up new consent change listener with debouncing
+    consentCleanupRef.current = CookieConsentService.onConsentChange((state) => {
+      // Clear previous timeout
+      if (debounceTimeout) {
+        clearTimeout(debounceTimeout);
+      }
+
+      // Debounce consent changes to prevent rapid firing
+      debounceTimeout = setTimeout(() => {
+        // Prevent processing if already processing a consent change
+        if (processingConsentRef.current) {
+          return;
+        }
+
+        processingConsentRef.current = true;
+        
+        try {
+          const canTrack = state.preferences.analytics && state.preferences.marketing;
+          
+          if (!canTrack && trackingServiceRef.current) {
+            // User revoked consent, cleanup tracking
+            console.log('[Smoobu] Consent revoked, stopping GA4 tracking');
+            trackingServiceRef.current.cleanup();
+            trackingServiceRef.current = null;
+          } else if (canTrack && !trackingServiceRef.current) {
+            // User granted consent, try to initialize tracking
+            console.log('[Smoobu] Consent granted, attempting to initialize GA4 tracking');
+            const iframe = document.querySelector('#apartmentIframeAll iframe') as HTMLIFrameElement;
+            if (iframe && iframeLoadedRef.current) {
+              initializeTracking(iframe);
+            }
+          }
+        } finally {
+          // Reset processing flag after a short delay
+          setTimeout(() => {
+            processingConsentRef.current = false;
+          }, 100);
+        }
+      }, 300); // 300ms debounce delay
+    });
+
+    // Return cleanup function that also clears the timeout
+    const originalCleanup = consentCleanupRef.current;
+    consentCleanupRef.current = () => {
+      if (debounceTimeout) {
+        clearTimeout(debounceTimeout);
+      }
+      originalCleanup();
+    };
+  };
 
   useEffect(() => {
     
@@ -93,6 +184,9 @@ function Smoobu({ homeCode }: ISmoobu) {
                   iframeLoadedRef.current = true;
                   setIframeLoaded(true);
                   setIsLoading(false);
+                  
+                  // Initialize GA4 tracking after iframe loads
+                  initializeTracking(iframe);
                   return;
                 }
                 
@@ -101,6 +195,9 @@ function Smoobu({ homeCode }: ISmoobu) {
                     iframeLoadedRef.current = true;
                     setIframeLoaded(true);
                     setIsLoading(false);
+                    
+                    // Initialize GA4 tracking after iframe loads
+                    initializeTracking(iframe);
                   }, 500);
                 };
               } else {
@@ -116,6 +213,12 @@ function Smoobu({ homeCode }: ISmoobu) {
                 iframeLoadedRef.current = true;
                 setIframeLoaded(true);
                 setIsLoading(false);
+                
+                // Try to initialize tracking even on fallback timeout
+                const iframe = document.querySelector('#apartmentIframeAll iframe') as HTMLIFrameElement;
+                if (iframe) {
+                  initializeTracking(iframe);
+                }
               }
             }, 5000);
           } else {
@@ -138,6 +241,21 @@ function Smoobu({ homeCode }: ISmoobu) {
         });
     } 
   }, [homeCode, url]);
+
+  // Set up consent listener when component mounts
+  useEffect(() => {
+    setupConsentListener();
+    
+    // Cleanup function
+    return () => {
+      if (consentCleanupRef.current) {
+        consentCleanupRef.current();
+      }
+      if (trackingServiceRef.current) {
+        trackingServiceRef.current.cleanup();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     setKey(prevKey => prevKey + 1); // Increment key to trigger component re-render

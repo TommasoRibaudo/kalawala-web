@@ -11,6 +11,8 @@ import { AmenityType } from "../../../utils/types";
 import { houseDataList } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
+import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
+import { useRandomPopup } from "../../../hooks/useRandomPopup";
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 
@@ -20,6 +22,9 @@ const ListingTucanoES = () => {
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
 
     const [show, setShow] = useState(false);
+
+    // Add random popup functionality for Spanish listing page
+    useRandomPopup({ isSpanishPage: true });
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -103,9 +108,14 @@ const ListingTucanoES = () => {
                 </Col>
             </Row>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+
+            {/* Message Tip Container */}
+            <MessageTipContainer />
         </div>
     )
 
 }
 
 export default ListingTucanoES;
+
+

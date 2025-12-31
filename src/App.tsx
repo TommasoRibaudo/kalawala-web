@@ -11,7 +11,6 @@ import { runBrowserCompatibilityTest, displayBrowserCompatibilityResults } from 
 import { runTrackingTest } from './utils/cookieConsentTrackingTest';
 import { CookieConsentBanner } from './components/CookieConsentBanner/CookieConsentBanner';
 import { CookieConsentService } from './services/CookieConsent.service';
-import MessageTipContainer from './components/MessageTip/MessageTipContainer.component';
 import './utils/cookieConsentDemo';
 import './utils/messageTipDemo';
 
@@ -392,7 +391,6 @@ function App() {
     <>
       <AppRouter />
       <CookieConsentBanner onConsentChange={handleConsentChange} />
-      <MessageTipContainer />
     </>
   );
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Home } from '../pages';
+import MessageTipContainer from '../components/MessageTip/MessageTipContainer.component';
 import ListingGeco from '../pages/Listing/staticPages/ListingGeco.page';
 import ListingRana from '../pages/Listing/staticPages/ListingRana.page';
 import ListingTucano from '../pages/Listing/staticPages/ListingTucano.page';
@@ -164,6 +165,7 @@ const AppRouter = () => {
       {/* <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} /> */}
       </Routes>
+      <MessageTipContainer />
     </BrowserRouter>
   );
 };

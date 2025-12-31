@@ -9,9 +9,11 @@ import DiscoverRIBES from "../../components/Discover/Discover.componentRIBES";
 import WelcomeSliderRibES from "../../components/WelcomeSlider/WelcomeSlider.componentRIBES";
 import PortfolioRIBES from "../../components/Portfolio/Portfolio.componentRIBES";
 import OurOtherHomesRIBES from "../../components/OurOtherHomes/OurOtherHomes.ComponentRIBES";
+import { useRandomPopup } from "../../hooks/useRandomPopup";
 
 const HomeRibES = () => {
-
+  // Add random popup functionality
+  useRandomPopup({ isSpanishPage: false });
   return (
     <div id="body">
       <Helmet>

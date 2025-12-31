@@ -13,11 +13,16 @@ import { NamDataList } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import FixedNavigationNam from "../../../components/FixedNavigation/FixedNavigation.componentNam";
+import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
+import { useRandomPopup } from "../../../hooks/useRandomPopup";
 
 
 const ListingPlumeria = () => {
     const listing = "Plumeria"
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
+    
+    // Add random popup functionality for English listing page
+    useRandomPopup({ isSpanishPage: false });
 
     const [show, setShow] = useState(false);
 
@@ -98,6 +103,9 @@ const ListingPlumeria = () => {
                 </Col>
             </Row>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+
+            {/* Message Tip Container */}
+            <MessageTipContainer />
         </div>
     )
 

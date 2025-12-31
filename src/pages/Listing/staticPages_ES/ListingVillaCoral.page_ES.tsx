@@ -11,6 +11,8 @@ import { AmenityType } from "../../../utils/types";
 import { VillasDataListES } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
+import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
+import { useRandomPopup } from "../../../hooks/useRandomPopup";
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
 import FixedNavigationRibES from "../../../components/FixedNavigation/FixedNavigation.componentRIBES";
 
@@ -20,6 +22,9 @@ const ListingVillaCoralES = () => {
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
 
     const [show, setShow] = useState(false);
+
+    // Add random popup functionality for Spanish listing page
+    useRandomPopup({ isSpanishPage: true });
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -110,9 +115,14 @@ const ListingVillaCoralES = () => {
                 </Col>
             </Row>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+
+            {/* Message Tip Container */}
+            <MessageTipContainer />
         </div>
     )
 
 }
 
 export default ListingVillaCoralES;
+
+

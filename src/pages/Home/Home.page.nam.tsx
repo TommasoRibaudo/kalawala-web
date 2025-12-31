@@ -9,10 +9,14 @@ import OurOtherHomesNam from "../../components/OurOtherHomes/OurOtherHomes.compo
 import { NamDataList } from '../../utils/constants';
 import FixedNavigationNam from "../../components/FixedNavigation/FixedNavigation.componentNam";
 import MessageTipContainer, { useMessageTip } from "../../components/MessageTip/MessageTipContainer.component";
+import { useRandomPopup } from "../../hooks/useRandomPopup";
 
 const HomeNam = () => {
   const { addMessageTip } = useMessageTip();
 
+    // Add random popup functionality
+    useRandomPopup({ isSpanishPage: false });
+    
   useEffect(() => {
     
     const timer = setTimeout(() => {

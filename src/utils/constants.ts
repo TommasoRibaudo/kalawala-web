@@ -1,5 +1,24 @@
 import { HouseDataType, ListingType } from "./types";
 
+// Random popup configuration
+export const RANDOM_POPUP_CONFIG = {
+  // Probability of showing the popup (0-1, where 1 = 100% chance)
+  showProbability: 1, 
+  
+  // Time range in milliseconds for random delay
+  minDelay: 25000, 
+  maxDelay: 26000, 
+  
+  // Duration the popup stays visible
+  duration: 8000, // 8 seconds
+  
+  // Messages for different languages
+  messages: {
+    en: "Recent guests booked directly on our website.",
+    es: "Huéspedes recientes reservaron directamente en nuestro sitio."
+  }
+};
+
 export interface IImageDescription {
     roomType: string;
     roomDescription: string;

@@ -11,6 +11,8 @@ import { AmenityType } from "../../../utils/types";
 import { NamDataListES } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
+import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
+import { useRandomPopup } from "../../../hooks/useRandomPopup";
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
 import FixedNavigationNamES from "../../../components/FixedNavigation/FixedNavigation.componentNamES";
 
@@ -20,6 +22,9 @@ const ListingGiuliaES = () => {
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
 
     const [show, setShow] = useState(false);
+
+    // Add random popup functionality for Spanish listing page
+    useRandomPopup({ isSpanishPage: true });
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -98,9 +103,14 @@ const ListingGiuliaES = () => {
                 </Col>
             </Row>
             {show && <ImagesModal closeModal={handleClose} houseName="Giulia" />}
+
+            {/* Message Tip Container */}
+            <MessageTipContainer />
         </div>
     )
 
 }
 
 export default ListingGiuliaES;
+
+

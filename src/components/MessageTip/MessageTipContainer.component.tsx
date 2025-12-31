@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import MessageTip from './MessageTip.component';
 import './MessageTip.style.scss';
 
@@ -16,6 +17,14 @@ interface MessageTipContainerProps {
 const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) => {
   const [messageTips, setMessageTips] = useState<MessageTipData[]>([]);
   const [isCookieBannerVisible, setIsCookieBannerVisible] = useState(false);
+  const location = useLocation();
+
+  // Clear all message tips when route changes (language switching)
+  useEffect(() => {
+    setMessageTips([]);
+    // Also clear the random popup session flag so it can show again on the new language page
+    sessionStorage.removeItem('randomPopupShown');
+  }, [location.pathname]);
 
   const addMessageTip = useCallback((messageData: MessageTipData) => {
     setMessageTips(prev => [...prev, messageData]);

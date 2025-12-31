@@ -13,6 +13,8 @@ import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
+import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
+import { useRandomPopup } from "../../../hooks/useRandomPopup";
 
 
 const ListingGecoES = () => {
@@ -20,6 +22,9 @@ const ListingGecoES = () => {
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
 
     const [show, setShow] = useState(false);
+    
+    // Add random popup functionality for Spanish listing page
+    useRandomPopup({ isSpanishPage: true });
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -115,6 +120,9 @@ const ListingGecoES = () => {
                 </Col>
             </Row>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+            
+            {/* Message Tip Container */}
+            <MessageTipContainer />
         </div>
     )
 

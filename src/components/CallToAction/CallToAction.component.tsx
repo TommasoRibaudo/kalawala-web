@@ -1,10 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './CallToAction.style.scss'
 import Smoobu2 from '../Smoobu2/Smoobu2.component';
 
 const CallToAction = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   return (
-    <section id="callToAction" className="call-to-action overly bg-1" style={{ backgroundImage: `url(https://drive.google.com/thumbnail?id=1NoeXMkl7483dB0hVfCYuGPbqKTkRpQXq&sz=w1000)` }}>
+    <section 
+      id="callToAction" 
+      className="call-to-action overly bg-1" 
+      style={{ 
+        backgroundImage: `url(https://drive.google.com/thumbnail?id=1NoeXMkl7483dB0hVfCYuGPbqKTkRpQXq&sz=w1000)`,
+        paddingTop: isMobile ? '80px' : undefined,
+        minHeight: isMobile ? 'auto' : undefined
+      }}
+    >
       <div className="test section-sm">
         <div className="container">
           <div className="row">

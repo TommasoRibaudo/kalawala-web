@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './WelcomeSlider.style.scss';
 import Smoobu2 from '../Smoobu2/Smoobu2.component';
 
 const WelcomeSliderNam = () => {
   const banner = 'https://drive.google.com/thumbnail?id=1bbRn5NLsJ8cKqm0I697TMNT5z9iDASxF&sz=w1000';
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   return (
     <section
@@ -11,12 +23,18 @@ const WelcomeSliderNam = () => {
       style={{
         backgroundImage: `url(${banner})`,
         position: 'relative',
-        minHeight: '100vh',
+        padding: isMobile ? '20px 0px 133px 0px' : '0px',
+        paddingTop: isMobile ? '5px' : '133px',
+        paddingBottom: isMobile ? '133px' : '133px',
+        minHeight: isMobile ? 'auto' : '100vh',
+        display: isMobile ? 'block' : 'flex',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        justifyContent: isMobile ? 'flex-start' : 'center'
       }}
     >
       <div className="block">
-        <h1>Namaitami Homes</h1>
-        <p id="short-description">
+        <h1 style={{ fontSize: isMobile ? '32px' : '90px' }}>Namaitami Homes</h1>
+        <p id="short-description" style={{ fontSize: isMobile ? '16px' : '20px', width: isMobile ? '90%' : '70%' }}>
           Fully equipped vacation homes in the heart of Puerto Viejo and Playa Chiquita.
         </p>
         <br />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './WelcomeSlider.style.scss';
 import Smoobu2 from '../Smoobu2/Smoobu2.component';
 
@@ -6,20 +6,37 @@ const WelcomeSlider = () => {
   const banner =
     'https://drive.google.com/thumbnail?id=1c25flui45r6oVIvPMqKLemVsWgjbhsAH&sz=w1000';
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   return (
     <section
       className="hero-area overlay"
       style={{
         backgroundImage: `url(${banner})`,
         position: 'relative',
-        padding: '0px',
-        paddingTop: '10px',
-        paddingBottom: '133px'
+        padding: isMobile ? '20px 0px 133px 0px' : '0px',
+        paddingTop: isMobile ? '5px' : '133px',
+        paddingBottom: isMobile ? '133px' : '133px',
+        minHeight: isMobile ? 'auto' : '100vh',
+        display: isMobile ? 'block' : 'flex',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        justifyContent: isMobile ? 'flex-start' : 'center'
       }}
     >
       <div className="block">
-        <h1>RESERVAS KALAWALA</h1>
-        <p id="short-description">
+        <h1 style={{ fontSize: isMobile ? '32px' : '90px' }}>RESERVAS KALAWALA</h1>
+        <p id="short-description" style={{ fontSize: isMobile ? '16px' : '20px', width: isMobile ? '90%' : '70%' }}>
           Fully equipped vacation homes in the heart of Puerto Viejo and Playa Chiquita.
         </p>
         <br />
@@ -43,7 +60,7 @@ const WelcomeSlider = () => {
       <div className="hero-rating"
         style={{
           position: 'absolute',
-          bottom: '35px',
+          bottom: '45px',
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 9999,

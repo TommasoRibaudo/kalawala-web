@@ -1,21 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './WelcomeSlider.style.scss';
 import Button from 'react-bootstrap/Button';
 
 const WelcomeSliderRibES = () => {
   const banner = 'https://drive.google.com/thumbnail?id=1IzO1ErB7f2RbnW35G78njQkT8ulSgMOJ&sz=w1000';
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   return (
     <section
       className="hero-area overlay"
       style={{
         backgroundImage: `url(${banner})`,
-        minHeight: '100vh',
+        position: 'relative',
+        padding: isMobile ? '20px 0px 133px 0px' : '0px',
+        paddingTop: isMobile ? '5px' : '133px',
+        paddingBottom: isMobile ? '133px' : '133px',
+        minHeight: isMobile ? 'auto' : '100vh',
+        display: isMobile ? 'block' : 'flex',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        justifyContent: isMobile ? 'flex-start' : 'center'
       }}
     >
       <div className="block">
-        <h1>VILLAS MAR DE CORAL</h1>
-        <p id="short-description">
+        <h1 style={{ fontSize: isMobile ? '32px' : '90px' }}>VILLAS MAR DE CORAL</h1>
+        <p id="short-description" style={{ fontSize: isMobile ? '16px' : '20px', width: isMobile ? '90%' : '70%' }}>
           Villas completamente equipadas con Piscina Privada, cerca de Playa Chiquita, Puerto Viejo.
         </p>
         <Button variant="outline-light" className='btn-transparent' href="homeVillasES#callToActionES">

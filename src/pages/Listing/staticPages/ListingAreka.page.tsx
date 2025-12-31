@@ -13,11 +13,16 @@ import { NamDataList } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import FixedNavigationNam from "../../../components/FixedNavigation/FixedNavigation.componentNam";
+import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
+import { useRandomPopup } from "../../../hooks/useRandomPopup";
 
 
 const ListingAreka = () => {
     const listing = "Areka"
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
+    
+    // Add random popup functionality for English listing page
+    useRandomPopup({ isSpanishPage: false });
     // Amenities are handled by the Amenities component
 
     const [show, setShow] = useState(false);
@@ -108,6 +113,9 @@ const ListingAreka = () => {
                 </Col>
             </Row>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+            
+            {/* Message Tip Container */}
+            <MessageTipContainer />
         </div>
     )
 

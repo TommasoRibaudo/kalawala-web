@@ -1,5 +1,5 @@
 @use '../../styles/mixins';
-@import  '../../styles/styles.scss';
+@import '../../styles/styles.scss';
 // @import '../../styles/variables';
 
 // http://wahabali.com/work/vation/images/slider/img-01.jpg
@@ -11,14 +11,41 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
+
   @media (max-width: 768px) {
     background-position: center;
     background-size: cover; // or 'contain' if you want the whole image to fit within the screen
     height: 100vh; // Adjust the height as needed
   }
+
+  .hero-rating {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    z-index: 99; // above overlay
+
+    p {
+      color: $kalawala-light-cream !important;
+      font-size: 20px;
+      width: 70%;
+      margin: 0 auto;
+    }
+  }
+
+
+
   .block {
     text-align: center;
     z-index: 99;
+
+    .hero-trust {
+      color: $kalawala-text-gray !important;
+      margin-top: 15px;
+      font-size: 16px;
+    }
 
     .video-button {
 
@@ -54,7 +81,7 @@
       margin: 0 auto;
     }
 
-    .btn-transparent{
+    .btn-transparent {
       margin-top: 40px;
       border-color: $kalawala-light-cream !important;
       padding: 14px 50px;

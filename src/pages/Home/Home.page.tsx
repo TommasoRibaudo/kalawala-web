@@ -7,12 +7,16 @@ import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 import MessageTipContainer, { useMessageTip } from "../../components/MessageTip/MessageTipContainer.component";
+import { useRandomPopup } from "../../hooks/useRandomPopup";
 
 import { houseDataEngList } from '../../utils/constants';
 import OurOtherHomes from "../../components/OurOtherHomes/OurOtherHomes.component";
 
 const Home = () => {
   const { addMessageTip } = useMessageTip();
+  
+  // Add random popup functionality
+  useRandomPopup({ isSpanishPage: false });
 
   useEffect(() => {
 

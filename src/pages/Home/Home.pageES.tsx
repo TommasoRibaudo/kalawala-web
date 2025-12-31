@@ -8,10 +8,14 @@ import FixedNavigationES from "../../components/FixedNavigation/FixedNavigation.
 import PortfolioES from "../../components/Portfolio/Portfolio.componentES";
 import ContactUsES from "../../components/ContactUs/ContactUs.componentES";
 import OurOtherHomesES from "../../components/OurOtherHomes/OurOtherHomes.ComponentES";
-import MessageTipContainer, { useMessageTip } from "../../components/MessageTip/MessageTipContainer.component";
+import { useMessageTip } from "../../components/MessageTip/MessageTipContainer.component";
+import { useRandomPopup } from "../../hooks/useRandomPopup";
 
 const HomeES = () => {
   const { addMessageTip } = useMessageTip();
+  
+  // Add random popup functionality for Spanish page
+  useRandomPopup({ isSpanishPage: true });
 
   useEffect(() => {
     
@@ -60,8 +64,6 @@ const HomeES = () => {
       {/* <Testimonial /> */}
       <ContactUsES />
       
-      {/* Message Tip Container */}
-      <MessageTipContainer />
     </div>
   )
 }

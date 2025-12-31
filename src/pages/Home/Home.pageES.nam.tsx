@@ -10,10 +10,12 @@ import { NamDataListES } from '../../utils/constants';
 import DiscoverNamES from "../../components/Discover/Discover.componentNamES";
 import OurOtherHomesNamES from "../../components/OurOtherHomes/OurOtherHomes.componentNamES";
 import MessageTipContainer, { useMessageTip } from "../../components/MessageTip/MessageTipContainer.component";
+import { useRandomPopup } from "../../hooks/useRandomPopup";
 
 const HomeNamES = () => {
   const { addMessageTip } = useMessageTip();
-
+  // Add random popup functionality
+  useRandomPopup({ isSpanishPage: false });
   useEffect(() => {
     
     const timer = setTimeout(() => {

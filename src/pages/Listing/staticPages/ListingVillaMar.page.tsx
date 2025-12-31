@@ -13,11 +13,16 @@ import { VillasDataList } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import FixedNavigationRib from "../../../components/FixedNavigation/FixedNavigation.componentRIB";
+import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
+import { useRandomPopup } from "../../../hooks/useRandomPopup";
 
 
 const ListingVillaMar = () => {
     const listing = 'Villa Mar'
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
+    
+    // Add random popup functionality for English listing page
+    useRandomPopup({ isSpanishPage: false });
 
     const [show, setShow] = useState(false);
 
@@ -108,6 +113,9 @@ const ListingVillaMar = () => {
                 </Col>
             </Row>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+
+            {/* Message Tip Container */}
+            <MessageTipContainer />
         </div>
     )
 

@@ -6,11 +6,36 @@ import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
+import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import { useRandomPopup } from "../../hooks/useRandomPopup";
 import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
 
 import { houseDataEngList } from '../../utils/constants';
 import OurOtherHomes from "../../components/OurOtherHomes/OurOtherHomes.component";
+
+const helpMeChooseOptions = [
+    {
+        emoji: "🧡",
+        label: "Ideal for couples",
+        houseName: "Villa Mar",
+        houseLangCode: "VillaMar",
+        image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
+    },
+    {
+        emoji: "👨‍👩‍👧",
+        label: "Perfect for families",
+        houseName: "Delfines",
+        houseLangCode: "Delfin",
+        image: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000"
+    },
+    {
+        emoji: "🐾",
+        label: "Pet-friendly",
+        houseName: "Rana",
+        houseLangCode: "Rana",
+        image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+    }
+];
 
 const Home = () => {
   // Add random popup functionality
@@ -33,6 +58,7 @@ const Home = () => {
       </Helmet>
       <WelcomeSlider />
       <FixedNavigation isBlog={false} />
+      <HelpMeChoose title="Find your" titleHighlight="Ideal Stay" options={helpMeChooseOptions} />
       <OurHomes houseDataList={houseDataEngList} />
       <OurOtherHomes />
       <Discover />

@@ -8,8 +8,33 @@ import OurOtherHomesNam from "../../components/OurOtherHomes/OurOtherHomes.compo
 import { NamDataList } from '../../utils/constants';
 import FixedNavigationNam from "../../components/FixedNavigation/FixedNavigation.componentNam";
 import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
+import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import { useRandomPopup } from "../../hooks/useRandomPopup";
 import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
+
+const helpMeChooseOptions = [
+    {
+        emoji: "🧡",
+        label: "Ideal for couples",
+        houseName: "Villa Mar",
+        houseLangCode: "VillaMar",
+        image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
+    },
+    {
+        emoji: "👨‍👩‍👧",
+        label: "Perfect for families",
+        houseName: "Delfines",
+        houseLangCode: "Delfin",
+        image: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000"
+    },
+    {
+        emoji: "🐾",
+        label: "Pet-friendly",
+        houseName: "Rana",
+        houseLangCode: "Rana",
+        image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+    }
+];
 
 const HomeNam = () => {
   // Add random popup functionality
@@ -32,6 +57,7 @@ const HomeNam = () => {
       </Helmet>
       <WelcomeSliderNam />
       <FixedNavigationNam isBlog={false} />
+      <HelpMeChoose title="Find your" titleHighlight="Ideal Stay" options={helpMeChooseOptions} />
       <OurHomesNam NamDataList={NamDataList} />
       <OurOtherHomesNam />
       <DiscoverNam />

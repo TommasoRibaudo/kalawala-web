@@ -18,7 +18,7 @@ const OurHomesES: React.FC<IOurHomes> = ({ style, houseDataList }) => {
                         <h2>Nuestras <span className="color">Casas</span> </h2>
                         <div className="border"></div>
                     </div>
-                    <div className="homes-grid">
+                    <div className={`homes-grid ${houseDataList.filter(houseData => houseData.houseLangCode.includes('ES')).length === 5 ? 'homes-grid--five' : ''}`}>
                         {houseDataList.filter(houseData => houseData.houseLangCode.includes('ES')).map(({ name, guestNumber, parking, image, houseLangCode }, index) => (
                             <HomeCard
                                 key={`${name}-${index}`}

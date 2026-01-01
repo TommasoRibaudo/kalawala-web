@@ -4,20 +4,55 @@
 /* Homes grid layout */
 .homes-grid {
   display: grid;
-  gap: 20px;
+  gap: 30px;
   justify-items: center;
+  justify-content: center;
   width: 100%;
   
-  /* Extra large screens: 5 columns in one row */
-  @media (min-width: 1620px) {
-    grid-template-columns: repeat(5, 1fr);
+  /* Default: auto-fit columns that expand to fill space */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  
+  /* Extra large screens */
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    max-width: 1400px;
+    margin: 0 auto;
   }
   
-  /* Large screens: 3+2 checkerboard layout */
-  @media (min-width: 992px) and (max-width: 1619.98px) {
+  /* Medium screens: 2 columns */
+  @media (min-width: 768px) and (max-width: 991.98px) {
+    grid-template-columns: repeat(2, 1fr);
+    
+    /* Center the 3rd item if only 3 items */
+    .home-card-item:nth-child(3):last-child {
+      grid-column: 1 / -1;
+      justify-self: center;
+      max-width: 50%;
+    }
+  }
+  
+  /* Small screens: 2 columns */
+  @media (min-width: 576px) and (max-width: 767.98px) {
+    grid-template-columns: repeat(2, 1fr);
+    
+    .home-card-item:nth-child(3):last-child {
+      grid-column: 1 / -1;
+      justify-self: center;
+      max-width: 50%;
+    }
+  }
+  
+  /* Extra small screens: 1 column */
+  @media (max-width: 575.98px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Checkered layout for exactly 5 items */
+.homes-grid--five {
+  @media (min-width: 992px) {
     grid-template-columns: repeat(6, 1fr);
     
-    /* First row: 3 items positioned at columns 1, 3, 5 */
     .home-card-item:nth-child(1) {
       grid-column: 1 / 3;
       grid-row: 1;
@@ -33,7 +68,6 @@
       grid-row: 1;
     }
     
-    /* Second row: 2 items positioned at columns 2, 4 (offset/staggered) */
     .home-card-item:nth-child(4) {
       grid-column: 2 / 4;
       grid-row: 2;
@@ -45,7 +79,6 @@
     }
   }
   
-  /* Medium screens: 2+2+1 layout */
   @media (min-width: 768px) and (max-width: 991.98px) {
     grid-template-columns: repeat(2, 1fr);
     
@@ -55,27 +88,11 @@
       max-width: 50%;
     }
   }
-  
-  /* Small screens: 2+2+1 layout */
-  @media (min-width: 576px) and (max-width: 767.98px) {
-    grid-template-columns: repeat(2, 1fr);
-    
-    .home-card-item:nth-child(5) {
-      grid-column: 1 / -1;
-      justify-self: center;
-      max-width: 50%;
-    }
-  }
-  
-  /* Extra small screens: 1 column */
-  @media (max-width: 575.98px) {
-    grid-template-columns: 1fr;
-  }
 }
 
 .home-card-item {
   width: 100%;
-  max-width: 300px; /* Prevent cards from getting too wide */
+  max-width: 350px;
 }
 
 .about .row {

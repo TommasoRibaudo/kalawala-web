@@ -18,7 +18,7 @@ const OurHomes: React.FC<IOurHomes> = ({ style, houseDataList }) => {
                         <h2>Our <span className="color">Homes</span> </h2>
                         <div className="border"></div>
                     </div>
-                    <div className="homes-grid">
+                    <div className={`homes-grid ${houseDataList.length === 5 ? 'homes-grid--five' : ''}`}>
                         {houseDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => (
                             <HomeCard 
                                 key={houseLangCode} 

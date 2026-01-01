@@ -7,8 +7,33 @@ import FixedNavigationES from "../../components/FixedNavigation/FixedNavigation.
 import PortfolioES from "../../components/Portfolio/Portfolio.componentES";
 import ContactUsES from "../../components/ContactUs/ContactUs.componentES";
 import OurOtherHomesES from "../../components/OurOtherHomes/OurOtherHomes.ComponentES";
+import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import { useRandomPopup } from "../../hooks/useRandomPopup";
 import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
+
+const helpMeChooseOptionsES = [
+    {
+        emoji: "🧡",
+        label: "Ideal para parejas",
+        houseName: "Villa Mar",
+        houseLangCode: "VillaMarES",
+        image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
+    },
+    {
+        emoji: "👨‍👩‍👧",
+        label: "Perfecto para familias",
+        houseName: "Delfines",
+        houseLangCode: "DelfinES",
+        image: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000"
+    },
+    {
+        emoji: "🐾",
+        label: "Pet-friendly",
+        houseName: "Rana",
+        houseLangCode: "RanaES",
+        image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+    }
+];
 
 const HomeES = () => {
   // Add random popup functionality for Spanish page
@@ -30,6 +55,7 @@ const HomeES = () => {
       </Helmet>
       <WelcomeSliderES />
       <FixedNavigationES isBlog={false}/>
+      <HelpMeChoose title="Elige tu" titleHighlight="Estadía Ideal" options={helpMeChooseOptionsES} />
       <OurHomesES houseDataList={houseDataList}/>
       <OurOtherHomesES/>
       <DiscoverES />

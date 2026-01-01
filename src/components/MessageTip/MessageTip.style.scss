@@ -9,23 +9,11 @@
   // Adjust position when cookie banner is visible
   &.cookie-banner-visible {
     bottom: 120px; // Adjust based on typical cookie banner height
-    
-    @media (max-width: 768px) {
-      bottom: 140px; // More space on mobile due to banner height
-    }
   }
   
-  // Mobile adjustments
+  // Hide on mobile
   @media (max-width: 768px) {
-    bottom: 15px;
-    right: 15px;
-    left: 15px; // Allow full width on mobile
-  }
-  
-  @media (max-width: 480px) {
-    bottom: 10px;
-    right: 10px;
-    left: 10px;
+    display: none;
   }
 }
 

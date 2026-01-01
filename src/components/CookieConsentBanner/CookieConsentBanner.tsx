@@ -48,27 +48,27 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onCons
 
   // Text content based on language
   const text = {
-    title: isSpanish ? '🍪 Usamos cookies' : '🍪 We use cookies',
+    title: isSpanish ? '🍪 Cookies' : '🍪 Cookies',
     description: isSpanish 
-      ? 'Utilizamos cookies y tecnologías similares para mejorar tu experiencia de navegación, analizar el tráfico del sitio y proporcionar contenido personalizado. Al hacer clic en "Aceptar todo", consientes nuestro uso de cookies.'
-      : 'We use cookies and similar technologies to enhance your browsing experience, analyze site traffic, and provide personalized content. By clicking "Accept All", you consent to our use of cookies.',
-    acceptAll: isSpanish ? 'Aceptar todo' : 'Accept All',
-    rejectAll: isSpanish ? 'Rechazar todo' : 'Reject All',
-    customize: isSpanish ? 'Personalizar' : 'Customize',
-    essential: isSpanish ? 'Cookies esenciales' : 'Essential Cookies',
-    analytics: isSpanish ? 'Cookies de análisis' : 'Analytics Cookies',
-    marketing: isSpanish ? 'Cookies de marketing' : 'Marketing Cookies',
-    required: isSpanish ? '(Requeridas)' : '(Required)',
+      ? 'Usamos cookies para mejorar tu experiencia y analizar el tráfico.'
+      : 'We use cookies to improve your experience and analyze traffic.',
+    acceptAll: isSpanish ? 'Aceptar' : 'Accept',
+    rejectAll: isSpanish ? 'Rechazar' : 'Reject',
+    customize: isSpanish ? 'Opciones' : 'Options',
+    essential: isSpanish ? 'Esenciales' : 'Essential',
+    analytics: isSpanish ? 'Análisis' : 'Analytics',
+    marketing: isSpanish ? 'Marketing' : 'Marketing',
+    required: isSpanish ? '(Req.)' : '(Req.)',
     essentialDesc: isSpanish 
-      ? 'Estas cookies son necesarias para el funcionamiento del sitio web y no se pueden desactivar. Generalmente solo se establecen en respuesta a acciones realizadas por ti.'
-      : 'These cookies are necessary for the website to function and cannot be switched off. They are usually only set in response to actions made by you.',
+      ? 'Necesarias para el funcionamiento del sitio.'
+      : 'Required for the site to function.',
     analyticsDesc: isSpanish
-      ? 'Estas cookies nos ayudan a entender cómo los visitantes interactúan con nuestro sitio web recopilando y reportando información de forma anónima.'
-      : 'These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously.',
+      ? 'Nos ayudan a entender el uso del sitio.'
+      : 'Help us understand site usage.',
     marketingDesc: isSpanish
-      ? 'Estas cookies se utilizan para rastrear visitantes en sitios web para mostrar anuncios relevantes y medir la efectividad de las campañas.'
-      : 'These cookies are used to track visitors across websites to display relevant advertisements and measure campaign effectiveness.',
-    savePreferences: isSpanish ? 'Guardar preferencias' : 'Save Preferences',
+      ? 'Para mostrar anuncios relevantes.'
+      : 'To show relevant ads.',
+    savePreferences: isSpanish ? 'Guardar' : 'Save',
     cancel: isSpanish ? 'Cancelar' : 'Cancel'
   };
 

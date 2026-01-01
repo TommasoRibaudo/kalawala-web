@@ -1,4 +1,3 @@
-import React from "react";
 import { Helmet } from "react-helmet";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
 import {VillasDataListES } from '../../utils/constants';
@@ -10,10 +9,14 @@ import WelcomeSliderRibES from "../../components/WelcomeSlider/WelcomeSlider.com
 import PortfolioRIBES from "../../components/Portfolio/Portfolio.componentRIBES";
 import OurOtherHomesRIBES from "../../components/OurOtherHomes/OurOtherHomes.ComponentRIBES";
 import { useRandomPopup } from "../../hooks/useRandomPopup";
+import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
 
 const HomeRibES = () => {
   // Add random popup functionality
-  useRandomPopup({ isSpanishPage: false });
+  useRandomPopup({ isSpanishPage: true });
+
+  // Show discount tip when Smoobu component changes size
+  useSmoobuSizeChange({ isSpanishPage: true });
   return (
     <div id="body">
       <Helmet>

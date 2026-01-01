@@ -10,6 +10,7 @@
   background: rgba(11, 48, 40, 0.9); // Green glassy background
   backdrop-filter: blur(20px); // Increased blur for better glassy effect
   border-top: 1px solid rgba(138, 162, 136, 0.3);
+  padding-bottom: env(safe-area-inset-bottom); // Safe area for mobile browser UI / notch
 
   z-index: 10000; // Higher than MessageTip (9999) to avoid conflicts
   font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;

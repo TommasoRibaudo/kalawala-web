@@ -1,7 +1,7 @@
 // Message Tip Container
 .message-tip-container {
   position: fixed;
-  bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom)); // Safe area for mobile browser UI / notch
   right: 20px;
   z-index: 9999;
   pointer-events: none; // Allow clicks to pass through container

@@ -1,0 +1,32 @@
+.price-confirmation-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  .price-display {
+    font-weight: normal; // Remove boldness as requested
+    font-size: 16px; // Match instant confirmation badge size
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    
+    // Responsive adjustments
+    @media (max-width: 768px) {
+      font-size: 14px; // Match mobile confirmation badge size
+    }
+  }
+  
+  .confirmation-badge {
+    display: flex;
+    justify-content: center;
+  }
+  
+  // Overall responsive behavior
+  @media (max-width: 768px) {
+    margin-bottom: 15px;
+    padding: 12px;
+  }
+}

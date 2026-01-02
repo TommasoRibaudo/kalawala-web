@@ -25,12 +25,17 @@ const OtherListingsES: FC<IOtherListing> = ({ currentListing, listings }) => {
 
     }, [])
 
+    const isMobile = windowWidth <= 1199;
+    const shouldUseCarousel = isMobile && otherListings.length > 2;
+
     return (
         <>
 
             <div className="cont d-flex justify-content-center">
                 <div className="header">¡Revisa nuestras otras opciones!</div>
-                <div className={`${otherListings.length === 1 ? 'single-listing-container' : (windowWidth <= 1199 ? 'hstack' : 'vstack')} gap-5 subCont`}>
+                <div className={`${otherListings.length === 1 ? 'single-listing-container' : 
+                    shouldUseCarousel ? 'mobile-carousel' : 
+                    (isMobile ? 'mobile-vertical' : 'hstack gap-5')} subCont`}>
                     {otherListings.map(({ name, mainImage }) => {
                         // For Spanish listings, ensure we route to the correct Spanish page
                         const routeName = name.includes('ES') ? name.replace(/\s/g, "") : `${name.replace(/\s/g, "")}ES`;

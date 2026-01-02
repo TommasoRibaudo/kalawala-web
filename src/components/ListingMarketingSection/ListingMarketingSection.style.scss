@@ -1,0 +1,29 @@
+.listing-marketing-section {
+  margin: 20px 0;
+  position: relative;
+  z-index: 10; // Ensure it appears above images
+  clear: both; // Ensure it clears any floated elements
+
+  .descriptive-title {
+    background-color: rgba(87, 203, 204, 0.1); // Teal color with transparency like amenities
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: rgb(0, 0, 0);
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-size: 20px; // Increased from 16px to match description text
+    font-weight: 600; // Increased weight for better visibility
+    margin-bottom: 15px;
+    text-align: center;
+
+    // Responsive adjustments
+    @media (max-width: 768px) {
+      font-size: 18px; // Increased from 14px
+      padding: 14px 16px;
+    }
+  }
+
+  // Overall responsive behavior
+  @media (max-width: 768px) {
+    margin: 15px 0;
+  }
+}

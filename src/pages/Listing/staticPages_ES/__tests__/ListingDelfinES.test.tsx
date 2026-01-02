@@ -140,9 +140,9 @@ describe('ListingDelfinES Component', () => {
     const amenityNames = delfinESData?.amenities.map(a => a.name) || [];
     
     // Check that expected Spanish amenities are present
-    expect(amenityNames).toContain('Baño Privado Equipado');
+    expect(amenityNames).toContain('2 Baños Privado Equipado');
     expect(amenityNames).toContain('Cocina Privada Equipada');
-    expect(amenityNames).toContain('A/C');
+    expect(amenityNames).toContain('Cuartos con A/C');
     expect(amenityNames).toContain('Parqueo Privado Encerrado');
     expect(amenityNames).toContain('100Mbps WiFi');
     
@@ -172,7 +172,7 @@ describe('ListingDelfinES Component', () => {
     
     // Check for key Spanish description elements
     expect(screen.getByText(/Bienvenido a Reservas Kalawala/)).toBeInTheDocument();
-    expect(screen.getByText(/acomoda hasta 6 huéspedes/)).toBeInTheDocument();
+    expect(screen.getAllByText(/acomoda hasta 6 huéspedes/)[0]).toBeInTheDocument();
     expect(screen.getByText(/2 unidades de aire acondicionado/)).toBeInTheDocument();
     expect(screen.getAllByText(/estacionamiento privado/)[0]).toBeInTheDocument();
     expect(screen.getByText(/caja de seguridad/)).toBeInTheDocument();
@@ -186,9 +186,9 @@ describe('ListingDelfinES Component', () => {
     );
     
     expect(screen.getByText('Entrada:')).toBeInTheDocument();
-    expect(screen.getByText('2:00 PM')).toBeInTheDocument();
+    expect(screen.getByText('3:00 PM')).toBeInTheDocument();
     expect(screen.getByText('Salida:')).toBeInTheDocument();
-    expect(screen.getByText('11:00 AM')).toBeInTheDocument();
+    expect(screen.getByText('12:00 PM (mediodía)')).toBeInTheDocument();
   });
 
   test('should display Spanish booking button text', () => {

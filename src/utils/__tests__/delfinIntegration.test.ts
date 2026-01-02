@@ -47,19 +47,19 @@ describe('Delfin Integration Tests', () => {
     // Check English amenities
     expect(delfinEnglish?.amenities).toBeDefined();
     const englishAmenityNames = delfinEnglish?.amenities.map(a => a.name) || [];
-    expect(englishAmenityNames).toContain('Private Equipped Bathroom');
+    expect(englishAmenityNames).toContain('2 Private Equipped Bathrooms');
     expect(englishAmenityNames).toContain('Private Equipped Kitchen');
-    expect(englishAmenityNames).toContain('A/C');
-    expect(englishAmenityNames).toContain('Private Fenced Parking');
+    expect(englishAmenityNames).toContain('Bedrooms with A/C');
+    expect(englishAmenityNames).toContain('Private Fenced Parking for 2 Vehicles');
     expect(englishAmenityNames).toContain('100Mbps WiFi');
     expect(englishAmenityNames).not.toContain('Pet Friendly');
     
     // Check Spanish amenities
     expect(delfinSpanish?.amenities).toBeDefined();
     const spanishAmenityNames = delfinSpanish?.amenities.map(a => a.name) || [];
-    expect(spanishAmenityNames).toContain('Baño Privado Equipado');
+    expect(spanishAmenityNames).toContain('2 Baños Privado Equipado');
     expect(spanishAmenityNames).toContain('Cocina Privada Equipada');
-    expect(spanishAmenityNames).toContain('A/C');
+    expect(spanishAmenityNames).toContain('Cuartos con A/C');
     expect(spanishAmenityNames).toContain('Parqueo Privado Encerrado');
     expect(spanishAmenityNames).toContain('100Mbps WiFi');
     expect(spanishAmenityNames).not.toContain('Pet Friendly');

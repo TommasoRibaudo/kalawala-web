@@ -51,7 +51,8 @@ html,
         padding: 0 20px;
 
         .heading {
-            height: 100px;
+            height: fit-content; // Changed from fixed 100px to fit-content
+            min-height: 100px; // Maintain minimum height for consistency
             @media (max-width: 992px) {
                 height: fit-content;
     
@@ -132,6 +133,12 @@ html,
             padding: 0 20px;
             margin-top: 10px;
         }
+    }
+
+    // Mobile container for OtherListings - appears after booking section
+    .other-listings-mobile {
+        padding: 20px;
+        margin-top: 30px;
     }
 
 }

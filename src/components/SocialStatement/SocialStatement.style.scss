@@ -1,0 +1,28 @@
+.social-statement {
+  margin: 1.5rem 0; // Increased margin
+  padding: 1.25rem; // Increased padding
+  background-color: #f8f9fa;
+  border-left: 4px solid rgba(87, 203, 204, 1);
+  border-radius: 4px;
+  position: relative;
+  z-index: 5; // Ensure proper layering
+
+  &__text {
+    margin: 0;
+    font-size: 1.5rem; // Increased from 1.25rem to make text bigger
+    font-style: italic;
+    color: #495057;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 768px) {
+  .social-statement {
+    margin: 1rem 0;
+    padding: 1rem;
+    
+    &__text {
+      font-size: 1.3rem; // Increased from 1.1rem for mobile too
+    }
+  }
+}

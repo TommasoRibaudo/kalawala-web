@@ -1,241 +1,213 @@
-# Design Document
+# Design Document: Listing Page Enhancements
 
 ## Overview
 
-This design outlines the implementation of the Delfines listing feature for the Kalawala vacation rental website. The solution follows the existing architectural patterns used for other properties (Rana, Tucano, Pappagallo, Geco) while accommodating the specific requirements for Delfines as a 6-person, non-pet-friendly accommodation.
+This design enhances all property listing pages with new marketing elements including descriptive titles, pricing displays, social proof statements, feature highlights, and instant confirmation badges. The layout is reorganized to move the comparison section to the bottom of the page.
 
 ## Architecture
 
-The Delfines listing implementation follows the established multi-language, component-based architecture:
+The implementation follows the existing React component architecture with TypeScript. New content will be managed through a centralized configuration object that maps property names to their specific marketing content.
 
 ```
-src/
-├── pages/Listing/staticPages/
-│   └── ListingDelfines.page.tsx          # English listing page
-├── pages/Listing/staticPages_ES/
-│   └── ListingDelfines.page_ES.tsx       # Spanish listing page
-├── utils/
-│   └── constants.ts                      # Updated with Delfines data
-└── Router/
-    └── Router.tsx                        # Updated with new routes
+┌─────────────────────────────────────────────────────────────┐
+│                    Listing Page Layout                       │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ Header: Title + Descriptive Subtitle + Price        │   │
+│  │ [Blue Section] "casa familiar, pet friendly..."     │   │
+│  │ [Bold] "Precio promedio: 75,000 CRC la noche"       │   │
+│  │ [Red Badge] "✔ Confirmación inmediata"              │   │
+│  └─────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ Images Container                                     │   │
+│  └─────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ Social Statement                                     │   │
+│  │ "Elegida por su parqueo privado interno..."         │   │
+│  └─────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ Amenities                                            │   │
+│  └─────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ Feature Highlights (Why guests choose...)           │   │
+│  │ 📍 Ubicación caminable...                           │   │
+│  │ 🏡 Espacio privado para hasta 5 personas            │   │
+│  │ ❄️ A/C en habitaciones                              │   │
+│  │ 💻 WiFi rápido ideal para trabajo remoto            │   │
+│  │ 🐾 Pet-friendly con espacio exterior                │   │
+│  └─────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ Description                                          │   │
+│  └─────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ Other Listings (Comparison Section) - MOVED HERE    │   │
+│  └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
 ```
-
-### Data Flow
-
-1. **Route Access**: User navigates to `/Delfin` or `/DelfinES`
-2. **Component Rendering**: Appropriate listing component loads
-3. **Data Retrieval**: Component queries `houseDataList` for Delfines data
-4. **Content Display**: Page renders with property details, amenities, and booking widget
-5. **Related Properties**: Other listings component shows remaining Kalawala properties
 
 ## Components and Interfaces
 
-### New Components
+### New Type: PropertyMarketingContent
 
-#### ListingDelfines.page.tsx
-- **Purpose**: English version of Delfines listing page
-- **Props**: None (uses static listing name)
-- **Key Features**:
-  - Helmet configuration for SEO
-  - Image container with modal functionality
-  - Amenities display (excluding pet-friendly)
-  - Smoobu booking widget with houseCode 10
-  - Other listings sidebar
+```typescript
+interface PropertyMarketingContent {
+  propertyKey: string;           // e.g., 'Rana', 'RanaES'
+  descriptiveTitle: {
+    en: string;
+    es: string;
+  };
+  price: {
+    crc: number;                 // e.g., 75000
+    usd: number;                 // e.g., 150
+  };
+  socialStatement: {
+    en: string;
+    es: string;
+  };
+  featureHighlights: {
+    en: string[];
+    es: string[];
+  };
+}
+```
 
-#### ListingDelfines.page_ES.tsx
-- **Purpose**: Spanish version of Delfines listing page
-- **Props**: None (uses static listing name)
-- **Key Features**:
-  - Spanish Helmet configuration for SEO
-  - Spanish navigation components
-  - Translated amenities display
-  - Same Smoobu integration
-  - Spanish other listings sidebar
+### New Component: ListingMarketingSection
 
-### Updated Components
+A reusable component that renders the descriptive title, price, and confirmation badge.
 
-#### Router.tsx
-- **New Routes**:
-  - `/Delfin` → `ListingDelfines` (English version)
-  - `/DelfinES` → `ListingDelfinesES` (Spanish version)
-- **Note**: URL uses "Delfin" (singular) to maintain consistency with cookie banner logic that checks for "ES" suffix
+```typescript
+interface ListingMarketingSectionProps {
+  propertyKey: string;
+  isSpanish: boolean;
+}
+```
 
-#### constants.ts
-- **New Data Structures**:
-  - Delfines entries in `houseDataList`
-  - Delfines in `homesSnippet`
-  - New image description arrays
+### New Component: SocialStatement
+
+A component that renders the social proof statement below images.
+
+```typescript
+interface SocialStatementProps {
+  propertyKey: string;
+  isSpanish: boolean;
+}
+```
+
+### New Component: FeatureHighlights
+
+A component that renders the "Why guests choose" section with icons.
+
+```typescript
+interface FeatureHighlightsProps {
+  propertyKey: string;
+  propertyName: string;
+  isSpanish: boolean;
+}
+```
+
+### New Component: InstantConfirmationBadge
+
+A styled badge component for the confirmation message.
+
+```typescript
+interface InstantConfirmationBadgeProps {
+  isSpanish: boolean;
+}
+```
 
 ## Data Models
 
-### House Data Structure
+### Property Marketing Configuration
+
+A new configuration object in `src/utils/constants.ts`:
 
 ```typescript
-// English Version
-{
-  name: "Delfin",
-  guestNumber: 6,
-  location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
-  description: "Welcome to Reservas Kalawala. Located in the heart of town...",
-  neighborhood: "Puerto Viejo is a popular destination...",
-  houseCode: 10,
-  houseLangCode: "Delfin",
-  parking: true,
-  image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000", // Rana image initially
-  amenities: [
-    // All Rana amenities except pet-friendly
-  ]
-}
-
-// Spanish Version
-{
-  name: "Delfín",
-  guestNumber: 6,
-  location: "AAA Puerto Viejo de Talamanca, Limón, Costa Rica",
-  description: "Bienvenido a Reservas Kalawala. Ubicada en el corazón del pueblo...",
-  neighborhood: "Puerto Viejo es un destino popular...",
-  houseCode: 10,
-  houseLangCode: "DelfinES",
-  parking: true,
-  image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000", // Rana image initially
-  amenities: [
-    // Spanish amenities (all Rana amenities except pet-friendly)
-  ]
-}
-```
-
-### Amenities Configuration
-
-Based on Rana's amenities, excluding pet-friendly:
-
-**English Amenities:**
-- Private Equipped Bathroom
-- Private Equipped Kitchen  
-- A/C
-- Private Fenced Parking
-- 100Mbps WiFi
-
-**Spanish Amenities:**
-- Baño Privado Equipado
-- Cocina Privada Equipada
-- A/C
-- Parqueo Privado Encerrado
-- 100Mbps WiFi
-
-### Image Descriptions
-
-New arrays will be created:
-- `delfinImageDescriptions` (English)
-- `delfinImageDescriptionsES` (Spanish)
-
-Initially copied from `ranaImageDescriptions` and `ranaImageDescriptionsES` respectively.
-
-### Home Page Integration
-
-**homesSnippet Update:**
-```typescript
-export const homesSnippet: ListingType[] = [
-    {
-        name: 'Tucano',
-        mainImage: "https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000"
+export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent> = {
+  'Rana': {
+    propertyKey: 'Rana',
+    descriptiveTitle: {
+      en: 'Family home, pet friendly with air conditioning',
+      es: 'Casa familiar, pet friendly con aire acondicionado'
     },
-    {
-        name: 'Geco',
-        mainImage: "https://drive.google.com/thumbnail?id=1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2&sz=w1000"
+    price: { crc: 75000, usd: 150 },
+    socialStatement: {
+      en: 'Chosen for its private internal parking and small garden for pets',
+      es: 'Elegida por su parqueo privado interno y pequeño jardín para las mascotas'
     },
-    {
-        name: 'Pappagallo',
-        mainImage: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000"
-    },
-    {
-        name: 'Rana',
-        mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
-    },
-    {
-        name: 'Delfin',
-        mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000" // Rana image initially
+    featureHighlights: {
+      en: [
+        '📍 Walkable location in downtown Puerto Viejo',
+        '🏡 Private space for up to 5 people',
+        '❄️ A/C in bedrooms',
+        '💻 Fast WiFi ideal for remote work',
+        '🐾 Pet-friendly with outdoor space'
+      ],
+      es: [
+        '📍 Ubicación caminable en el centro de Puerto Viejo',
+        '🏡 Espacio privado para hasta 5 personas',
+        '❄️ A/C en habitaciones',
+        '💻 WiFi rápido ideal para trabajo remoto',
+        '🐾 Pet-friendly con espacio exterior'
+      ]
     }
-]
+  },
+  // ... similar entries for all other properties
+};
 ```
+
+## Correctness Properties
+
+*A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+
+### Property 1: Price Currency Matches Page Language
+
+*For any* listing page, if the page is a Spanish variant (URL ends with "ES"), the price display SHALL contain "CRC" or "colones", and if the page is an English variant, the price display SHALL contain "$" or "USD".
+
+**Validates: Requirements 2.1, 2.2**
+
+### Property 2: Text Content Language Consistency
+
+*For any* listing page, all marketing text content (descriptive title, social statement, feature highlights, confirmation badge) SHALL be displayed in the language matching the page variant (Spanish for ES pages, English for EN pages).
+
+**Validates: Requirements 1.2, 3.3, 5.1, 5.2**
+
+### Property 3: Feature Highlights Contain Configured Features
+
+*For any* listing page and its corresponding property configuration, the rendered feature highlights section SHALL contain all features defined in the property's `featureHighlights` array, and each feature SHALL include an emoji icon.
+
+**Validates: Requirements 4.1, 4.2, 4.4**
+
+### Property 4: Property Content Configuration Mapping
+
+*For any* property name, the displayed marketing content (price, social statement, features) SHALL exactly match the values defined in `PROPERTY_MARKETING_CONFIG` for that property.
+
+**Validates: Requirements 7.1, 7.2**
+
+### Property 5: Comparison Section Position
+
+*For any* listing page, the OtherListings component SHALL be rendered after the description section and SHALL NOT be rendered inside the sidebar column.
+
+**Validates: Requirements 6.1, 6.2**
 
 ## Error Handling
 
-### Route Protection
-- Invalid routes will fall back to existing 404 handling
-- Missing house data will be handled by existing null checks in components
-
-### Data Validation
-- House data structure validation follows existing patterns
-- Image loading errors handled by existing image components
-- Smoobu widget errors handled by existing Smoobu component
-
-### Responsive Design
-- Follows existing responsive patterns used in other listing pages
-- Mobile-first approach with Bootstrap grid system
-- Image modal functionality consistent with other listings
+- If a property key is not found in `PROPERTY_MARKETING_CONFIG`, the marketing sections should gracefully hide rather than crash
+- Missing translations should fall back to English content
+- Invalid price values (NaN, negative) should display a placeholder or hide the price section
 
 ## Testing Strategy
 
-### Component Testing
-- **Unit Tests**: Test individual component rendering with Delfines data
-- **Integration Tests**: Verify routing to Delfines pages works correctly
-- **Data Tests**: Ensure Delfines data is properly structured and accessible
+### Unit Tests
+- Test that `PROPERTY_MARKETING_CONFIG` contains entries for all properties
+- Test that each property has both English and Spanish content
+- Test price formatting functions for CRC and USD
 
-### User Acceptance Testing
-- **Navigation**: Verify users can access both English and Spanish Delfines pages
-- **Content Display**: Confirm all property information displays correctly
-- **Booking Integration**: Test Smoobu widget functionality with houseCode 10
-- **Related Properties**: Verify other listings show correctly on Delfines pages
+### Property-Based Tests
+- Use fast-check to generate random property keys and verify content mapping
+- Test language consistency across all page variants
+- Test that all configured features render with emojis
 
-### Cross-Language Testing
-- **Content Consistency**: Ensure English and Spanish versions show equivalent information
-- **Navigation**: Test language switching and proper component usage
-- **SEO**: Verify meta tags and canonical links are properly configured
-
-### Performance Testing
-- **Image Loading**: Test initial load with Rana images
-- **Component Rendering**: Ensure no performance regression with additional data
-- **Mobile Performance**: Verify responsive behavior on various screen sizes
-
-## SEO Configuration
-
-### Meta Tags
-**English Version:**
-```html
-<title>House Delfin - Puerto Viejo Vacation Home Rental</title>
-<meta name="description" content="Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, bathroom, 2 A/C units, and private parking." />
-<link rel="canonical" href="https://www.reservaskalawala.com/Delfin" />
-<link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Delfin" />
-<link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/DelfinES" />
-```
-
-**Spanish Version:**
-```html
-<title>Casa Delfín - Alquiler de Casa de Vacaciones en Puerto Viejo</title>
-<meta name="description" content="Bienvenido a Reservas Kalawala. Ubicada en el corazón del pueblo, esta casa acomoda hasta 6 huéspedes con cocina totalmente equipada, baño, 2 unidades de aire acondicionado y estacionamiento privado." />
-<link rel="canonical" href="https://www.reservaskalawala.com/DelfinES" />
-<link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Delfin" />
-<link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/DelfinES" />
-```
-
-## Implementation Notes
-
-### Photo Management
-- Initial implementation uses Rana photos as placeholders
-- Separate image description arrays created for future photo updates
-- Image links can be updated independently without affecting Rana
-
-### Content Translation
-- Spanish description will be translated from provided English text
-- Neighborhood description will follow Rana's pattern but adapted for Delfines
-- All UI elements will use existing Spanish components
-
-### Smoobu Integration
-- Uses houseCode 10 as specified
-- Follows existing Smoobu component integration pattern
-- No changes needed to Smoobu component itself
-
-### Future Extensibility
-- Structure allows easy photo updates when new images are available
-- Content can be modified independently for each language
-- Additional amenities can be added following existing patterns
+### Integration Tests
+- Render each listing page and verify all new sections appear
+- Verify DOM ordering of new elements
+- Test responsive behavior of new components

@@ -7,6 +7,7 @@
     height: 100%;
     // padding-top: 20px;
     flex-direction: column;
+    padding-bottom: 40px;
     .listing:hover{
         cursor: pointer;
         transform: translateY(-10px);
@@ -44,6 +45,21 @@
 .subCont{
     width:100%;
     align-items: center;
+    
+    // Mobile vertical layout (2 or fewer listings)
+    &.mobile-vertical {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 20px !important;
+        
+        .listing {
+            flex-shrink: 0 !important;
+            width: 80% !important;
+            max-width: 300px !important;
+            height: 170px !important;
+        }
+    }
 }
 
 .single-listing-container {
@@ -54,8 +70,34 @@
     
     .listing {
         width: 230px !important;
-        flex-shrink: 0 !important;
-        max-width: 230px !important;
+    }
+}
+
+.mobile-carousel {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    width: 100% !important;
+    padding: 10px 0 !important;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    
+    // Hide scrollbar but keep functionality
+    scrollbar-width: none; // Firefox
+    -ms-overflow-style: none; // IE and Edge
+    
+    &::-webkit-scrollbar {
+        display: none; // Chrome, Safari, Opera
+    }
+    
+    .listing {
+        flex: 0 0 auto !important;
+        width: 200px !important;
+        margin-right: 15px !important;
+        
+        &:last-child {
+            margin-right: 0 !important;
+        }
     }
 }
 
@@ -66,4 +108,3 @@
     font-weight: bold;
     margin-bottom: 20px;
 }
-

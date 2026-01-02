@@ -140,10 +140,10 @@ describe('ListingDelfin Component', () => {
     const amenityNames = delfinData?.amenities.map(a => a.name) || [];
     
     // Check that expected amenities are present
-    expect(amenityNames).toContain('Private Equipped Bathroom');
+    expect(amenityNames).toContain('2 Private Equipped Bathrooms');
     expect(amenityNames).toContain('Private Equipped Kitchen');
-    expect(amenityNames).toContain('A/C');
-    expect(amenityNames).toContain('Private Fenced Parking');
+    expect(amenityNames).toContain('Bedrooms with A/C');
+    expect(amenityNames).toContain('Private Fenced Parking for 2 Vehicles');
     expect(amenityNames).toContain('100Mbps WiFi');
     
     // Check that pet-friendly amenity is excluded
@@ -185,9 +185,9 @@ describe('ListingDelfin Component', () => {
     );
     
     expect(screen.getByText('Check-in:')).toBeInTheDocument();
-    expect(screen.getByText('2:00 PM')).toBeInTheDocument();
+    expect(screen.getByText('3:00 PM')).toBeInTheDocument();
     expect(screen.getByText('Check-out:')).toBeInTheDocument();
-    expect(screen.getByText('11:00 AM')).toBeInTheDocument();
+    expect(screen.getByText('12:00 PM (noon)')).toBeInTheDocument();
   });
 
   test('should handle image modal functionality', () => {

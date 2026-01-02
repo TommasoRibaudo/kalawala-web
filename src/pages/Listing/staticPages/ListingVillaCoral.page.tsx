@@ -15,6 +15,11 @@ import { useMediaQuery } from '@react-hook/media-query';
 import FixedNavigationRib from "../../../components/FixedNavigation/FixedNavigation.componentRIB";
 import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
 import { useRandomPopup } from "../../../hooks/useRandomPopup";
+import { useSmoobuBookingTip } from "../../../hooks/useSmoobuBookingTip";
+import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
+import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
+import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
+import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 
 
 const ListingVillaCoral = () => {
@@ -23,6 +28,9 @@ const ListingVillaCoral = () => {
     
     // Add random popup functionality for English listing page
     useRandomPopup({ isSpanishPage: false });
+    
+    // Show booking encouragement tip when user interacts with Smoobu widget
+    useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'Villa Coral' });
 
     const [show, setShow] = useState(false);
 
@@ -52,10 +60,7 @@ const ListingVillaCoral = () => {
             </Helmet>
             <FixedNavigationRib isBlog={false} />
             <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <OtherListings listings={VillaSnippet} currentListing={listing || ''} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
+                <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
                         <h1 className="title">Villa Coral</h1>
                         <h3 className="location">
@@ -63,13 +68,20 @@ const ListingVillaCoral = () => {
                                 Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica
                             </a>
                         </h3>
+                        {/* Add marketing section after title */}
+                        <ListingMarketingSection propertyKey="VillaCoral" isSpanish={false} />
                         {isScreenSmall && (
                             <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Online Now!</Button></div>)}
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
+                    {/* Add social statement after images */}
+                    <SocialStatement propertyKey="VillaCoral" isSpanish={false} />
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
+                    
+                    {/* Add feature highlights before description */}
+                    <FeatureHighlights propertyKey="VillaCoral" propertyName="Villa Coral" isSpanish={false} />
                     
                     <div className="description">
                     <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
@@ -109,11 +121,27 @@ const ListingVillaCoral = () => {
                         </p>
                     </div>
 
+                    {/* Show OtherListings here only on desktop */}
+                    {!isScreenSmall && (
+                        <div className="other-listings-bottom">
+                            <OtherListings listings={VillaSnippet} currentListing={listing || ''} />
+                        </div>
+                    )}
+
                 </Col>
-                <Col id="smoobuComp" className="book col" lg={3} md={windowWidth <= 991 ? { span: 12 } : { order: 'first', span: 4 }} sm={{ span: 12 }} xs={{ span: 12 }}>
+                <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
+                    {/* Add price and confirmation above Smoobu */}
+                    <PriceConfirmationSection propertyKey="VillaCoral" isSpanish={false} />
                     <Smoobu homeCode={houseData!.houseCode} />
                 </Col>
             </Row>
+            
+            {/* Show OtherListings here only on mobile - after the entire row */}
+            {isScreenSmall && (
+                <div className="other-listings-mobile">
+                    <OtherListings listings={VillaSnippet} currentListing={listing || ''} />
+                </div>
+            )}
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
 
             {/* Message Tip Container */}

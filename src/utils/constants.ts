@@ -1,4 +1,4 @@
-import { HouseDataType, ListingType } from "./types";
+import { HouseDataType, ListingType, PropertyMarketingContent } from "./types";
 
 // Random popup configuration
 export const RANDOM_POPUP_CONFIG = {
@@ -2008,3 +2008,286 @@ export const NamDataListES: HouseDataType[] = [
     },
 
 ]
+
+export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent> = {
+    'Rana': {
+        propertyKey: 'Rana',
+        descriptiveTitle: {
+            en: 'Family home, pet friendly with air conditioning',
+            es: 'Casa familiar, pet friendly con aire acondicionado'
+        },
+        price: { crc: 75000, usd: 150 },
+        socialStatement: {
+            en: 'Chosen for its private internal parking and small garden for pets',
+            es: 'Elegida por su parqueo privado interno y pequeño jardín para las mascotas'
+        },
+        featureHighlights: {
+            en: [
+                '📍 Walkable location in downtown Puerto Viejo',
+                '🏡 Private space for up to 5 people',
+                '❄️ A/C in bedrooms',
+                '💻 Fast WiFi ideal for remote work',
+                '🐾 Pet-friendly with outdoor space'
+            ],
+            es: [
+                '📍 Ubicación caminable en el centro de Puerto Viejo',
+                '🏡 Espacio privado para hasta 5 personas',
+                '❄️ A/C en habitaciones',
+                '💻 WiFi rápido ideal para trabajo remoto',
+                '🐾 Pet-friendly con espacio exterior'
+            ]
+        }
+    },
+    'Geco': {
+        propertyKey: 'Geco',
+        descriptiveTitle: {
+            en: 'Family home, pet friendly with air conditioning',
+            es: 'Casa familiar, pet friendly con aire acondicionado'
+        },
+        price: { crc: 75000, usd: 150 },
+        socialStatement: {
+            en: 'Chosen for its private internal parking and small garden for pets',
+            es: 'Elegida por su parqueo privado interno y pequeño jardín para las mascotas'
+        },
+        featureHighlights: {
+            en: [
+                '📍 Walkable location in downtown Puerto Viejo',
+                '🏡 Private space for up to 5 people',
+                '❄️ A/C in bedrooms',
+                '💻 Fast WiFi ideal for remote work',
+                '🐾 Pet-friendly with outdoor space'
+            ],
+            es: [
+                '📍 Ubicación caminable en el centro de Puerto Viejo',
+                '🏡 Espacio privado para hasta 5 personas',
+                '❄️ A/C en habitaciones',
+                '💻 WiFi rápido ideal para trabajo remoto',
+                '🐾 Pet-friendly con espacio exterior'
+            ]
+        }
+    },
+    'Tucano': {
+        propertyKey: 'Tucano',
+        descriptiveTitle: {
+            en: 'Central apartment above Italian bakery',
+            es: 'Apartamento céntrico sobre panadería italiana'
+        },
+        price: { crc: 79000, usd: 159 },
+        socialStatement: {
+            en: 'Chosen for its central location perfect for bars and restaurants',
+            es: 'Elegida por su ubicación céntrica perfecta para bares y restaurantes'
+        },
+        featureHighlights: {
+            en: [
+                '📍 Central location above Italian bakery',
+                '🏡 Cozy apartment for up to 5 people',
+                '❄️ A/C in bedrooms',
+                '💻 Fast WiFi ideal for remote work',
+                '🍞 15% discount at bakery downstairs'
+            ],
+            es: [
+                '📍 Ubicación céntrica sobre panadería italiana',
+                '🏡 Apartamento acogedor para hasta 5 personas',
+                '❄️ A/C en habitaciones',
+                '💻 WiFi rápido ideal para trabajo remoto',
+                '🍞 15% descuento en panadería de abajo'
+            ]
+        }
+    },
+    'Pappagallo': {
+        propertyKey: 'Pappagallo',
+        descriptiveTitle: {
+            en: 'Central apartment above Italian bakery',
+            es: 'Apartamento céntrico sobre panadería italiana'
+        },
+        price: { crc: 79000, usd: 159 },
+        socialStatement: {
+            en: 'Chosen for its central location perfect for bars and restaurants',
+            es: 'Elegida por su ubicación céntrica perfecta para bares y restaurantes'
+        },
+        featureHighlights: {
+            en: [
+                '📍 Central location above Italian bakery',
+                '🏡 Cozy apartment for up to 5 people',
+                '❄️ A/C in bedrooms',
+                '💻 Fast WiFi ideal for remote work',
+                '🍞 15% discount at bakery downstairs'
+            ],
+            es: [
+                '📍 Ubicación céntrica sobre panadería italiana',
+                '🏡 Apartamento acogedor para hasta 5 personas',
+                '❄️ A/C en habitaciones',
+                '💻 WiFi rápido ideal para trabajo remoto',
+                '🍞 15% descuento en panadería de abajo'
+            ]
+        }
+    },
+    'VillaMar': {
+        propertyKey: 'VillaMar',
+        descriptiveTitle: {
+            en: 'Private villa with pool for couples',
+            es: 'Villa privada con piscina para parejas'
+        },
+        price: { crc: 93000, usd: 186 },
+        socialStatement: {
+            en: 'Chosen for its private pool perfect for romantic getaways',
+            es: 'Elegida por su piscina privada perfecta para escapadas románticas'
+        },
+        featureHighlights: {
+            en: [
+                '🏊 Private pool exclusive for guests',
+                '💑 Perfect for couples seeking privacy',
+                '❄️ Full A/C throughout the villa',
+                '💻 Fast WiFi with dedicated workspace',
+                '🏖️ Close to beautiful Playa Chiquita'
+            ],
+            es: [
+                '🏊 Piscina privada exclusiva para huéspedes',
+                '💑 Perfecta para parejas que buscan privacidad',
+                '❄️ A/C completo en toda la villa',
+                '💻 WiFi rápido con espacio de trabajo dedicado',
+                '🏖️ Cerca de la hermosa Playa Chiquita'
+            ]
+        }
+    },
+    'VillaCoral': {
+        propertyKey: 'VillaCoral',
+        descriptiveTitle: {
+            en: 'Private villa with pool for couples',
+            es: 'Villa privada con piscina para parejas'
+        },
+        price: { crc: 93000, usd: 186 },
+        socialStatement: {
+            en: 'Chosen for its private pool perfect for romantic getaways',
+            es: 'Elegida por su piscina privada perfecta para escapadas románticas'
+        },
+        featureHighlights: {
+            en: [
+                '🏊 Private pool exclusive for guests',
+                '💑 Perfect for couples seeking privacy',
+                '❄️ Full A/C throughout the villa',
+                '💻 Fast WiFi with dedicated workspace',
+                '🏖️ Close to beautiful Playa Chiquita'
+            ],
+            es: [
+                '🏊 Piscina privada exclusiva para huéspedes',
+                '💑 Perfecta para parejas que buscan privacidad',
+                '❄️ A/C completo en toda la villa',
+                '💻 WiFi rápido con espacio de trabajo dedicado',
+                '🏖️ Cerca de la hermosa Playa Chiquita'
+            ]
+        }
+    },
+    'Areka': {
+        propertyKey: 'Areka',
+        descriptiveTitle: {
+            en: 'Cozy retreat perfect for couples exploring Punta Uva',
+            es: 'Refugio acogedor perfecto para parejas explorando Punta Uva'
+        },
+        price: { crc: 47000, usd: 94 },
+        socialStatement: {
+            en: 'Chosen for its peaceful location',
+            es: 'Elegida por su ubicación tranquila'
+        },
+        featureHighlights: {
+            en: [
+                '🏖️ 2 min drive from Punta Uva beach',
+                '💑 Intimate space perfect for couples',
+                '❄️ A/C for comfortable nights',
+                '💻 WiFi for staying connected',
+                '🚗 Outside Private parking available'
+            ],
+            es: [
+                '🏖️ 2 min en carro de playa Punta Uva',
+                '💑 Espacio íntimo perfecto para parejas',
+                '❄️ A/C para noches cómodas',
+                '💻 WiFi para mantenerse conectado',
+                '🚗 Parqueo privado externo disponible'
+            ]
+        }
+    },
+    'Plumeria': {
+        propertyKey: 'Plumeria',
+        descriptiveTitle: {
+            en: 'Cozy retreat perfect for couples exploring Punta Uva',
+            es: 'Refugio acogedor perfecto para parejas explorando Punta Uva'
+        },
+        price: { crc: 47000, usd: 94 },
+        socialStatement: {
+            en: 'Chosen for its peaceful location',
+            es: 'Elegida por su ubicación tranquila'
+        },
+        featureHighlights: {
+            en: [
+                '🏖️ 2 min drive from Punta Uva beach',
+                '💑 Intimate space perfect for couples',
+                '❄️ A/C for comfortable nights',
+                '💻 WiFi for staying connected',
+                '🚗 Outside Private parking available'
+            ],
+            es: [
+                '🏖️ 2 min en carro de playa Punta Uva',
+                '💑 Espacio íntimo perfecto para parejas',
+                '❄️ A/C para noches cómodas',
+                '💻 WiFi para mantenerse conectado',
+                '🚗 Parqueo privado externo disponible'
+            ]
+        }
+    },
+    'Giulia': {
+        propertyKey: 'Giulia',
+        descriptiveTitle: {
+            en: 'Family-friendly house near Punta Uva',
+            es: 'Casa familiar cerca de Punta Uva'
+        },
+        price: { crc: 79000, usd: 159 },
+        socialStatement: {
+            en: 'Chosen for its family-friendly amenities and beach proximity',
+            es: 'Elegida por sus comodidades familiares y proximidad a la playa'
+        },
+        featureHighlights: {
+            en: [
+                '👨‍👩‍👧‍👦 Perfect for families with children',
+                '🏖️ Walking distance to Playa chiquita beach',
+                '❄️ A/C in bedrooms for comfort',
+                '💻 Fast WiFi for remote work',
+                '🚗 Parking space available'
+            ],
+            es: [
+                '👨‍👩‍👧‍👦 Perfecta para familias con niños',
+                '🏖️ A distancia caminable de playa chiquita',
+                '❄️ A/C en habitaciones para comodidad',
+                '💻 WiFi rápido para trabajo remoto',
+                '🚗 Espacio de parqueo disponible'
+            ]
+        }
+    },
+    'Delfin': {
+        propertyKey: 'Delfin',
+        descriptiveTitle: {
+            en: 'Spacious house perfect for large families',
+            es: 'Casa espaciosa perfecta para familias grandes'
+        },
+        price: { crc: 90000, usd: 180 },
+        socialStatement: {
+            en: 'Chosen for its spacious layout accommodating up to 6 guests',
+            es: 'Elegida por su diseño espacioso que acomoda hasta 6 huéspedes'
+        },
+        featureHighlights: {
+            en: [
+                '👨‍👩‍👧‍👦 Spacious for up to 6 people',
+                '🏡 Two bathrooms for convenience',
+                '❄️ A/C in all bedrooms',
+                '💻 Fast WiFi throughout the house',
+                '🚗 Private fenced parking for 2 vehicles'
+            ],
+            es: [
+                '👨‍👩‍👧‍👦 Espaciosa para hasta 6 personas',
+                '🏡 Dos baños para conveniencia',
+                '❄️ A/C en todas las habitaciones',
+                '💻 WiFi rápido en toda la casa',
+                '🚗 Parqueo privado cercado para 2 vehículos'
+            ]
+        }
+    }
+};

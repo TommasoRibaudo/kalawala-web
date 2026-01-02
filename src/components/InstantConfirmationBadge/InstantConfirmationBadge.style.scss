@@ -1,0 +1,39 @@
+.instant-confirmation-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; // Increased gap for better spacing
+  background-color: rgba(220, 53, 69, 0.7); // Made more transparent
+  color: white;
+  padding: 10px 16px; // Increased padding
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 16px; // Increased from 14px
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.15); // Reduced shadow opacity
+  position: relative;
+  z-index: 10; // Ensure it appears above other elements
+  
+  .checkmark {
+    font-size: 18px; // Increased from 16px
+    font-weight: bold;
+  }
+  
+  .text {
+    white-space: nowrap;
+  }
+  
+  // Hover effect for better interactivity
+  &:hover {
+    background-color: rgba(200, 35, 51, 0.8); // Made hover state more transparent too
+    box-shadow: 0 3px 6px rgba(220, 53, 69, 0.25);
+  }
+  
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    font-size: 14px; // Increased from 12px
+    padding: 8px 12px; // Increased padding
+    
+    .checkmark {
+      font-size: 16px; // Increased from 14px
+    }
+  }
+}

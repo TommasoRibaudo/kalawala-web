@@ -25,10 +25,10 @@ import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHigh
 const ListingVillaMarES = () => {
     const listing = 'Villa MarES'
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
-    
+
     // Add random popup functionality for Spanish listing page
     useRandomPopup({ isSpanishPage: true });
-    
+
     // Show booking encouragement tip when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: true, propertyName: 'Villa Mar' });
 
@@ -59,6 +59,9 @@ const ListingVillaMarES = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/VillaMar" />
             </Helmet>
             <FixedNavigationRibES isBlog={false} />
+            {isScreenSmall && (
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
@@ -70,8 +73,6 @@ const ListingVillaMarES = () => {
                         </h3>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="VillaMar" isSpanish={true} />
-                        {isScreenSmall && (
-                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Reverva en linea!</Button></div>)}
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
@@ -79,15 +80,15 @@ const ListingVillaMarES = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
-                    
+
                     {/* Add feature highlights before description */}
                     <FeatureHighlights propertyKey="VillaMar" propertyName="Villa Mar" isSpanish={true} />
-                    
+
                     <div className="description">
-                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
-                        <p><strong>Entrada:</strong> 3:00 PM</p>
-                        <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
-                    </div>
+                        <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                            <p><strong>Entrada:</strong> 3:00 PM</p>
+                            <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
+                        </div>
                         <p>
                             Descubre el retiro perfecto en Playa Chiquita, Puerto Viejo. Nuestra villa de lujo construida recientemente ofrece una experiencia vacacional ideal, combinando comodidad y conveniencia en un entorno tropical sereno.
                             <br />
@@ -120,7 +121,7 @@ const ListingVillaMarES = () => {
                         </p>
 
                     </div>
-                    
+
                     {/* Show OtherListings here only on desktop */}
                     {!isScreenSmall && (
                         <div className="other-listings-bottom">

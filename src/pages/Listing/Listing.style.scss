@@ -141,4 +141,50 @@ html,
         margin-top: 30px;
     }
 
+    // Sticky CTA button for mobile
+    .sticky-cta-mobile {
+        background: rgba(255, 255, 255, 0.98); // More opaque background
+        backdrop-filter: blur(15px);
+        padding: 20px;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15); // Stronger shadow
+        border-top: 2px solid rgba(0, 0, 0, 0.1); // More prominent border
+        
+        .sticky-cta-button {
+            width: 100%;
+            padding: 18px 30px; // Larger padding for better visibility
+            font-size: 18px; // Larger font size
+            font-weight: 700; // Bolder text
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 12px; // More rounded corners
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); // Add button shadow
+            animation: subtle-pulse 3s ease-in-out infinite; // Subtle attention-grabbing animation
+            
+            &:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+                animation: none; // Stop pulse on hover
+            }
+            
+            &:active {
+                transform: translateY(-1px);
+            }
+        }
+        
+        // Add safe area padding for devices with notches
+        padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    }
+
+}
+
+// Subtle pulse animation for sticky CTA button
+@keyframes subtle-pulse {
+    0%, 100% {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
 }

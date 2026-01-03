@@ -30,7 +30,7 @@ const ListingArekaES = () => {
 
     // Add random popup functionality for Spanish listing page
     useRandomPopup({ isSpanishPage: true });
-    
+
     // Show booking encouragement tip when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: true, propertyName: 'Casa Areka' });
 
@@ -59,6 +59,9 @@ const ListingArekaES = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Areka" />
             </Helmet>
             <FixedNavigationNamES isBlog={false} />
+            {isScreenSmall && (
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
@@ -70,8 +73,6 @@ const ListingArekaES = () => {
                         </h3>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="Areka" isSpanish={true} />
-                        {isScreenSmall && (
-                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">¡Reserva en línea!</Button></div>)}
                     </div>
                     <ImagesContainer showModal={handleShow} houseName="Areka" />
                     {/* Add social statement after images */}
@@ -79,15 +80,15 @@ const ListingArekaES = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
-                    
+
                     {/* Add feature highlights before description */}
                     <FeatureHighlights propertyKey="Areka" propertyName="Casa Areka" isSpanish={true} />
-                    
+
                     <div className="description">
-                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
-                        <p><strong>Entrada:</strong> 3:00 PM</p>
-                        <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
-                    </div>
+                        <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                            <p><strong>Entrada:</strong> 3:00 PM</p>
+                            <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
+                        </div>
                         <p>
                             Nuevos bungalows totalmente equipados con A/C ubicados a 200mts de la hermosa playa Playa Chiquita, en uno de los barrios más seguros y tranquilos del Caribe. A pocos minutos de Puerto Viejo y Manzanillo, estamos perfectamente ubicados para visitar la playa Punta Uva y Arrecife.
                             <br />
@@ -113,7 +114,7 @@ const ListingArekaES = () => {
                             <br />
                         </p>
                     </div>
-                    
+
                     {/* Show OtherListings here only on desktop */}
                     {!isScreenSmall && (
                         <div className="other-listings-bottom">

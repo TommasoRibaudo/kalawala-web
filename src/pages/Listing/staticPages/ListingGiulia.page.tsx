@@ -25,10 +25,10 @@ import PriceConfirmationSection from "../../../components/PriceConfirmationSecti
 const ListingGiulia = () => {
     const listing = "Giulia"
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
-    
+
     // Add random popup functionality for English listing page
     useRandomPopup({ isSpanishPage: false });
-    
+
     // Show booking encouragement tip when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'House Giulia' });
 
@@ -59,6 +59,9 @@ const ListingGiulia = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Giulia" />
             </Helmet>
             <FixedNavigationNam isBlog={false} />
+            {isScreenSmall && (
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
@@ -70,8 +73,6 @@ const ListingGiulia = () => {
                         </h3>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="Giulia" isSpanish={false} />
-                        {isScreenSmall && (
-                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Online Now!</Button></div>)}
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
@@ -79,15 +80,15 @@ const ListingGiulia = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
-                    
+
                     {/* Add feature highlights before description */}
                     <FeatureHighlights propertyKey="Giulia" propertyName="House Giulia" isSpanish={false} />
-                    
+
                     <div className="description">
-                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
-                        <p ><strong>Check-in:</strong> 3:00 PM</p>
-                        <p ><strong>Check-out:</strong> 12:00 PM (noon)</p>
-                    </div>
+                        <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                            <p ><strong>Check-in:</strong> 3:00 PM</p>
+                            <p ><strong>Check-out:</strong> 12:00 PM (noon)</p>
+                        </div>
                         <p>
                             Escape to Puerto Viejo in our home with A/C, gas kitchen, and a spacious closet. Relax on your private covered patio. Our home is located just 200 meters from the stunning Playa Chiquita beach, in one of the safest and calmest neighborhoods in the Caribbean. Explore nearby attractions like Puerto Viejo, Manzanillo, Punta Uva beach, and Arrecife from our perfect location.<br />
                         </p>
@@ -129,7 +130,7 @@ const ListingGiulia = () => {
                     <Smoobu homeCode={houseData!.houseCode} />
                 </Col>
             </Row>
-            
+
             {/* Show OtherListings here only on mobile - after the entire row */}
             {isScreenSmall && (
                 <div className="other-listings-mobile">

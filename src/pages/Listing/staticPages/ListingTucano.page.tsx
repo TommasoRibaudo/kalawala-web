@@ -71,7 +71,7 @@ const ListingTucano = () => {
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="Tucano" isSpanish={false} />
                         {isScreenSmall && (
-                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Online Now!</Button></div>)}
+                            <div className="button-hold sticky-cta-mobile"><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}

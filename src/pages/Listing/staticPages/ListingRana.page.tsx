@@ -6,12 +6,12 @@ import Smoobu from "../../../components/Smoobu/Smoobu.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
 import { HouseDataType } from "../../../utils/types";
-import {homesSnippet} from "../../../utils/constants";
+import { homesSnippet } from "../../../utils/constants";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
 import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
 import { useRandomPopup } from "../../../hooks/useRandomPopup";
@@ -28,10 +28,10 @@ const ListingRana = () => {
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
 
     const [show, setShow] = useState(false);
-    
+
     // Add random popup functionality for English listing page
     useRandomPopup({ isSpanishPage: false });
-    
+
     // Show booking encouragement tip when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'House Rana' });
 
@@ -59,7 +59,10 @@ const ListingRana = () => {
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/RanaES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Rana" />
             </Helmet>
-            <FixedNavigation isBlog={false}/>
+            <FixedNavigation isBlog={false} />
+            {isScreenSmall && (
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
@@ -71,9 +74,6 @@ const ListingRana = () => {
                         </h3>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="Rana" isSpanish={false} />
-                        {isScreenSmall && (
-                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Online Now!</Button></div>)}
-                    
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
@@ -81,53 +81,53 @@ const ListingRana = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
-                    
+
                     {/* Add feature highlights before description */}
                     <FeatureHighlights propertyKey="Rana" propertyName="House Rana" isSpanish={false} />
-                    
+
                     <div className="description">
-                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
-                        <p ><strong>Check-in:</strong> 2:00 PM</p>
-                        <p ><strong>Check-out:</strong> 11:00 AM</p>
+                        <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                            <p ><strong>Check-in:</strong> 2:00 PM</p>
+                            <p ><strong>Check-out:</strong> 11:00 AM</p>
+                        </div>
+                        <p>
+                            Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space. Our prime location ensures easy access to both the town center and the beaches of Puerto Viejo.
+                            <br />
+                        </p>
+                        <p>
+                            The house offers complete privacy, with all described spaces, including the kitchen and bathroom, exclusively for your use. You'll have all the amenities needed to feel at home.
+                            <br />
+                        </p>
+                        <p>
+                            You'll find most shops and restaurants within a short walking distance. Additionally, a nearby jungle path along the ocean leads to natural coral pools and Cocles.
+                            <br />
+                        </p>
+                        <p>
+                            Have a special request? We are happy to accommodate if possible. Please don't hesitate to let us know.
+                            <br />
+                        </p>
+                        <p>
+                            Puerto Viejo is a well known destination for tourists from around the globe. The town features beautiful beaches bordered by lush tropical rainforest and is home to two National Parks, Manzanillo and Cahuita. At night, Puerto Viejo transforms with a vibrant nightlife scene. Staying here allows you to fully experience everything that makes Puerto Viejo special.
+                            <br />
+                        </p>
+                        <p>
+                            The house is conveniently situated near a beach path that eventually leads to Cocles. Along the path, you'll have the chance to observe diverse wildlife and enjoy natural coral pools. There's even a hidden sightseeing spot to discover!
+                            <br />
+                        </p>
+                        <p>
+                            Getting around Puerto Viejo and its vicinity is best done by renting a bike or an electric bike. Additionally, the public bus service is available, connecting you to Cahuita, Manzanillo, and Sixaola. If you prefer driving, we can accommodate cars and provide private parking. Please inform us if you have a larger pickup truck that requires extra space.
+                            <br />
+                        </p>
+                        <p>
+                            The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!
+                            <br />
+                        </p>
+                        <p>
+                            Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.
+                            <br />
+                        </p>
                     </div>
-                        <p>
-                        Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space. Our prime location ensures easy access to both the town center and the beaches of Puerto Viejo.
-                            <br />
-                        </p>
-                        <p>
-                        The house offers complete privacy, with all described spaces, including the kitchen and bathroom, exclusively for your use. You'll have all the amenities needed to feel at home.
-                            <br />
-                        </p>
-                        <p>
-                        You'll find most shops and restaurants within a short walking distance. Additionally, a nearby jungle path along the ocean leads to natural coral pools and Cocles.
-                            <br />
-                        </p>
-                        <p>
-                        Have a special request? We are happy to accommodate if possible. Please don't hesitate to let us know.
-                            <br />
-                        </p>
-                        <p>
-                        Puerto Viejo is a well known destination for tourists from around the globe. The town features beautiful beaches bordered by lush tropical rainforest and is home to two National Parks, Manzanillo and Cahuita. At night, Puerto Viejo transforms with a vibrant nightlife scene. Staying here allows you to fully experience everything that makes Puerto Viejo special.
-                            <br />
-                        </p>
-                        <p>
-                        The house is conveniently situated near a beach path that eventually leads to Cocles. Along the path, you'll have the chance to observe diverse wildlife and enjoy natural coral pools. There's even a hidden sightseeing spot to discover!
-                            <br />
-                        </p>
-                        <p>
-                        Getting around Puerto Viejo and its vicinity is best done by renting a bike or an electric bike. Additionally, the public bus service is available, connecting you to Cahuita, Manzanillo, and Sixaola. If you prefer driving, we can accommodate cars and provide private parking. Please inform us if you have a larger pickup truck that requires extra space.
-                            <br />
-                        </p>
-                        <p>
-                        The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!
-                            <br />
-                        </p>
-                        <p>
-                        Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.
-                            <br />
-                        </p>
-                    </div>
-                    
+
                     {/* Show OtherListings here only on desktop */}
                     {!isScreenSmall && (
                         <div className="other-listings-bottom">
@@ -142,7 +142,7 @@ const ListingRana = () => {
                     <Smoobu homeCode={houseData!.houseCode} />
                 </Col>
             </Row>
-            
+
             {/* Show OtherListings here only on mobile - after the entire row */}
             {isScreenSmall && (
                 <div className="other-listings-mobile">
@@ -150,7 +150,7 @@ const ListingRana = () => {
                 </div>
             )}
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
-            
+
             {/* Message Tip Container */}
             <MessageTipContainer />
         </div>

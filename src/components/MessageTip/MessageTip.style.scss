@@ -11,9 +11,17 @@
     bottom: 120px; // Adjust based on typical cookie banner height
   }
   
-  // Hide on mobile
+  // Mobile adjustments - show above sticky CTA button
   @media (max-width: 768px) {
-    display: none;
+    display: block; // Show on mobile
+    bottom: 120px; // Position above sticky CTA button (increased for larger button)
+    right: 15px;
+    left: 15px; // Allow full width on mobile
+    
+    // Adjust when sticky CTA is present
+    &.with-sticky-cta {
+      bottom: 140px;
+    }
   }
 }
 
@@ -210,5 +218,15 @@
   
   .message-tip--visible {
     transform: none;
+  }
+}
+
+// Shimmer animation for skeleton loading
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }

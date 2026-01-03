@@ -4,7 +4,7 @@ import '../Listing.style.scss'
 import Smoobu from "../../../components/Smoobu/Smoobu.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
-import {homesSnippet} from "../../../utils/constants";
+import { homesSnippet } from "../../../utils/constants";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType, HouseDataType } from "../../../utils/types";
 import { houseDataList } from "../../../utils/constants";
@@ -27,10 +27,10 @@ const ListingDelfin = () => {
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
 
     const [show, setShow] = useState(false);
-    
+
     // Add random popup functionality for Spanish listing page
     useRandomPopup({ isSpanishPage: true });
-    
+
     // Show booking encouragement tip when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: true, propertyName: 'Casa Delfín' });
 
@@ -58,11 +58,14 @@ const ListingDelfin = () => {
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/DelfinES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Delfin" />
             </Helmet>
-            <FixedNavigationES isBlog={false}/>
+            <FixedNavigationES isBlog={false} />
+            {isScreenSmall && (
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
-                        <h1 className="title">Casa Delfín</h1>
+                        <h1 className="title">Casa Delfines</h1>
                         <h3 className="location">
                             <a href="https://maps.app.goo.gl/ixZHjG7yYsMF9U2e9" target="_blank" rel="noopener noreferrer">
                                 Puerto Viejo de Talamanca, Limón, Costa Rica
@@ -70,9 +73,7 @@ const ListingDelfin = () => {
                         </h3>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="Delfin" isSpanish={true} />
-                        {isScreenSmall && (
-                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Reverva en linea!</Button></div>)}
-                    
+
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
@@ -80,53 +81,53 @@ const ListingDelfin = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
-                    
+
                     {/* Add feature highlights before description */}
                     <FeatureHighlights propertyKey="Delfin" propertyName="Casa Delfín" isSpanish={true} />
-                    
+
                     <div className="description">
-                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
-                        <p><strong>Entrada:</strong> 3:00 PM</p>
-                        <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
+                        <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                            <p><strong>Entrada:</strong> 3:00 PM</p>
+                            <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
+                        </div>
+                        <p>
+                            Bienvenido a Reservas Kalawala. Ubicada en el corazón del pueblo, esta casa acomoda hasta 6 huéspedes con cocina totalmente equipada, baño, 2 unidades de aire acondicionado (no en cocina o sala de estar), y estacionamiento privado. Nuestra ubicación privilegiada ofrece fácil acceso tanto al centro del pueblo como a las playas más hermosas que Puerto Viejo tiene para ofrecer.
+                            <br />
+                        </p>
+                        <p>
+                            Todos los espacios descritos aquí son privados, incluyendo la cocina totalmente equipada y el baño. Tendrás todo lo que necesitas para sentirte como en casa.
+                            <br />
+                        </p>
+                        <p>
+                            Ofrecemos check-out flexible con entrega de llaves en caja de seguridad para tu conveniencia.
+                            <br />
+                        </p>
+                        <p>
+                            ¿Tienes alguna solicitud especial? Estaremos más que felices de complacerte si podemos. Por favor no dudes en hacérnoslo saber.
+                            <br />
+                        </p>
+                        <p>
+                            Ofrecemos servicios de limpieza para reservas de 5 noches o más. Nuestro equipo se comunicará con usted durante su estadía para coordinar un horario conveniente para la limpieza.
+                            <br />
+                        </p>
+                        <p>
+                            Si requieres de una cuna durante tu estadía, háznoslo saber en tu reservación. Nos encargaremos de prepararla en la habitación antes de tu llegada.
+                            <br />
+                        </p>
+                        <p>
+                            Puerto Viejo es un destino popular para turistas de todo el mundo, gracias a sus impresionantes alrededores. El pueblo cuenta con playas inmensas rodeadas de selva tropical, así como dos Parques Nacionales (Manzanillo y Cahuita). Por la noche, el pueblo cobra vida con una escena nocturna animada y activa. Cuando te hospedes aquí, podrás sumergirte completamente en todo lo que hace único a Puerto Viejo.
+                            <br />
+                        </p>
+                        <p>
+                            La casa está ubicada cerca del acceso a la playa que eventualmente lleva a Cocles. En el camino, tendrás la oportunidad de observar una variedad de animales y admirar piscinas naturales en el coral. ¡Incluso hay un lugar de observación oculto esperando ser descubierto!
+                            <br />
+                        </p>
+                        <p>
+                            Moverse por Puerto Viejo y sus alrededores es más fácil alquilando una bicicleta o un scooter. Sin embargo, también hay un servicio de autobús público confiable disponible que puede llevarte a Cahuita, Manzanillo y Sixaola. Si prefieres conducir, también podemos acomodar autos.
+                            <br />
+                        </p>
                     </div>
-                    <p>
-                        Bienvenido a Reservas Kalawala. Ubicada en el corazón del pueblo, esta casa acomoda hasta 6 huéspedes con cocina totalmente equipada, baño, 2 unidades de aire acondicionado (no en cocina o sala de estar), y estacionamiento privado. Nuestra ubicación privilegiada ofrece fácil acceso tanto al centro del pueblo como a las playas más hermosas que Puerto Viejo tiene para ofrecer.
-                            <br />
-                        </p>
-                        <p>
-                        Todos los espacios descritos aquí son privados, incluyendo la cocina totalmente equipada y el baño. Tendrás todo lo que necesitas para sentirte como en casa.
-                            <br />
-                        </p>
-                        <p>
-                        Ofrecemos check-out flexible con entrega de llaves en caja de seguridad para tu conveniencia.
-                            <br />
-                        </p>
-                        <p>
-                        ¿Tienes alguna solicitud especial? Estaremos más que felices de complacerte si podemos. Por favor no dudes en hacérnoslo saber.
-                            <br />
-                        </p>
-                        <p>
-                        Ofrecemos servicios de limpieza para reservas de 5 noches o más. Nuestro equipo se comunicará con usted durante su estadía para coordinar un horario conveniente para la limpieza.
-                            <br />
-                        </p>
-                        <p>
-                        Si requieres de una cuna durante tu estadía, háznoslo saber en tu reservación. Nos encargaremos de prepararla en la habitación antes de tu llegada.
-                            <br />
-                        </p>
-                        <p>
-                        Puerto Viejo es un destino popular para turistas de todo el mundo, gracias a sus impresionantes alrededores. El pueblo cuenta con playas inmensas rodeadas de selva tropical, así como dos Parques Nacionales (Manzanillo y Cahuita). Por la noche, el pueblo cobra vida con una escena nocturna animada y activa. Cuando te hospedes aquí, podrás sumergirte completamente en todo lo que hace único a Puerto Viejo.
-                            <br />
-                        </p>
-                        <p>
-                        La casa está ubicada cerca del acceso a la playa que eventualmente lleva a Cocles. En el camino, tendrás la oportunidad de observar una variedad de animales y admirar piscinas naturales en el coral. ¡Incluso hay un lugar de observación oculto esperando ser descubierto!
-                            <br />
-                        </p>
-                        <p>
-                        Moverse por Puerto Viejo y sus alrededores es más fácil alquilando una bicicleta o un scooter. Sin embargo, también hay un servicio de autobús público confiable disponible que puede llevarte a Cahuita, Manzanillo y Sixaola. Si prefieres conducir, también podemos acomodar autos.
-                            <br />
-                        </p>
-                    </div>
-                    
+
                     {/* Show OtherListings here only on desktop */}
                     {!isScreenSmall && (
                         <div className="other-listings-bottom">
@@ -149,7 +150,7 @@ const ListingDelfin = () => {
                 </div>
             )}
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
-            
+
             {/* Message Tip Container */}
             <MessageTipContainer />
         </div>

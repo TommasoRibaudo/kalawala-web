@@ -25,10 +25,10 @@ const ListingGeco = () => {
     const listing = 'Geco'
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
     const [show, setShow] = useState(false);
-    
+
     // Add random popup functionality for English listing page
     useRandomPopup({ isSpanishPage: false });
-    
+
     // Show booking encouragement tip when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'House Geco' });
 
@@ -57,6 +57,9 @@ const ListingGeco = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Geco" />
             </Helmet>
             <FixedNavigation isBlog={false} />
+            {isScreenSmall && (
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
@@ -68,8 +71,7 @@ const ListingGeco = () => {
                         </h3>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="Geco" isSpanish={false} />
-                        {isScreenSmall && (
-                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Online Now!</Button></div>)}
+
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
@@ -138,7 +140,7 @@ const ListingGeco = () => {
                     <Smoobu homeCode={houseData!.houseCode} />
                 </Col>
             </Row>
-            
+
             {/* Show OtherListings here only on mobile - after the entire row */}
             {isScreenSmall && (
                 <div className="other-listings-mobile">
@@ -146,7 +148,7 @@ const ListingGeco = () => {
                 </div>
             )}
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
-            
+
         </div>
     )
 

@@ -25,10 +25,10 @@ import PriceConfirmationSection from "../../../components/PriceConfirmationSecti
 const ListingVillaCoral = () => {
     const listing = 'Villa Coral'
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
-    
+
     // Add random popup functionality for English listing page
     useRandomPopup({ isSpanishPage: false });
-    
+
     // Show booking encouragement tip when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'Villa Coral' });
 
@@ -59,6 +59,9 @@ const ListingVillaCoral = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/VillaCoral" />
             </Helmet>
             <FixedNavigationRib isBlog={false} />
+            {isScreenSmall && (
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
@@ -70,8 +73,6 @@ const ListingVillaCoral = () => {
                         </h3>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="VillaCoral" isSpanish={false} />
-                        {isScreenSmall && (
-                            <div className="button-hold"><Button className='btn-darker' href="#smoobuComp">Book Online Now!</Button></div>)}
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
@@ -79,15 +80,15 @@ const ListingVillaCoral = () => {
                     <div className="amenaties">
                         <Amenities amenities={houseData?.amenities as AmenityType[]} />
                     </div>
-                    
+
                     {/* Add feature highlights before description */}
                     <FeatureHighlights propertyKey="VillaCoral" propertyName="Villa Coral" isSpanish={false} />
-                    
+
                     <div className="description">
-                    <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
-                        <p ><strong>Check-in:</strong> 3:00 PM</p>
-                        <p ><strong>Check-out:</strong> 12:00 PM (noon)</p>
-                    </div>
+                        <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
+                            <p ><strong>Check-in:</strong> 3:00 PM</p>
+                            <p ><strong>Check-out:</strong> 12:00 PM (noon)</p>
+                        </div>
                         <p>
                             Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting.
                             <br />
@@ -135,7 +136,7 @@ const ListingVillaCoral = () => {
                     <Smoobu homeCode={houseData!.houseCode} />
                 </Col>
             </Row>
-            
+
             {/* Show OtherListings here only on mobile - after the entire row */}
             {isScreenSmall && (
                 <div className="other-listings-mobile">

@@ -13,7 +13,7 @@
   /* Lock height for consistency */
   position: sticky;
   top: 0;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: var(--kalawala-darker-green);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 
@@ -105,14 +105,15 @@
     /* Show mobile flag */
   }
 
-  /* Fix navbar positioning - use sticky but ensure proper z-index */
+  /* Fix navbar positioning - use radial gradient from top-left corner */
   .navigation {
     position: sticky !important;
     top: 0 !important;
     z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.9);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    background: radial-gradient(ellipse at top left, var(--kalawala-light-green) 0%, #FFFEF7 70%) !important;
+    /* Radial gradient from green in top-left corner to cream */
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
 
   /* Fix hamburger menu positioning and margins */
@@ -133,13 +134,15 @@
   .navigation .navbar-collapse.show,
   .navbar-collapse,
   .navbar-collapse.show {
-    background-color: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
+    background-color: #FFFEF7 !important;
+    /* Use light cream color for mobile menu */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     border-radius: 8px !important;
     padding: 20px 15px !important;
     /* Increased padding for better spacing */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 4px 12px rgba(11, 48, 40, 0.2) !important;
+    /* Shadow using brand darker green */
     position: absolute !important;
     top: 100% !important;
     left: 10px !important;

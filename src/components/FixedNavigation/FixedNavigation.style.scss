@@ -1,41 +1,50 @@
 @use '../../styles/mixins';
-@import  '../../styles/styles.scss';
+@import '../../styles/styles.scss';
 
 .navigation {
   width: 100%;
-  z-index: 1000; /* Higher z-index to stay above content */
+  z-index: 1000;
+  /* Higher z-index to stay above content */
   margin-bottom: 0;
   padding: 10px;
-  min-height: 80px; /* Fixed height to prevent CLS */
-  height: 80px; /* Lock height for consistency */
+  min-height: 80px;
+  /* Fixed height to prevent CLS */
+  height: 80px;
+  /* Lock height for consistency */
   position: sticky;
   top: 0;
   background-color: rgba(0, 0, 0, 0.9);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 
-  &.navbar{
+  &.navbar {
     border-radius: 0;
-  }  
+  }
 
   .container {
     margin-right: auto;
     margin-left: auto;
   }
-  
-  .navMenu{
+
+  .navMenu {
     .navText {
       font-size: 16px;
-      color: var(--kalawala-text-gray); /* Color del texto principal */
-      line-height: 1.2; /* Consistent line height */
+      color: var(--kalawala-text-gray);
+      /* Color del texto principal */
+      line-height: 1.2;
+
+      /* Consistent line height */
       &.active {
         color: $primary-color;
       }
+
       &:hover {
         color: $primary-color;
       }
     }
   }
 }
+
 .navbar-flag {
   position: absolute;
   right: 15px;
@@ -54,8 +63,10 @@
   }
 
   svg {
-    width: 32px; /* Adjust the size as needed */
-    height: 24px; /* Adjust the height proportionally */
+    width: 32px;
+    /* Adjust the size as needed */
+    height: 24px;
+    /* Adjust the height proportionally */
   }
 }
 
@@ -85,35 +96,38 @@
 
 @media (max-width: 991.98px) {
   .navbar-flag {
-    display: none; /* Hide desktop flag on mobile */
+    display: none;
+    /* Hide desktop flag on mobile */
   }
 
   .mobile-flag {
-    display: flex; /* Show mobile flag */
+    display: flex;
+    /* Show mobile flag */
   }
-  
+
   /* Fix navbar positioning - use sticky but ensure proper z-index */
   .navigation {
     position: sticky !important;
     top: 0 !important;
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0.9);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
   }
-  
+
   /* Fix hamburger menu positioning and margins */
   .navbar-toggler {
     margin-right: 15px;
     padding: 8px 12px;
     border: none;
-    
+
     &:focus {
       box-shadow: none;
     }
-    
+
     /* SVG will use its natural color */
   }
-  
+
   /* Fix mobile menu background and positioning */
   .navigation .navbar-collapse,
   .navigation .navbar-collapse.show,
@@ -121,39 +135,41 @@
   .navbar-collapse.show {
     background-color: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
     border-radius: 8px !important;
-    padding: 20px 15px !important; /* Increased padding for better spacing */
+    padding: 20px 15px !important;
+    /* Increased padding for better spacing */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
     position: absolute !important;
     top: 100% !important;
     left: 10px !important;
     right: 10px !important;
     z-index: 1001 !important;
-    max-height: 400px !important; /* Increased height for better usability */
-    overflow-y: auto !important; /* Enable scrolling when content exceeds height */
+    max-height: 400px !important;
+    /* Increased height for better usability */
+    overflow-y: auto !important;
+    /* Enable scrolling when content exceeds height */
   }
-    
-    .navMenu {
-      .navText {
-        color: var(--kalawala-text-gray);
-        font-weight: 500;
-        padding: 8px 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        
-        &:last-child {
-          border-bottom: none;
-        }
-        
-        &.active {
-          color: $primary-color;
-          font-weight: 600;
-        }
-        
-        &:hover {
-          color: $primary-color;
-        }
+
+  .navMenu {
+    .navText {
+      color: var(--kalawala-text-gray);
+      font-weight: 500;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &.active {
+        color: $primary-color;
+        font-weight: 600;
+      }
+
+      &:hover {
+        color: $primary-color;
       }
     }
   }
-
-
+}

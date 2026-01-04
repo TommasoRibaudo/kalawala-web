@@ -14,12 +14,12 @@ import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
-import { useRandomPopup } from "../../../hooks/useRandomPopup";
 import { useSmoobuBookingTip } from "../../../hooks/useSmoobuBookingTip";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
+import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 
 
 const ListingTucano = () => {
@@ -28,12 +28,12 @@ const ListingTucano = () => {
 
     const [show, setShow] = useState(false);
     
-    // Add random popup functionality for English listing page
-    useRandomPopup({ isSpanishPage: false });
-    
     // Show booking encouragement tip when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'House Tucano' });
-
+    useSmoobuMobileScrollTip({ 
+        isSpanishPage: false, 
+        isScreenSmall: isScreenSmall 
+    });
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 

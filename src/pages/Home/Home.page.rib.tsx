@@ -9,13 +9,9 @@ import OurHomesRIB from "../../components/OurHomes/OurHomes.componentRIB";
 import DiscoverRIB from "../../components/Discover/Discover.componentRIB";
 import PortfolioRIB from "../../components/Portfolio/Portfolio.componentRIB";
 import OurOtherHomesRIB from "../../components/OurOtherHomes/OurOtherHomes.componentRIB";
-import { useRandomPopup } from "../../hooks/useRandomPopup";
 import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
 
 const HomeRib = () => {
-  // Add random popup functionality
-  useRandomPopup({ isSpanishPage: false });
-
   // Show discount tip when Smoobu component changes size
   useSmoobuSizeChange({ isSpanishPage: false });
  

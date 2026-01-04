@@ -3,11 +3,11 @@ import { HouseDataType, ListingType, PropertyMarketingContent } from "./types";
 // Random popup configuration
 export const RANDOM_POPUP_CONFIG = {
   // Probability of showing the popup (0-1, where 1 = 100% chance)
-  showProbability: 1, 
+  showProbability: 1, // 30% chance to show 
   
   // Time range in milliseconds for random delay
   minDelay: 25000, 
-  maxDelay: 26000, 
+  maxDelay: 50000, 
   
   // Duration the popup stays visible
   duration: 8000, // 8 seconds
@@ -15,7 +15,7 @@ export const RANDOM_POPUP_CONFIG = {
   // Messages for different languages
   messages: {
     en: "Recent guests booked directly on our website.",
-    es: "Huéspedes recientes reservaron directamente en nuestro sitio."
+    es: "Huéspedes recientes reservaron directamente en nuestra web."
   }
 };
 
@@ -2016,7 +2016,7 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             en: 'Family home, pet friendly with air conditioning',
             es: 'Casa familiar, pet friendly con aire acondicionado'
         },
-        price: { crc: 75000, usd: 150 },
+        price: { crc: 80000, usd: 160 },
         socialStatement: {
             en: 'Chosen for its private internal parking and small garden for pets',
             es: 'Elegida por su parqueo privado interno y pequeño jardín para las mascotas'
@@ -2044,7 +2044,7 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             en: 'Family home, pet friendly with air conditioning',
             es: 'Casa familiar, pet friendly con aire acondicionado'
         },
-        price: { crc: 75000, usd: 150 },
+        price: { crc: 80000, usd: 160 },
         socialStatement: {
             en: 'Chosen for its private internal parking and small garden for pets',
             es: 'Elegida por su parqueo privado interno y pequeño jardín para las mascotas'
@@ -2072,7 +2072,7 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             en: 'Central apartment above Italian bakery',
             es: 'Apartamento céntrico sobre panadería italiana'
         },
-        price: { crc: 79000, usd: 159 },
+        price: { crc: 84000, usd: 169 },
         socialStatement: {
             en: 'Chosen for its central location perfect for bars and restaurants',
             es: 'Elegida por su ubicación céntrica perfecta para bares y restaurantes'
@@ -2100,7 +2100,7 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             en: 'Central apartment above Italian bakery',
             es: 'Apartamento céntrico sobre panadería italiana'
         },
-        price: { crc: 79000, usd: 159 },
+        price: { crc: 84000, usd: 169 },
         socialStatement: {
             en: 'Chosen for its central location perfect for bars and restaurants',
             es: 'Elegida por su ubicación céntrica perfecta para bares y restaurantes'
@@ -2128,7 +2128,7 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             en: 'Private villa with pool for couples',
             es: 'Villa privada con piscina para parejas'
         },
-        price: { crc: 93000, usd: 186 },
+        price: { crc: 99000, usd: 199 },
         socialStatement: {
             en: 'Chosen for its private pool perfect for romantic getaways',
             es: 'Elegida por su piscina privada perfecta para escapadas románticas'
@@ -2156,7 +2156,7 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             en: 'Private villa with pool for couples',
             es: 'Villa privada con piscina para parejas'
         },
-        price: { crc: 93000, usd: 186 },
+        price: { crc: 99000, usd: 199 },
         socialStatement: {
             en: 'Chosen for its private pool perfect for romantic getaways',
             es: 'Elegida por su piscina privada perfecta para escapadas románticas'
@@ -2184,7 +2184,7 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             en: 'Cozy retreat perfect for couples exploring Punta Uva',
             es: 'Refugio acogedor perfecto para parejas explorando Punta Uva'
         },
-        price: { crc: 47000, usd: 94 },
+        price: { crc: 49000, usd: 99 },
         socialStatement: {
             en: 'Chosen for its peaceful location',
             es: 'Elegida por su ubicación tranquila'
@@ -2212,7 +2212,7 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             en: 'Cozy retreat perfect for couples exploring Punta Uva',
             es: 'Refugio acogedor perfecto para parejas explorando Punta Uva'
         },
-        price: { crc: 47000, usd: 94 },
+        price: { crc: 49000, usd: 99 },
         socialStatement: {
             en: 'Chosen for its peaceful location',
             es: 'Elegida por su ubicación tranquila'
@@ -2240,7 +2240,7 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             en: 'Family-friendly house near Punta Uva',
             es: 'Casa familiar cerca de Punta Uva'
         },
-        price: { crc: 79000, usd: 159 },
+        price: { crc: 84000, usd: 169 },
         socialStatement: {
             en: 'Chosen for its family-friendly amenities and beach proximity',
             es: 'Elegida por sus comodidades familiares y proximidad a la playa'
@@ -2268,7 +2268,7 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             en: 'Spacious house perfect for large families',
             es: 'Casa espaciosa perfecta para familias grandes'
         },
-        price: { crc: 90000, usd: 180 },
+        price: { crc: 99000, usd: 199 },
         socialStatement: {
             en: 'Chosen for its spacious layout accommodating up to 6 guests',
             es: 'Elegida por su diseño espacioso que acomoda hasta 6 huéspedes'

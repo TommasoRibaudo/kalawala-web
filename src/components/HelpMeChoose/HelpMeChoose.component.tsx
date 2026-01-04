@@ -31,7 +31,6 @@ const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options 
             <div className="container">
                 <div className="title text-center wow fadeIn" data-wow-duration="1500ms">
                     <h2>{title} {titleHighlight && <span className="color">{titleHighlight}</span>}</h2>
-                    <div className="border"></div>
                 </div>
                 <div className="help-me-choose-cards">
                     {options.map((option) => (

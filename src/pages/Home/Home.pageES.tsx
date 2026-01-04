@@ -8,7 +8,6 @@ import PortfolioES from "../../components/Portfolio/Portfolio.componentES";
 import ContactUsES from "../../components/ContactUs/ContactUs.componentES";
 import OurOtherHomesES from "../../components/OurOtherHomes/OurOtherHomes.ComponentES";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
-import { useRandomPopup } from "../../hooks/useRandomPopup";
 import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
 
 const helpMeChooseOptionsES = [
@@ -32,13 +31,17 @@ const helpMeChooseOptionsES = [
         houseName: "Rana",
         houseLangCode: "RanaES",
         image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+    },
+    {
+        emoji: "⭐",
+        label: "Opción Recomendada",
+        houseName: "House Plumeria",
+        houseLangCode: "PlumeriaES",
+        image: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
     }
 ];
 
 const HomeES = () => {
-  // Add random popup functionality for Spanish page
-  useRandomPopup({ isSpanishPage: true });
-
   // Show discount tip when Smoobu component changes size
   useSmoobuSizeChange({ isSpanishPage: true });
  

@@ -13,12 +13,12 @@ import OtherListingsES from "../components/OtherListings/OtherListings.component
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 import { Helmet } from "react-helmet";
 import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
-import { useRandomPopup } from "../../../hooks/useRandomPopup";
 import { useSmoobuBookingTip } from "../../../hooks/useSmoobuBookingTip";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
+import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 
 
 const ListingDelfin = () => {
@@ -27,13 +27,12 @@ const ListingDelfin = () => {
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
 
     const [show, setShow] = useState(false);
-
-    // Add random popup functionality for Spanish listing page
-    useRandomPopup({ isSpanishPage: true });
-
     // Show booking encouragement tip when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: true, propertyName: 'Casa Delfín' });
-
+    useSmoobuMobileScrollTip({
+        isSpanishPage: true,
+        isScreenSmall: isScreenSmall
+    });
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -52,7 +51,7 @@ const ListingDelfin = () => {
             <Helmet>
                 <meta charSet="utf-8" />
                 <title>Casa Delfín - Alquiler de Casa de Vacaciones en Puerto Viejo</title>
-                <meta name="description" content="Bienvenido a Reservas Kalawala. Ubicada en el corazón del pueblo, esta casa acomoda hasta 6 huéspedes con cocina totalmente equipada, baño, 2 unidades de aire acondicionado y estacionamiento privado." />
+                <meta name="description" content="Bienvenido a Reservas Kalawala. Ubicada en el corazón del pueblo, esta casa acomoda hasta 6 huéspedes con cocina totalmente equipada, 2 baños, 2 unidades de aire acondicionado y estacionamiento privado para hasta 2 carros." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/DelfinES" />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Delfin" />
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/DelfinES" />
@@ -60,7 +59,7 @@ const ListingDelfin = () => {
             </Helmet>
             <FixedNavigationES isBlog={false} />
             {isScreenSmall && (
-                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">VER DISPONIBILIDAD</Button></div>)}
 
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
@@ -91,11 +90,11 @@ const ListingDelfin = () => {
                             <p><strong>Salida:</strong> 12:00 PM (mediodía)</p>
                         </div>
                         <p>
-                            Bienvenido a Reservas Kalawala. Ubicada en el corazón del pueblo, esta casa acomoda hasta 6 huéspedes con cocina totalmente equipada, baño, 2 unidades de aire acondicionado (no en cocina o sala de estar), y estacionamiento privado. Nuestra ubicación privilegiada ofrece fácil acceso tanto al centro del pueblo como a las playas más hermosas que Puerto Viejo tiene para ofrecer.
+                            Bienvenido a Reservas Kalawala. Ubicada en el corazón del pueblo, esta casa acomoda hasta 6 huéspedes con cocina totalmente equipada, 2 baños, 2 unidades de aire acondicionado (no en cocina o sala de estar), y estacionamiento privado. Nuestra ubicación privilegiada ofrece fácil acceso tanto al centro del pueblo como a las playas más hermosas que Puerto Viejo tiene para ofrecer.
                             <br />
                         </p>
                         <p>
-                            Todos los espacios descritos aquí son privados, incluyendo la cocina totalmente equipada y el baño. Tendrás todo lo que necesitas para sentirte como en casa.
+                            Todos los espacios descritos aquí son privados, incluyendo la cocina totalmente equipada y los baños. Tendrás todo lo que necesitas para sentirte como en casa.
                             <br />
                         </p>
                         <p>

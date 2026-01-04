@@ -37,9 +37,6 @@ const WelcomeSliderRib = () => {
         <p id="short-description" style={{ fontSize: isMobile ? '16px' : '20px', width: isMobile ? '90%' : '70%' }}>
           Private Pool, Fully Equipped Villas near Playa Chiquita, Puerto Viejo.
         </p>
-        <Button variant="outline-light" className='btn-transparent' href="#callToAction">
-          Book Now - Lowest Online Prices!
-        </Button>
         <p style={{ marginTop: '20px', color: 'white' }}>
           ✓ Instant confirmation · ✓ Secure booking · ✓ No platform fees
         </p>

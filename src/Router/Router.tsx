@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { Home } from '../pages';
 import MessageTipContainer from '../components/MessageTip/MessageTipContainer.component';
 import ListingGeco from '../pages/Listing/staticPages/ListingGeco.page';
@@ -40,8 +40,24 @@ import ListingVillaMarES from '../pages/Listing/staticPages_ES/ListingVillaMar.p
 import ListingVillaCoralES from '../pages/Listing/staticPages_ES/ListingVillaCoral.page_ES';
 import ListingDelfin from '../pages/Listing/staticPages/ListingDelfin.page';
 import ListingDelfinES from '../pages/Listing/staticPages_ES/ListingDelfin.page_ES';
+import { useRandomPopup } from '../hooks/useRandomPopup';
 // import About from './About';
 // import Contact from './Contact';
+
+// Component to handle random popup logic inside Router context
+const RandomPopupHandler = () => {
+  const location = useLocation();
+  
+  // Determine if current page is Spanish based on route
+  const isSpanishPage = location.pathname.endsWith('ES') || 
+                       location.pathname.includes('ES/') ||
+                       location.pathname === '/HomeES';
+  
+  // Use the random popup hook once at the app level
+  useRandomPopup({ isSpanishPage });
+  
+  return null; // This component doesn't render anything
+};
 
 const AppRouter = () => {
   // Web Vitals CLS tracking - runs on every page
@@ -110,6 +126,7 @@ const AppRouter = () => {
 
   return (
     <BrowserRouter>
+      <RandomPopupHandler />
       <Routes>
       <Route path="/" element={<Home />} />
       {/*   <Route path='listing'>

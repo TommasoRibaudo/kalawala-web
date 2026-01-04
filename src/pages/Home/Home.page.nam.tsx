@@ -9,7 +9,6 @@ import { NamDataList } from '../../utils/constants';
 import FixedNavigationNam from "../../components/FixedNavigation/FixedNavigation.componentNam";
 import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
-import { useRandomPopup } from "../../hooks/useRandomPopup";
 import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
 
 const helpMeChooseOptions = [
@@ -33,13 +32,17 @@ const helpMeChooseOptions = [
         houseName: "Rana",
         houseLangCode: "Rana",
         image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+    },
+    {
+        emoji: "⭐",
+        label: "Best value",
+        houseName: "House Plumeria",
+        houseLangCode: "Plumeria",
+        image: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
     }
 ];
 
 const HomeNam = () => {
-  // Add random popup functionality
-  useRandomPopup({ isSpanishPage: false });
-
   // Show discount tip when Smoobu component changes size
   useSmoobuSizeChange({ isSpanishPage: false });
 

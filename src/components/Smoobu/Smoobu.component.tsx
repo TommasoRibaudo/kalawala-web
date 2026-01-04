@@ -4,6 +4,7 @@ import React from 'react';
 import IframeSkeleton from '../IframeSkeleton/IframeSkeleton.component';
 import { GA4SmoobuTrackingService, createGA4SmoobuConfig } from '../../services/GA4SmoobuTracking.service';
 import { CookieConsentService } from '../../services/CookieConsent.service';
+import { useLanguageDetection } from '../../hooks/useLanguageDetection';
 declare global {
   interface Window {
     BookingToolIframe: {
@@ -31,6 +32,7 @@ function Smoobu({ homeCode }: ISmoobu) {
   const smoobuUrl: string = process.env.REACT_APP_SMOOBU_URL!;
   const houseCodesObject = JSON.parse(process.env.REACT_APP_HOUSE_CODES!);
   const url: string = homeCode ? smoobuUrl + houseCodesObject[homeCode] : smoobuUrl;
+  const isSpanishPage = useLanguageDetection();
 
   // Initialize GA4 tracking service
   const initializeTracking = (iframe: HTMLIFrameElement) => {
@@ -272,6 +274,7 @@ function Smoobu({ homeCode }: ISmoobu) {
 
   return (
     <div style={{ textAlign: "center" }}>
+        
       {/* Iframe container - let Smoobu manage this completely */}
       <div 
         id="apartmentIframeAll" 
@@ -311,9 +314,6 @@ function Smoobu({ homeCode }: ISmoobu) {
         }}
       />
       
-      <p style={{ color: 'black', fontWeight: 550, fontSize: 12 }}>
-        Add Discount code: <strong>#norefundallowed</strong> Reservation becomes Non Refundable / Agrega el codigo para obtener un descuento pero la Reservación no tendrá reembolso
-      </p>
     </div>
   );
 

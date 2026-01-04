@@ -139,6 +139,8 @@ html,
     .other-listings-mobile {
         padding: 20px;
         margin-top: 30px;
+        // Add bottom padding to prevent overlap with fixed CTA button
+        padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
     }
 
     // Sticky CTA button for mobile
@@ -160,7 +162,7 @@ html,
             border: none;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); // Add button shadow
-            animation: subtle-pulse 3s ease-in-out infinite; // Subtle attention-grabbing animation
+            animation: subtle-pulse 4s ease-in-out infinite; // More noticeable attention-grabbing animation
             
             &:hover {
                 transform: translateY(-3px);
@@ -183,8 +185,10 @@ html,
 @keyframes subtle-pulse {
     0%, 100% {
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transform: scale(1);
     }
     50% {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        transform: scale(1.02);
     }
 }

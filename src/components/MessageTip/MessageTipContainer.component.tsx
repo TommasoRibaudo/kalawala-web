@@ -17,6 +17,8 @@ interface MessageTipContainerProps {
 const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) => {
   const [messageTips, setMessageTips] = useState<MessageTipData[]>([]);
   const [isCookieBannerVisible, setIsCookieBannerVisible] = useState(false);
+  const [stickyCTAHeight, setStickyCTAHeight] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const location = useLocation();
 
   // Clear all message tips when route changes (language switching)
@@ -34,25 +36,33 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
     setMessageTips(prev => prev.filter(tip => tip.id !== id));
   }, []);
 
-  // Check for cookie banner visibility
+  const getMessageTipsCount = useCallback(() => {
+    return messageTips.length;
+  }, [messageTips.length]);
+
+  // Check for cookie banner visibility and sticky CTA height
   useEffect(() => {
-    const checkCookieBanner = () => {
+    const checkElements = () => {
       const cookieBanner = document.querySelector('.cookie-consent-banner');
+      const stickyCTA = document.querySelector('.sticky-cta-mobile');
+      
       // Use React.startTransition to avoid act() warnings in tests
       if (typeof React.startTransition === 'function') {
         React.startTransition(() => {
           setIsCookieBannerVisible(!!cookieBanner);
+          setStickyCTAHeight(stickyCTA ? stickyCTA.getBoundingClientRect().height : 0);
         });
       } else {
         setIsCookieBannerVisible(!!cookieBanner);
+        setStickyCTAHeight(stickyCTA ? stickyCTA.getBoundingClientRect().height : 0);
       }
     };
 
     // Initial check
-    checkCookieBanner();
+    checkElements();
 
-    // Set up observer to watch for cookie banner changes
-    const observer = new MutationObserver(checkCookieBanner);
+    // Set up observer to watch for changes
+    const observer = new MutationObserver(checkElements);
     observer.observe(document.body, {
       childList: true,
       subtree: true,
@@ -60,8 +70,16 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
       attributeFilter: ['class', 'style']
     });
 
+    // Also listen for resize events to recalculate heights
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      checkElements();
+    };
+    window.addEventListener('resize', handleResize);
+
     return () => {
       observer.disconnect();
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -69,17 +87,39 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
   React.useEffect(() => {
     // You can expose this through a context or global function
     (window as any).addMessageTip = addMessageTip;
+    (window as any).getMessageTipsCount = getMessageTipsCount;
 
     return () => {
       delete (window as any).addMessageTip;
+      delete (window as any).getMessageTipsCount;
     };
-  }, [addMessageTip]);
+  }, [addMessageTip, getMessageTipsCount]);
 
   const containerClassName = `message-tip-container ${className || ''} ${isCookieBannerVisible ? 'cookie-banner-visible' : ''
-    }`.trim();
+    } ${stickyCTAHeight > 0 ? 'with-sticky-cta' : ''}`.trim();
+
+  // Calculate dynamic bottom position
+  const containerStyle: React.CSSProperties = {};
+  const isMobile = windowWidth <= 768;
+  
+  if (isMobile) {
+    let bottomOffset = 20; // Base margin
+    
+    if (stickyCTAHeight > 0) {
+      // Add sticky CTA height plus margin
+      bottomOffset += stickyCTAHeight;
+    }
+    
+    if (isCookieBannerVisible) {
+      // Add additional offset for cookie banner (typical height ~100px)
+      bottomOffset += 100;
+    }
+    
+    containerStyle.bottom = `calc(${bottomOffset}px + env(safe-area-inset-bottom))`;
+  }
 
   return (
-    <div className={containerClassName}>
+    <div className={containerClassName} style={containerStyle}>
       {messageTips.map((tip) => (
         <MessageTip
           key={tip.id}
@@ -102,7 +142,14 @@ export const useMessageTip = () => {
     }
   }, []);
 
-  return { addMessageTip };
+  const getMessageTipsCount = useCallback(() => {
+    if ((window as any).getMessageTipsCount) {
+      return (window as any).getMessageTipsCount();
+    }
+    return 0;
+  }, []);
+
+  return { addMessageTip, getMessageTipsCount };
 };
 
 export default MessageTipContainer;

@@ -13,8 +13,8 @@ import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
-import { useRandomPopup } from "../../../hooks/useRandomPopup";
 import { useSmoobuBookingTip } from "../../../hooks/useSmoobuBookingTip";
+import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
@@ -26,11 +26,12 @@ const ListingGeco = () => {
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
     const [show, setShow] = useState(false);
 
-    // Add random popup functionality for English listing page
-    useRandomPopup({ isSpanishPage: false });
-
-    // Show booking encouragement tip when user interacts with Smoobu widget
+    // Show appropriate tip based on screen size when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'House Geco' });
+    useSmoobuMobileScrollTip({
+        isSpanishPage: false,
+        isScreenSmall: isScreenSmall
+    });
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);

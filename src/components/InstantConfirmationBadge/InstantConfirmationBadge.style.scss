@@ -1,39 +1,40 @@
 .instant-confirmation-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px; // Increased gap for better spacing
-  background-color: rgba(220, 53, 69, 0.7); // Made more transparent
+  gap: 6px;
+  background-color: var(--kalawala-light-green);
   color: white;
-  padding: 10px 16px; // Increased padding
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 16px; // Increased from 14px
-  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.15); // Reduced shadow opacity
+  padding: 4px 8px; // Smaller padding for badge appearance
+  border-radius: 12px; // More rounded for badge look
+  font-weight: 500; // Less bold
+  font-size: 12px; // Smaller font size
   position: relative;
-  z-index: 10; // Ensure it appears above other elements
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.2); // Subtle border
   
   .checkmark {
-    font-size: 18px; // Increased from 16px
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: normal;
+    color: white; // Ensure checkmark is white
   }
   
   .text {
     white-space: nowrap;
-  }
-  
-  // Hover effect for better interactivity
-  &:hover {
-    background-color: rgba(200, 35, 51, 0.8); // Made hover state more transparent too
-    box-shadow: 0 3px 6px rgba(220, 53, 69, 0.25);
+    font-size: 14px; // Even smaller text
   }
   
   // Responsive adjustments
   @media (max-width: 768px) {
-    font-size: 14px; // Increased from 12px
-    padding: 8px 12px; // Increased padding
+    font-size: 14px;
+    padding: 3px 10px;
     
     .checkmark {
-      font-size: 16px; // Increased from 14px
+      font-size: 14px;
+      color: white; // Ensure checkmark stays white on mobile
+    }
+    
+    .text {
+      font-size: 14px;
     }
   }
 }

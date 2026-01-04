@@ -1,40 +1,28 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useMessageTip } from '../components/MessageTip/MessageTipContainer.component';
 
-interface UseSmoobuBookingTipOptions {
+interface UseSmoobuMobileScrollTipOptions {
   isSpanishPage?: boolean;
-  propertyName?: string;
+  isScreenSmall: boolean;
 }
 
 /**
- * Hook that shows a reassuring booking tip when user interacts with the Smoobu booking widget.
- * Detects both clicks on the container and focus on the iframe (for clicks inside iframe).
- * The tip is shown only once per session and encourages users to complete their booking.
+ * Hook that shows a scroll instruction tip on mobile when user interacts with the Smoobu booking widget.
+ * Only shows on small screens and instructs users to scroll down after selecting dates.
  * 
  * @example
- * // In English listing pages:
- * useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'House Delfin' });
- * 
- * // In Spanish listing pages:
- * useSmoobuBookingTip({ isSpanishPage: true, propertyName: 'Casa Delfín' });
+ * // In listing pages:
+ * useSmoobuMobileScrollTip({ isSpanishPage: false, isScreenSmall: true });
  */
-export const useSmoobuBookingTip = (options: UseSmoobuBookingTipOptions = {}) => {
-  const { isSpanishPage = false, propertyName = 'this property' } = options;
+export const useSmoobuMobileScrollTip = (options: UseSmoobuMobileScrollTipOptions) => {
+  const { isSpanishPage = false, isScreenSmall } = options;
   const { addMessageTip, getMessageTipsCount } = useMessageTip();
   const hasTriggeredRef = useRef(false);
 
-  const showBookingTip = useCallback(() => {
-    if (hasTriggeredRef.current) return;
+  const showScrollTip = useCallback(() => {
+    if (hasTriggeredRef.current || !isScreenSmall) return;
     
-    // Check if we're on mobile
-    const isMobile = window.innerWidth <= 992; // Match the breakpoint used in the component
-    
-    // Don't show this tip on mobile - let the mobile scroll tip handle it instead
-    if (isMobile) {
-      return;
-    }
-    
-    // On desktop, only show if no other tips are currently showing
+    // Only show if no other tips are currently showing
     if (getMessageTipsCount() > 0) {
       return;
     }
@@ -42,25 +30,28 @@ export const useSmoobuBookingTip = (options: UseSmoobuBookingTipOptions = {}) =>
     hasTriggeredRef.current = true;
 
     const message = isSpanishPage
-      ? `✔ Confirmación inmediata garantizada para ${propertyName}. ¡Reserva ahora y asegura tu estadía!`
-      : `✔ Instant confirmation guaranteed for ${propertyName}. Book now and secure your stay!`;
+      ? `Después de seleccionar fechas y presionar buscar, desplázate hacia abajo para ver el precio y reservar.`
+      : `After selecting dates and pressing search, scroll down to see the price and book.`;
 
     addMessageTip({
-      id: 'booking-encouragement',
+      id: 'mobile-scroll-instruction',
       text: message,
-      delay: 2000,
-      duration: 15000
+      delay: 5000,
+      duration: 12000
     });
-  }, [addMessageTip, getMessageTipsCount, isSpanishPage, propertyName]);
+  }, [addMessageTip, getMessageTipsCount, isSpanishPage, isScreenSmall]);
 
   useEffect(() => {
+    // Only set up listeners if on small screen
+    if (!isScreenSmall) return;
+
     let cleanup: (() => void) | null = null;
     let pollInterval: NodeJS.Timeout | null = null;
 
     const setupEventListeners = (smoobuElement: HTMLElement) => {
       // Handle direct clicks on the container
       const handleClick = () => {
-        showBookingTip();
+        showScrollTip();
       };
 
       // Handle iframe focus (triggered when user clicks inside iframe)
@@ -69,7 +60,7 @@ export const useSmoobuBookingTip = (options: UseSmoobuBookingTipOptions = {}) =>
         setTimeout(() => {
           const activeElement = document.activeElement;
           if (activeElement?.tagName === 'IFRAME' && smoobuElement.contains(activeElement)) {
-            showBookingTip();
+            showScrollTip();
           }
         }, 0);
       };
@@ -130,7 +121,7 @@ export const useSmoobuBookingTip = (options: UseSmoobuBookingTipOptions = {}) =>
         clearInterval(pollInterval);
       }
     };
-  }, [showBookingTip]);
+  }, [showScrollTip, isScreenSmall]);
 
   return { hasTriggered: hasTriggeredRef.current };
 };

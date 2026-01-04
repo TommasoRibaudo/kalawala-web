@@ -14,12 +14,12 @@ import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
-import { useRandomPopup } from "../../../hooks/useRandomPopup";
 import { useSmoobuBookingTip } from "../../../hooks/useSmoobuBookingTip";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
+import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 
 
 const ListingDelfin = () => {
@@ -29,12 +29,12 @@ const ListingDelfin = () => {
 
     const [show, setShow] = useState(false);
 
-    // Add random popup functionality for English listing page
-    useRandomPopup({ isSpanishPage: false });
-
     // Show booking encouragement tip when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'House Delfin' });
-
+    useSmoobuMobileScrollTip({
+        isSpanishPage: false,
+        isScreenSmall: isScreenSmall
+    });
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -53,7 +53,7 @@ const ListingDelfin = () => {
             <Helmet>
                 <meta charSet="utf-8" />
                 <title>House Delfin - Puerto Viejo Vacation Home Rental</title>
-                <meta name="description" content="Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, bathroom, 2 A/C units, and private parking." />
+                <meta name="description" content="Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, 2 bathrooms, 2 A/C units, and private parking for 2 cars." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Delfin" />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Delfin" />
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/DelfinES" />
@@ -92,11 +92,11 @@ const ListingDelfin = () => {
                             <p ><strong>Check-out:</strong> 12:00 PM (noon)</p>
                         </div>
                         <p>
-                            Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, bathroom, 2 A/C units (not in kitchen or living room), and private parking. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.
+                            Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, 2 bathrooms, 2 A/C units (not in kitchen or living room), and private parking. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.
                             <br />
                         </p>
                         <p>
-                            All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.
+                            All of the spaces described here are private, including the fully equipped kitchen and bathrooms. You'll have everything you need to make yourself at home.
                             <br />
                         </p>
                         <p>

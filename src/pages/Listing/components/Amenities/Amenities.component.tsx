@@ -10,7 +10,7 @@ interface IAmenities {
 const Amenities: FC<IAmenities> = ({ amenities }) => {
     return (
         <div className="amenitiesCont d-flex justify-content-center">
-            <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+            <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4" style={{margin:"-0.1px"}}>
                 {
                     amenities.map(({ icon, name }) => {
                         return (

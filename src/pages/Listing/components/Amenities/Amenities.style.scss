@@ -6,4 +6,18 @@
     height: 100%;
     margin-top: 20px;
     margin-bottom: 30px;
+    
+    // Mobile responsive - center amenities and add spacing
+    @include mixins.mobile {
+        .row {
+            justify-content: center !important;
+            gap: 15px 0; // Vertical gap between rows
+        }
+        
+        .col {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px; // Additional vertical spacing between amenities
+        }
+    }
 }

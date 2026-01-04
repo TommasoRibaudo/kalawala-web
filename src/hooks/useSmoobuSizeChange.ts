@@ -12,11 +12,20 @@ interface UseSmoobuClickOptions {
  */
 export const useSmoobuSizeChange = (options: UseSmoobuClickOptions = {}) => {
   const { isSpanishPage = false } = options;
-  const { addMessageTip } = useMessageTip();
+  const { addMessageTip, getMessageTipsCount } = useMessageTip();
   const hasTriggeredRef = useRef(false);
 
   const showDiscountTip = useCallback(() => {
     if (hasTriggeredRef.current) return;
+    
+    // Check if we're on mobile
+    const isMobile = window.innerWidth <= 768;
+    
+    // On mobile, only show if no other tips are currently showing
+    if (isMobile && getMessageTipsCount() > 0) {
+      return;
+    }
+    
     hasTriggeredRef.current = true;
 
     const message = isSpanishPage
@@ -26,10 +35,10 @@ export const useSmoobuSizeChange = (options: UseSmoobuClickOptions = {}) => {
     addMessageTip({
       id: 'welcome-message',
       text: message,
-      delay: 1000,
-      duration: 60000
+      delay: 2000,
+      duration: 20000
     });
-  }, [addMessageTip, isSpanishPage]);
+  }, [addMessageTip, getMessageTipsCount, isSpanishPage]);
 
   useEffect(() => {
     const smoobuElement = document.querySelector('.Smoobo') as HTMLElement;

@@ -13,6 +13,7 @@ import { CookieConsentBanner } from './components/CookieConsentBanner/CookieCons
 import { CookieConsentService } from './services/CookieConsent.service';
 import './utils/cookieConsentDemo';
 import './utils/messageTipDemo';
+import { useLocation } from 'react-router-dom';
 
 
 // import '../src/styles/style.css'

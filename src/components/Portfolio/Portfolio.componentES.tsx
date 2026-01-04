@@ -22,7 +22,7 @@ const PortfolioES = () => {
           <div className="border2"></div>
         </div>
       </div>
-      <div className="row">
+      <div className="row" style={{margin:"-0.1px"}}>
         <div className="col-md-12">
           <div className="portfolio-filter">
             {houses.map((houseName) => {

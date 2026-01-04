@@ -12,7 +12,6 @@ import { houseDataList } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
-import { useRandomPopup } from "../../../hooks/useRandomPopup";
 import { useSmoobuBookingTip } from "../../../hooks/useSmoobuBookingTip";
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
@@ -20,6 +19,7 @@ import ListingMarketingSection from "../../../components/ListingMarketingSection
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
+import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 
 
 const ListingPappagalloES = () => {
@@ -28,13 +28,12 @@ const ListingPappagalloES = () => {
 
 
     const [show, setShow] = useState(false);
-
-    // Add random popup functionality for Spanish listing page
-    useRandomPopup({ isSpanishPage: true });
-
     // Show booking encouragement tip when user interacts with Smoobu widget
     useSmoobuBookingTip({ isSpanishPage: true, propertyName: 'Casa Pappagallo' });
-
+    useSmoobuMobileScrollTip({
+        isSpanishPage: true,
+        isScreenSmall: isScreenSmall
+    });
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -61,7 +60,7 @@ const ListingPappagalloES = () => {
             </Helmet>
             <FixedNavigationES isBlog={false} />
             {isScreenSmall && (
-                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">VER DISPONIBILIDAD</Button></div>)}
 
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>

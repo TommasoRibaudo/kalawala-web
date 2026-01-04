@@ -6,21 +6,24 @@
   z-index: 9999;
   pointer-events: none; // Allow clicks to pass through container
   
-  // Adjust position when cookie banner is visible
+  // Adjust position when cookie banner is visible (desktop)
   &.cookie-banner-visible {
     bottom: 120px; // Adjust based on typical cookie banner height
   }
   
-  // Mobile adjustments - show above sticky CTA button
+  // Mobile adjustments
   @media (max-width: 768px) {
     display: block; // Show on mobile
-    bottom: 120px; // Position above sticky CTA button (increased for larger button)
     right: 15px;
     left: 15px; // Allow full width on mobile
     
-    // Adjust when sticky CTA is present
-    &.with-sticky-cta {
-      bottom: 140px;
+    // On mobile, positioning is handled dynamically via inline styles
+    // This ensures proper positioning above sticky CTA buttons
+    
+    // When cookie banner is visible on mobile, we need to account for both
+    &.cookie-banner-visible {
+      // The inline styles will handle the sticky CTA positioning
+      // but we may need additional offset for cookie banner
     }
   }
 }

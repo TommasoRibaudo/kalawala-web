@@ -38,7 +38,7 @@
         gap: 20px;
         flex-wrap: wrap;
 
-        @media (min-width: 768px) {
+        @media (min-width: 1024px) {
             flex-wrap: nowrap;
         }
     }
@@ -48,9 +48,20 @@
         overflow: visible;
         cursor: pointer;
         flex: 1;
-        min-width: 280px;
+        min-width: 250px;
         max-width: 350px;
         padding: 15px;
+
+        @media (max-width: 1023px) {
+            flex: 0 1 calc(50% - 10px);
+            min-width: 250px;
+        }
+
+        @media (max-width: 767px) {
+            flex: 1;
+            min-width: 280px;
+            max-width: 100%;
+        }
 
         &:hover .card-image-wrapper {
             transform: translateY(-10px);

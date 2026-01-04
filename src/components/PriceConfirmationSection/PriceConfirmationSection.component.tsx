@@ -13,7 +13,7 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
   isSpanish
 }) => {
   const config = PROPERTY_MARKETING_CONFIG[propertyKey];
-  
+
   if (!config) {
     return null;
   }
@@ -25,9 +25,30 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
     return `$${price}`;
   };
 
-  const priceText = isSpanish 
-    ? `Precio promedio: ${formatPrice(config.price.crc, 'CRC')} la noche`
-    : `Average price: ${formatPrice(config.price.usd, 'USD')} per night`;
+  const averageText = isSpanish ? 'promedio' : 'Average';
+  const tooltipText = isSpanish
+    ? 'Los precios pueden variar según la temporada y pueden ser más altos que el precio promedio'
+    : 'Prices may vary according to season and might be higher than the average price';
+
+  const priceText = isSpanish
+    ? (
+      <>
+        Precio {averageText}: {formatPrice(config.price.crc, 'CRC')} la noche{' '}
+        <span className="average-indicator">
+          <span className="info-icon">ⓘ</span>
+          <span className="tooltip">{tooltipText}</span>
+        </span>
+      </>
+    )
+    : (
+      <>
+        {averageText} price: {formatPrice(config.price.usd, 'USD')} per night{' '}
+        <span className="average-indicator">
+          <span className="info-icon">ⓘ</span>
+          <span className="tooltip">{tooltipText}</span>
+        </span>
+      </>
+    );
 
   return (
     <div className="price-confirmation-section">
@@ -37,6 +58,27 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
       <div className="confirmation-badge">
         <InstantConfirmationBadge isSpanish={isSpanish} />
       </div>
+      <p className='price-display' style={{ marginTop: '15px' }}>
+        {isSpanish ? (
+          <><>
+            Código de descuento: <strong>#norefundallowed</strong>
+          </>
+            <br />
+            <>
+              La reservación se vuelve No Reembolsable
+            </>
+          </>
+        ) : (
+          <><>
+            Discount code: <strong>#norefundallowed</strong>
+          </>
+            <br />
+            <>
+              Reservation becomes Non Refundable
+            </>
+          </>
+        )}
+      </p>
     </div>
   );
 };

@@ -118,6 +118,12 @@
       margin-bottom:20px;
       position: relative;
       z-index: 1;
+      
+      // Mobile-specific styling to make cards bigger
+      @media (max-width: 768px) {
+        padding: 20px 15px; // Reduce padding on mobile to make more room for image
+      }
+      
       &:hover {
         border-bottom:2px solid $primary-color;
       }
@@ -137,6 +143,14 @@
         transform: translateZ(0px);
         transition-duration: 0.3s;
         transition-property: transform;
+        
+        // Make icon-box bigger on mobile
+        @media (max-width: 768px) {
+          width: 250px; // Increase width significantly for bigger image
+          height: 140px; // Increase height for bigger image
+          margin: 30px auto 50px; // Reduce top/bottom margins to save space
+        }
+        
         &:after, &:before {
           content: "";
           position: absolute;
@@ -146,26 +160,80 @@
           background-color: inherit;
           left: 20.4315px;
           transform: scaleY(0.5774) rotate(-45deg);
+          
+          // Adjust positioning for mobile
+          @media (max-width: 768px) {
+            width: 177px; // Proportionally increase for larger icon-box
+            height: 177px;
+            left: 32px; // Adjust positioning for larger width
+          }
         }
         &:before {
           top: -56.5685px;
           border-top: 2px solid rgba(236, 239, 241, 0.07);
           border-right: 2px solid rgba(236, 239, 241, 0.07);
+          
+          @media (max-width: 768px) {
+            top: -88px; // Adjust for larger size
+          }
         }
         &:after {
           bottom: -56.5685px;
           border-bottom: 2px solid rgba(236, 239, 241, 0.07);
           border-left: 2px solid rgba(236, 239, 241, 0.07);
+          
+          @media (max-width: 768px) {
+            bottom: -88px; // Adjust for larger size
+          }
         }
         h3 {
           color:#afbac4;
         }
-  
+        
+        // Make images bigger on mobile
+        .our-homes-img-m {
+          @media (max-width: 768px) {
+            width: 100%;
+            height: auto;
+            min-height: 160px; // Increase minimum height significantly
+            max-height: 180px; // Set max height to prevent overflow
+            object-fit: cover;
+            border-radius: 8px; // Add some rounding like HelpMeChoose
+          }
+        }
       }
       
+      // Make content text bigger on mobile
+      .content {
+        h3 {
+          @media (max-width: 768px) {
+            font-size: 2rem; // Increase title size more
+            margin-bottom: 20px;
+            font-weight: 600;
+          }
+        }
+        
+        // Make icons and text bigger on mobile
+        @media (max-width: 768px) {
+          .container-rounded-border {
+            padding: 10px 15px; // Add more padding
+            margin-bottom: 15px;
+            
+            b {
+              font-size: 22px !important; // Increase from 18px to 22px
+              font-weight: 600;
+            }
+          }
+          
+          // Make all FontAwesome icons bigger
+          svg {
+            font-size: 26px !important; // Increase from 20px to 26px
+            margin: 0 10px !important; // Increase spacing
+          }
+        }
+      }
     }
-    
-  }
+}
   
   
   

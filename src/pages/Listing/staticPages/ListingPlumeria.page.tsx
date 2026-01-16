@@ -50,8 +50,8 @@ const ListingPlumeria = () => {
         <div className={`listingContainer ${show && 'modal-open'}`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>House Plumeria - Couples Retreat with Private Pool</title>
-                <meta name="description" content="New fully equipped Bungalows with A/C and private pool located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife." />
+                <title>House Plumeria - Couples Retreat</title>
+                <meta name="description" content="New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Plumeria" />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Plumeria" />
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/PlumeriaES" />
@@ -89,7 +89,7 @@ const ListingPlumeria = () => {
                             <p ><strong>Check-out:</strong> 12:00 PM (noon)</p>
                         </div>
                         <p>
-                            New fully equipped Bungalows with A/C and private pool located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife.
+                            New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife.
                             <br />
                         </p>
                         <p>

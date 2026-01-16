@@ -41,6 +41,8 @@ import ListingVillaCoralES from '../pages/Listing/staticPages_ES/ListingVillaCor
 import ListingDelfin from '../pages/Listing/staticPages/ListingDelfin.page';
 import ListingDelfinES from '../pages/Listing/staticPages_ES/ListingDelfin.page_ES';
 import { useRandomPopup } from '../hooks/useRandomPopup';
+import CahuitaPark from '../pages/Blog/staticPages/CahuitaPark';
+import CahuitaParkES from '../pages/Blog/staticPages_ES/BusHoursES';
 // import About from './About';
 // import Contact from './Contact';
 
@@ -154,6 +156,8 @@ const AppRouter = () => {
       <Route path='/travellingtopuertoviejoES' element={<TravellingToPuertoES />} />
       <Route path='/puertoviejobyplaneES' element={<PuertoViejoByPlaneES />} />
       <Route path='/TenHoursInPuertoES' element={<TenHoursInPuertoES />} />
+      <Route path='/cahuitaparkwhattodo' element={<CahuitaPark />} />
+      <Route path='/cahuitaparkwhattodoES' element={<CahuitaParkES />} />
       <Route path='/HomeES' element={<HomeES/>} />
       <Route path='/Success' element={<Success/>} />
       <Route path='/HomeNam' element={<HomeNam/>} />

@@ -2,23 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
-// import Amenities from "./components/Amenities/Amenities.component";
 import { blogs } from "../../../assets/blogs/blogs";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import OtherBlogs from "../Components/OtherBlogs.Component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
-import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
-import { allHomesSnippet } from "../../../utils/constants";
+import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
+import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
+import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
 
 
 const PuertoViejoByPlane = () => {
-    // const { blogId } = useParams();
-    const blogId = 'puertoviejobyplane'
-
-    const blogData = blogs.find((blog) => blog.id === blogId);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -38,39 +34,50 @@ const PuertoViejoByPlane = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/puertoviejobyplane" />
             </Helmet>
             <FixedNavigation isBlog={true} />
-            <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={allHomesSnippet} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+            <Row className="subContainer" style={{ justifyContent: 'center' }}>
 
-                    <br />
-                    <div className="heading title-container" style={{ maxWidth: 1000, }}>
+                <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
 
-                        <h1 className="title blog-title">Getting to Puerto Viejo By Plane
-                        </h1>
-                        <div className="border"></div>
+                    <div className="blog-header" style={{ maxWidth: 1000, marginBottom: '2rem' }}>
+                        <div className="heading title-container">
+                            <h1 className="title blog-title">Getting to Puerto Viejo By Plane</h1>
+                            <div className="border"></div>
+                        </div>
 
-                    </div>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <div className="description" style={{ maxWidth: 1000, }}>
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img 
-                                src="https://drive.google.com/thumbnail?id=1kE3Zq-IbD47bdiLkW25IKuBncif7J7YR&sz=w1000" 
-                                style={{ maxWidth: 1000, }} 
-                                className="responsive-image" 
-                                alt="Kayaking in Punta Uva"
+                        <div className="blog-hero-image" style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginTop: '1.5rem',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                        }}>
+                            <img
+                                src="https://drive.google.com/thumbnail?id=1example-plane-image&sz=w1000"
+                                className="responsive-image"
+                                style={{
+                                    maxWidth: '100%',
+                                    height: 'auto',
+                                    display: 'block'
+                                }}
+                                alt="Flying to Puerto Viejo Costa Rica"
                                 width="1000"
                                 height="600"
                                 loading="lazy"
                             />
                         </div>
-                        <p style={{ display: 'flex', justifyContent: 'right' }}>Image by <a href="http://www.freepik.com/" target="_blank" rel="noreferrer"> Freepik</a></p>
-                        <br />
+                    </div>
+
+                    <div className="description" style={{ maxWidth: 1000, }}>
                         <p>Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón.</p>
+                        <br />
+
+                        {/* Stay Recommendation Component - positioned in middle of article */}
+                        <StayRecommendation
+                            title="Where to stay when flying to Puerto Viejo?"
+                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS}
+                            language="en"
+                        />
                         <br />
 
                         <p>To book your flight, simply visit <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> and select your travel dates and times. You will then be prompted to enter your personal and payment details to complete your booking. It's important to note that Sansa Airlines offers several
@@ -83,7 +90,13 @@ const PuertoViejoByPlane = () => {
                         <br />
                         <p>Once you arrive in Limón, a private transfer will drive you to Puerto Viejo for approximately $75 USD. A chauffeur will be waiting for you at the airport and will drive you directly to your accommodation, ensuring a stress-free
                             and comfortable journey. Alternatively, you can take a bus or taxi from Limón to Puerto Viejo, but we recommend arranging a private transfer beforehand to save time and avoid any potential scam.</p>
-                        <br />
+                        {/* Why Stay With Us Component - after main content, before OtherBlogs */}
+                        <div style={{ maxWidth: 1000 }}>
+                            <WhyStayWithUs
+                                language="en"
+                                ctaLink="/"
+                            />
+                        </div>
                         <p> At this point, all that's left is for you to kick back and enjoy the laid-back vibes of Puerto Viejo. Whether you're looking to relax on the beach, explore the jungle, or indulge in some delicious Caribbean cuisine,
                             Puerto Viejo has something for everyone.</p>
                         <br />
@@ -93,6 +106,16 @@ const PuertoViejoByPlane = () => {
                         <br />
 
                     </div>
+
+
+                    {/* Smoobu Booking Component */}
+                    <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
+                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <div className="smoobu-wrapper">
+                            <Smoobu2 targetId="planeSmoobuBooking" />
+                        </div>
+                    </div>
+
                     <OtherBlogs currentBlog="puertoviejobyplane" blogs={blogs} />
                 </Col>
             </Row>

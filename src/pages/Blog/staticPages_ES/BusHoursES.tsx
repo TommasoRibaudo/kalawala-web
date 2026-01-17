@@ -11,6 +11,10 @@ import { allHomesSnippetES} from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import ListingAdES from "../Components/ListingAd/ListingAd.componentES";
 import { Helmet } from "react-helmet";
+import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
+import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
+import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
 
 
 const CahuitaParkES = () => {
@@ -38,11 +42,9 @@ const CahuitaParkES = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/cahuitaparkwhattodo" />
             </Helmet>
             <FixedNavigation isBlog={true} />
-            <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAdES listings={allHomesSnippetES} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+            <Row className="subContainer" style={{ justifyContent: 'center' }}>
+
+                <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
 
                     <br />
                    <div className="heading title-container" style={{ maxWidth: 1000, }}>
@@ -54,7 +56,7 @@ const CahuitaParkES = () => {
                     </div>
                     <div className="description" style={{ maxWidth: 1000, }}>
                          <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://pixabay.com/get/g648d00416193a3478059ee6a683f1fe0ccf051614aeaa74b633c7aaf78894891e22ae09c588bb97a06725ac09e08253ad077e3ef0b11c705e588e1895d987a05_1280.jpg" className="responsive-image" alt="Traveling to Puerto Viejo by bus" />
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg" className="responsive-image" alt="Traveling to Puerto Viejo by bus" />
                         </div>
                         <br />
                         <p><a href="https://maps.app.goo.gl/vHs1CB5nqzLDoGhv9" target="_blank" rel="noopener noreferrer">El Parque Nacional Cahuita</a> es uno de los parques más accesibles y tranquilos del Caribe costarricense. Combina selva, playa, fauna y arrecife en un solo lugar.</p>
@@ -82,6 +84,15 @@ const CahuitaParkES = () => {
                         <p>La visibilidad depende del clima y del estado del mar.</p>
 
                         <br />
+                        
+                        {/* Stay Recommendation Component - positioned in middle of article */}
+                        <StayRecommendation
+                            title="¿Dónde hospedarte para visitar el Parque Nacional Cahuita?"
+                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES}
+                            language="es"
+                        />
+                        <br />
+                        
                         <h3><strong>Cuidado con la comida y los animales</strong></h3>
                         <p>El parque tiene mucha fauna. Es común ver monos, mapaches, iguanas, pizotes y perezosos.</p>
                         <p>Algunos animales intentan robar comida. Guardá bien tus snacks y no los dejés a la vista.</p>
@@ -92,7 +103,13 @@ const CahuitaParkES = () => {
                         <p>El parque cierra a las 4:00 p.m. Todos los visitantes deben salir antes de esa hora.</p>
                         <p>Por eso conviene entrar temprano y recorrer el parque sin apuro.</p>
 
-                        <br />
+                    {/* Why Stay With Us Component - after main content, before OtherBlogs */}
+                    <div style={{ maxWidth: 1000 }}>
+                        <WhyStayWithUs
+                            language="es"
+                            ctaLink="/"
+                        />
+                    </div>
                         <h3><strong>Boat Ride Back Instead of Walking</strong></h3>
                         <p>El sendero principal es largo si lo caminás completo.</p>
                         <p>Muchos visitantes hacen el recorrido a pie en un solo sentido y regresan en bote hacia Cahuita. Hay lancheros locales que ofrecen este servicio.</p>
@@ -114,6 +131,16 @@ const CahuitaParkES = () => {
                         </ul>
                         <p>El Parque Nacional Cahuita es fácil de visitar, natural y muy especial. Con una buena planificación, es una de las mejores experiencias del Caribe de Costa Rica.</p>
                     </div>
+
+
+                    {/* Smoobu Booking Component */}
+                    <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
+                        <h3 className="smoobu-title">Reserva tu Estadía</h3>
+                        <div className="smoobu-wrapper">
+                            <Smoobu2 targetId="cahuitaParkESSmoobuBooking" />
+                        </div>
+                    </div>
+
                     <OtherBlogs currentBlog="bushoursES" blogs={blogsES} />
                 </Col>
             </Row>

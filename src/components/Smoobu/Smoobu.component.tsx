@@ -30,7 +30,7 @@ function Smoobu({ homeCode }: ISmoobu) {
   const consentCleanupRef = useRef<(() => void) | null>(null);
   const processingConsentRef = useRef<boolean>(false);
   const smoobuUrl: string = process.env.REACT_APP_SMOOBU_URL!;
-  const houseCodesObject = JSON.parse(process.env.REACT_APP_HOUSE_CODES!);
+  const houseCodesObject = process.env.REACT_APP_HOUSE_CODES ? JSON.parse(process.env.REACT_APP_HOUSE_CODES) : {};
   const url: string = homeCode ? smoobuUrl + houseCodesObject[homeCode] : smoobuUrl;
   const isSpanishPage = useLanguageDetection();
 

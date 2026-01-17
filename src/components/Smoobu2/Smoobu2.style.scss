@@ -1,5 +1,5 @@
 @use '../../styles/mixins';
-@import  '../../styles/styles.scss';
+@import '../../styles/styles.scss';
 
 .smoobu2-skeleton {
   position: absolute;
@@ -8,7 +8,7 @@
   right: 0;
   bottom: 0;
   z-index: 1;
-  transition: opacity 0.3s ease-in-out;
+  @include mixins.transition(opacity, 0.3s, ease-in-out);
 }
 
 // Shimmer animation for skeleton overlay
@@ -17,70 +17,193 @@
   100% { background-position: 200% 0; }
 }
 
-// #apartmentIframeAll{
-//   background-color: red;
-//  .border-box-container{
-//     background-color: green;
-//  }
-// }
+// Blog-specific Smoobu container styling
+.blog-smoobu-container {
+  margin: 40px 0;
+  padding: 30px 0;
+  border-top: 1px solid rgba(23, 23, 23, 0.1);
+  background-color: #f8f9fa;
 
-.apartment-frame-loaded {
-  // background-color: red;
-  // width: 400px
+  @include mixins.tablet {
+    margin: 30px 0;
+    padding: 25px 0;
+  }
+
+  @include mixins.mobile {
+    margin: 25px 0;
+    padding: 20px 0;
+  }
+
+  .smoobu-title {
+    color: $kalawala-text-gray;
+    font-family: $primary-font;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-align: center;
+    line-height: 1.3;
+
+    @include mixins.tablet {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    @include mixins.mobile {
+      font-size: 18px;
+      margin-bottom: 18px;
+    }
+  }
+
+  .smoobu-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    @include mixins.tablet {
+      padding: 0 15px;
+    }
+
+    @include mixins.mobile {
+      padding: 0 10px;
+    }
+  }
 }
 
-#apartmentIframeAll .border-box-container {
-  background-color: green;
-}
+// Enhanced Smoobu iframe styling for blog context
+#apartmentIframeAll,
+#blogSmoobuBooking {
+  width: 100%;
+  min-height: 600px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(11, 48, 40, 0.1);
+  background-color: $kalawala-light-cream;
 
+  @include mixins.tablet {
+    min-height: 550px;
+  }
+
+  @include mixins.mobile {
+    min-height: 500px;
+  }
+
+  @include mixins.mobile-xs {
+    min-height: 450px;
+  }
+}
 
 /* Customize the font of all Smoobu-generated elements */
-#apartmentIframeAll * {
-  font-family: 'Open Sans', sans-serif;
+#apartmentIframeAll *,
+#blogSmoobuBooking * {
+  font-family: $primary-font !important;
 }
 
 /* Customize the background color of the calendar header */
-#apartmentIframeAll .border-box-header {
-  background-color: #02bd2b;
+#apartmentIframeAll .border-box-header,
+#blogSmoobuBooking .border-box-header {
+  background-color: $kalawala-darker-green !important;
+  color: $kalawala-light-cream !important;
 }
 
 /* Customize the color of the calendar days */
-#apartmentIframeAll .border-box-day {
-  color: #333;
+#apartmentIframeAll .border-box-day,
+#blogSmoobuBooking .border-box-day {
+  color: $kalawala-text-gray !important;
+  font-family: $secondary-font !important;
 }
 
 /* Customize the color of the selected calendar day */
-#apartmentIframeAll .border-box-day.selected {
-  background-color: #007aff;
-  color: #fff;
+#apartmentIframeAll .border-box-day.selected,
+#blogSmoobuBooking .border-box-day.selected {
+  background-color: $kalawala-dark-green !important;
+  color: $kalawala-light-cream !important;
 }
 
 /* Customize the background color of the booking form */
-#apartmentIframeAll .border-box-booking-form {
-  background-color: #07c579;
+#apartmentIframeAll .border-box-booking-form,
+#blogSmoobuBooking .border-box-booking-form {
+  background-color: $kalawala-light-cream !important;
+  border: 1px solid rgba(23, 23, 23, 0.1) !important;
+  border-radius: 8px !important;
 }
 
 /* Customize the border radius of the booking form fields */
 #apartmentIframeAll .border-box-booking-form input[type="text"],
 #apartmentIframeAll .border-box-booking-form input[type="email"],
-#apartmentIframeAll .border-box-booking-form select {
-  border-radius: 5px;
+#apartmentIframeAll .border-box-booking-form select,
+#blogSmoobuBooking .border-box-booking-form input[type="text"],
+#blogSmoobuBooking .border-box-booking-form input[type="email"],
+#blogSmoobuBooking .border-box-booking-form select {
+  border-radius: 6px !important;
+  border: 1px solid rgba(23, 23, 23, 0.2) !important;
+  font-family: $secondary-font !important;
+  color: $kalawala-text-gray !important;
+  @include mixins.transition(all, 0.2s, ease);
+
+  &:focus {
+    border-color: $kalawala-darker-green !important;
+    box-shadow: 0 0 0 2px rgba(11, 48, 40, 0.1) !important;
+  }
 }
 
 /* Customize the color of the booking form button */
-#apartmentIframeAll .border-box-booking-form button[type="submit"] {
-  background-color: #007aff;
-  color: #fff;
-  border-color: #00ff1a;
-  border-radius: 5px;
-  font-weight: bold;
-  padding: 10px;
-  transition: all 0.2s ease-in-out;
+#apartmentIframeAll .border-box-booking-form button[type="submit"],
+#blogSmoobuBooking .border-box-booking-form button[type="submit"] {
+  background-color: $kalawala-darker-green !important;
+  color: $kalawala-light-cream !important;
+  border-color: $kalawala-darker-green !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-family: $primary-font !important;
+  padding: 12px 20px !important;
+  @include mixins.transition(all, 0.2s, ease-in-out);
+  box-shadow: 0 2px 4px rgba(11, 48, 40, 0.2) !important;
 }
 
 /* Change the color of the booking form button on hover */
-#apartmentIframeAll .border-box-booking-form button[type="submit"]:hover {
-  background-color: #006e0f;
-  color: #62ff00;
-  border-color: #007aff;
+#apartmentIframeAll .border-box-booking-form button[type="submit"]:hover,
+#blogSmoobuBooking .border-box-booking-form button[type="submit"]:hover {
+  background-color: $kalawala-dark-green !important;
+  color: $kalawala-light-cream !important;
+  border-color: $kalawala-dark-green !important;
+  box-shadow: 0 4px 8px rgba(11, 48, 40, 0.3) !important;
+  @include mixins.transform(translateY(-1px));
+}
+
+/* Responsive adjustments for Smoobu elements */
+@include mixins.mobile {
+  #apartmentIframeAll .border-box-booking-form,
+  #blogSmoobuBooking .border-box-booking-form {
+    padding: 15px !important;
+  }
+
+  #apartmentIframeAll .border-box-booking-form input,
+  #apartmentIframeAll .border-box-booking-form select,
+  #blogSmoobuBooking .border-box-booking-form input,
+  #blogSmoobuBooking .border-box-booking-form select {
+    font-size: 14px !important;
+    padding: 8px 10px !important;
+  }
+
+  #apartmentIframeAll .border-box-booking-form button[type="submit"],
+  #blogSmoobuBooking .border-box-booking-form button[type="submit"] {
+    width: 100% !important;
+    padding: 10px 15px !important;
+    font-size: 15px !important;
+  }
+}
+
+@include mixins.mobile-xs {
+  #apartmentIframeAll .border-box-booking-form,
+  #blogSmoobuBooking .border-box-booking-form {
+    padding: 12px !important;
+  }
+
+  #apartmentIframeAll .border-box-booking-form input,
+  #apartmentIframeAll .border-box-booking-form select,
+  #blogSmoobuBooking .border-box-booking-form input,
+  #blogSmoobuBooking .border-box-booking-form select {
+    font-size: 13px !important;
+    padding: 7px 8px !important;
+  }
 }

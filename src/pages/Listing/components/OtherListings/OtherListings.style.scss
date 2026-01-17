@@ -1,110 +1,141 @@
 @use '../../../../styles/mixins';
-@import  '../../../../styles/styles.scss';
+@import '../../../../styles/styles.scss';
 
-
-
-.cont{
-    height: 100%;
-    // padding-top: 20px;
+.other-listings-container {
+    display: flex;
     flex-direction: column;
-    padding-bottom: 40px;
-    .listing:hover{
-        cursor: pointer;
-        transform: translateY(-10px);
-        box-shadow: 0px 20px 10px rgba(0, 0, 0, 0.363);
-    }
-    
+    align-items: center;
+    padding: 20px 0 40px;
+    width: 100%;
 }
 
-.listing {
-    background-color:rgb(25, 136, 136);
-    height: 170px;
-    width:230px;
-    border-radius: 5px;
-    flex-direction: row;
+.other-listings-header {
+    text-align: center;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    margin-top: 0;
+}
+
+.other-listings-grid {
+    width: 100%;
+    max-width: 1200px;
+    
+    &.single-listing {
+        display: flex;
+        justify-content: center;
+        
+        .listing-card {
+            width: 280px;
+        }
+    }
+    
+    &.desktop-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        justify-items: center;
+    }
+    
+    &.mobile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 0 10px;
+    }
+    
+    &.mobile-scroll {
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        padding: 0 10px 10px;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        
+        // Hide scrollbar but keep functionality
+        scrollbar-width: none; // Firefox
+        -ms-overflow-style: none; // IE and Edge
+        
+        &::-webkit-scrollbar {
+            display: none; // Chrome, Safari, Opera
+        }
+        
+        .listing-card {
+            flex: 0 0 200px;
+        }
+    }
+}
+
+.listing-card {
+    background-color: rgb(25, 136, 136);
+    height: 200px;
+    width: 250px;
+    border-radius: 8px;
     border: 3px solid $primary-color;
     background-size: cover;
-    background-position: center center;
-    @media (max-width: 1440px) {
-      width: 100%;
+    background-position: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    
+    &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
     }
     
-  }
+    &:focus {
+        outline: 2px solid $primary-color;
+        outline-offset: 2px;
+    }
+}
 
-.name{
-    background-color: #303233ab;
-    width: 100%;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    height: 26px;
-    text-align: center;
+.listing-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 20px 15px 15px;
+}
+
+.listing-card-title {
     color: white;
     font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.subCont{
-    width:100%;
-    align-items: center;
+@media (max-width: 768px) {
+    .other-listings-header {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
     
-    // Mobile vertical layout (2 or fewer listings)
-    &.mobile-vertical {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        gap: 20px !important;
-        
-        .listing {
-            flex-shrink: 0 !important;
-            width: 80% !important;
-            max-width: 300px !important;
-            height: 170px !important;
+    .other-listings-grid {
+        &.mobile-grid {
+            grid-template-columns: 1fr;
+            
+            .listing-card {
+                width: 100%;
+                max-width: 300px;
+                justify-self: center;
+            }
         }
     }
-}
-
-.single-listing-container {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    width: 100%;
     
-    .listing {
-        width: 230px !important;
-    }
-}
-
-.mobile-carousel {
-    display: flex !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    width: 100% !important;
-    padding: 10px 0 !important;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    
-    // Hide scrollbar but keep functionality
-    scrollbar-width: none; // Firefox
-    -ms-overflow-style: none; // IE and Edge
-    
-    &::-webkit-scrollbar {
-        display: none; // Chrome, Safari, Opera
+    .listing-card {
+        height: 180px;
     }
     
-    .listing {
-        flex: 0 0 auto !important;
-        width: 200px !important;
-        margin-right: 15px !important;
-        
-        &:last-child {
-            margin-right: 0 !important;
-        }
+    .listing-card-title {
+        font-size: 14px;
     }
-}
-
-.header{
-    text-align: center;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 20px;
 }

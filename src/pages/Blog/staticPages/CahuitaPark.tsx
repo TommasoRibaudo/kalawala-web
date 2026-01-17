@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
-//import constants
-import { allHomesSnippet } from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
-import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
 import { blogs } from "../../../assets/blogs/blogs";
 import OtherBlogs from "../Components/OtherBlogs.Component";
+import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
+import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
+import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
 
 
 const CahuitaPark = () => {
@@ -36,25 +37,41 @@ const CahuitaPark = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/cahuitaparkwhattodo" />
             </Helmet>
             <FixedNavigation isBlog={true} />
-            <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={allHomesSnippet} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+            <Row className="subContainer" style={{ justifyContent: 'center' }}>
 
-                    <br />
-                    <div className="heading title-container" style={{ maxWidth: 1000, }}>
+                <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
 
-                        <h1 className="title blog-title">Visiting Cahuita National Park: What to Know Before You Go</h1>
-                        <br />
-                        <div className="border"></div>
+                    <div className="blog-header" style={{ maxWidth: 1000, marginBottom: '2rem' }}>
+                        <div className="heading title-container">
+                            <h1 className="title blog-title">Visiting Cahuita National Park: What to Know Before You Go</h1>
+                            <div className="border"></div>
+                        </div>
 
+                        <div className="blog-hero-image" style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginTop: '1.5rem',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                        }}>
+                            <img
+                                src="https://pixabay.com/get/g648d00416193a3478059ee6a683f1fe0ccf051614aeaa74b633c7aaf78894891e22ae09c588bb97a06725ac09e08253ad077e3ef0b11c705e588e1895d987a05_1280.jpg"
+                                className="responsive-image"
+                                style={{
+                                    maxWidth: '100%',
+                                    height: 'auto',
+                                    display: 'block'
+                                }}
+                                alt="Cahuita National Park Beach"
+                                width="1000"
+                                height="600"
+                                loading="lazy"
+                            />
+                        </div>
                     </div>
                     <div className="description" style={{ maxWidth: 1000, }}>
-                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://pixabay.com/get/g648d00416193a3478059ee6a683f1fe0ccf051614aeaa74b633c7aaf78894891e22ae09c588bb97a06725ac09e08253ad077e3ef0b11c705e588e1895d987a05_1280.jpg" className="responsive-image" alt="Traveling to Puerto Viejo by bus" />
-                        </div>
-                        <br />
+
                         <p><a href="https://maps.app.goo.gl/vHs1CB5nqzLDoGhv9" target="_blank" rel="noopener noreferrer">Cahuita National Park</a> is one of the easiest and most relaxed national parks to visit on Costa Rica’s Caribbean coast. It combines jungle trails, white-sand beaches, wildlife, and coral reefs in one place.</p>
                         <p>If you are staying near Cahuita town or Puerto Viejo, this is a great half-day or full-day trip. Below is a clear guide to help you plan your visit.</p>
 
@@ -62,10 +79,18 @@ const CahuitaPark = () => {
                         <h3><strong>Enter from Cahuita Town</strong></h3>
                         <p></p>
                         <p>The most common entrance is in Cahuita town, near Playa Blanca.</p>
-                        <p>This entrance works on a donation basis, which makes it cheaper than other park entrances. The donation helps support park maintenance and local guides.</p>
+                        <p>This entrance works on a <strong>donation basis</strong>, which makes it cheaper than other park entrances. The donation helps support park maintenance and local guides.</p>
                         <p>Arrive early in the morning if you can. It is cooler, quieter, and better for wildlife spotting.</p>
 
                         <br />
+                        {/* Stay Recommendation Component - positioned in middle of article */}
+                        <StayRecommendation
+                            title="Where to stay near Cahuita National Park?"
+                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS}
+                            language="en"
+                        />
+                        <br />
+
                         <h3><strong>Snorkeling Inside the Park</strong></h3>
                         <p>Snorkeling is one of the main reasons people visit Cahuita National Park.</p>
                         <p>The coral reef here is one of the largest on Costa Rica’s Caribbean coast. You can see colorful fish, coral formations, and sometimes rays.</p>
@@ -87,18 +112,25 @@ const CahuitaPark = () => {
 
                         <br />
                         <h3><strong>Know the Park Schedule</strong></h3>
-                        <p>The park closes at 4:00 p.m. Visitors must exit before that time.</p>
+                        <p>The park <strong>closes at 4:00 p.m.</strong> Visitors must exit before that time.</p>
                         <p>This is another reason to enter early. You will have more time to walk, swim, and relax without rushing.</p>
 
-                        <br />
+                    {/* Why Stay With Us Component - after main content, before OtherBlogs */}
+                    <div style={{ maxWidth: 1000 }}>
+                        <WhyStayWithUs
+                            language="en"
+                            ctaLink="/"
+                        />
+                    </div>
+
                         <h3><strong>Boat Ride Back Instead of Walking</strong></h3>
                         <p>The main trail runs along the coast and can be long if you walk the full route.</p>
-                        <p>Many visitors choose to walk one way and return by boat. Local boat operators offer rides back toward Cahuita town.</p>
+                        <p>Many visitors choose to walk one way and <strong>return by boat</strong>. Local boat operators offer rides back toward Cahuita town.</p>
                         <p>This is a good option if you want to enjoy the trail without walking the entire distance.</p>
 
                         <br />
                         <h3><strong>Plastic Is Not Allowed</strong></h3>
-                        <p>Single-use plastics are not allowed inside the park.</p>
+                        <p><strong>Single-use plastics</strong> are not allowed inside the park.</p>
                         <p>This includes plastic bags, disposable bottles, and plastic food packaging. Bring reusable bottles and containers.</p>
                         <p>Park staff may check bags at the entrance.</p>
 
@@ -110,8 +142,18 @@ const CahuitaPark = () => {
                             <li><strong>Use reef-safe sunscreen</strong> </li>
                             <li><strong>Start early to avoid heat and crowds</strong> </li>
                         </ul>
-                        <p>Cahuita National Park is calm, beautiful, and easy to visit. With a little planning, it is one of the best nature experiences on the Caribbean coast of Costa Rica.</p>
+                        <p><strong>Cahuita National Park is calm, beautiful, and easy to visit.</strong> With a little planning, it is one of the best nature experiences on the Caribbean coast of Costa Rica.</p>
                     </div>
+
+
+                    {/* Smoobu Booking Component */}
+                    <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
+                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <div className="smoobu-wrapper">
+                            <Smoobu2 targetId="cahuitaParkSmoobuBooking" />
+                        </div>
+                    </div>
+
                     <OtherBlogs currentBlog="cahuitaParkwhattodo" blogs={blogs} />
                 </Col>
             </Row>

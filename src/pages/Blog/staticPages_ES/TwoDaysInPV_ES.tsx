@@ -11,6 +11,10 @@ import ListingAdES from "../Components/ListingAd/ListingAd.componentES";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 import { allHomesSnippetES } from "../../../utils/constants";
 import OtherBlogs from "../Components/OtherBlogs.Component";
+import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
+import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
+import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
 
 
 const TwoDaysInPV = () => {
@@ -37,11 +41,9 @@ const TwoDaysInPV = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/twodaysinpuertoviejo" />
             </Helmet>
             <FixedNavigationES isBlog={true} />
-            <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAdES listings={allHomesSnippetES} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+            <Row className="subContainer" style={{ justifyContent: 'center' }}>
+
+                <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
 
                     <br />
                     <div className="heading title-container" style={{ maxWidth: 1000, }}>
@@ -69,12 +71,26 @@ const TwoDaysInPV = () => {
                             Para el almuerzo, nos detuvimos en <a href="https://maps.app.goo.gl/TnyD131GeLKYeARSA" target="_blank" rel="noopener noreferrer">Selvin's</a>, un restaurante caribeño local, y probamos un delicioso pollo caribeño con rice and beans.</p>
                         <br />
 
+                        {/* Stay Recommendation Component - positioned in middle of article */}
+                        <StayRecommendation
+                            title="¿Dónde hospedarte si solo tienes 2 días en Puerto Viejo?"
+                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES}
+                            language="es"
+                        />
+                        <br />
+
                         <p>Después, nos registramos en nuestro Airbnb, tomamos una ducha refrescante y descansamos por un rato. Para la cena, decidimos probar <a href="https://maps.app.goo.gl/2vNghKagTvPVHnip6" target="_blank" rel="noopener noreferrer">Cafe Viejo</a>, un
                             restaurante italiano ubicado en el centro del pueblo. La comida fue fantástica; probamos el “Fritto Misto”, una mezcla de pescado y mariscos fritos. Más tarde esa noche, nos dirigimos a <a href="https://maps.app.goo.gl/fXnSossA1PqAfkbh9" target="_blank" rel="noopener noreferrer">Salsa Brava</a>, un bar en la playa conocido por sus noches de reggae y ambiente relajado.</p>
                         <br />
 
                         <p>Al día siguiente, nos levantamos más tarde de lo que hubiéramos querido, tomamos café y croissants en la <a href="https://maps.app.goo.gl/UW6EWzA4h9WQTsbX6" target="_blank" rel="noopener noreferrer">Panadería Degustibus</a> y nos dirigimos a Cocles. Hay un camino agradable y bien cuidado cerca de la panadería que conduce a Cocles, donde descubrimos un bonito mirador antes de llegar a la playa.</p>
-                        <br />
+                        {/* Why Stay With Us Component - after main content, before OtherBlogs */}
+                        <div style={{ maxWidth: 1000 }}>
+                            <WhyStayWithUs
+                                language="es"
+                                ctaLink="/"
+                            />
+                        </div>
 
                         <p>Después de nuestra caminata, regresamos a la casa para empacar y hacer el check-out. Tuvimos suerte de irnos un domingo, ya que nos dijeron que no se permiten camiones grandes en la carretera,
                             lo que hizo nuestro viaje de regreso a San José más suave de lo esperado.</p>
@@ -84,6 +100,16 @@ const TwoDaysInPV = () => {
                             Ya sea que busques aventura o descansar, Puerto Viejo tiene algo que ofrecer para todos. ¿Qué estás esperando? ¡Reserva tu viaje hoy y experimenta la magia de Puerto Viejo por ti mismo!
                         </p>
                     </div>
+
+
+                    {/* Smoobu Booking Component */}
+                    <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
+                        <h3 className="smoobu-title">Reserva tu Estadía</h3>
+                        <div className="smoobu-wrapper">
+                            <Smoobu2 targetId="twoDaysESSmoobuBooking" />
+                        </div>
+                    </div>
+
                     <OtherBlogs currentBlog="twodaysinpuertoviejoES" blogs={blogsES} />
                 </Col>
             </Row>

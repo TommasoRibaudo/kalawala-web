@@ -2291,3 +2291,98 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
         }
     }
 };
+
+// Property recommendations for blog articles
+export interface PropertyRecommendation {
+  name: string;
+  reason: string;
+  link: string;
+  houseCode?: number;
+}
+
+export const PUERTO_VIEJO_BLOG_RECOMMENDATIONS: PropertyRecommendation[] = [
+  {
+    name: 'Casa Geco',
+    reason: 'Ideal si quieres moverte caminando',
+    link: '/Geco',
+    houseCode: 1
+  },
+  {
+    name: 'Plumeria',
+    reason: 'Perfecta para descansar cerca de la playa',
+    link: '/Plumeria',
+    houseCode: 8
+  },
+  {
+    name: 'Villa Coral',
+    reason: 'Si buscas una escapada corta con piscina privada',
+    link: '/VillaCoral',
+    houseCode: 6
+  }
+];
+
+// General Puerto Viejo area recommendations for travel-focused blogs
+export const GENERAL_PUERTO_VIEJO_RECOMMENDATIONS: PropertyRecommendation[] = [
+  {
+    name: 'Casa Geco',
+    reason: 'Perfect for exploring on foot',
+    link: '/Geco',
+    houseCode: 1
+  },
+  {
+    name: 'Plumeria',
+    reason: 'Ideal for beach relaxation',
+    link: '/Plumeria',
+    houseCode: 8
+  },
+  {
+    name: 'Villa Coral',
+    reason: 'Great for short getaways with private pool',
+    link: '/VillaCoral',
+    houseCode: 6
+  }
+];
+
+// Cahuita-focused recommendations
+export const CAHUITA_AREA_RECOMMENDATIONS: PropertyRecommendation[] = [
+  {
+    name: 'Plumeria',
+    reason: 'Close to Cahuita National Park',
+    link: '/Plumeria',
+    houseCode: 8
+  },
+  {
+    name: 'Casa Geco',
+    reason: 'Easy access to transportation',
+    link: '/Geco',
+    houseCode: 1
+  },
+  {
+    name: 'Villa Coral',
+    reason: 'Perfect for relaxing after park visits',
+    link: '/VillaCoral',
+    houseCode: 6
+  }
+];
+
+// Spanish versions for ES blog pages
+export const PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES: PropertyRecommendation[] = [
+  {
+    name: 'Casa Geco',
+    reason: 'Ideal si quieres moverte caminando',
+    link: '/GecoES',
+    houseCode: 1
+  },
+  {
+    name: 'Plumeria',
+    reason: 'Perfecta para descansar cerca de la playa',
+    link: '/PlumeriaES',
+    houseCode: 8
+  },
+  {
+    name: 'Villa Coral',
+    reason: 'Si buscas una escapada corta con piscina privada',
+    link: '/VillaCoralES',
+    houseCode: 6
+  }
+];

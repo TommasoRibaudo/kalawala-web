@@ -2,24 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
-// import Amenities from "./components/Amenities/Amenities.component";
 import { blogs } from "../../../assets/blogs/blogs";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import OtherBlogs from "../Components/OtherBlogs.Component";
-//import constants
-import { allHomesSnippet} from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
-import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
+import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
+import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
+import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
 
 
-const TwoDaysInPV = () => {
-    // const { blogId } = useParams();
-    
-    const blogId = 'gettingtogandoca'
-    const blogData = blogs.find((blog) => blog.id === blogId);
+const GettingToGandoca = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -38,45 +33,53 @@ const TwoDaysInPV = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/gettingtogandoca" />
             </Helmet>
             <FixedNavigation isBlog={true} />
-            <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={allHomesSnippet} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+            <Row className="subContainer" style={{ justifyContent: 'center' }}>
 
-                    <br />
-                    <div className="heading title-container" style={{ maxWidth: 1000, }}>
+                <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
 
-                        <h1 className="title blog-title">How to Get to Gandoca-Manzanillo National Wildlife Refuge from Puerto Viejo, Costa Rica</h1>
-                        <br />
-                        <div className="border"></div>
+                    <div className="blog-header" style={{ maxWidth: 1000, marginBottom: '2rem' }}>
+                        <div className="heading title-container">
+                            <h1 className="title blog-title">How to Get to Gandoca-Manzanillo National Wildlife Refuge from Puerto Viejo, Costa Rica</h1>
+                            <div className="border"></div>
+                        </div>
 
-                    </div>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <div className="description" style={{ maxWidth: 1000, }}>
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img 
-                                src="https://cdn.pixabay.com/photo/2020/01/07/05/11/beach-4746787_960_720.jpg" 
-                                className="responsive-image" 
-                                style={{ maxWidth: 1000, }} 
-                                alt="Gandoca-Manzanillo National Wildlife Refuge Beach"
+                        <div className="blog-hero-image" style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginTop: '1.5rem',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                        }}>
+                            <img
+                                src="https://drive.google.com/thumbnail?id=1example-gandoca-image&sz=w1000"
+                                className="responsive-image"
+                                style={{
+                                    maxWidth: '100%',
+                                    height: 'auto',
+                                    display: 'block'
+                                }}
+                                alt="Gandoca-Manzanillo National Wildlife Refuge"
                                 width="1000"
                                 height="600"
                                 loading="lazy"
                             />
                         </div>
-                        <br />
+                    </div>
+
+                    <div className="description" style={{ maxWidth: 1000, }}>
                         <p>The <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Gandoca-Manzanillo National Wildlife Refuge</a>, located in the province of Limón, is one of the best-kept secrets of Costa Rica's Southern Caribbean. This impressive wildlife refuge offers a rich variety of ecosystems, from mangroves and coral reefs to pristine beaches. If you're in Puerto Viejo de Talamanca and looking for a nature getaway, this is an excellent option. In this guide, we show you how to easily get there from Puerto Viejo so you can fully explore this natural paradise.</p>
                         <br />
                         <h3><strong>Transportation Options</strong></h3>
                         <br />
+                        {/* Stay Recommendation Component - positioned in middle of article */}
+                        <StayRecommendation
+                            title="Where to stay when visiting Gandoca-Manzanillo?"
+                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS}
+                            language="en"
+                        />
+                        <br />
+
                         <h4><strong>1. Bus from Puerto Viejo to Manzanillo</strong></h4>
                         <p>The simplest and most economical way to reach <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Gandoca-Manzanillo National Wildlife Refuge</a> is by taking a bus from downtown Puerto Viejo to Manzanillo. The <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">bus stop</a> is located where you buy the tickets, near the basketball court or by the Deleite Ice Cream Shop.</p>
                         <br />
@@ -125,7 +128,13 @@ const TwoDaysInPV = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <br />
+                        {/* Why Stay With Us Component - after main content, before OtherBlogs */}
+                        <div style={{ maxWidth: 1000 }}>
+                            <WhyStayWithUs
+                                language="en"
+                                ctaLink="/"
+                            />
+                        </div>
                         <h4><strong>2. Rent a Scooter or a 4x4</strong></h4>
                         <p>If you prefer to explore at your own pace, renting a scooter or a 4x4 is an excellent option. If you're staying in our houses in downtown Puerto Viejo, you can rent vehicles at <a href="https://maps.app.goo.gl/uao7BMUuwFLyRL6dA" target="_blank" rel="noopener noreferrer">Mistery Jungle</a>, right in front, with prices starting at $30. If you're staying in our villas in Playa Chiquita, you can request to have the vehicle delivered directly to your villa.</p>
                         <br />
@@ -139,6 +148,16 @@ const TwoDaysInPV = () => {
                         <br />
                         <p>We invite you to plan your visit to this beautiful refuge and take the opportunity to stay in our cozy houses in Puerto Viejo de Talamanca. We offer a comfortable and relaxing environment, perfect for enjoying nature and exploring all that the region has to offer. Discover the charm of Gandoca-Manzanillo National Wildlife Refuge and the warmth of our villas!</p>
                     </div>
+
+
+                    {/* Smoobu Booking Component */}
+                    <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
+                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <div className="smoobu-wrapper">
+                            <Smoobu2 targetId="gandocaSmoobuBooking" />
+                        </div>
+                    </div>
+
                     <OtherBlogs currentBlog="gettingtogandoca" blogs={blogs} />
                 </Col>
             </Row>
@@ -148,4 +167,4 @@ const TwoDaysInPV = () => {
 
 }
 
-export default TwoDaysInPV;
+export default GettingToGandoca;

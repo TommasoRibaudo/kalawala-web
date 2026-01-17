@@ -1,24 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
-// import Amenities from "./components/Amenities/Amenities.component";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import OtherBlogs from "../Components/OtherBlogs.Component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
-import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
 import { blogs } from "../../../assets/blogs/blogs";
-import { allHomesSnippet } from "../../../utils/constants";
+import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
+import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
+import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import { CAHUITA_AREA_RECOMMENDATIONS } from "../../../utils/constants";
 
 
 const TenHoursInPuerto = () => {
-    // const { blogId } = useParams();
-    const blogId = 'TenHoursInPuerto'
-
-    const blogData = blogs.find((blog) => blog.id === blogId);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -37,35 +33,41 @@ const TenHoursInPuerto = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/TenHoursInPuerto" />
             </Helmet>
             <FixedNavigation isBlog={true} />
-            <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={allHomesSnippet} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+            <Row className="subContainer" style={{ justifyContent: 'center' }}>
 
-                    <br />
-                    <div className="heading title-container" style={{ maxWidth: 1000, }}>
+                <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
 
-                        <h1 className="title blog-title">Ten hours to explore Cahuita
-                        </h1>
+                    <div className="blog-header" style={{ maxWidth: 1000, marginBottom: '2rem' }}>
+                        <div className="heading title-container">
+                            <h1 className="title blog-title">Ten hours to explore Cahuita</h1>
+                            <div className="border"></div>
+                        </div>
 
-                        <div className="border"></div>
-
-                    </div>
-                    <br />
-                    <div className="description" style={{ maxWidth: 1000, }}>
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img 
-                                src="https://drive.google.com/thumbnail?id=1H81sxVh2z1VmcbZvVTlhdEINmQ0tQ5Es&sz=w1000" 
-                                style={{ maxWidth: 1000, }} 
-                                className="responsive-image" 
+                        <div className="blog-hero-image" style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginTop: '1.5rem',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                        }}>
+                            <img
+                                src="https://drive.google.com/thumbnail?id=1H81sxVh2z1VmcbZvVTlhdEINmQ0tQ5Es&sz=w1000"
+                                className="responsive-image"
+                                style={{
+                                    maxWidth: '100%',
+                                    height: 'auto',
+                                    display: 'block'
+                                }}
                                 alt="Traveling to Puerto Viejo by bus"
                                 width="1000"
                                 height="600"
                                 loading="lazy"
                             />
                         </div>
-                        <br />
+                    </div>
+
+                    <div className="description" style={{ maxWidth: 1000, }}>
                         <p>If you only have ten hours to explore Cahuita, let's make the most of our time! We start our adventure early, waking up at 7 am. The first thing is to have a coffee and enjoy a delicious ham and cheese croissant fresh out of the oven at Degustibus Bakery.</p>
                         <br />
                         <p>After the delicious breakfast, we walked to the bus stop located near the town's basketball court, in front of the Deelite ice cream shop. It's important to know that there are two bus stops in the area: the larger one is for the MEPE buses going to San José, and the smaller one is for the buses going to Limón. We'll take the latter. You can buy the ticket on the same day or pay directly when boarding the bus. The ticket office is a small booth next to the shuttle.</p>
@@ -74,6 +76,15 @@ const TenHoursInPuerto = () => {
                         <br />
                         <p>Cahuita National Park is open from 8 am to 4 pm in both sectors: Playa Blanca and Puerto Vargas. Today we will visit Playa Blanca, where the entrance is free, although a voluntary contribution is accepted. Remember that, being a national park, the entry of domestic animals and alcoholic beverages is not allowed.</p>
                         <br />
+                        
+                        {/* Stay Recommendation Component - positioned in middle of article */}
+                        <StayRecommendation
+                            title="Where to stay when exploring Cahuita?"
+                            properties={CAHUITA_AREA_RECOMMENDATIONS}
+                            language="en"
+                        />
+                        <br />
+                        
                         <p><b><i>We arrive at the park at 9:15 am, just when the sun starts to warm up. We hire a guide for our hike since we want to learn about the park's biodiversity and observe species that are sometimes hard to see on our own. We manage to see different animals like bird species, as well as hear and see howler monkeys, sloths, and many species of flora. The hike took approximately two hours.</i></b></p>
                         <br />
                         <p>After the hike, we went straight to have lunch at a typical soda called Kawe, where we enjoyed a delicious rice and beans that gave us the energy to continue exploring this calm and beautiful town. Then, we took a stroll through the town's shops, where we bought some souvenirs.</p>
@@ -84,6 +95,23 @@ const TenHoursInPuerto = () => {
                         <br />
                         <br />
                     </div>
+
+                    {/* Why Stay With Us Component - after main content, before OtherBlogs */}
+                    <div style={{ maxWidth: 1000 }}>
+                        <WhyStayWithUs
+                            language="en"
+                            ctaLink="/"
+                        />
+                    </div>
+
+                    {/* Smoobu Booking Component */}
+                    <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
+                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <div className="smoobu-wrapper">
+                            <Smoobu2 targetId="tenHoursSmoobuBooking" />
+                        </div>
+                    </div>
+
                     <OtherBlogs currentBlog="TravellingToPuertoByBus" blogs={blogs} />
                 </Col>
             </Row>

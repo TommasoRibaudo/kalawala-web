@@ -10,6 +10,10 @@ import { Helmet } from "react-helmet";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import ListingAdES from "../Components/ListingAd/ListingAd.componentES";
 import OtherBlogs from "../Components/OtherBlogs.Component";
+import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
+import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
+import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
 
 
 const TenHoursInPuertoES = () => {
@@ -36,11 +40,9 @@ const TenHoursInPuertoES = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/TenHoursInPuerto" />
             </Helmet>
             <FixedNavigationES isBlog={true} />
-            <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAdES listings={allHomesSnippetES} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+            <Row className="subContainer" style={{ justifyContent: 'center' }}>
+
+                <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
 
                     <br />
                     <div className="heading title-container" style={{ maxWidth: 1000, }}>
@@ -65,6 +67,15 @@ const TenHoursInPuertoES = () => {
                         <br />
                         <p>El Parque Nacional Cahuita abre de 8 am a 4 pm en ambos sectores: Playa Blanca y Puerto Vargas. Hoy visitaremos Playa Blanca, donde la entrada es gratuita, aunque se acepta una colaboración voluntaria. Recuerda que, al ser un parque nacional, no se permite el ingreso de animales domésticos ni bebidas alcohólicas.</p>
                         <br />
+                        
+                        {/* Stay Recommendation Component - positioned in middle of article */}
+                        <StayRecommendation
+                            title="¿Dónde hospedarte cuando explores Cahuita?"
+                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES}
+                            language="es"
+                        />
+                        <br />
+                        
                         <p><b><i>Llegamos al parque a las 9:15 am, justo cuando el sol empieza a calentar. Contratamos un guía para nuestra caminata, ya que queremos aprender sobre la biodiversidad del parque y observar especies que a veces es difícil ver por nuestra cuenta. Logramos ver distintos animales como especies de pájaros, además de escuchar y ver a los monos congos, osos perezosos y muchas especies de flora. El recorrido tomó aproximadamente dos horas.</i></b></p>
                         <br />
                         <p>Después de la caminata, fuimos directamente a almorzar a una soda típica llamada Kawe, donde disfrutamos de un delicioso rice and beans que nos dio la energía para seguir explorando este calmo y hermoso pueblo. Luego, nos dimos una vuelta por las tiendas del pueblo, donde compramos algunos souvenirs.</p>
@@ -75,6 +86,23 @@ const TenHoursInPuertoES = () => {
                         <br />
                         <br />
                     </div>
+
+                    {/* Why Stay With Us Component - after main content, before OtherBlogs */}
+                    <div style={{ maxWidth: 1000 }}>
+                        <WhyStayWithUs
+                            language="es"
+                            ctaLink="/"
+                        />
+                    </div>
+
+                    {/* Smoobu Booking Component */}
+                    <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
+                        <h3 className="smoobu-title">Reserva tu Estadía</h3>
+                        <div className="smoobu-wrapper">
+                            <Smoobu2 targetId="tenHoursESSmoobuBooking" />
+                        </div>
+                    </div>
+
                     <OtherBlogs currentBlog="TravellingToPuertoByBus" blogs={blogsES} />
                 </Col>
             </Row>

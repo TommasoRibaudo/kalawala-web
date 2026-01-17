@@ -11,6 +11,10 @@ import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
 import { blogs } from "../../../assets/blogs/blogs";
 import OtherBlogs from "../Components/OtherBlogs.ComponentES";
+import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
+import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
+import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
 
 
 const TwoDaysInPV = () => {
@@ -38,11 +42,9 @@ const TwoDaysInPV = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/gettingtogandoca" />
             </Helmet>
             <FixedNavigation isBlog={true} />
-            <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={allHomesSnippetES} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+            <Row className="subContainer" style={{ justifyContent: 'center' }}>
+
+                <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
 
                     <br />
                     <div className="heading title-container" style={{ maxWidth: 1000, }}>
@@ -113,7 +115,11 @@ const TwoDaysInPV = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <br />
+                        <StayRecommendation
+                            title="¿Dónde hospedarte cuando visites Gandoca-Manzanillo?"
+                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES}
+                            language="es"
+                        />
                         <h4><strong>2. Rentar un Scooter o un 4x4</strong></h4>
                         <p>Si prefieres explorar a tu propio ritmo, rentar un scooter o un 4x4 es una excelente opción. Si te hospedas en nuestras casas en el centro de Puerto Viejo, puedes rentar vehículos en <a href="https://maps.app.goo.gl/uao7BMUuwFLyRL6dA" target="_blank" rel="noopener noreferrer">Mistery Jungle</a>, justo al frente, con precios que comienzan en $30. Si estás alojado en nuestras villas en Playa Chiquita, puedes solicitar que te entreguen el vehículo directamente en tu villa.</p>
                         <br />
@@ -126,7 +132,27 @@ const TwoDaysInPV = () => {
                         <p>El Refugio Nacional Gandoca-Manzanillo es un destino imperdible para los amantes de la naturaleza y la aventura. Ya sea que decidas viajar en autobús, rentar un vehículo o ir en carro, llegar a este paraíso natural es fácil y accesible.</p>
                         <br />
                         <p>Te invitamos a planificar tu visita a este hermoso refugio y a aprovechar la oportunidad de hospedarte en nuestras acogedoras casas en Puerto Viejo de Talamanca. Ofrecemos un ambiente cómodo y relajante, perfecto para disfrutar de la naturaleza y explorar todo lo que la región tiene para ofrecer. ¡No esperes más y ven a descubrir el encanto del Refugio Nacional Gandoca-Manzanillo y la calidez de nuestras villas!</p>
+                        
+                        {/* Stay Recommendation Component - positioned before OtherBlogs */}
+                        <br />
                     </div>
+
+                    {/* Why Stay With Us Component - after main content, before OtherBlogs */}
+                    <div style={{ maxWidth: 1000 }}>
+                        <WhyStayWithUs
+                            language="es"
+                            ctaLink="/"
+                        />
+                    </div>
+
+                    {/* Smoobu Booking Component */}
+                    <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
+                        <h3 className="smoobu-title">Reserva tu Estadía</h3>
+                        <div className="smoobu-wrapper">
+                            <Smoobu2 targetId="gandocaESSmoobuBooking" />
+                        </div>
+                    </div>
+
                     <OtherBlogs currentBlog="gettingtogandocaES" blogs={blogs} />
                 </Col>
             </Row>

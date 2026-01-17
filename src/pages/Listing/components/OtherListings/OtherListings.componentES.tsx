@@ -1,53 +1,80 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, useCallback, useMemo } from "react";
 import './OtherListings.style.scss'
 import { ListingType } from "../../../../utils/types";
 import { useNavigate } from "react-router-dom";
 
-interface IOtherListing {
+interface IOtherListings {
     currentListing: string
     listings: ListingType[]
 }
 
-const OtherListingsES: FC<IOtherListing> = ({ currentListing, listings }) => {
-
+const OtherListingsES: FC<IOtherListings> = ({ currentListing, listings }) => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+    const navigate = useNavigate()
 
-    const naviagate = useNavigate()
-
-    // Filter out the current listing
-    // Normalize names by removing 'ES' suffix for comparison
-    const normalizeName = (name: string) => name.replace(/ES$/, '');
-    const otherListings = listings.filter(listing => normalizeName(listing.name) !== normalizeName(currentListing))
-
-    useEffect(() => {
-        window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
-
-
+    const handleResize = useCallback(() => {
+        setWindowWidth(window.innerWidth)
     }, [])
 
-    const isMobile = windowWidth <= 1199;
-    const shouldUseCarousel = isMobile && otherListings.length > 2;
+    useEffect(() => {
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener("resize", handleResize)
+    }, [handleResize])
+
+    const normalizeName = useCallback((name: string) => name.replace(/ES$/, ''), [])
+
+    const otherListings = useMemo(() => 
+        listings.filter(listing => 
+            normalizeName(listing.name) !== normalizeName(currentListing)
+        ), 
+        [listings, currentListing, normalizeName]
+    )
+
+    const handleListingClick = useCallback((name: string) => {
+        const routeName = name.includes('ES') 
+            ? name.replace(/\s/g, "") 
+            : `${name.replace(/\s/g, "")}ES`
+        navigate(`/${routeName}`)
+    }, [navigate])
+
+    const getLayoutClass = useMemo(() => {
+        const isMobile = windowWidth <= 1199
+        const listingCount = otherListings.length
+
+        if (listingCount === 0) return 'no-listings'
+        if (listingCount === 1) return 'single-listing'
+        if (isMobile && listingCount <= 2) return 'mobile-grid'
+        if (isMobile) return 'mobile-scroll'
+        return 'desktop-grid'
+    }, [windowWidth, otherListings.length])
+
+    if (otherListings.length === 0) {
+        return null
+    }
 
     return (
-        <>
-
-            <div className="cont d-flex justify-content-center">
-                <div className="header">¡Revisa nuestras otras opciones!</div>
-                <div className={`${otherListings.length === 1 ? 'single-listing-container' : 
-                    shouldUseCarousel ? 'mobile-carousel' : 
-                    (isMobile ? 'mobile-vertical' : 'hstack gap-5')} subCont`}>
-                    {otherListings.map(({ name, mainImage }) => {
-                        // For Spanish listings, ensure we route to the correct Spanish page
-                        const routeName = name.includes('ES') ? name.replace(/\s/g, "") : `${name.replace(/\s/g, "")}ES`;
-                        return (
-                            <div key={name} style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { naviagate(`/${routeName}`) }}>
-                                <div className="name">{name.replace('ES', '')}</div>
-                            </div>
-                        );
-                    })}
-                </div>
+        <div className="other-listings-container">
+            <h3 className="other-listings-header">¡Revisa nuestras otras opciones!</h3>
+            <div className={`other-listings-grid ${getLayoutClass}`}>
+                {otherListings.map(({ name, mainImage }) => (
+                    <div 
+                        key={name} 
+                        className="listing-card"
+                        style={{ backgroundImage: `url(${mainImage})` }}
+                        onClick={() => handleListingClick(name)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === 'Enter' && handleListingClick(name)}
+                        aria-label={`View listing: ${name.replace('ES', '')}`}
+                    >
+                        <div className="listing-card-overlay">
+                            <h4 className="listing-card-title">{name.replace('ES', '')}</h4>
+                        </div>
+                    </div>
+                ))}
             </div>
-        </>)
+        </div>
+    )
 }
 
 export default OtherListingsES

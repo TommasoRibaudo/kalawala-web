@@ -10,6 +10,10 @@ import { Helmet } from "react-helmet";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 import ListingAdES from "../Components/ListingAd/ListingAd.componentES";
 import { allHomesSnippetES } from "../../../utils/constants";
+import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
+import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
+import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
 
 
 const PuertoViejoByPlaneES = () => {
@@ -37,11 +41,9 @@ const PuertoViejoByPlaneES = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/puertoviejobyplane" />
             </Helmet>
             <FixedNavigationES isBlog={true} />
-            <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAdES listings={allHomesSnippetES} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+            <Row className="subContainer" style={{ justifyContent: 'center' }}>
+
+                <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
 
                     <br />
                     <div className="heading title-container" style={{ maxWidth: 1000, }}>
@@ -62,8 +64,14 @@ const PuertoViejoByPlaneES = () => {
                         <p style={{ display: 'flex', justifyContent: 'right' }}>Image by <a href="http://www.freepik.com/" target="_blank" rel="noreferrer"> Freepik</a></p>
                         <br />
                         <p>Llegar a Puerto Viejo en avión es más fácil de lo que piensas. En este artículo, te mostraremos cómo viajar desde cualquier destino a Puerto Viejo tomando un vuelo doméstico desde San José a Limón.</p>
-                        <br />
-
+                       
+                        {/* Why Stay With Us Component - after main content, before OtherBlogs */}
+                        <div style={{ maxWidth: 1000 }}>
+                            <WhyStayWithUs
+                                language="es"
+                                ctaLink="/"
+                            />
+                        </div>
                         <p>Para reservar tu vuelo, simplemente visita <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> y selecciona tus fechas y horarios de viaje. Luego se te pedirá que ingreses tus datos personales y de pago para completar tu reserva.
                             Es importante tener en cuenta que Sansa Airlines ofrece varias opciones de vuelo durante el día, lo que facilita encontrar un vuelo que se ajuste a tu horario.</p>
                         <br />
@@ -76,6 +84,15 @@ const PuertoViejoByPlaneES = () => {
                         <p>Una vez que llegues a Limón, un traslado privado te llevará a Puerto Viejo por aproximadamente $75 USD. Un chófer te estará esperando en el aeropuerto y te llevará directamente a tu alojamiento, garantizando un viaje cómodo y sin estrés.
                             Alternativamente, puedes tomar un autobús o un taxi desde Limón a Puerto Viejo, pero te recomendamos organizar un traslado privado con antelación para ahorrar tiempo y evitar posibles estafas.</p>
                         <br />
+
+                        {/* Stay Recommendation Component - positioned in middle of article */}
+                        <StayRecommendation
+                            title="¿Dónde hospedarte cuando vueles a Puerto Viejo?"
+                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES}
+                            language="es"
+                        />
+                        <br />
+
                         <p>En este punto, lo único que te queda por hacer es relajarte y disfrutar del ambiente tranquilo de Puerto Viejo. Ya sea que busques relajarte en la playa, explorar la jungla o disfrutar de una deliciosa comida caribeña,
                             Puerto Viejo tiene algo para todos.</p>
                         <br />
@@ -85,6 +102,16 @@ const PuertoViejoByPlaneES = () => {
                         <br />
 
                     </div>
+
+
+                    {/* Smoobu Booking Component */}
+                    <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
+                        <h3 className="smoobu-title">Reserva tu Estadía</h3>
+                        <div className="smoobu-wrapper">
+                            <Smoobu2 targetId="planeESSmoobuBooking" />
+                        </div>
+                    </div>
+
                     <OtherBlogs currentBlog="puertoviejobyplane" blogs={blogsES} />
                 </Col>
             </Row>

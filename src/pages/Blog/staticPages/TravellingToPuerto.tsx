@@ -1,23 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
-// import Amenities from "./components/Amenities/Amenities.component";
-import { allHomesSnippet } from "../../../utils/constants";
+
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
-import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
 import { blogs } from "../../../assets/blogs/blogs";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import OtherBlogs from "../Components/OtherBlogs.Component";
+import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
+import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
+import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS } from "../../../utils/constants";
 
 
-const TwoDaysInPV = () => {
-    // const { blogId } = useParams();
-    const blogId = 'travellingtopuertoviejo'
-
-    const blogData = blogs.find((blog) => blog.id === blogId);
+const TravellingToPuerto = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -36,35 +33,41 @@ const TwoDaysInPV = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/travellingtopuertoviejo" />
             </Helmet>
             <FixedNavigation isBlog={true} />
-            <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={allHomesSnippet} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+            <Row className="subContainer" style={{ justifyContent: 'center' }}>
 
-                    <br />
-                    <div className="heading title-container" style={{ maxWidth: 1000, }}>
+                <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
 
-                        <h1 className="title blog-title">How to get to Puerto Viejo from San Jose
-                        </h1>
+                    <div className="blog-header" style={{ maxWidth: 1000, marginBottom: '2rem' }}>
+                        <div className="heading title-container">
+                            <h1 className="title blog-title">How to get to Puerto Viejo from San Jose</h1>
+                            <div className="border"></div>
+                        </div>
 
-                        <div className="border"></div>
-
-                    </div>
-                    <br />
-                    <div className="description" style={{ maxWidth: 1000, }}>
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img 
-                                src="https://drive.google.com/thumbnail?id=1JxE6lYoK9C2maxtGP9rlUp2a47Ce5C9W&sz=w1000" 
-                                style={{ maxWidth: 1000, }} 
-                                className="responsive-image" 
+                        <div className="blog-hero-image" style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginTop: '1.5rem',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                        }}>
+                            <img
+                                src="https://drive.google.com/thumbnail?id=1JxE6lYoK9C2maxtGP9rlUp2a47Ce5C9W&sz=w1000"
+                                className="responsive-image"
+                                style={{
+                                    maxWidth: '100%',
+                                    height: 'auto',
+                                    display: 'block'
+                                }}
                                 alt="Surqui"
                                 width="1000"
                                 height="600"
                                 loading="lazy"
                             />
                         </div>
-                        <br />
+                    </div>
+
+                    <div className="description" style={{ maxWidth: 1000, }}>
                         <p>If you're planning a trip to Puerto Viejo, Costa Rica, you may be wondering how to get there using public transportation. Fortunately, there are several options available that can take you to this beautiful Caribbean town in Talamanca.</p>
                         <br />
 
@@ -76,6 +79,15 @@ const TwoDaysInPV = () => {
                         <p>While you cannot reserve tickets in advance, it's always a good idea to arrive at the bus station early to secure your spot on the bus. Keep in mind that during peak travel seasons, such as holidays and weekends, 
                             the buses can get crowded quickly, so plan accordingly.</p>
                         <br />
+                        
+                        {/* Stay Recommendation Component - positioned in middle of article */}
+                        <StayRecommendation
+                            title="Where to stay when traveling to Puerto Viejo?"
+                            properties={GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
+                            language="en"
+                        />
+                        <br />
+                        
                         <p>The bus has many stops, and will also stop at the bus station in limón, Cahuita and finally, Puerto Viejo.</p>
                         <br />
                         <p> If you're looking to save some money on transportation costs, the cheapest option is to take the public bus. These buses are clean, reliable, and offer an affordable way to get to Puerto Viejo. 
@@ -109,6 +121,23 @@ const TwoDaysInPV = () => {
                         </p>
                         <br />
                     </div>
+
+                    {/* Why Stay With Us Component - after main content, before OtherBlogs */}
+                    <div style={{ maxWidth: 1000 }}>
+                        <WhyStayWithUs
+                            language="en"
+                            ctaLink="/"
+                        />
+                    </div>
+
+                    {/* Smoobu Booking Component */}
+                    <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
+                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <div className="smoobu-wrapper">
+                            <Smoobu2 targetId="travellingSmoobuBooking" />
+                        </div>
+                    </div>
+
                     <OtherBlogs currentBlog="travellingtopuertoviejo" blogs={blogs} />
                 </Col>
             </Row>
@@ -118,4 +147,4 @@ const TwoDaysInPV = () => {
 
 }
 
-export default TwoDaysInPV;
+export default TravellingToPuerto;

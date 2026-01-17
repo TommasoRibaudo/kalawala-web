@@ -2,22 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
-//import constants
-import { allHomesSnippet} from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
-import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
 import { blogs } from "../../../assets/blogs/blogs";
 import OtherBlogs from "../Components/OtherBlogs.Component";
+import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
+import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
+import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
 
 
 const BusHours = () => {
-    // const { blogId } = useParams();
-    
-    const blogId = 'bushours'
-    const blogData = blogs.find((blog) => blog.id === blogId);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -36,28 +32,39 @@ const BusHours = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/bushours" />
             </Helmet>
             <FixedNavigation isBlog={true} />
-            <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 4 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } : { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <ListingAd listings={allHomesSnippet} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 10 }} md={windowWidth <= 991 ? { order: 'first', span: 12 } : { order: 'first', span: 12 }} sm={12} xs={12}>
+            <Row className="subContainer" style={{ justifyContent: 'center' }}>
 
-                    <br />
-                    <div className="heading title-container" style={{ maxWidth: 1000, }}>
+                <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
 
-                        <h1 className="title blog-title">Complete Bus Schedule from Puerto Viejo, Costa Rica - MEPE Bus Routes & Timetables</h1>
-                        <br />
-                        <div className="border"></div>
+                    <div className="blog-header" style={{ maxWidth: 1000, marginBottom: '2rem' }}>
+                        <div className="heading title-container">
+                            <h1 className="title blog-title">Complete Bus Schedule from Puerto Viejo, Costa Rica - MEPE Bus Routes & Timetables</h1>
+                            <div className="border"></div>
+                        </div>
 
+                        <div className="blog-hero-image" style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginTop: '1.5rem',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                        }}>
+                            <img
+                                src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg"
+                                className="responsive-image"
+                                style={{
+                                    maxWidth: '100%',
+                                    height: 'auto',
+                                    display: 'block'
+                                }}
+                                alt="MEPE Bus in Puerto Viejo"
+                                width="1000"
+                                height="600"
+                                loading="lazy"
+                            />
+                        </div>
                     </div>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <p>Planning your transportation in Costa Rica's Caribbean coast? Look no further! This comprehensive guide provides you with all the bus schedules you need to travel from Puerto Viejo to major destinations including <strong>San Jose</strong>, <strong>Limón</strong>, <strong>Cahuita</strong>, <strong>Manzanillo</strong>, and <strong>Sixaola</strong>. Whether you're searching for "bus San Jose Puerto Viejo", "bus Cahuita Puerto Viejo", or "bus from Puerto Viejo to San Jose", we've got you covered with the most up-to-date MEPE bus timetables.</p>
                         <br />
@@ -66,6 +73,15 @@ const BusHours = () => {
                         <br />
                         <p>MEPE buses are easily recognizable by their distinctive blue and white colors, and they operate on fixed schedules that are generally punctual. The company has been serving the Caribbean region for decades, building a reputation for safety, affordability, and comprehensive coverage of the area's most important routes.</p>
                         <br />
+
+                        {/* Stay Recommendation Component - positioned in middle of article */}
+                        <StayRecommendation
+                            title="Where to stay while using Puerto Viejo bus services?"
+                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS}
+                            language="en"
+                        />
+                        <br />
+
                         <h3><strong>Bus Routes from Puerto Viejo</strong></h3>
                         <p>Puerto Viejo serves as a major transportation hub for the Southern Caribbean region. From here, you can easily reach:</p>
                         <ul>
@@ -336,7 +352,13 @@ const BusHours = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <br />
+                    {/* Why Stay With Us Component - after main content, before OtherBlogs */}
+                    <div style={{ maxWidth: 1000 }}>
+                        <WhyStayWithUs
+                            language="en"
+                            ctaLink="/"
+                        />
+                    </div>
                         <h3><strong>Tips for Bus Travel in Puerto Viejo</strong></h3>
                         <ul>
                             <li><strong>Arrive Early:</strong> Buses can fill up quickly, especially during peak tourist season</li>
@@ -355,6 +377,16 @@ const BusHours = () => {
                         <br />
                         <p>For the most comfortable stay while exploring the Caribbean coast, consider booking one of our fully equipped homes in Puerto Viejo or Playa Chiquita. We offer convenient locations near bus stops and provide all the amenities you need for a perfect Costa Rican getaway!</p>
                     </div>
+
+
+                    {/* Smoobu Booking Component */}
+                    <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
+                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <div className="smoobu-wrapper">
+                            <Smoobu2 targetId="busHoursSmoobuBooking" />
+                        </div>
+                    </div>
+
                     <OtherBlogs currentBlog="bushours" blogs={blogs} />
                 </Col>
             </Row>

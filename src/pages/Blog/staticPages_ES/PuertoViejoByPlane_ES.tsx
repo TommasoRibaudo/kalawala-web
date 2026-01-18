@@ -69,7 +69,7 @@ const PuertoViejoByPlaneES = () => {
                         <div style={{ maxWidth: 1000 }}>
                             <WhyStayWithUs
                                 language="es"
-                                ctaLink="/"
+                                ctaLink="/HomeES"
                             />
                         </div>
                         <p>Para reservar tu vuelo, simplemente visita <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> y selecciona tus fechas y horarios de viaje. Luego se te pedirá que ingreses tus datos personales y de pago para completar tu reserva.

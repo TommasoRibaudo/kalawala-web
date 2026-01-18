@@ -107,7 +107,7 @@ const CahuitaParkES = () => {
                     <div style={{ maxWidth: 1000 }}>
                         <WhyStayWithUs
                             language="es"
-                            ctaLink="/"
+                            ctaLink="/HomeES"
                         />
                     </div>
                         <h3><strong>Boat Ride Back Instead of Walking</strong></h3>

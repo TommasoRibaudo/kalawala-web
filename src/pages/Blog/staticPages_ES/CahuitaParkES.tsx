@@ -128,7 +128,7 @@ const BusHoursES = () => {
                     <div style={{ maxWidth: 1000 }}>
                         <WhyStayWithUs
                             language="es"
-                            ctaLink="/"
+                            ctaLink="/HomeES"
                         />
                     </div>
 

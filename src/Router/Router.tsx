@@ -43,6 +43,8 @@ import ListingDelfinES from '../pages/Listing/staticPages_ES/ListingDelfin.page_
 import { useRandomPopup } from '../hooks/useRandomPopup';
 import CahuitaPark from '../pages/Blog/staticPages/CahuitaPark';
 import CahuitaParkES from '../pages/Blog/staticPages_ES/BusHoursES';
+import IndigenousTravel from '../pages/Blog/staticPages/IndigenousTravel';
+import IndigenousTravelES from '../pages/Blog/staticPages_ES/IndigenousTravelES';
 // import About from './About';
 // import Contact from './Contact';
 
@@ -158,6 +160,8 @@ const AppRouter = () => {
       <Route path='/TenHoursInPuertoES' element={<TenHoursInPuertoES />} />
       <Route path='/cahuitaparkwhattodo' element={<CahuitaPark />} />
       <Route path='/cahuitaparkwhattodoES' element={<CahuitaParkES />} />
+      <Route path='/indigenousTravelPV' element={<IndigenousTravel />} />
+      <Route path='/indigenousTravelPVES' element={<IndigenousTravelES />} />
       <Route path='/HomeES' element={<HomeES/>} />
       <Route path='/Success' element={<Success/>} />
       <Route path='/HomeNam' element={<HomeNam/>} />

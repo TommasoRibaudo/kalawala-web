@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import './Smoobu.style.scss';
 import React from 'react';
+import posthog from 'posthog-js';
 import IframeSkeleton from '../IframeSkeleton/IframeSkeleton.component';
 import { GA4SmoobuTrackingService, createGA4SmoobuConfig } from '../../services/GA4SmoobuTracking.service';
 import { CookieConsentService } from '../../services/CookieConsent.service';
@@ -266,6 +267,92 @@ function Smoobu({ homeCode }: ISmoobu) {
   // Debug state changes
   useEffect(() => {
   }, [isLoading, iframeLoaded]);
+
+  // Track booking steps via iFrameSizer postMessage events from Smoobu.
+  // Message format: [iFrameSizer]IFRAME_ID:HEIGHT:WIDTH:EVENT_TYPE
+  // - init            → a new page loaded inside the iframe (step change)
+  // - mutationObserver → iframe content updated (date/guest selection, form fill)
+  useEffect(() => {
+    // We track which step the user is on to avoid duplicate events.
+    let currentStep = 'listing';
+    let interactionCount = 0;
+
+    const handleMessage = (event: MessageEvent) => {
+      if (!event.origin.includes('smoobu.com')) return;
+      if (typeof event.data !== 'string') return;
+      if (!event.data.startsWith('[iFrameSizer]')) return;
+
+      // Parse: [iFrameSizer]ID:HEIGHT:WIDTH:EVENT_TYPE
+      const body = event.data.replace('[iFrameSizer]', '');
+      const colonIdx = body.indexOf(':');                        // first colon after ID
+      const rest = body.slice(colonIdx + 1);
+      const parts = rest.split(':');                             // [height, width, eventType]
+      const height = parseFloat(parts[0]);
+      const eventType = parts[2];
+
+      if (!eventType) return;
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[Smoobu postMessage parsed]', { height, eventType, currentStep });
+      }
+
+      if (!CookieConsentService.hasConsent('analytics')) return;
+
+      if (eventType === 'init') {
+        // Determine step from iframe height.
+        // Booking form (~1000-1200px) is significantly shorter than the listing/calendar view (~1800px+).
+        const step = height < 1400 ? 'booking_form' : 'listing';
+
+        if (step !== currentStep) {
+          currentStep = step;
+          interactionCount = 0; // reset per step
+
+          posthog.capture('smoobu_step_changed', {
+            step,
+            iframe_height: height,
+            home_code: homeCode,
+          });
+
+          // Booking form reached = user clicked "Book Now"
+          if (step === 'booking_form') {
+            posthog.capture('smoobu_booking_started', { home_code: homeCode });
+          }
+        }
+      } else if (eventType === 'mutationObserver') {
+        // Content updated — user interacted (dates, guests, form fields).
+        // We debounce by counting and only fire every 3rd mutation to avoid noise.
+        interactionCount++;
+        if (interactionCount % 3 === 1) {
+          posthog.capture('smoobu_content_updated', {
+            step: currentStep,
+            interaction_count: interactionCount,
+            iframe_height: height,
+            home_code: homeCode,
+          });
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [homeCode]);
+
+  // Detect clicks inside the iframe via window blur (cross-origin safe)
+  useEffect(() => {
+    if (!iframeLoaded) return;
+
+    const handleBlur = () => {
+      const iframe = document.querySelector('#apartmentIframeAll iframe');
+      if (document.activeElement === iframe) {
+        if (CookieConsentService.hasConsent('analytics')) {
+          posthog.capture('smoobu_iframe_clicked', { home_code: homeCode });
+        }
+      }
+    };
+
+    window.addEventListener('blur', handleBlur);
+    return () => window.removeEventListener('blur', handleBlur);
+  }, [iframeLoaded, homeCode]);
 
   if (!homeCode) {
     return null; // Return null if homeCode is not provided to unmount the component

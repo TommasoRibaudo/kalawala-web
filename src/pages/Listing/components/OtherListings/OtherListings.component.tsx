@@ -9,38 +9,57 @@ interface IOtherListing {
 }
 
 const OtherListings: FC<IOtherListing> = ({ currentListing, listings }) => {
-
     const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-
-    const naviagate = useNavigate()
-
-    // Filter out the current listing
+    const navigate = useNavigate()
     const otherListings = listings.filter(listing => listing.name !== currentListing)
 
     useEffect(() => {
-        window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
-
-
+        const handleResize = () => setWindowWidth(window.innerWidth)
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener("resize", handleResize)
     }, [])
 
-    const isMobile = windowWidth <= 1199;
-    const shouldUseCarousel = isMobile && otherListings.length > 2;
+    const isMobile = windowWidth <= 1199
+
+    const getLayoutClass = () => {
+        if (otherListings.length === 0) return 'no-listings'
+        if (otherListings.length === 1) return 'single-listing'
+        if (isMobile && otherListings.length <= 2) return 'mobile-grid'
+        if (isMobile) return 'mobile-scroll'
+        return 'desktop-grid'
+    }
+
+    const handleListingClick = (name: string) => {
+        navigate(`/${name.replace(/\s/g, "")}`)
+    }
+
+    if (otherListings.length === 0) {
+        return null
+    }
 
     return (
-        <>
-            <div className="cont d-flex justify-content-center">
-                <div className="header">Check out our other options!</div>
-                <div className={`${otherListings.length === 1 ? 'single-listing-container' : 
-                    shouldUseCarousel ? 'mobile-carousel' : 
-                    (isMobile ? 'mobile-vertical' : 'hstack gap-5')} subCont`}>
-                    {otherListings.map(({ name, mainImage }) => (
-                        <div key={name} style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { naviagate(`/${name.replace(/\s/g, "")}`) }}>
-                            <div className="name">{name}</div>
+        <div className="other-listings-container">
+            <h3 className="other-listings-header">Check out our other options!</h3>
+            <div className={`other-listings-grid ${getLayoutClass()}`}>
+                {otherListings.map(({ name, mainImage }) => (
+                    <div
+                        key={name}
+                        className="listing-card"
+                        style={{ backgroundImage: `url(${mainImage})` }}
+                        onClick={() => handleListingClick(name)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleListingClick(name)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`View listing: ${name}`}
+                    >
+                        <div className="listing-card-overlay">
+                            <h4 className="listing-card-title">{name}</h4>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
             </div>
-        </>)
+        </div>
+    )
 }
 
 export default OtherListings

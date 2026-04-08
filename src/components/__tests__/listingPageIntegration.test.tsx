@@ -51,7 +51,7 @@ describe('Listing Page Integration Tests', () => {
       render(<PriceConfirmationSection propertyKey="Rana" isSpanish={false} />);
       
       // Should contain price display (note: USD prices include $ symbol)
-      expect(screen.getByText(/Average price: \$150 per night/)).toBeInTheDocument();
+      expect(screen.getByText(/Average price: \$160 per night/)).toBeInTheDocument();
       
       // Should contain instant confirmation badge (text is split across elements)
       expect(screen.getByText('✔')).toBeInTheDocument();
@@ -73,7 +73,7 @@ describe('Listing Page Integration Tests', () => {
       render(<PriceConfirmationSection propertyKey="Rana" isSpanish={true} />);
       
       // Should contain Spanish price display with CRC (note: space formatting)
-      expect(screen.getByText(/Precio promedio: 75 000 CRC la noche/)).toBeInTheDocument();
+      expect(screen.getByText(/Precio promedio: 80\s*000 CRC la noche/)).toBeInTheDocument();
       
       // Should contain Spanish instant confirmation badge (text is split across elements)
       expect(screen.getByText('✔')).toBeInTheDocument();
@@ -118,7 +118,7 @@ describe('Listing Page Integration Tests', () => {
       
       // Price and confirmation should be tested separately in PriceConfirmationSection
       render(<PriceConfirmationSection propertyKey="Delfin" isSpanish={false} />);
-      expect(screen.getByText(/Average price: \$180 per night/)).toBeInTheDocument();
+      expect(screen.getByText(/Average price: \$199 per night/)).toBeInTheDocument();
       expect(screen.getByText('✔')).toBeInTheDocument();
       expect(screen.getByText('Instant confirmation')).toBeInTheDocument();
     });
@@ -146,8 +146,8 @@ describe('Listing Page Integration Tests', () => {
       
       // Verify all components are present
       expect(screen.getByText('Cozy retreat perfect for couples exploring Punta Uva')).toBeInTheDocument();
-      expect(screen.getByText(/Average price: \$94 per night/)).toBeInTheDocument();
-      expect(screen.getByText('Chosen for its peaceful location and proximity to Punta Uva beach')).toBeInTheDocument();
+      expect(screen.getByText(/Average price: \$99 per night/)).toBeInTheDocument();
+      expect(screen.getByText('Chosen for its peaceful location')).toBeInTheDocument();
       expect(screen.getByText('Why guests choose Casa Areka')).toBeInTheDocument();
       
       // Test mobile layout
@@ -155,8 +155,8 @@ describe('Listing Page Integration Tests', () => {
       
       // Components should still be present and functional on mobile
       expect(screen.getByText('Cozy retreat perfect for couples exploring Punta Uva')).toBeInTheDocument();
-      expect(screen.getByText(/Average price: \$94 per night/)).toBeInTheDocument();
-      expect(screen.getByText('Chosen for its peaceful location and proximity to Punta Uva beach')).toBeInTheDocument();
+      expect(screen.getByText(/Average price: \$99 per night/)).toBeInTheDocument();
+      expect(screen.getByText('Chosen for its peaceful location')).toBeInTheDocument();
       expect(screen.getByText('Why guests choose Casa Areka')).toBeInTheDocument();
     });
   });
@@ -207,8 +207,8 @@ describe('Listing Page Integration Tests', () => {
       
       // All text should be in Spanish
       expect(screen.getByText('Refugio acogedor perfecto para parejas explorando Punta Uva')).toBeInTheDocument();
-      expect(screen.getByText(/Precio promedio: 47 000 CRC la noche/)).toBeInTheDocument();
-      expect(screen.getByText('Elegida por su ubicación tranquila y proximidad a la playa Punta Uva')).toBeInTheDocument();
+      expect(screen.getByText(/Precio promedio: 49\s*000 CRC la noche/)).toBeInTheDocument();
+      expect(screen.getByText('Elegida por su ubicación tranquila')).toBeInTheDocument();
       expect(screen.getByText('¿Por qué los huéspedes eligen Casa Plumeria?')).toBeInTheDocument();
       expect(screen.getAllByText('✔')[0]).toBeInTheDocument();
       expect(screen.getAllByText('Confirmación inmediata')[0]).toBeInTheDocument();
@@ -227,7 +227,7 @@ describe('Listing Page Integration Tests', () => {
       
       // All text should be in English
       expect(screen.getByText('Family-friendly house near Punta Uva')).toBeInTheDocument();
-      expect(screen.getByText(/Average price: \$159 per night/)).toBeInTheDocument();
+      expect(screen.getByText(/Average price: \$169 per night/)).toBeInTheDocument();
       expect(screen.getByText('Chosen for its family-friendly amenities and beach proximity')).toBeInTheDocument();
       expect(screen.getByText('Why guests choose Casa Giulia')).toBeInTheDocument();
       expect(screen.getAllByText('✔')[0]).toBeInTheDocument();

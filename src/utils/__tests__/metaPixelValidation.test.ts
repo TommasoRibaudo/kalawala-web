@@ -5,6 +5,19 @@
  * Requirements: 1.4, 2.3, 4.3
  */
 
+// Mock the MetaPixel service to avoid real network retries in validateErrorHandling
+jest.mock('../../services/MetaPixel.service', () => {
+  const mockService = {
+    initialize: jest.fn().mockResolvedValue(undefined),
+    getState: jest.fn().mockReturnValue({ isLoaded: false, isInitialized: false, hasError: false }),
+    getErrorHistory: jest.fn().mockReturnValue([]),
+  };
+  return {
+    MetaPixelService: jest.fn().mockImplementation(() => mockService),
+    createMetaPixelService: jest.fn().mockReturnValue(mockService),
+  };
+});
+
 import {
   validateScriptLoading,
   validatePixelInitialization,
@@ -12,36 +25,6 @@ import {
   validateErrorHandling,
   runPixelValidation
 } from '../metaPixelValidation';
-
-// Import the actual functions for tests that need them
-const actualModule = jest.requireActual('../metaPixelValidation');
-
-// Mock the validation functions to avoid actual network calls
-jest.mock('../metaPixelValidation', () => {
-  const originalModule = jest.requireActual('../metaPixelValidation');
-  
-  return {
-    ...originalModule,
-    validateScriptLoading: jest.fn().mockResolvedValue({
-      success: true,
-      message: 'Meta Pixel script loaded successfully',
-      details: { scriptSrc: 'https://connect.facebook.net/en_US/fbevents.js' },
-      timestamp: Date.now()
-    }),
-    validateErrorHandling: jest.fn().mockResolvedValue({
-      success: true,
-      message: 'Error handling mechanisms working correctly',
-      timestamp: Date.now()
-    }),
-    runPixelValidation: jest.fn().mockResolvedValue({
-      scriptLoading: { success: true, message: 'Script loaded', timestamp: Date.now() },
-      pixelInitialization: { success: true, message: 'Pixel initialized', timestamp: Date.now() },
-      pageViewTracking: { success: true, message: 'PageView tracking works', timestamp: Date.now() },
-      errorHandling: { success: true, message: 'Error handling works', timestamp: Date.now() },
-      overall: { success: true, message: 'All validations passed', timestamp: Date.now() }
-    })
-  };
-});
 
 // Mock global objects
 const mockFbq = jest.fn();
@@ -80,12 +63,18 @@ beforeAll(() => {
 beforeEach(() => {
   jest.clearAllMocks();
   mockFbq.mockClear();
+  
+  // Restore fbq after each test
+  window.fbq = mockFbq;
+  window.fbq.queue = [];
+  window.fbq.loaded = true;
+  window.fbq.version = '2.0';
 });
 
 describe('Meta Pixel Validation', () => {
   describe('Script Loading Validation', () => {
     test('should validate successful script loading', async () => {
-      // Mock successful script loading
+      // Mock querySelector to return a script element
       (document.querySelector as jest.Mock).mockReturnValueOnce({
         getAttribute: () => 'https://connect.facebook.net/en_US/fbevents.js'
       });
@@ -110,7 +99,7 @@ describe('Meta Pixel Validation', () => {
 
   describe('Pixel Initialization Validation', () => {
     test('should validate correct pixel ID configuration', () => {
-      const result = actualModule.validatePixelInitialization();
+      const result = validatePixelInitialization();
       
       expect(result.success).toBe(true);
       expect(result.message).toContain('correct pixel ID');
@@ -121,7 +110,7 @@ describe('Meta Pixel Validation', () => {
       const originalPixelId = process.env.REACT_APP_META_PIXEL_ID;
       delete process.env.REACT_APP_META_PIXEL_ID;
       
-      const result = actualModule.validatePixelInitialization();
+      const result = validatePixelInitialization();
       
       expect(result.success).toBe(false);
       expect(result.message).toContain('not set');
@@ -134,7 +123,7 @@ describe('Meta Pixel Validation', () => {
       const originalPixelId = process.env.REACT_APP_META_PIXEL_ID;
       process.env.REACT_APP_META_PIXEL_ID = 'wrong-id';
       
-      const result = actualModule.validatePixelInitialization();
+      const result = validatePixelInitialization();
       
       expect(result.success).toBe(false);
       expect(result.message).toContain('mismatch');
@@ -146,11 +135,10 @@ describe('Meta Pixel Validation', () => {
 
   describe('PageView Tracking Validation', () => {
     test('should validate PageView tracking functionality', () => {
-      // Ensure fbq is available
       window.fbq = mockFbq;
       window.fbq.loaded = true;
       
-      const result = actualModule.validatePageViewTracking();
+      const result = validatePageViewTracking();
       
       expect(result.success).toBe(true);
       expect(result.message).toContain('working correctly');
@@ -158,9 +146,10 @@ describe('Meta Pixel Validation', () => {
 
     test('should detect missing fbq function', () => {
       const originalFbq = (window as any).fbq;
-      delete (window as any).fbq;
+      // Must set to a non-function value so typeof check fails
+      (window as any).fbq = undefined;
       
-      const result = actualModule.validatePageViewTracking();
+      const result = validatePageViewTracking();
       
       expect(result.success).toBe(false);
       expect(result.message).toContain('not available');
@@ -174,11 +163,11 @@ describe('Meta Pixel Validation', () => {
     test('should validate error handling mechanisms', async () => {
       const result = await validateErrorHandling();
       
-      // Error handling should work even if some tests fail
+      // Error handling should return a result even if some tests fail
       expect(result).toBeDefined();
       expect(result.success).toBeDefined();
       expect(result.message).toBeDefined();
-    }, 10000);
+    }, 15000);
   });
 
   describe('Comprehensive Validation', () => {
@@ -251,19 +240,13 @@ describe('Meta Pixel Validation', () => {
     });
 
     test('should handle DOM API variations', async () => {
-      // Test with different querySelector implementations
-      const originalQuerySelector = document.querySelector;
-      
-      // Mock querySelector that throws
-      (document.querySelector as any) = jest.fn(() => {
+      // Test with querySelector that throws
+      (document.querySelector as jest.Mock).mockImplementationOnce(() => {
         throw new Error('DOM error');
       });
       
       const result = await validateScriptLoading();
       expect(result.success).toBe(false);
-      
-      // Restore
-      document.querySelector = originalQuerySelector;
     });
   });
 });

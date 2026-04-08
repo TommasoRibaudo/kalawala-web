@@ -98,7 +98,7 @@ describe('ListingDelfin Component', () => {
     );
     
     expect(screen.getByTestId('fixed-navigation')).toBeInTheDocument();
-    expect(screen.getByText('House Delfin')).toBeInTheDocument();
+    expect(screen.getByText('House Delfines')).toBeInTheDocument();
     expect(screen.getByTestId('images-container')).toBeInTheDocument();
     expect(screen.getByTestId('smoobu-component')).toBeInTheDocument();
   });

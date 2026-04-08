@@ -352,6 +352,14 @@ describe('CookieConsentService', () => {
 
   describe('onConsentChange', () => {
     test('should register and call event listener', () => {
+      // Ensure real dispatchEvent and addEventListener are available
+      const realDispatchEvent = EventTarget.prototype.dispatchEvent.bind(window);
+      const realAddEventListener = EventTarget.prototype.addEventListener.bind(window);
+      const realRemoveEventListener = EventTarget.prototype.removeEventListener.bind(window);
+      window.dispatchEvent = realDispatchEvent;
+      window.addEventListener = realAddEventListener;
+      window.removeEventListener = realRemoveEventListener;
+
       const callback = jest.fn();
       const cleanup = CookieConsentService.onConsentChange(callback);
       

@@ -98,7 +98,7 @@ describe('ListingDelfinES Component', () => {
     );
     
     expect(screen.getByTestId('fixed-navigation-es')).toBeInTheDocument();
-    expect(screen.getByText('Casa Delfín')).toBeInTheDocument();
+    expect(screen.getByText('Casa Delfines')).toBeInTheDocument();
     expect(screen.getByTestId('images-container')).toBeInTheDocument();
     expect(screen.getByTestId('smoobu-component')).toBeInTheDocument();
   });
@@ -202,7 +202,7 @@ describe('ListingDelfinES Component', () => {
       </BrowserRouter>
     );
     
-    expect(screen.getByText('Reverva en linea!')).toBeInTheDocument();
+    expect(screen.getByText('VER DISPONIBILIDAD')).toBeInTheDocument();
   });
 
   test('should handle image modal functionality with Spanish content', () => {

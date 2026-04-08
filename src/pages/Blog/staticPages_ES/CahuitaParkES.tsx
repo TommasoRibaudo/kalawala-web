@@ -17,10 +17,10 @@ import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
 
 
-const BusHoursES = () => {
+const CahuitaParkwhattodoES = () => {
     // const { blogId } = useParams();
 
-    const blogId = 'bushoursES'
+    const blogId = 'cahuitaParkwhattodoES'
     const blogData = blogsES.find((blog) => blog.id === blogId);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -45,7 +45,29 @@ const BusHoursES = () => {
             <Row className="subContainer" style={{ justifyContent: 'center' }}>
 
                 <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
-
+                    <div className="blog-hero-image" style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '1.5rem',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                    }}>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Cahuita_national_park%2C_Costa_Rica.jpg/1280px-Cahuita_national_park%2C_Costa_Rica.jpg?20090819063715"
+                            className="responsive-image"
+                            style={{
+                                maxWidth: '100%',
+                                height: 'auto',
+                                display: 'block'
+                            }}
+                            alt="Cahuita National Park Beach"
+                            width="1000"
+                            height="600"
+                            loading="lazy"
+                        />
+                         Photo by <a href="https://haakonkrohn.com/" target="_blank" rel="noopener noreferrer">Haakon S. Krohn</a>
+                    </div>
                     <div className="blog-header" style={{ maxWidth: 1000, marginBottom: '2rem' }}>
                         <div className="heading title-container">
                             <h1 className="title blog-title">Visitar el Parque Nacional Cahuita: lo que tenés que saber</h1>
@@ -140,7 +162,7 @@ const BusHoursES = () => {
                         </div>
                     </div>
 
-                    <OtherBlogs currentBlog="bushoursES" blogs={blogsES} />
+                    <OtherBlogs currentBlog="cahuitaParkwhattodo" blogs={blogsES} />
                 </Col>
             </Row>
             <ContactUs />
@@ -149,4 +171,4 @@ const BusHoursES = () => {
 
 }
 
-export default BusHoursES;
+export default CahuitaParkwhattodoES;

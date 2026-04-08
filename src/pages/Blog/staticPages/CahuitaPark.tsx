@@ -9,7 +9,7 @@ import OtherBlogs from "../Components/OtherBlogs.Component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
-import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
+import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
 
 
 const CahuitaPark = () => {
@@ -56,7 +56,7 @@ const CahuitaPark = () => {
                             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
                         }}>
                             <img
-                                src="https://pixabay.com/get/g648d00416193a3478059ee6a683f1fe0ccf051614aeaa74b633c7aaf78894891e22ae09c588bb97a06725ac09e08253ad077e3ef0b11c705e588e1895d987a05_1280.jpg"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Cahuita_national_park%2C_Costa_Rica.jpg/1280px-Cahuita_national_park%2C_Costa_Rica.jpg?20090819063715"
                                 className="responsive-image"
                                 style={{
                                     maxWidth: '100%',
@@ -86,7 +86,7 @@ const CahuitaPark = () => {
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
                             title="Where to stay near Cahuita National Park?"
-                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS}
+                            properties={GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
                             language="en"
                         />
                         <br />

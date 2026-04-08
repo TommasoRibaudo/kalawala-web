@@ -30,6 +30,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'npm'
+          cache-dependency-path: package-lock.json
       - name: Install Dependencies
         run: npm ci
       - name: Audit Dependencies
@@ -46,6 +47,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'npm'
+          cache-dependency-path: package-lock.json
       - name: Install Dependencies
         run: npm ci
       - name: TypeScript Check
@@ -63,6 +65,7 @@ jobs:
         with:
           node-version: '18.x'
           cache: 'npm'
+          cache-dependency-path: package-lock.json
       - name: Install Dependencies
         run: npm ci
       - name: Build React App

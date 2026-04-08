@@ -126,9 +126,11 @@ jobs:
           protocol: ftps
           port: 21
           local-dir: ./build/
-          server-dir: /public_html/
+          server-dir: public_html/
+          dangerous-clean-slate: false
           exclude: |
             **/.git**
             **/.git*/
             **/node_modules/**
-            **/.*
+            **/.gitignore
+            **/.gitattributes

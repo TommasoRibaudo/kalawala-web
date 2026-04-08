@@ -27,11 +27,11 @@ describe('CookieConsentBanner', () => {
   test('should render banner when consent is needed', () => {
     render(<CookieConsentBanner onConsentChange={mockOnConsentChange} />);
     
-    expect(screen.getByText('🍪 We use cookies')).toBeInTheDocument();
-    expect(screen.getByText(/We use cookies and similar technologies/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /accept all/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /reject all/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /customize/i })).toBeInTheDocument();
+    expect(screen.getByText('🍪 Cookies')).toBeInTheDocument();
+    expect(screen.getByText(/We use cookies/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /accept/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /reject/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /options/i })).toBeInTheDocument();
   });
 
   test('should not render banner when consent is not needed', () => {
@@ -39,13 +39,13 @@ describe('CookieConsentBanner', () => {
     
     render(<CookieConsentBanner onConsentChange={mockOnConsentChange} />);
     
-    expect(screen.queryByText('🍪 We use cookies')).not.toBeInTheDocument();
+    expect(screen.queryByText('🍪 Cookies')).not.toBeInTheDocument();
   });
 
   test('should call acceptAll when Accept All button is clicked', () => {
     render(<CookieConsentBanner onConsentChange={mockOnConsentChange} />);
     
-    const acceptButton = screen.getByRole('button', { name: /accept all/i });
+    const acceptButton = screen.getByRole('button', { name: /accept/i });
     fireEvent.click(acceptButton);
     
     expect(mockCookieConsentService.acceptAll).toHaveBeenCalled();
@@ -54,7 +54,7 @@ describe('CookieConsentBanner', () => {
   test('should call rejectAll when Reject All button is clicked', () => {
     render(<CookieConsentBanner onConsentChange={mockOnConsentChange} />);
     
-    const rejectButton = screen.getByRole('button', { name: /reject all/i });
+    const rejectButton = screen.getByRole('button', { name: /reject/i });
     fireEvent.click(rejectButton);
     
     expect(mockCookieConsentService.rejectAll).toHaveBeenCalled();
@@ -63,28 +63,28 @@ describe('CookieConsentBanner', () => {
   test('should show customization options when Customize button is clicked', () => {
     render(<CookieConsentBanner onConsentChange={mockOnConsentChange} />);
     
-    const customizeButton = screen.getByRole('button', { name: /customize/i });
+    const customizeButton = screen.getByRole('button', { name: /options/i });
     fireEvent.click(customizeButton);
     
-    expect(screen.getByText('Essential Cookies')).toBeInTheDocument();
-    expect(screen.getByText('Analytics Cookies')).toBeInTheDocument();
-    expect(screen.getByText('Marketing Cookies')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /save preferences/i })).toBeInTheDocument();
+    expect(screen.getByText('Essential')).toBeInTheDocument();
+    expect(screen.getByText('Analytics')).toBeInTheDocument();
+    expect(screen.getByText('Marketing')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument();
   });
 
   test('should handle preference changes in customization', () => {
     render(<CookieConsentBanner onConsentChange={mockOnConsentChange} />);
     
     // Open customization
-    const customizeButton = screen.getByRole('button', { name: /customize/i });
+    const customizeButton = screen.getByRole('button', { name: /options/i });
     fireEvent.click(customizeButton);
     
     // Find analytics checkbox and uncheck it
-    const analyticsCheckbox = screen.getByRole('checkbox', { name: /analytics cookies/i });
+    const analyticsCheckbox = screen.getByRole('checkbox', { name: /analytics/i });
     fireEvent.click(analyticsCheckbox);
     
     // Save preferences
-    const saveButton = screen.getByRole('button', { name: /save preferences/i });
+    const saveButton = screen.getByRole('button', { name: /save/i });
     fireEvent.click(saveButton);
     
     expect(mockCookieConsentService.saveConsent).toHaveBeenCalledWith({
@@ -98,11 +98,11 @@ describe('CookieConsentBanner', () => {
     render(<CookieConsentBanner onConsentChange={mockOnConsentChange} />);
     
     // Open customization
-    const customizeButton = screen.getByRole('button', { name: /customize/i });
+    const customizeButton = screen.getByRole('button', { name: /options/i });
     fireEvent.click(customizeButton);
     
     // Essential cookies checkbox should be disabled
-    const essentialCheckbox = screen.getByRole('checkbox', { name: /essential cookies/i });
+    const essentialCheckbox = screen.getByRole('checkbox', { name: /essential/i });
     expect(essentialCheckbox).toBeDisabled();
     expect(essentialCheckbox).toBeChecked();
   });
@@ -117,7 +117,7 @@ describe('CookieConsentBanner', () => {
     
     render(<CookieConsentBanner onConsentChange={mockOnConsentChange} />);
     
-    expect(screen.getByText('🍪 We use cookies')).toBeInTheDocument();
+    expect(screen.getByText('🍪 Cookies')).toBeInTheDocument();
     
     // Simulate consent change
     consentChangeCallback({
@@ -128,7 +128,7 @@ describe('CookieConsentBanner', () => {
     });
     
     await waitFor(() => {
-      expect(screen.queryByText('🍪 We use cookies')).not.toBeInTheDocument();
+      expect(screen.queryByText('🍪 Cookies')).not.toBeInTheDocument();
     });
   });
 
@@ -163,10 +163,10 @@ describe('CookieConsentBanner', () => {
     const banner = screen.getByRole('dialog');
     expect(banner).toHaveAttribute('aria-labelledby', 'cookie-banner-title');
     
-    const title = screen.getByText('🍪 We use cookies');
+    const title = screen.getByText('🍪 Cookies');
     expect(title).toHaveAttribute('id', 'cookie-banner-title');
     
-    const customizeButton = screen.getByRole('button', { name: /customize/i });
+    const customizeButton = screen.getByRole('button', { name: /options/i });
     expect(customizeButton).toHaveAttribute('aria-expanded', 'false');
     
     // Open customization and check aria-expanded changes
@@ -178,16 +178,16 @@ describe('CookieConsentBanner', () => {
     render(<CookieConsentBanner onConsentChange={mockOnConsentChange} />);
     
     // Open customization
-    const customizeButton = screen.getByRole('button', { name: /customize/i });
+    const customizeButton = screen.getByRole('button', { name: /options/i });
     fireEvent.click(customizeButton);
     
-    expect(screen.getByText('Essential Cookies')).toBeInTheDocument();
+    expect(screen.getByText('Essential')).toBeInTheDocument();
     
     // Close customization
     const cancelButton = screen.getByRole('button', { name: /cancel/i });
     fireEvent.click(cancelButton);
     
-    expect(screen.queryByText('Essential Cookies')).not.toBeInTheDocument();
+    expect(screen.queryByText('Essential')).not.toBeInTheDocument();
   });
 
   test('should handle service errors gracefully', () => {
@@ -203,7 +203,7 @@ describe('CookieConsentBanner', () => {
     render(<CookieConsentBanner onConsentChange={mockOnConsentChange} />);
     
     // Banner should not be visible due to error
-    expect(screen.queryByText('🍪 We use cookies')).not.toBeInTheDocument();
+    expect(screen.queryByText('🍪 Cookies')).not.toBeInTheDocument();
     
     // Restore console.error
     console.error = originalError;

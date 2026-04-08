@@ -42,10 +42,7 @@ const Listing = () => {
         <div className={`listingContainer ${show && 'modal-open'}`}>
             <FixedNavigation isBlog={false}/>
             <Row className="subContainer">
-                <Col className="otherOptions col" lg={windowWidth <= 1199 ? { order: 'last', span: 2 } : { order: 'first', span: 2 }} md={{ order: 'last', span: 12 }} order={windowWidth <= 1199 ? { lg: 'last' } :  { lg: 'first' }} sm={{ order: 'last', span: 12 }} xs={{ order: 'last', span: 12 }}>
-                    <OtherListings listings={homesSnippet} currentListing={listing || ''} />
-                </Col>
-                <Col className="info col" lg={{ order: 'first', span: 7 }} md={windowWidth <= 991 ?{  order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
+                <Col className="info col" lg={{ order: 'first', span: 9 }} md={windowWidth <= 991 ?{  order: 'first', span: 12 } : { order: 'first', span: 8 }} sm={12} xs={12}>
                     <div className="heading">
                         <h1 className="title">{houseData?.name}</h1>
                         <h3 className="location">{houseData?.location}</h3>
@@ -64,6 +61,9 @@ const Listing = () => {
                     <Smoobu homeCode={houseData!.houseCode} />
                 </Col>
             </Row>
+            <div className="other-listings-bottom">
+                <OtherListings listings={homesSnippet} currentListing={listing || ''} />
+            </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
         </div>
     )

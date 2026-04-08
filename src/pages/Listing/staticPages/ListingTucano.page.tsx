@@ -114,11 +114,6 @@ const ListingTucano = () => {
                         </p>
                     </div>
 
-                    {/* Move OtherListings to bottom after description */}
-                    <div className="other-listings-bottom">
-                        <OtherListings listings={homesSnippet} currentListing={listing || ''} />
-                    </div>
-
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
                     {/* Add price and confirmation above Smoobu */}
@@ -126,6 +121,9 @@ const ListingTucano = () => {
                     <Smoobu homeCode={houseData!.houseCode} />
                 </Col>
             </Row>
+            <div className="other-listings-bottom">
+                <OtherListings listings={homesSnippet} currentListing={listing || ''} />
+            </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
             
             {/* Message Tip Container */}

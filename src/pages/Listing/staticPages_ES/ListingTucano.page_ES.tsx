@@ -114,13 +114,6 @@ const ListingTucanoES = () => {
                         </p>
                     </div>
 
-                    {/* Show OtherListings here only on desktop */}
-                    {!isScreenSmall && (
-                        <div className="other-listings-bottom">
-                            <OtherListingsES listings={homesSnippet} currentListing={listing || ''} />
-                        </div>
-                    )}
-
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
                     {/* Add price and confirmation above Smoobu */}
@@ -129,12 +122,9 @@ const ListingTucanoES = () => {
                 </Col>
             </Row>
 
-            {/* Show OtherListings here only on mobile - after the entire row */}
-            {isScreenSmall && (
-                <div className="other-listings-mobile">
-                    <OtherListingsES listings={homesSnippet} currentListing={listing || ''} />
-                </div>
-            )}
+            <div className="other-listings-bottom">
+                <OtherListingsES listings={homesSnippet} currentListing={listing || ''} />
+            </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
 
             {/* Message Tip Container */}

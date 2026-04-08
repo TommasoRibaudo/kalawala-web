@@ -135,6 +135,15 @@ html,
         }
     }
 
+    .other-listings-bottom {
+        padding: 20px;
+        margin-top: 30px;
+
+        @media (max-width: 992px) {
+            padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+        }
+    }
+
     // Mobile container for OtherListings - appears after booking section
     .other-listings-mobile {
         padding: 20px;

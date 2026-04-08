@@ -29,25 +29,38 @@ const mockIntersectionObserver = jest.fn();
 const mockObserve = jest.fn();
 const mockDisconnect = jest.fn();
 const mockUnobserve = jest.fn();
+const mockTakeRecords = jest.fn<IntersectionObserverEntry[], []>(() => []);
+
+type MockIntersectionObserverInstance = IntersectionObserver & {
+  callback: IntersectionObserverCallback;
+  options?: IntersectionObserverInit;
+  triggerCallback: (entries: IntersectionObserverEntry[]) => void;
+};
+
+const normalizeThresholds = (
+  threshold?: number | number[]
+): number[] => (Array.isArray(threshold) ? threshold : [threshold ?? 0]);
 
 // Create a proper IntersectionObserver mock
-const createMockIntersectionObserver = (callback: IntersectionObserverCallback, options?: IntersectionObserverInit) => {
-  const instance = {
+const createMockIntersectionObserver = (
+  callback: IntersectionObserverCallback,
+  options?: IntersectionObserverInit
+): MockIntersectionObserverInstance => {
+  const instance: MockIntersectionObserverInstance = {
     observe: mockObserve,
     disconnect: mockDisconnect,
     unobserve: mockUnobserve,
-    root: null,
-    rootMargin: options?.rootMargin || '0px',
-    thresholds: Array.isArray(options?.threshold) ? options.threshold : [options?.threshold || 0],
+    takeRecords: mockTakeRecords,
+    root: options?.root ?? null,
+    rootMargin: options?.rootMargin ?? '0px',
+    thresholds: normalizeThresholds(options?.threshold),
     callback,
-    options
+    options,
+    triggerCallback: (entries: IntersectionObserverEntry[]) => {
+      callback(entries, instance);
+    },
   };
-  
-  // Store callback for later use
-  (instance as any).triggerCallback = (entries: IntersectionObserverEntry[]) => {
-    callback(entries, instance as IntersectionObserver);
-  };
-  
+
   return instance;
 };
 
@@ -71,16 +84,6 @@ beforeAll(() => {
   Object.defineProperty(window, 'IntersectionObserver', {
     writable: true,
     value: mockIntersectionObserver,
-  });
-
-  // Mock URL constructor
-  global.URL = jest.fn().mockImplementation((url) => {
-    const mockUrl = new (jest.requireActual('url').URL)(url);
-    return {
-      ...mockUrl,
-      searchParams: new URLSearchParams(mockUrl.search),
-      toString: () => mockUrl.toString(),
-    };
   });
 
   // Mock window.location
@@ -118,6 +121,7 @@ describe('GA4SmoobuTrackingService', () => {
     mockObserve.mockClear();
     mockDisconnect.mockClear();
     mockUnobserve.mockClear();
+    mockTakeRecords.mockClear();
     
     // Reset window.location
     Object.defineProperty(window, 'location', {
@@ -290,15 +294,6 @@ describe('GA4SmoobuTrackingService', () => {
       mockIframe = document.createElement('iframe') as HTMLIFrameElement;
       mockIframe.src = 'https://smoobu.com/booking/widget';
       
-      // Mock URL constructor for iframe URL manipulation
-      global.URL = jest.fn().mockImplementation((url) => {
-        const actualUrl = new (jest.requireActual('url').URL)(url);
-        return {
-          ...actualUrl,
-          searchParams: new URLSearchParams(actualUrl.search),
-          toString: () => actualUrl.toString(),
-        };
-      });
     });
 
     test('should append UTM parameters to iframe URL when present in page URL', () => {

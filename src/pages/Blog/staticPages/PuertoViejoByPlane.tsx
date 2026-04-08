@@ -10,7 +10,7 @@ import { Helmet } from "react-helmet";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
-import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
+import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
 
 
 const PuertoViejoByPlane = () => {
@@ -75,7 +75,7 @@ const PuertoViejoByPlane = () => {
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
                             title="Where to stay when flying to Puerto Viejo?"
-                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS}
+                            properties={GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
                             language="en"
                         />
                         <br />

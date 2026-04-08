@@ -9,7 +9,7 @@ import OtherBlogs from "../Components/OtherBlogs.Component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
-import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
+import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 
 
@@ -100,7 +100,7 @@ const IndigenousTravel = () => {
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
                             title="Looking to stay in Puerto Viejo?"
-                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS}
+                            properties={GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
                             language="en"
                         />
 

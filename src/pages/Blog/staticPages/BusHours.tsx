@@ -9,7 +9,7 @@ import OtherBlogs from "../Components/OtherBlogs.Component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
-import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
+import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
 
 
 const BusHours = () => {
@@ -63,6 +63,7 @@ const BusHours = () => {
                                 height="600"
                                 loading="lazy"
                             />
+                            Photo by <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a>
                         </div>
                     </div>
                     <div className="description" style={{ maxWidth: 1000, }}>
@@ -77,7 +78,7 @@ const BusHours = () => {
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
                             title="Where to stay while using Puerto Viejo bus services?"
-                            properties={PUERTO_VIEJO_BLOG_RECOMMENDATIONS}
+                            properties={GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
                             language="en"
                         />
                         <br />
@@ -372,7 +373,7 @@ const BusHours = () => {
                         <p>Bus tickets can be purchased at the main bus stops in Puerto Viejo. The primary bus stop is located near the basketball court in downtown Puerto Viejo, close to the Deleite Ice Cream Shop.</p>
                         <br />
                         <h3><strong>Contact for Bus Information</strong></h3>
-                        <p>Need updated information about schedules or routes? You can contact us via WhatsApp for the most current information about bus services:</p>
+                        <p>Need updated information about schedules or routes? You can contact the bus company via WhatsApp for the most current information about bus services:</p>
                         <p><strong>WhatsApp: <a href="https://wa.me/50672852592" target="_blank" rel="noopener noreferrer">+(506) 7285-2592</a></strong></p>
                         <br />
                         <p>For the most comfortable stay while exploring the Caribbean coast, consider booking one of our fully equipped homes in Puerto Viejo or Playa Chiquita. We offer convenient locations near bus stops and provide all the amenities you need for a perfect Costa Rican getaway!</p>

@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import posthog from 'posthog-js';
+import { CookieConsentService } from '../services/CookieConsent.service';
 import { Home } from '../pages';
 import MessageTipContainer from '../components/MessageTip/MessageTipContainer.component';
 import ListingGeco from '../pages/Listing/staticPages/ListingGeco.page';
@@ -45,8 +47,38 @@ import CahuitaPark from '../pages/Blog/staticPages/CahuitaPark';
 import CahuitaParkES from '../pages/Blog/staticPages_ES/BusHoursES';
 import IndigenousTravel from '../pages/Blog/staticPages/IndigenousTravel';
 import IndigenousTravelES from '../pages/Blog/staticPages_ES/IndigenousTravelES';
+import BestTimeToVisitPuerto from '../pages/Blog/staticPages/BestTimeToVisitPuerto';
+import BestTimeToVisitPuertoES from '../pages/Blog/staticPages_ES/BestTimeToVisitPuertoES';
+import PuertoHiddenGems from '../pages/Blog/staticPages/PuertoHiddenGems';
+import PuertoHiddenGemsES from '../pages/Blog/staticPages_ES/PuertoHiddenGemsES';
 // import About from './About';
 // import Contact from './Contact';
+
+// Component to capture pageviews on route changes and manage PostHog consent
+const PostHogPageView = () => {
+  const location = useLocation();
+
+  // Opt-in/out when consent changes
+  React.useEffect(() => {
+    const cleanup = CookieConsentService.onConsentChange((state) => {
+      if (state.preferences.analytics) {
+        posthog.opt_in_capturing();
+      } else {
+        posthog.opt_out_capturing();
+      }
+    });
+    return cleanup;
+  }, []);
+
+  // Capture pageview only if analytics consent is given
+  React.useEffect(() => {
+    if (CookieConsentService.hasConsent('analytics')) {
+      posthog.capture('$pageview');
+    }
+  }, [location]);
+
+  return null;
+};
 
 // Component to handle random popup logic inside Router context
 const RandomPopupHandler = () => {
@@ -130,6 +162,7 @@ const AppRouter = () => {
 
   return (
     <BrowserRouter>
+      <PostHogPageView />
       <RandomPopupHandler />
       <Routes>
       <Route path="/" element={<Home />} />
@@ -162,6 +195,10 @@ const AppRouter = () => {
       <Route path='/cahuitaparkwhattodoES' element={<CahuitaParkES />} />
       <Route path='/indigenousTravelPV' element={<IndigenousTravel />} />
       <Route path='/indigenousTravelPVES' element={<IndigenousTravelES />} />
+      <Route path='/bestTimeToVisitPuerto' element={<BestTimeToVisitPuerto />} />
+      <Route path='/bestTimeToVisitPuertoES' element={<BestTimeToVisitPuertoES />} />
+      <Route path='/puertoHiddenGemsES' element={<PuertoHiddenGemsES />} />
+      <Route path='/puertoHiddenGems' element={<PuertoHiddenGems />} />
       <Route path='/HomeES' element={<HomeES/>} />
       <Route path='/Success' element={<Success/>} />
       <Route path='/HomeNam' element={<HomeNam/>} />

@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import posthog from 'posthog-js';
+import { CookieConsentService } from './services/CookieConsent.service';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -38,6 +40,16 @@ import '../src/styles/scss/templates/_typography.scss'
 
 import './styles/maps/style.css.map'
 
+posthog.init(process.env.REACT_APP_PUBLIC_POSTHOG_KEY as string, {
+  api_host: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,
+  person_profiles: 'identified_only',
+  opt_out_capturing_by_default: true,
+});
+
+// Opt-in immediately if user has already accepted analytics cookies
+if (CookieConsentService.hasConsent('analytics')) {
+  posthog.opt_in_capturing();
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

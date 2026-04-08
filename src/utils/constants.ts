@@ -2347,7 +2347,7 @@ export const GENERAL_PUERTO_VIEJO_RECOMMENDATIONS: PropertyRecommendation[] = [
 export const CAHUITA_AREA_RECOMMENDATIONS: PropertyRecommendation[] = [
   {
     name: 'Plumeria',
-    reason: 'Close to Cahuita National Park',
+    reason: 'Perfect Retreat for Couples',
     link: '/Plumeria',
     houseCode: 8
   },

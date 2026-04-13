@@ -4,7 +4,6 @@ import '../../Listing/Listing.style.scss';
 
 // import Amenities from "./components/Amenities/Amenities.component";
 import { blogsES } from "../../../assets/blogs/blogs";
-import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import OtherBlogs from "../Components/OtherBlogs.Component";
 //import constants
 import { allHomesSnippetES, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
@@ -47,7 +46,7 @@ const BestTimeToVisitPuertoES = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/puertoHiddenGems" />
             </Helmet>
 
-            <FixedNavigation isBlog={true} />
+            <FixedNavigationES isBlog={true} />
 
             <Row className="subContainer" style={{ justifyContent: 'center' }}>
                 <Col

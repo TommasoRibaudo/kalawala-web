@@ -12,7 +12,7 @@ import { AmenityType } from "../../../utils/types";
 import { VillasDataList } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
-import FixedNavigationRib from "../../../components/FixedNavigation/FixedNavigation.componentRIB";
+import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
 import { useSmoobuBookingTip } from "../../../hooks/useSmoobuBookingTip";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
@@ -20,6 +20,7 @@ import SocialStatement from "../../../components/SocialStatement/SocialStatement
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
+import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
 
 
 const ListingVillaMar = () => {
@@ -57,7 +58,7 @@ const ListingVillaMar = () => {
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/VillaMarES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/VillaMar" />
             </Helmet>
-            <FixedNavigationRib isBlog={false} />
+            <FixedNavigation isBlog={false} />
             {isScreenSmall && (
                 <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
 
@@ -119,6 +120,8 @@ const ListingVillaMar = () => {
                             Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.
                         </p>
                     </div>
+
+                    <GuestReviews propertyKey="VILLA MAR" isSpanish={false} />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>

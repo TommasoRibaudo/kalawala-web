@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import './FixedNavigation.style.scss';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -15,6 +15,27 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
   const [isActive, setIsActive] = useState<boolean>(true);
   const navbarRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (navbarRef.current && !navbarRef.current.contains(event.target as Node)) {
+        closeMenu();
+      }
+    };
+    let lastScrollY = window.scrollY;
+    const handleScroll = () => {
+      const delta = Math.abs(window.scrollY - lastScrollY);
+      lastScrollY = window.scrollY;
+      if (delta > 50) closeMenu();
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const handleToggleClick = (event: any) => {
     // Handle toggle click
   };
@@ -30,7 +51,7 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
   const closeMenu = () => {
     // Force close the Bootstrap collapse if it's open
     const collapseElement = navbarRef.current?.querySelector('.navbar-collapse');
-    if (collapseElement && !collapseElement.classList.contains('collapse')) {
+    if (collapseElement && collapseElement.classList.contains('show')) {
       const toggleButton = navbarRef.current?.querySelector('.navbar-toggler');
       if (toggleButton) {
         (toggleButton as HTMLElement).click();

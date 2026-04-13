@@ -1,0 +1,242 @@
+.guest-reviews {
+  margin: 30px 0;
+
+  &__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0b3028;
+    margin-bottom: 20px;
+    font-family: 'Urbanist', sans-serif;
+  }
+
+  &__cards {
+    display: flex;
+    gap: 16px;
+  }
+
+  &__card {
+    flex: 1;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    &:focus {
+      outline: 2px solid #57cbcc;
+      outline-offset: 2px;
+    }
+  }
+
+  &__quote-mark {
+    font-size: 3rem;
+    color: #57cbcc;
+    line-height: 1;
+    margin-bottom: 8px;
+    font-family: Georgia, serif;
+    user-select: none;
+  }
+
+  &__preview-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: #171717;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    flex: 1;
+    font-style: italic;
+  }
+
+  &__reviewer-name {
+    font-weight: 700;
+    color: #0b3028;
+    margin-top: 16px;
+    font-size: 0.95rem;
+  }
+
+  &__location {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  &__stars {
+    color: #f5a623;
+    font-size: 0.9rem;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  &__meta {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  /* ---- Overlay ---- */
+
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ---- Panel ---- */
+
+  &__panel {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 48px 32px 32px;
+  }
+
+  &__panel-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0b3028;
+    margin-bottom: 8px;
+    font-family: 'Urbanist', sans-serif;
+  }
+
+  &__close-btn {
+    position: sticky;
+    top: 0;
+    float: right;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #0b3028;
+    color: #fff;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    margin-left: 16px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+    z-index: 1;
+
+    &:hover {
+      background: #294f44;
+    }
+  }
+
+  &__full-review {
+    padding: 24px 0;
+
+    & + & {
+      border-top: 1px solid #e0e0e0;
+    }
+  }
+
+  &__full-quote-mark {
+    font-size: 2.5rem;
+    color: #57cbcc;
+    line-height: 1;
+    font-family: Georgia, serif;
+    user-select: none;
+  }
+
+  &__full-text {
+    color: #171717;
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  &__full-reviewer-name {
+    font-weight: 700;
+    color: #0b3028;
+    margin-top: 16px;
+    font-size: 0.95rem;
+  }
+
+  &__full-location {
+    font-size: 0.82rem;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  &__full-stars {
+    color: #f5a623;
+    font-size: 0.9rem;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  &__full-meta {
+    font-size: 0.82rem;
+    color: #888;
+    margin-top: 2px;
+  }
+}
+
+/* ---- Mobile bottom-sheet ---- */
+
+@keyframes guest-reviews-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .guest-reviews {
+    &__cards {
+      flex-direction: row;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 12px;
+      padding-bottom: 12px;
+      /* hide scrollbar visually */
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    &__card {
+      flex: 0 0 82%;
+      scroll-snap-align: start;
+    }
+
+    &__overlay {
+      align-items: flex-end;
+    }
+
+    &__panel {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 12px 12px 0 0;
+      max-height: 80vh;
+      animation: guest-reviews-slide-up 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 40px 20px 24px;
+    }
+  }
+}

@@ -6,7 +6,7 @@ import WelcomeSliderNam from "../../components/WelcomeSlider/WelcomeSlider.compo
 import PortfolioNam from "../../components/Portfolio/Portfolio.componentNam";
 import OurOtherHomesNam from "../../components/OurOtherHomes/OurOtherHomes.componentNam";
 import { NamDataList } from '../../utils/constants';
-import FixedNavigationNam from "../../components/FixedNavigation/FixedNavigation.componentNam";
+import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
 import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
@@ -59,7 +59,7 @@ const HomeNam = () => {
         <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/HomeNam" />
       </Helmet>
       <WelcomeSliderNam />
-      <FixedNavigationNam isBlog={false} />
+      <FixedNavigation isBlog={false} />
       <HelpMeChoose title="Find your" titleHighlight="Ideal Stay" options={helpMeChooseOptions} />
       <OurHomesNam NamDataList={NamDataList} />
       <OurOtherHomesNam />

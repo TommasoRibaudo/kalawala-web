@@ -19,6 +19,7 @@ import ListingMarketingSection from "../../../components/ListingMarketingSection
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
+import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
 
 
 const ListingGeco = () => {
@@ -126,6 +127,8 @@ const ListingGeco = () => {
                             <br />
                         </p>
                     </div>
+
+                    <GuestReviews propertyKey="GECO" isSpanish={false} />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>

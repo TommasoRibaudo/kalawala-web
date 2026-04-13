@@ -20,6 +20,7 @@ import SocialStatement from "../../../components/SocialStatement/SocialStatement
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
+import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
 
 
 const ListingDelfin = () => {
@@ -120,6 +121,8 @@ const ListingDelfin = () => {
                             <br />
                         </p>
                     </div>
+
+                    <GuestReviews propertyKey="DELFINES" isSpanish={false} />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>

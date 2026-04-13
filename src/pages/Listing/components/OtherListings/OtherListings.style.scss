@@ -96,12 +96,14 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
     padding: 20px 15px 15px;
 }
 
 .listing-card-title {
-    color: white;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff;
+    text-shadow: none;
     font-size: 16px;
     font-weight: 600;
     margin: 0;

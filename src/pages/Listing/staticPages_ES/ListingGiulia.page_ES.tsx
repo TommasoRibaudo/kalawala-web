@@ -14,12 +14,13 @@ import { useMediaQuery } from '@react-hook/media-query';
 import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
 import { useSmoobuBookingTip } from "../../../hooks/useSmoobuBookingTip";
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
-import FixedNavigationNamES from "../../../components/FixedNavigation/FixedNavigation.componentNamES";
+import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
+import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
 
 
 const ListingGiuliaES = () => {
@@ -57,7 +58,7 @@ const ListingGiuliaES = () => {
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/GiuliaES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Giulia" />
             </Helmet>
-            <FixedNavigationNamES isBlog={false} />
+            <FixedNavigationES isBlog={false} />
             {isScreenSmall && (
                 <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">VER DISPONIBILIDAD</Button></div>)}
 
@@ -108,6 +109,8 @@ const ListingGiuliaES = () => {
                             <br />
                         </p>
                     </div>
+
+                    <GuestReviews propertyKey="GIULIA" isSpanish={true} />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>

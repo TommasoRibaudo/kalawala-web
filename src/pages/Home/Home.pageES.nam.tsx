@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
+import FixedNavigationES from "../../components/FixedNavigation/FixedNavigation.componentES";
 import OurHomes from "../../components/OurHomes/OurHomes.component";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSliderNamES from "../../components/WelcomeSlider/WelcomeSlider.componentNamES";
@@ -60,7 +60,7 @@ const HomeNamES = () => {
         <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/HomeNam" />
       </Helmet>
       <WelcomeSliderNamES />
-      <FixedNavigation isBlog={false}/>
+      <FixedNavigationES isBlog={false}/>
       <HelpMeChoose title="Elige tu" titleHighlight="Estadía Ideal" options={helpMeChooseOptionsES} />
       <OurHomes houseDataList={NamDataListES}/>
       <OurOtherHomesNamES />

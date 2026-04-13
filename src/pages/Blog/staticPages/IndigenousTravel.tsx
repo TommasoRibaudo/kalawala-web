@@ -10,8 +10,6 @@ import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
-import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
-
 
 const IndigenousTravel = () => {
     // const { blogId } = useParams();
@@ -56,7 +54,7 @@ const IndigenousTravel = () => {
                 />
             </Helmet>
 
-            <FixedNavigationES isBlog={true} />
+            <FixedNavigation isBlog={true} />
 
             <Row className="subContainer" style={{ justifyContent: 'center' }}>
                 <Col

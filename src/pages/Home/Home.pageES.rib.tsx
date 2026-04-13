@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
 import {VillasDataListES } from '../../utils/constants';
 import CallToActionES from "../../components/CallToAction/CallToAction.componentES";
-import FixedNavigationRibES from "../../components/FixedNavigation/FixedNavigation.componentRIBES";
+import FixedNavigationES from "../../components/FixedNavigation/FixedNavigation.componentES";
 import OurHomesRIBES from "../../components/OurHomes/OurHomes.componentRIBES";
 import DiscoverRIBES from "../../components/Discover/Discover.componentRIBES";
 import WelcomeSliderRibES from "../../components/WelcomeSlider/WelcomeSlider.componentRIBES";
@@ -25,7 +25,7 @@ const HomeRibES = () => {
         <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/HomeVillas" />
       </Helmet>
       <WelcomeSliderRibES />
-      <FixedNavigationRibES isBlog={false}/>
+      <FixedNavigationES isBlog={false}/>
       <OurHomesRIBES houseDataList={VillasDataListES}/>
       <OurOtherHomesRIBES/>
       <DiscoverRIBES />

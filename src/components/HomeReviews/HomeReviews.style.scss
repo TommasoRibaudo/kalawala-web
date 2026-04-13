@@ -1,0 +1,270 @@
+@import '../../styles/styles.scss';
+
+.home-reviews {
+  padding: 60px 0 40px;
+  background: $section-bg;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+
+  .title {
+    margin-bottom: 30px;
+  }
+
+  &__title {
+    font-size: 36px;
+    font-weight: 400;
+    color: $kalawala-text-gray;
+    font-family: $primary-font;
+    margin: 0;
+
+    .color {
+      color: $primary-color;
+    }
+  }
+
+  /* ---- Carousel track ---- */
+
+  &__track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 40px 24px;
+    scrollbar-width: none;
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* ---- Cards ---- */
+
+  &__card {
+    flex: 0 0 30%;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    &:focus {
+      outline: 2px solid #57cbcc;
+      outline-offset: 2px;
+    }
+  }
+
+  &__quote-mark {
+    font-size: 3rem;
+    color: #57cbcc;
+    line-height: 1;
+    margin-bottom: 8px;
+    font-family: Georgia, serif;
+    user-select: none;
+  }
+
+  &__preview-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: #171717;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    flex: 1;
+    font-style: italic;
+  }
+
+  &__reviewer-name {
+    font-weight: 700;
+    color: #0b3028;
+    margin-top: 16px;
+    font-size: 0.95rem;
+  }
+
+  &__location {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  &__stars {
+    color: #f5a623;
+    font-size: 0.9rem;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  &__meta {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  &__property {
+    font-size: 0.78rem;
+    color: #57cbcc;
+    font-weight: 600;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ---- Overlay ---- */
+
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ---- Panel ---- */
+
+  &__panel {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 48px 32px 36px;
+  }
+
+  &__close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #0b3028;
+    color: #fff;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+
+    &:hover {
+      background: #294f44;
+    }
+  }
+
+  &__full-quote-mark {
+    font-size: 3rem;
+    color: #57cbcc;
+    line-height: 1;
+    font-family: Georgia, serif;
+    user-select: none;
+    margin-bottom: 8px;
+  }
+
+  &__full-text {
+    color: #171717;
+    font-size: 1.1rem;
+    line-height: 1.75;
+    font-style: italic;
+  }
+
+  &__full-reviewer-name {
+    font-weight: 700;
+    color: #0b3028;
+    margin-top: 20px;
+    font-size: 1rem;
+  }
+
+  &__full-location {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  &__full-stars {
+    color: #f5a623;
+    font-size: 1rem;
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  &__full-meta {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  &__full-property {
+    font-size: 0.82rem;
+    color: #57cbcc;
+    font-weight: 600;
+    margin-top: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+/* ---- Mobile ---- */
+
+@keyframes home-reviews-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .home-reviews {
+    padding: 40px 0 24px;
+
+    .title {
+      padding: 0 20px;
+    }
+
+    &__title {
+      font-size: 1.75rem;
+    }
+
+    &__track {
+      padding: 8px 20px 20px;
+      /* No scroll-snap — it conflicts with JS-driven auto-scroll */
+    }
+
+    &__card {
+      flex: 0 0 82%;
+    }
+
+    &__overlay {
+      align-items: flex-end;
+    }
+
+    &__panel {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 12px 12px 0 0;
+      max-height: 80vh;
+      animation: home-reviews-slide-up 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 40px 20px 28px;
+    }
+  }
+}

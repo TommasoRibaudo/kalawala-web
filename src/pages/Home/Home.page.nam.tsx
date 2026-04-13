@@ -10,6 +10,7 @@ import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.co
 import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
+import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
 
 const helpMeChooseOptions = [
     {
@@ -61,6 +62,7 @@ const HomeNam = () => {
       <WelcomeSliderNam />
       <FixedNavigation isBlog={false} />
       <HelpMeChoose title="Find your" titleHighlight="Ideal Stay" options={helpMeChooseOptions} />
+      <HomeReviews isSpanish={false} />
       <OurHomesNam NamDataList={NamDataList} />
       <OurOtherHomesNam />
       <DiscoverNam />

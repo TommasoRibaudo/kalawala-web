@@ -8,6 +8,7 @@ import Portfolio from "../../components/Portfolio/Portfolio.component";
 import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
+import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
 
 import { houseDataEngList } from '../../utils/constants';
 import OurOtherHomes from "../../components/OurOtherHomes/OurOtherHomes.component";
@@ -62,6 +63,7 @@ const Home = () => {
       <WelcomeSlider />
       <FixedNavigation isBlog={false} />
       <HelpMeChoose title="Find your" titleHighlight="Ideal Stay" options={helpMeChooseOptions} />
+      <HomeReviews isSpanish={false} />
       <OurHomes houseDataList={houseDataEngList} />
       <OurOtherHomes />
       <Discover />

@@ -1,0 +1,592 @@
+# Secure, Production-Grade Booking Engine Design Using the Smoobu API with PayPal and Manual Deposit
+
+## Executive summary
+
+Building a secure, production-grade booking engine on top of the Smoobu API **is feasible**, but it requires a real backend (as a proxy), a database-backed booking state machine, and webhook-driven reconciliation to achieve the guarantees you care about: “availability shown is real,” “bookings actually happen,” and “payments are confirmed.” Smoobu explicitly warns that its API **cannot be called directly from a front-end** and recommends using a backend proxy service for security reasons. citeturn0search1
+
+Your existing codebase already contains strong foundations for privacy-respecting analytics and Smoobu integration, but it currently relies on the embedded Smoobu BookingTool iframe—not a custom booking engine built on the API. fileciteturn21file0L1-L1 The repo also includes a Smoobu webhook receiver (PHP) that forwards booking events into analytics, but it does not implement a true booking/payment workflow. fileciteturn22file0L1-L1
+
+The key architectural pattern to meet your security goals is:
+
+- **Frontend never talks to Smoobu nor PayPal directly for “write” actions** (create/confirm/cancel bookings).
+- **Backend is the only component holding secrets** (Smoobu API key, PayPal credentials, storage signing keys).
+- **Booking is a state machine** in your DB, with **idempotency**, **locking/holds**, and **webhook verification**.
+- **Smoobu remains the inventory source of truth**, kept in sync via Smoobu webhooks, which Smoobu positions as necessary for real-time correctness (cron alone can’t guarantee correctness). citeturn20search1
+- For PayPal, you should rely on **Orders v2**, use **idempotency headers** (`PayPal-Request-Id`), and verify webhooks cryptographically via PayPal’s `verify-webhook-signature` endpoint before acting. citeturn16search4turn2search0
+
+A notable improvement over your “fake 1h timer” deposit flow is to make expiration **real** (auto-cancel the hold and release inventory) while still allowing staff override/extension when guests contact you. This reduces double-booking risk and prevents “stuck” inventory holds, improving both security and revenue integrity.
+
+Entities referenced once for quick access: entity["company","PayPal","online payments company"], entity["company","PostHog","product analytics vendor"], entity["company","Meta Platforms","social media company"], entity["company","Google","search and analytics company"], entity["company","GitHub","code hosting platform"], entity["organization","OWASP","web security nonprofit"], entity["organization","NIST","us standards institute"].
+
+## What exists today in TommasoRibaudo/kalawala-web
+
+This repository is a Create React App (CRA) marketing site that already integrates analytics and Smoobu’s embedded booking widget, and it deploys to cPanel via GitHub Actions + FTPS. fileciteturn6file0L1-L1 fileciteturn24file0L1-L1
+
+Key relevant findings:
+
+- **Smoobu booking is currently embedded via the BookingTool iframe script**, initialized client-side (`BookingToolIframe.js`). The component also listens for `postMessage` events originating from `smoobu.com` to infer step changes (listing vs booking form) and captures analytics events. fileciteturn21file0L1-L1  
+  - This is not a custom booking engine: you cannot enforce your own booking + payment guarantees at the backend layer because the booking happens in Smoobu’s widget.
+- The project runs **PostHog in opt-out-by-default mode** and opts users in only after analytics consent, which is a good privacy pattern. fileciteturn9file0L1-L1  
+- There is a fairly comprehensive **cookie consent service** that stores consent state, expires it, and clears tracking cookies when consent is rejected. fileciteturn10file0L1-L1
+- The site includes **GA4 gtag** in `public/index.html` and prepares for Meta Pixel (preconnect + a noscript image fallback). fileciteturn13file0L1-L1
+- There is a **Smoobu webhook receiver** in `public/smoobu-webhook.php` that:
+  - checks a shared secret passed as a **query parameter**,
+  - accepts JSON,
+  - maps Smoobu actions to PostHog event names,
+  - forwards a `/capture/` request to PostHog, and
+  - returns HTTP 200 to Smoobu even when PostHog fails (logging error server-side). fileciteturn22file0L1-L1  
+- CI/CD includes secret scanning (Gitleaks), dependency auditing, and TypeScript typecheck before deployment; it also generates a PHP config file from secrets at deploy time. fileciteturn24file0L1-L1
+
+Implication: you already have (1) a consent-aware analytics layer and (2) a minimal webhook endpoint deployed to a PHP-capable host. But to implement your required booking/payment security guarantees, you need a real backend booking service + DB (or a substantial expansion of PHP beyond “webhook forwarder”).
+
+## Reference architecture and core state machine
+
+Smoobu’s own documentation frames the first architectural constraint: **“Smoobu API cannot be directly called from your website/front-end application”** and recommends a backend proxy service. citeturn0search1 This dovetails with your core security requirement (“my calendar is not targeteable,” “my info is not exposed”): secrets must not live on the client.
+
+### Architecture overview
+
+```mermaid
+flowchart LR
+  U[Guest Browser] -->|HTTPS| FE[Frontend UI\nkalawala-web]
+  FE -->|HTTPS JSON| BE[Booking API Backend\n(proxy + state machine)]
+  BE -->|Api-Key/OAuth| SM[Smoobu API]
+  SM -->|Webhooks| WH1[Webhook Receiver\nSmoobu events]
+  BE -->|Create/Update/Cancel| SM
+  BE --> DB[(Relational DB\nBookings + Holds + Payments)]
+  BE --> OBJ[(Object Storage\nDeposit Proof Uploads)]
+  U -->|PayPal approval redirect| PP[PayPal Checkout]
+  PP -->|Webhooks| WH2[Webhook Receiver\nPayPal events]
+  BE -->|Orders v2 create/capture| PP
+  BE --> OBS[Monitoring/Logs/Alerts]
+```
+
+Why this works for your guarantees:
+
+- **Availability correctness**: the backend queries Smoobu’s availability endpoint in real time and re-validates immediately before creating a hold/booking. citeturn21search0
+- **Booking correctness**: the backend creates the booking (or provisional hold) in Smoobu via API and persists Smoobu’s returned reservation ID. citeturn21search0
+- **Payment correctness**: PayPal payment completion is confirmed via webhook + signature verification before finalizing the booking state. citeturn2search0turn16search0
+- **Real-time sync**: Smoobu webhooks notify you of calendar/rate/booking changes and Smoobu explicitly warns cron jobs alone cannot guarantee correct real-time data. citeturn20search1
+
+Smoobu rate-limits requests (documented as 1000 requests/minute), so caching and throttling are required for production robustness. citeturn0search1
+
+image_group{"layout":"carousel","aspect_ratio":"16:9","query":["booking engine architecture diagram webhooks payments","paypal webhook verification flow diagram","property booking availability state machine diagram"],"num_per_query":1}
+
+### Core state machine and database primatives
+
+A production-grade booking engine should treat booking as a **workflow with explicit states** (not “just create a reservation and hope”). This reduces ambiguity, improves recoverability, and makes fraud/abuse controls possible (rate-limiting, replay protection, idempotency).
+
+Suggested high-level states:
+
+```mermaid
+stateDiagram-v2
+  [*] --> Searching
+  Searching --> Quoted: availability/price quote
+  Quoted --> HoldCreating: user commits to pay or deposit
+  HoldCreating --> HoldActive: Smoobu blocked booking or reservation created
+  HoldCreating --> Failed: Smoobu create failed
+  HoldActive --> PaypalPending: payment method = PayPal
+  HoldActive --> DepositPending: payment method = deposit
+  PaypalPending --> Paid: PayPal webhook verified + capture completed
+  PaypalPending --> Expired: hold timeout
+  DepositPending --> ProofUploaded: deposit proof uploaded
+  ProofUploaded --> Paid: admin approves deposit
+  Paid --> Confirmed: update Smoobu booking statuses + send confirmations
+  HoldActive --> Cancelled: user cancels / admin cancels
+  DepositPending --> Cancelled
+  PaypalPending --> Cancelled
+  Expired --> [*]
+  Cancelled --> [*]
+  Confirmed --> [*]
+  Failed --> [*]
+```
+
+Recommended database tables (minimal but sufficient):
+
+- `apartments`: your internal listing ID ↔ Smoobu `apartmentId`
+- `booking_intents`: immutable record of what the guest attempted (dates, guests, offer/discount, device/session)
+- `holds`: one per intent, includes `smoobu_reservation_id` (nullable until created), expiration, and status
+- `payments`: PayPal order IDs / capture IDs, or deposit proof workflow metadata
+- `documents`: deposit proof metadata (storage key, MIME, checksum, scan status)
+- `webhook_events`: dedupe store for webhook event IDs (PayPal event `id`, Smoobu booking `data.id` + action + timestamp)
+- `audit_log`: append-only record of security-relevant actions
+
+This structure is specifically designed to address OWASP-style API risks around broken authorization, sensitive business flows, and unsafe consumption of third-party APIs. citeturn12search4turn12search0
+
+## Availability search and booking consistency
+
+### Availability search behavior and the “no houses available” requirement
+
+Your requirement “allow selecting any future date even when no house is available” is primarily a UI/UX rule: never block date-picking; always allow the search request; and if there are no results, show a “no houses available” response.
+
+The backend should implement a `POST /availability/quote` endpoint that:
+
+1. Accepts `{arrivalDate, departureDate, guests}`.
+2. Calls Smoobu’s `booking/checkApartmentAvailability` endpoint server-side. citeturn19view2turn21search0
+3. Returns:
+   - `available: []` if no apartments are available
+   - `available: [{apartmentId, price, restrictions?}]` if available  
+   Smoobu’s docs indicate the response can include prices and reasons for disapproval when restrictions prevent reservation. citeturn21search0
+
+Security controls for “calendar not targeteable”:
+
+- **Do not expose apartment calendars** (daily availability grids) publicly; expose only “answer a query for a date range.”
+- Apply bot controls and rate limits because availability search is a “sensitive business flow” (a known API risk category). citeturn12search4turn12search0
+- Implement caching with a short TTL (e.g., 30–120 seconds) keyed by `(arrivalDate, departureDate, guests)` but **always re-check** right before creating a hold/booking.
+
+### Provisional holds: local hold vs provisional Smoobu reservation
+
+You asked for detailed deposit behavior: “we ask for info, block the house, show page with 1h timer, upload deposit picture.” The central question is where to enforce the “block”:
+
+- **Option A**: create a provisional reservation/blocked booking in Smoobu immediately
+- **Option B**: create only a local hold in your DB, and create the Smoobu reservation later
+
+Smoobu supports cancellation via `DELETE /api/reservations/<reservationId>` (returns `{"success": true}`), which is necessary for expiring holds. citeturn19view1turn21search0 Also, Smoobu’s channel list includes a “Blocked channel” (ID 11), which is a strong indication the platform supports explicit blocking entries. citeturn19view3turn21search0
+
+#### Option comparison table
+
+| Dimension | Option A: Provisional Smoobu reservation/blocked booking | Option B: Local hold only (no Smoobu write until paid) |
+|---|---|---|
+| Availability correctness shown to guest | Strong: you can block inventory at the source (Smoobu) immediately after quote acceptance | Weaker: other channels/users can book in Smoobu while you “hold” locally |
+| Double-booking risk | Low if you always use Smoobu as lock source | Higher unless you accept occasional “payment but no inventory” refunds |
+| Operational cleanup | Needs automated expiry + cancel call to Smoobu citeturn19view1turn21search0 | Simple locally, but inventory not protected |
+| Guest experience | Better: “we reserved for you” messaging is truthful | Risky: you may need to inform guest inventory was lost |
+| Implementation complexity | Medium: requires Smoobu create + cancel + webhook reconciliation | Medium: requires complex compensation logic and refunds |
+| Security: calendar targetability | Similar at API level (both require rate limits); Option A reduces abuse impact by locking inventory | Similar, but abuse can help bots “race” inventory |
+
+**Recommendation:** Option A (provisional Smoobu reservation / blocked booking) is the best fit for your priority: “when a date is shown as available … it actually is” and “when a booking is done … it actually does happen.” Smoobu is your inventory system, so use it as the locking authority.
+
+Implementation notes supported by Smoobu docs:
+
+- Smoobu availability: `POST /booking/checkApartmentAvailability`. citeturn19view2turn21search0  
+- Smoobu booking creation: `POST /api/reservations` returns a booking ID. citeturn19view0turn21search0  
+- Smoobu booking update supports payment status fields such as `priceStatus`, `depositStatus` and the docs enumerate “0 open/not paid, 1 complete payment.” citeturn21search0  
+- Smoobu can explicitly represent blocked bookings (`is-blocked-booking` appears in booking responses). citeturn21search0turn19view3
+
+## Payment flows
+
+### PayPal flow with webhook verification and idempotency
+
+A secure PayPal integration should treat the PayPal webhook as the source of truth for payment completion and implement idempotent processing.
+
+Key PayPal primitives from official docs:
+
+- Orders v2 supports creating orders and capturing payment: `POST /v2/checkout/orders/{id}/capture`. citeturn16search4  
+- PayPal recommends idempotency via `PayPal-Request-Id` for calls that create/modify data. citeturn16search4turn0search2  
+- For end-to-end checkout you should subscribe to events including `CHECKOUT.ORDER.APPROVED` and `PAYMENT.CAPTURE.COMPLETED`. citeturn16search0  
+- Webhook signature verification is supported via `POST /v1/notifications/verify-webhook-signature` (using headers like `PAYPAL-TRANSMISSION-ID`, `PAYPAL-TRANSMISSION-SIG`, etc.). citeturn2search0turn20search0
+
+#### Recommended PayPal booking sequence
+
+1. **Guest selects dates + listing** → backend creates a quote (Smoobu availability check).
+2. Guest clicks “Pay with PayPal” → backend:
+   - creates a `booking_intent`
+   - creates a provisional Smoobu block/reservation (Option A)
+   - creates a PayPal order for the required amount (deposit or full)
+   - stores `paypal_order_id` + idempotency key in DB
+3. Guest approves PayPal payment (redirect/SDK) → backend captures:
+   - either immediately when the guest returns (synchronous capture)
+   - or on `CHECKOUT.ORDER.APPROVED` then capture
+4. Backend waits for/consumes `PAYMENT.CAPTURE.COMPLETED` webhook and verifies signature.
+5. Backend transitions booking to `Paid → Confirmed` and updates any payment fields in Smoobu, then emails guest.
+
+#### Sample webhook verification logic (pseudocode)
+
+```ts
+// PayPal webhook handler (Node-style pseudocode)
+//
+// Required: verify signature via PayPal API before processing.
+// Docs: /v1/notifications/verify-webhook-signature citeturn2search0turn20search0
+
+async function handlePayPalWebhook(req, res) {
+  const headers = req.headers
+  const event = req.body // raw JSON parsed
+
+  // 1) Dedupe early
+  if (await db.webhookEvents.exists(event.id)) return res.status(200).send("duplicate")
+
+  // 2) Verify signature
+  const verification = await paypal.verifyWebhookSignature({
+    auth_algo: headers["paypal-auth-algo"],
+    cert_url: headers["paypal-cert-url"],
+    transmission_id: headers["paypal-transmission-id"],
+    transmission_sig: headers["paypal-transmission-sig"],
+    transmission_time: headers["paypal-transmission-time"],
+    webhook_id: process.env.PAYPAL_WEBHOOK_ID,
+    webhook_event: event
+  })
+
+  if (verification.verification_status !== "SUCCESS") {
+    // store attempt for security review; do not process
+    await db.webhookEvents.insert({ id: event.id, status: "rejected_signature" })
+    return res.status(400).send("invalid signature")
+  }
+
+  // 3) Process idempotently in a DB transaction
+  await db.transaction(async (tx) => {
+    await tx.webhookEvents.insert({ id: event.id, status: "verified" })
+
+    switch (event.event_type) {
+      case "PAYMENT.CAPTURE.COMPLETED":
+        // find booking by paypal_order_id or capture_id
+        // update payment + booking state, then confirm in Smoobu
+        break
+      case "PAYMENT.CAPTURE.DENIED":
+        // cancel hold in Smoobu + mark booking cancelled
+        break
+      default:
+        // ignore or store for audit
+    }
+  })
+
+  return res.status(200).send("ok")
+}
+```
+
+#### Idempotency rules you should enforce
+
+- **PayPal API calls**: always set `PayPal-Request-Id` on create/capture. citeturn16search4turn0search2  
+- **Webhook processing**: store PayPal `event.id` in `webhook_events` with a UNIQUE constraint to prevent double-processing from retries.
+- **Booking confirmation**: your internal `booking_id` should be the idempotency anchor; confirmation must be safe to retry.
+
+### Manual deposit flow
+
+You described:
+
+- ask for guest info
+- block the house
+- show deposit instructions page with 1-hour timer (fake)
+- guest uploads deposit picture
+- guest can contact you to explain problems (skips timer, which does nothing)
+
+This is implementable, but the “fake timer” undermines your inventory and correctness guarantees. A secure production-grade variant keeps your UX but makes the timer meaningful.
+
+#### Recommended deposit flow (secure version)
+
+1. **Quote**: backend checks availability via Smoobu availability endpoint. citeturn19view2turn21search0  
+2. **Hold**: create provisional reservation/blocked booking in Smoobu (`POST /api/reservations`) and store returned ID. citeturn19view0turn21search0  
+3. **Deposit instructions page**:
+   - show real countdown, e.g., 60 minutes
+   - show bank transfer instructions
+   - show booking summary (dates, property, amount, booking reference)
+4. **Proof upload**: guest uploads transfer receipt image (secure upload path).
+5. **Admin review**: staff marks “deposit confirmed” or “rejected/needs clarification.”
+6. **Finalize**:
+   - if confirmed: update booking state and optionally update Smoobu booking payment fields (`depositStatus=1`, etc.). citeturn21search0
+   - if rejected: request re-upload or cancel hold
+7. **Expiry**:
+   - if timer expires and no proof uploaded and no “contacted” flag: cancel Smoobu reservation (`DELETE /api/reservations/<id>`) and mark locally as expired. citeturn19view1turn21search0  
+   - if guest clicked “I have a problem / contact us”: allow extending hold (admin action) while still tracking expiry deadlines.
+
+If you truly want the timer to be “fake,” you can still **display** it as urgency while not expiring the hold, but doing so will increase the risk of inventory being blocked unnecessarily (revenue + fairness issue). The secure compromise is: the timer triggers an automatic action, but you build a **one-click extension** admin workflow.
+
+## File uploads, guest portal access, and communications
+
+### Deposit proof upload security
+
+The OWASP File Upload Cheat Sheet strongly recommends an allowlist approach, not trusting the browser-provided `Content-Type`, renaming files, setting size limits, storing files outside the webroot, and performing antivirus/sandbox scanning when possible. citeturn0search0turn0search4
+
+A secure approach:
+
+- **Use signed upload URLs** (frontend uploads directly to object storage; backend issues short-lived signed URL).
+- **Never make the object publicly readable**; serve via authenticated download endpoint.
+- Validate:
+  - file size limits (e.g., <10 MB)
+  - allowed extensions (jpeg/png/pdf only)
+  - detected MIME type via server-side sniffing (not just header)
+  - file signatures/magic bytes per OWASP guidance citeturn0search0
+- **Scan** uploads (e.g., ClamAV, managed scanning).
+- Store metadata in DB: checksum, detected MIME, scan status, storage key.
+- Consider “content disarm and reconstruct” for PDFs if you allow them. citeturn0search0
+
+### Guest portal: reservation ID + user-generated password
+
+Your requirement: a “success page … reservation ID + user-generated password access to manage booking.”
+
+This is feasible and relatively privacy-preserving if implemented as a **password-based access token** rather than a full guest account system.
+
+Minimum viable secure design:
+
+- On booking creation/confirmation:
+  - generate a `reservation_public_id` (non-guessable; not sequential; e.g., base32 random 16–20 chars)
+  - ask guest to set a password (or generate and email a one-time code)
+- Store only a salted password hash (Argon2/bcrypt/scrypt), never plaintext.
+- Enforce password policy aligned with NIST guidance (e.g., allow long passwords, avoid arbitrary composition rules, store salted hashes resistant to offline attack). citeturn12search1
+- Rate limit login attempts and protect against enumeration (same response for “ID not found” vs “wrong password”).
+
+Portal capabilities (safe subset):
+
+- View booking summary + payment status
+- Upload deposit proof / see upload status
+- Request changes (sends message to staff)
+- Cancel request (depending on policy)
+
+### Communication templates
+
+Use transactional email/SMS at each state transition; keep messages short, include the next action, and include the booking reference.
+
+**Template: Hold created (deposit flow)**  
+Subject: “Your dates are reserved — complete your deposit”  
+Body (email):  
+“Hi {{first_name}},  
+We’ve reserved {{property_name}} from {{check_in}} to {{check_out}} for you.  
+To confirm the booking, please complete the bank deposit within {{deadline_minutes}} minutes and upload your receipt here: {{deposit_upload_url}}.  
+Booking reference: {{reservation_public_id}}  
+Need help? Click here: {{help_url}}”
+
+**Template: Deposit proof received**  
+Subject: “We received your deposit receipt”  
+Body:  
+“Thanks! We received your receipt and are verifying it.  
+Booking reference: {{reservation_public_id}}  
+We’ll confirm as soon as it’s approved.”
+
+**Template: Booking confirmed (PayPal or deposit)**  
+Subject: “Booking confirmed — {{property_name}}”  
+Body:  
+“Confirmed! Your stay is booked from {{check_in}} to {{check_out}}.  
+Reservation ID: {{reservation_public_id}}  
+Manage your booking: {{portal_url}}”
+
+**Template: Hold expiring soon** (optional)  
+Subject: “Reminder: your reservation expires soon”  
+Body:  
+“Your temporary reservation will expire at {{expires_at}} unless payment/proof is completed.  
+Upload receipt: {{deposit_upload_url}}”
+
+These templates should be triggered server-side on state transitions to avoid client-side spoofing and to guarantee delivery even if the browser closes mid-flow.
+
+## Analytics events mapping for Meta Pixel, PostHog, and GA4
+
+Your repo already has consent-aware analytics initialization and custom tracking around the Smoobu iframe. fileciteturn9file0L1-L1 fileciteturn21file0L1-L1 For a new booking engine, you should track events at both:
+
+- **client side** (UX funnel; subject to blockers)
+- **server side** (source of truth for booking/payment outcomes)
+
+PostHog’s JS docs describe opt-out-by-default (`opt_out_capturing_by_default`) and opt-in/out methods (`posthog.opt_in_capturing()` / `posthog.opt_out_capturing()`). citeturn7view0 This matches your repo’s implementation. fileciteturn9file0L1-L1
+
+GA4 has recommended ecommerce events like `begin_checkout`, `add_payment_info`, and `purchase`. citeturn2search2 It also supports the Measurement Protocol for sending events server-to-server, which is useful for reliable conversion tracking and back-office events. citeturn17search0turn17search3
+
+For Meta Pixel standard purchase tracking, “Purchase requires currency” is a commonly enforced requirement in integrations. citeturn11search2 For server + browser deduplication patterns, Segment documentation describes event ID usage to deduplicate between Pixel and Conversions API. citeturn9search6
+
+### Unified analytics event map
+
+Below is a pragmatic event plan tailored to **booking**, not generic ecommerce.
+
+| Moment | PostHog event | GA4 event | Meta Pixel event | Trigger | Key properties (examples) | Sample payload snippet |
+|---|---|---|---|---|---|---|
+| User searches dates | `booking_search` | `view_item_list` (or custom `booking_search`) | `Search` | After availability quote returned | `arrival_date`, `departure_date`, `guests`, `results_count`, `source` | `posthog.capture('booking_search', {...})` |
+| Quote shown | `booking_quote_viewed` | `select_item` / custom | `ViewContent` | When results render | `apartment_id`, `total_price`, `currency`, `nights` | `gtag('event','select_item', {...})` |
+| User begins checkout / commits | `begin_checkout` | `begin_checkout` citeturn2search2 | `InitiateCheckout` | When hold is successfully created | `booking_id`, `payment_method`, `value`, `currency` | `fbq('track','InitiateCheckout',{value, currency})` |
+| Payment method chosen | `add_payment_info` | `add_payment_info` citeturn2search2 | `AddPaymentInfo` | When user selects PayPal vs Deposit | `payment_type` (`paypal`/`deposit`) | `gtag('event','add_payment_info',{payment_type:'deposit'})` |
+| Deposit proof uploaded | `deposit_proof_uploaded` | custom `deposit_proof_uploaded` | (custom) | When backend marks upload complete | `document_type`, `scan_status`, `booking_id` | server-side PostHog capture |
+| PayPal approved | `paypal_order_approved` | custom | (optional) | On return from PayPal approval | `paypal_order_id` | — |
+| Payment confirmed | `purchase` | `purchase` citeturn2search2 | `Purchase` | **Server-side** on PayPal `PAYMENT.CAPTURE.COMPLETED` citeturn16search0 or admin deposit approval | `transaction_id`, `value`, `currency`, `booking_id`, `apartment_id` | `fbq('track','Purchase',{value,currency})` |
+| Booking cancelled/expired | `booking_cancelled` | custom | (optional) | When hold canceled/expired | `reason` | — |
+
+#### Sample payloads
+
+**PostHog client event** (pattern already used in your repo) fileciteturn21file0L1-L1  
+```js
+posthog.capture('begin_checkout', {
+  booking_id: 'BK_ABC123',
+  apartment_id: 38,
+  arrival_date: '2026-06-10',
+  departure_date: '2026-06-14',
+  value: 520,
+  currency: 'USD',
+  payment_method: 'paypal'
+})
+```
+
+**GA4 measurement protocol server-side** (useful for reliable purchase events)  
+Measurement Protocol is designed for sending events directly to GA servers. citeturn17search0turn17search3  
+```json
+{
+  "client_id": "1857116524.1675709798",
+  "events": [{
+    "name": "purchase",
+    "params": {
+      "transaction_id": "BK_ABC123",
+      "value": 520,
+      "currency": "USD"
+    }
+  }]
+}
+```
+
+**Meta Pixel Purchase event**  
+Many integrations require currency for purchase events. citeturn11search2  
+```js
+fbq('track', 'Purchase', {
+  value: 520.00,
+  currency: 'USD'
+})
+```
+
+If you later add Meta Conversions API (server-side), ensure deduplication via event IDs as described in Segment’s guidance. citeturn9search6
+
+## Security, monitoring, admin workflows, edge cases, and PRD
+
+### Security checklist
+
+Use this as a production gate; it aligns with common OWASP API risks and secure storage guidance. citeturn12search4turn18search1turn18search0
+
+| Area | Control | Why it matters | Source anchor |
+|---|---|---|---|
+| Secrets | Use a secrets manager; don’t hardcode keys | Prevent credential leaks | citeturn18search1turn18search0 |
+| Transport | HTTPS everywhere + HSTS | Prevent downgrade/MITM | citeturn18search3 |
+| Webhooks (PayPal) | Verify signature before processing | Prevent spoofed payment events | citeturn2search0turn20search0 |
+| Webhooks (Smoobu) | Use secret path/token + rate limit + dedupe | Smoobu webhooks don’t document signatures; prevent replay/abuse | citeturn20search1 |
+| Idempotency | `PayPal-Request-Id` + webhook event dedupe table | Prevent double charges / double confirms | citeturn16search4turn0search2 |
+| File uploads | Allowlist types, rename, store outside webroot, scan | Prevent malicious file execution/data leakage | citeturn0search0turn0search4 |
+| Auth to guest portal | Salted password hashes + rate limit | Prevent credential stuffing/enumeration | citeturn12search1 |
+| Abuse prevention | Rate limit availability searches + CAPTCHA when needed | Protect sensitive business flow | citeturn12search4turn12search0 |
+
+### Monitoring and alerting
+
+Minimum observability signals:
+
+- **Booking funnel health**:
+  - holds created per day
+  - holds expired
+  - PayPal approved vs captured
+  - deposit proof uploaded vs approved
+- **Mismatch detection**:
+  - “Confirmed in DB but missing in Smoobu” (reconciliation job)
+  - Smoobu webhook spikes / failures
+- **Security alerts**:
+  - webhook signature failures (PayPal)
+  - repeated failed portal logins by IP
+  - availability quote rate limit triggers
+
+Because Smoobu recommends webhooks for real-time correctness and warns cron jobs can’t guarantee correctness, you should still run a **periodic reconciliation** as a defense-in-depth backup (e.g., every 15–60 minutes fetch upcoming reservations and compare with DB). citeturn20search1turn21search0
+
+### Admin workflows
+
+Admin panel minimum actions:
+
+- Search booking by reservation ID, guest email, Smoobu reservation ID
+- Approve/reject deposit proof and leave internal notes
+- Extend hold expiration (“guest contacted us”)
+- Cancel booking/hold (and cancel in Smoobu)
+- Resend confirmation email / deposit instructions
+- Upload supplemental documents (optional)
+
+### Edge cases and recovery table
+
+| Failure mode | Symptom | Likely cause | Recovery |
+|---|---|---|---|
+| Availability shown but booking fails on confirm | Guest hits “pay” and gets failure | Race condition with other booking | Auto-release flow, re-run availability check, offer alternatives/next dates |
+| PayPal capture succeeds but webhook delayed | Payment done, booking still pending | webhook delivery delay / downtime | Poll PayPal order status; finalize when capture confirmed; keep idempotent |
+| PayPal webhook spoof attempt | Unexpected “paid” webhook | attacker posts fake webhook | Reject unless signature verifies citeturn2search0turn20search0 |
+| Deposit proof upload malware | suspicious file | malicious upload | quarantine + scan; never serve raw file publicly citeturn0search0 |
+| Smoobu webhook missed | DB stale | network/host issue | reconciliation job to pull Smoobu reservations and reconcile citeturn20search1 |
+
+### PRD
+
+**Problem statement**  
+Implement a secure booking engine integrated with Smoobu that provides real-time availability, prevents double bookings, supports PayPal payments and a manual deposit flow with proof upload, and provides guests a secure portal to manage their reservation.
+
+**Goals**
+- Availability shown is accurate (validated server-side using Smoobu API). citeturn21search0
+- Booking creation/holds are reliable and race-safe (Smoobu-based holds recommended).
+- Payments are confirmed before final confirmation (PayPal webhooks verified; deposit requires admin approval). citeturn2search0turn16search0
+- Guest and operator data is protected (no secret leakage; secure file uploads; minimal PII retention). citeturn18search1turn0search0turn18search0
+
+**Non-goals**
+- Replacing Smoobu as the system of record for property management.
+- Supporting every possible payment provider (only PayPal + manual deposit).
+
+**Key features and acceptance criteria**
+
+| Feature | Acceptance criteria |
+|---|---|
+| Availability search | Selecting any future dates is allowed; results can be empty; backend uses Smoobu availability endpoint; response includes `results_count` and property summaries. citeturn21search0 |
+| Hold creation | When user starts checkout, backend creates a hold in Smoobu and persists Smoobu reservation ID. citeturn21search0turn19view0 |
+| PayPal payment | System uses Orders v2; capture is idempotent using `PayPal-Request-Id`; booking is confirmed only after verified webhook/capture completion. citeturn16search4turn2search0turn16search0 |
+| Deposit workflow | Hold is created; deposit instructions page displayed; upload proof; admin approval required; auto-expire releases hold unless extended. citeturn19view1turn0search0 |
+| Secure uploads | Only allowlist MIME/types; files renamed; stored outside webroot; scan status tracked. citeturn0search0turn0search4 |
+| Guest portal | Guest can access with reservation ID + password; password stored as salted hash; rate-limited logins. citeturn12search1 |
+| Webhooks | PayPal signature verified; Smoobu actions ingested idempotently; webhook events stored for replay protection. citeturn2search0turn20search1 |
+| Observability | Dashboards/alerts for payment-webhook failures, booking confirmation failures, hold expiries, upload scan failures. |
+
+**Backend API endpoints (suggested)**  
+(Names are illustrative; the backend remains the only layer that calls Smoobu/PayPal.)
+
+- `POST /api/availability/quote`
+- `POST /api/bookings/hold`
+- `POST /api/bookings/:booking_id/paypal/create-order`
+- `POST /api/bookings/:booking_id/paypal/capture`
+- `POST /api/bookings/:booking_id/deposit/instructions`
+- `POST /api/bookings/:booking_id/deposit/upload-url`
+- `POST /api/webhooks/smoobu`
+- `POST /api/webhooks/paypal`
+- `POST /api/portal/login`
+- `GET /api/portal/bookings/:reservation_public_id`
+- `POST /api/portal/bookings/:reservation_public_id/upload-deposit-proof`
+
+**Data models (core fields)**
+
+- `bookings`: `id`, `reservation_public_id`, `smoobu_reservation_id`, `apartment_id`, `arrival`, `departure`, `status`, `price`, `currency`, `payment_method`
+- `payments`: `booking_id`, `provider`, `paypal_order_id`, `paypal_capture_id`, `status`, `amount`
+- `documents`: `booking_id`, `type`, `storage_key`, `mime_detected`, `scan_status`, `sha256`
+- `webhook_events`: `provider`, `event_id`, `received_at`, `processed_at`, `status`
+
+**Test cases**
+- Concurrency: two users attempt same apartment/dates; only one reaches Confirmed.
+- Webhook replay: send same PayPal event twice → only one processed.
+- Invalid PayPal signature → no state change.
+- Upload: malicious content-type mismatch → rejected/quarantined. citeturn0search0
+- Expiry: hold expires → Smoobu reservation canceled and dates become available. citeturn19view1
+
+### Delivery milestones and timeline
+
+```mermaid
+gantt
+  title Booking Engine Milestones
+  dateFormat  YYYY-MM-DD
+  axisFormat  %b %d
+
+  section Foundations
+  Threat model, data model, state machine        :a1, 2026-04-14, 10d
+  Backend scaffolding + secrets + DB migrations  :a2, after a1, 10d
+
+  section Smoobu integration
+  Availability quote endpoint                    :b1, after a2, 7d
+  Hold creation + cancel + reconciliation        :b2, after b1, 12d
+  Smoobu webhook ingestion + dedupe              :b3, after b1, 10d
+
+  section Payments
+  PayPal Orders v2 create/capture + idempotency  :c1, after b1, 10d
+  PayPal webhook verify + booking finalize       :c2, after c1, 10d
+
+  section Deposit workflow
+  Deposit instructions + real expiry             :d1, after b2, 7d
+  Secure upload pipeline + admin review          :d2, after d1, 10d
+
+  section UX and analytics
+  Guest portal access + success page             :e1, after c2, 10d
+  Analytics events mapped + server-side purchase :e2, after e1, 7d
+
+  section Hardening
+  Load tests + rate limiting + alerts            :f1, after e2, 10d
+  Security review + go-live checklist            :f2, after f1, 7d
+```
+
+### Open questions to resolve later
+
+- How exactly do you want to represent “blocked” holds in Smoobu: “Blocked channel (ID 11)” vs “Direct booking” with a custom flag? citeturn19view3turn21search0  
+- Should PayPal collect the full amount or only a deposit amount?
+- Do you need partial refunds, date changes, or cancellation fees in the portal?
+- What bank(s)/countries are deposits coming from, and what receipt file types are common?
+- Which email/SMS provider will you use for transactional communications?
+- Data retention policy for deposit receipts and guest PII (duration, deletion process). citeturn18search0turn0search0
+
+### Prioritized recommendations and next steps
+
+1. Implement the **backend proxy + DB state machine** first (this is the security foundation). citeturn0search1turn12search4  
+2. Choose **Option A (provisional Smoobu hold)** to guarantee availability and prevent double-booking. citeturn19view3turn19view1turn21search0  
+3. Implement PayPal with **webhook verification + idempotency** as non-negotiable controls. citeturn2search0turn16search4turn16search0  
+4. Make the deposit timer a **real expiry** with admin override (solves stuck inventory and strengthens correctness). citeturn19view1turn20search1  
+5. Build secure deposit-proof uploads using OWASP-recommended controls (allowlist, rename, scan, private storage). citeturn0search0turn0search4  
+6. Add server-side analytics for “purchase/confirmed” outcomes (GA4 Measurement Protocol + PostHog backend capture) to reduce adblock-induced blind spots. citeturn17search0turn7view0

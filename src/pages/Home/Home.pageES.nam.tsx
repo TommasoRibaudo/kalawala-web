@@ -11,6 +11,7 @@ import OurOtherHomesNamES from "../../components/OurOtherHomes/OurOtherHomes.com
 import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
+import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
 
 const helpMeChooseOptionsES = [
     {
@@ -62,6 +63,7 @@ const HomeNamES = () => {
       <WelcomeSliderNamES />
       <FixedNavigationES isBlog={false}/>
       <HelpMeChoose title="Elige tu" titleHighlight="Estadía Ideal" options={helpMeChooseOptionsES} />
+      <HomeReviews isSpanish={true} />
       <OurHomes houseDataList={NamDataListES}/>
       <OurOtherHomesNamES />
       <DiscoverNamES />

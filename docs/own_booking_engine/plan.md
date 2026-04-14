@@ -117,7 +117,8 @@ infra/
 - **Lambda vs Fargate**: Lambda is simpler and cheaper for low-to-moderate traffic. Switch to Fargate if cold starts become a UX issue.
 - **Database**: RDS PostgreSQL with automated backups, encryption at rest, private subnet placement.
 - **S3 uploads**: Out of MVP. If custom uploads are added later, bucket policy denies public access and upload/download URLs are time-limited.
-- **Secrets rotation**: Secrets Manager with automatic rotation for DB credentials.
+- **Secrets rotation**: Secrets Manager with automatic rotation for DB credentials.
+
 ### Core state machine and database primatives
 
 A production-grade booking engine should treat booking as a **workflow with explicit states** (not “just create a reservation and hope”). This reduces ambiguity, improves recoverability, and makes fraud/abuse controls possible (rate-limiting, replay protection, idempotency).
@@ -886,3 +887,25 @@ gantt
 3. Implement PayPal with **webhook verification + idempotency** as non-negotiable controls. citeturn2search0turn16search4turn16search0  
 4. Keep manual deposit as an offline handoff unless a future PRD explicitly adds a privileged approval workflow.  
 5. Add server-side analytics for “purchase/confirmed” outcomes (GA4 Measurement Protocol + PostHog backend capture) to reduce adblock-induced blind spots. citeturn17search0turn7view0
+
+### CI/CD: frontend vs backend deployment separation
+
+The existing GitHub Actions workflow (`.github/workflows/main.yml`) deploys **only the React frontend** to cPanel via FTPS. It runs `npm run build` and uploads the `build/` folder. Backend code in `infra/` or `backend/` directories does not end up in `build/`, so it won't accidentally reach the frontend server — but there is currently **no pipeline to deploy the backend or Terraform infrastructure**.
+
+#### Current workflow (frontend only — unchanged)
+
+```
+main.yml: push to main → secret-scan → audit → typecheck → npm run build → FTP upload build/ to cPanel
+```
+
+#### Required: separate backend workflow
+
+A new `.github/workflows/deploy-backend.yml` is needed with:
+
+1. **Path filtering** — only triggers on changes to `infra/` or `backend/`, so frontend-only pushes don't re-deploy infrastructure.
+2. **Terraform plan/apply** — provisions AWS resources (VPC, RDS, Lambda, API Gateway, S3, ElastiCache, WAF, SES, CloudWatch).
+3. **Lambda code deploy** — packages backend code, uploads to S3, updates Lambda function (either via Terraform `aws_lambda_function` resource or `aws lambda update-function-code` CLI).
+4. **AWS auth** — OIDC federation (preferred) or GitHub Secrets for `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`.
+5. **Environment protection** — GitHub Environments with required reviewers for prod Terraform applies.
+
+This ensures the two deployment pipelines are fully isolated: frontend changes go to cPanel, backend/infra changes go to AWS.

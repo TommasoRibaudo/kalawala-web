@@ -548,7 +548,7 @@ gantt
 [x] 1.3 Data model design: define DB tables, indexes, unique constraints for idempotency (hold uniqueness, webhook dedupe). See `docs/own_booking_engine/data_model.md`. (8h)  
 [x] 1.4 API contract design: specify request/response schemas for search/hold/PayPal/deposit-handoff/portal endpoints. See `docs/own_booking_engine/api_contract.md`. (8h)  
 
-[ ] 2.1 Backend scaffold: create Booking API service (framework, routing, validation, public endpoint hardening). (10h)  
+[x] 2.1 Backend scaffold: create Booking API service (framework, routing, validation, public endpoint hardening). (10h)  
 [ ] 2.2 Rate limiting + abuse controls: implement per-IP/per-device limits; add CAPTCHA challenge triggers for “hold/create” endpoints. (10h)  
 [ ] 2.3 Secrets management: configure secure storage for Smoobu/PayPal credentials, webhook secrets, encryption keys. (6h)  
 [ ] 2.4 Observability baseline: structured logs, correlation IDs, error alerts, dashboards. (8h)  
@@ -591,3 +591,64 @@ gantt
 [ ] 7.2 Security hardening pass: secrets review, logging redaction, webhook replay protection, dependency audit gates. (10h)  
 [ ] 7.3 Load + abuse testing: simulate bot traffic on search/hold endpoints; validate rate limits and cost controls. (12h)  
 [ ] 7.4 Launch readiness: runbooks, alerts, on-call plan, rollback plan, post-launch monitoring checklist. (10h)
+
+## CI/CD: frontend vs backend deployment separation
+
+The existing GitHub Actions workflow (`.github/workflows/main.yml`) deploys **only the React frontend** to cPanel via FTPS. It runs `npm run build` and uploads the `build/` folder. Backend code (`infra/`, Lambda handlers, etc.) does not end up in `build/`, so it won't accidentally land on the frontend server — but there is currently **no pipeline to deploy the backend or infrastructure**.
+
+### Current workflow (frontend only)
+
+```
+main.yml: push to main → secret-scan → audit → typecheck → npm run build → FTP upload build/ to cPanel
+```
+
+This remains unchanged for the frontend.
+
+### Required: backend deployment workflow
+
+A separate workflow (or separate jobs in the same file) is needed for:
+
+1. **Terraform plan/apply** — provisions AWS infrastructure (VPC, RDS, Lambda, API Gateway, S3, ElastiCache, etc.)
+2. **Lambda code deploy** — packages backend code and deploys to Lambda (either via Terraform `aws_lambda_function` with `filename` or via `aws lambda update-function-code`)
+
+### Recommended workflow structure
+
+```yaml
+# .github/workflows/deploy-backend.yml
+name: Deploy Backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'infra/**'
+      - 'backend/**'
+
+jobs:
+  terraform-plan:
+    # Runs on every push, posts plan as PR comment if on a PR
+    ...
+
+  terraform-apply:
+    # Runs only on main after plan succeeds
+    needs: [terraform-plan]
+    ...
+
+  deploy-lambda:
+    # Packages backend code, uploads to S3, updates Lambda function
+    needs: [terraform-apply]
+    ...
+```
+
+Key points:
+- **Path filtering**: only triggers when `infra/` or `backend/` files change, so frontend-only pushes don't re-deploy infra.
+- **AWS credentials**: use OIDC federation (recommended) or store `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` in GitHub Secrets.
+- **Terraform state**: remote backend (S3 + DynamoDB) — the workflow runs `terraform init` then `plan`/`apply` with the appropriate `.tfvars`.
+- **Environment protection**: use GitHub Environments with required reviewers for prod applies.
+
+### Task checklist
+
+[ ] 8.1 Create `deploy-backend.yml` workflow: Terraform init/plan/apply for `infra/` with path filtering, AWS OIDC auth, and environment-specific `.tfvars` selection. (8h)  
+[ ] 8.2 Lambda packaging step: build and zip backend code, upload artifact to S3, update Lambda function code (either via Terraform or AWS CLI). (6h)  
+[ ] 8.3 Environment protection rules: configure GitHub Environments (dev/staging/prod) with required reviewers for prod Terraform applies. (4h)  
+[ ] 8.4 Verify deployment isolation: confirm that frontend deploys (main.yml) never touch backend resources, and backend deploys (deploy-backend.yml) never touch cPanel. Add path filters and smoke tests. (4h)  

@@ -35,6 +35,9 @@
     "start": "react-scripts start",
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "build-local": "react-scripts build",
+    "booking-api:build": "npm --prefix booking-api run build",
+    "booking-api:typecheck": "npm --prefix booking-api run typecheck",
+    "booking-api:test": "npm --prefix booking-api run test",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

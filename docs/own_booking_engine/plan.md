@@ -69,8 +69,55 @@ Why this works for your guarantees:
 
 Smoobu rate-limits requests (documented as 1000 requests/minute), so caching and throttling are required for production robustness. citeturn0search1
 
-image_group{"layout":"carousel","aspect_ratio":"16:9","query":["booking engine architecture diagram webhooks payments","paypal webhook verification flow diagram","property booking availability state machine diagram"],"num_per_query":1}
+### AWS infrastructure (Terraform-managed)
 
+The backend runs on AWS, with all infrastructure defined as Terraform IaC. This provides repeatable, version-controlled infrastructure with environment separation.
+
+#### Target AWS services
+
+| Component | AWS Service | Purpose |
+|---|---|---|
+| Booking API | API Gateway + Lambda (Node.js) or ECS Fargate | Backend proxy + state machine logic |
+| Database | RDS PostgreSQL (or Aurora Serverless v2) | Booking sessions, holds, payments, webhook events, audit log |
+| File storage | S3 (private bucket) | Deposit receipt uploads (pre-signed URLs) |
+| Secrets | AWS Secrets Manager | Smoobu API key, PayPal credentials, webhook secrets, DB credentials |
+| Cache | ElastiCache Redis (or DynamoDB TTL) | Availability/rates cache (5–10 min TTL per apartment+month) |
+| Webhooks ingress | API Gateway endpoints | PayPal and Smoobu webhook receivers |
+| Email/SMS | SES (email) + SNS (SMS) | Transactional booking communications |
+| Monitoring | CloudWatch Logs + Alarms | Structured logs, error alerts, booking funnel dashboards |
+| CDN/WAF | CloudFront + WAF | Rate limiting, bot protection, DDoS mitigation for public endpoints |
+
+#### Terraform structure
+
+```
+infra/
+├── main.tf              # Provider config, backend state (S3 + DynamoDB lock)
+├── variables.tf         # Input variables (region, environment, domain, etc.)
+├── outputs.tf           # API Gateway URL, S3 bucket name, RDS endpoint, etc.
+├── vpc.tf               # VPC, subnets, security groups
+├── database.tf          # RDS PostgreSQL instance + security group rules
+├── lambda.tf            # Lambda functions (or ecs.tf for Fargate)
+├── api_gateway.tf       # API Gateway routes, integrations, authorizers
+├── s3.tf                # Private S3 bucket for deposit receipts
+├── secrets.tf           # Secrets Manager entries
+├── cache.tf             # ElastiCache Redis cluster
+├── ses.tf               # SES domain verification + templates
+├── cloudwatch.tf        # Log groups, metric filters, alarms
+├── waf.tf               # WAF rules (rate limiting, bot control)
+└── environments/
+    ├── dev.tfvars
+    ├── staging.tfvars
+    └── prod.tfvars
+```
+
+#### Key decisions
+
+- **State backend**: S3 bucket + DynamoDB table for state locking.
+- **Environment separation**: Separate `.tfvars` files for dev/staging/prod.
+- **Lambda vs Fargate**: Lambda is simpler and cheaper for low-to-moderate traffic. Switch to Fargate if cold starts become a UX issue.
+- **Database**: RDS PostgreSQL with automated backups, encryption at rest, private subnet placement.
+- **S3 uploads**: Bucket policy denies public access; pre-signed URLs for time-limited upload/download.
+- **Secrets rotation**: Secrets Manager with automatic rotation for DB credentials.
 ### Core state machine and database primatives
 
 A production-grade booking engine should treat booking as a **workflow with explicit states** (not “just create a reservation and hope”). This reduces ambiguity, improves recoverability, and makes fraud/abuse controls possible (rate-limiting, replay protection, idempotency).
@@ -102,8 +149,8 @@ stateDiagram-v2
 
 Recommended database tables (minimal but sufficient):
 
-- `apartments`: your internal listing ID ↔ Smoobu `apartmentId`
-- `booking_intents`: immutable record of what the guest attempted (dates, guests, offer/discount, device/session)
+- `apartments`: your internal listing ID ↔ Smoobu `apartmentId`, plus `slug` (the `houseLangCode` value, e.g., `"Geco"`, `"Rana"`) used to build language-aware listing page URLs
+- `booking_intents`: immutable record of what the guest attempted (dates, guests, offer/discount, device/session, `language` — `'en'` or `'es'`)
 - `holds`: one per intent, includes `smoobu_reservation_id` (nullable until created), expiration, and status
 - `payments`: PayPal order IDs / capture IDs, or deposit proof workflow metadata
 - `documents`: deposit proof metadata (storage key, MIME, checksum, scan status)
@@ -132,6 +179,289 @@ Security controls for “calendar not targeteable”:
 - **Do not expose apartment calendars** (daily availability grids) publicly; expose only “answer a query for a date range.”
 - Apply bot controls and rate limits because availability search is a “sensitive business flow” (a known API risk category). citeturn12search4turn12search0
 - Implement caching with a short TTL (e.g., 30–120 seconds) keyed by `(arrivalDate, departureDate, guests)` but **always re-check** right before creating a hold/booking.
+
+### Listing redirect behavior (available results → listing page in new tab)
+
+When the booking engine shows available properties in search results, each result card must link to the corresponding listing page on the existing website, opening in a **new browser tab** (`target="_blank"` with `rel="noopener noreferrer"`). This lets the guest browse the full listing (photos, amenities, neighborhood info, reviews) without losing their search context in the booking engine.
+
+#### Language-aware redirect URLs
+
+The existing website uses a **URL-suffix convention** for language:
+
+- English listing pages: `/{PropertyName}` (e.g., `/Geco`, `/Rana`, `/Tucano`, `/Pappagallo`, `/Delfin`, `/Areka`, `/Giulia`, `/Plumeria`, `/VillaMar`, `/VillaCoral`)
+- Spanish listing pages: `/{PropertyName}ES` (e.g., `/GecoES`, `/RanaES`, `/TucanoES`, `/PappagalloES`, `/DelfinES`, `/ArekaES`, `/GiuliaES`, `/PlumeriaES`, `/VillaMarES`, `/VillaCoralES`)
+
+The booking engine must detect the guest's current language context and construct the redirect URL accordingly:
+
+- If the guest is using the booking engine in Spanish → link to `/{houseLangCode}ES`
+- If the guest is using the booking engine in English → link to `/{houseLangCode}`
+
+The `houseLangCode` field in the property data (`houseDataList` in `src/utils/constants.ts`) maps each property to its URL slug. The backend availability response should include this slug (or the frontend should maintain a `smoobuApartmentId → houseLangCode` mapping) so the correct link can be built.
+
+#### Language detection pattern (existing codebase convention)
+
+The site determines language via URL suffix using `useLanguageDetection()` hook (`src/hooks/useLanguageDetection.ts`):
+
+```ts
+const isSpanishPage = location.pathname.endsWith('ES') || 
+                     location.pathname.includes('ES/') ||
+                     location.pathname === '/HomeES';
+```
+
+The booking engine should follow this same convention. If the booking engine lives at a route like `/book` (English) and `/bookES` (Spanish), language detection is automatic. Alternatively, the booking engine can accept a `lang` query parameter or use a React context to propagate language state.
+
+#### UI behavior for result cards
+
+Each available property card in the search results should:
+
+1. Display the property name, thumbnail image, guest capacity, key amenities, and price for the selected dates.
+2. Include a clearly visible "View listing" / "Ver alojamiento" link/button (language-dependent).
+3. Open the listing page in a new tab on click (`window.open` or `<a target="_blank">`).
+4. Also include a "Book now" / "Reservar ahora" action that proceeds to the checkout/hold flow within the booking engine.
+
+This mirrors the existing `HomeCard` component pattern (`src/components/OurHomes/Components/HomeCard.component.tsx`) which navigates to `/${houseLangCode}`, but adapted for new-tab behavior and language awareness.
+
+#### Property slug mapping (backend → frontend)
+
+The backend availability response should include enough data for the frontend to build the redirect URL. Recommended approach:
+
+```ts
+// Backend availability response shape
+interface AvailableProperty {
+  apartmentId: number;        // Smoobu apartment ID
+  slug: string;               // e.g., "Geco", "Rana" — maps to houseLangCode
+  name: string;               // Display name
+  price: number;
+  currency: string;
+  guestCapacity: number;
+  thumbnailUrl: string;
+  amenities: string[];
+}
+
+// Frontend builds the redirect URL
+const listingUrl = isSpanish ? `/${property.slug}ES` : `/${property.slug}`;
+```
+
+The `apartments` table in the backend DB (see data models section) should store the `slug` alongside the `smoobu_apartment_id` to enable this mapping.
+
+### Language handling across the booking engine
+
+The booking engine must be fully bilingual (English/Spanish), consistent with the rest of the website. This applies to:
+
+- **Search UI**: date picker labels, guest count label, search button text, "no houses available" message
+- **Result cards**: property descriptions, amenity names, "View listing" / "Book now" button labels
+- **Checkout flow**: form labels, payment method descriptions, deposit instructions, timer messaging
+- **Confirmation/portal pages**: booking summary, status labels, action buttons
+- **Email/SMS templates**: all communication templates (hold created, deposit received, booking confirmed, etc.) must be sent in the guest's detected language
+- **Error messages**: validation errors, "no longer available" messages, upload errors
+
+The language should be determined at the start of the booking session and persisted in the `booking_session` record (as a `language` field: `'en'` or `'es'`) so that server-side communications (emails, SMS) use the correct language even after the browser session ends.
+
+#### Implementation approach
+
+Follow the existing codebase pattern but use a lightweight i18n approach with a language context and string maps (preferred over duplicating entire components for each language, which is the current pattern for static listing pages):
+
+```ts
+// Booking engine string map
+const bookingStrings = {
+  en: {
+    searchButton: "Search availability",
+    noResults: "No houses available for these dates",
+    viewListing: "View listing",
+    bookNow: "Book now",
+    depositInstructions: "Complete your deposit",
+    holdExpiring: "Your reservation expires in",
+  },
+  es: {
+    searchButton: "Buscar disponibilidad",
+    noResults: "No hay casas disponibles para estas fechas",
+    viewListing: "Ver alojamiento",
+    bookNow: "Reservar ahora",
+    depositInstructions: "Complete su depósito",
+    holdExpiring: "Su reserva expira en",
+  }
+};
+```
+
+The `LanguageSwitcher` component (`src/components/FlagComponent/Flag.component.tsx`) should also work within the booking engine routes, toggling between `/book` ↔ `/bookES` (or equivalent) and preserving any search state (dates, guests) via query parameters or React state.
+
+### Styling standards for the booking engine UI
+
+The booking engine frontend must follow the existing website's styling conventions to maintain visual consistency:
+
+#### Design tokens (from `src/styles/_variables.scss`)
+
+- Primary colors: `$kalawala-darker-green: #0B3028`, `$kalawala-dark-green: #294F44`, `$kalawala-light-green: #8AA288`
+- Text color: `$kalawala-text-gray: #171717`
+- Background: `$kalawala-light-cream: #FFFFFFFF`, `$kalawala-opaque-beige: #FFFFFF`
+- Fonts: `$primary-font: 'Urbanist', sans-serif` (used for both primary and secondary)
+
+#### Component styling patterns
+
+- Each component has a co-located `.style.scss` file (e.g., `BookingSearch.style.scss`)
+- Import global variables via `@import '../../styles/styles.scss'` and mixins via `@use '../../styles/mixins'`
+- Use React Bootstrap for grid layout (`Container`, `Row`, `Col`) and responsive behavior
+- Responsive breakpoints: `@media (max-width: 992px)` for mobile, `@media (max-width: 1199px)` for tablet
+- Class naming follows a BEM-like pattern scoped to the component (e.g., `.booking-search-container`, `.booking-result-card`, `.booking-result-card-overlay`)
+
+#### Result card styling reference
+
+The booking engine result cards should follow the visual pattern of existing `HomeCard` and `OtherListings` components:
+
+- Card with background image, overlay gradient, and property name
+- Guest capacity badge with icon
+- Amenity icons row (A/C, kitchen, WiFi, parking)
+- Hover effect for interactivity
+- Accessible: `role="button"`, `tabIndex={0}`, `aria-label`, keyboard navigation support (`onKeyDown` for Enter)
+
+### Listing-page calendar with per-night price dots
+
+When a guest is browsing a specific listing page (e.g., `/Areka` or `/ArekaES`), the booking calendar embedded on that page should display colored dots on each date indicating the nightly price tier relative to the visible month's average. Unavailable dates show a grey dot. This gives guests an at-a-glance sense of pricing without requiring them to select dates first.
+
+#### Data source: Smoobu `GET /api/rates`
+
+The Smoobu Rates API returns per-day pricing and availability for one or more apartments over a date range:
+
+```
+GET https://login.smoobu.com/api/rates?apartments[]=<apartmentId>&start_date=YYYY-MM-DD&end_date=YYYY-MM-DD
+```
+
+Response shape per apartment per date:
+
+```json
+{
+  "<apartmentId>": {
+    "2026-06-15": {
+      "price": 120.00,
+      "min_length_of_stay": 2,
+      "available": 1
+    },
+    "2026-06-16": {
+      "price": null,
+      "min_length_of_stay": null,
+      "available": 0
+    }
+  }
+}
+```
+
+- `price`: nightly rate (null if no price set)
+- `available`: `1` = available, `0` = unavailable
+- `min_length_of_stay`: minimum nights (useful for future validation)
+
+This endpoint is called **server-side only** (Smoobu API keys must never reach the browser). The backend proxies the data to the frontend.
+
+#### Backend endpoint: `GET /api/calendar/:apartmentSlug`
+
+```
+GET /api/calendar/Areka?month=2026-06
+```
+
+Response:
+
+```json
+{
+  "apartment": "Areka",
+  "month": "2026-06",
+  "dates": {
+    "2026-06-01": { "price": 95.00, "available": true, "minStay": 2 },
+    "2026-06-02": { "price": 110.00, "available": true, "minStay": 2 },
+    "2026-06-03": { "price": null, "available": false, "minStay": null },
+    ...
+  },
+  "stats": {
+    "avg": 105.50,
+    "min": 85.00,
+    "max": 150.00
+  }
+}
+```
+
+The backend computes `stats` from the available dates in the response (excluding unavailable dates from the average). The frontend uses these stats to classify each date.
+
+#### Dot color classification
+
+For each date in the visible month, compute the dot color based on the month's average price of available dates:
+
+| Condition | Dot color | Meaning |
+|---|---|---|
+| `available === false` | Grey | Night unavailable |
+| `price <= avg * 0.85` | Green | Low price (≤15% below average) |
+| `price > avg * 0.85 && price <= avg * 1.15` | Yellow | Around average (within ±15%) |
+| `price > avg * 1.15` | Red | High price (>15% above average) |
+
+The thresholds (0.85 / 1.15) are configurable. The frontend renders a small colored circle on each calendar date cell.
+
+#### Lazy loading and efficient polling strategy
+
+The calendar must minimize API calls while keeping the UX responsive:
+
+1. **Initial load (current month)**: When the listing page loads, the frontend requests the current visible month's data from the backend. The backend calls Smoobu `GET /api/rates` for that month's date range for the specific apartment and caches the result (TTL: 5–10 minutes, keyed by `apartmentId + month`).
+
+2. **User navigates to a different month**: When the guest clicks "next month" or selects a future date in a different month:
+   - **Priority fetch**: The backend immediately returns data for the **selected date** (or the full target month if already cached).
+   - **Background fill**: If the month wasn't cached, the backend fetches the full month from Smoobu and returns it. The frontend renders dots progressively — the selected date's dot appears first, then the rest of the month fills in as data arrives.
+   - In practice, since Smoobu returns the full date range in one call, the "priority fetch" and "background fill" happen in the same request. The perceived optimization is on the frontend: show the calendar immediately with a loading state, then paint dots once data arrives.
+
+3. **Caching rules**:
+   - Backend caches `GET /api/rates` responses per `(apartmentId, month)` with a 5–10 minute TTL.
+   - Past months are never fetched (calendar only shows current + future months).
+   - Smoobu `updateRates` webhooks should invalidate the cache for affected apartments/dates.
+   - Respect Smoobu's 1000 req/min rate limit; the per-month granularity and caching ensure this is never approached under normal usage.
+
+4. **Recalculated average per month**: Each month has its own average. When the user navigates to July, the dots reflect July's average — not June's. This means a $120/night that was "red" in a cheap June could be "green" in an expensive July.
+
+#### Frontend component behavior
+
+```
+CalendarWithPriceDots
+├── props: apartmentSlug, language
+├── state: visibleMonth, monthData (map of month → dates+stats), loading
+├── on mount: fetch current month
+├── on month change: fetch new month if not cached locally
+├── render: calendar grid with colored dot per date cell
+```
+
+Each date cell renders:
+
+```tsx
+<div className="calendar-date-cell">
+  <span className="date-number">{day}</span>
+  <span
+    className={`price-dot price-dot--${getDotColor(date, monthData)}`}
+    aria-label={getAriaLabel(date, monthData, language)}
+  />
+</div>
+```
+
+Where `getDotColor` returns `'grey'` | `'green'` | `'yellow'` | `'red'` and `getAriaLabel` returns a screen-reader-friendly description like "June 15, $120, above average price" / "15 de junio, $120, precio por encima del promedio" (language-aware).
+
+#### Styling for price dots
+
+```scss
+.price-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-top: 2px;
+
+  &--green  { background-color: #4CAF50; }
+  &--yellow { background-color: #FFC107; }
+  &--red    { background-color: #F44336; }
+  &--grey   { background-color: #BDBDBD; }
+}
+```
+
+These colors should be defined as SCSS variables in the booking engine's stylesheet, complementing the existing Kalawala palette. The dot size and spacing should be tested at mobile breakpoints to ensure they remain visible without cluttering the calendar.
+
+#### Analytics events for calendar interaction
+
+| Moment | Event name | Key properties |
+|---|---|---|
+| Month data loaded | `calendar_month_loaded` | `apartment_slug`, `month`, `available_count`, `avg_price`, `source` (cache/api) |
+| User navigates month | `calendar_month_changed` | `apartment_slug`, `from_month`, `to_month` |
+| User clicks a date | `calendar_date_selected` | `apartment_slug`, `date`, `price`, `dot_color`, `available` |
 
 ### Provisional holds: local hold vs provisional Smoobu reservation
 
@@ -514,6 +844,7 @@ Implement a secure booking engine integrated with Smoobu that provides real-time
 (Names are illustrative; the backend remains the only layer that calls Smoobu/PayPal.)
 
 - `POST /api/availability/quote`
+- `GET /api/calendar/:apartmentSlug?month=YYYY-MM` — returns per-day price, availability, min stay, and month stats (avg/min/max) for the listing-page calendar price dots
 - `POST /api/bookings/hold`
 - `POST /api/bookings/:booking_id/paypal/create-order`
 - `POST /api/bookings/:booking_id/paypal/capture`
@@ -527,7 +858,7 @@ Implement a secure booking engine integrated with Smoobu that provides real-time
 
 **Data models (core fields)**
 
-- `bookings`: `id`, `reservation_public_id`, `smoobu_reservation_id`, `apartment_id`, `arrival`, `departure`, `status`, `price`, `currency`, `payment_method`
+- `bookings`: `id`, `reservation_public_id`, `smoobu_reservation_id`, `apartment_id`, `arrival`, `departure`, `status`, `price`, `currency`, `payment_method`, `language` (`'en'` | `'es'` — persisted at session start for server-side communications)
 - `payments`: `booking_id`, `provider`, `paypal_order_id`, `paypal_capture_id`, `status`, `amount`
 - `documents`: `booking_id`, `type`, `storage_key`, `mime_detected`, `scan_status`, `sha256`
 - `webhook_events`: `provider`, `event_id`, `received_at`, `processed_at`, `status`

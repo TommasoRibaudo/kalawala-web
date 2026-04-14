@@ -63,14 +63,16 @@ flowchart LR
   BE --> OBS[Logs/metrics/alerts]
 ```
 
+### AWS infrastructure (Terraform-managed)
+
+Backend runs on AWS: API Gateway + Lambda, RDS PostgreSQL, ElastiCache Redis, S3, Secrets Manager, SES, CloudWatch, WAF/CloudFront — all provisioned via Terraform IaC. See [plan.md — AWS infrastructure](plan.md#aws-infrastructure-terraform-managed) for the full service table, Terraform file structure (`infra/`), and key decisions (Lambda vs Fargate, state backend, secrets rotation).
+
 Key points:
 
 - **All Smoobu calls and keys stay server-side**, never in the browser. citeturn25view2  
 - **DB is the source of truth for “your booking state machine,”** while Smoobu is the source of truth for external calendar sync and confirmed/cancelled reservations.
 - **Webhooks** are required for correctness. Smoobu explicitly says cron-based polling cannot guarantee real-time correctness and recommends webhook notifications when calendar/rates/availability change. citeturn16search0  
 - Implement rate-limits and anti-automation controls because reservation endpoints are sensitive business flows. citeturn23view0turn15search4  
-
-image_group{"layout":"carousel","aspect_ratio":"16:9","query":["secure booking engine architecture diagram webhooks payments","availability hold state machine diagram booking system","webhook signature verification diagram"],"num_per_query":1}
 
 ### DB state machine (core)
 
@@ -121,6 +123,22 @@ To make “availability shown = availability real”:
 - Introduce a **short-lived server-side cache** for repeated checks (e.g., 10–30 seconds keyed by `(arrival, departure, guests)`), but never rely on cache for final booking writes.
 - Subscribe to Smoobu webhooks and reconcile changes. Webhooks exist specifically because cron/polling isn’t real-time reliable. citeturn16search0  
 - Respect Smoobu rate limits (1000 requests/min) and use response headers to implement a backoff strategy. citeturn25view1  
+
+### Listing redirect behavior (search results → listing page in new tab)
+
+Result cards link to the existing listing page in a new tab (`target="_blank"`, `rel="noopener noreferrer"`). URL: `/{slug}` (EN) or `/{slug}ES` (ES) using the `houseLangCode`/`slug` field. See [plan.md — Listing redirect behavior](plan.md#listing-redirect-behavior-available-results--listing-page-in-new-tab) for URL patterns, the `AvailableProperty` interface, and result card UI requirements.
+
+### Language handling across the booking engine
+
+Fully bilingual EN/ES. Use string maps (`bookingStrings`) rather than component duplication. Persist `language` (`'en' | 'es'`) in `booking_session` for server-side comms. Integrate `LanguageSwitcher` on booking routes (`/book` ↔ `/bookES`). See [plan.md — Language handling](plan.md#language-handling-across-the-booking-engine) for the full string map and route conventions.
+
+### Styling standards for the booking engine
+
+Use Kalawala design tokens (`$kalawala-darker-green`, `$kalawala-dark-green`, `$kalawala-light-green`, `$kalawala-text-gray`, `Urbanist` font), React Bootstrap grid, co-located `.style.scss` files, BEM-like class naming, and responsive breakpoints at 992px/1199px. See [plan.md — Styling standards](plan.md#styling-standards-for-the-booking-engine-ui) for the full reference including accessible card markup patterns.
+
+### Listing-page calendar with per-night price dots
+
+Listing pages display colored dots per date (green/yellow/red/grey) relative to the month average price. Backend endpoint `GET /api/calendar/:apartmentSlug?month=YYYY-MM` proxies Smoobu `GET /api/rates`, computes avg/min/max stats, and caches per (apartmentId, month) with 5–10 min TTL. Frontend component `CalendarWithPriceDots` fetches on mount and on month navigation. See [plan.md — Calendar pricing dots](plan.md#listing-page-calendar-with-per-night-price-dots) for dot classification thresholds, lazy-loading strategy, component structure, SCSS, and analytics events.
 
 ## Payment and booking flows
 
@@ -384,6 +402,9 @@ At minimum:
 - `POST /api/search`
   - input: arrival_date, departure_date, guests
   - output: properties[] + message + “no availability” structured response
+- `GET /api/calendar/:apartmentSlug?month=YYYY-MM`
+  - returns per-day price, availability, min stay, and month stats (avg/min/max) for listing-page calendar price dots
+  - backend proxies Smoobu `GET /api/rates`, caches per (apartmentId, month) with 5–10 min TTL
 - `POST /api/holds`
   - creates hold in DB and (recommended) Smoobu hold
 - `POST /api/paypal/order`
@@ -409,7 +430,11 @@ At minimum:
   - id, created_at, expires_at, status, arrival/departure, guests
   - chosen_property_id (nullable)
   - payment_method (paypal|deposit)
+  - language (`'en'` | `'es'` — detected at session start, used for all UI text and server-side communications)
   - reservation_portal_password_hash (optional)
+- `property` (maps internal data to Smoobu)
+  - id, smoobu_apartment_id, slug (the `houseLangCode` value, e.g., `"Geco"`, `"Rana"` — used to build language-aware listing page URLs: `/{slug}` for EN, `/{slug}ES` for ES)
+  - name, guest_capacity, thumbnail_url, amenities
 - `hold`
   - id, booking_session_id, property_id
   - status (active|expired|cancelled|converted)
@@ -528,7 +553,7 @@ gantt
 - Whether provisional holds should be created as “Blocked” (`11`) or “Direct booking” (`13`) in Smoobu for reporting/accounting purposes. citeturn17search0  
 - Whether you need multi-property bookings (one reservation blocking multiple apartments) and how you want to expose that in UI.
 - Whether you want to send guest communications via Smoobu messaging endpoints or via your own email/SMS provider. (Smoobu supports reservation messaging endpoints.) citeturn16search0  
-- Which hosting/runtime you will use for the backend (shared hosting PHP vs separate container/serverless) and your operational constraints.
+- ~~Which hosting/runtime you will use for the backend~~ → **Decided: AWS infrastructure provisioned via Terraform** (see infrastructure section below).
 
 ### Prioritized recommendations and next steps
 
@@ -542,7 +567,7 @@ gantt
 
 ### Milestone planning checklist (with estimated effort)
 
-[ ] 1.1 Threat model workshop: document attacker goals (inventory lock, scraping, payment spoofing), trust boundaries, and required mitigations (rate limits, webhook verification, upload hardening). (6h)  
+[x] 1.1 Threat model workshop: document attacker goals (inventory lock, scraping, payment spoofing), trust boundaries, and required mitigations (rate limits, webhook verification, upload hardening). (6h)  
 [ ] 1.2 PRD freeze: finalize flows (PayPal, deposit, portal), non-functional requirements, admin operations, and success metrics. (6h)  
 [ ] 1.3 Data model design: define DB tables, indexes, unique constraints for idempotency (hold uniqueness, webhook dedupe). (8h)  
 [ ] 1.4 API contract design: specify request/response schemas for search/hold/payments/uploads/portal/admin endpoints. (8h)  
@@ -552,10 +577,24 @@ gantt
 [ ] 2.3 Secrets management: configure secure storage for Smoobu/PayPal credentials, webhook secrets, encryption keys. (6h)  
 [ ] 2.4 Observability baseline: structured logs, correlation IDs, error alerts, dashboards. (8h)  
 
+[ ] 2.5 Terraform project scaffold: create `infra/` directory with `main.tf` (AWS provider, S3+DynamoDB remote state backend), `variables.tf`, `outputs.tf`, and environment-specific `.tfvars` files (dev/staging/prod). (6h)  
+[ ] 2.6 Terraform VPC + networking: define VPC, public/private subnets, NAT gateway, security groups for Lambda/RDS/ElastiCache. (8h)  
+[ ] 2.7 Terraform RDS PostgreSQL: provision RDS instance in private subnet with encryption at rest, automated backups, Secrets Manager integration for credentials. (8h)  
+[ ] 2.8 Terraform Lambda + API Gateway: define Lambda functions for booking API endpoints, API Gateway HTTP API with routes, CORS config, and WAF rate-limiting rules. (12h)  
+[ ] 2.9 Terraform S3 + CloudFront: private S3 bucket for deposit receipts (no public access, pre-signed URL policy), CloudFront distribution for frontend if needed. (6h)  
+[ ] 2.10 Terraform supporting services: ElastiCache Redis for rates/availability cache, SES for transactional email, CloudWatch log groups + alarms. (8h)  
+[ ] 2.11 Terraform CI/CD integration: add `terraform plan` to PR checks and `terraform apply` to deployment pipeline (GitHub Actions). (6h)  
+
 [ ] 3.1 Smoobu proxy client: implement server-side client with retries/backoff and rate-limit header handling. (10h)  
 [ ] 3.2 Availability search endpoint: implement `POST /api/search` using Smoobu availability check; return structured “no houses available” response. (10h)  
-[ ] 3.3 Property catalog: build a safe mapping from public property slugs → Smoobu apartment IDs; prevent enumeration. (8h)  
-[ ] 3.4 Search UI integration: implement date picker (future dates allowed), guest count, results list + “none available” message. (10h)  
+[ ] 3.3 Property catalog: build a safe mapping from public property slugs → Smoobu apartment IDs; include `slug` field (matching `houseLangCode` from `src/utils/constants.ts`) for language-aware listing page URLs; prevent enumeration. (8h)  
+[ ] 3.4 Search UI integration: implement date picker (future dates allowed), guest count, results list + "none available" message. (10h)  
+[ ] 3.5 Listing redirect from results: each available property card in search results must link to the existing listing page in a new tab (`target="_blank"`, `rel="noopener noreferrer"`); URL built as `/{slug}` (EN) or `/{slug}ES` (ES) based on detected language. Follow `HomeCard` / `OtherListings` visual pattern. (8h)  
+[ ] 3.6 Booking engine i18n: implement bilingual string maps (EN/ES) for all booking UI text (search, results, checkout, deposit, confirmation, errors); persist `language` in `booking_session` for server-side communications; integrate `LanguageSwitcher` on booking routes (`/book` ↔ `/bookES`). (12h)  
+[ ] 3.7 Booking engine styling: apply existing website design tokens (`$kalawala-darker-green`, `$kalawala-dark-green`, `$kalawala-light-green`, `$kalawala-text-gray`, `Urbanist` font) and patterns (React Bootstrap grid, co-located `.style.scss`, BEM-like class naming, responsive breakpoints at 992px/1199px, accessible card markup). (8h)  
+[ ] 3.8 Calendar pricing backend: implement `GET /api/calendar/:apartmentSlug?month=YYYY-MM` endpoint that proxies Smoobu `GET /api/rates` for the apartment's full month, computes avg/min/max stats from available dates, and returns per-day price/availability/minStay + stats. Cache per (apartmentId, month) with 5–10 min TTL; invalidate on Smoobu `updateRates` webhook. (12h)  
+[ ] 3.9 Calendar price dots frontend: implement `CalendarWithPriceDots` component for listing pages; fetch month data on mount and on month navigation; render colored dots (green/yellow/red/grey) per date based on month average; lazy-load new months on navigation; accessible `aria-label` per dot in current language. (14h)  
+[ ] 3.10 Calendar dot styling: implement `.price-dot` SCSS with color variants (green #4CAF50, yellow #FFC107, red #F44336, grey #BDBDBD); test at mobile breakpoints; ensure dots are visible without cluttering the calendar grid. (4h)  
 
 [ ] 4.1 Hold creation: implement DB hold + Smoobu provisional hold creation (choose blocked vs direct booking channel). (12h)  
 [ ] 4.2 Hold expiry worker: schedule job to expire holds and cancel Smoobu reservations; include “help requested” exception path. (10h)  

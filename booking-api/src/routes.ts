@@ -30,13 +30,13 @@ export function createRouter(config: BookingApiConfig): Router {
       validateSearchRequest(request.body);
       throw notImplemented("Availability search is scaffolded; Smoobu integration lands in task 3.2.");
     },
-    { requireJsonBody: true }
+    { requireJsonBody: true, abuseProtection: "availabilitySearch" }
   );
 
   router.get("/api/calendar/:apartmentSlug", async (request) => {
     validateCalendarRequest(request.pathParams, request.query);
     throw notImplemented("Calendar pricing route is scaffolded; Smoobu rates integration lands in task 3.8.");
-  });
+  }, { abuseProtection: "publicRead" });
 
   router.post(
     "/api/holds",
@@ -44,7 +44,7 @@ export function createRouter(config: BookingApiConfig): Router {
       validateHoldRequest(request.body);
       throw notImplemented("PayPal hold creation is scaffolded; DB and Smoobu hold logic land in task 4.1.");
     },
-    { requireJsonBody: true, requireIdempotencyKey: true }
+    { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "holdCreate" }
   );
 
   router.post(
@@ -53,7 +53,7 @@ export function createRouter(config: BookingApiConfig): Router {
       validateBookingSessionRequest(request.body);
       throw notImplemented("PayPal order creation is scaffolded; Orders API integration lands in task 5.1.");
     },
-    { requireJsonBody: true, requireIdempotencyKey: true }
+    { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "paymentCreate" }
   );
 
   router.post(
@@ -62,13 +62,13 @@ export function createRouter(config: BookingApiConfig): Router {
       validatePayPalCaptureRequest(request.body);
       throw notImplemented("PayPal capture is scaffolded; capture reconciliation lands in task 5.1.");
     },
-    { requireJsonBody: true, requireIdempotencyKey: true }
+    { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "paymentCapture" }
   );
 
   router.get("/api/deposit-handoff", async (request) => {
     validateDepositHandoffQuery(request.query);
     throw notImplemented("Manual deposit handoff route is scaffolded; offline instructions land in task 4.3.");
-  });
+  }, { abuseProtection: "publicRead" });
 
   router.post(
     "/api/deposit-handoff/events",
@@ -76,7 +76,7 @@ export function createRouter(config: BookingApiConfig): Router {
       validateDepositHandoffEvent(request.body);
       throw notImplemented("Manual deposit handoff event route is scaffolded; analytics/notification lands in task 4.4.");
     },
-    { requireJsonBody: true, requireIdempotencyKey: true }
+    { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "depositEvent" }
   );
 
   router.post(
@@ -86,7 +86,7 @@ export function createRouter(config: BookingApiConfig): Router {
       assertPayPalWebhookHeaders(request);
       throw notImplemented("PayPal webhook route is scaffolded; signature verification and state transitions land in task 5.2.");
     },
-    { requireJsonBody: true, preserveRawBody: true }
+    { requireJsonBody: true, preserveRawBody: true, abuseProtection: "webhook" }
   );
 
   router.post(
@@ -96,7 +96,7 @@ export function createRouter(config: BookingApiConfig): Router {
       assertSmoobuWebhookSecret(request, config);
       throw notImplemented("Smoobu webhook route is scaffolded; dedupe and reconciliation land in task 6.1.");
     },
-    { requireJsonBody: true, preserveRawBody: true, rejectQuerySecrets: true }
+    { requireJsonBody: true, preserveRawBody: true, rejectQuerySecrets: true, abuseProtection: "webhook" }
   );
 
   router.post(
@@ -105,13 +105,13 @@ export function createRouter(config: BookingApiConfig): Router {
       validatePortalLogin(request.body);
       throw notImplemented("Portal login is scaffolded; password auth and sessions land in task 6.3.");
     },
-    { requireJsonBody: true }
+    { requireJsonBody: true, abuseProtection: "portalLogin" }
   );
 
   router.get("/api/portal/reservation/:reservationPublicId", async (request) => {
     validateReservationPublicId(request.pathParams);
     throw notImplemented("Portal reservation read is scaffolded; authenticated reservation access lands in task 6.4.");
-  });
+  }, { abuseProtection: "portalRead" });
 
   router.post(
     "/api/portal/reservation/:reservationPublicId/help-request",
@@ -120,7 +120,7 @@ export function createRouter(config: BookingApiConfig): Router {
       validatePortalMessage(request.body);
       throw notImplemented("Portal help requests are scaffolded; support event persistence lands in task 6.4.");
     },
-    { requireJsonBody: true, requireIdempotencyKey: true }
+    { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "portalWrite" }
   );
 
   router.post(
@@ -130,7 +130,7 @@ export function createRouter(config: BookingApiConfig): Router {
       validateCancellationRequest(request.body);
       throw notImplemented("Portal cancellation requests are scaffolded; support event persistence lands in task 6.4.");
     },
-    { requireJsonBody: true, requireIdempotencyKey: true }
+    { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "portalWrite" }
   );
 
   return router;

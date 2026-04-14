@@ -1,4 +1,5 @@
 import { loadConfig } from "./config";
+import { AbuseGuard } from "./abuseProtection";
 import { assertRouteHardening } from "./http/router";
 import {
   getClientIp,
@@ -18,6 +19,7 @@ import { ApiResponse, BookingApiConfig, LambdaHttpRequest, RouteRequest } from "
 
 export function createBookingApiHandler(config: BookingApiConfig = loadConfig()) {
   const router = createRouter(config);
+  const abuseGuard = new AbuseGuard(config.abuseProtection);
 
   return async function bookingApiHandler(event: LambdaHttpRequest): Promise<ApiResponse> {
     const headers = normalizeHeaders(event.headers);
@@ -51,6 +53,7 @@ export function createBookingApiHandler(config: BookingApiConfig = loadConfig())
       };
 
       assertRouteHardening(request, route.options);
+      abuseGuard.assertAllowed(request, route.options.abuseProtection);
 
       return await route.handler(request);
     } catch (error) {

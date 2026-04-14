@@ -53,11 +53,24 @@ export interface JsonBody {
 
 export type RouteHandler = (request: RouteRequest) => Promise<ApiResponse> | ApiResponse;
 
+export type AbuseProtectionPolicyName =
+  | "publicRead"
+  | "availabilitySearch"
+  | "holdCreate"
+  | "paymentCreate"
+  | "paymentCapture"
+  | "depositEvent"
+  | "webhook"
+  | "portalLogin"
+  | "portalRead"
+  | "portalWrite";
+
 export interface RouteOptions {
   requireJsonBody?: boolean;
   requireIdempotencyKey?: boolean;
   preserveRawBody?: boolean;
   rejectQuerySecrets?: boolean;
+  abuseProtection?: AbuseProtectionPolicyName;
 }
 
 export interface RouteDefinition {
@@ -71,6 +84,13 @@ export interface BookingApiConfig {
   allowedOrigins: string[];
   maxBodyBytes: number;
   smoobuWebhookSecret?: string;
+  abuseProtection: AbuseProtectionConfig;
+}
+
+export interface AbuseProtectionConfig {
+  enabled: boolean;
+  captchaChallengesEnabled: boolean;
+  maxTrackedBuckets: number;
 }
 
 export type FieldErrors = Record<string, string[]>;

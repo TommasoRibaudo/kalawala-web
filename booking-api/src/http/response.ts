@@ -76,7 +76,7 @@ export function optionsResponse(headers: HeadersMap): ApiResponse {
       ...headers,
       "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
       "Access-Control-Allow-Headers":
-        "Content-Type,Accept,Accept-Language,X-Correlation-Id,Idempotency-Key,X-Smoobu-Webhook-Secret,PAYPAL-AUTH-ALGO,PAYPAL-CERT-URL,PAYPAL-TRANSMISSION-ID,PAYPAL-TRANSMISSION-SIG,PAYPAL-TRANSMISSION-TIME",
+        "Content-Type,Accept,Accept-Language,X-Correlation-Id,Idempotency-Key,X-Kalawala-Device-Id,X-Device-Id,X-Captcha-Token,X-Smoobu-Webhook-Secret,PAYPAL-AUTH-ALGO,PAYPAL-CERT-URL,PAYPAL-TRANSMISSION-ID,PAYPAL-TRANSMISSION-SIG,PAYPAL-TRANSMISSION-TIME",
       "Access-Control-Max-Age": "600",
     },
     body: "",

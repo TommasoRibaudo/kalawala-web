@@ -549,7 +549,7 @@ gantt
 [x] 1.4 API contract design: specify request/response schemas for search/hold/PayPal/deposit-handoff/portal endpoints. See `docs/own_booking_engine/api_contract.md`. (8h)  
 
 [x] 2.1 Backend scaffold: create Booking API service (framework, routing, validation, public endpoint hardening). (10h)  
-[ ] 2.2 Rate limiting + abuse controls: implement per-IP/per-device limits; add CAPTCHA challenge triggers for “hold/create” endpoints. (10h)  
+[x] 2.2 Rate limiting + abuse controls: implement per-IP/per-device limits; add CAPTCHA challenge triggers for “hold/create” endpoints. (10h)  
 [ ] 2.3 Secrets management: configure secure storage for Smoobu/PayPal credentials, webhook secrets, encryption keys. (6h)  
 [ ] 2.4 Observability baseline: structured logs, correlation IDs, error alerts, dashboards. (8h)  
 

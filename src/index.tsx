@@ -38,8 +38,6 @@ import '../src/styles/scss/templates/_team.scss'
 import '../src/styles/scss/templates/_testimonials.scss'
 import '../src/styles/scss/templates/_typography.scss'
 
-import './styles/maps/style.css.map'
-
 posthog.init(process.env.REACT_APP_PUBLIC_POSTHOG_KEY as string, {
   api_host: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,
   person_profiles: 'identified_only',

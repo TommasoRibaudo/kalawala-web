@@ -814,6 +814,8 @@ Admin panel minimum actions:
 
 ### PRD
 
+Task 1.2 froze the MVP PRD in `docs/own_booking_engine/prd.md`. The frozen PRD is the implementation source of truth for PayPal, deposit, portal, non-functional requirements, admin operations, success metrics, and change-control decisions.
+
 **Problem statement**  
 Implement a secure booking engine integrated with Smoobu that provides real-time availability, prevents double bookings, supports PayPal payments and a manual deposit flow with proof upload, and provides guests a secure portal to manage their reservation.
 

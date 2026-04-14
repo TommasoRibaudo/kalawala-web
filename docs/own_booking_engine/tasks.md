@@ -568,7 +568,7 @@ gantt
 ### Milestone planning checklist (with estimated effort)
 
 [x] 1.1 Threat model workshop: document attacker goals (inventory lock, scraping, payment spoofing), trust boundaries, and required mitigations (rate limits, webhook verification, upload hardening). (6h)  
-[ ] 1.2 PRD freeze: finalize flows (PayPal, deposit, portal), non-functional requirements, admin operations, and success metrics. (6h)  
+[x] 1.2 PRD freeze: finalize flows (PayPal, deposit, portal), non-functional requirements, admin operations, and success metrics. (6h)  
 [ ] 1.3 Data model design: define DB tables, indexes, unique constraints for idempotency (hold uniqueness, webhook dedupe). (8h)  
 [ ] 1.4 API contract design: specify request/response schemas for search/hold/payments/uploads/portal/admin endpoints. (8h)  
 

@@ -13,10 +13,10 @@ This design covers:
 - Booking sessions and explicit state transitions.
 - Public property mapping to Smoobu apartment IDs.
 - Smoobu-backed provisional holds with real expiry.
-- PayPal and manual deposit payment records.
-- Private receipt upload metadata and scan state.
+- PayPal payment records.
+- Manual deposit handoff state only; no custom receipt upload or approval workflow in MVP.
 - Webhook dedupe and replay-safe processing.
-- Idempotent public/admin write endpoints.
+- Idempotent public/system write endpoints.
 - Append-only audit history.
 
 ## Source Context
@@ -71,9 +71,6 @@ create type booking_status as enum (
   'hold_active',
   'paypal_pending',
   'paypal_captured',
-  'deposit_pending',
-  'proof_uploaded',
-  'deposit_under_review',
   'paid',
   'confirmed',
   'expired',
@@ -81,7 +78,7 @@ create type booking_status as enum (
   'failed'
 );
 
-create type payment_method as enum ('paypal', 'deposit');
+create type payment_method as enum ('paypal');
 
 create type hold_status as enum (
   'creating',
@@ -95,27 +92,14 @@ create type hold_status as enum (
 create type payment_status as enum (
   'pending',
   'order_created',
-  'approved',
   'captured',
-  'under_review',
   'paid',
-  'rejected',
   'failed',
   'cancelled',
-  'refunded_requested'
+  'refund_flagged'
 );
 
-create type payment_provider as enum ('paypal', 'manual_deposit');
-
-create type upload_scan_status as enum (
-  'pending_upload',
-  'uploaded',
-  'validating',
-  'quarantined',
-  'clean',
-  'rejected',
-  'scan_failed'
-);
+create type payment_provider as enum ('paypal');
 
 create type webhook_provider as enum ('paypal', 'smoobu');
 
@@ -136,7 +120,7 @@ create type idempotency_status as enum (
   'failed'
 );
 
-create type actor_type as enum ('guest', 'admin', 'system', 'provider');
+create type actor_type as enum ('guest', 'system', 'provider');
 ```
 
 ## Core Tables
@@ -192,7 +176,7 @@ create table booking_sessions (
   payment_method payment_method,
   currency char(3),
   total_amount_cents integer check (total_amount_cents is null or total_amount_cents >= 0),
-  deposit_amount_cents integer check (deposit_amount_cents is null or deposit_amount_cents >= 0),
+  quote_id text unique,
   quote_hash text,
   quote_expires_at timestamptz,
 
@@ -229,10 +213,7 @@ create index booking_sessions_property_dates_idx on booking_sessions (property_i
 create index booking_sessions_guest_email_idx on booking_sessions (lower(guest_email)) where guest_email is not null;
 create index booking_sessions_expiry_idx on booking_sessions (expires_at) where status in (
   'hold_active',
-  'paypal_pending',
-  'deposit_pending',
-  'proof_uploaded',
-  'deposit_under_review'
+  'paypal_pending'
 );
 ```
 
@@ -241,6 +222,7 @@ Rules:
 - The browser can never directly set `confirmed_at`, `cancelled_at`, or final statuses.
 - `confirmed` requires a Smoobu reservation ID in `holds` and verified payment state in `payments`.
 - `language` is persisted at session start for server-side emails, portal text, and Smoobu `language` fields.
+- `quote_id` is a backend-generated opaque token (format `qt_<ULID>`) returned to the browser as the public quote reference. It is distinct from the UUID primary key. The backend validates `quoteId` in hold creation and deposit-handoff requests by looking up `booking_sessions.quote_id`.
 - PII retention cleanup targets abandoned sessions after 90 days unless linked to payment, fraud, support, or audit records.
 
 ### holds
@@ -266,8 +248,6 @@ create table holds (
   smoobu_cancel_attempts integer not null default 0,
   last_smoobu_error text,
 
-  help_requested_at timestamptz,
-  extension_count integer not null default 0,
   converted_at timestamptz,
   cancelled_at timestamptz,
   expired_at timestamptz,
@@ -312,7 +292,7 @@ Implementation note: create the hold row as `creating` inside a DB transaction b
 
 ### payments
 
-One payment workflow row per booking session. PayPal IDs and deposit state share the table because only one MVP method can be active for a booking.
+One PayPal payment workflow row per booking session. Manual deposit is an offline handoff and does not create a `payments` row in MVP.
 
 ```sql
 create table payments (
@@ -332,12 +312,6 @@ create table payments (
   paypal_payer_id text,
   paypal_capture_status text,
 
-  deposit_reference text,
-  deposit_approved_by uuid,
-  deposit_approved_at timestamptz,
-  deposit_rejected_at timestamptz,
-  deposit_rejection_reason text,
-
   provider_payload jsonb,
   paid_at timestamptz,
   failed_at timestamptz,
@@ -345,10 +319,7 @@ create table payments (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
 
-  constraint payments_provider_method_match check (
-    (provider = 'paypal' and method = 'paypal')
-    or (provider = 'manual_deposit' and method = 'deposit')
-  )
+  constraint payments_provider_method_match check (provider = 'paypal' and method = 'paypal')
 );
 
 create unique index payments_paypal_order_id_uidx on payments (paypal_order_id)
@@ -371,53 +342,12 @@ Idempotency rules:
 - PayPal order creation stores `paypal_order_request_id`, matching the `PayPal-Request-Id` header.
 - PayPal capture stores `paypal_capture_request_id`, also matching `PayPal-Request-Id`.
 - Webhook completion must match expected booking, amount, currency, and provider IDs before setting `paid_at`.
-- Deposit upload does not mark a payment paid; only clean scan plus admin approval can set `paid_at`.
+- Manual deposit handoff does not mark a payment paid; only PayPal capture/webhook reconciliation can set `paid_at` in MVP.
+- A verified `PAYMENT.CAPTURE.REFUNDED` or `PAYMENT.CAPTURE.REVERSED` webhook sets `status = 'refund_flagged'`, writes an audit entry, and alerts staff. Automated refunds are out of MVP; staff resolve these manually.
 
 ### uploaded_files
 
-Private metadata for deposit proof uploads. Files are stored in a private S3 bucket and never served from public webroot.
-
-```sql
-create table uploaded_files (
-  id uuid primary key default gen_random_uuid(),
-  booking_session_id uuid not null references booking_sessions(id) on delete restrict,
-  payment_id uuid references payments(id) on delete restrict,
-
-  document_type text not null default 'deposit_receipt',
-  storage_bucket text not null,
-  storage_key text not null unique,
-  original_filename text,
-  declared_mime text,
-  detected_mime text,
-  file_extension text,
-  size_bytes bigint,
-  sha256 text,
-
-  scan_status upload_scan_status not null default 'pending_upload',
-  validation_errors jsonb not null default '[]'::jsonb,
-  uploaded_at timestamptz,
-  scanned_at timestamptz,
-  rejected_at timestamptz,
-
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-
-  constraint uploaded_files_size_non_negative check (size_bytes is null or size_bytes >= 0)
-);
-
-create index uploaded_files_booking_idx on uploaded_files (booking_session_id, created_at desc);
-create index uploaded_files_scan_queue_idx on uploaded_files (scan_status, created_at)
-  where scan_status in ('uploaded', 'validating', 'quarantined', 'scan_failed');
-create index uploaded_files_sha256_idx on uploaded_files (sha256) where sha256 is not null;
-```
-
-Security rules:
-
-- The backend generates `storage_key`; user filenames are metadata only.
-- Do not enforce MIME/extension allowlists with hard DB checks; rejected values must still be stored for audit and abuse analysis.
-- Admin approval is blocked unless `scan_status = 'clean'`.
-- Presigned URLs are never stored in this table and must be redacted from logs.
-- Unknown or mismatched MIME/magic-byte results remain `quarantined` or `rejected`.
+Out of MVP. Do not create custom receipt upload tables unless a future PRD explicitly adds an automated deposit approval workflow.
 
 ### webhook_events
 
@@ -475,7 +405,7 @@ Webhook dedupe rules:
 
 ### idempotency_keys
 
-Reusable idempotency ledger for public and admin write endpoints.
+Reusable idempotency ledger for public and system write endpoints.
 
 ```sql
 create table idempotency_keys (
@@ -510,10 +440,7 @@ Endpoint scopes should be specific, for example:
 - `booking.hold.create`
 - `booking.paypal.order.create`
 - `booking.paypal.capture`
-- `booking.deposit.upload.presign`
-- `admin.deposit.approve`
-- `admin.hold.extend`
-- `admin.booking.cancel`
+- `booking.deposit_handoff.view`
 
 If the same key is reused with a different `request_hash`, return a conflict and write an audit event.
 
@@ -649,7 +576,6 @@ select *
 from holds
 where status in ('creating', 'active')
   and expires_at <= now()
-  and help_requested_at is null
 for update skip locked;
 ```
 
@@ -660,7 +586,7 @@ For each row:
 3. Mark booking `expired`.
 4. Add audit and state transition rows.
 
-Admin extensions update `expires_at`, increment `extension_count`, require `reason`, and write `audit_log`.
+Custom admin hold extensions are out of MVP. Expired PayPal holds are cancelled by the worker.
 
 ### PayPal Capture And Webhook
 
@@ -669,23 +595,21 @@ Admin extensions update `expires_at`, increment `extension_count`, require `reas
 - Verified `PAYMENT.CAPTURE.COMPLETED` processing locks the payment and booking rows, checks amount/currency/order/capture IDs, then transitions to `paypal_captured` or `paid`.
 - Confirmation only occurs after Smoobu state is confirmed or reconciled.
 
-### Deposit Approval
+### Manual Deposit Handoff
 
-Admin approval requires:
+Manual deposit is not a payment state in MVP:
 
-- Matching `booking_session_id`.
-- Payment `provider = 'manual_deposit'`.
-- At least one linked `uploaded_files.scan_status = 'clean'`.
-- Active or admin-extended hold.
-
-Approval sets payment `paid`, booking `paid`, then `confirmed` after Smoobu update/reconciliation. Rejection records a reason and leaves the hold expiring unless admin extends it.
+- Selecting manual deposit does not create a `payments` row.
+- Selecting manual deposit does not create a custom-engine Smoobu hold.
+- Selecting manual deposit cannot transition booking status to `paid` or `confirmed`.
+- Staff handle accepted manual deposit bookings directly in Smoobu or existing business channels.
 
 ## Retention And Privacy
 
 - Abandoned `booking_sessions` without payment, hold, audit, or support records can be deleted/anonymized after 90 days.
 - Confirmed/cancelled bookings and payment metadata follow legal/accounting retention rules.
-- Deposit receipt files and PII default to 24 months after checkout, configurable by environment.
-- Analytics events must not include raw guest PII, receipt URLs, presigned URLs, provider secrets, or raw webhook payloads.
+- Guest PII defaults to 24 months after checkout, configurable by environment.
+- Analytics events must not include raw guest PII, provider secrets, or raw webhook payloads.
 
 ## Initial Migration Order
 
@@ -694,19 +618,18 @@ Approval sets payment `paid`, booking `paid`, then `confirmed` after Smoobu upda
 3. `booking_sessions`.
 4. `holds`.
 5. `payments`.
-6. `uploaded_files`.
-7. `webhook_events`.
-8. `idempotency_keys`.
-9. `audit_log`.
-10. Supporting tables.
-11. Seed `properties` from the existing property catalog after confirming `houseCode` equals Smoobu `apartmentId`.
+6. `webhook_events`.
+7. `idempotency_keys`.
+8. `audit_log`.
+9. Supporting tables.
+10. Seed `properties` from the existing property catalog after confirming `houseCode` equals Smoobu `apartmentId`.
 
 ## Acceptance Checks For Task 1.3
 
-- DB tables are defined for properties, booking sessions, holds, payments, uploads, webhooks, idempotency, and audit logs.
+- DB tables are defined for properties, booking sessions, holds, PayPal payments, webhooks, idempotency, and audit logs.
 - Overlapping active local holds are blocked by a PostgreSQL exclusion constraint.
 - PayPal order/capture IDs and request IDs have unique indexes.
 - Webhooks are deduped by provider-specific external event ID or deterministic dedupe key.
 - Public reservation IDs are unique and non-sequential.
-- Deposit uploads remain private and cannot become approved without clean scan metadata.
-- Admin and system transitions are auditable.
+- Manual deposit handoff cannot become paid or confirmed inside the custom engine.
+- Provider and system transitions are auditable.

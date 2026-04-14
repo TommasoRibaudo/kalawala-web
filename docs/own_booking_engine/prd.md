@@ -6,9 +6,9 @@ Date: 2026-04-14
 
 ## Purpose
 
-Build a secure Kalawala booking engine that lets guests search availability, reserve inventory, pay by PayPal or manual deposit, upload deposit proof, and manage a reservation through a guest portal. The frontend remains a React CRA marketing site; booking authority lives in the backend.
+Build a secure Kalawala booking engine that lets guests search availability, reserve inventory, pay by PayPal, and manage a PayPal-confirmed reservation through a guest portal. Manual deposit remains an offline/manual handoff outside the custom booking engine. The frontend remains a React CRA marketing site; booking authority lives in the backend.
 
-This PRD freezes the MVP product behavior for PayPal, manual deposit, guest portal, non-functional requirements, admin operations, and success metrics. Later changes to frozen decisions require a new task or explicit change request.
+This PRD freezes the MVP product behavior for PayPal, offline deposit handoff, guest portal, non-functional requirements, operational handoff, and success metrics. Later changes to frozen decisions require a new task or explicit change request.
 
 ## Source References
 
@@ -35,17 +35,17 @@ Relevant Smoobu API facts used for this PRD:
 |---|---|
 | Booking authority | Backend state machine is authoritative for Kalawala workflow; Smoobu remains inventory source of truth. |
 | Smoobu access | No Smoobu API key or Smoobu write call is exposed to the browser. |
-| Hold model | Use Smoobu-backed provisional holds for both PayPal and deposit flows. |
+| Hold model | Use Smoobu-backed provisional holds for PayPal checkout only. Manual deposit does not create an automated custom-engine hold in MVP. |
 | Smoobu channel for unpaid holds | Use Smoobu `Blocked channel` (`channelId: 11`) for provisional unpaid holds. If the account/API rejects this channel in implementation, use a config-gated fallback to `Direct booking` (`channelId: 13`) with an audit entry. |
 | Hold duration | Default guest hold is 60 minutes. Expiry is real, not fake. |
-| Hold extension | Admin can extend an active hold when the guest requests help. Extensions require an internal note and audit entry. |
+| Hold extension | No custom admin hold extension in MVP. Expired PayPal holds are automatically cancelled. Exceptions are handled manually outside the custom app. |
 | PayPal charge amount | MVP PayPal checkout collects the full quoted booking amount unless a later property-level configuration explicitly enables deposit-only PayPal. |
-| Manual deposit amount | Manual deposit uses the configured deposit amount from backend configuration or Smoobu-derived pricing rules; upload proof alone never confirms payment. |
-| Confirmation authority | A booking is confirmed only after Smoobu hold exists and payment is verified: PayPal capture/webhook or admin-approved deposit. |
+| Manual deposit | Manual deposit is an offline inquiry/handoff. The booking engine can show instructions/contact options, but it does not upload receipts, approve deposits, or confirm deposit bookings. Staff handle deposit bookings directly in Smoobu or existing business channels. |
+| Confirmation authority | A booking is confirmed automatically only after Smoobu hold exists and PayPal payment is verified. Manual deposit confirmation is outside the custom engine in MVP. |
 | Guest portal | Portal access uses non-guessable `reservation_public_id` plus guest password. Passwords are stored only as salted hashes. |
 | Language | Persist `language` as `'en'` or `'es'` in the booking record at session start and use it for portal and communications. |
 | Listing links | Search result listing links open in a new tab with `target="_blank"` and `rel="noopener noreferrer"`, using `/{slug}` for English and `/{slug}ES` for Spanish. |
-| Upload file types | Deposit proof MVP allowlist is PDF, JPEG, and PNG. Files are private, renamed, scanned, and never served directly from a public bucket. |
+| Receipt uploads | No custom receipt upload in MVP. Guests send deposit proof through existing offline channels such as WhatsApp or email if manual deposit is offered. |
 | Automated refunds | Automated PayPal refunds are out of MVP scope. Staff can record refund requests and reconcile manually until a later refund task is added. |
 
 ## User Flows
@@ -84,37 +84,35 @@ Failure and recovery:
 - If Smoobu update fails after payment capture, set a provisioning-failed status, alert staff, and retry/reconcile before telling the guest the booking is confirmed.
 - If hold expires before payment verification, cancel the Smoobu reservation and mark the local hold expired.
 
-### Manual Deposit Flow
+### Manual Deposit Handoff
 
-1. Guest selects an available property and enters required guest details.
-2. Backend creates a booking intent and rechecks Smoobu availability.
-3. Backend creates a provisional Smoobu hold and stores the returned reservation ID.
-4. Guest sees deposit instructions, booking summary, reservation reference, and a real 60-minute countdown tied to backend `expires_at`.
-5. Guest uploads deposit proof through a short-lived signed upload URL.
-6. Upload enters quarantine. Backend validates file size, extension, detected MIME/magic bytes, checksum, and scan result.
-7. Admin reviews proof and approves, rejects, requests re-upload, extends the hold, or cancels the hold.
-8. Approval transitions the booking to paid/confirmed, updates Smoobu deposit/payment status when applicable, sends confirmation, and enables portal access.
+1. Guest selects manual deposit instead of PayPal.
+2. Frontend shows clear offline instructions and contact options, such as WhatsApp/email, in the guest's language.
+3. The page states that the stay is not confirmed by the custom booking engine until Kalawala staff manually confirms through existing business channels.
+4. No custom receipt upload, deposit approval, hold extension, or admin dashboard is built for MVP.
+5. If staff accepts the deposit offline, staff manages the booking directly in Smoobu or the existing operational process.
 
-Failure and recovery:
+MVP requirements:
 
-- Upload completion alone cannot mark the booking paid.
-- Rejected proof returns the booking to a re-upload-needed state if the hold remains active.
-- Expired hold without uploaded proof or admin extension cancels Smoobu reservation automatically.
-- A guest help request flags the booking for staff and allows extension, but does not disable expiry indefinitely.
+- Manual deposit must not display an automatic "confirmed" state in the custom engine.
+- Manual deposit must not create a long-running custom hold that requires an admin panel to release.
+- Manual deposit contact events can be tracked as inquiries, but they are not purchase/confirmed-booking events.
+- Any future automated deposit workflow requires a separate PRD update.
 
 ### Guest Portal Flow
 
 1. Guest receives or sets portal credentials after hold creation or confirmation.
 2. Guest logs in with `reservation_public_id` and password.
 3. Portal returns the same generic error for unknown reservation ID and wrong password.
-4. Guest can view booking summary, payment status, upload/re-upload deposit proof when allowed, request changes, and request cancellation.
-5. Portal actions create backend records and notifications; they do not directly mutate confirmed/cancelled state without server validation or admin review.
+4. Guest can view booking summary, PayPal payment status, and request help/cancellation.
+5. Portal actions create backend records and notifications; they do not directly mutate confirmed/cancelled state without server validation.
 
 MVP portal does not allow:
 
 - Changing stay dates directly.
 - Changing property directly.
 - Updating Smoobu or PayPal state from the browser.
+- Uploading deposit receipts.
 - Automated refunds.
 
 ## State Machine Requirements
@@ -127,9 +125,6 @@ The backend must model explicit states. Names can be adjusted during API contrac
 - `HOLD_ACTIVE`
 - `PAYPAL_PENDING`
 - `PAYPAL_CAPTURED`
-- `DEPOSIT_PENDING`
-- `PROOF_UPLOADED`
-- `DEPOSIT_UNDER_REVIEW`
 - `PAID`
 - `CONFIRMED`
 - `EXPIRED`
@@ -141,7 +136,6 @@ State transition rules:
 - Only backend code can transition booking state.
 - `CONFIRMED` requires an active Smoobu reservation ID and verified payment.
 - PayPal verification requires capture completion plus verified webhook or reconciliation against PayPal.
-- Deposit verification requires clean upload scan and admin approval.
 - Cancellation and expiry must attempt Smoobu cancellation and record the outcome.
 - Every privileged transition writes to `audit_log`.
 
@@ -149,21 +143,19 @@ State transition rules:
 
 ### Security
 
-- Keep Smoobu API keys, PayPal secrets, DB credentials, upload signing keys, and webhook secrets in AWS Secrets Manager.
+- Keep Smoobu API keys, PayPal secrets, DB credentials, and webhook secrets in AWS Secrets Manager.
 - Never use `REACT_APP_*` for secrets.
 - Verify PayPal webhook signatures before state changes.
 - Dedupe PayPal and Smoobu webhooks.
 - Validate all API inputs with typed schemas.
 - Use parameterized DB queries or a safe ORM.
 - Redact secrets, authorization headers, session IDs, and pre-signed URLs from logs.
-- Store receipt uploads in a private S3 bucket with public access blocked.
-- Scan uploads before admin approval.
-- Apply WAF/rate limiting to public search, hold, upload, webhook, and portal endpoints.
+- Apply WAF/rate limiting to public search, hold, webhook, and portal endpoints.
 
 ### Reliability
 
 - All write endpoints must be idempotent by booking ID and idempotency key.
-- Hold creation, payment updates, and admin transitions must run inside DB transactions where possible.
+- Hold creation and payment updates must run inside DB transactions where possible.
 - Scheduled expiry worker must cancel expired Smoobu holds.
 - Reconciliation jobs must compare DB state against Smoobu and PayPal.
 - Webhook handlers must safely process duplicate and out-of-order events.
@@ -180,9 +172,9 @@ State transition rules:
 ### Privacy And Retention
 
 - Store the minimum PII needed for booking operations, payment reconciliation, and legally required records.
-- Default receipt and guest PII retention is 24 months after checkout, configurable by environment.
+- Default guest PII retention is 24 months after checkout, configurable by environment.
 - Delete or anonymize expired abandoned booking intents after 90 days unless tied to fraud, payment, audit, or support records.
-- Do not include receipt URLs or sensitive guest details in analytics events.
+- Do not include sensitive guest details in analytics events.
 
 ### Accessibility And I18n
 
@@ -195,36 +187,34 @@ State transition rules:
 
 - Every request gets a correlation ID.
 - Structured logs include booking ID, public reservation ID where safe, provider IDs, and state transition names.
-- Metrics and alerts cover payment webhook failures, Smoobu create/cancel failures, expired holds, upload scan failures, reconciliation mismatches, and portal brute-force signals.
+- Metrics and alerts cover payment webhook failures, Smoobu create/cancel failures, expired holds, reconciliation mismatches, and portal brute-force signals.
 
-## Admin Operations
+## Manual Operations Outside The Custom App
 
-MVP admin capabilities:
+There is no custom admin panel in MVP.
 
-- Search booking by public reservation ID, guest email, Smoobu reservation ID, PayPal order ID, or date range.
-- View booking timeline, current state, payment status, upload scan status, Smoobu reservation ID, and audit entries.
-- Approve deposit proof only when scan status is clean.
-- Reject deposit proof with a required reason and optional guest-facing message.
-- Request deposit proof re-upload.
-- Extend hold expiration with a required internal note.
-- Cancel active hold or booking, including Smoobu cancellation attempt and audit record.
-- Resend deposit instructions or confirmation message.
-- Record manual refund/support notes without changing PayPal state automatically.
-- Trigger or view reconciliation results for a booking.
+MVP operational model:
 
-Admin guardrails:
+- PayPal bookings are confirmed by backend automation only after verified payment.
+- Manual deposit is handled through existing channels such as Smoobu, WhatsApp, email, or phone.
+- Staff do not approve deposits, extend timers, or cancel holds in a custom dashboard.
+- Staff can still use Smoobu directly for offline/manual bookings.
+- Backend alerts can notify staff about failures, but remediation happens outside a custom admin UI in MVP.
 
-- Admin cannot mark PayPal as paid manually in MVP.
-- Admin cannot approve quarantined, failed-scan, or unsupported receipt files.
-- Destructive actions require confirmation and an audit reason.
-- All admin operations require authenticated staff access and role-based authorization.
+Out of MVP:
+
+- Custom admin dashboard.
+- Deposit receipt review queue.
+- Admin approve/reject buttons.
+- Admin hold-extension button.
+- Custom admin booking cancellation UI.
 
 ## Success Metrics
 
 ### Correctness Metrics
 
 - Confirmed bookings without Smoobu reservation ID: 0.
-- Confirmed bookings without verified PayPal capture or admin-approved deposit: 0.
+- Confirmed bookings without verified PayPal capture: 0.
 - Double-booked same property/date from Kalawala flow: 0.
 - Expired holds still active in Smoobu after cleanup window: 0.
 - Duplicate webhook events causing duplicate state transitions: 0.
@@ -237,8 +227,7 @@ Admin guardrails:
 - Hold active to payment method selected.
 - PayPal order created to PayPal approved.
 - PayPal approved to capture completed.
-- Deposit instructions shown to proof uploaded.
-- Proof uploaded to admin approval/rejection.
+- Manual deposit option selected to contact handoff clicked.
 - Hold active to confirmed.
 - Hold active to expired/cancelled.
 
@@ -248,16 +237,13 @@ Admin guardrails:
 - Smoobu API error rate and 429 count.
 - PayPal webhook verification failure count.
 - Webhook processing lag p95.
-- Upload scan completion p95.
 - Reconciliation mismatch count and time to resolution.
-- Admin deposit review time p50/p95.
 
 ### Security Metrics
 
 - Rate-limit trigger count by endpoint.
 - CAPTCHA escalation count for hold creation, if CAPTCHA is enabled.
 - Portal failed-login rate by IP/device.
-- Rejected upload count by reason.
 - Invalid or replayed webhook count.
 - Secrets detected in logs or artifacts: 0.
 
@@ -268,7 +254,8 @@ Admin guardrails:
 - Guest self-service date/property changes.
 - Automated PayPal refunds.
 - Supporting payment providers beyond PayPal and manual deposit.
-- Full admin accounting/reporting suite.
+- Custom admin panel or admin accounting/reporting suite.
+- Custom deposit receipt upload and approval workflow.
 
 ## Change Control
 
@@ -277,7 +264,7 @@ The following require a new task or explicit approval before implementation chan
 - Hold duration or expiry semantics.
 - Smoobu channel used for provisional holds.
 - PayPal full-payment vs deposit-only charging behavior.
-- Deposit file allowlist.
+- Any change that makes manual deposit automatic inside the booking engine.
 - State transition gates for `PAID` or `CONFIRMED`.
 - Public API response fields that expose provider IDs or raw provider errors.
-- Retention duration for receipt files or guest PII.
+- Retention duration for guest PII.

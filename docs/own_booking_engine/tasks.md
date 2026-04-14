@@ -550,7 +550,7 @@ gantt
 
 [x] 2.1 Backend scaffold: create Booking API service (framework, routing, validation, public endpoint hardening). (10h)  
 [x] 2.2 Rate limiting + abuse controls: implement per-IP/per-device limits; add CAPTCHA challenge triggers for “hold/create” endpoints. (10h)  
-[ ] 2.3 Secrets management: configure secure storage for Smoobu/PayPal credentials, webhook secrets, encryption keys. (6h)  
+[x] 2.3 Secrets management: configure secure storage for Smoobu/PayPal credentials, webhook secrets, encryption keys. (6h)
 [ ] 2.4 Observability baseline: structured logs, correlation IDs, error alerts, dashboards. (8h)  
 
 [ ] 2.5 Terraform project scaffold: create `infra/` directory with `main.tf` (AWS provider, S3+DynamoDB remote state backend), `variables.tf`, `outputs.tf`, and environment-specific `.tfvars` files (dev/staging/prod). (6h)  

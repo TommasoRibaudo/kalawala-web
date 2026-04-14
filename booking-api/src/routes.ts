@@ -93,7 +93,7 @@ export function createRouter(config: BookingApiConfig): Router {
     "/api/webhooks/smoobu",
     async (request) => {
       assertJsonObject(request.body);
-      assertSmoobuWebhookSecret(request, config);
+      await assertSmoobuWebhookSecret(request, config);
       throw notImplemented("Smoobu webhook route is scaffolded; dedupe and reconciliation land in task 6.1.");
     },
     { requireJsonBody: true, preserveRawBody: true, rejectQuerySecrets: true, abuseProtection: "webhook" }
@@ -184,15 +184,11 @@ function assertPayPalWebhookHeaders(request: RouteRequest): void {
   }
 }
 
-function assertSmoobuWebhookSecret(request: RouteRequest, config: BookingApiConfig): void {
-  if (!config.smoobuWebhookSecret) {
-    throw new ApiError(503, "webhook_not_configured", "Smoobu webhook secret is not configured.", {
-      retryable: true,
-    });
-  }
+async function assertSmoobuWebhookSecret(request: RouteRequest, config: BookingApiConfig): Promise<void> {
+  const { smoobuWebhookSecret } = await config.secrets.getSecrets();
 
   const provided = getHeader(request.headers, "x-smoobu-webhook-secret");
-  const expected = Buffer.from(config.smoobuWebhookSecret);
+  const expected = Buffer.from(smoobuWebhookSecret);
   const actual = Buffer.from(provided ?? "");
   if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) {
     throw new ApiError(401, "unauthorized", "Webhook secret is invalid.");

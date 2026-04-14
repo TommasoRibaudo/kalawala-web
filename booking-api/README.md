@@ -20,7 +20,8 @@ database, and webhook secrets never enter the browser bundle.
   - idempotency key enforcement for public write endpoints,
   - per-IP and per-device rate limits,
   - CAPTCHA challenge triggers for repeated hold/order creation attempts,
-  - no query-string secrets on the new Smoobu webhook route.
+  - no query-string secrets on the new Smoobu webhook route,
+  - Secrets Manager-backed provider credentials with fail-closed validation.
 - Contract-level validators for the planned booking endpoints.
 - Fail-closed placeholder handlers for provider/database work scheduled in later
   tasks.
@@ -38,10 +39,31 @@ npm run booking-api:build
 | --- | --- |
 | `BOOKING_API_ALLOWED_ORIGINS` | Comma-separated CORS allowlist. |
 | `BOOKING_API_MAX_BODY_BYTES` | Optional JSON body limit, defaults to `65536`. |
+| `BOOKING_API_SECRETS_MANAGER_SECRET_ID` | AWS Secrets Manager secret ID/ARN for the booking provider secret bundle. Required outside local/test. |
+| `BOOKING_API_SECRETS_EXTENSION_ENDPOINT` | Optional AWS Parameters and Secrets Lambda Extension endpoint, defaults to `http://localhost:2773`. |
+| `BOOKING_API_SECRETS_CACHE_TTL_MS` | Optional in-process secret cache TTL, defaults to `300000`. |
+| `BOOKING_API_SECRETS_FETCH_TIMEOUT_MS` | Optional Secrets Manager extension fetch timeout, defaults to `2000`. |
 | `BOOKING_API_ABUSE_PROTECTION_ENABLED` | Optional boolean, defaults to `true`. |
 | `BOOKING_API_CAPTCHA_CHALLENGES_ENABLED` | Optional boolean, defaults to `true`. |
 | `BOOKING_API_RATE_LIMIT_MAX_BUCKETS` | Optional in-memory limiter bucket cap, defaults to `10000`. |
-| `SMOOBU_WEBHOOK_SECRET` | Shared secret for `X-Smoobu-Webhook-Secret`; fail-closed when unset. |
+
+The Secrets Manager value must be a JSON object with this shape:
+
+```json
+{
+  "smoobuApiKey": "stored only in Secrets Manager",
+  "paypalClientId": "stored only in Secrets Manager",
+  "paypalClientSecret": "stored only in Secrets Manager",
+  "paypalWebhookId": "stored only in Secrets Manager",
+  "smoobuWebhookSecret": "shared header value for X-Smoobu-Webhook-Secret",
+  "bookingEncryptionKeyBase64": "base64-encoded 32-byte key",
+  "portalSessionSecret": "high-entropy signing secret"
+}
+```
+
+For local tests only, `BOOKING_API_SECRETS_JSON` or individual raw env vars can
+be enabled with `BOOKING_API_ALLOW_INSECURE_ENV_SECRETS=true`. Do not use those
+raw secret modes for deployed environments.
 
 Provider integrations, database adapters, durable Redis/WAF rate-limit backing,
 and observability are implemented in later booking-engine tasks.

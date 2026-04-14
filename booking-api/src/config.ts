@@ -1,4 +1,5 @@
 import { BookingApiConfig } from "./types";
+import { createSecretProvider } from "./secrets";
 
 const DEFAULT_MAX_BODY_BYTES = 64 * 1024;
 const DEFAULT_MAX_TRACKED_RATE_LIMIT_BUCKETS = 10_000;
@@ -60,7 +61,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
   return {
     allowedOrigins: splitCsv(env.BOOKING_API_ALLOWED_ORIGINS),
     maxBodyBytes: parseMaxBodyBytes(env.BOOKING_API_MAX_BODY_BYTES),
-    smoobuWebhookSecret: env.SMOOBU_WEBHOOK_SECRET,
+    secrets: createSecretProvider(env),
     abuseProtection: {
       enabled: parseBoolean(env.BOOKING_API_ABUSE_PROTECTION_ENABLED, true),
       captchaChallengesEnabled: parseBoolean(env.BOOKING_API_CAPTCHA_CHALLENGES_ENABLED, true),

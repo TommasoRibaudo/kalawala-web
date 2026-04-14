@@ -1,0 +1,324 @@
+import { ApiError } from "./http/errors";
+import { BookingProviderSecrets, BookingSecretProvider, FieldErrors, JsonBody } from "./types";
+
+const DEFAULT_EXTENSION_ENDPOINT = "http://localhost:2773";
+const DEFAULT_SECRET_CACHE_TTL_MS = 5 * 60 * 1000;
+const DEFAULT_FETCH_TIMEOUT_MS = 2_000;
+const REQUIRED_FIELDS: Array<keyof BookingProviderSecrets> = [
+  "smoobuApiKey",
+  "paypalClientId",
+  "paypalClientSecret",
+  "paypalWebhookId",
+  "smoobuWebhookSecret",
+  "bookingEncryptionKeyBase64",
+  "portalSessionSecret",
+];
+
+interface CachedSecrets {
+  expiresAt: number;
+  value: BookingProviderSecrets;
+}
+
+export interface LambdaExtensionSecretProviderOptions {
+  secretId: string;
+  endpoint?: string;
+  sessionToken?: string;
+  cacheTtlMs?: number;
+  fetchTimeoutMs?: number;
+  now?: () => number;
+}
+
+export class StaticSecretProvider implements BookingSecretProvider {
+  readonly source = "static";
+  private readonly secrets: BookingProviderSecrets;
+
+  constructor(value: unknown, sourceLabel = "static") {
+    this.secrets = validateBookingSecrets(value, sourceLabel);
+  }
+
+  async getSecrets(): Promise<BookingProviderSecrets> {
+    return this.secrets;
+  }
+}
+
+export class MissingSecretProvider implements BookingSecretProvider {
+  readonly source = "missing";
+
+  async getSecrets(): Promise<BookingProviderSecrets> {
+    throw secretProviderError("secrets_not_configured", "Booking API secrets are not configured.", {
+      secrets: ["secrets_manager_secret_id_required"],
+    });
+  }
+}
+
+export class InvalidSecretProvider implements BookingSecretProvider {
+  readonly source = "invalid";
+
+  constructor(private readonly error: ApiError) {}
+
+  async getSecrets(): Promise<BookingProviderSecrets> {
+    throw this.error;
+  }
+}
+
+export class LambdaExtensionSecretProvider implements BookingSecretProvider {
+  readonly source = "aws-secrets-manager-extension";
+  private readonly secretId: string;
+  private readonly endpoint: string;
+  private readonly sessionToken?: string;
+  private readonly cacheTtlMs: number;
+  private readonly fetchTimeoutMs: number;
+  private readonly now: () => number;
+  private cached?: CachedSecrets;
+
+  constructor(options: LambdaExtensionSecretProviderOptions) {
+    this.secretId = options.secretId;
+    this.endpoint = (options.endpoint ?? DEFAULT_EXTENSION_ENDPOINT).replace(/\/+$/, "");
+    this.sessionToken = options.sessionToken;
+    this.cacheTtlMs = options.cacheTtlMs ?? DEFAULT_SECRET_CACHE_TTL_MS;
+    this.fetchTimeoutMs = options.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS;
+    this.now = options.now ?? Date.now;
+  }
+
+  async getSecrets(): Promise<BookingProviderSecrets> {
+    const now = this.now();
+    if (this.cached && this.cached.expiresAt > now) {
+      return this.cached.value;
+    }
+
+    if (!this.sessionToken) {
+      throw secretProviderError("secrets_unavailable", "Secrets Manager extension session token is unavailable.", {
+        awsSessionToken: ["required_for_lambda_extension"],
+      });
+    }
+
+    const url = `${this.endpoint}/secretsmanager/get?secretId=${encodeURIComponent(this.secretId)}`;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.fetchTimeoutMs);
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "X-Aws-Parameters-Secrets-Token": this.sessionToken,
+        },
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        throw secretProviderError("secrets_unavailable", "Secrets Manager returned an error.", {
+          secretsManager: [`http_${response.status}`],
+        });
+      }
+
+      const payload = (await response.json()) as JsonBody;
+      const secretString = payload.SecretString;
+      if (typeof secretString !== "string" || secretString.trim().length === 0) {
+        throw secretProviderError("secrets_invalid", "Secrets Manager secret has no SecretString.", {
+          secretString: ["required"],
+        });
+      }
+
+      const parsed = parseSecretJson(secretString, `secret:${this.secretId}`);
+      this.cached = {
+        value: parsed,
+        expiresAt: now + this.cacheTtlMs,
+      };
+      return parsed;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw secretProviderError("secrets_unavailable", "Secrets Manager secret could not be loaded.", {
+        secretsManager: ["fetch_failed"],
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+}
+
+export function createSecretProvider(env: NodeJS.ProcessEnv = process.env): BookingSecretProvider {
+  const secretId = trimOptional(env.BOOKING_API_SECRETS_MANAGER_SECRET_ID);
+  if (secretId) {
+    return new LambdaExtensionSecretProvider({
+      secretId,
+      endpoint: trimOptional(env.BOOKING_API_SECRETS_EXTENSION_ENDPOINT),
+      sessionToken: trimOptional(env.AWS_SESSION_TOKEN),
+      cacheTtlMs: parsePositiveInteger(env.BOOKING_API_SECRETS_CACHE_TTL_MS, DEFAULT_SECRET_CACHE_TTL_MS),
+      fetchTimeoutMs: parsePositiveInteger(env.BOOKING_API_SECRETS_FETCH_TIMEOUT_MS, DEFAULT_FETCH_TIMEOUT_MS),
+    });
+  }
+
+  const inlineSecretJson = trimOptional(env.BOOKING_API_SECRETS_JSON);
+  if (inlineSecretJson) {
+    if (!allowInsecureEnvSecrets(env)) {
+      return new InvalidSecretProvider(
+        secretProviderError("raw_env_secrets_not_allowed", "Raw provider secrets must be loaded from Secrets Manager.", {
+          secrets: ["set_BOOKING_API_SECRETS_MANAGER_SECRET_ID_or_enable_local_override"],
+        })
+      );
+    }
+
+    try {
+      return new StaticSecretProvider(JSON.parse(inlineSecretJson), "BOOKING_API_SECRETS_JSON");
+    } catch (error) {
+      return invalidSecretProviderFrom(error);
+    }
+  }
+
+  const rawEnvSecrets = readRawEnvSecrets(env);
+  if (rawEnvSecrets) {
+    if (!allowInsecureEnvSecrets(env)) {
+      return new InvalidSecretProvider(
+        secretProviderError("raw_env_secrets_not_allowed", "Raw provider secrets must be loaded from Secrets Manager.", {
+          secrets: ["set_BOOKING_API_SECRETS_MANAGER_SECRET_ID_or_enable_local_override"],
+        })
+      );
+    }
+
+    try {
+      return new StaticSecretProvider(rawEnvSecrets, "local env");
+    } catch (error) {
+      return invalidSecretProviderFrom(error);
+    }
+  }
+
+  return new MissingSecretProvider();
+}
+
+export function parseSecretJson(value: string, sourceLabel = "secret json"): BookingProviderSecrets {
+  try {
+    return validateBookingSecrets(JSON.parse(value), sourceLabel);
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw secretProviderError("secrets_invalid", "Secret payload must be valid JSON.", {
+      secrets: ["invalid_json"],
+    });
+  }
+}
+
+export function validateBookingSecrets(value: unknown, sourceLabel = "secrets"): BookingProviderSecrets {
+  const errors: FieldErrors = {};
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw secretProviderError("secrets_invalid", "Secret payload must be a JSON object.", {
+      secrets: ["object_required"],
+    });
+  }
+
+  const body = value as Record<string, unknown>;
+  const result = {} as BookingProviderSecrets;
+
+  for (const field of REQUIRED_FIELDS) {
+    const stringValue = requireSecretString(body, field, errors);
+    if (stringValue) {
+      result[field] = stringValue;
+    }
+  }
+
+  validateBase64Key(result.bookingEncryptionKeyBase64, "bookingEncryptionKeyBase64", errors);
+
+  if (Object.keys(errors).length > 0) {
+    throw secretProviderError("secrets_invalid", `Secret payload '${sourceLabel}' is invalid.`, errors);
+  }
+
+  return result;
+}
+
+function readRawEnvSecrets(env: NodeJS.ProcessEnv): Partial<BookingProviderSecrets> | null {
+  const raw: Partial<BookingProviderSecrets> = {
+    smoobuApiKey: trimOptional(env.SMOOBU_API_KEY),
+    paypalClientId: trimOptional(env.PAYPAL_CLIENT_ID),
+    paypalClientSecret: trimOptional(env.PAYPAL_CLIENT_SECRET),
+    paypalWebhookId: trimOptional(env.PAYPAL_WEBHOOK_ID),
+    smoobuWebhookSecret: trimOptional(env.SMOOBU_WEBHOOK_SECRET),
+    bookingEncryptionKeyBase64: trimOptional(env.BOOKING_API_ENCRYPTION_KEY_BASE64),
+    portalSessionSecret: trimOptional(env.BOOKING_API_PORTAL_SESSION_SECRET),
+  };
+
+  return Object.values(raw).some(Boolean) ? raw : null;
+}
+
+function requireSecretString(
+  body: Record<string, unknown>,
+  field: keyof BookingProviderSecrets,
+  errors: FieldErrors
+): string | undefined {
+  const value = body[field];
+  if (typeof value !== "string" || value.trim().length === 0) {
+    addError(errors, field, "required");
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+  if (trimmed.length < 16) {
+    addError(errors, field, "too_short");
+  }
+
+  return trimmed;
+}
+
+function validateBase64Key(value: string | undefined, field: string, errors: FieldErrors): void {
+  if (!value) {
+    return;
+  }
+
+  const decoded = Buffer.from(value, "base64");
+  const normalizedInput = value.replace(/=+$/, "");
+  const normalizedRoundTrip = decoded.toString("base64").replace(/=+$/, "");
+  if (decoded.length !== 32 || normalizedInput !== normalizedRoundTrip) {
+    addError(errors, field, "must_be_base64_32_bytes");
+  }
+}
+
+function allowInsecureEnvSecrets(env: NodeJS.ProcessEnv): boolean {
+  const override = trimOptional(env.BOOKING_API_ALLOW_INSECURE_ENV_SECRETS);
+  if (override) {
+    return ["1", "true", "yes", "on"].includes(override.toLowerCase());
+  }
+
+  return env.NODE_ENV === "test";
+}
+
+function invalidSecretProviderFrom(error: unknown): BookingSecretProvider {
+  if (error instanceof ApiError) {
+    return new InvalidSecretProvider(error);
+  }
+
+  return new InvalidSecretProvider(
+    secretProviderError("secrets_invalid", "Secret configuration is invalid.", {
+      secrets: ["invalid"],
+    })
+  );
+}
+
+function parsePositiveInteger(value: string | undefined, defaultValue: number): number {
+  if (!value) {
+    return defaultValue;
+  }
+
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    return defaultValue;
+  }
+
+  return parsed;
+}
+
+function trimOptional(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed || undefined;
+}
+
+function addError(errors: FieldErrors, field: string, code: string): void {
+  errors[field] = [...(errors[field] ?? []), code];
+}
+
+function secretProviderError(code: string, message: string, fieldErrors: FieldErrors): ApiError {
+  return new ApiError(503, code, message, {
+    fieldErrors,
+    retryable: true,
+  });
+}

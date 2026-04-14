@@ -1,9 +1,11 @@
 import { createBookingApiHandler } from "./app";
+import { MissingSecretProvider } from "./secrets";
 import { BookingApiConfig, LambdaHttpRequest } from "./types";
 
 const config: BookingApiConfig = {
   allowedOrigins: ["https://kalawala.test"],
   maxBodyBytes: 64 * 1024,
+  secrets: new MissingSecretProvider(),
   abuseProtection: {
     enabled: true,
     captchaChallengesEnabled: true,

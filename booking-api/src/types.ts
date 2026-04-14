@@ -83,7 +83,7 @@ export interface RouteDefinition {
 export interface BookingApiConfig {
   allowedOrigins: string[];
   maxBodyBytes: number;
-  smoobuWebhookSecret?: string;
+  secrets: BookingSecretProvider;
   abuseProtection: AbuseProtectionConfig;
 }
 
@@ -94,3 +94,18 @@ export interface AbuseProtectionConfig {
 }
 
 export type FieldErrors = Record<string, string[]>;
+
+export interface BookingProviderSecrets {
+  smoobuApiKey: string;
+  paypalClientId: string;
+  paypalClientSecret: string;
+  paypalWebhookId: string;
+  smoobuWebhookSecret: string;
+  bookingEncryptionKeyBase64: string;
+  portalSessionSecret: string;
+}
+
+export interface BookingSecretProvider {
+  readonly source: "aws-secrets-manager-extension" | "static" | "missing" | "invalid";
+  getSecrets(): Promise<BookingProviderSecrets>;
+}

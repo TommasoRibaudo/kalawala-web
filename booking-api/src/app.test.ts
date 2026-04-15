@@ -6,6 +6,14 @@ const config: BookingApiConfig = {
   allowedOrigins: ["https://kalawala.test"],
   maxBodyBytes: 64 * 1024,
   secrets: new MissingSecretProvider(),
+  smoobu: {
+    baseUrl: "https://login.smoobu.com",
+    timeoutMs: 8_000,
+    maxRetries: 3,
+    baseBackoffMs: 250,
+    maxBackoffMs: 2_000,
+    maxRateLimitDelayMs: 60_000,
+  },
   abuseProtection: {
     enabled: true,
     captchaChallengesEnabled: true,

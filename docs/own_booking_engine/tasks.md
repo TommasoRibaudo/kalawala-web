@@ -561,7 +561,7 @@ gantt
 [x] 2.10 Terraform supporting services: ElastiCache Redis for rates/availability cache, SES for transactional email, CloudWatch log groups + alarms. (8h)  
 [x] 2.11 Terraform CI/CD integration: add `terraform plan` to PR checks and `terraform apply` to deployment pipeline (GitHub Actions). (6h)  
 
-[ ] 3.1 Smoobu proxy client: implement server-side client with retries/backoff and rate-limit header handling. (10h)  
+[x] 3.1 Smoobu proxy client: implement server-side client with retries/backoff and rate-limit header handling. (10h)  
 [ ] 3.2 Availability search endpoint: implement `POST /api/search` using Smoobu availability check; return structured “no houses available” response. (10h)  
 [ ] 3.3 Property catalog: build a safe mapping from public property slugs → Smoobu apartment IDs; include `slug` field (matching `houseLangCode` from `src/utils/constants.ts`) for language-aware listing page URLs; prevent enumeration. (8h)  
 [ ] 3.4 Search UI integration: implement date picker (future dates allowed), guest count, results list + "none available" message. (10h)  

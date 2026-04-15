@@ -175,6 +175,14 @@ test("Smoobu webhook route reads shared secret from secret provider", async () =
     allowedOrigins: [],
     maxBodyBytes: 64 * 1024,
     secrets: new StaticSecretProvider(VALID_SECRETS),
+    smoobu: {
+      baseUrl: "https://login.smoobu.com",
+      timeoutMs: 8_000,
+      maxRetries: 3,
+      baseBackoffMs: 250,
+      maxBackoffMs: 2_000,
+      maxRateLimitDelayMs: 60_000,
+    },
     abuseProtection: {
       enabled: false,
       captchaChallengesEnabled: false,

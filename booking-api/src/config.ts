@@ -4,6 +4,12 @@ import { createSecretProvider } from "./secrets";
 const DEFAULT_MAX_BODY_BYTES = 64 * 1024;
 const DEFAULT_MAX_TRACKED_RATE_LIMIT_BUCKETS = 10_000;
 const DEFAULT_SERVICE_NAME = "booking-api";
+const DEFAULT_SMOOBU_BASE_URL = "https://login.smoobu.com";
+const DEFAULT_SMOOBU_TIMEOUT_MS = 8_000;
+const DEFAULT_SMOOBU_MAX_RETRIES = 3;
+const DEFAULT_SMOOBU_BASE_BACKOFF_MS = 250;
+const DEFAULT_SMOOBU_MAX_BACKOFF_MS = 2_000;
+const DEFAULT_SMOOBU_MAX_RATE_LIMIT_DELAY_MS = 60_000;
 
 function splitCsv(value: string | undefined): string[] {
   if (!value) {
@@ -72,6 +78,17 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
     allowedOrigins: splitCsv(env.BOOKING_API_ALLOWED_ORIGINS),
     maxBodyBytes: parseMaxBodyBytes(env.BOOKING_API_MAX_BODY_BYTES),
     secrets: createSecretProvider(env),
+    smoobu: {
+      baseUrl: normalizeBaseUrl(env.SMOOBU_BASE_URL, DEFAULT_SMOOBU_BASE_URL),
+      timeoutMs: parsePositiveInteger(env.SMOOBU_TIMEOUT_MS, DEFAULT_SMOOBU_TIMEOUT_MS),
+      maxRetries: parseNonNegativeInteger(env.SMOOBU_MAX_RETRIES, DEFAULT_SMOOBU_MAX_RETRIES),
+      baseBackoffMs: parsePositiveInteger(env.SMOOBU_BASE_BACKOFF_MS, DEFAULT_SMOOBU_BASE_BACKOFF_MS),
+      maxBackoffMs: parsePositiveInteger(env.SMOOBU_MAX_BACKOFF_MS, DEFAULT_SMOOBU_MAX_BACKOFF_MS),
+      maxRateLimitDelayMs: parsePositiveInteger(
+        env.SMOOBU_MAX_RATE_LIMIT_DELAY_MS,
+        DEFAULT_SMOOBU_MAX_RATE_LIMIT_DELAY_MS
+      ),
+    },
     abuseProtection: {
       enabled: parseBoolean(env.BOOKING_API_ABUSE_PROTECTION_ENABLED, true),
       captchaChallengesEnabled: parseBoolean(env.BOOKING_API_CAPTCHA_CHALLENGES_ENABLED, true),
@@ -87,4 +104,32 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
       metricsEnabled: parseBoolean(env.BOOKING_API_METRICS_ENABLED, true),
     },
   };
+}
+
+function parseNonNegativeInteger(value: string | undefined, defaultValue: number): number {
+  if (!value) {
+    return defaultValue;
+  }
+
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 0) {
+    return defaultValue;
+  }
+
+  return parsed;
+}
+
+function normalizeBaseUrl(value: string | undefined, defaultValue: string): string {
+  const raw = value?.trim() || defaultValue;
+  try {
+    const parsed = new URL(raw);
+    // Env parsing fails closed to the production Smoobu origin; the client
+    // constructor still re-validates for manually constructed test clients.
+    if (parsed.protocol !== "https:" && parsed.hostname !== "localhost") {
+      return defaultValue;
+    }
+    return parsed.toString().replace(/\/+$/, "");
+  } catch {
+    return defaultValue;
+  }
 }

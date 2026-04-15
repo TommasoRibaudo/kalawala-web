@@ -87,8 +87,18 @@ export interface BookingApiConfig {
   allowedOrigins: string[];
   maxBodyBytes: number;
   secrets: BookingSecretProvider;
+  smoobu: SmoobuClientConfig;
   abuseProtection: AbuseProtectionConfig;
   observability: ObservabilityConfig;
+}
+
+export interface SmoobuClientConfig {
+  baseUrl: string;
+  timeoutMs: number;
+  maxRetries: number;
+  baseBackoffMs: number;
+  maxBackoffMs: number;
+  maxRateLimitDelayMs: number;
 }
 
 export interface AbuseProtectionConfig {

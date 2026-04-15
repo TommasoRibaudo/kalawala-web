@@ -3,106 +3,49 @@
 #
 # These are consumed by CI/CD pipelines, application config, and the
 # booking-api Lambda environment variables.
+#
+# Outputs for not-yet-provisioned resources (RDS, API Gateway, ElastiCache,
+# Secrets Manager, CloudWatch) are added incrementally as each task lands:
+#   Task 2.7 → RDS outputs
+#   Task 2.8 → API Gateway outputs
+#   Task 2.10 → ElastiCache, Secrets Manager, CloudWatch outputs
 ##############################################################################
 
 # ---------------------------------------------------------------------------
-# Networking
+# Networking  (task 2.6)
 # ---------------------------------------------------------------------------
 
 output "vpc_id" {
   description = "ID of the VPC created for the booking engine."
-  value       = module.vpc.vpc_id
+  value       = aws_vpc.main.id
 }
 
 output "private_subnet_ids" {
   description = "IDs of the private subnets (Lambda, RDS, ElastiCache)."
-  value       = module.vpc.private_subnet_ids
+  value       = aws_subnet.private[*].id
 }
 
 output "public_subnet_ids" {
-  description = "IDs of the public subnets (NAT gateway, load balancer)."
-  value       = module.vpc.public_subnet_ids
+  description = "IDs of the public subnets (NAT gateway)."
+  value       = aws_subnet.public[*].id
 }
 
-# ---------------------------------------------------------------------------
-# API Gateway / booking API
-# ---------------------------------------------------------------------------
-
-output "api_gateway_url" {
-  description = "Base URL of the API Gateway HTTP API (e.g. https://abc.execute-api.us-east-1.amazonaws.com)."
-  value       = module.api_gateway.api_endpoint
+output "nat_gateway_public_ip" {
+  description = "Public IP of the NAT gateway (add to Smoobu/PayPal IP allowlists)."
+  value       = aws_eip.nat.public_ip
 }
 
-output "api_gateway_id" {
-  description = "ID of the API Gateway HTTP API."
-  value       = module.api_gateway.api_id
+output "sg_lambda_id" {
+  description = "Security group ID assigned to booking API Lambda functions."
+  value       = aws_security_group.lambda.id
 }
 
-# ---------------------------------------------------------------------------
-# Database
-# ---------------------------------------------------------------------------
-
-output "rds_endpoint" {
-  description = "RDS PostgreSQL instance endpoint (host:port)."
-  value       = module.database.endpoint
-  sensitive   = true
+output "sg_rds_id" {
+  description = "Security group ID assigned to the RDS instance."
+  value       = aws_security_group.rds.id
 }
 
-output "rds_database_name" {
-  description = "Name of the initial database on the RDS instance."
-  value       = module.database.database_name
-}
-
-# ---------------------------------------------------------------------------
-# Cache
-# ---------------------------------------------------------------------------
-
-output "redis_primary_endpoint" {
-  description = "ElastiCache Redis primary endpoint address."
-  value       = module.cache.primary_endpoint_address
-  sensitive   = true
-}
-
-output "redis_port" {
-  description = "ElastiCache Redis port."
-  value       = module.cache.port
-}
-
-# ---------------------------------------------------------------------------
-# Secrets Manager ARNs
-# (ARNs are safe to expose; the actual secret values are not.)
-# ---------------------------------------------------------------------------
-
-output "smoobu_secret_arn" {
-  description = "ARN of the Secrets Manager secret holding Smoobu API credentials."
-  value       = module.secrets.smoobu_secret_arn
-}
-
-output "paypal_secret_arn" {
-  description = "ARN of the Secrets Manager secret holding PayPal credentials."
-  value       = module.secrets.paypal_secret_arn
-}
-
-output "db_secret_arn" {
-  description = "ARN of the Secrets Manager secret holding RDS master credentials."
-  value       = module.secrets.db_secret_arn
-}
-
-output "webhook_secret_arn" {
-  description = "ARN of the Secrets Manager secret holding webhook HMAC signing secrets."
-  value       = module.secrets.webhook_secret_arn
-}
-
-output "encryption_secret_arn" {
-  description = "ARN of the Secrets Manager secret holding the field-level encryption key."
-  value       = module.secrets.encryption_secret_arn
-}
-
-# ---------------------------------------------------------------------------
-# CloudWatch
-# ---------------------------------------------------------------------------
-
-output "booking_api_log_group_name" {
-  description = "CloudWatch log group name for the booking API Lambda functions."
-  value       = module.cloudwatch.booking_api_log_group_name
+output "sg_elasticache_id" {
+  description = "Security group ID assigned to the ElastiCache Redis cluster."
+  value       = aws_security_group.elasticache.id
 }

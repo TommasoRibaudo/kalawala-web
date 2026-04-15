@@ -554,7 +554,7 @@ gantt
 [x] 2.4 Observability baseline: structured logs, correlation IDs, error alerts, dashboards. (8h)  
 
 [x] 2.5 Terraform project scaffold: create `infra/` directory with `main.tf` (AWS provider, S3+DynamoDB remote state backend), `variables.tf`, `outputs.tf`, and environment-specific `.tfvars` files (dev/staging/prod). (6h)  
-[ ] 2.6 Terraform VPC + networking: define VPC, public/private subnets, NAT gateway, security groups for Lambda/RDS/ElastiCache. (8h)  
+[x] 2.6 Terraform VPC + networking: define VPC, public/private subnets, NAT gateway, security groups for Lambda/RDS/ElastiCache. (8h)  
 [ ] 2.7 Terraform RDS PostgreSQL: provision RDS instance in private subnet with encryption at rest, automated backups, Secrets Manager integration for credentials. (8h)  
 [ ] 2.8 Terraform Lambda + API Gateway: define Lambda functions for booking API endpoints, API Gateway HTTP API with routes, CORS config, and WAF rate-limiting rules. (12h)  
 [ ] 2.9 Terraform S3 + CloudFront: CloudFront distribution for frontend if needed; do not provision custom deposit-receipt upload storage in MVP. (6h)  

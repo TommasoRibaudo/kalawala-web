@@ -1,0 +1,313 @@
+name: Deploy Backend Infrastructure
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "infra/**"
+      - "backend/**"
+      - ".github/workflows/deploy-backend.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "infra/**"
+      - "backend/**"
+      - ".github/workflows/deploy-backend.yml"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Terraform environment to plan/apply."
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      apply:
+        description: "Run terraform apply after the plan succeeds."
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  id-token: write
+  issues: write
+  pull-requests: write
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+  TF_VERSION: "1.6.6"
+  TF_WORKING_DIR: infra
+  AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+  TF_STATE_REGION: ${{ vars.TF_STATE_REGION || vars.AWS_REGION || 'us-east-1' }}
+  TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+  TF_STATE_DYNAMODB_TABLE: ${{ vars.TF_STATE_DYNAMODB_TABLE || 'kalawala-tfstate-lock' }}
+  TF_STATE_KEY_PREFIX: ${{ vars.TF_STATE_KEY_PREFIX || 'kalawala' }}
+  AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME || secrets.AWS_ROLE_TO_ASSUME }}
+
+jobs:
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'dev' }}
+      TF_VAR_FILE: ${{ format('environments/{0}.tfvars', github.event_name == 'workflow_dispatch' && inputs.environment || 'dev') }}
+      TF_PLAN_FILE: ${{ format('tfplan-{0}', github.event_name == 'workflow_dispatch' && inputs.environment || 'dev') }}
+      TF_PLAN_ARTIFACT: ${{ format('terraform-plan-{0}', github.event_name == 'workflow_dispatch' && inputs.environment || 'dev') }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate workflow configuration
+        run: |
+          missing=0
+
+          if [ -z "${AWS_ROLE_TO_ASSUME}" ]; then
+            echo "::error::Set repository variable or secret AWS_ROLE_TO_ASSUME to the GitHub OIDC deploy role ARN."
+            missing=1
+          fi
+
+          if [ -z "${TF_STATE_BUCKET}" ]; then
+            echo "::error::Set repository variable TF_STATE_BUCKET to the Terraform remote-state S3 bucket."
+            missing=1
+          fi
+
+          if [ ! -f "${TF_WORKING_DIR}/${TF_VAR_FILE}" ]; then
+            echo "::error::Missing Terraform variable file: ${TF_WORKING_DIR}/${TF_VAR_FILE}"
+            missing=1
+          fi
+
+          exit "${missing}"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          role-session-name: kalawala-terraform-plan-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          terraform init \
+            -input=false \
+            -reconfigure \
+            -backend-config="bucket=${TF_STATE_BUCKET}" \
+            -backend-config="key=${TF_STATE_KEY_PREFIX}/${DEPLOY_ENV}/terraform.tfstate" \
+            -backend-config="region=${TF_STATE_REGION}" \
+            -backend-config="dynamodb_table=${TF_STATE_DYNAMODB_TABLE}" \
+            -backend-config="encrypt=true"
+
+      - name: Terraform validate
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform validate -no-color
+
+      - name: Terraform plan
+        id: plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          set +e
+          terraform plan \
+            -detailed-exitcode \
+            -input=false \
+            -lock-timeout=5m \
+            -no-color \
+            -out="${TF_PLAN_FILE}" \
+            -var-file="${TF_VAR_FILE}"
+          exit_code=$?
+          set -e
+
+          if [ "${exit_code}" -eq 1 ]; then
+            exit 1
+          fi
+
+          echo "exitcode=${exit_code}" >> "${GITHUB_OUTPUT}"
+
+      - name: Upload reviewed plan artifact
+        if: ${{ steps.plan.outcome == 'success' && github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.TF_PLAN_ARTIFACT }}
+          path: ${{ env.TF_WORKING_DIR }}/${{ env.TF_PLAN_FILE }}
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Add plan to job summary
+        if: ${{ always() && steps.plan.outcome == 'success' }}
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          terraform show -no-color "${TF_PLAN_FILE}" > plan.txt
+          total_lines="$(wc -l < plan.txt | tr -d ' ')"
+
+          {
+            echo "### Terraform plan: ${DEPLOY_ENV}"
+            echo
+            echo "Exit code: ${{ steps.plan.outputs.exitcode }} (0 = no changes, 2 = changes pending)"
+            echo
+            echo '```terraform'
+            sed -n '1,300p' plan.txt
+            if [ "${total_lines}" -gt 300 ]; then
+              echo
+              echo "... plan truncated in summary (${total_lines} total lines)."
+            fi
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Comment Terraform plan on PR
+        if: ${{ github.event_name == 'pull_request' && steps.plan.outcome == 'success' }}
+        uses: actions/github-script@v7
+        env:
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
+          PLAN_EXIT_CODE: ${{ steps.plan.outputs.exitcode }}
+          PLAN_PATH: ${{ env.TF_WORKING_DIR }}/plan.txt
+        with:
+          script: |
+            const fs = require('fs');
+
+            const marker = '<!-- kalawala-terraform-plan -->';
+            const maxChars = 60000;
+            const plan = fs.readFileSync(process.env.PLAN_PATH, 'utf8');
+            const truncated = plan.length > maxChars
+              ? `${plan.slice(0, maxChars)}\n\n... plan truncated in PR comment (${plan.length} characters total).`
+              : plan;
+
+            const body = [
+              marker,
+              `### Terraform plan: ${process.env.DEPLOY_ENV}`,
+              '',
+              `Exit code: ${process.env.PLAN_EXIT_CODE} (0 = no changes, 2 = changes pending)`,
+              '',
+              '<details>',
+              '<summary>Show plan</summary>',
+              '',
+              '```terraform',
+              truncated,
+              '```',
+              '</details>',
+            ].join('\n');
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+
+            const existing = comments.find((comment) =>
+              comment.user.type === 'Bot' && (comment.body || '').includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+            }
+
+      - name: Note Lambda deployment boundary
+        if: ${{ always() }}
+        run: |
+          {
+            echo "### Lambda deployment"
+            echo
+            echo "This workflow deploys Terraform-managed infrastructure only. Lambda code packaging/deploy remains intentionally out of scope for task 2.11 and is tracked separately by task 8.2."
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    needs:
+      - terraform-plan
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.apply) }}
+    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'dev' }}
+    concurrency:
+      group: terraform-apply-${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'dev' }}
+      cancel-in-progress: false
+    env:
+      DEPLOY_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'dev' }}
+      TF_VAR_FILE: ${{ format('environments/{0}.tfvars', github.event_name == 'workflow_dispatch' && inputs.environment || 'dev') }}
+      TF_REVIEWED_PLAN_FILE: ${{ format('tfplan-{0}', github.event_name == 'workflow_dispatch' && inputs.environment || 'dev') }}
+      TF_PLAN_ARTIFACT: ${{ format('terraform-plan-{0}', github.event_name == 'workflow_dispatch' && inputs.environment || 'dev') }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate workflow configuration
+        run: |
+          missing=0
+
+          if [ -z "${AWS_ROLE_TO_ASSUME}" ]; then
+            echo "::error::Set repository variable or secret AWS_ROLE_TO_ASSUME to the GitHub OIDC deploy role ARN."
+            missing=1
+          fi
+
+          if [ -z "${TF_STATE_BUCKET}" ]; then
+            echo "::error::Set repository variable TF_STATE_BUCKET to the Terraform remote-state S3 bucket."
+            missing=1
+          fi
+
+          if [ ! -f "${TF_WORKING_DIR}/${TF_VAR_FILE}" ]; then
+            echo "::error::Missing Terraform variable file: ${TF_WORKING_DIR}/${TF_VAR_FILE}"
+            missing=1
+          fi
+
+          exit "${missing}"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          role-session-name: kalawala-terraform-apply-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Download reviewed plan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.TF_PLAN_ARTIFACT }}
+          path: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          terraform init \
+            -input=false \
+            -reconfigure \
+            -backend-config="bucket=${TF_STATE_BUCKET}" \
+            -backend-config="key=${TF_STATE_KEY_PREFIX}/${DEPLOY_ENV}/terraform.tfstate" \
+            -backend-config="region=${TF_STATE_REGION}" \
+            -backend-config="dynamodb_table=${TF_STATE_DYNAMODB_TABLE}" \
+            -backend-config="encrypt=true"
+
+      - name: Confirm reviewed plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform show -no-color "${TF_REVIEWED_PLAN_FILE}" > reviewed-plan.txt
+
+      - name: Terraform apply
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform apply -input=false -no-color -auto-approve "${TF_REVIEWED_PLAN_FILE}"

@@ -559,7 +559,7 @@ gantt
 [x] 2.8 Terraform Lambda + API Gateway: define Lambda functions for booking API endpoints, API Gateway REST API (v1) with routes, CORS config, and WAF rate-limiting rules. REST API chosen over HTTP API (v2) because REST API supports direct WAF WebACL association. (12h)  
 [x] 2.9 Terraform S3 + CloudFront: CloudFront distribution for frontend if needed; do not provision custom deposit-receipt upload storage in MVP. (6h)  
 [x] 2.10 Terraform supporting services: ElastiCache Redis for rates/availability cache, SES for transactional email, CloudWatch log groups + alarms. (8h)  
-[ ] 2.11 Terraform CI/CD integration: add `terraform plan` to PR checks and `terraform apply` to deployment pipeline (GitHub Actions). (6h)  
+[x] 2.11 Terraform CI/CD integration: add `terraform plan` to PR checks and `terraform apply` to deployment pipeline (GitHub Actions). (6h)  
 
 [ ] 3.1 Smoobu proxy client: implement server-side client with retries/backoff and rate-limit header handling. (10h)  
 [ ] 3.2 Availability search endpoint: implement `POST /api/search` using Smoobu availability check; return structured “no houses available” response. (10h)  

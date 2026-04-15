@@ -180,6 +180,12 @@ test("Smoobu webhook route reads shared secret from secret provider", async () =
       captchaChallengesEnabled: false,
       maxTrackedBuckets: 100,
     },
+    observability: {
+      serviceName: "booking-api",
+      environment: "test",
+      logLevel: "silent",
+      metricsEnabled: false,
+    },
   });
 
   const event: LambdaHttpRequest = {

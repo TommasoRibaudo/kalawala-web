@@ -1,8 +1,9 @@
-import { BookingApiConfig } from "./types";
+import { BookingApiConfig, LogLevel } from "./types";
 import { createSecretProvider } from "./secrets";
 
 const DEFAULT_MAX_BODY_BYTES = 64 * 1024;
 const DEFAULT_MAX_TRACKED_RATE_LIMIT_BUCKETS = 10_000;
+const DEFAULT_SERVICE_NAME = "booking-api";
 
 function splitCsv(value: string | undefined): string[] {
   if (!value) {
@@ -57,6 +58,15 @@ function parsePositiveInteger(value: string | undefined, defaultValue: number): 
   return parsed;
 }
 
+function parseLogLevel(value: string | undefined): LogLevel {
+  const normalized = value?.trim().toLowerCase();
+  if (normalized === "debug" || normalized === "info" || normalized === "warn" || normalized === "error" || normalized === "silent") {
+    return normalized;
+  }
+
+  return "info";
+}
+
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConfig {
   return {
     allowedOrigins: splitCsv(env.BOOKING_API_ALLOWED_ORIGINS),
@@ -69,6 +79,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
         env.BOOKING_API_RATE_LIMIT_MAX_BUCKETS,
         DEFAULT_MAX_TRACKED_RATE_LIMIT_BUCKETS
       ),
+    },
+    observability: {
+      serviceName: env.BOOKING_API_SERVICE_NAME?.trim() || DEFAULT_SERVICE_NAME,
+      environment: env.BOOKING_API_ENVIRONMENT?.trim() || env.NODE_ENV?.trim() || "local",
+      logLevel: parseLogLevel(env.BOOKING_API_LOG_LEVEL),
+      metricsEnabled: parseBoolean(env.BOOKING_API_METRICS_ENABLED, true),
     },
   };
 }

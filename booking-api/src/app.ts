@@ -1,6 +1,7 @@
 import { loadConfig } from "./config";
 import { AbuseGuard } from "./abuseProtection";
 import { assertRouteHardening } from "./http/router";
+import { createObservability } from "./observability";
 import {
   getClientIp,
   getCorrelationId,
@@ -15,26 +16,37 @@ import {
 } from "./http/request";
 import { buildHeaders, errorResponse, optionsResponse } from "./http/response";
 import { createRouter } from "./routes";
-import { ApiResponse, BookingApiConfig, LambdaHttpRequest, RouteRequest } from "./types";
+import { ApiResponse, BookingApiConfig, HttpMethod, LambdaHttpRequest, RouteRequest } from "./types";
 
 export function createBookingApiHandler(config: BookingApiConfig = loadConfig()) {
   const router = createRouter(config);
   const abuseGuard = new AbuseGuard(config.abuseProtection);
+  const observability = createObservability(config.observability);
 
   return async function bookingApiHandler(event: LambdaHttpRequest): Promise<ApiResponse> {
+    const startedAtMs = Date.now();
     const headers = normalizeHeaders(event.headers);
     const correlationId = getCorrelationId(headers);
     const responseHeaders = buildHeaders(config, correlationId, getHeader(headers, "origin"));
+    let method: HttpMethod = "GET";
+    let path = "/";
+    let routePattern: string | undefined;
+    let abusePolicy: string | undefined;
+    let response: ApiResponse | undefined;
+    let errorForLog: unknown;
 
     try {
-      const method = getMethod(event);
+      method = getMethod(event);
       if (method === "OPTIONS") {
-        return optionsResponse(responseHeaders);
+        response = optionsResponse(responseHeaders);
+        return response;
       }
 
-      const path = getPath(event);
+      path = getPath(event);
       const query = getQuery(event);
       const { route, pathParams } = router.match({ method, path });
+      routePattern = route.pattern;
+      abusePolicy = route.options.abuseProtection;
       const rawBody = getRawBody(event, config.maxBodyBytes);
       const body = parseJsonBody(rawBody, headers, route.options.requireJsonBody ?? false);
 
@@ -50,14 +62,39 @@ export function createBookingApiHandler(config: BookingApiConfig = loadConfig())
         correlationId,
         clientIp: getClientIp(event),
         userAgent: getUserAgent(event, headers),
+        awsRequestId: event.requestContext?.requestId,
+        observability: observability.createRouteObservability({
+          correlationId,
+          awsRequestId: event.requestContext?.requestId,
+          method,
+          path,
+          route: route.pattern,
+        }),
       };
 
       assertRouteHardening(request, route.options);
       abuseGuard.assertAllowed(request, route.options.abuseProtection);
 
-      return await route.handler(request);
+      response = await route.handler(request);
+      return response;
     } catch (error) {
-      return errorResponse(error, responseHeaders, correlationId);
+      errorForLog = error;
+      response = errorResponse(error, responseHeaders, correlationId);
+      return response;
+    } finally {
+      observability.recordHttpRequest({
+        correlationId,
+        method,
+        path,
+        routePattern,
+        abusePolicy,
+        statusCode: response?.statusCode ?? 500,
+        durationMs: Date.now() - startedAtMs,
+        clientIp: getClientIp(event),
+        userAgent: getUserAgent(event, headers),
+        awsRequestId: event.requestContext?.requestId,
+        error: errorForLog,
+      });
     }
   };
 }

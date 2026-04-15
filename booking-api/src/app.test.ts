@@ -11,6 +11,12 @@ const config: BookingApiConfig = {
     captchaChallengesEnabled: true,
     maxTrackedBuckets: 100,
   },
+  observability: {
+    serviceName: "booking-api",
+    environment: "test",
+    logLevel: "silent",
+    metricsEnabled: false,
+  },
 };
 
 const validHoldBody = {

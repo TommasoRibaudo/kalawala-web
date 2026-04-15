@@ -22,6 +22,14 @@ database, and webhook secrets never enter the browser bundle.
   - CAPTCHA challenge triggers for repeated hold/order creation attempts,
   - no query-string secrets on the new Smoobu webhook route,
   - Secrets Manager-backed provider credentials with fail-closed validation.
+- Observability baseline:
+  - structured JSON request logs,
+  - correlation IDs on responses and logs,
+  - hashed client identifiers in logs,
+  - recursive secret redaction,
+  - CloudWatch Embedded Metric Format metrics,
+  - operational alert signals for webhook failures, rate limits, CAPTCHA
+    escalations, provider degradation, and future state-transition failures.
 - Contract-level validators for the planned booking endpoints.
 - Fail-closed placeholder handlers for provider/database work scheduled in later
   tasks.
@@ -46,6 +54,10 @@ npm run booking-api:build
 | `BOOKING_API_ABUSE_PROTECTION_ENABLED` | Optional boolean, defaults to `true`. |
 | `BOOKING_API_CAPTCHA_CHALLENGES_ENABLED` | Optional boolean, defaults to `true`. |
 | `BOOKING_API_RATE_LIMIT_MAX_BUCKETS` | Optional in-memory limiter bucket cap, defaults to `10000`. |
+| `BOOKING_API_SERVICE_NAME` | Optional structured-log/metric service name, defaults to `booking-api`. |
+| `BOOKING_API_ENVIRONMENT` | Optional structured-log/metric environment, defaults to `NODE_ENV` or `local`. |
+| `BOOKING_API_LOG_LEVEL` | Optional log level: `debug`, `info`, `warn`, `error`, or `silent`; defaults to `info`. |
+| `BOOKING_API_METRICS_ENABLED` | Optional boolean for CloudWatch EMF metrics, defaults to `true`. |
 
 The Secrets Manager value must be a JSON object with this shape:
 
@@ -66,4 +78,8 @@ be enabled with `BOOKING_API_ALLOW_INSECURE_ENV_SECRETS=true`. Do not use those
 raw secret modes for deployed environments.
 
 Provider integrations, database adapters, durable Redis/WAF rate-limit backing,
-and observability are implemented in later booking-engine tasks.
+and Terraform-managed CloudWatch alarms/dashboards are implemented in later
+booking-engine tasks.
+
+See `docs/own_booking_engine/observability.md` for the metric and alert
+contract.

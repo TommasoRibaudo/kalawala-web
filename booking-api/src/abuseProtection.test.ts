@@ -1,11 +1,23 @@
 import { AbuseGuard } from "./abuseProtection";
 import { ApiError } from "./http/errors";
-import { AbuseProtectionConfig, RouteRequest } from "./types";
+import { AbuseProtectionConfig, RouteObservability, RouteRequest } from "./types";
 
 const config: AbuseProtectionConfig = {
   enabled: true,
   captchaChallengesEnabled: true,
   maxTrackedBuckets: 100,
+};
+
+const noopObservability: RouteObservability = {
+  logger: {
+    debug: () => undefined,
+    info: () => undefined,
+    warn: () => undefined,
+    error: () => undefined,
+  },
+  recordProviderCall: () => undefined,
+  recordStateTransition: () => undefined,
+  recordSecurityEvent: () => undefined,
 };
 
 function makeRequest(overrides: Partial<RouteRequest> = {}): RouteRequest {
@@ -26,6 +38,7 @@ function makeRequest(overrides: Partial<RouteRequest> = {}): RouteRequest {
     correlationId: "test-correlation",
     clientIp: "203.0.113.10",
     userAgent: "Jest Browser",
+    observability: noopObservability,
     ...overrides,
   };
 }

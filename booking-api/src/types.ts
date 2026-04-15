@@ -13,6 +13,7 @@ export interface LambdaHttpRequest {
   body?: string | null;
   isBase64Encoded?: boolean;
   requestContext?: {
+    requestId?: string;
     http?: {
       method?: string;
       path?: string;
@@ -45,6 +46,8 @@ export interface RouteRequest {
   correlationId: string;
   clientIp?: string;
   userAgent?: string;
+  awsRequestId?: string;
+  observability: RouteObservability;
 }
 
 export interface JsonBody {
@@ -85,6 +88,7 @@ export interface BookingApiConfig {
   maxBodyBytes: number;
   secrets: BookingSecretProvider;
   abuseProtection: AbuseProtectionConfig;
+  observability: ObservabilityConfig;
 }
 
 export interface AbuseProtectionConfig {
@@ -108,4 +112,62 @@ export interface BookingProviderSecrets {
 export interface BookingSecretProvider {
   readonly source: "aws-secrets-manager-extension" | "static" | "missing" | "invalid";
   getSecrets(): Promise<BookingProviderSecrets>;
+}
+
+export type LogLevel = "debug" | "info" | "warn" | "error" | "silent";
+
+export interface ObservabilityConfig {
+  serviceName: string;
+  environment: string;
+  logLevel: LogLevel;
+  metricsEnabled: boolean;
+}
+
+export interface ObservabilityLogger {
+  debug(message: string, fields?: Record<string, unknown>): void;
+  info(message: string, fields?: Record<string, unknown>): void;
+  warn(message: string, fields?: Record<string, unknown>): void;
+  error(message: string, fields?: Record<string, unknown>): void;
+}
+
+export type ProviderName = "smoobu" | "paypal" | "database" | "cache" | "email" | "internal";
+
+export interface ProviderCallObservation {
+  provider: ProviderName;
+  operation: string;
+  durationMs: number;
+  statusCode?: number;
+  retryable?: boolean;
+  rateLimitRemaining?: number;
+  rateLimitResetSeconds?: number;
+  errorCode?: string;
+}
+
+export interface StateTransitionObservation {
+  entityType: "booking_session" | "hold" | "payment" | "webhook_event" | "portal_session";
+  fromState?: string;
+  toState: string;
+  action: string;
+  success: boolean;
+  bookingSessionId?: string;
+  reservationPublicId?: string;
+  provider?: ProviderName;
+  providerObjectId?: string;
+  errorCode?: string;
+}
+
+export interface SecurityEventObservation {
+  name: string;
+  severity: "info" | "warn" | "error";
+  route?: string;
+  provider?: ProviderName;
+  errorCode?: string;
+  bookingSessionId?: string;
+}
+
+export interface RouteObservability {
+  logger: ObservabilityLogger;
+  recordProviderCall(observation: ProviderCallObservation): void;
+  recordStateTransition(observation: StateTransitionObservation): void;
+  recordSecurityEvent(observation: SecurityEventObservation): void;
 }

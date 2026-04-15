@@ -98,7 +98,8 @@ infra/
 ├── database.tf          # RDS PostgreSQL instance + security group rules
 ├── lambda.tf            # Lambda functions (or ecs.tf for Fargate)
 ├── api_gateway.tf       # API Gateway routes, integrations, authorizers
-├── s3.tf                # Private S3 bucket if custom receipt uploads are added later
+├── frontend.tf          # Optional private S3 + CloudFront frontend hosting
+├── s3.tf                # Future private S3 bucket if custom receipt uploads are added later
 ├── secrets.tf           # Secrets Manager entries
 ├── cache.tf             # ElastiCache Redis cluster
 ├── ses.tf               # SES domain verification + templates

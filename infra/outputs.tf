@@ -146,6 +146,35 @@ output "api_gateway_execution_arn" {
 }
 
 # ---------------------------------------------------------------------------
+# Frontend S3 + CloudFront  (task 2.9)
+# ---------------------------------------------------------------------------
+
+output "frontend_bucket_name" {
+  description = "S3 bucket for React frontend build artifacts. Null when frontend_static_hosting_enabled is false."
+  value       = try(aws_s3_bucket.frontend[0].bucket, null)
+}
+
+output "frontend_cloudfront_distribution_id" {
+  description = "CloudFront distribution ID for frontend CDN invalidations. Null when frontend_static_hosting_enabled is false."
+  value       = try(aws_cloudfront_distribution.frontend[0].id, null)
+}
+
+output "frontend_cloudfront_distribution_arn" {
+  description = "CloudFront distribution ARN for the frontend CDN. Null when frontend_static_hosting_enabled is false."
+  value       = try(aws_cloudfront_distribution.frontend[0].arn, null)
+}
+
+output "frontend_cloudfront_domain_name" {
+  description = "CloudFront domain name for the frontend CDN. Null when frontend_static_hosting_enabled is false."
+  value       = try(aws_cloudfront_distribution.frontend[0].domain_name, null)
+}
+
+output "frontend_cloudfront_hosted_zone_id" {
+  description = "CloudFront hosted zone ID for Route 53 alias records. Null when frontend_static_hosting_enabled is false."
+  value       = try(aws_cloudfront_distribution.frontend[0].hosted_zone_id, null)
+}
+
+# ---------------------------------------------------------------------------
 # WAF  (task 2.8)
 # ---------------------------------------------------------------------------
 

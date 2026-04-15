@@ -1,0 +1,1 @@
+when a booking is made by deposit with a uploaded image, the s3 bucket link is added to the notes of the booking reservation. 

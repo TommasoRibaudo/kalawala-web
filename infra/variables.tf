@@ -104,6 +104,54 @@ variable "api_subdomain" {
 }
 
 # ---------------------------------------------------------------------------
+# Frontend static hosting / CDN
+#
+# The current production frontend still deploys through the existing FTPS
+# workflow. These controls provision an AWS static-site origin + CloudFront
+# distribution when/if the frontend is moved behind AWS. This is not a
+# deposit-receipt upload bucket.
+# ---------------------------------------------------------------------------
+
+variable "frontend_static_hosting_enabled" {
+  description = "Provision a private S3 bucket and CloudFront distribution for the React frontend build artifacts."
+  type        = bool
+  default     = false
+}
+
+variable "frontend_bucket_name" {
+  description = "Optional globally unique S3 bucket name for frontend build artifacts. Defaults to project-environment-account."
+  type        = string
+  default     = null
+}
+
+variable "frontend_cdn_aliases" {
+  description = "Optional custom domain aliases for the frontend CloudFront distribution. Requires frontend_cdn_acm_certificate_arn when non-empty."
+  type        = list(string)
+  default     = []
+}
+
+variable "frontend_cdn_acm_certificate_arn" {
+  description = "ACM certificate ARN in us-east-1 for frontend_cdn_aliases. Leave null when using the default CloudFront domain."
+  type        = string
+  default     = null
+}
+
+variable "frontend_cdn_price_class" {
+  description = "CloudFront price class for frontend distribution edge locations."
+  type        = string
+  default     = "PriceClass_100"
+
+  validation {
+    condition = contains([
+      "PriceClass_100",
+      "PriceClass_200",
+      "PriceClass_All",
+    ], var.frontend_cdn_price_class)
+    error_message = "frontend_cdn_price_class must be PriceClass_100, PriceClass_200, or PriceClass_All."
+  }
+}
+
+# ---------------------------------------------------------------------------
 # Database (RDS PostgreSQL)
 # ---------------------------------------------------------------------------
 

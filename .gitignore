@@ -23,5 +23,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .env
+
+# Terraform state — belt-and-suspenders (also in infra/.gitignore)
+*.tfstate
+*.tfstate.*
+
 .vscode/settings.json
 /public/smoobu-config.php

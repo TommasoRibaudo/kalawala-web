@@ -131,6 +131,12 @@ variable "db_name" {
   default     = "kalawala_booking"
 }
 
+variable "db_username" {
+  description = "Master username for the RDS instance."
+  type        = string
+  default     = "kalawala_admin"
+}
+
 variable "db_multi_az" {
   description = "Enable Multi-AZ deployment for the RDS instance."
   type        = bool

@@ -59,6 +59,7 @@ npm run booking-api:build
 | `BOOKING_API_LOG_LEVEL` | Optional log level: `debug`, `info`, `warn`, `error`, or `silent`; defaults to `info`. |
 | `BOOKING_API_METRICS_ENABLED` | Optional boolean for CloudWatch EMF metrics, defaults to `true`. |
 | `SMOOBU_BASE_URL` | Optional Smoobu API origin, defaults to `https://login.smoobu.com`. |
+| `SMOOBU_CUSTOMER_ID` | Required for `POST /api/search`; Smoobu customer/user ID used with configured apartment IDs. |
 | `SMOOBU_TIMEOUT_MS` | Optional outbound Smoobu fetch timeout, defaults to `8000`. |
 | `SMOOBU_MAX_RETRIES` | Optional retry count for idempotent Smoobu calls, defaults to `3`. |
 | `SMOOBU_BASE_BACKOFF_MS` | Optional first retry backoff, defaults to `250`. |

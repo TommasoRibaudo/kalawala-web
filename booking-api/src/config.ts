@@ -80,6 +80,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
     secrets: createSecretProvider(env),
     smoobu: {
       baseUrl: normalizeBaseUrl(env.SMOOBU_BASE_URL, DEFAULT_SMOOBU_BASE_URL),
+      customerId: parseOptionalPositiveInteger(env.SMOOBU_CUSTOMER_ID, "SMOOBU_CUSTOMER_ID"),
       timeoutMs: parsePositiveInteger(env.SMOOBU_TIMEOUT_MS, DEFAULT_SMOOBU_TIMEOUT_MS),
       maxRetries: parseNonNegativeInteger(env.SMOOBU_MAX_RETRIES, DEFAULT_SMOOBU_MAX_RETRIES),
       baseBackoffMs: parsePositiveInteger(env.SMOOBU_BASE_BACKOFF_MS, DEFAULT_SMOOBU_BASE_BACKOFF_MS),
@@ -104,6 +105,24 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
       metricsEnabled: parseBoolean(env.BOOKING_API_METRICS_ENABLED, true),
     },
   };
+}
+
+function parseOptionalPositiveInteger(value: string | undefined, envName?: string): number | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const parsed = Number(value);
+  if (Number.isInteger(parsed) && parsed > 0) {
+    return parsed;
+  }
+
+  if (envName) {
+    // eslint-disable-next-line no-console
+    console.warn(`[booking-api] Ignoring invalid ${envName} value: expected a positive integer, got "${value}"`);
+  }
+
+  return undefined;
 }
 
 function parseNonNegativeInteger(value: string | undefined, defaultValue: number): number {

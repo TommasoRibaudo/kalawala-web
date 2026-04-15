@@ -3,6 +3,7 @@ import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
 import { notImplemented, ApiError } from "./http/errors";
 import { Router } from "./http/router";
+import { handleAvailabilitySearch } from "./search";
 import { BookingApiConfig, RouteRequest } from "./types";
 import {
   assertJsonObject,
@@ -27,8 +28,8 @@ export function createRouter(config: BookingApiConfig): Router {
   router.post(
     "/api/search",
     async (request) => {
-      validateSearchRequest(request.body);
-      throw notImplemented("Availability search is scaffolded; Smoobu integration lands in task 3.2.");
+      const searchRequest = validateSearchRequest(request.body);
+      return handleAvailabilitySearch(searchRequest, config, request.responseHeaders, request.observability);
     },
     { requireJsonBody: true, abuseProtection: "availabilitySearch" }
   );

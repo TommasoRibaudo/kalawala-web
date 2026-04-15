@@ -94,6 +94,7 @@ export interface BookingApiConfig {
 
 export interface SmoobuClientConfig {
   baseUrl: string;
+  customerId?: number;
   timeoutMs: number;
   maxRetries: number;
   baseBackoffMs: number;

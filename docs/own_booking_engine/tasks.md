@@ -556,7 +556,7 @@ gantt
 [x] 2.5 Terraform project scaffold: create `infra/` directory with `main.tf` (AWS provider, S3+DynamoDB remote state backend), `variables.tf`, `outputs.tf`, and environment-specific `.tfvars` files (dev/staging/prod). (6h)  
 [x] 2.6 Terraform VPC + networking: define VPC, public/private subnets, NAT gateway, security groups for Lambda/RDS/ElastiCache. (8h)  
 [x] 2.7 Terraform RDS PostgreSQL: provision RDS instance in private subnet with encryption at rest, automated backups, Secrets Manager integration for credentials. (8h)  
-[ ] 2.8 Terraform Lambda + API Gateway: define Lambda functions for booking API endpoints, API Gateway HTTP API with routes, CORS config, and WAF rate-limiting rules. (12h)  
+[x] 2.8 Terraform Lambda + API Gateway: define Lambda functions for booking API endpoints, API Gateway REST API (v1) with routes, CORS config, and WAF rate-limiting rules. REST API chosen over HTTP API (v2) because REST API supports direct WAF WebACL association. (12h)  
 [ ] 2.9 Terraform S3 + CloudFront: CloudFront distribution for frontend if needed; do not provision custom deposit-receipt upload storage in MVP. (6h)  
 [ ] 2.10 Terraform supporting services: ElastiCache Redis for rates/availability cache, SES for transactional email, CloudWatch log groups + alarms. (8h)  
 [ ] 2.11 Terraform CI/CD integration: add `terraform plan` to PR checks and `terraform apply` to deployment pipeline (GitHub Actions). (6h)  

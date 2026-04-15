@@ -88,6 +88,73 @@ output "db_secret_arn" {
 }
 
 output "db_secret_read_policy_arn" {
-  description = "ARN of the IAM policy that grants read access to the DB secret. Attach to Lambda execution roles in task 2.8."
+  description = "ARN of the IAM policy that grants read access to the DB secret. Attached to the Lambda execution role."
   value       = aws_iam_policy.db_secret_read.arn
+}
+
+# ---------------------------------------------------------------------------
+# Lambda  (task 2.8)
+# ---------------------------------------------------------------------------
+
+output "booking_api_lambda_arn" {
+  description = "ARN of the booking_api Lambda function."
+  value       = aws_lambda_function.booking_api.arn
+}
+
+output "booking_api_lambda_name" {
+  description = "Name of the booking_api Lambda function (used by CI/CD for update-function-code)."
+  value       = aws_lambda_function.booking_api.function_name
+}
+
+output "webhooks_lambda_arn" {
+  description = "ARN of the webhooks Lambda function."
+  value       = aws_lambda_function.webhooks.arn
+}
+
+output "webhooks_lambda_name" {
+  description = "Name of the webhooks Lambda function (used by CI/CD for update-function-code)."
+  value       = aws_lambda_function.webhooks.function_name
+}
+
+output "lambda_execution_role_arn" {
+  description = "ARN of the shared Lambda execution IAM role."
+  value       = aws_iam_role.lambda_exec.arn
+}
+
+# ---------------------------------------------------------------------------
+# API Gateway  (task 2.8)
+# ---------------------------------------------------------------------------
+
+output "api_gateway_id" {
+  description = "ID of the REST API."
+  value       = aws_api_gateway_rest_api.main.id
+}
+
+output "api_gateway_invoke_url" {
+  description = "Base invocation URL for the booking API stage (e.g. https://{id}.execute-api.{region}.amazonaws.com/{stage})."
+  value       = aws_api_gateway_stage.main.invoke_url
+}
+
+output "api_gateway_stage_arn" {
+  description = "ARN of the API Gateway stage (used for WAF association and CloudWatch log subscriptions)."
+  value       = aws_api_gateway_stage.main.arn
+}
+
+output "api_gateway_execution_arn" {
+  description = "Execution ARN prefix for the API Gateway (used to build Lambda permission source_arn)."
+  value       = aws_api_gateway_rest_api.main.execution_arn
+}
+
+# ---------------------------------------------------------------------------
+# WAF  (task 2.8)
+# ---------------------------------------------------------------------------
+
+output "waf_web_acl_arn" {
+  description = "ARN of the WAF WebACL protecting the booking API stage."
+  value       = aws_wafv2_web_acl.booking_api.arn
+}
+
+output "waf_web_acl_id" {
+  description = "ID of the WAF WebACL (used if the WebACL is later associated with a CloudFront distribution)."
+  value       = aws_wafv2_web_acl.booking_api.id
 }

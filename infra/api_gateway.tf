@@ -267,14 +267,29 @@ resource "aws_api_gateway_stage" "main" {
   # for end-to-end trace visibility.
   xray_tracing_enabled = true
 
-  # Access logging is configured in task 2.10 once the CloudWatch log group
-  # for the API Gateway is provisioned in cloudwatch.tf.
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_gateway_access.arn
+    format = jsonencode({
+      requestId      = "$context.requestId"
+      ip             = "$context.identity.sourceIp"
+      requestTime    = "$context.requestTime"
+      httpMethod     = "$context.httpMethod"
+      routeKey       = "$context.resourcePath"
+      status         = "$context.status"
+      protocol       = "$context.protocol"
+      responseLength = "$context.responseLength"
+      errorMessage   = "$context.error.message"
+    })
+  }
+
+  depends_on = [
+    aws_api_gateway_deployment.main,
+    aws_api_gateway_account.main,
+  ]
 
   tags = {
     Name = "${var.project}-${var.environment}-api-stage"
   }
-
-  depends_on = [aws_api_gateway_deployment.main]
 }
 
 ##############################################################################

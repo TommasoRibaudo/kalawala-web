@@ -84,6 +84,7 @@ data "aws_iam_policy_document" "lambda_secrets_read" {
     resources = [
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.smoobu_secret_name}*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.paypal_secret_name}*",
+      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.redis_secret_name}*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.webhook_secret_name}*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.encryption_secret_name}*",
     ]
@@ -136,7 +137,7 @@ data "archive_file" "webhooks_placeholder" {
 
 resource "aws_cloudwatch_log_group" "booking_api" {
   name              = "/aws/lambda/${var.project}-${var.environment}-booking-api"
-  retention_in_days = var.environment == "prod" ? 90 : 14
+  retention_in_days = local.cloudwatch_log_retention_days
 
   tags = {
     Name = "${var.project}-${var.environment}-booking-api-logs"
@@ -145,7 +146,7 @@ resource "aws_cloudwatch_log_group" "booking_api" {
 
 resource "aws_cloudwatch_log_group" "webhooks" {
   name              = "/aws/lambda/${var.project}-${var.environment}-webhooks"
-  retention_in_days = var.environment == "prod" ? 90 : 14
+  retention_in_days = local.cloudwatch_log_retention_days
 
   tags = {
     Name = "${var.project}-${var.environment}-webhooks-logs"
@@ -163,6 +164,11 @@ locals {
     DB_SECRET_NAME    = var.db_secret_name
     SMOOBU_SECRET     = var.smoobu_secret_name
     PAYPAL_SECRET     = var.paypal_secret_name
+    REDIS_HOST        = aws_elasticache_replication_group.cache.primary_endpoint_address
+    REDIS_PORT        = tostring(aws_elasticache_replication_group.cache.port)
+    REDIS_SECRET_NAME = var.redis_secret_name
+    SES_CONFIG_SET    = aws_ses_configuration_set.booking.name
+    SES_FROM_EMAIL    = local.ses_from_email
     WEBHOOK_SECRET    = var.webhook_secret_name
     ENCRYPTION_SECRET = var.encryption_secret_name
   }

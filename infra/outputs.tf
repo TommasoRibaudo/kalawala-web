@@ -187,3 +187,61 @@ output "waf_web_acl_id" {
   description = "ID of the WAF WebACL (used if the WebACL is later associated with a CloudFront distribution)."
   value       = aws_wafv2_web_acl.booking_api.id
 }
+
+# ---------------------------------------------------------------------------
+# Supporting services  (task 2.10)
+# ---------------------------------------------------------------------------
+
+output "redis_primary_endpoint" {
+  description = "Primary Redis endpoint for availability/rates cache."
+  value       = aws_elasticache_replication_group.cache.primary_endpoint_address
+  sensitive   = true
+}
+
+output "redis_reader_endpoint" {
+  description = "Reader Redis endpoint for availability/rates cache."
+  value       = aws_elasticache_replication_group.cache.reader_endpoint_address
+  sensitive   = true
+}
+
+output "redis_port" {
+  description = "Redis TLS port."
+  value       = aws_elasticache_replication_group.cache.port
+}
+
+output "redis_secret_arn" {
+  description = "ARN of the Secrets Manager secret holding Redis AUTH token and endpoint metadata."
+  value       = aws_secretsmanager_secret.redis.arn
+  sensitive   = true
+}
+
+output "ses_domain_identity_arn" {
+  description = "SES domain identity ARN used for transactional booking email."
+  value       = aws_ses_domain_identity.booking.arn
+}
+
+output "ses_domain_verification_token" {
+  description = "SES TXT verification token. Add as _amazonses.<domain> when ses_route53_zone_id is not set."
+  value       = aws_ses_domain_identity.booking.verification_token
+  sensitive   = true
+}
+
+output "ses_dkim_tokens" {
+  description = "SES DKIM tokens. Add each token as <token>._domainkey CNAME to <token>.dkim.amazonses.com when ses_route53_zone_id is not set."
+  value       = aws_ses_domain_dkim.booking.dkim_tokens
+}
+
+output "ses_from_email" {
+  description = "Default transactional email From address configured for booking Lambda functions."
+  value       = local.ses_from_email
+}
+
+output "cloudwatch_alert_topic_arn" {
+  description = "SNS topic ARN used by CloudWatch alarms."
+  value       = aws_sns_topic.alerts.arn
+}
+
+output "api_gateway_access_log_group_name" {
+  description = "CloudWatch log group name for API Gateway access logs."
+  value       = aws_cloudwatch_log_group.api_gateway_access.name
+}

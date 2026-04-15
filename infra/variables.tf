@@ -207,10 +207,60 @@ variable "redis_node_type" {
   default     = "cache.t4g.micro"
 }
 
+variable "redis_engine_version" {
+  description = "Redis engine major/minor version for the ElastiCache replication group."
+  type        = string
+  default     = "7.1"
+}
+
 variable "redis_num_cache_nodes" {
   description = "Number of cache nodes in the Redis cluster."
   type        = number
   default     = 1
+}
+
+# ---------------------------------------------------------------------------
+# SES / transactional email
+# ---------------------------------------------------------------------------
+
+variable "ses_domain_name" {
+  description = "Domain identity to verify in SES for transactional booking email. Defaults to domain_name when null."
+  type        = string
+  default     = null
+}
+
+variable "ses_from_email" {
+  description = "Default From address for transactional booking email. Defaults to reservations@ses_domain_name when null."
+  type        = string
+  default     = null
+}
+
+variable "ses_route53_zone_id" {
+  description = "Optional Route 53 hosted zone ID for creating SES verification, DKIM, and MAIL FROM records automatically."
+  type        = string
+  default     = null
+}
+
+# ---------------------------------------------------------------------------
+# CloudWatch / alerting
+# ---------------------------------------------------------------------------
+
+variable "cloudwatch_log_retention_days" {
+  description = "CloudWatch log retention in days. Defaults to 90 in prod and 14 elsewhere when null."
+  type        = number
+  default     = null
+}
+
+variable "cloudwatch_alert_email_addresses" {
+  description = "Email addresses to subscribe to the CloudWatch alert SNS topic. Empty list creates the topic without subscriptions."
+  type        = list(string)
+  default     = []
+}
+
+variable "cloudwatch_alarm_actions_enabled" {
+  description = "Whether CloudWatch alarms should publish to the alert SNS topic."
+  type        = bool
+  default     = true
 }
 
 # ---------------------------------------------------------------------------
@@ -245,6 +295,12 @@ variable "db_secret_name" {
   description = "AWS Secrets Manager secret name that holds the RDS master credentials."
   type        = string
   default     = "kalawala/db"
+}
+
+variable "redis_secret_name" {
+  description = "AWS Secrets Manager secret name that holds the Redis AUTH token and cache endpoint metadata."
+  type        = string
+  default     = "kalawala/redis"
 }
 
 variable "webhook_secret_name" {

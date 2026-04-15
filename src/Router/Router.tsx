@@ -51,6 +51,7 @@ import BestTimeToVisitPuerto from '../pages/Blog/staticPages/BestTimeToVisitPuer
 import BestTimeToVisitPuertoES from '../pages/Blog/staticPages_ES/BestTimeToVisitPuertoES';
 import PuertoHiddenGems from '../pages/Blog/staticPages/PuertoHiddenGems';
 import PuertoHiddenGemsES from '../pages/Blog/staticPages_ES/PuertoHiddenGemsES';
+import BookingPage from '../pages/Booking.page';
 // import About from './About';
 // import Contact from './Contact';
 
@@ -166,6 +167,8 @@ const AppRouter = () => {
       <RandomPopupHandler />
       <Routes>
       <Route path="/" element={<Home />} />
+      <Route path='/book' element={<BookingPage />} />
+      <Route path='/bookES' element={<BookingPage />} />
       {/*   <Route path='listing'>
         <Route path=':listing' element={<Listing />} />
       </Route> */}

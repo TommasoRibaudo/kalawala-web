@@ -564,7 +564,7 @@ gantt
 [x] 3.1 Smoobu proxy client: implement server-side client with retries/backoff and rate-limit header handling. (10h)  
 [x] 3.2 Availability search endpoint: implement `POST /api/search` using Smoobu availability check; return structured “no houses available” response. (10h)  
 [x] 3.3 Property catalog: build a safe mapping from public property slugs → Smoobu apartment IDs; include `slug` field (matching `houseLangCode` from `src/utils/constants.ts`) for language-aware listing page URLs; prevent enumeration. (8h)  
-[ ] 3.4 Search UI integration: implement date picker (future dates allowed), guest count, results list + "none available" message. (10h)  
+[x] 3.4 Search UI integration: implement date picker (future dates allowed), guest count, results list + "none available" message. (10h)  
 [ ] 3.5 Listing redirect from results: each available property card in search results must link to the existing listing page in a new tab (`target="_blank"`, `rel="noopener noreferrer"`); URL built as `/{slug}` (EN) or `/{slug}ES` (ES) based on detected language. Follow `HomeCard` / `OtherListings` visual pattern. (8h)  
 [ ] 3.6 Booking engine i18n: implement bilingual string maps (EN/ES) for all booking UI text (search, results, checkout, deposit, confirmation, errors); persist `language` in `booking_session` for server-side communications; integrate `LanguageSwitcher` on booking routes (`/book` ↔ `/bookES`). (12h)  
 [ ] 3.7 Booking engine styling: apply existing website design tokens (`$kalawala-darker-green`, `$kalawala-dark-green`, `$kalawala-light-green`, `$kalawala-text-gray`, `Urbanist` font) and patterns (React Bootstrap grid, co-located `.style.scss`, BEM-like class naming, responsive breakpoints at 992px/1199px, accessible card markup). (8h)  

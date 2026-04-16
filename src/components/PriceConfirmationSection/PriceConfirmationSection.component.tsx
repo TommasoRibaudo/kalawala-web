@@ -1,5 +1,6 @@
 import React from 'react';
 import { PROPERTY_MARKETING_CONFIG } from '../../utils/constants';
+import CalendarWithPriceDots from '../CalendarWithPriceDots';
 import InstantConfirmationBadge from '../InstantConfirmationBadge/InstantConfirmationBadge.component';
 import './PriceConfirmationSection.style.scss';
 
@@ -79,6 +80,7 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
           </>
         )}
       </p>
+      <CalendarWithPriceDots apartmentSlug={config.propertyKey} language={isSpanish ? 'es' : 'en'} />
     </div>
   );
 };

@@ -227,6 +227,6 @@ test("Smoobu webhook route reads shared secret from secret provider", async () =
 
   const response = await handler(event);
 
-  expect(response.statusCode).toBe(501);
-  expect(JSON.parse(response.body).error.code).toBe("not_implemented");
+  expect(response.statusCode).toBe(200);
+  expect(JSON.parse(response.body).received).toBe(true);
 });

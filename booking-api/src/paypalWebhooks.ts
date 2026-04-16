@@ -13,7 +13,7 @@ export type WebhookEventStatus = "pending" | "processed" | "duplicate" | "ignore
 
 export interface WebhookEventRecord {
   id: string;
-  provider: "paypal";
+  provider: "paypal" | "smoobu";
   externalEventId: string;
   eventType: string;
   receivedAt: string;
@@ -25,44 +25,48 @@ export interface WebhookEventRecord {
 export interface WebhookEventRepository {
   /** Returns true if the event was newly inserted; false if it was a duplicate. */
   insertIfNew(input: {
+    provider: "paypal" | "smoobu";
     externalEventId: string;
     eventType: string;
     payloadHash: string;
   }): Promise<{ inserted: boolean; record: WebhookEventRecord }>;
 
-  markProcessed(externalEventId: string, status: WebhookEventStatus): Promise<void>;
+  markProcessed(provider: "paypal" | "smoobu", externalEventId: string, status: WebhookEventStatus): Promise<void>;
 }
 
 export class InMemoryWebhookEventRepository implements WebhookEventRepository {
   private readonly records = new Map<string, WebhookEventRecord>();
 
   async insertIfNew(input: {
+    provider: "paypal" | "smoobu";
     externalEventId: string;
     eventType: string;
     payloadHash: string;
   }): Promise<{ inserted: boolean; record: WebhookEventRecord }> {
-    const existing = this.records.get(input.externalEventId);
+    const dedupeKey = `${input.provider}:${input.externalEventId}`;
+    const existing = this.records.get(dedupeKey);
     if (existing) {
       return { inserted: false, record: existing };
     }
 
     const record: WebhookEventRecord = {
       id: randomUUID(),
-      provider: "paypal",
+      provider: input.provider,
       externalEventId: input.externalEventId,
       eventType: input.eventType,
       receivedAt: new Date().toISOString(),
       status: "pending",
       payloadHash: input.payloadHash,
     };
-    this.records.set(input.externalEventId, record);
+    this.records.set(dedupeKey, record);
     return { inserted: true, record };
   }
 
-  async markProcessed(externalEventId: string, status: WebhookEventStatus): Promise<void> {
-    const existing = this.records.get(externalEventId);
+  async markProcessed(provider: "paypal" | "smoobu", externalEventId: string, status: WebhookEventStatus): Promise<void> {
+    const key = `${provider}:${externalEventId}`;
+    const existing = this.records.get(key);
     if (existing) {
-      this.records.set(externalEventId, {
+      this.records.set(key, {
         ...existing,
         status,
         processedAt: new Date().toISOString(),
@@ -206,6 +210,7 @@ export async function handlePayPalWebhook(
   const webhookEvents = getWebhookEventRepository(config);
   const payloadHash = sha256(request.rawBody);
   const { inserted } = await webhookEvents.insertIfNew({
+    provider: "paypal",
     externalEventId,
     eventType,
     payloadHash,
@@ -226,9 +231,9 @@ export async function handlePayPalWebhook(
   // 4. Apply state transitions
   try {
     await applyPayPalWebhookEvent(event, config, request);
-    await webhookEvents.markProcessed(externalEventId, "processed");
+    await webhookEvents.markProcessed("paypal", externalEventId, "processed");
   } catch (error) {
-    await webhookEvents.markProcessed(externalEventId, "failed");
+    await webhookEvents.markProcessed("paypal", externalEventId, "failed");
     throw error;
   }
 

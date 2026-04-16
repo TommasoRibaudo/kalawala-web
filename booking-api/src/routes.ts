@@ -3,12 +3,13 @@ import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
 import { notImplemented, ApiError } from "./http/errors";
 import { Router } from "./http/router";
-import { handleCalendarRequest, invalidateCalendarRatesCacheFromWebhook } from "./calendar";
+import { handleCalendarRequest } from "./calendar";
 import { handleManualDepositHandoff, handleManualDepositHandoffEvent } from "./depositHandoff";
 import { handleCreatePayPalHold } from "./holds";
 import { handleCreatePayPalOrder, handleCapturePayPalOrder } from "./paypalOrders";
 import { handlePayPalWebhook } from "./paypalWebhooks";
 import { handleAvailabilitySearch } from "./search";
+import { handleSmoobuWebhook } from "./smoobuWebhooks";
 import { BookingApiConfig, RouteRequest } from "./types";
 import {
   assertJsonObject,
@@ -100,21 +101,7 @@ export function createRouter(config: BookingApiConfig): Router {
     async (request) => {
       const body = assertJsonObject(request.body);
       await assertSmoobuWebhookSecret(request, config);
-      const cacheInvalidation = invalidateCalendarRatesCacheFromWebhook(body, request.observability);
-      if (cacheInvalidation.action === "updateRates") {
-        return jsonResponse(
-          200,
-          {
-            received: true,
-            action: "updateRates",
-            cache: {
-              invalidatedEntries: cacheInvalidation.invalidatedEntries,
-            },
-          },
-          request.responseHeaders
-        );
-      }
-      throw notImplemented("Smoobu webhook route is scaffolded; dedupe and reconciliation land in task 6.1.");
+      return handleSmoobuWebhook(request, config, body);
     },
     { requireJsonBody: true, preserveRawBody: true, rejectQuerySecrets: true, abuseProtection: "webhook" }
   );

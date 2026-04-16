@@ -85,7 +85,9 @@ export interface HoldRepository {
   }): Promise<HoldRecord>;
   failHold(input: { holdId: string; reason: string }): Promise<HoldRecord>;
   getByBookingSessionId(bookingSessionId: string): Promise<HoldRecord | undefined>;
+  getBySmoobuReservationId(smoobuReservationId: number): Promise<HoldRecord | undefined>;
   expireHold(holdId: string): Promise<HoldRecord>;
+  cancelHold(holdId: string): Promise<HoldRecord>;
   listExpiredHolds(now: string): Promise<HoldRecord[]>;
 }
 
@@ -241,6 +243,26 @@ export class InMemoryHoldRepository implements HoldRepository {
   async getByBookingSessionId(bookingSessionId: string): Promise<HoldRecord | undefined> {
     const holdId = this.holdIdByBookingSessionId.get(bookingSessionId);
     return holdId ? this.holdsById.get(holdId) : undefined;
+  }
+
+  async getBySmoobuReservationId(smoobuReservationId: number): Promise<HoldRecord | undefined> {
+    for (const hold of this.holdsById.values()) {
+      if (hold.smoobuReservationId === smoobuReservationId) {
+        return hold;
+      }
+    }
+    return undefined;
+  }
+
+  async cancelHold(holdId: string): Promise<HoldRecord> {
+    const existing = this.getRequiredHold(holdId);
+    const updated: HoldRecord = {
+      ...existing,
+      status: "cancelled",
+      updatedAt: new Date().toISOString(),
+    };
+    this.holdsById.set(updated.id, updated);
+    return updated;
   }
 
   async expireHold(holdId: string): Promise<HoldRecord> {

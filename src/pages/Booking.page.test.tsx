@@ -1,11 +1,23 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import posthog from 'posthog-js';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { CookieConsentService } from '../services/CookieConsent.service';
 import BookingPage from './Booking.page';
+
+jest.mock('posthog-js', () => ({
+  __esModule: true,
+  default: {
+    capture: jest.fn(),
+  },
+}));
 
 const originalFetch = global.fetch;
 
 afterEach(() => {
   global.fetch = originalFetch;
+  CookieConsentService.clearConsent();
+  delete (window as any).gtag;
+  jest.clearAllMocks();
   jest.restoreAllMocks();
 });
 
@@ -523,4 +535,233 @@ test('renders Spanish manual deposit handoff instructions', async () => {
   ).toBeInTheDocument();
   expect(screen.getByText('No subas comprobantes aqu\u00ed. Env\u00eda cualquier comprobante de pago por el canal de contacto que elijas abajo.')).toBeInTheDocument();
   expect(screen.getByRole('link', { name: /contactar por whatsapp/i })).toHaveAttribute('href', 'https://wa.me/50684632276');
+});
+
+test('records manual deposit contact clicks with consent-aware analytics', async () => {
+  CookieConsentService.acceptAll();
+  (window as any).gtag = jest.fn();
+  const propertyId = 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111';
+  mockJsonResponses([
+    {
+      body: {
+        bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+        quoteId: 'qt_TEST',
+        quoteExpiresAt: '2099-06-01T12:00:00Z',
+        arrivalDate: '2099-06-10',
+        departureDate: '2099-06-14',
+        guests: 2,
+        language: 'en',
+        resultsCount: 1,
+        properties: [
+          {
+            propertyId,
+            slug: 'Geco',
+            listingUrl: '/Geco',
+            name: 'Casa Geco',
+            guestCapacity: 5,
+            thumbnailUrl: 'https://example.com/geco.jpg',
+            amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
+            actions: {
+              viewListingUrl: '/Geco',
+              canCreatePayPalHold: true,
+              canUseManualDepositHandoff: true,
+            },
+          },
+        ],
+        availabilityWarnings: [],
+      },
+    },
+    {
+      body: {
+        language: 'en',
+        status: 'manual_deposit_handoff',
+        isBookingConfirmed: false,
+        doesCreateHold: false,
+        messageKey: 'deposit.handoffIntro',
+        instructions: {
+          titleKey: 'deposit.title',
+          bodyKeys: ['deposit.bankInstructions', 'deposit.notConfirmed', 'deposit.contactUs'],
+          contactMethods: [
+            {
+              type: 'whatsapp',
+              label: '+506 8463 2276',
+              url: 'https://wa.me/50684632276',
+            },
+          ],
+        },
+        bookingContext: {
+          quoteId: 'qt_TEST',
+          property: {
+            propertyId,
+            slug: 'Geco',
+            listingUrl: '/Geco',
+            name: 'Casa Geco',
+          },
+          arrivalDate: '2099-06-10',
+          departureDate: '2099-06-14',
+          guests: 2,
+        },
+      },
+    },
+    {
+      body: {
+        recorded: true,
+        status: 'manual_deposit_handoff',
+        isBookingConfirmed: false,
+        doesCreateHold: false,
+        messageKey: 'deposit.contactEventRecorded',
+      },
+    },
+  ]);
+
+  renderBookingPage();
+
+  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Casa Geco');
+
+  fireEvent.click(screen.getByRole('button', { name: /manual deposit/i }));
+  await screen.findByRole('heading', { name: 'Manual deposit instructions' });
+
+  fireEvent.click(screen.getByRole('link', { name: /contact by whatsapp/i }));
+
+  await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(3));
+  const eventCall = (global.fetch as jest.Mock).mock.calls[2];
+  const eventOptions = eventCall[1] as RequestInit & { headers: Record<string, string>; body: string };
+
+  expect(eventCall[0]).toBe('/api/deposit-handoff/events');
+  expect(eventOptions.method).toBe('POST');
+  expect(eventOptions.keepalive).toBe(true);
+  expect(eventOptions.headers).toMatchObject({
+    Accept: 'application/json',
+    'Accept-Language': 'en',
+    'Content-Type': 'application/json',
+  });
+  expect(eventOptions.headers['Idempotency-Key']).toMatch(/^deposit-/);
+  expect(JSON.parse(eventOptions.body)).toEqual({
+    quoteId: 'qt_TEST',
+    propertyId,
+    language: 'en',
+    contactMethod: 'whatsapp',
+    analyticsConsent: true,
+  });
+  expect(posthog.capture).toHaveBeenCalledWith(
+    'manual_deposit_handoff_clicked',
+    expect.objectContaining({
+      analytics_consent: true,
+      contact_method: 'whatsapp',
+      language: 'en',
+      quote_id: 'qt_TEST',
+      property_id: propertyId,
+      property_slug: 'Geco',
+    })
+  );
+  expect(window.gtag).toHaveBeenCalledWith(
+    'event',
+    'manual_deposit_handoff_clicked',
+    expect.objectContaining({
+      event_category: 'booking',
+      contact_method: 'whatsapp',
+      analytics_consent: true,
+    })
+  );
+});
+
+test('suppresses analytics but still posts event when consent is not given', async () => {
+  const propertyId = 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111';
+  mockJsonResponses([
+    {
+      body: {
+        bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+        quoteId: 'qt_TEST',
+        quoteExpiresAt: '2099-06-01T12:00:00Z',
+        arrivalDate: '2099-06-10',
+        departureDate: '2099-06-14',
+        guests: 2,
+        language: 'en',
+        resultsCount: 1,
+        properties: [
+          {
+            propertyId,
+            slug: 'Geco',
+            listingUrl: '/Geco',
+            name: 'Casa Geco',
+            guestCapacity: 5,
+            thumbnailUrl: 'https://example.com/geco.jpg',
+            amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
+            actions: {
+              viewListingUrl: '/Geco',
+              canCreatePayPalHold: true,
+              canUseManualDepositHandoff: true,
+            },
+          },
+        ],
+        availabilityWarnings: [],
+      },
+    },
+    {
+      body: {
+        language: 'en',
+        status: 'manual_deposit_handoff',
+        isBookingConfirmed: false,
+        doesCreateHold: false,
+        messageKey: 'deposit.handoffIntro',
+        instructions: {
+          titleKey: 'deposit.title',
+          bodyKeys: ['deposit.bankInstructions', 'deposit.notConfirmed', 'deposit.contactUs'],
+          contactMethods: [
+            {
+              type: 'whatsapp',
+              label: '+506 8463 2276',
+              url: 'https://wa.me/50684632276',
+            },
+          ],
+        },
+        bookingContext: {
+          quoteId: 'qt_TEST',
+          property: {
+            propertyId,
+            slug: 'Geco',
+            listingUrl: '/Geco',
+            name: 'Casa Geco',
+          },
+          arrivalDate: '2099-06-10',
+          departureDate: '2099-06-14',
+          guests: 2,
+        },
+      },
+    },
+    {
+      body: {
+        recorded: true,
+        status: 'manual_deposit_handoff',
+        isBookingConfirmed: false,
+        doesCreateHold: false,
+        messageKey: 'deposit.contactEventRecorded',
+      },
+    },
+  ]);
+
+  renderBookingPage();
+
+  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Casa Geco');
+
+  fireEvent.click(screen.getByRole('button', { name: /manual deposit/i }));
+  await screen.findByRole('heading', { name: 'Manual deposit instructions' });
+
+  fireEvent.click(screen.getByRole('link', { name: /contact by whatsapp/i }));
+
+  await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(3));
+  const eventCall = (global.fetch as jest.Mock).mock.calls[2];
+  const eventOptions = eventCall[1] as RequestInit & { body: string };
+
+  expect(JSON.parse(eventOptions.body)).toEqual(
+    expect.objectContaining({ analyticsConsent: false })
+  );
+  expect(posthog.capture).not.toHaveBeenCalled();
+  expect(window.gtag).toBeUndefined();
 });

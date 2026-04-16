@@ -1,4 +1,5 @@
 import React from 'react';
+import posthog from 'posthog-js';
 import { Alert, Button, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { useSearchParams } from 'react-router-dom';
@@ -14,8 +15,10 @@ import {
   BookingLanguage,
   BookingSearchResponse,
   getDepositHandoff,
+  recordDepositHandoffEvent,
   searchAvailability,
 } from '../services/BookingApi.service';
+import { CookieConsentService } from '../services/CookieConsent.service';
 import { bookingStrings, BookingStrings } from './Booking.i18n';
 import './Booking.style.scss';
 
@@ -480,6 +483,32 @@ const ManualDepositHandoffPanel = ({
           strings.depositContactUs,
         ];
 
+  const handleContactClick = (method: DepositHandoffResponse['instructions']['contactMethods'][number]) => {
+    const analyticsConsent = CookieConsentService.hasConsent('analytics');
+    const property = context?.property;
+
+    if (!context?.quoteId || !property?.propertyId) {
+      return;
+    }
+
+    captureManualDepositHandoffClick(analyticsConsent, {
+      analytics_consent: analyticsConsent,
+      contact_method: method.type,
+      language,
+      quote_id: context.quoteId,
+      property_id: property.propertyId,
+      property_slug: property.slug,
+    });
+
+    void recordDepositHandoffEvent({
+      quoteId: context.quoteId,
+      propertyId: property.propertyId,
+      language,
+      contactMethod: method.type,
+      analyticsConsent,
+    }).catch(() => undefined);
+  };
+
   return (
     <section className="booking-deposit-handoff" aria-labelledby="booking-deposit-title">
       <div className="booking-deposit-handoff__header">
@@ -518,6 +547,7 @@ const ManualDepositHandoffPanel = ({
             href={method.url}
             target={method.type === 'email' ? undefined : '_blank'}
             rel={method.type === 'email' ? undefined : 'noopener noreferrer'}
+            onClick={() => handleContactClick(method)}
           >
             <span>{method.type === 'email' ? strings.contactByEmail : strings.contactByWhatsapp}</span>
             <strong>{method.label}</strong>
@@ -539,6 +569,21 @@ function getDepositInstructionCopy(bodyKey: string, strings: BookingStrings): st
   }
 
   return strings[stringKey];
+}
+
+function captureManualDepositHandoffClick(analyticsConsent: boolean, properties: Record<string, unknown>): void {
+  if (!analyticsConsent) {
+    return;
+  }
+
+  posthog.capture('manual_deposit_handoff_clicked', properties);
+
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+    window.gtag('event', 'manual_deposit_handoff_clicked', {
+      event_category: 'booking',
+      ...properties,
+    });
+  }
 }
 
 function validateSearch(

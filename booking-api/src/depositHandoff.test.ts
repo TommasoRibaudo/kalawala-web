@@ -58,6 +58,29 @@ function makeGetEvent(queryStringParameters: Record<string, string>): LambdaHttp
   };
 }
 
+function makePostEvent(body: unknown, headers: Record<string, string> = {}): LambdaHttpRequest {
+  return {
+    version: "2.0",
+    rawPath: "/api/deposit-handoff/events",
+    headers: {
+      "content-type": "application/json",
+      "idempotency-key": "deposit-event-key-123",
+      "user-agent": "Jest Browser",
+      "x-kalawala-device-id": "device-deposit-123",
+      ...headers,
+    },
+    body: JSON.stringify(body),
+    requestContext: {
+      http: {
+        method: "POST",
+        path: "/api/deposit-handoff/events",
+        sourceIp: "203.0.113.20",
+        userAgent: "Jest Browser",
+      },
+    },
+  };
+}
+
 test("GET /api/deposit-handoff returns read-only manual deposit instructions", async () => {
   const handler = createBookingApiHandler(createConfig());
 
@@ -225,6 +248,126 @@ test("GET /api/deposit-handoff rejects a property that does not belong to the qu
       language: "en",
       quoteId: session.quoteId,
       propertyId: BOOKING_PROPERTIES[1].propertyId,
+    })
+  );
+  const body = JSON.parse(response.body);
+
+  expect(response.statusCode).toBe(404);
+  expect(body.error.code).toBe("deposit_context_not_found");
+});
+
+test("POST /api/deposit-handoff/events records a read-only handoff click", async () => {
+  const bookingSessions = new InMemoryBookingSessionRepository();
+  const property = BOOKING_PROPERTIES[0];
+  const session = await bookingSessions.createQuotedSession({
+    arrivalDate: "2099-06-10",
+    departureDate: "2099-06-14",
+    guests: 2,
+    language: "en",
+    quotedProperties: [
+      {
+        propertyId: property.propertyId,
+        currency: "USD",
+        totalAmountCents: 51000,
+        nightlyAverageCents: 12750,
+        nights: 4,
+        includesTaxes: false,
+        rateSource: "smoobu",
+      },
+    ],
+  });
+  const handler = createBookingApiHandler(createConfig(bookingSessions));
+
+  const response = await handler(
+    makePostEvent({
+      quoteId: session.quoteId,
+      propertyId: property.propertyId,
+      language: "en",
+      contactMethod: "whatsapp",
+      analyticsConsent: true,
+    })
+  );
+  const body = JSON.parse(response.body);
+
+  expect(response.statusCode).toBe(200);
+  expect(body).toEqual({
+    recorded: true,
+    status: "manual_deposit_handoff",
+    isBookingConfirmed: false,
+    doesCreateHold: false,
+    messageKey: "deposit.contactEventRecorded",
+  });
+});
+
+test("POST /api/deposit-handoff/events requires an idempotency key", async () => {
+  const property = BOOKING_PROPERTIES[0];
+  const handler = createBookingApiHandler(createConfig());
+
+  const response = await handler(
+    makePostEvent(
+      {
+        quoteId: "qt_TEST",
+        propertyId: property.propertyId,
+        language: "en",
+        contactMethod: "whatsapp",
+        analyticsConsent: false,
+      },
+      { "idempotency-key": "" }
+    )
+  );
+  const body = JSON.parse(response.body);
+
+  expect(response.statusCode).toBe(400);
+  expect(body.error.code).toBe("missing_idempotency_key");
+});
+
+test("POST /api/deposit-handoff/events rejects unsupported contact methods", async () => {
+  const property = BOOKING_PROPERTIES[0];
+  const handler = createBookingApiHandler(createConfig());
+
+  const response = await handler(
+    makePostEvent({
+      quoteId: "qt_TEST",
+      propertyId: property.propertyId,
+      language: "en",
+      contactMethod: "sms",
+      analyticsConsent: false,
+    })
+  );
+  const body = JSON.parse(response.body);
+
+  expect(response.statusCode).toBe(400);
+  expect(body.error.code).toBe("unsupported_contact_method");
+});
+
+test("POST /api/deposit-handoff/events rejects a property that does not belong to the quote", async () => {
+  const bookingSessions = new InMemoryBookingSessionRepository();
+  const session = await bookingSessions.createQuotedSession({
+    arrivalDate: "2099-06-10",
+    departureDate: "2099-06-14",
+    guests: 2,
+    language: "en",
+    quotedProperties: [
+      {
+        propertyId: BOOKING_PROPERTIES[0].propertyId,
+        currency: "USD",
+        totalAmountCents: 51000,
+        nightlyAverageCents: 12750,
+        nights: 4,
+        includesTaxes: false,
+        rateSource: "smoobu",
+      },
+    ],
+  });
+  const handler = createBookingApiHandler(createConfig(bookingSessions));
+
+  const response = await handler(
+    makePostEvent({
+      quoteId: session.quoteId,
+      propertyId: BOOKING_PROPERTIES[1].propertyId,
+      language: "en",
+      contactMethod: "email",
+      analyticsConsent: false,
     })
   );
   const body = JSON.parse(response.body);

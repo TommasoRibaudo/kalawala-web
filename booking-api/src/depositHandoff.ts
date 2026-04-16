@@ -10,6 +10,14 @@ export interface DepositHandoffQuery {
   propertyId?: string;
 }
 
+export interface DepositHandoffEventRequest {
+  quoteId: string;
+  propertyId: string;
+  language: "en" | "es";
+  contactMethod: string;
+  analyticsConsent: boolean;
+}
+
 const CONTACT_METHODS = [
   {
     type: "whatsapp",
@@ -58,6 +66,48 @@ export async function handleManualDepositHandoff(
         contactMethods: CONTACT_METHODS,
       },
       ...(bookingContext ? { bookingContext } : {}),
+    },
+    responseHeaders
+  );
+}
+
+export async function handleManualDepositHandoffEvent(
+  event: DepositHandoffEventRequest,
+  config: BookingApiConfig,
+  responseHeaders: HeadersMap,
+  observability: RouteObservability
+): Promise<ApiResponse> {
+  const contactMethod = CONTACT_METHODS.find((method) => method.type === event.contactMethod);
+  if (!contactMethod) {
+    throw new ApiError(400, "unsupported_contact_method", "Manual deposit contact method is not supported.", {
+      fieldErrors: {
+        contactMethod: ["unsupported_contact_method"],
+      },
+    });
+  }
+
+  const bookingContext = await buildBookingContext({ quoteId: event.quoteId, propertyId: event.propertyId, language: event.language }, config);
+  const eventName = "manual_deposit_handoff_clicked";
+
+  observability.logger.info(event.analyticsConsent ? eventName : "manual_deposit_handoff_clicked_no_analytics_consent", {
+    eventName,
+    analyticsConsent: event.analyticsConsent,
+    language: event.language,
+    quoteId: event.quoteId,
+    propertyId: event.propertyId,
+    contactMethod: contactMethod.type,
+    staffNotificationChannel: "existing_contact_link",
+    hasBookingContext: Boolean(bookingContext),
+  });
+
+  return jsonResponse(
+    200,
+    {
+      recorded: true,
+      status: "manual_deposit_handoff",
+      isBookingConfirmed: false,
+      doesCreateHold: false,
+      messageKey: "deposit.contactEventRecorded",
     },
     responseHeaders
   );

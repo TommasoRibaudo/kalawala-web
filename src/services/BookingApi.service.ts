@@ -64,6 +64,14 @@ export interface DepositHandoffRequest {
   propertyId?: string;
 }
 
+export interface DepositHandoffEventRequest {
+  quoteId: string;
+  propertyId: string;
+  language: BookingLanguage;
+  contactMethod: string;
+  analyticsConsent: boolean;
+}
+
 export interface DepositHandoffContactMethod {
   type: 'whatsapp' | 'email' | string;
   label: string;
@@ -93,6 +101,14 @@ export interface DepositHandoffResponse {
     departureDate?: string;
     guests?: number;
   };
+}
+
+export interface DepositHandoffEventResponse {
+  recorded: true;
+  status: 'manual_deposit_handoff';
+  isBookingConfirmed: false;
+  doesCreateHold: false;
+  messageKey: string;
 }
 
 export type CalendarDot = 'green' | 'yellow' | 'red' | 'grey';
@@ -237,6 +253,30 @@ export async function getDepositHandoff(request: DepositHandoffRequest): Promise
   return body as DepositHandoffResponse;
 }
 
+export async function recordDepositHandoffEvent(
+  request: DepositHandoffEventRequest
+): Promise<DepositHandoffEventResponse> {
+  const response = await fetch(`${apiBaseUrl}/api/deposit-handoff/events`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-Language': request.language,
+      'Content-Type': 'application/json',
+      'Idempotency-Key': createIdempotencyKey(),
+    },
+    body: JSON.stringify(request),
+    keepalive: true,
+  });
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as DepositHandoffEventResponse;
+}
+
 export async function getCalendarMonth(
   apartmentSlug: string,
   month: string,
@@ -351,4 +391,13 @@ function min(values: number[]): number | null {
 
 function max(values: number[]): number | null {
   return values.length > 0 ? Math.max(...values) : null;
+}
+
+function createIdempotencyKey(): string {
+  const randomId =
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+  return `deposit-${randomId}`;
 }

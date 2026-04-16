@@ -4,7 +4,7 @@ import { jsonResponse } from "./http/response";
 import { notImplemented, ApiError } from "./http/errors";
 import { Router } from "./http/router";
 import { handleCalendarRequest, invalidateCalendarRatesCacheFromWebhook } from "./calendar";
-import { handleManualDepositHandoff } from "./depositHandoff";
+import { handleManualDepositHandoff, handleManualDepositHandoffEvent } from "./depositHandoff";
 import { handleCreatePayPalHold } from "./holds";
 import { handleAvailabilitySearch } from "./search";
 import { BookingApiConfig, RouteRequest } from "./types";
@@ -77,8 +77,8 @@ export function createRouter(config: BookingApiConfig): Router {
   router.post(
     "/api/deposit-handoff/events",
     async (request) => {
-      validateDepositHandoffEvent(request.body);
-      throw notImplemented("Manual deposit handoff event route is scaffolded; analytics/notification lands in task 4.4.");
+      const event = validateDepositHandoffEvent(request.body);
+      return handleManualDepositHandoffEvent(event, config, request.responseHeaders, request.observability);
     },
     { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "depositEvent" }
   );

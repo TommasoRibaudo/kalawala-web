@@ -575,7 +575,7 @@ gantt
 [x] 4.1 PayPal hold creation: implement DB hold + Smoobu provisional hold creation for PayPal checkout (choose blocked vs direct booking channel). (12h)  
 [x] 4.2 Hold expiry worker: schedule job to expire PayPal holds and cancel Smoobu reservations. (10h)  
 [x] 4.3 Manual deposit handoff page: show localized bank/contact instructions and state clearly that manual deposit is not confirmed by the custom engine. (6h)  
-[ ] 4.4 Manual deposit handoff analytics/notification: track handoff clicks and optionally notify staff through existing email/WhatsApp process; no custom receipt upload. (6h)  
+[x] 4.4 Manual deposit handoff analytics/notification: track handoff clicks and optionally notify staff through existing email/WhatsApp process; no custom receipt upload. (6h)  
 [x] 4.5 Removed from MVP: custom admin review UI, approve/reject queue, receipt upload review, and hold-extension controls. (0h)  
 
 [ ] 5.1 PayPal Orders integration: create order + capture endpoints; store PayPal-Request-Id and internal idempotency keys. (14h)  

@@ -585,7 +585,7 @@ gantt
 [x] 6.1 Smoobu webhooks ingestion: implement secure webhook endpoint with secret validation, dedupe, and reconciliation with DB. (12h)  
 [x] 6.2 Guest communication templates: implement email/SMS templates for each state (hold created, payment pending, confirmed, cancelled, manual deposit handoff). (8h)  
 [x] 6.3 Reservation portal auth: reservation ID + password creation, hashing, rate limiting, session management. (14h)  
-[ ] 6.4 Portal pages: reservation details, payment status, request cancellation/help. (14h)  
+[x] 6.4 Portal pages: reservation details, payment status, request cancellation/help. (14h)  
 
 [ ] 7.1 Analytics schema: define events + properties; implement PostHog + GA4 + Meta Pixel triggers with consent gating. (10h)  
 [ ] 7.2 Security hardening pass: secrets review, logging redaction, webhook replay protection, dependency audit gates. (10h)  

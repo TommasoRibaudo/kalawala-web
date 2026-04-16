@@ -1,10 +1,11 @@
 import { timingSafeEqual } from "crypto";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
-import { notImplemented, ApiError } from "./http/errors";
+import { ApiError } from "./http/errors";
 import { Router } from "./http/router";
 import { handleCalendarRequest } from "./calendar";
 import { handlePortalLogin } from "./portalAuth";
+import { handlePortalReservation, handlePortalHelpRequest, handlePortalCancellationRequest } from "./portalPages";
 import { handleManualDepositHandoff, handleManualDepositHandoffEvent } from "./depositHandoff";
 import { handleCreatePayPalHold } from "./holds";
 import { handleCreatePayPalOrder, handleCapturePayPalOrder } from "./paypalOrders";
@@ -117,16 +118,16 @@ export function createRouter(config: BookingApiConfig): Router {
   );
 
   router.get("/api/portal/reservation/:reservationPublicId", async (request) => {
-    validateReservationPublicId(request.pathParams);
-    throw notImplemented("Portal reservation read is scaffolded; authenticated reservation access lands in task 6.4.");
+    const reservationPublicId = validateReservationPublicId(request.pathParams);
+    return handlePortalReservation(reservationPublicId, request, config);
   }, { abuseProtection: "portalRead" });
 
   router.post(
     "/api/portal/reservation/:reservationPublicId/help-request",
     async (request) => {
-      validateReservationPublicId(request.pathParams);
-      validatePortalMessage(request.body);
-      throw notImplemented("Portal help requests are scaffolded; support event persistence lands in task 6.4.");
+      const reservationPublicId = validateReservationPublicId(request.pathParams);
+      const body = validatePortalMessage(request.body);
+      return handlePortalHelpRequest(reservationPublicId, body, request, config);
     },
     { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "portalWrite" }
   );
@@ -134,9 +135,9 @@ export function createRouter(config: BookingApiConfig): Router {
   router.post(
     "/api/portal/reservation/:reservationPublicId/cancellation-request",
     async (request) => {
-      validateReservationPublicId(request.pathParams);
-      validateCancellationRequest(request.body);
-      throw notImplemented("Portal cancellation requests are scaffolded; support event persistence lands in task 6.4.");
+      const reservationPublicId = validateReservationPublicId(request.pathParams);
+      const body = validateCancellationRequest(request.body);
+      return handlePortalCancellationRequest(reservationPublicId, body, request, config);
     },
     { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "portalWrite" }
   );

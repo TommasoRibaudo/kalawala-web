@@ -47,5 +47,6 @@ export async function handler(): Promise<HoldExpiryResult> {
     bookingSessions: config.bookingSessions,
     smoobuClient,
     logger,
+    emailConfig: config.email,
   });
 }

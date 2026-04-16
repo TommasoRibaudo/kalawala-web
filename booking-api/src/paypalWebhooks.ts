@@ -1,9 +1,11 @@
 import { createHash, randomUUID } from "crypto";
 import { BookingSessionRepository } from "./bookingSessions";
+import { createEmailClient } from "./email";
 import { ApiError } from "./http/errors";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
 import { PaymentRepository } from "./payments";
+import { BOOKING_PROPERTIES_BY_ID } from "./propertyCatalog";
 import { createPayPalClient, PayPalVerifySignatureInput } from "./paypalClient";
 import { ApiResponse, BookingApiConfig, RouteRequest } from "./types";
 
@@ -379,6 +381,22 @@ async function handleCaptureCompleted(
     provider: "paypal",
     providerObjectId: captureId,
   });
+
+  // Send booking_confirmed email — non-fatal; must not affect webhook 2xx response
+  try {
+    const property = BOOKING_PROPERTIES_BY_ID.get(session.propertyId ?? "");
+    const emailClient = createEmailClient(config.email, request.observability.logger);
+    await emailClient.sendBookingConfirmed(
+      { ...session, confirmedAt, status: "booking_confirmed" },
+      property?.name ?? session.propertyId ?? "",
+      captureId
+    );
+  } catch (emailError) {
+    request.observability.logger.error("booking_confirmed_email_failed", {
+      bookingSessionId: session.id,
+      error: emailError instanceof Error ? emailError.message : String(emailError),
+    });
+  }
 }
 
 async function handleCaptureFailed(

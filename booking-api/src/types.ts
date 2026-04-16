@@ -1,4 +1,5 @@
 import type { BookingSessionRepository } from "./bookingSessions";
+import type { EmailConfig } from "./email";
 import type { HoldRepository } from "./holds";
 import type { PaymentRepository } from "./payments";
 import type { WebhookEventRepository } from "./paypalWebhooks";
@@ -104,6 +105,7 @@ export interface BookingApiConfig {
   secrets: BookingSecretProvider;
   smoobu: SmoobuClientConfig;
   paypal: PayPalClientConfig;
+  email: EmailConfig;
   bookingSessions?: BookingSessionRepository;
   holds?: HoldRepository;
   payments?: PaymentRepository;

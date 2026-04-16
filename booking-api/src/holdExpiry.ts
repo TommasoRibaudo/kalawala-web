@@ -1,7 +1,9 @@
 import { BookingSessionRepository } from "./bookingSessions";
 import { HoldRecord, HoldRepository } from "./holds";
+import { createEmailClient } from "./email";
+import { BOOKING_PROPERTIES_BY_ID } from "./propertyCatalog";
 import { SmoobuProviderError } from "./smoobuClient";
-import { ObservabilityLogger } from "./types";
+import { ObservabilityLogger, BookingApiConfig } from "./types";
 
 import type { SmoobuClient } from "./smoobuClient";
 
@@ -27,6 +29,7 @@ export interface HoldExpiryDependencies {
   bookingSessions: BookingSessionRepository;
   smoobuClient: SmoobuClient;
   logger: ObservabilityLogger;
+  emailConfig?: BookingApiConfig["email"];
   now?: () => string;
 }
 
@@ -144,6 +147,24 @@ async function processOneHold(
       holdId: hold.id,
       bookingSessionId: hold.bookingSessionId,
     });
+
+    // Send cancellation email — non-fatal
+    if (deps.emailConfig) {
+      try {
+        const session = await bookingSessions.getById(hold.bookingSessionId);
+        if (session?.guest?.email) {
+          const property = BOOKING_PROPERTIES_BY_ID.get(session.propertyId ?? "");
+          const emailClient = createEmailClient(deps.emailConfig, logger);
+          await emailClient.sendCancelled(session, property?.name ?? session.propertyId ?? "");
+        }
+      } catch (emailError) {
+        logger.error("hold_expiry_email_failed", {
+          holdId: hold.id,
+          bookingSessionId: hold.bookingSessionId,
+          error: emailError instanceof Error ? emailError.message : String(emailError),
+        });
+      }
+    }
   } catch (error) {
     result.sessionUpdateFailed += 1;
     const errMsg = error instanceof Error ? error.message : "unknown";

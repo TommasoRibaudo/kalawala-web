@@ -35,6 +35,11 @@ function createConfig(bookingSessions = new InMemoryBookingSessionRepository()):
       captchaChallengesEnabled: true,
       maxTrackedBuckets: 100,
     },
+    email: {
+      fromAddress: "test@kalawala.com",
+      region: "us-east-1",
+      disabled: true,
+    },
     observability: {
       serviceName: "booking-api",
       environment: "test",

@@ -14,6 +14,8 @@ export interface BookingProperty {
 }
 
 // TODO: Replace placeholder smoobuApartmentId values (1–10) with real Smoobu apartment IDs before deployment.
+// WARNING: Using wrong IDs will cause availability checks and hold creation to target incorrect apartments.
+// Real IDs can be found in the Smoobu dashboard under Settings → Apartments, or via GET /api/apartments.
 export const BOOKING_PROPERTIES: BookingProperty[] = [
   {
     propertyId: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111",

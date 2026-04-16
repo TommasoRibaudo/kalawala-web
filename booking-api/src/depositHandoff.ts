@@ -1,4 +1,5 @@
 import { getBookingSessionRepository } from "./bookingSessions";
+import { createEmailClient } from "./email";
 import { ApiError } from "./http/errors";
 import { jsonResponse } from "./http/response";
 import { BOOKING_PROPERTIES_BY_ID, listingUrlForLanguage } from "./propertyCatalog";
@@ -99,6 +100,34 @@ export async function handleManualDepositHandoffEvent(
     staffNotificationChannel: "existing_contact_link",
     hasBookingContext: Boolean(bookingContext),
   });
+
+  // Send deposit handoff email — non-fatal
+  if (bookingContext) {
+    try {
+      const repository = getBookingSessionRepository(config);
+      const session = event.quoteId ? await repository.getByQuoteId(event.quoteId) : undefined;
+      const guestEmail = session?.guest?.email;
+      const guestFirstName = session?.guest?.firstName ?? "";
+      if (guestEmail) {
+        const property = event.propertyId ? BOOKING_PROPERTIES_BY_ID.get(event.propertyId) : undefined;
+        const emailClient = createEmailClient(config.email, observability.logger);
+        await emailClient.sendDepositHandoff(
+          guestEmail,
+          guestFirstName,
+          event.language,
+          property?.name ?? "",
+          session?.arrivalDate ?? "",
+          session?.departureDate ?? "",
+          session?.guests ?? 0
+        );
+      }
+    } catch (emailError) {
+      observability.logger.error("deposit_handoff_email_failed", {
+        error: emailError instanceof Error ? emailError.message : String(emailError),
+        quoteId: event.quoteId,
+      });
+    }
+  }
 
   return jsonResponse(
     200,

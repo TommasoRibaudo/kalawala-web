@@ -275,6 +275,47 @@ describe("processExpiredHolds", () => {
     expect(logger.debug).toHaveBeenCalledWith("hold_expiry_sweep_empty", expect.any(Object));
   });
 
+  it("sends cancellation email when emailConfig is provided and session has guest email", async () => {
+    const holds = new InMemoryHoldRepository();
+    const sessions = new InMemoryBookingSessionRepository();
+    const smoobuClient = createMockSmoobuClient();
+    const logger = createSilentLogger();
+
+    await seedActiveHold(holds, sessions, { expiresAt: PAST });
+
+    const emailConfig = {
+      fromAddress: "test@kalawala.com",
+      region: "us-east-1",
+      disabled: true, // disabled so no real SES call; we verify the log
+    };
+
+    const deps = createDeps({ holds, bookingSessions: sessions, smoobuClient, logger, emailConfig });
+    await processExpiredHolds(deps);
+
+    // With disabled=true the EmailClient logs email_send_skipped_disabled
+    expect(logger.info).toHaveBeenCalledWith(
+      "email_send_skipped_disabled",
+      expect.objectContaining({ template: "cancelled" })
+    );
+  });
+
+  it("does not attempt email when emailConfig is not provided", async () => {
+    const holds = new InMemoryHoldRepository();
+    const sessions = new InMemoryBookingSessionRepository();
+    const logger = createSilentLogger();
+
+    await seedActiveHold(holds, sessions, { expiresAt: PAST });
+
+    // No emailConfig — should complete without any email log
+    const deps = createDeps({ holds, bookingSessions: sessions, logger });
+    await processExpiredHolds(deps);
+
+    expect(logger.info).not.toHaveBeenCalledWith(
+      "email_send_skipped_disabled",
+      expect.anything()
+    );
+  });
+
   it("short-circuits a hold when expireHold DB update fails, skipping Smoobu cancel and session update", async () => {
     const holds = new InMemoryHoldRepository();
     const sessions = new InMemoryBookingSessionRepository();

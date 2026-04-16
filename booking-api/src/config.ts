@@ -16,6 +16,8 @@ const DEFAULT_PAYPAL_TIMEOUT_MS = 10_000;
 const DEFAULT_PAYPAL_HOLD_TTL_MINUTES = 60;
 const DEFAULT_IDEMPOTENCY_TTL_MINUTES = 24 * 60;
 const DEFAULT_STALE_IDEMPOTENCY_LOCK_SECONDS = 120;
+const DEFAULT_SES_REGION = "us-east-1";
+const DEFAULT_SES_FROM_ADDRESS = "reservations@kalawala.com";
 
 function splitCsv(value: string | undefined): string[] {
   if (!value) {
@@ -121,6 +123,13 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
         env.BOOKING_API_RATE_LIMIT_MAX_BUCKETS,
         DEFAULT_MAX_TRACKED_RATE_LIMIT_BUCKETS
       ),
+    },
+    email: {
+      fromAddress: env.SES_FROM_ADDRESS?.trim() || DEFAULT_SES_FROM_ADDRESS,
+      region: env.SES_REGION?.trim() || env.AWS_REGION?.trim() || DEFAULT_SES_REGION,
+      disabled: parseBoolean(env.EMAIL_DISABLED, false),
+      contactWhatsAppUrl: env.CONTACT_WHATSAPP_URL?.trim() || undefined,
+      contactEmail: env.CONTACT_EMAIL?.trim() || undefined,
     },
     observability: {
       serviceName: env.BOOKING_API_SERVICE_NAME?.trim() || DEFAULT_SERVICE_NAME,

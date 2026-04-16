@@ -1,5 +1,6 @@
 import { createHash, randomUUID, scrypt as scryptCallback, ScryptOptions } from "crypto";
 import { BookingSessionQuotedProperty, BookingSessionRecord, HoldGuestDetails } from "./bookingSessions";
+import { createEmailClient } from "./email";
 import { ApiError } from "./http/errors";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
@@ -421,6 +422,10 @@ export async function handleCreatePayPalHold(
         body: responseBody,
       },
     });
+
+    // Send hold_created email — non-fatal; errors are logged inside EmailClient
+    const emailClient = createEmailClient(config.email, request.observability.logger);
+    await emailClient.sendHoldCreated(activeSession, property.name);
 
     return jsonResponse(200, responseBody, request.responseHeaders);
   } catch (error) {

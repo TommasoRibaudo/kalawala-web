@@ -41,6 +41,11 @@ const config: BookingApiConfig = {
     captchaChallengesEnabled: false,
     maxTrackedBuckets: 100,
   },
+  email: {
+    fromAddress: "test@kalawala.com",
+    region: "us-east-1",
+    disabled: true,
+  },
   observability: {
     serviceName: "booking-api",
     environment: "test",

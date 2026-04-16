@@ -4,6 +4,7 @@ import { jsonResponse } from "./http/response";
 import { notImplemented, ApiError } from "./http/errors";
 import { Router } from "./http/router";
 import { handleCalendarRequest } from "./calendar";
+import { handlePortalLogin } from "./portalAuth";
 import { handleManualDepositHandoff, handleManualDepositHandoffEvent } from "./depositHandoff";
 import { handleCreatePayPalHold } from "./holds";
 import { handleCreatePayPalOrder, handleCapturePayPalOrder } from "./paypalOrders";
@@ -109,8 +110,8 @@ export function createRouter(config: BookingApiConfig): Router {
   router.post(
     "/api/portal/login",
     async (request) => {
-      validatePortalLogin(request.body);
-      throw notImplemented("Portal login is scaffolded; password auth and sessions land in task 6.3.");
+      const body = validatePortalLogin(request.body);
+      return handlePortalLogin(body, request, config);
     },
     { requireJsonBody: true, abuseProtection: "portalLogin" }
   );

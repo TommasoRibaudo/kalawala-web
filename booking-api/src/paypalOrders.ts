@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import { BookingSessionRecord, BookingSessionRepository } from "./bookingSessions";
+import { createEmailClient } from "./email";
 import { getHoldRepository } from "./holds";
 import { ApiError } from "./http/errors";
 import { getHeader } from "./http/request";
@@ -133,6 +134,10 @@ export async function handleCreatePayPalOrder(
     provider: "paypal",
     providerObjectId: paypalOrderResult.orderId,
   });
+
+  // Send payment_pending email — non-fatal
+  const emailClient = createEmailClient(config.email, request.observability.logger);
+  await emailClient.sendPaymentPending(session, property.name, paypalOrderResult.orderId);
 
   const responseBody = buildCreateOrderResponse(session, paypalOrderResult, property);
   return jsonResponse(200, responseBody, request.responseHeaders);

@@ -73,6 +73,7 @@ export interface BookingSessionRepository {
   createQuotedSession(input: CreateQuotedBookingSessionInput): Promise<BookingSessionRecord>;
   getById(id: string): Promise<BookingSessionRecord | undefined>;
   getByQuoteId(quoteId: string): Promise<BookingSessionRecord | undefined>;
+  getByReservationPublicId(reservationPublicId: string): Promise<BookingSessionRecord | undefined>;
   markHoldCreating(input: {
     bookingSessionId: string;
     propertyId: string;
@@ -93,12 +94,14 @@ export interface BookingSessionRepository {
 export class InMemoryBookingSessionRepository implements BookingSessionRepository {
   private readonly sessionsById = new Map<string, BookingSessionRecord>();
   private readonly sessionsByQuoteId = new Map<string, BookingSessionRecord>();
+  private readonly sessionsByPublicId = new Map<string, BookingSessionRecord>();
 
   async createQuotedSession(input: CreateQuotedBookingSessionInput): Promise<BookingSessionRecord> {
     const record = createBookingSessionRecord(input, "quoted");
 
     this.sessionsById.set(record.id, record);
     this.sessionsByQuoteId.set(record.quoteId, record);
+    this.sessionsByPublicId.set(record.reservationPublicId, record);
     return record;
   }
 
@@ -108,6 +111,10 @@ export class InMemoryBookingSessionRepository implements BookingSessionRepositor
 
   async getByQuoteId(quoteId: string): Promise<BookingSessionRecord | undefined> {
     return this.sessionsByQuoteId.get(quoteId);
+  }
+
+  async getByReservationPublicId(reservationPublicId: string): Promise<BookingSessionRecord | undefined> {
+    return this.sessionsByPublicId.get(reservationPublicId);
   }
 
   async markHoldCreating(input: {
@@ -237,6 +244,7 @@ export class InMemoryBookingSessionRepository implements BookingSessionRepositor
   private save(record: BookingSessionRecord): BookingSessionRecord {
     this.sessionsById.set(record.id, record);
     this.sessionsByQuoteId.set(record.quoteId, record);
+    this.sessionsByPublicId.set(record.reservationPublicId, record);
     return record;
   }
 }

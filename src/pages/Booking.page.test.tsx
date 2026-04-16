@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import BookingPage from './Booking.page';
 
 const originalFetch = global.fetch;
@@ -13,6 +13,38 @@ function renderBookingPage(path = '/book') {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <BookingPage />
+    </MemoryRouter>
+  );
+}
+
+function LocationProbe() {
+  const location = useLocation();
+  return <div data-testid="location">{`${location.pathname}${location.search}`}</div>;
+}
+
+function renderBookingRoutes(path = '/book') {
+  return render(
+    <MemoryRouter initialEntries={[path]}>
+      <Routes>
+        <Route
+          path="/book"
+          element={
+            <>
+              <BookingPage />
+              <LocationProbe />
+            </>
+          }
+        />
+        <Route
+          path="/bookES"
+          element={
+            <>
+              <BookingPage />
+              <LocationProbe />
+            </>
+          }
+        />
+      </Routes>
     </MemoryRouter>
   );
 }
@@ -123,6 +155,23 @@ test('renders Spanish no-availability state for bookES route', async () => {
   const [, request] = (global.fetch as jest.Mock).mock.calls[0];
   expect(request.headers['Accept-Language']).toBe('es');
   expect(JSON.parse(request.body)).toMatchObject({ language: 'es' });
+});
+
+test('language switcher toggles booking routes and preserves search query state', () => {
+  renderBookingRoutes('/book?arrivalDate=2099-10-01&departureDate=2099-10-05&guests=4');
+
+  expect(screen.getByLabelText('Check-in')).toHaveValue('2099-10-01');
+  expect(screen.getByLabelText('Check-out')).toHaveValue('2099-10-05');
+  expect(screen.getByLabelText('Guests')).toHaveValue(4);
+
+  fireEvent.click(screen.getAllByRole('button', { name: /switch language to espa/i })[0]);
+
+  expect(screen.getByTestId('location')).toHaveTextContent(
+    '/bookES?arrivalDate=2099-10-01&departureDate=2099-10-05&guests=4'
+  );
+  expect(screen.getByLabelText('Llegada')).toHaveValue('2099-10-01');
+  expect(screen.getByLabelText('Salida')).toHaveValue('2099-10-05');
+  expect(screen.getByLabelText('Huéspedes')).toHaveValue(4);
 });
 
 test('builds Spanish listing links from the property slug and opens them in a new tab', async () => {

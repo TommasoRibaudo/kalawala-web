@@ -1,9 +1,11 @@
 import React from 'react';
 import { Alert, Button, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
+import { useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDays, faUser, faWifi, faSnowflake, faCar, faKitchenSet } from '@fortawesome/free-solid-svg-icons';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
+import FixedNavigationES from '../components/FixedNavigation/FixedNavigation.componentES';
 import { useLanguageDetection } from '../hooks/useLanguageDetection';
 import {
   BookingApiError,
@@ -12,76 +14,9 @@ import {
   BookingSearchResponse,
   searchAvailability,
 } from '../services/BookingApi.service';
+import { bookingStrings, BookingStrings } from './Booking.i18n';
 import './Booking.style.scss';
 
-const bookingStrings = {
-  en: {
-    title: 'Book directly with Kalawala',
-    subtitle: 'Choose your dates and see which homes are available for your stay.',
-    checkIn: 'Check-in',
-    checkOut: 'Check-out',
-    guests: 'Guests',
-    guestsHelp: 'Adults and children staying overnight.',
-    decreaseGuests: 'Decrease guests',
-    increaseGuests: 'Increase guests',
-    search: 'Search availability',
-    searching: 'Searching',
-    resultsTitle: 'Available homes',
-    resultCount: (count: number) => `${count} ${count === 1 ? 'home is' : 'homes are'} available`,
-    viewListing: 'View listing',
-    noResultsTitle: 'No houses available for these dates',
-    noResultsBody: 'Try a different date range or guest count. We update availability directly from our booking system.',
-    priceForStay: 'Total for stay',
-    averageNight: 'avg. per night',
-    sleeps: (count: number) => `Sleeps ${count}`,
-    available: 'Available for your dates',
-    quoteExpires: 'Quote expires',
-    validationDateOrder: 'Check-out must be after check-in.',
-    validationArrival: 'Choose today or a future check-in date.',
-    validationGuests: 'Guest count must be at least 1.',
-    providerUnavailable: 'Availability is temporarily unavailable. Please try again in a moment.',
-    genericError: 'We could not search availability right now. Please try again.',
-    warningMinimumStay: 'Some homes require a longer minimum stay for these dates.',
-    warningGuestCapacity: 'Some homes cannot host this guest count.',
-    warningArrivalDay: 'Some homes have arrival-day restrictions.',
-    warningLeadTime: 'Some homes require more advance notice.',
-    warningGapRule: 'Some homes are unavailable because of calendar spacing rules.',
-  },
-  es: {
-    title: 'Reserva directamente con Kalawala',
-    subtitle: 'Elige tus fechas y mira cu\u00e1les casas est\u00e1n disponibles para tu estad\u00eda.',
-    checkIn: 'Llegada',
-    checkOut: 'Salida',
-    guests: 'Hu\u00e9spedes',
-    guestsHelp: 'Adultos y ni\u00f1os que se quedan a dormir.',
-    decreaseGuests: 'Reducir hu\u00e9spedes',
-    increaseGuests: 'Aumentar hu\u00e9spedes',
-    search: 'Buscar disponibilidad',
-    searching: 'Buscando',
-    resultsTitle: 'Casas disponibles',
-    resultCount: (count: number) => `${count} ${count === 1 ? 'casa disponible' : 'casas disponibles'}`,
-    viewListing: 'Ver alojamiento',
-    noResultsTitle: 'No hay casas disponibles para estas fechas',
-    noResultsBody: 'Prueba con otras fechas o cantidad de hu\u00e9spedes. Actualizamos disponibilidad directamente desde nuestro sistema de reservas.',
-    priceForStay: 'Total de la estad\u00eda',
-    averageNight: 'prom. por noche',
-    sleeps: (count: number) => `Hasta ${count} hu\u00e9spedes`,
-    available: 'Disponible para tus fechas',
-    quoteExpires: 'Cotizaci\u00f3n vence',
-    validationDateOrder: 'La salida debe ser despu\u00e9s de la llegada.',
-    validationArrival: 'Elige hoy o una fecha futura de llegada.',
-    validationGuests: 'La cantidad de hu\u00e9spedes debe ser al menos 1.',
-    providerUnavailable: 'La disponibilidad no est\u00e1 disponible temporalmente. Int\u00e9ntalo de nuevo en un momento.',
-    genericError: 'No pudimos buscar disponibilidad ahora. Int\u00e9ntalo de nuevo.',
-    warningMinimumStay: 'Algunas casas requieren una estad\u00eda m\u00ednima m\u00e1s larga para estas fechas.',
-    warningGuestCapacity: 'Algunas casas no aceptan esta cantidad de hu\u00e9spedes.',
-    warningArrivalDay: 'Algunas casas tienen restricciones para el d\u00eda de llegada.',
-    warningLeadTime: 'Algunas casas requieren m\u00e1s anticipaci\u00f3n.',
-    warningGapRule: 'Algunas casas no est\u00e1n disponibles por reglas de espacio entre reservas.',
-  },
-};
-
-type BookingStrings = typeof bookingStrings.en;
 type WarningStringKey =
   | 'warningMinimumStay'
   | 'warningGuestCapacity'
@@ -108,30 +43,55 @@ const BookingPage = () => {
   const isSpanishPage = useLanguageDetection();
   const language: BookingLanguage = isSpanishPage ? 'es' : 'en';
   const strings = bookingStrings[language];
-  const today = getCostaRicaToday();
-  const [arrivalDate, setArrivalDate] = React.useState(today);
-  const [departureDate, setDepartureDate] = React.useState(addDays(today, 2));
-  const [guests, setGuests] = React.useState(2);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const today = React.useMemo(() => getCostaRicaToday(), []);
+  const [arrivalDate, setArrivalDate] = React.useState(() =>
+    getInitialArrivalDate(searchParams.get('arrivalDate'), today)
+  );
+  const [departureDate, setDepartureDate] = React.useState(() =>
+    getInitialDepartureDate(searchParams.get('departureDate'), searchParams.get('arrivalDate'), today)
+  );
+  const [guests, setGuests] = React.useState(() => getInitialGuestCount(searchParams.get('guests')));
   const [result, setResult] = React.useState<BookingSearchResponse | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const Navigation = language === 'es' ? FixedNavigationES : FixedNavigation;
 
   const minDepartureDate = addDays(arrivalDate || today, 1);
 
+  const updateBookingQuery = React.useCallback(
+    (updates: Record<string, string | number>) => {
+      const nextParams = new URLSearchParams(searchParams.toString());
+      Object.entries(updates).forEach(([key, value]) => {
+        nextParams.set(key, String(value));
+      });
+      setSearchParams(nextParams, { replace: true });
+    },
+    [searchParams, setSearchParams]
+  );
+
   const handleArrivalChange = (value: string) => {
     setArrivalDate(value);
+    const updates: Record<string, string> = { arrivalDate: value };
     if (value && departureDate <= value) {
-      setDepartureDate(addDays(value, 1));
+      const nextDepartureDate = addDays(value, 1);
+      setDepartureDate(nextDepartureDate);
+      updates.departureDate = nextDepartureDate;
     }
+    updateBookingQuery(updates);
   };
 
   const handleGuestInputChange = (value: number) => {
-    setGuests(Number.isFinite(value) ? value : 0);
+    const nextGuests = Number.isFinite(value) ? value : 0;
+    setGuests(nextGuests);
+    updateBookingQuery({ guests: nextGuests });
   };
 
   const handleGuestStepChange = (value: number) => {
-    setGuests(Math.max(1, value));
+    const nextGuests = Math.max(1, value);
+    setGuests(nextGuests);
+    updateBookingQuery({ guests: nextGuests });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -166,18 +126,18 @@ const BookingPage = () => {
   return (
     <div id="body" className="booking-page">
       <Helmet>
-        <title>{strings.title} | Reservas Kalawala</title>
-        <meta name="description" content={strings.subtitle} />
+        <title>{strings.documentTitle} | {strings.siteTitle}</title>
+        <meta name="description" content={strings.metaDescription} />
         <link rel="canonical" href={`https://www.reservaskalawala.com/${language === 'es' ? 'bookES' : 'book'}`} />
       </Helmet>
-      <FixedNavigation isBlog={false} />
+      <Navigation isBlog={false} />
 
       <main className="booking-search-container">
         <Container>
           <Row className="justify-content-center">
             <Col lg={10} xl={9}>
               <section className="booking-search-header" aria-labelledby="booking-search-title">
-                <p className="booking-search-eyebrow">Kalawala</p>
+                <p className="booking-search-eyebrow">{strings.eyebrow}</p>
                 <h1 id="booking-search-title">{strings.title}</h1>
                 <p>{strings.subtitle}</p>
               </section>
@@ -205,7 +165,10 @@ const BookingPage = () => {
                         value={departureDate}
                         min={minDepartureDate}
                         isInvalid={Boolean(fieldErrors.departureDate)}
-                        onChange={(event) => setDepartureDate(event.target.value)}
+                        onChange={(event) => {
+                          setDepartureDate(event.target.value);
+                          updateBookingQuery({ departureDate: event.target.value });
+                        }}
                       />
                       <Form.Control.Feedback type="invalid">{fieldErrors.departureDate}</Form.Control.Feedback>
                     </Form.Group>
@@ -363,7 +326,7 @@ const BookingPropertyCard = ({
             <FontAwesomeIcon icon={faUser} /> {strings.sleeps(property.guestCapacity)}
           </p>
         </div>
-        <ul className="booking-amenities" aria-label={`${property.name} amenities`}>
+        <ul className="booking-amenities" aria-label={strings.amenitiesLabel(property.name)}>
           {property.amenities.slice(0, 5).map((amenity) => (
             <li key={`${property.propertyId}-${amenity.code}`}>
               <FontAwesomeIcon icon={amenityIcons[amenity.code] ?? faWifi} />
@@ -410,6 +373,29 @@ function validateSearch(
   }
 
   return errors;
+}
+
+function getInitialArrivalDate(value: string | null, today: string): string {
+  return value && isYmd(value) && value >= today ? value : today;
+}
+
+function getInitialDepartureDate(value: string | null, arrivalValue: string | null, today: string): string {
+  const arrivalDate = getInitialArrivalDate(arrivalValue, today);
+  return value && isYmd(value) && value > arrivalDate ? value : addDays(arrivalDate, 2);
+}
+
+function getInitialGuestCount(value: string | null): number {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed >= 1 ? parsed : 2;
+}
+
+function isYmd(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false;
+  }
+
+  const date = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 
 function getSearchErrorMessage(error: unknown, strings: BookingStrings): string {

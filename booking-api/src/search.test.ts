@@ -1,4 +1,5 @@
 import { createBookingApiHandler } from "./app";
+import { InMemoryBookingSessionRepository } from "./bookingSessions";
 import { StaticSecretProvider } from "./secrets";
 import { BookingApiConfig, LambdaHttpRequest } from "./types";
 
@@ -113,6 +114,14 @@ test("POST /api/search calls Smoobu availability and returns safe property summa
     listingUrl: "/GecoES",
     name: "Casa Geco",
     guestCapacity: 5,
+    amenities: [
+      { code: "bath", label: "Ba\u00f1o privado equipado" },
+      { code: "kitchen", label: "Cocina privada equipada" },
+      { code: "ac", label: "A/C" },
+      { code: "parking", label: "Parqueo privado cercado" },
+      { code: "wifi", label: "WiFi 100Mbps" },
+      { code: "pet", label: "Acepta mascotas" },
+    ],
     price: {
       currency: "USD",
       totalAmountCents: 51000,
@@ -142,7 +151,47 @@ test("POST /api/search calls Smoobu availability and returns safe property summa
   });
 });
 
+test("POST /api/search persists quoted booking session language for server-side communications", async () => {
+  const bookingSessions = new InMemoryBookingSessionRepository();
+  global.fetch = jest.fn(async () =>
+    jsonResponse({
+      availableApartments: [1],
+      prices: {
+        "1": { price: 510, currency: "USD" },
+      },
+      errorMessages: {},
+    })
+  ) as typeof fetch;
+  const handler = createBookingApiHandler({ ...config, bookingSessions });
+
+  const response = await handler(
+    makeSearchEvent({
+      arrivalDate: "2099-06-10",
+      departureDate: "2099-06-14",
+      guests: 3,
+      language: "es",
+      source: "booking_page",
+    })
+  );
+
+  expect(response.statusCode).toBe(200);
+  const body = JSON.parse(response.body);
+  const session = await bookingSessions.getById(body.bookingSessionId);
+  expect(session).toMatchObject({
+    id: body.bookingSessionId,
+    quoteId: body.quoteId,
+    status: "quoted",
+    language: "es",
+    arrivalDate: "2099-06-10",
+    departureDate: "2099-06-14",
+    guests: 3,
+    source: "booking_page",
+  });
+  expect(body.language).toBe("es");
+});
+
 test("POST /api/search returns structured 200 response when no houses are available", async () => {
+  const bookingSessions = new InMemoryBookingSessionRepository();
   global.fetch = jest.fn(async () =>
     jsonResponse({
       availableApartments: [],
@@ -150,7 +199,7 @@ test("POST /api/search returns structured 200 response when no houses are availa
       errorMessages: {},
     })
   ) as typeof fetch;
-  const handler = createBookingApiHandler(config);
+  const handler = createBookingApiHandler({ ...config, bookingSessions });
 
   const response = await handler(
     makeSearchEvent({
@@ -165,6 +214,7 @@ test("POST /api/search returns structured 200 response when no houses are availa
   const body = JSON.parse(response.body);
   expect(body.resultsCount).toBe(0);
   expect(body.properties).toEqual([]);
+  expect(await bookingSessions.getById(body.bookingSessionId)).toBeUndefined();
   expect(body.availabilityWarnings).toEqual([
     {
       code: "no_properties_available",

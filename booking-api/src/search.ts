@@ -1,4 +1,4 @@
-import { randomBytes, randomUUID } from "crypto";
+import { createNoAvailabilitySession, getBookingSessionRepository } from "./bookingSessions";
 import { ApiError } from "./http/errors";
 import { jsonResponse } from "./http/response";
 import { BOOKING_PROPERTIES, BOOKING_PROPERTIES_BY_SMOOBU_ID, BookingProperty, listingUrlForLanguage } from "./propertyCatalog";
@@ -6,7 +6,7 @@ import { createSmoobuClient } from "./smoobuClient";
 import { ApiResponse, BookingApiConfig, HeadersMap, RouteObservability } from "./types";
 import { SearchRequest } from "./validation";
 
-// TODO: Persist quote/bookingSessionId to DB and enforce TTL server-side in hold creation (task 4.1).
+// TODO: Replace the request-local in-memory fallback with RDS persistence before hold creation (task 4.1).
 const QUOTE_TTL_MS = 10 * 60 * 1000;
 
 interface SmoobuAvailabilityResponse {
@@ -30,12 +30,6 @@ interface AvailabilityWarning {
   propertyId?: string;
 }
 
-interface SearchQuote {
-  bookingSessionId: string;
-  quoteId: string;
-  expiresAt: string;
-}
-
 export async function handleAvailabilitySearch(
   request: SearchRequest,
   config: BookingApiConfig,
@@ -53,7 +47,6 @@ export async function handleAvailabilitySearch(
   }
 
   const smoobuClient = await createSmoobuClient(config);
-  const quote = createQuote();
   const apartmentIds = BOOKING_PROPERTIES.map((property) => property.smoobuApartmentId);
   const smoobuPayload = {
     arrivalDate: request.arrivalDate,
@@ -69,26 +62,38 @@ export async function handleAvailabilitySearch(
     observability
   );
   const normalized = normalizeAvailability(availability.data, request);
+  const bookingSessionInput = {
+    arrivalDate: request.arrivalDate,
+    departureDate: request.departureDate,
+    guests: request.guests,
+    language: request.language,
+    source: request.source,
+    quoteTtlMs: QUOTE_TTL_MS,
+  };
+  const bookingSession =
+    normalized.properties.length > 0
+      ? await getBookingSessionRepository(config).createQuotedSession(bookingSessionInput)
+      : createNoAvailabilitySession(bookingSessionInput);
 
   observability.recordStateTransition({
     entityType: "booking_session",
-    toState: "quoted",
+    toState: bookingSession.status,
     action: "availability_search",
     success: true,
-    bookingSessionId: quote.bookingSessionId,
+    bookingSessionId: bookingSession.id,
     provider: "smoobu",
   });
 
   return jsonResponse(
     200,
     {
-      bookingSessionId: quote.bookingSessionId,
-      quoteId: quote.quoteId,
-      quoteExpiresAt: quote.expiresAt,
-      arrivalDate: request.arrivalDate,
-      departureDate: request.departureDate,
-      guests: request.guests,
-      language: request.language,
+      bookingSessionId: bookingSession.id,
+      quoteId: bookingSession.quoteId,
+      quoteExpiresAt: bookingSession.quoteExpiresAt,
+      arrivalDate: bookingSession.arrivalDate,
+      departureDate: bookingSession.departureDate,
+      guests: bookingSession.guests,
+      language: bookingSession.language,
       resultsCount: normalized.properties.length,
       properties: normalized.properties,
       availabilityWarnings:
@@ -98,20 +103,6 @@ export async function handleAvailabilitySearch(
     },
     responseHeaders
   );
-}
-
-function createQuote(): SearchQuote {
-  return {
-    bookingSessionId: randomUUID(),
-    quoteId: createQuoteId(),
-    expiresAt: new Date(Date.now() + QUOTE_TTL_MS).toISOString(),
-  };
-}
-
-function createQuoteId(): string {
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const entropy = randomBytes(8).toString("hex").toUpperCase();
-  return `qt_${timestamp}${entropy}`;
 }
 
 function normalizeAvailability(data: SmoobuAvailabilityResponse, request: SearchRequest) {
@@ -149,7 +140,10 @@ function buildPublicProperty(property: BookingProperty, price: PriceQuote, langu
     name: property.name,
     guestCapacity: property.guestCapacity,
     thumbnailUrl: property.thumbnailUrl,
-    amenities: property.amenities,
+    amenities: property.amenities.map((amenity) => ({
+      code: amenity.code,
+      label: localizeAmenityLabel(amenity, language),
+    })),
     price,
     actions: {
       viewListingUrl: listingUrl,
@@ -157,6 +151,40 @@ function buildPublicProperty(property: BookingProperty, price: PriceQuote, langu
       canUseManualDepositHandoff: true,
     },
   };
+}
+
+function localizeAmenityLabel(amenity: BookingProperty["amenities"][number], language: "en" | "es"): string {
+  if (language === "en") {
+    return amenity.label;
+  }
+
+  if (amenity.code === "bath" && amenity.label.startsWith("2 ")) {
+    return "2 ba\u00f1os";
+  }
+
+  if (amenity.code === "parking") {
+    if (amenity.label.toLowerCase().includes("unfenced")) {
+      return "Parqueo sin cerca";
+    }
+    if (amenity.label.toLowerCase().includes("fenced")) {
+      return "Parqueo privado cercado";
+    }
+    if (amenity.label.toLowerCase().includes("outside")) {
+      return "Parqueo exterior";
+    }
+    return "Parqueo privado";
+  }
+
+  const labels: Record<string, string> = {
+    ac: "A/C",
+    bath: "Ba\u00f1o privado equipado",
+    kitchen: "Cocina privada equipada",
+    pet: "Acepta mascotas",
+    pool: "Piscina privada",
+    wifi: amenity.label === "WiFi" ? "WiFi" : "WiFi 100Mbps",
+  };
+
+  return labels[amenity.code] ?? amenity.label;
 }
 
 function parseAvailableApartmentIds(value: unknown): number[] {

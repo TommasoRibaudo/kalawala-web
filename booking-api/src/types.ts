@@ -1,3 +1,5 @@
+import type { BookingSessionRepository } from "./bookingSessions";
+
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS";
 
 export type HeadersMap = Record<string, string>;
@@ -88,6 +90,7 @@ export interface BookingApiConfig {
   maxBodyBytes: number;
   secrets: BookingSecretProvider;
   smoobu: SmoobuClientConfig;
+  bookingSessions?: BookingSessionRepository;
   abuseProtection: AbuseProtectionConfig;
   observability: ObservabilityConfig;
 }

@@ -69,6 +69,15 @@ export async function handleAvailabilitySearch(
     language: request.language,
     source: request.source,
     quoteTtlMs: QUOTE_TTL_MS,
+    quotedProperties: normalized.properties.map((property) => ({
+      propertyId: property.propertyId,
+      currency: property.price.currency,
+      totalAmountCents: property.price.totalAmountCents,
+      nightlyAverageCents: property.price.nightlyAverageCents,
+      nights: property.price.nights,
+      includesTaxes: property.price.includesTaxes,
+      rateSource: property.price.rateSource,
+    })),
   };
   const bookingSession =
     normalized.properties.length > 0
@@ -147,7 +156,9 @@ function buildPublicProperty(property: BookingProperty, price: PriceQuote, langu
     price,
     actions: {
       viewListingUrl: listingUrl,
-      canCreatePayPalHold: false,
+      // Hard-coded true now that the hold route is implemented (task 4.1).
+      // TODO: derive dynamically once per-property or per-environment feature flags exist.
+      canCreatePayPalHold: true,
       canUseManualDepositHandoff: true,
     },
   };

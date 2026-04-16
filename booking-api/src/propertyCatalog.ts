@@ -178,6 +178,8 @@ export const BOOKING_PROPERTIES_BY_SMOOBU_ID = new Map(
   BOOKING_PROPERTIES.map((property) => [property.smoobuApartmentId, property])
 );
 
+export const BOOKING_PROPERTIES_BY_ID = new Map(BOOKING_PROPERTIES.map((property) => [property.propertyId, property]));
+
 export function listingUrlForLanguage(slug: string, language: "en" | "es"): string {
   return `/${slug}${language === "es" ? "ES" : ""}`;
 }

@@ -10,6 +10,10 @@ const DEFAULT_SMOOBU_MAX_RETRIES = 3;
 const DEFAULT_SMOOBU_BASE_BACKOFF_MS = 250;
 const DEFAULT_SMOOBU_MAX_BACKOFF_MS = 2_000;
 const DEFAULT_SMOOBU_MAX_RATE_LIMIT_DELAY_MS = 60_000;
+const DEFAULT_SMOOBU_HOLD_CHANNEL_ID = 11;
+const DEFAULT_PAYPAL_HOLD_TTL_MINUTES = 60;
+const DEFAULT_IDEMPOTENCY_TTL_MINUTES = 24 * 60;
+const DEFAULT_STALE_IDEMPOTENCY_LOCK_SECONDS = 120;
 
 function splitCsv(value: string | undefined): string[] {
   if (!value) {
@@ -89,6 +93,18 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
         env.SMOOBU_MAX_RATE_LIMIT_DELAY_MS,
         DEFAULT_SMOOBU_MAX_RATE_LIMIT_DELAY_MS
       ),
+      holdChannelId: parseSmoobuHoldChannelId(env.SMOOBU_HOLD_CHANNEL_ID),
+    },
+    hold: {
+      defaultTtlMinutes: parsePositiveInteger(env.PAYPAL_HOLD_TTL_MINUTES, DEFAULT_PAYPAL_HOLD_TTL_MINUTES),
+      idempotencyTtlMinutes: parsePositiveInteger(
+        env.BOOKING_API_IDEMPOTENCY_TTL_MINUTES,
+        DEFAULT_IDEMPOTENCY_TTL_MINUTES
+      ),
+      staleIdempotencyLockSeconds: parsePositiveInteger(
+        env.BOOKING_API_STALE_IDEMPOTENCY_LOCK_SECONDS,
+        DEFAULT_STALE_IDEMPOTENCY_LOCK_SECONDS
+      ),
     },
     abuseProtection: {
       enabled: parseBoolean(env.BOOKING_API_ABUSE_PROTECTION_ENABLED, true),
@@ -105,6 +121,21 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
       metricsEnabled: parseBoolean(env.BOOKING_API_METRICS_ENABLED, true),
     },
   };
+}
+
+function parseSmoobuHoldChannelId(value: string | undefined): 11 | 13 {
+  if (!value) {
+    return DEFAULT_SMOOBU_HOLD_CHANNEL_ID;
+  }
+
+  const parsed = Number(value);
+  if (parsed === 11 || parsed === 13) {
+    return parsed;
+  }
+
+  // eslint-disable-next-line no-console
+  console.warn(`[booking-api] Ignoring invalid SMOOBU_HOLD_CHANNEL_ID value: expected 11 or 13, got "${value}"`);
+  return DEFAULT_SMOOBU_HOLD_CHANNEL_ID;
 }
 
 function parseOptionalPositiveInteger(value: string | undefined, envName?: string): number | undefined {

@@ -13,6 +13,12 @@ const config: BookingApiConfig = {
     baseBackoffMs: 250,
     maxBackoffMs: 2_000,
     maxRateLimitDelayMs: 60_000,
+    holdChannelId: 11,
+  },
+  hold: {
+    defaultTtlMinutes: 60,
+    idempotencyTtlMinutes: 1440,
+    staleIdempotencyLockSeconds: 120,
   },
   abuseProtection: {
     enabled: true,
@@ -70,8 +76,8 @@ test("booking handler: hold route triggers CAPTCHA before repeated create attemp
   const second = await handler(makePostEvent(validHoldBody, "idem-key-00000002"));
   const third = await handler(makePostEvent(validHoldBody, "idem-key-00000003"));
 
-  expect(first.statusCode).toBe(501);
-  expect(second.statusCode).toBe(501);
+  expect(first.statusCode).toBe(404);
+  expect(second.statusCode).toBe(404);
   expect(third.statusCode).toBe(403);
   expect(third.headers["X-Captcha-Required"]).toBe("true");
   expect(JSON.parse(third.body).error.code).toBe("captcha_required");

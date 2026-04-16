@@ -1,4 +1,5 @@
 import type { BookingSessionRepository } from "./bookingSessions";
+import type { HoldRepository } from "./holds";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS";
 
@@ -91,6 +92,8 @@ export interface BookingApiConfig {
   secrets: BookingSecretProvider;
   smoobu: SmoobuClientConfig;
   bookingSessions?: BookingSessionRepository;
+  holds?: HoldRepository;
+  hold: HoldConfig;
   abuseProtection: AbuseProtectionConfig;
   observability: ObservabilityConfig;
 }
@@ -103,6 +106,13 @@ export interface SmoobuClientConfig {
   baseBackoffMs: number;
   maxBackoffMs: number;
   maxRateLimitDelayMs: number;
+  holdChannelId: 11 | 13;
+}
+
+export interface HoldConfig {
+  defaultTtlMinutes: number;
+  idempotencyTtlMinutes: number;
+  staleIdempotencyLockSeconds: number;
 }
 
 export interface AbuseProtectionConfig {

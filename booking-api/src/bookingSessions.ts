@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID } from "crypto";
 
 export type BookingLanguage = "en" | "es";
-export type BookingSessionStatus = "quoted" | "no_availability";
+export type BookingSessionStatus = "quoted" | "no_availability" | "hold_creating" | "hold_active" | "hold_expired" | "failed";
 
 const DEFAULT_QUOTE_TTL_MS = 10 * 60 * 1000;
 
@@ -12,10 +12,31 @@ export interface CreateQuotedBookingSessionInput {
   language: BookingLanguage;
   source?: string;
   quoteTtlMs?: number;
+  quotedProperties?: BookingSessionQuotedProperty[];
+}
+
+export interface BookingSessionQuotedProperty {
+  propertyId: string;
+  currency: string;
+  totalAmountCents: number;
+  nightlyAverageCents: number;
+  nights: number;
+  includesTaxes: boolean;
+  rateSource: "smoobu";
+}
+
+export interface HoldGuestDetails {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  country?: string;
+  message?: string;
 }
 
 export interface BookingSessionRecord {
   id: string;
+  reservationPublicId: string;
   quoteId: string;
   status: BookingSessionStatus;
   language: BookingLanguage;
@@ -24,13 +45,37 @@ export interface BookingSessionRecord {
   guests: number;
   source?: string;
   quoteExpiresAt: string;
+  quotedProperties: BookingSessionQuotedProperty[];
+  propertyId?: string;
+  paymentMethod?: "paypal";
+  currency?: string;
+  totalAmountCents?: number;
+  guest?: HoldGuestDetails;
+  portalPasswordHash?: string;
+  portalPasswordSetAt?: string;
+  expiresAt?: string;
+  failureReason?: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface BookingSessionRepository {
   createQuotedSession(input: CreateQuotedBookingSessionInput): Promise<BookingSessionRecord>;
   getById?(id: string): Promise<BookingSessionRecord | undefined>;
   getByQuoteId?(quoteId: string): Promise<BookingSessionRecord | undefined>;
+  markHoldCreating(input: {
+    bookingSessionId: string;
+    propertyId: string;
+    paymentMethod: "paypal";
+    price: BookingSessionQuotedProperty;
+    guest: HoldGuestDetails;
+    portalPasswordHash: string;
+    expiresAt: string;
+  }): Promise<BookingSessionRecord>;
+  markHoldActive(input: { bookingSessionId: string; expiresAt: string }): Promise<BookingSessionRecord>;
+  markFailed(input: { bookingSessionId: string; reason: string }): Promise<BookingSessionRecord>;
+  markHoldExpired(input: { bookingSessionId: string }): Promise<BookingSessionRecord>;
+  listByStatus?(status: BookingSessionStatus): Promise<BookingSessionRecord[]>;
 }
 
 export class InMemoryBookingSessionRepository implements BookingSessionRepository {
@@ -52,6 +97,92 @@ export class InMemoryBookingSessionRepository implements BookingSessionRepositor
   async getByQuoteId(quoteId: string): Promise<BookingSessionRecord | undefined> {
     return this.sessionsByQuoteId.get(quoteId);
   }
+
+  async markHoldCreating(input: {
+    bookingSessionId: string;
+    propertyId: string;
+    paymentMethod: "paypal";
+    price: BookingSessionQuotedProperty;
+    guest: HoldGuestDetails;
+    portalPasswordHash: string;
+    expiresAt: string;
+  }): Promise<BookingSessionRecord> {
+    const existing = this.sessionsById.get(input.bookingSessionId);
+    if (!existing) {
+      throw new Error(`Booking session ${input.bookingSessionId} was not found.`);
+    }
+
+    return this.save({
+      ...existing,
+      status: "hold_creating",
+      propertyId: input.propertyId,
+      paymentMethod: input.paymentMethod,
+      currency: input.price.currency,
+      totalAmountCents: input.price.totalAmountCents,
+      guest: input.guest,
+      portalPasswordHash: input.portalPasswordHash,
+      portalPasswordSetAt: new Date().toISOString(),
+      expiresAt: input.expiresAt,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  async markHoldActive(input: { bookingSessionId: string; expiresAt: string }): Promise<BookingSessionRecord> {
+    const existing = this.sessionsById.get(input.bookingSessionId);
+    if (!existing) {
+      throw new Error(`Booking session ${input.bookingSessionId} was not found.`);
+    }
+
+    return this.save({
+      ...existing,
+      status: "hold_active",
+      expiresAt: input.expiresAt,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  async markFailed(input: { bookingSessionId: string; reason: string }): Promise<BookingSessionRecord> {
+    const existing = this.sessionsById.get(input.bookingSessionId);
+    if (!existing) {
+      throw new Error(`Booking session ${input.bookingSessionId} was not found.`);
+    }
+
+    return this.save({
+      ...existing,
+      status: "failed",
+      failureReason: input.reason,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  async markHoldExpired(input: { bookingSessionId: string }): Promise<BookingSessionRecord> {
+    const existing = this.sessionsById.get(input.bookingSessionId);
+    if (!existing) {
+      throw new Error(`Booking session ${input.bookingSessionId} was not found.`);
+    }
+
+    return this.save({
+      ...existing,
+      status: "hold_expired",
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  async listByStatus(status: BookingSessionStatus): Promise<BookingSessionRecord[]> {
+    const results: BookingSessionRecord[] = [];
+    for (const session of this.sessionsById.values()) {
+      if (session.status === status) {
+        results.push(session);
+      }
+    }
+    return results;
+  }
+
+  private save(record: BookingSessionRecord): BookingSessionRecord {
+    this.sessionsById.set(record.id, record);
+    this.sessionsByQuoteId.set(record.quoteId, record);
+    return record;
+  }
 }
 
 export function getBookingSessionRepository(config: {
@@ -71,6 +202,7 @@ function createBookingSessionRecord(
   const now = new Date();
   return {
     id: randomUUID(),
+    reservationPublicId: createReservationPublicId(),
     quoteId: createQuoteId(),
     status,
     language: input.language,
@@ -79,7 +211,9 @@ function createBookingSessionRecord(
     guests: input.guests,
     ...(input.source ? { source: input.source } : {}),
     quoteExpiresAt: new Date(now.getTime() + (input.quoteTtlMs ?? DEFAULT_QUOTE_TTL_MS)).toISOString(),
+    quotedProperties: input.quotedProperties ?? [],
     createdAt: now.toISOString(),
+    updatedAt: now.toISOString(),
   };
 }
 
@@ -87,4 +221,14 @@ function createQuoteId(): string {
   const timestamp = Date.now().toString(36).toUpperCase();
   const entropy = randomBytes(8).toString("hex").toUpperCase();
   return `qt_${timestamp}${entropy}`;
+}
+
+function createReservationPublicId(): string {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = randomBytes(8);
+  let suffix = "";
+  for (const byte of bytes) {
+    suffix += alphabet[byte % alphabet.length];
+  }
+  return `KWL-${suffix}`;
 }

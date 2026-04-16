@@ -1,5 +1,7 @@
 import { loadConfig } from "./config";
 import { AbuseGuard } from "./abuseProtection";
+import { InMemoryBookingSessionRepository } from "./bookingSessions";
+import { InMemoryHoldRepository } from "./holds";
 import { assertRouteHardening } from "./http/router";
 import { createObservability } from "./observability";
 import {
@@ -19,15 +21,20 @@ import { createRouter } from "./routes";
 import { ApiResponse, BookingApiConfig, HttpMethod, LambdaHttpRequest, RouteRequest } from "./types";
 
 export function createBookingApiHandler(config: BookingApiConfig = loadConfig()) {
-  const router = createRouter(config);
-  const abuseGuard = new AbuseGuard(config.abuseProtection);
-  const observability = createObservability(config.observability);
+  const runtimeConfig: BookingApiConfig = {
+    ...config,
+    bookingSessions: config.bookingSessions ?? new InMemoryBookingSessionRepository(),
+    holds: config.holds ?? new InMemoryHoldRepository(),
+  };
+  const router = createRouter(runtimeConfig);
+  const abuseGuard = new AbuseGuard(runtimeConfig.abuseProtection);
+  const observability = createObservability(runtimeConfig.observability);
 
   return async function bookingApiHandler(event: LambdaHttpRequest): Promise<ApiResponse> {
     const startedAtMs = Date.now();
     const headers = normalizeHeaders(event.headers);
     const correlationId = getCorrelationId(headers);
-    const responseHeaders = buildHeaders(config, correlationId, getHeader(headers, "origin"));
+    const responseHeaders = buildHeaders(runtimeConfig, correlationId, getHeader(headers, "origin"));
     let method: HttpMethod = "GET";
     let path = "/";
     let routePattern: string | undefined;
@@ -47,7 +54,7 @@ export function createBookingApiHandler(config: BookingApiConfig = loadConfig())
       const { route, pathParams } = router.match({ method, path });
       routePattern = route.pattern;
       abusePolicy = route.options.abuseProtection;
-      const rawBody = getRawBody(event, config.maxBodyBytes);
+      const rawBody = getRawBody(event, runtimeConfig.maxBodyBytes);
       const body = parseJsonBody(rawBody, headers, route.options.requireJsonBody ?? false);
 
       const request: RouteRequest = {

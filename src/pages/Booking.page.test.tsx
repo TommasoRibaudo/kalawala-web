@@ -90,7 +90,7 @@ test('submits availability search and renders available properties', async () =>
         },
         actions: {
           viewListingUrl: '/Geco',
-          canCreatePayPalHold: false,
+          canCreatePayPalHold: true,
           canUseManualDepositHandoff: true,
         },
       },
@@ -203,7 +203,7 @@ test('builds Spanish listing links from the property slug and opens them in a ne
         },
         actions: {
           viewListingUrl: '/Geco',
-          canCreatePayPalHold: false,
+          canCreatePayPalHold: true,
           canUseManualDepositHandoff: true,
         },
       },

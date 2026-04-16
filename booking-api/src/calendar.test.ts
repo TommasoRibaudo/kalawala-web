@@ -23,6 +23,12 @@ const config: BookingApiConfig = {
     baseBackoffMs: 250,
     maxBackoffMs: 2_000,
     maxRateLimitDelayMs: 60_000,
+    holdChannelId: 11,
+  },
+  hold: {
+    defaultTtlMinutes: 60,
+    idempotencyTtlMinutes: 1440,
+    staleIdempotencyLockSeconds: 120,
   },
   abuseProtection: {
     enabled: false,

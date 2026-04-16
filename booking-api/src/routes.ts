@@ -4,6 +4,7 @@ import { jsonResponse } from "./http/response";
 import { notImplemented, ApiError } from "./http/errors";
 import { Router } from "./http/router";
 import { handleCalendarRequest, invalidateCalendarRatesCacheFromWebhook } from "./calendar";
+import { handleCreatePayPalHold } from "./holds";
 import { handleAvailabilitySearch } from "./search";
 import { BookingApiConfig, RouteRequest } from "./types";
 import {
@@ -43,8 +44,8 @@ export function createRouter(config: BookingApiConfig): Router {
   router.post(
     "/api/holds",
     async (request) => {
-      validateHoldRequest(request.body);
-      throw notImplemented("PayPal hold creation is scaffolded; DB and Smoobu hold logic land in task 4.1.");
+      const holdRequest = validateHoldRequest(request.body);
+      return handleCreatePayPalHold(holdRequest, request, config);
     },
     { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "holdCreate" }
   );

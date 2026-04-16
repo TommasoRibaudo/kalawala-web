@@ -296,3 +296,95 @@ resource "aws_lambda_permission" "webhooks_apigw" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
 }
+
+
+##############################################################################
+# hold_expiry Lambda — scheduled worker
+#
+# Runs on a cron schedule (every 1 minute) via EventBridge to expire holds
+# that have passed their `expiresAt` timestamp. For each expired hold:
+#   1. Marks the hold as "expired" in the DB.
+#   2. Cancels the corresponding Smoobu reservation (if one exists).
+#   3. Marks the booking session as "hold_expired".
+#
+# Same VPC placement as booking_api so it can reach RDS and ElastiCache.
+# Uses the shared execution role (same secrets and network access).
+##############################################################################
+
+data "archive_file" "hold_expiry_placeholder" {
+  type        = "zip"
+  source_dir  = "${path.module}/lambda/hold_expiry"
+  output_path = "${path.module}/lambda/hold_expiry.zip"
+}
+
+resource "aws_cloudwatch_log_group" "hold_expiry" {
+  name              = "/aws/lambda/${var.project}-${var.environment}-hold-expiry"
+  retention_in_days = local.cloudwatch_log_retention_days
+
+  tags = {
+    Name = "${var.project}-${var.environment}-hold-expiry-logs"
+  }
+}
+
+resource "aws_lambda_function" "hold_expiry" {
+  function_name = "${var.project}-${var.environment}-hold-expiry"
+  description   = "Kalawala hold expiry worker: expires stale holds and cancels Smoobu reservations."
+
+  runtime       = "nodejs22.x"
+  handler       = "index.handler"
+  architectures = ["arm64"]
+
+  role = aws_iam_role.lambda_exec.arn
+
+  filename         = data.archive_file.hold_expiry_placeholder.output_path
+  source_code_hash = data.archive_file.hold_expiry_placeholder.output_base64sha256
+
+  memory_size = 256
+  timeout     = 60
+
+  vpc_config {
+    subnet_ids         = aws_subnet.private[*].id
+    security_group_ids = [aws_security_group.lambda.id]
+  }
+
+  environment {
+    variables = local.lambda_common_env
+  }
+
+  depends_on = [
+    aws_cloudwatch_log_group.hold_expiry,
+    aws_iam_role_policy_attachment.lambda_basic_execution,
+    aws_iam_role_policy_attachment.lambda_vpc_access,
+  ]
+
+  tags = {
+    Name = "${var.project}-${var.environment}-hold-expiry"
+  }
+}
+
+##############################################################################
+# EventBridge schedule — triggers hold_expiry every 1 minute
+##############################################################################
+
+resource "aws_cloudwatch_event_rule" "hold_expiry_schedule" {
+  name                = "${var.project}-${var.environment}-hold-expiry-schedule"
+  description         = "Triggers the hold expiry worker every minute to clean up expired holds."
+  schedule_expression = "rate(1 minute)"
+
+  tags = {
+    Name = "${var.project}-${var.environment}-hold-expiry-schedule"
+  }
+}
+
+resource "aws_cloudwatch_event_target" "hold_expiry_target" {
+  rule = aws_cloudwatch_event_rule.hold_expiry_schedule.name
+  arn  = aws_lambda_function.hold_expiry.arn
+}
+
+resource "aws_lambda_permission" "hold_expiry_eventbridge" {
+  statement_id  = "AllowEventBridgeInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.hold_expiry.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.hold_expiry_schedule.arn
+}

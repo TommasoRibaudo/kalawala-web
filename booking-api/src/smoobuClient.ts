@@ -8,6 +8,7 @@ const DEFAULT_SMOOBU_CONFIG: SmoobuClientConfig = {
   baseBackoffMs: 250,
   maxBackoffMs: 2_000,
   maxRateLimitDelayMs: 60_000,
+  holdChannelId: 11,
 };
 // Keep local defaults so SmoobuClient remains usable in focused tests and
 // worker code that constructs it outside loadConfig().

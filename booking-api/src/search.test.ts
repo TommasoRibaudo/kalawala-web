@@ -23,6 +23,12 @@ const config: BookingApiConfig = {
     baseBackoffMs: 250,
     maxBackoffMs: 2_000,
     maxRateLimitDelayMs: 60_000,
+    holdChannelId: 11,
+  },
+  hold: {
+    defaultTtlMinutes: 60,
+    idempotencyTtlMinutes: 1440,
+    staleIdempotencyLockSeconds: 120,
   },
   abuseProtection: {
     enabled: false,
@@ -132,7 +138,7 @@ test("POST /api/search calls Smoobu availability and returns safe property summa
     },
     actions: {
       viewListingUrl: "/GecoES",
-      canCreatePayPalHold: false,
+      canCreatePayPalHold: true,
       canUseManualDepositHandoff: true,
     },
   });
@@ -339,7 +345,7 @@ test("POST /api/search uses English listing URLs and drops unknown or unpriced S
     listingUrl: "/Geco",
     actions: {
       viewListingUrl: "/Geco",
-      canCreatePayPalHold: false,
+      canCreatePayPalHold: true,
     },
   });
   expect(JSON.stringify(body.properties)).not.toContain("999");

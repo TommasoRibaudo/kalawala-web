@@ -31,6 +31,12 @@ database, and webhook secrets never enter the browser bundle.
   - operational alert signals for webhook failures, rate limits, CAPTCHA
     escalations, provider degradation, and future state-transition failures.
 - Contract-level validators for the planned booking endpoints.
+- PayPal hold creation:
+  - quote/session validation,
+  - just-in-time Smoobu availability recheck,
+  - local hold state with overlap protection,
+  - Smoobu provisional reservation creation using the blocked channel by default,
+  - idempotent success replay for hold creation retries.
 - Fail-closed placeholder handlers for provider/database work scheduled in later
   tasks.
 
@@ -65,6 +71,10 @@ npm run booking-api:build
 | `SMOOBU_BASE_BACKOFF_MS` | Optional first retry backoff, defaults to `250`. |
 | `SMOOBU_MAX_BACKOFF_MS` | Optional max exponential backoff, defaults to `2000`. |
 | `SMOOBU_MAX_RATE_LIMIT_DELAY_MS` | Optional cap for honoring Smoobu retry-after waits, defaults to `60000`. |
+| `SMOOBU_HOLD_CHANNEL_ID` | Optional Smoobu channel for unpaid PayPal holds. Defaults to `11` (Blocked channel); `13` is the config-gated Direct booking fallback. |
+| `PAYPAL_HOLD_TTL_MINUTES` | Optional PayPal hold duration, defaults to `60`. |
+| `BOOKING_API_IDEMPOTENCY_TTL_MINUTES` | Optional public write idempotency retention window, defaults to `1440`. |
+| `BOOKING_API_STALE_IDEMPOTENCY_LOCK_SECONDS` | Optional stale in-progress idempotency lock timeout, defaults to `120`. |
 
 The Secrets Manager value must be a JSON object with this shape:
 

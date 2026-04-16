@@ -388,3 +388,97 @@ resource "aws_lambda_permission" "hold_expiry_eventbridge" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.hold_expiry_schedule.arn
 }
+
+
+##############################################################################
+# payment_reconciliation Lambda — scheduled worker
+#
+# Runs on a cron schedule (every 5 minutes) via EventBridge to reconcile
+# "pending PayPal" sessions. For each pending payment:
+#   1. Queries PayPal Orders API for the actual order status.
+#   2. If COMPLETED → confirms the booking (missed webhook recovery).
+#   3. If VOIDED/declined → marks as failed.
+#   4. If stale (>2h pending) → marks as failed (abandoned).
+#   5. Alerts on any missed-webhook confirmations.
+#
+# Same VPC placement as booking_api so it can reach RDS and ElastiCache.
+# Uses the shared execution role (same secrets and network access).
+##############################################################################
+
+data "archive_file" "payment_reconciliation_placeholder" {
+  type        = "zip"
+  source_dir  = "${path.module}/lambda/payment_reconciliation"
+  output_path = "${path.module}/lambda/payment_reconciliation.zip"
+}
+
+resource "aws_cloudwatch_log_group" "payment_reconciliation" {
+  name              = "/aws/lambda/${var.project}-${var.environment}-payment-reconciliation"
+  retention_in_days = local.cloudwatch_log_retention_days
+
+  tags = {
+    Name = "${var.project}-${var.environment}-payment-reconciliation-logs"
+  }
+}
+
+resource "aws_lambda_function" "payment_reconciliation" {
+  function_name = "${var.project}-${var.environment}-payment-reconciliation"
+  description   = "Kalawala payment reconciliation: resolves pending PayPal sessions and alerts anomalies."
+
+  runtime       = "nodejs22.x"
+  handler       = "index.handler"
+  architectures = ["arm64"]
+
+  role = aws_iam_role.lambda_exec.arn
+
+  filename         = data.archive_file.payment_reconciliation_placeholder.output_path
+  source_code_hash = data.archive_file.payment_reconciliation_placeholder.output_base64sha256
+
+  memory_size = 256
+  timeout     = 120
+
+  vpc_config {
+    subnet_ids         = aws_subnet.private[*].id
+    security_group_ids = [aws_security_group.lambda.id]
+  }
+
+  environment {
+    variables = local.lambda_common_env
+  }
+
+  depends_on = [
+    aws_cloudwatch_log_group.payment_reconciliation,
+    aws_iam_role_policy_attachment.lambda_basic_execution,
+    aws_iam_role_policy_attachment.lambda_vpc_access,
+  ]
+
+  tags = {
+    Name = "${var.project}-${var.environment}-payment-reconciliation"
+  }
+}
+
+##############################################################################
+# EventBridge schedule — triggers payment_reconciliation every 5 minutes
+##############################################################################
+
+resource "aws_cloudwatch_event_rule" "payment_reconciliation_schedule" {
+  name                = "${var.project}-${var.environment}-payment-reconciliation-schedule"
+  description         = "Triggers the payment reconciliation worker every 5 minutes to resolve pending PayPal sessions."
+  schedule_expression = "rate(5 minutes)"
+
+  tags = {
+    Name = "${var.project}-${var.environment}-payment-reconciliation-schedule"
+  }
+}
+
+resource "aws_cloudwatch_event_target" "payment_reconciliation_target" {
+  rule = aws_cloudwatch_event_rule.payment_reconciliation_schedule.name
+  arn  = aws_lambda_function.payment_reconciliation.arn
+}
+
+resource "aws_lambda_permission" "payment_reconciliation_eventbridge" {
+  statement_id  = "AllowEventBridgeInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.payment_reconciliation.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.payment_reconciliation_schedule.arn
+}

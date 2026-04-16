@@ -580,7 +580,7 @@ gantt
 
 [x] 5.1 PayPal Orders integration: create order + capture endpoints; store PayPal-Request-Id and internal idempotency keys. (14h)  
 [x] 5.2 PayPal webhooks endpoint: implement signature verification (postback or self verification), dedupe, and state transitions. (14h)  
-[ ] 5.3 Payment reconciliation job: periodic check of “pending PayPal” sessions; resolve missing webhooks; alert anomalies. (10h)  
+[x] 5.3 Payment reconciliation job: periodic check of “pending PayPal” sessions; resolve missing webhooks; alert anomalies. (10h)  
 
 [ ] 6.1 Smoobu webhooks ingestion: implement secure webhook endpoint with secret validation, dedupe, and reconciliation with DB. (12h)  
 [ ] 6.2 Guest communication templates: implement email/SMS templates for each state (hold created, payment pending, confirmed, cancelled, manual deposit handoff). (8h)  

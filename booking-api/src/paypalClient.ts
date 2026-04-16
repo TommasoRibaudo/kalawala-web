@@ -35,6 +35,13 @@ export interface PayPalCaptureResult {
   amountCents: number;
 }
 
+export interface PayPalOrderDetails {
+  orderId: string;
+  status: string;
+  captureId?: string;
+  captureStatus?: string;
+}
+
 export interface PayPalVerifySignatureInput {
   auth_algo: string;
   cert_url: string;
@@ -271,6 +278,54 @@ export class PayPalClient {
       observability.recordProviderCall({
         provider: "paypal",
         operation: "captureOrder",
+        durationMs: this.now() - startedAtMs,
+        statusCode,
+        errorCode,
+      });
+    }
+  }
+
+  async getOrderDetails(
+    orderId: string,
+    observability: RouteObservability
+  ): Promise<PayPalOrderDetails> {
+    const accessToken = await this.getAccessToken();
+    const startedAtMs = this.now();
+    let statusCode: number | undefined;
+    let errorCode: string | undefined;
+
+    try {
+      const encodedId = encodeURIComponent(orderId);
+      const response = await this.fetchWithTimeout(
+        `/v2/checkout/orders/${encodedId}`,
+        "GET",
+        undefined,
+        {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        }
+      );
+      statusCode = response.status;
+
+      if (!response.ok) {
+        const err = await buildPayPalHttpError(response, "paypal_get_order_failed");
+        errorCode = err.code;
+        throw err;
+      }
+
+      const data = await parseJsonResponse<PayPalCaptureOrderResponse>(response);
+      const capture = data.purchase_units?.[0]?.payments?.captures?.[0];
+
+      return {
+        orderId: data.id ?? orderId,
+        status: data.status ?? "UNKNOWN",
+        captureId: capture?.id,
+        captureStatus: capture?.status,
+      };
+    } finally {
+      observability.recordProviderCall({
+        provider: "paypal",
+        operation: "getOrderDetails",
         durationMs: this.now() - startedAtMs,
         statusCode,
         errorCode,

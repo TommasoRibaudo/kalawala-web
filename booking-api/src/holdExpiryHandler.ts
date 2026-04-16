@@ -8,12 +8,15 @@ import { BookingApiConfig } from "./types";
  * Lambda entry point for the scheduled hold expiry worker.
  * Triggered by EventBridge rule (e.g. rate(1 minute)).
  *
- * TODO(rds): Replace getHoldRepository / getBookingSessionRepository with
- * RDS-backed implementations once the database persistence layer lands.
- * Until then, this handler is a functional no-op in deployed environments
- * because the in-memory fallback repos start empty on every cold start.
- * The core logic in processExpiredHolds is fully tested and ready for
- * real repositories.
+ * IMPORTANT — Repository wiring:
+ * loadConfig() does not yet populate `bookingSessions` or `holds` because
+ * the RDS persistence layer has not landed. When it does, loadConfig() must
+ * be updated to instantiate the RDS-backed repositories and assign them to
+ * config.bookingSessions and config.holds. Without that change this handler
+ * remains a no-op. The same applies to paymentReconciliationHandler.ts.
+ *
+ * The core logic in processExpiredHolds is fully tested with in-memory
+ * repositories and ready for real ones.
  */
 export async function handler(): Promise<HoldExpiryResult> {
   const config = loadConfig();

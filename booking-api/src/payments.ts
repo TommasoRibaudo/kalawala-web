@@ -40,6 +40,9 @@ export interface PaymentRepository {
   }): Promise<PaymentRecord>;
 
   markFailed(bookingSessionId: string): Promise<PaymentRecord>;
+
+  /** List all payments with the given status. Used by the reconciliation job. */
+  listByStatus(status: PaymentStatus): Promise<PaymentRecord[]>;
 }
 
 export class InMemoryPaymentRepository implements PaymentRepository {
@@ -105,6 +108,16 @@ export class InMemoryPaymentRepository implements PaymentRepository {
     };
     this.records.set(bookingSessionId, updated);
     return updated;
+  }
+
+  async listByStatus(status: PaymentStatus): Promise<PaymentRecord[]> {
+    const results: PaymentRecord[] = [];
+    for (const record of this.records.values()) {
+      if (record.status === status) {
+        results.push(record);
+      }
+    }
+    return results;
   }
 
   private getRequired(bookingSessionId: string): PaymentRecord {

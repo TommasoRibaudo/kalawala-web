@@ -26,6 +26,12 @@ type WarningStringKey =
   | 'warningLeadTime'
   | 'warningGapRule';
 
+type DepositInstructionStringKey =
+  | 'depositBankInstructions'
+  | 'depositStaffWillConfirm'
+  | 'depositNoReceiptUpload'
+  | 'depositContactUs';
+
 const amenityIcons: Record<string, typeof faWifi> = {
   ac: faSnowflake,
   kitchen: faKitchenSet,
@@ -39,6 +45,13 @@ const warningMessages: Record<string, WarningStringKey> = {
   arrival_day_restricted: 'warningArrivalDay',
   lead_time_restricted: 'warningLeadTime',
   gap_rule_restricted: 'warningGapRule',
+};
+
+const depositInstructionMessages: Record<string, DepositInstructionStringKey> = {
+  'deposit.bankInstructions': 'depositBankInstructions',
+  'deposit.staffWillConfirm': 'depositStaffWillConfirm',
+  'deposit.noReceiptUpload': 'depositNoReceiptUpload',
+  'deposit.contactUs': 'depositContactUs',
 };
 
 const BookingPage = () => {
@@ -454,6 +467,18 @@ const ManualDepositHandoffPanel = ({
   onBack: () => void;
 }) => {
   const context = handoff.bookingContext;
+  const instructionCopies = handoff.instructions.bodyKeys
+    .map((bodyKey) => getDepositInstructionCopy(bodyKey, strings))
+    .filter((copy): copy is string => Boolean(copy));
+  const bodyCopies =
+    instructionCopies.length > 0
+      ? instructionCopies
+      : [
+          strings.depositBankInstructions,
+          strings.depositStaffWillConfirm,
+          strings.depositNoReceiptUpload,
+          strings.depositContactUs,
+        ];
 
   return (
     <section className="booking-deposit-handoff" aria-labelledby="booking-deposit-title">
@@ -480,10 +505,9 @@ const ManualDepositHandoffPanel = ({
       )}
 
       <div className="booking-deposit-handoff__body">
-        <p>{strings.depositBankInstructions}</p>
-        <p>{strings.depositStaffWillConfirm}</p>
-        <p>{strings.depositNoReceiptUpload}</p>
-        <p>{strings.depositContactUs}</p>
+        {bodyCopies.map((copy) => (
+          <p key={copy}>{copy}</p>
+        ))}
       </div>
 
       <div className="booking-deposit-handoff__contacts">
@@ -507,6 +531,15 @@ const ManualDepositHandoffPanel = ({
     </section>
   );
 };
+
+function getDepositInstructionCopy(bodyKey: string, strings: BookingStrings): string | null {
+  const stringKey = depositInstructionMessages[bodyKey];
+  if (!stringKey) {
+    return null;
+  }
+
+  return strings[stringKey];
+}
 
 function validateSearch(
   arrivalDate: string,

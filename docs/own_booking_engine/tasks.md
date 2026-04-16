@@ -649,7 +649,7 @@ Key points:
 
 ### Task checklist
 
-[ ] 8.1 Create `deploy-backend.yml` workflow: Terraform init/plan/apply for `infra/` with path filtering, AWS OIDC auth, and environment-specific `.tfvars` selection. (8h)  
-[ ] 8.2 Lambda packaging step: build and zip backend code, upload artifact to S3, update Lambda function code (either via Terraform or AWS CLI). (6h)  
-[ ] 8.3 Environment protection rules: configure GitHub Environments (dev/staging/prod) with required reviewers for prod Terraform applies. (4h)  
-[ ] 8.4 Verify deployment isolation: confirm that frontend deploys (main.yml) never touch backend resources, and backend deploys (deploy-backend.yml) never touch cPanel. Add path filters and smoke tests. (4h)  
+[x] 8.1 Create `deploy-backend.yml` workflow: Terraform init/plan/apply for `infra/` with path filtering, AWS OIDC auth, and environment-specific `.tfvars` selection. (8h)  
+[x] 8.2 Lambda packaging step: build and zip backend code, upload artifact to S3, update Lambda function code (either via Terraform or AWS CLI). (6h)  
+[x] 8.3 Environment protection rules: configure GitHub Environments (dev/staging/prod) with required reviewers for prod Terraform applies. (4h)  
+[x] 8.4 Verify deployment isolation: confirm that frontend deploys (main.yml) never touch backend resources, and backend deploys (deploy-backend.yml) never touch cPanel. Add path filters and smoke tests. (4h)  

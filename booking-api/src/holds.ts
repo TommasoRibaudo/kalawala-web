@@ -481,10 +481,10 @@ async function reserveHoldIdempotency(
 }
 
 async function requireQuotedSession(
-  bookingSessions: { getById?: (id: string) => Promise<BookingSessionRecord | undefined> },
+  bookingSessions: { getById(id: string): Promise<BookingSessionRecord | undefined> },
   holdRequest: HoldRequest
 ): Promise<BookingSessionRecord> {
-  const session = await bookingSessions.getById?.(holdRequest.bookingSessionId);
+  const session = await bookingSessions.getById(holdRequest.bookingSessionId);
   if (!session || session.quoteId !== holdRequest.quoteId) {
     throw new ApiError(404, "not_found", "The quote was not found.");
   }

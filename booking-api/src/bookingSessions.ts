@@ -61,8 +61,8 @@ export interface BookingSessionRecord {
 
 export interface BookingSessionRepository {
   createQuotedSession(input: CreateQuotedBookingSessionInput): Promise<BookingSessionRecord>;
-  getById?(id: string): Promise<BookingSessionRecord | undefined>;
-  getByQuoteId?(quoteId: string): Promise<BookingSessionRecord | undefined>;
+  getById(id: string): Promise<BookingSessionRecord | undefined>;
+  getByQuoteId(quoteId: string): Promise<BookingSessionRecord | undefined>;
   markHoldCreating(input: {
     bookingSessionId: string;
     propertyId: string;

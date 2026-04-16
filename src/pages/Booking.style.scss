@@ -381,6 +381,138 @@
   }
 }
 
+.booking-result-card__deposit-button {
+  border-color: rgba(41, 79, 68, 0.45);
+  border-radius: 8px;
+  color: $kalawala-darker-green;
+  font-weight: 700;
+  min-height: 44px;
+
+  &:hover,
+  &:focus-visible {
+    background: $kalawala-light-green;
+    border-color: $kalawala-light-green;
+    color: $white;
+  }
+
+  &:disabled {
+    border-color: rgba(41, 79, 68, 0.2);
+    color: rgba(23, 23, 23, 0.55);
+  }
+}
+
+.booking-deposit-handoff {
+  background: $kalawala-opaque-beige;
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 8px;
+  margin-top: 34px;
+  padding: 28px;
+
+  h2,
+  h3 {
+    color: $kalawala-darker-green;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 30px;
+    margin: 0 0 10px;
+  }
+
+  h3 {
+    font-size: 20px;
+    margin: 0 0 8px;
+  }
+}
+
+.booking-deposit-handoff__header {
+  margin-bottom: 20px;
+
+  p:last-child {
+    font-size: 17px;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+.booking-deposit-handoff__notice {
+  align-items: flex-start;
+  border-radius: 8px;
+  display: grid;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.booking-deposit-handoff__context {
+  border-bottom: 1px solid rgba(41, 79, 68, 0.16);
+  border-top: 1px solid rgba(41, 79, 68, 0.16);
+  display: grid;
+  gap: 4px;
+  margin-bottom: 20px;
+  padding: 16px 0;
+
+  p {
+    margin: 0;
+  }
+}
+
+.booking-deposit-handoff__body {
+  display: grid;
+  gap: 10px;
+  line-height: 1.6;
+  margin-bottom: 22px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.booking-deposit-handoff__contacts {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.booking-deposit-handoff__contact {
+  border: 1px solid rgba(41, 79, 68, 0.24);
+  border-radius: 8px;
+  color: $kalawala-darker-green;
+  display: grid;
+  gap: 4px;
+  min-height: 76px;
+  padding: 14px;
+  text-decoration: none;
+
+  span {
+    color: rgba(23, 23, 23, 0.72);
+    font-size: 14px;
+  }
+
+  strong {
+    overflow-wrap: anywhere;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(138, 162, 136, 0.14);
+    border-color: $kalawala-dark-green;
+    color: $kalawala-darker-green;
+    text-decoration: none;
+  }
+}
+
+.booking-deposit-handoff__back {
+  color: $kalawala-dark-green;
+  font-weight: 700;
+  margin-top: 18px;
+  padding: 0;
+
+  &:hover,
+  &:focus-visible {
+    color: $kalawala-darker-green;
+  }
+}
+
 @media (max-width: 1199px) {
   .booking-result-card__content {
     padding: 16px;
@@ -408,11 +540,16 @@
   .booking-quote-expiry {
     text-align: left;
   }
+
+  .booking-deposit-handoff__contacts {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 575px) {
   .booking-search-form,
-  .booking-results-empty {
+  .booking-results-empty,
+  .booking-deposit-handoff {
     padding: 18px;
   }
 

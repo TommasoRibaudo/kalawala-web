@@ -4,6 +4,7 @@ import { jsonResponse } from "./http/response";
 import { notImplemented, ApiError } from "./http/errors";
 import { Router } from "./http/router";
 import { handleCalendarRequest, invalidateCalendarRatesCacheFromWebhook } from "./calendar";
+import { handleManualDepositHandoff } from "./depositHandoff";
 import { handleCreatePayPalHold } from "./holds";
 import { handleAvailabilitySearch } from "./search";
 import { BookingApiConfig, RouteRequest } from "./types";
@@ -69,8 +70,8 @@ export function createRouter(config: BookingApiConfig): Router {
   );
 
   router.get("/api/deposit-handoff", async (request) => {
-    validateDepositHandoffQuery(request.query);
-    throw notImplemented("Manual deposit handoff route is scaffolded; offline instructions land in task 4.3.");
+    const query = validateDepositHandoffQuery(request.query);
+    return handleManualDepositHandoff(query, config, request.responseHeaders, request.observability);
   }, { abuseProtection: "publicRead" });
 
   router.post(

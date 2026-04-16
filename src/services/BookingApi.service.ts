@@ -58,6 +58,43 @@ export interface BookingSearchResponse {
   availabilityWarnings: BookingAvailabilityWarning[];
 }
 
+export interface DepositHandoffRequest {
+  language: BookingLanguage;
+  quoteId?: string;
+  propertyId?: string;
+}
+
+export interface DepositHandoffContactMethod {
+  type: 'whatsapp' | 'email' | string;
+  label: string;
+  url: string;
+}
+
+export interface DepositHandoffResponse {
+  language: BookingLanguage;
+  status: 'manual_deposit_handoff';
+  isBookingConfirmed: false;
+  doesCreateHold: false;
+  messageKey: string;
+  instructions: {
+    titleKey: string;
+    bodyKeys: string[];
+    contactMethods: DepositHandoffContactMethod[];
+  };
+  bookingContext?: {
+    quoteId?: string;
+    property?: {
+      propertyId: string;
+      slug: string;
+      listingUrl: string;
+      name: string;
+    };
+    arrivalDate?: string;
+    departureDate?: string;
+    guests?: number;
+  };
+}
+
 export type CalendarDot = 'green' | 'yellow' | 'red' | 'grey';
 
 export interface CalendarProperty {
@@ -172,6 +209,32 @@ export async function searchAvailability(request: BookingSearchRequest): Promise
   }
 
   return body as BookingSearchResponse;
+}
+
+export async function getDepositHandoff(request: DepositHandoffRequest): Promise<DepositHandoffResponse> {
+  const params = new URLSearchParams({ language: request.language });
+  if (request.quoteId) {
+    params.set('quoteId', request.quoteId);
+  }
+  if (request.propertyId) {
+    params.set('propertyId', request.propertyId);
+  }
+
+  const response = await fetch(`${apiBaseUrl}/api/deposit-handoff?${params.toString()}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Accept-Language': request.language,
+    },
+  });
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as DepositHandoffResponse;
 }
 
 export async function getCalendarMonth(

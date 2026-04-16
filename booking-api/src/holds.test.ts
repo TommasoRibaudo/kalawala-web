@@ -12,45 +12,45 @@ function createTestConfig(): BookingApiConfig {
   bookingSessions = new InMemoryBookingSessionRepository();
   holds = new InMemoryHoldRepository();
   return {
-  allowedOrigins: ["https://kalawala.test"],
-  maxBodyBytes: 64 * 1024,
-  secrets: new StaticSecretProvider({
-    smoobuApiKey: "smoobu-secret-value",
-    paypalClientId: "paypal-client-id-value",
-    paypalClientSecret: "paypal-client-secret-value",
-    paypalWebhookId: "paypal-webhook-id-value",
-    smoobuWebhookSecret: "smoobu-webhook-secret-value",
-    bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
-    portalSessionSecret: "portal-session-secret-value",
-  }),
-  smoobu: {
-    baseUrl: "https://login.smoobu.com",
-    customerId: 9,
-    timeoutMs: 8_000,
-    maxRetries: 0,
-    baseBackoffMs: 250,
-    maxBackoffMs: 2_000,
-    maxRateLimitDelayMs: 60_000,
-    holdChannelId: 11,
-  },
-  bookingSessions,
-  holds,
-  hold: {
-    defaultTtlMinutes: 60,
-    idempotencyTtlMinutes: 1440,
-    staleIdempotencyLockSeconds: 120,
-  },
-  abuseProtection: {
-    enabled: false,
-    captchaChallengesEnabled: false,
-    maxTrackedBuckets: 100,
-  },
-  observability: {
-    serviceName: "booking-api",
-    environment: "test",
-    logLevel: "silent",
-    metricsEnabled: false,
-  },
+    allowedOrigins: ["https://kalawala.test"],
+    maxBodyBytes: 64 * 1024,
+    secrets: new StaticSecretProvider({
+      smoobuApiKey: "smoobu-secret-value",
+      paypalClientId: "paypal-client-id-value",
+      paypalClientSecret: "paypal-client-secret-value",
+      paypalWebhookId: "paypal-webhook-id-value",
+      smoobuWebhookSecret: "smoobu-webhook-secret-value",
+      bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
+      portalSessionSecret: "portal-session-secret-value",
+    }),
+    smoobu: {
+      baseUrl: "https://login.smoobu.com",
+      customerId: 9,
+      timeoutMs: 8_000,
+      maxRetries: 0,
+      baseBackoffMs: 250,
+      maxBackoffMs: 2_000,
+      maxRateLimitDelayMs: 60_000,
+      holdChannelId: 11,
+    },
+    bookingSessions,
+    holds,
+    hold: {
+      defaultTtlMinutes: 60,
+      idempotencyTtlMinutes: 1440,
+      staleIdempotencyLockSeconds: 120,
+    },
+    abuseProtection: {
+      enabled: false,
+      captchaChallengesEnabled: false,
+      maxTrackedBuckets: 100,
+    },
+    observability: {
+      serviceName: "booking-api",
+      environment: "test",
+      logLevel: "silent",
+      metricsEnabled: false,
+    },
   };
 }
 

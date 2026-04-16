@@ -10,8 +10,10 @@ import { useLanguageDetection } from '../hooks/useLanguageDetection';
 import {
   BookingApiError,
   BookingAvailableProperty,
+  DepositHandoffResponse,
   BookingLanguage,
   BookingSearchResponse,
+  getDepositHandoff,
   searchAvailability,
 } from '../services/BookingApi.service';
 import { bookingStrings, BookingStrings } from './Booking.i18n';
@@ -54,6 +56,9 @@ const BookingPage = () => {
   const [guests, setGuests] = React.useState(() => getInitialGuestCount(searchParams.get('guests')));
   const [result, setResult] = React.useState<BookingSearchResponse | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [depositHandoff, setDepositHandoff] = React.useState<DepositHandoffResponse | null>(null);
+  const [depositError, setDepositError] = React.useState<string | null>(null);
+  const [depositLoadingPropertyId, setDepositLoadingPropertyId] = React.useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const Navigation = language === 'es' ? FixedNavigationES : FixedNavigation;
@@ -99,6 +104,8 @@ const BookingPage = () => {
     const validation = validateSearch(arrivalDate, departureDate, guests, today, strings);
     setFieldErrors(validation);
     setError(null);
+    setDepositError(null);
+    setDepositHandoff(null);
 
     if (Object.keys(validation).length > 0) {
       setResult(null);
@@ -120,6 +127,29 @@ const BookingPage = () => {
       setError(getSearchErrorMessage(searchError, strings));
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleManualDepositHandoff = async (property: BookingAvailableProperty) => {
+    if (!result?.quoteId) {
+      setDepositError(strings.contactHandoffError);
+      return;
+    }
+
+    setDepositLoadingPropertyId(property.propertyId);
+    setDepositError(null);
+
+    try {
+      const response = await getDepositHandoff({
+        language,
+        quoteId: result.quoteId,
+        propertyId: property.propertyId,
+      });
+      setDepositHandoff(response);
+    } catch {
+      setDepositError(strings.contactHandoffError);
+    } finally {
+      setDepositLoadingPropertyId(null);
     }
   };
 
@@ -228,7 +258,30 @@ const BookingPage = () => {
                 </Alert>
               )}
 
-              {result && <BookingSearchResults result={result} strings={strings} language={language} />}
+              {depositError && (
+                <Alert className="booking-search-alert" variant="danger" role="alert">
+                  {depositError}
+                </Alert>
+              )}
+
+              {depositHandoff && (
+                <ManualDepositHandoffPanel
+                  handoff={depositHandoff}
+                  strings={strings}
+                  language={language}
+                  onBack={() => setDepositHandoff(null)}
+                />
+              )}
+
+              {result && (
+                <BookingSearchResults
+                  result={result}
+                  strings={strings}
+                  language={language}
+                  onManualDepositHandoff={handleManualDepositHandoff}
+                  depositLoadingPropertyId={depositLoadingPropertyId}
+                />
+              )}
             </Col>
           </Row>
         </Container>
@@ -241,9 +294,17 @@ interface BookingSearchResultsProps {
   result: BookingSearchResponse;
   strings: BookingStrings;
   language: BookingLanguage;
+  onManualDepositHandoff: (property: BookingAvailableProperty) => void;
+  depositLoadingPropertyId: string | null;
 }
 
-const BookingSearchResults = ({ result, strings, language }: BookingSearchResultsProps) => {
+const BookingSearchResults = ({
+  result,
+  strings,
+  language,
+  onManualDepositHandoff,
+  depositLoadingPropertyId,
+}: BookingSearchResultsProps) => {
   const hasResults = result.properties.length > 0;
   const warnings = result.availabilityWarnings
     .map((warning) => warningMessages[warning.code])
@@ -274,7 +335,13 @@ const BookingSearchResults = ({ result, strings, language }: BookingSearchResult
       <Row className="booking-results-grid g-4">
         {result.properties.map((property) => (
           <Col className="booking-results-col" key={property.propertyId} md={6} xl={4}>
-            <BookingPropertyCard property={property} strings={strings} language={language} />
+            <BookingPropertyCard
+              property={property}
+              strings={strings}
+              language={language}
+              onManualDepositHandoff={onManualDepositHandoff}
+              isDepositLoading={depositLoadingPropertyId === property.propertyId}
+            />
           </Col>
         ))}
       </Row>
@@ -302,13 +369,18 @@ const BookingPropertyCard = ({
   property,
   strings,
   language,
+  onManualDepositHandoff,
+  isDepositLoading,
 }: {
   property: BookingAvailableProperty;
   strings: BookingStrings;
   language: BookingLanguage;
+  onManualDepositHandoff: (property: BookingAvailableProperty) => void;
+  isDepositLoading: boolean;
 }) => {
   const listingUrl = buildListingUrl(property.slug, language);
   const titleId = `booking-result-title-${property.propertyId}`;
+  const canUseManualDeposit = property.actions?.canUseManualDepositHandoff !== false;
 
   return (
     <article className="booking-result-card" aria-labelledby={titleId}>
@@ -354,8 +426,85 @@ const BookingPropertyCard = ({
         <a className="booking-result-card__link" href={listingUrl} target="_blank" rel="noopener noreferrer">
           {strings.viewListing}
         </a>
+        {canUseManualDeposit && (
+          <Button
+            className="booking-result-card__deposit-button"
+            type="button"
+            variant="outline-secondary"
+            disabled={isDepositLoading}
+            onClick={() => onManualDepositHandoff(property)}
+          >
+            {isDepositLoading ? strings.manualDepositLoading : strings.manualDepositButton}
+          </Button>
+        )}
       </div>
     </article>
+  );
+};
+
+const ManualDepositHandoffPanel = ({
+  handoff,
+  strings,
+  language,
+  onBack,
+}: {
+  handoff: DepositHandoffResponse;
+  strings: BookingStrings;
+  language: BookingLanguage;
+  onBack: () => void;
+}) => {
+  const context = handoff.bookingContext;
+
+  return (
+    <section className="booking-deposit-handoff" aria-labelledby="booking-deposit-title">
+      <div className="booking-deposit-handoff__header">
+        <p className="booking-results-kicker">{strings.manualDepositTitle}</p>
+        <h2 id="booking-deposit-title">{strings.depositTitle}</h2>
+        <p>{strings.depositInstructions}</p>
+      </div>
+
+      <Alert className="booking-deposit-handoff__notice" variant="warning">
+        <strong>{strings.depositNotConfirmedTitle}</strong>
+        <span>{strings.depositNotConfirmed}</span>
+      </Alert>
+
+      {context && (
+        <div className="booking-deposit-handoff__context" aria-label={strings.depositContextTitle}>
+          <h3>{strings.depositContextTitle}</h3>
+          {context.property && <p>{context.property.name}</p>}
+          {context.arrivalDate && context.departureDate && (
+            <p>{strings.depositDates(formatDate(context.arrivalDate, language), formatDate(context.departureDate, language))}</p>
+          )}
+          {typeof context.guests === 'number' && <p>{strings.depositGuests(context.guests)}</p>}
+        </div>
+      )}
+
+      <div className="booking-deposit-handoff__body">
+        <p>{strings.depositBankInstructions}</p>
+        <p>{strings.depositStaffWillConfirm}</p>
+        <p>{strings.depositNoReceiptUpload}</p>
+        <p>{strings.depositContactUs}</p>
+      </div>
+
+      <div className="booking-deposit-handoff__contacts">
+        {handoff.instructions.contactMethods.map((method) => (
+          <a
+            key={`${method.type}-${method.url}`}
+            className="booking-deposit-handoff__contact"
+            href={method.url}
+            target={method.type === 'email' ? undefined : '_blank'}
+            rel={method.type === 'email' ? undefined : 'noopener noreferrer'}
+          >
+            <span>{method.type === 'email' ? strings.contactByEmail : strings.contactByWhatsapp}</span>
+            <strong>{method.label}</strong>
+          </a>
+        ))}
+      </div>
+
+      <Button className="booking-deposit-handoff__back" type="button" variant="link" onClick={onBack}>
+        {strings.backToResults}
+      </Button>
+    </section>
   );
 };
 
@@ -450,6 +599,18 @@ function formatDateTime(value: string, language: BookingLanguage): string {
   return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
     dateStyle: 'medium',
     timeStyle: 'short',
+  }).format(date);
+}
+
+function formatDate(value: string, language: BookingLanguage): string {
+  const date = new Date(`${value}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
+    dateStyle: 'medium',
+    timeZone: 'UTC',
   }).format(date);
 }
 

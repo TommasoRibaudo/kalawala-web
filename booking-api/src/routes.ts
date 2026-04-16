@@ -3,6 +3,7 @@ import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
 import { notImplemented, ApiError } from "./http/errors";
 import { Router } from "./http/router";
+import { handleCalendarRequest, invalidateCalendarRatesCacheFromWebhook } from "./calendar";
 import { handleAvailabilitySearch } from "./search";
 import { BookingApiConfig, RouteRequest } from "./types";
 import {
@@ -35,8 +36,8 @@ export function createRouter(config: BookingApiConfig): Router {
   );
 
   router.get("/api/calendar/:apartmentSlug", async (request) => {
-    validateCalendarRequest(request.pathParams, request.query);
-    throw notImplemented("Calendar pricing route is scaffolded; Smoobu rates integration lands in task 3.8.");
+    const calendarRequest = validateCalendarRequest(request.pathParams, request.query);
+    return handleCalendarRequest(calendarRequest, config, request.responseHeaders, request.observability);
   }, { abuseProtection: "publicRead" });
 
   router.post(
@@ -93,8 +94,22 @@ export function createRouter(config: BookingApiConfig): Router {
   router.post(
     "/api/webhooks/smoobu",
     async (request) => {
-      assertJsonObject(request.body);
+      const body = assertJsonObject(request.body);
       await assertSmoobuWebhookSecret(request, config);
+      const cacheInvalidation = invalidateCalendarRatesCacheFromWebhook(body, request.observability);
+      if (cacheInvalidation.action === "updateRates") {
+        return jsonResponse(
+          200,
+          {
+            received: true,
+            action: "updateRates",
+            cache: {
+              invalidatedEntries: cacheInvalidation.invalidatedEntries,
+            },
+          },
+          request.responseHeaders
+        );
+      }
       throw notImplemented("Smoobu webhook route is scaffolded; dedupe and reconciliation land in task 6.1.");
     },
     { requireJsonBody: true, preserveRawBody: true, rejectQuerySecrets: true, abuseProtection: "webhook" }

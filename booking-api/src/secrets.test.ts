@@ -203,7 +203,7 @@ test("Smoobu webhook route reads shared secret from secret provider", async () =
       "content-type": "application/json",
       "x-smoobu-webhook-secret": VALID_SECRETS.smoobuWebhookSecret,
     },
-    body: JSON.stringify({ action: "updateRates", data: { id: 123 } }),
+    body: JSON.stringify({ action: "newReservation", data: { id: 123 } }),
     requestContext: {
       http: {
         method: "POST",

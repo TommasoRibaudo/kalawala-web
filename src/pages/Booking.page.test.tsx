@@ -125,6 +125,61 @@ test('renders Spanish no-availability state for bookES route', async () => {
   expect(JSON.parse(request.body)).toMatchObject({ language: 'es' });
 });
 
+test('builds Spanish listing links from the property slug and opens them in a new tab', async () => {
+  mockJsonResponse({
+    bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+    quoteId: 'qt_TEST',
+    quoteExpiresAt: '2099-06-01T12:00:00Z',
+    arrivalDate: '2099-07-10',
+    departureDate: '2099-07-14',
+    guests: 2,
+    language: 'es',
+    resultsCount: 1,
+    properties: [
+      {
+        propertyId: 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111',
+        slug: 'Geco',
+        listingUrl: '/Geco',
+        name: 'Casa Geco',
+        guestCapacity: 5,
+        thumbnailUrl: 'https://example.com/geco.jpg',
+        amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
+        price: {
+          currency: 'USD',
+          totalAmountCents: 51000,
+          nightlyAverageCents: 12750,
+          nights: 4,
+          includesTaxes: false,
+          rateSource: 'smoobu',
+        },
+        actions: {
+          viewListingUrl: '/Geco',
+          canCreatePayPalHold: false,
+          canUseManualDepositHandoff: true,
+        },
+      },
+    ],
+    availabilityWarnings: [],
+  });
+
+  renderBookingPage('/bookES');
+
+  fireEvent.change(screen.getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
+  fireEvent.change(screen.getByLabelText('Salida'), { target: { value: '2099-07-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /buscar disponibilidad/i }));
+
+  await screen.findByText('Casa Geco');
+
+  const viewListingLink = screen.getByRole('link', { name: 'Ver alojamiento' });
+  const imageListingLink = screen.getByRole('link', { name: 'Ver alojamiento: Casa Geco' });
+  expect(viewListingLink).toHaveAttribute('href', '/GecoES');
+  expect(viewListingLink).toHaveAttribute('target', '_blank');
+  expect(viewListingLink).toHaveAttribute('rel', 'noopener noreferrer');
+  expect(imageListingLink).toHaveAttribute('href', '/GecoES');
+  expect(imageListingLink).toHaveAttribute('target', '_blank');
+  expect(imageListingLink).toHaveAttribute('rel', 'noopener noreferrer');
+});
+
 test('validates past arrival date before calling the booking API', async () => {
   global.fetch = jest.fn() as typeof fetch;
   renderBookingPage();

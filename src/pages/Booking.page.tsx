@@ -342,11 +342,17 @@ const BookingPropertyCard = ({
   strings: BookingStrings;
   language: BookingLanguage;
 }) => {
-  const listingUrl = property.actions?.viewListingUrl ?? property.listingUrl ?? `/${property.slug}${language === 'es' ? 'ES' : ''}`;
+  const listingUrl = buildListingUrl(property.slug, language);
 
   return (
     <article className="booking-result-card">
-      <a className="booking-result-image" href={listingUrl} target="_blank" rel="noopener noreferrer">
+      <a
+        className="booking-result-image"
+        href={listingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${strings.viewListing}: ${property.name}`}
+      >
         <img src={property.thumbnailUrl} alt={property.name} />
         <span>{strings.available}</span>
       </a>
@@ -451,6 +457,11 @@ function formatDateTime(value: string, language: BookingLanguage): string {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(date);
+}
+
+function buildListingUrl(slug: string, language: BookingLanguage): string {
+  const normalizedSlug = slug.replace(/^\/+/, '');
+  return `/${normalizedSlug}${language === 'es' ? 'ES' : ''}`;
 }
 
 export default BookingPage;

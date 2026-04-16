@@ -10,13 +10,17 @@ locals {
   booking_api_service_name      = "booking-api"
 
   lambda_alarm_functions = {
-    booking_api = aws_lambda_function.booking_api.function_name
-    webhooks    = aws_lambda_function.webhooks.function_name
+    booking_api             = aws_lambda_function.booking_api.function_name
+    webhooks                = aws_lambda_function.webhooks.function_name
+    hold_expiry             = aws_lambda_function.hold_expiry.function_name
+    payment_reconciliation  = aws_lambda_function.payment_reconciliation.function_name
   }
 
   booking_lambda_log_groups = {
-    booking_api = aws_cloudwatch_log_group.booking_api.name
-    webhooks    = aws_cloudwatch_log_group.webhooks.name
+    booking_api             = aws_cloudwatch_log_group.booking_api.name
+    webhooks                = aws_cloudwatch_log_group.webhooks.name
+    hold_expiry             = aws_cloudwatch_log_group.hold_expiry.name
+    payment_reconciliation  = aws_cloudwatch_log_group.payment_reconciliation.name
   }
 
   # The booking API emits named operational_alert logs now. These metric

@@ -74,16 +74,16 @@ function makeRequest(overrides: Partial<RouteRequest> = {}): RouteRequest {
 }
 
 /** Fire `count` requests through the guard and return all thrown errors. */
-function fireRequests(
+async function fireRequests(
   guard: AbuseGuard,
   request: RouteRequest,
   policy: Parameters<AbuseGuard["assertAllowed"]>[1],
   count: number
-): Array<{ index: number; error: unknown }> {
+): Promise<Array<{ index: number; error: unknown }>> {
   const errors: Array<{ index: number; error: unknown }> = [];
   for (let i = 0; i < count; i++) {
     try {
-      guard.assertAllowed(request, policy);
+      await guard.assertAllowed(request, policy);
     } catch (error) {
       errors.push({ index: i, error });
     }
@@ -281,14 +281,14 @@ describe("search endpoint — availabilitySearch rate limiting", () => {
 
     // Exhaust IP limit (30/60s) using distinct device IDs
     for (let i = 0; i < 30; i++) {
-      guard.assertAllowed(
+      await guard.assertAllowed(
         makeRequest({ headers: { "x-kalawala-device-id": `unique-${i}` } }),
         "availabilitySearch"
       );
     }
 
     try {
-      guard.assertAllowed(request, "availabilitySearch");
+      await guard.assertAllowed(request, "availabilitySearch");
       throw new Error("Expected rate limit error");
     } catch (error: unknown) {
       expect((error as { statusCode?: number }).statusCode).toBe(429);
@@ -302,27 +302,27 @@ describe("search endpoint — availabilitySearch rate limiting", () => {
 
     // Exhaust IP A (30 requests)
     for (let i = 0; i < 30; i++) {
-      guard.assertAllowed(
+      await guard.assertAllowed(
         makeRequest({ clientIp: "10.0.0.1", headers: { "x-kalawala-device-id": `dev-a-${i}` } }),
         "availabilitySearch"
       );
     }
 
     // IP A is now blocked
-    expect(() =>
+    await expect(
       guard.assertAllowed(
         makeRequest({ clientIp: "10.0.0.1", headers: { "x-kalawala-device-id": "dev-a-overflow" } }),
         "availabilitySearch"
       )
-    ).toThrow();
+    ).rejects.toBeDefined();
 
     // IP B should still be allowed
-    expect(() =>
+    await expect(
       guard.assertAllowed(
         makeRequest({ clientIp: "10.0.0.2", headers: { "x-kalawala-device-id": "dev-b-1" } }),
         "availabilitySearch"
       )
-    ).not.toThrow();
+    ).resolves.toBeUndefined();
   });
 });
 
@@ -331,16 +331,16 @@ describe("search endpoint — availabilitySearch rate limiting", () => {
 // ---------------------------------------------------------------------------
 
 describe("hold endpoint — holdCreate rate limiting and CAPTCHA", () => {
-  test("CAPTCHA challenge fires after 3 hold attempts from same device", () => {
+  test("CAPTCHA challenge fires after 3 hold attempts from same device", async () => {
     const guard = new AbuseGuard(ABUSE_CONFIG, () => 1_000);
     const request = makeRequest({ path: "/api/holds" });
 
-    guard.assertAllowed(request, "holdCreate"); // 1
-    guard.assertAllowed(request, "holdCreate"); // 2
+    await guard.assertAllowed(request, "holdCreate"); // 1
+    await guard.assertAllowed(request, "holdCreate"); // 2
 
     // 3rd attempt triggers CAPTCHA (captchaAfter=2 for device scope)
     try {
-      guard.assertAllowed(request, "holdCreate");
+      await guard.assertAllowed(request, "holdCreate");
       throw new Error("Expected captcha_required");
     } catch (error: unknown) {
       expect((error as { statusCode?: number }).statusCode).toBe(403);
@@ -351,24 +351,18 @@ describe("hold endpoint — holdCreate rate limiting and CAPTCHA", () => {
   });
 
   /**
-   * Documents the current state of CAPTCHA bypass (abuseProtection.ts TODO):
-   * The server correctly emits X-Captcha-Required + 403, but does NOT yet read
-   * or verify an inbound X-Captcha-Token against a provider (reCAPTCHA/hCaptcha).
-   * Until that integration lands, every request past captchaAfter is rejected
-   * regardless of whether the client sends a token.
-   *
-   * When the bypass is implemented, this test should be updated to assert that
-   * a valid X-Captcha-Token header allows the request through.
+   * When no captchaVerifier is configured (CAPTCHA_SECRET_KEY not set),
+   * a token in the request header is ignored and the 403 is still returned.
+   * This is the safe default: the bypass only works when a verifier is wired up.
    */
-  test("CAPTCHA bypass is not yet implemented — token in request header does not unblock (known TODO)", () => {
+  test("no verifier configured — token in request header does not unblock", async () => {
+    // ABUSE_CONFIG has no captchaVerifier, matching the default when CAPTCHA_SECRET_KEY is unset.
     const guard = new AbuseGuard(ABUSE_CONFIG, () => 1_000);
 
-    // Exhaust captchaAfter threshold
     const baseRequest = makeRequest({ path: "/api/holds" });
-    guard.assertAllowed(baseRequest, "holdCreate");
-    guard.assertAllowed(baseRequest, "holdCreate");
+    await guard.assertAllowed(baseRequest, "holdCreate");
+    await guard.assertAllowed(baseRequest, "holdCreate");
 
-    // Even with a token header present, the request is still rejected
     const requestWithToken = makeRequest({
       path: "/api/holds",
       headers: {
@@ -380,11 +374,9 @@ describe("hold endpoint — holdCreate rate limiting and CAPTCHA", () => {
     });
 
     try {
-      guard.assertAllowed(requestWithToken, "holdCreate");
-      throw new Error("Expected captcha_required — bypass not yet implemented");
+      await guard.assertAllowed(requestWithToken, "holdCreate");
+      throw new Error("Expected captcha_required");
     } catch (error: unknown) {
-      // This 403 is expected until the provider verification is wired up.
-      // See: abuseProtection.ts TODO(task-2.2)
       expect((error as { statusCode?: number }).statusCode).toBe(403);
       expect((error as { code?: string }).code).toBe("captcha_required");
     }
@@ -422,13 +414,13 @@ describe("hold endpoint — holdCreate rate limiting and CAPTCHA", () => {
     expect(codes[2]).toBe("captcha_required");
   });
 
-  test("hold IP hard limit (8/15min) blocks after CAPTCHA window is exhausted", () => {
+  test("hold IP hard limit (8/15min) blocks after CAPTCHA window is exhausted", async () => {
     // Disable CAPTCHA to test the hard IP cap directly
     const guard = new AbuseGuard({ ...ABUSE_CONFIG, captchaChallengesEnabled: false }, () => 1_000);
 
     // Exhaust IP limit (8/900s) using distinct device IDs so device bucket stays low
     for (let i = 0; i < 8; i++) {
-      guard.assertAllowed(
+      await guard.assertAllowed(
         makeRequest({ path: "/api/holds", headers: { "x-kalawala-device-id": `hold-dev-${i}` } }),
         "holdCreate"
       );
@@ -440,7 +432,7 @@ describe("hold endpoint — holdCreate rate limiting and CAPTCHA", () => {
     });
 
     try {
-      guard.assertAllowed(request, "holdCreate");
+      await guard.assertAllowed(request, "holdCreate");
       throw new Error("Expected rate limit");
     } catch (error: unknown) {
       expect((error as { statusCode?: number }).statusCode).toBe(429);
@@ -449,25 +441,25 @@ describe("hold endpoint — holdCreate rate limiting and CAPTCHA", () => {
     }
   });
 
-  test("bot rotating IPs still hits per-device hold limit", () => {
+  test("bot rotating IPs still hits per-device hold limit", async () => {
     const guard = new AbuseGuard(ABUSE_CONFIG, () => 1_000);
 
     // Device limit is 5/900s with captchaAfter=2
     // Use a single sticky device ID but rotate IPs
     const stickyDevice = "sticky-hold-bot";
 
-    guard.assertAllowed(
+    await guard.assertAllowed(
       makeRequest({ clientIp: "10.1.0.1", headers: { "x-kalawala-device-id": stickyDevice } }),
       "holdCreate"
     );
-    guard.assertAllowed(
+    await guard.assertAllowed(
       makeRequest({ clientIp: "10.1.0.2", headers: { "x-kalawala-device-id": stickyDevice } }),
       "holdCreate"
     );
 
     // 3rd attempt from a new IP but same device → CAPTCHA
     try {
-      guard.assertAllowed(
+      await guard.assertAllowed(
         makeRequest({ clientIp: "10.1.0.3", headers: { "x-kalawala-device-id": stickyDevice } }),
         "holdCreate"
       );
@@ -483,13 +475,13 @@ describe("hold endpoint — holdCreate rate limiting and CAPTCHA", () => {
 // ---------------------------------------------------------------------------
 
 describe("cost control — Smoobu API calls bounded by rate limits", () => {
-  test("search rate limit prevents more than 30 Smoobu calls per minute from one IP", () => {
+  test("search rate limit prevents more than 30 Smoobu calls per minute from one IP", async () => {
     const guard = new AbuseGuard({ ...ABUSE_CONFIG, captchaChallengesEnabled: false }, () => 1_000);
     let allowedCount = 0;
 
     for (let i = 0; i < 50; i++) {
       try {
-        guard.assertAllowed(
+        await guard.assertAllowed(
           makeRequest({ clientIp: "203.0.113.50", headers: { "x-kalawala-device-id": `cost-dev-${i}` } }),
           "availabilitySearch"
         );
@@ -503,13 +495,13 @@ describe("cost control — Smoobu API calls bounded by rate limits", () => {
     expect(allowedCount).toBeLessThanOrEqual(30);
   });
 
-  test("hold rate limit prevents more than 8 Smoobu hold-create calls per 15min from one IP", () => {
+  test("hold rate limit prevents more than 8 Smoobu hold-create calls per 15min from one IP", async () => {
     const guard = new AbuseGuard({ ...ABUSE_CONFIG, captchaChallengesEnabled: false }, () => 1_000);
     let allowedCount = 0;
 
     for (let i = 0; i < 20; i++) {
       try {
-        guard.assertAllowed(
+        await guard.assertAllowed(
           makeRequest({ clientIp: "203.0.113.60", headers: { "x-kalawala-device-id": `hold-cost-dev-${i}` } }),
           "holdCreate"
         );
@@ -522,7 +514,7 @@ describe("cost control — Smoobu API calls bounded by rate limits", () => {
     expect(allowedCount).toBeLessThanOrEqual(8);
   });
 
-  test("concurrent bots from different IPs are each individually capped", () => {
+  test("concurrent bots from different IPs are each individually capped", async () => {
     const guard = new AbuseGuard({ ...ABUSE_CONFIG, captchaChallengesEnabled: false }, () => 1_000);
     const botIps = ["203.0.113.71", "203.0.113.72", "203.0.113.73"];
     const allowedPerBot: Record<string, number> = {};
@@ -531,7 +523,7 @@ describe("cost control — Smoobu API calls bounded by rate limits", () => {
       allowedPerBot[ip] = 0;
       for (let i = 0; i < 50; i++) {
         try {
-          guard.assertAllowed(
+          await guard.assertAllowed(
             makeRequest({ clientIp: ip, headers: { "x-kalawala-device-id": `${ip}-dev-${i}` } }),
             "availabilitySearch"
           );
@@ -553,37 +545,37 @@ describe("cost control — Smoobu API calls bounded by rate limits", () => {
 // ---------------------------------------------------------------------------
 
 describe("window expiry — traffic recovers after window resets", () => {
-  test("search window resets after 60 seconds and allows new requests", () => {
+  test("search window resets after 60 seconds and allows new requests", async () => {
     let now = 1_000;
     const guard = new AbuseGuard({ ...ABUSE_CONFIG, captchaChallengesEnabled: false }, () => now);
     const request = makeRequest({ path: "/api/search" });
 
     // Exhaust IP limit
-    const errors = fireRequests(guard, request, "availabilitySearch", 31);
+    const errors = await fireRequests(guard, request, "availabilitySearch", 31);
     expect(errors.length).toBeGreaterThanOrEqual(1);
 
     // Advance clock past the 60-second window
     now += 60 * 1_000 + 1;
 
     // Should be allowed again
-    expect(() => guard.assertAllowed(request, "availabilitySearch")).not.toThrow();
+    await expect(guard.assertAllowed(request, "availabilitySearch")).resolves.toBeUndefined();
   });
 
-  test("hold window resets after 15 minutes and allows new requests", () => {
+  test("hold window resets after 15 minutes and allows new requests", async () => {
     let now = 1_000;
     const guard = new AbuseGuard(ABUSE_CONFIG, () => now);
     const request = makeRequest({ path: "/api/holds" });
 
     // Trigger CAPTCHA
-    guard.assertAllowed(request, "holdCreate");
-    guard.assertAllowed(request, "holdCreate");
-    expect(() => guard.assertAllowed(request, "holdCreate")).toThrow();
+    await guard.assertAllowed(request, "holdCreate");
+    await guard.assertAllowed(request, "holdCreate");
+    await expect(guard.assertAllowed(request, "holdCreate")).rejects.toBeDefined();
 
     // Advance clock past the 15-minute window
     now += 15 * 60 * 1_000 + 1;
 
     // Should be allowed again
-    expect(() => guard.assertAllowed(request, "holdCreate")).not.toThrow();
+    await expect(guard.assertAllowed(request, "holdCreate")).resolves.toBeUndefined();
   });
 });
 
@@ -607,12 +599,12 @@ describe("disabled abuse protection — feature-flag safety", () => {
     expect(statuses.every((s) => s !== 429)).toBe(true);
   });
 
-  test("no rate-limit headers are set when abuse protection is disabled", () => {
+  test("no rate-limit headers are set when abuse protection is disabled", async () => {
     const guard = new AbuseGuard({ ...ABUSE_CONFIG, enabled: false }, () => 1_000);
     const request = makeRequest();
 
     for (let i = 0; i < 50; i++) {
-      guard.assertAllowed(request, "availabilitySearch");
+      await guard.assertAllowed(request, "availabilitySearch");
     }
 
     expect(request.responseHeaders["X-RateLimit-Policy"]).toBeUndefined();
@@ -656,13 +648,13 @@ describe("sustained bot burst — mixed search and hold traffic", () => {
     expect(holdBlocked.length).toBeGreaterThan(0);
   });
 
-  test("high-volume bot from single IP is blocked within the first window", () => {
+  test("high-volume bot from single IP is blocked within the first window", async () => {
     const guard = new AbuseGuard({ ...ABUSE_CONFIG, captchaChallengesEnabled: false }, () => 1_000);
     let blockedAt: number | undefined;
 
     for (let i = 0; i < 100; i++) {
       try {
-        guard.assertAllowed(
+        await guard.assertAllowed(
           makeRequest({ clientIp: "203.0.113.100", headers: { "x-kalawala-device-id": `hv-dev-${i}` } }),
           "availabilitySearch"
         );
@@ -684,35 +676,35 @@ describe("sustained bot burst — mixed search and hold traffic", () => {
 // ---------------------------------------------------------------------------
 
 describe("portal login — brute-force protection", () => {
-  test("portal login is blocked after 5 attempts from same device", () => {
+  test("portal login is blocked after 5 attempts from same device", async () => {
     const guard = new AbuseGuard(ABUSE_CONFIG, () => 1_000);
     const request = makeRequest({ path: "/api/portal/login" });
 
     for (let i = 0; i < 5; i++) {
-      guard.assertAllowed(request, "portalLogin");
+      await guard.assertAllowed(request, "portalLogin");
     }
 
     try {
-      guard.assertAllowed(request, "portalLogin");
+      await guard.assertAllowed(request, "portalLogin");
       throw new Error("Expected rate limit");
     } catch (error: unknown) {
       expect((error as { statusCode?: number }).statusCode).toBe(429);
     }
   });
 
-  test("portal login IP limit (10/5min) blocks credential-stuffing bots", () => {
+  test("portal login IP limit (10/5min) blocks credential-stuffing bots", async () => {
     const guard = new AbuseGuard({ ...ABUSE_CONFIG, captchaChallengesEnabled: false }, () => 1_000);
 
     // Rotate device IDs to bypass device limit, keep same IP
     for (let i = 0; i < 10; i++) {
-      guard.assertAllowed(
+      await guard.assertAllowed(
         makeRequest({ clientIp: "10.2.0.1", headers: { "x-kalawala-device-id": `stuffing-dev-${i}` } }),
         "portalLogin"
       );
     }
 
     try {
-      guard.assertAllowed(
+      await guard.assertAllowed(
         makeRequest({ clientIp: "10.2.0.1", headers: { "x-kalawala-device-id": "stuffing-dev-overflow" } }),
         "portalLogin"
       );

@@ -132,10 +132,21 @@ export interface HoldConfig {
   staleIdempotencyLockSeconds: number;
 }
 
+export type CaptchaProvider = "hcaptcha" | "recaptcha";
+
+export interface CaptchaVerifierConfig {
+  provider: CaptchaProvider;
+  secretKey: string;
+  /** Override the verification endpoint (useful for tests). Defaults to the provider's production URL. */
+  verifyUrl?: string;
+}
+
 export interface AbuseProtectionConfig {
   enabled: boolean;
   captchaChallengesEnabled: boolean;
   maxTrackedBuckets: number;
+  /** When set, inbound X-Captcha-Token headers are verified against the provider before allowing bypass. */
+  captchaVerifier?: CaptchaVerifierConfig;
 }
 
 export type FieldErrors = Record<string, string[]>;

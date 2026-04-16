@@ -4,9 +4,63 @@ import { getHeader } from "./http/request";
 import {
   AbuseProtectionConfig,
   AbuseProtectionPolicyName,
+  CaptchaVerifierConfig,
   HeadersMap,
   RouteRequest,
 } from "./types";
+
+// ---------------------------------------------------------------------------
+// CAPTCHA verification
+// ---------------------------------------------------------------------------
+
+const HCAPTCHA_VERIFY_URL = "https://api.hcaptcha.com/siteverify";
+const RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
+
+const CAPTCHA_VERIFY_TIMEOUT_MS = 5_000;
+
+/**
+ * Verifies a CAPTCHA token against the configured provider (hCaptcha or reCAPTCHA).
+ * Returns true if the token is valid, false on any failure (network error, timeout,
+ * non-200 response, malformed JSON, or success !== true).
+ */
+export async function verifyCaptchaToken(
+  token: string,
+  cfg: CaptchaVerifierConfig,
+  clientIp?: string
+): Promise<boolean> {
+  const url =
+    cfg.verifyUrl ??
+    (cfg.provider === "hcaptcha" ? HCAPTCHA_VERIFY_URL : RECAPTCHA_VERIFY_URL);
+
+  const params = new URLSearchParams({ secret: cfg.secretKey, response: token });
+  if (clientIp) {
+    params.set("remoteip", clientIp);
+  }
+
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), CAPTCHA_VERIFY_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString(),
+      signal: ac.signal,
+    });
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const json = (await response.json()) as { success?: boolean };
+    return json.success === true;
+  } catch {
+    // Covers AbortError (timeout), network errors, and JSON parse failures.
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 type RateLimitScope = "ip" | "device";
 
@@ -115,7 +169,7 @@ export class AbuseGuard {
     this.store = new InMemoryRateLimitStore(config.maxTrackedBuckets, now);
   }
 
-  assertAllowed(request: RouteRequest, policyName: AbuseProtectionPolicyName | undefined): void {
+  async assertAllowed(request: RouteRequest, policyName: AbuseProtectionPolicyName | undefined): Promise<void> {
     if (!this.config.enabled || !policyName) {
       return;
     }
@@ -136,30 +190,50 @@ export class AbuseGuard {
       });
     }
 
-    // TODO(task-2.2): CAPTCHA bypass path is not yet implemented. This signals
-    // the client to show a CAPTCHA challenge (via X-Captcha-Required) but the
-    // server does not yet read an inbound X-Captcha-Token or verify it against
-    // a CAPTCHA provider (reCAPTCHA/hCaptcha). Until that integration lands,
-    // every request in the window after captchaAfter is rejected regardless of
-    // whether the user completed a real challenge. Wire up provider verification
-    // here before treating this 403 flow as end-to-end functional.
     const captchaRequired = results.find(
       ({ rule, count }) =>
         this.config.captchaChallengesEnabled &&
         typeof rule.captchaAfter === "number" &&
         count > rule.captchaAfter
     );
-    if (captchaRequired) {
-      request.responseHeaders["X-Captcha-Required"] = "true";
-      request.responseHeaders["X-Captcha-Policy"] = policy.name;
-      request.responseHeaders["X-Captcha-Window-Seconds"] = String(captchaRequired.rule.windowSeconds);
-
-      throw new ApiError(403, "captcha_required", "Please complete the CAPTCHA challenge before continuing.", {
-        fieldErrors: {
-          captchaToken: ["captcha_required"],
-        },
-      });
+    if (!captchaRequired) {
+      return;
     }
+
+    // If the client supplied a token, attempt to verify it against the provider.
+    // A verified token allows the request through (CAPTCHA bypass path).
+    // Any verification error (network, timeout, parse) is treated as a failed check
+    // so the safe default (403) is preserved and no exception leaks to the caller.
+    const inboundToken = getHeader(request.headers, "x-captcha-token");
+    if (inboundToken && this.config.captchaVerifier) {
+      let valid = false;
+      try {
+        valid = await verifyCaptchaToken(
+          inboundToken,
+          this.config.captchaVerifier,
+          request.clientIp ?? undefined
+        );
+      } catch (err) {
+        // verifyCaptchaToken already swallows most errors internally; this is a
+        // last-resort guard. Log and fall through to the 403 below.
+        request.observability?.logger.warn("captcha_verify_unexpected_error", { error: err });
+      }
+      if (valid) {
+        // Token verified — allow the request through without setting challenge headers.
+        return;
+      }
+      // Invalid or unverifiable token: fall through to the 403 so the client retries.
+    }
+
+    request.responseHeaders["X-Captcha-Required"] = "true";
+    request.responseHeaders["X-Captcha-Policy"] = policy.name;
+    request.responseHeaders["X-Captcha-Window-Seconds"] = String(captchaRequired.rule.windowSeconds);
+
+    throw new ApiError(403, "captcha_required", "Please complete the CAPTCHA challenge before continuing.", {
+      fieldErrors: {
+        captchaToken: ["captcha_required"],
+      },
+    });
   }
 
   private consumeRule(

@@ -1,4 +1,4 @@
-import { BookingApiConfig, LogLevel } from "./types";
+import { BookingApiConfig, CaptchaProvider, CaptchaVerifierConfig, LogLevel } from "./types";
 import { createSecretProvider } from "./secrets";
 
 const DEFAULT_MAX_BODY_BYTES = 64 * 1024;
@@ -123,6 +123,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
         env.BOOKING_API_RATE_LIMIT_MAX_BUCKETS,
         DEFAULT_MAX_TRACKED_RATE_LIMIT_BUCKETS
       ),
+      captchaVerifier: parseCaptchaVerifierConfig(env),
     },
     email: {
       fromAddress: env.SES_FROM_ADDRESS?.trim() || DEFAULT_SES_FROM_ADDRESS,
@@ -199,4 +200,27 @@ function normalizeBaseUrl(value: string | undefined, defaultValue: string): stri
   } catch {
     return defaultValue;
   }
+}
+
+function parseCaptchaVerifierConfig(env: NodeJS.ProcessEnv): CaptchaVerifierConfig | undefined {
+  const secretKey = env.CAPTCHA_SECRET_KEY?.trim();
+  if (!secretKey) {
+    return undefined;
+  }
+
+  const rawProvider = env.CAPTCHA_PROVIDER?.trim().toLowerCase();
+  let provider: CaptchaProvider;
+  if (rawProvider === "recaptcha") {
+    provider = "recaptcha";
+  } else if (!rawProvider || rawProvider === "hcaptcha") {
+    provider = "hcaptcha";
+  } else {
+    // eslint-disable-next-line no-console
+    console.warn(`[booking-api] Unrecognized CAPTCHA_PROVIDER value "${env.CAPTCHA_PROVIDER}"; expected "hcaptcha" or "recaptcha". Defaulting to "hcaptcha".`);
+    provider = "hcaptcha";
+  }
+
+  const verifyUrl = env.CAPTCHA_VERIFY_URL?.trim() || undefined;
+
+  return { provider, secretKey, verifyUrl };
 }

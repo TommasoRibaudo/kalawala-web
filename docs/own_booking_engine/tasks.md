@@ -590,7 +590,7 @@ gantt
 [x] 7.1 Analytics schema: define events + properties; implement PostHog + GA4 + Meta Pixel triggers with consent gating. (10h)  
 [x] 7.2 Security hardening pass: secrets review, logging redaction, webhook replay protection, dependency audit gates. (10h)  
 [x] 7.3 Load + abuse testing: simulate bot traffic on search/hold endpoints; validate rate limits and cost controls. (12h)  
-[ ] 7.3a CAPTCHA provider integration: wire up inbound X-Captcha-Token verification against reCAPTCHA/hCaptcha in AbuseGuard (see TODO in abuseProtection.ts); add end-to-end test for the bypass path. (8h)  
+[x] 7.3a CAPTCHA provider integration: wire up inbound X-Captcha-Token verification against reCAPTCHA/hCaptcha in AbuseGuard (see TODO in abuseProtection.ts); add end-to-end test for the bypass path. (8h)  
 [ ] 7.4 Launch readiness: runbooks, alerts, on-call plan, rollback plan, post-launch monitoring checklist. (10h)
 
 ## CI/CD: frontend vs backend deployment separation

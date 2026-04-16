@@ -74,7 +74,7 @@ export function createBookingApiHandler(config: BookingApiConfig = loadConfig())
       };
 
       assertRouteHardening(request, route.options);
-      abuseGuard.assertAllowed(request, route.options.abuseProtection);
+      await abuseGuard.assertAllowed(request, route.options.abuseProtection);
 
       response = await route.handler(request);
       return response;

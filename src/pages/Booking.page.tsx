@@ -271,11 +271,13 @@ const BookingSearchResults = ({ result, strings, language }: BookingSearchResult
         </p>
       </div>
       <WarningList warnings={warnings} strings={strings} />
-      <div className="booking-results-grid">
+      <Row className="booking-results-grid g-4">
         {result.properties.map((property) => (
-          <BookingPropertyCard key={property.propertyId} property={property} strings={strings} language={language} />
+          <Col className="booking-results-col" key={property.propertyId} md={6} xl={4}>
+            <BookingPropertyCard property={property} strings={strings} language={language} />
+          </Col>
         ))}
-      </div>
+      </Row>
     </section>
   );
 };
@@ -306,27 +308,33 @@ const BookingPropertyCard = ({
   language: BookingLanguage;
 }) => {
   const listingUrl = buildListingUrl(property.slug, language);
+  const titleId = `booking-result-title-${property.propertyId}`;
 
   return (
-    <article className="booking-result-card">
-      <a
-        className="booking-result-image"
-        href={listingUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`${strings.viewListing}: ${property.name}`}
-      >
-        <img src={property.thumbnailUrl} alt={property.name} />
-        <span>{strings.available}</span>
-      </a>
-      <div className="booking-result-content">
-        <div className="booking-result-heading">
-          <h3>{property.name}</h3>
-          <p>
+    <article className="booking-result-card" aria-labelledby={titleId}>
+      <div className="booking-result-card__media-frame">
+        <a
+          className="booking-result-card__media"
+          href={listingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${strings.viewListing}: ${property.name}`}
+        >
+          <img src={property.thumbnailUrl} alt={property.name} />
+          <span className="booking-result-card__overlay" aria-hidden="true" />
+        </a>
+        <span className="booking-result-card__status">{strings.available}</span>
+        <h3 className="booking-result-card__media-title" id={titleId}>
+          {property.name}
+        </h3>
+      </div>
+      <div className="booking-result-card__content">
+        <div className="booking-result-card__heading">
+          <p className="booking-result-card__guest-badge">
             <FontAwesomeIcon icon={faUser} /> {strings.sleeps(property.guestCapacity)}
           </p>
         </div>
-        <ul className="booking-amenities" aria-label={strings.amenitiesLabel(property.name)}>
+        <ul className="booking-result-card__amenities" aria-label={strings.amenitiesLabel(property.name)}>
           {property.amenities.slice(0, 5).map((amenity) => (
             <li key={`${property.propertyId}-${amenity.code}`}>
               <FontAwesomeIcon icon={amenityIcons[amenity.code] ?? faWifi} />
@@ -335,7 +343,7 @@ const BookingPropertyCard = ({
           ))}
         </ul>
         {property.price && (
-          <div className="booking-result-price">
+          <div className="booking-result-card__price">
             <span>{strings.priceForStay}</span>
             <strong>{formatMoney(property.price.totalAmountCents, property.price.currency, language)}</strong>
             <small>
@@ -343,7 +351,7 @@ const BookingPropertyCard = ({
             </small>
           </div>
         )}
-        <a className="booking-result-link" href={listingUrl} target="_blank" rel="noopener noreferrer">
+        <a className="booking-result-card__link" href={listingUrl} target="_blank" rel="noopener noreferrer">
           {strings.viewListing}
         </a>
       </div>

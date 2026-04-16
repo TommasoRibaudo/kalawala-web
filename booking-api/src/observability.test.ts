@@ -28,7 +28,7 @@ test("observability: redacts secrets and auth-shaped fields recursively", () => 
     idempotencyKey: "idem-123",
     bookingSessionId: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111",
     guest: {
-      email: "guest@example.com",
+      email: "[REDACTED]",
       portalPassword: "[REDACTED]",
     },
     headers: {
@@ -344,4 +344,60 @@ test("observability: records Smoobu provider rate-limit metrics", () => {
 
   const alert = entries.find((entry) => entry.eventType === "operational_alert");
   expect(alert?.alertName).toBe("smoobu_provider_degraded");
+});
+
+// ─── Logging redaction: PII fields ───────────────────────────────────────────
+
+test("observability: redacts guest PII fields (email, phone, firstName, lastName)", () => {
+  expect(
+    redactForLogs({
+      email: "guest@example.com",
+      phone: "+1-555-0100",
+      firstName: "Ana",
+      lastName: "Mora",
+      nested: {
+        "guest.email": "other@example.com",
+        "guest.phone": "+1-555-0101",
+        "guest.firstName": "Carlos",
+        "guest.lastName": "Vega",
+      },
+    })
+  ).toEqual({
+    email: "[REDACTED]",
+    phone: "[REDACTED]",
+    firstName: "[REDACTED]",
+    lastName: "[REDACTED]",
+    nested: {
+      "guest.email": "[REDACTED]",
+      "guest.phone": "[REDACTED]",
+      "guest.firstName": "[REDACTED]",
+      "guest.lastName": "[REDACTED]",
+    },
+  });
+});
+
+test("observability: redacts portalPassword and portalPasswordHash", () => {
+  expect(
+    redactForLogs({
+      portalPassword: "correct horse battery staple",
+      portalPasswordHash: "$argon2id$v=19$m=65536,t=3,p=4$...",
+    })
+  ).toEqual({
+    portalPassword: "[REDACTED]",
+    portalPasswordHash: "[REDACTED]",
+  });
+});
+
+test("observability: does not redact non-sensitive booking fields", () => {
+  const input = {
+    bookingSessionId: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111",
+    reservationPublicId: "KWL-ABCD1234",
+    propertyId: "prop-001",
+    arrivalDate: "2026-06-01",
+    departureDate: "2026-06-05",
+    guests: 2,
+    status: "booking_confirmed",
+    language: "en",
+  };
+  expect(redactForLogs(input)).toEqual(input);
 });

@@ -1,4 +1,8 @@
 import { createBookingApiHandler } from "./app";
+import { InMemoryBookingSessionRepository } from "./bookingSessions";
+import { InMemoryHoldRepository } from "./holds";
+import { InMemoryPaymentRepository } from "./payments";
+import { InMemoryWebhookEventRepository } from "./paypalWebhooks";
 import {
   createSecretProvider,
   LambdaExtensionSecretProvider,
@@ -195,6 +199,10 @@ test("Smoobu webhook route reads shared secret from secret provider", async () =
       idempotencyTtlMinutes: 1440,
       staleIdempotencyLockSeconds: 120,
     },
+    bookingSessions: new InMemoryBookingSessionRepository(),
+    holds: new InMemoryHoldRepository(),
+    payments: new InMemoryPaymentRepository(),
+    webhookEvents: new InMemoryWebhookEventRepository(),
     abuseProtection: {
       enabled: false,
       captchaChallengesEnabled: false,

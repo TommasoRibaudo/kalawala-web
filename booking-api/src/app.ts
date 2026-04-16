@@ -1,9 +1,5 @@
 import { loadConfig } from "./config";
 import { AbuseGuard } from "./abuseProtection";
-import { InMemoryBookingSessionRepository } from "./bookingSessions";
-import { InMemoryHoldRepository } from "./holds";
-import { InMemoryPaymentRepository } from "./payments";
-import { InMemoryWebhookEventRepository } from "./paypalWebhooks";
 import { assertRouteHardening } from "./http/router";
 import { createObservability } from "./observability";
 import {
@@ -23,13 +19,7 @@ import { createRouter } from "./routes";
 import { ApiResponse, BookingApiConfig, HttpMethod, LambdaHttpRequest, RouteRequest } from "./types";
 
 export function createBookingApiHandler(config: BookingApiConfig = loadConfig()) {
-  const runtimeConfig: BookingApiConfig = {
-    ...config,
-    bookingSessions: config.bookingSessions ?? new InMemoryBookingSessionRepository(),
-    holds: config.holds ?? new InMemoryHoldRepository(),
-    payments: config.payments ?? new InMemoryPaymentRepository(),
-    webhookEvents: config.webhookEvents ?? new InMemoryWebhookEventRepository(),
-  };
+  const runtimeConfig: BookingApiConfig = { ...config };
   const router = createRouter(runtimeConfig);
   const abuseGuard = new AbuseGuard(runtimeConfig.abuseProtection);
   const observability = createObservability(runtimeConfig.observability);

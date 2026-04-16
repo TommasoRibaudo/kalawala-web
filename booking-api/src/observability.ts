@@ -22,7 +22,7 @@ const LOG_LEVEL_PRIORITY: Record<LogLevel, number> = {
 };
 
 const SENSITIVE_KEY_PATTERN =
-  /authorization|cookie|token|secret|password|api[-_]?key|apikey|signature|session[-_]?token|session[-_]?secret|paypal[-_]?transmission[-_]?sig|x[-_]?smoobu[-_]?webhook[-_]?secret|booking[-_]?encryption[-_]?key|portal[-_]?session[-_]?secret/i;
+  /authorization|cookie|token|secret|password|passwordhash|api[-_]?key|apikey|signature|session[-_]?token|session[-_]?secret|paypal[-_]?transmission[-_]?sig|x[-_]?smoobu[-_]?webhook[-_]?secret|booking[-_]?encryption[-_]?key|portal[-_]?session[-_]?secret|portal[-_]?password|portal[-_]?password[-_]?hash|^email$|guest[-_.]?email|^phone$|guest[-_.]?phone|^firstName$|^lastName$|guest[-_.]?first[-_]?name|guest[-_.]?last[-_]?name/i;
 
 export interface HttpRequestObservation {
   correlationId: string;

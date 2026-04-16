@@ -252,10 +252,14 @@ describe("renderDepositHandoffEmail", () => {
 // ─── EmailClient (disabled mode) ──────────────────────────────────────────────
 
 describe("EmailClient (disabled)", () => {
-  const client = new EmailClient(
-    { fromAddress: "test@kalawala.com", region: "us-east-1", disabled: true },
-    noopLogger
-  );
+  let client: EmailClient;
+
+  beforeEach(() => {
+    client = new EmailClient(
+      { fromAddress: "test@kalawala.com", region: "us-east-1", disabled: true },
+      noopLogger
+    );
+  });
 
   it("sendHoldCreated: logs skip and does not throw", async () => {
     const session = makeSession();

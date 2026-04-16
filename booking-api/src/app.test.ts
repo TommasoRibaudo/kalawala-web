@@ -1,4 +1,8 @@
 import { createBookingApiHandler } from "./app";
+import { InMemoryBookingSessionRepository } from "./bookingSessions";
+import { InMemoryHoldRepository } from "./holds";
+import { InMemoryPaymentRepository } from "./payments";
+import { InMemoryWebhookEventRepository } from "./paypalWebhooks";
 import { MissingSecretProvider } from "./secrets";
 import { BookingApiConfig, LambdaHttpRequest } from "./types";
 
@@ -21,6 +25,10 @@ const config: BookingApiConfig = {
     orderReturnUrl: "",
     orderCancelUrl: "",
   },
+  bookingSessions: new InMemoryBookingSessionRepository(),
+  holds: new InMemoryHoldRepository(),
+  payments: new InMemoryPaymentRepository(),
+  webhookEvents: new InMemoryWebhookEventRepository(),
   hold: {
     defaultTtlMinutes: 60,
     idempotencyTtlMinutes: 1440,

@@ -25,3 +25,13 @@ also show smoobu messages and the option to send an email
 update number of people on portal 
 
 when a person makes a reservation make them create the password and redirect them immediately to the portal. 
+
+check if paypal has a way of paying that is more straightforward (enter cc details and go)
+
+make the token last until 7 days after their check out. so they can access the reservation page easily everytime they connect (maybe even suggest saving it as favorite)
+
+remove popup message about discount code, since we will show it natively. 
+
+Actively show discounts as they are being applied to the base price, by salshing it and showing the new price with more visual emphasis. (this applies to discount codes, weekly, monthly stays, smoobu still is always the source of truth of this information)
+
+implement testing using real values (even maybe create a booking? do the happy paths)

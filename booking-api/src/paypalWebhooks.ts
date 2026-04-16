@@ -100,6 +100,42 @@ interface PayPalWebhookEvent {
   };
 }
 
+// ─── Replay protection ────────────────────────────────────────────────────────
+
+/**
+ * Maximum age (in milliseconds) of a PayPal webhook transmission timestamp
+ * used to detect clock-skew anomalies.
+ *
+ * PayPal retries failed webhook deliveries for up to 3 days, and each retry
+ * carries the *original* transmission-time. A 4-day window therefore accepts
+ * all legitimate retries while still flagging timestamps that are clearly
+ * anomalous (e.g. replayed events from months ago).
+ *
+ * Note: primary replay protection is the deduplication store (insertIfNew).
+ * This check is a secondary defence against grossly out-of-range timestamps.
+ */
+export const PAYPAL_WEBHOOK_MAX_AGE_MS = 4 * 24 * 60 * 60 * 1000; // 4 days
+
+/**
+ * Returns true if the paypal-transmission-time header is within the allowed
+ * window relative to `nowMs`.
+ */
+export function isPayPalTransmissionTimeValid(
+  transmissionTime: string | undefined,
+  nowMs: number = Date.now()
+): boolean {
+  if (!transmissionTime) {
+    return false;
+  }
+
+  const eventMs = new Date(transmissionTime).getTime();
+  if (Number.isNaN(eventMs)) {
+    return false;
+  }
+
+  return Math.abs(nowMs - eventMs) <= PAYPAL_WEBHOOK_MAX_AGE_MS;
+}
+
 // ─── Signature verification ───────────────────────────────────────────────────
 
 /**
@@ -193,7 +229,23 @@ export async function handlePayPalWebhook(
     throw new ApiError(400, "webhook_signature_invalid", "PayPal webhook signature verification failed.");
   }
 
-  // 2. Parse event
+  // 2. Replay protection — reject events with a transmission-time outside the
+  //    allowed window. Legitimate PayPal retries carry the *original*
+  //    transmission-time; a 4-day window covers all retry scenarios while
+  //    flagging clearly anomalous timestamps (e.g. months-old replays).
+  //    Primary replay protection is the deduplication store (step 4).
+  //    Return 200 so PayPal does not keep retrying a stale-but-verified event.
+  if (!isPayPalTransmissionTimeValid(getHeader(request.headers, "paypal-transmission-time"))) {
+    request.observability.recordSecurityEvent({
+      name: "paypal_webhook_replay_rejected",
+      severity: "warn",
+      route: "/api/webhooks/paypal",
+      provider: "paypal",
+    });
+    return jsonResponse(200, { received: true, stale: true }, request.responseHeaders);
+  }
+
+  // 3. Parse event
   let event: PayPalWebhookEvent;
   try {
     event = JSON.parse(request.rawBody) as PayPalWebhookEvent;
@@ -208,7 +260,7 @@ export async function handlePayPalWebhook(
     throw new ApiError(400, "invalid_webhook_payload", "Webhook event is missing id or event_type.");
   }
 
-  // 3. Dedupe — idempotent insert
+  // 4. Dedupe — idempotent insert
   const webhookEvents = getWebhookEventRepository(config);
   const payloadHash = sha256(request.rawBody);
   const { inserted } = await webhookEvents.insertIfNew({
@@ -230,7 +282,7 @@ export async function handlePayPalWebhook(
     return jsonResponse(200, { received: true, duplicate: true }, request.responseHeaders);
   }
 
-  // 4. Apply state transitions
+  // 5. Apply state transitions
   try {
     await applyPayPalWebhookEvent(event, config, request);
     await webhookEvents.markProcessed("paypal", externalEventId, "processed");

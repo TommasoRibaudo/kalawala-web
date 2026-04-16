@@ -586,3 +586,77 @@ test("POST /api/webhooks/paypal PAYMENT.CAPTURE.DENIED does not affect a booking
   const payment = await payments.getByBookingSessionId(bookingSessionId);
   expect(payment?.status).toBe("captured");
 });
+
+// ─── Replay protection ────────────────────────────────────────────────────────
+
+import { isPayPalTransmissionTimeValid, PAYPAL_WEBHOOK_MAX_AGE_MS } from "./paypalWebhooks";
+
+test("isPayPalTransmissionTimeValid: accepts a timestamp within the allowed window", () => {
+  const now = Date.now();
+  const recent = new Date(now - 30_000).toISOString(); // 30 seconds ago — well within 4 days
+  expect(isPayPalTransmissionTimeValid(recent, now)).toBe(true);
+});
+
+test("isPayPalTransmissionTimeValid: accepts a timestamp exactly at the boundary", () => {
+  const now = Date.now();
+  const boundary = new Date(now - PAYPAL_WEBHOOK_MAX_AGE_MS).toISOString(); // exactly 4 days ago
+  expect(isPayPalTransmissionTimeValid(boundary, now)).toBe(true);
+});
+
+test("isPayPalTransmissionTimeValid: rejects a timestamp older than the allowed window", () => {
+  const now = Date.now();
+  const old = new Date(now - PAYPAL_WEBHOOK_MAX_AGE_MS - 1).toISOString(); // 4 days + 1ms ago
+  expect(isPayPalTransmissionTimeValid(old, now)).toBe(false);
+});
+
+test("isPayPalTransmissionTimeValid: rejects a future timestamp beyond the allowed window", () => {
+  const now = Date.now();
+  const future = new Date(now + PAYPAL_WEBHOOK_MAX_AGE_MS + 1).toISOString();
+  expect(isPayPalTransmissionTimeValid(future, now)).toBe(false);
+});
+
+test("isPayPalTransmissionTimeValid: rejects undefined", () => {
+  expect(isPayPalTransmissionTimeValid(undefined)).toBe(false);
+});
+
+test("isPayPalTransmissionTimeValid: rejects an invalid date string", () => {
+  expect(isPayPalTransmissionTimeValid("not-a-date")).toBe(false);
+});
+
+test("POST /api/webhooks/paypal returns 400 when transmission-time is outside the replay window", async () => {
+  global.fetch = makeHappyPathFetch() as typeof fetch;
+  const handler = createBookingApiHandler(config);
+
+  // Use a timestamp 5 days in the past — outside the 4-day window
+  const staleTime = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString();
+  const response = await handler(
+    makeWebhookEvent(makeCaptureCompletedEvent("00000000-0000-4000-8000-000000000001"), {
+      ...WEBHOOK_HEADERS,
+      "paypal-transmission-time": staleTime,
+    })
+  );
+
+  // Stale-but-verified events return 200 (not 400) so PayPal stops retrying gracefully
+  expect(response.statusCode).toBe(200);
+  const body = JSON.parse(response.body);
+  expect(body.stale).toBe(true);
+});
+
+test("POST /api/webhooks/paypal accepts a transmission-time within the replay window", async () => {
+  global.fetch = makeHappyPathFetch() as typeof fetch;
+  const handler = createBookingApiHandler(config);
+  const { bookingSessionId } = await setupSessionWithPaypalOrder(handler);
+
+  // Use a dynamic timestamp 30 seconds ago — always within the 4-day window
+  const recentTime = new Date(Date.now() - 30_000).toISOString();
+  const response = await handler(
+    makeWebhookEvent(makeCaptureCompletedEvent(bookingSessionId), {
+      ...WEBHOOK_HEADERS,
+      "paypal-transmission-time": recentTime,
+    })
+  );
+
+  expect(response.statusCode).toBe(200);
+  const session = await bookingSessions.getById(bookingSessionId);
+  expect(session?.status).toBe("booking_confirmed");
+});

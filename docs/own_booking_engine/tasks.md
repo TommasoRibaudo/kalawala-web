@@ -587,7 +587,7 @@ gantt
 [x] 6.3 Reservation portal auth: reservation ID + password creation, hashing, rate limiting, session management. (14h)  
 [x] 6.4 Portal pages: reservation details, payment status, request cancellation/help. (14h)  
 
-[ ] 7.1 Analytics schema: define events + properties; implement PostHog + GA4 + Meta Pixel triggers with consent gating. (10h)  
+[x] 7.1 Analytics schema: define events + properties; implement PostHog + GA4 + Meta Pixel triggers with consent gating. (10h)  
 [ ] 7.2 Security hardening pass: secrets review, logging redaction, webhook replay protection, dependency audit gates. (10h)  
 [ ] 7.3 Load + abuse testing: simulate bot traffic on search/hold endpoints; validate rate limits and cost controls. (12h)  
 [ ] 7.4 Launch readiness: runbooks, alerts, on-call plan, rollback plan, post-launch monitoring checklist. (10h)

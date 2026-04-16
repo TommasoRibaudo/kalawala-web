@@ -1,5 +1,4 @@
 import React from 'react';
-import posthog from 'posthog-js';
 import { Alert, Button, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { useSearchParams } from 'react-router-dom';
@@ -18,7 +17,11 @@ import {
   recordDepositHandoffEvent,
   searchAvailability,
 } from '../services/BookingApi.service';
-import { CookieConsentService } from '../services/CookieConsent.service';
+import {
+  trackBookingSearch,
+  trackAvailabilityResults,
+  trackManualDepositHandoffClicked,
+} from '../services/BookingAnalytics.service';
 import { bookingStrings, BookingStrings } from './Booking.i18n';
 import './Booking.style.scss';
 
@@ -130,6 +133,14 @@ const BookingPage = () => {
 
     setIsSubmitting(true);
     try {
+      trackBookingSearch({
+        arrival_date: arrivalDate,
+        departure_date: departureDate,
+        guests,
+        language,
+        source: 'booking_page',
+      });
+
       const response = await searchAvailability({
         arrivalDate,
         departureDate,
@@ -138,6 +149,26 @@ const BookingPage = () => {
         source: 'booking_page',
       });
       setResult(response);
+
+      const minPriceCents =
+        response.properties.length > 0
+          ? Math.min(
+              ...response.properties
+                .map((p) => p.price?.totalAmountCents)
+                .filter((v): v is number => v != null)
+            )
+          : null;
+      const firstCurrency = response.properties.find((p) => p.price?.currency)?.price?.currency ?? null;
+
+      trackAvailabilityResults({
+        available_count: response.properties.length,
+        min_price_cents: minPriceCents === Infinity ? null : minPriceCents,
+        currency: firstCurrency,
+        arrival_date: arrivalDate,
+        departure_date: departureDate,
+        guests,
+        language,
+      });
     } catch (searchError) {
       setResult(null);
       setError(getSearchErrorMessage(searchError, strings));
@@ -484,15 +515,13 @@ const ManualDepositHandoffPanel = ({
         ];
 
   const handleContactClick = (method: DepositHandoffResponse['instructions']['contactMethods'][number]) => {
-    const analyticsConsent = CookieConsentService.hasConsent('analytics');
     const property = context?.property;
 
     if (!context?.quoteId || !property?.propertyId) {
       return;
     }
 
-    captureManualDepositHandoffClick(analyticsConsent, {
-      analytics_consent: analyticsConsent,
+    trackManualDepositHandoffClicked({
       contact_method: method.type,
       language,
       quote_id: context.quoteId,
@@ -505,7 +534,6 @@ const ManualDepositHandoffPanel = ({
       propertyId: property.propertyId,
       language,
       contactMethod: method.type,
-      analyticsConsent,
     }).catch(() => undefined);
   };
 
@@ -569,21 +597,6 @@ function getDepositInstructionCopy(bodyKey: string, strings: BookingStrings): st
   }
 
   return strings[stringKey];
-}
-
-function captureManualDepositHandoffClick(analyticsConsent: boolean, properties: Record<string, unknown>): void {
-  if (!analyticsConsent) {
-    return;
-  }
-
-  posthog.capture('manual_deposit_handoff_clicked', properties);
-
-  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-    window.gtag('event', 'manual_deposit_handoff_clicked', {
-      event_category: 'booking',
-      ...properties,
-    });
-  }
 }
 
 function validateSearch(

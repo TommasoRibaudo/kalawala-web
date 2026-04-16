@@ -69,7 +69,7 @@ export interface DepositHandoffEventRequest {
   propertyId: string;
   language: BookingLanguage;
   contactMethod: string;
-  analyticsConsent: boolean;
+  analyticsConsent?: boolean;
 }
 
 export interface DepositHandoffContactMethod {

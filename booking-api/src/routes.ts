@@ -6,6 +6,7 @@ import { Router } from "./http/router";
 import { handleCalendarRequest, invalidateCalendarRatesCacheFromWebhook } from "./calendar";
 import { handleManualDepositHandoff, handleManualDepositHandoffEvent } from "./depositHandoff";
 import { handleCreatePayPalHold } from "./holds";
+import { handleCreatePayPalOrder, handleCapturePayPalOrder } from "./paypalOrders";
 import { handleAvailabilitySearch } from "./search";
 import { BookingApiConfig, RouteRequest } from "./types";
 import {
@@ -54,8 +55,8 @@ export function createRouter(config: BookingApiConfig): Router {
   router.post(
     "/api/paypal/order",
     async (request) => {
-      validateBookingSessionRequest(request.body);
-      throw notImplemented("PayPal order creation is scaffolded; Orders API integration lands in task 5.1.");
+      const body = validateBookingSessionRequest(request.body);
+      return handleCreatePayPalOrder(body, request, config);
     },
     { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "paymentCreate" }
   );
@@ -63,8 +64,8 @@ export function createRouter(config: BookingApiConfig): Router {
   router.post(
     "/api/paypal/capture",
     async (request) => {
-      validatePayPalCaptureRequest(request.body);
-      throw notImplemented("PayPal capture is scaffolded; capture reconciliation lands in task 5.1.");
+      const body = validatePayPalCaptureRequest(request.body);
+      return handleCapturePayPalOrder(body, request, config);
     },
     { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "paymentCapture" }
   );

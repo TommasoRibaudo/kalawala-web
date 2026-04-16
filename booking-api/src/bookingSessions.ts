@@ -1,7 +1,15 @@
 import { randomBytes, randomUUID } from "crypto";
 
 export type BookingLanguage = "en" | "es";
-export type BookingSessionStatus = "quoted" | "no_availability" | "hold_creating" | "hold_active" | "hold_expired" | "failed";
+export type BookingSessionStatus =
+  | "quoted"
+  | "no_availability"
+  | "hold_creating"
+  | "hold_active"
+  | "hold_expired"
+  | "paypal_order_created"
+  | "booking_confirmed"
+  | "failed";
 
 const DEFAULT_QUOTE_TTL_MS = 10 * 60 * 1000;
 
@@ -54,6 +62,8 @@ export interface BookingSessionRecord {
   portalPasswordHash?: string;
   portalPasswordSetAt?: string;
   expiresAt?: string;
+  paypalOrderId?: string;
+  confirmedAt?: string;
   failureReason?: string;
   createdAt: string;
   updatedAt: string;
@@ -73,6 +83,8 @@ export interface BookingSessionRepository {
     expiresAt: string;
   }): Promise<BookingSessionRecord>;
   markHoldActive(input: { bookingSessionId: string; expiresAt: string }): Promise<BookingSessionRecord>;
+  markPaypalOrderCreated(input: { bookingSessionId: string; paypalOrderId: string }): Promise<BookingSessionRecord>;
+  markBookingConfirmed(input: { bookingSessionId: string; confirmedAt: string }): Promise<BookingSessionRecord>;
   markFailed(input: { bookingSessionId: string; reason: string }): Promise<BookingSessionRecord>;
   markHoldExpired(input: { bookingSessionId: string }): Promise<BookingSessionRecord>;
   listByStatus?(status: BookingSessionStatus): Promise<BookingSessionRecord[]>;
@@ -137,6 +149,50 @@ export class InMemoryBookingSessionRepository implements BookingSessionRepositor
       ...existing,
       status: "hold_active",
       expiresAt: input.expiresAt,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  async markPaypalOrderCreated(input: {
+    bookingSessionId: string;
+    paypalOrderId: string;
+  }): Promise<BookingSessionRecord> {
+    const existing = this.sessionsById.get(input.bookingSessionId);
+    if (!existing) {
+      throw new Error(`Booking session ${input.bookingSessionId} was not found.`);
+    }
+    if (existing.status !== "hold_active") {
+      throw new Error(
+        `Cannot transition booking session ${input.bookingSessionId} to paypal_order_created: expected hold_active, got ${existing.status}.`
+      );
+    }
+
+    return this.save({
+      ...existing,
+      status: "paypal_order_created",
+      paypalOrderId: input.paypalOrderId,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  async markBookingConfirmed(input: {
+    bookingSessionId: string;
+    confirmedAt: string;
+  }): Promise<BookingSessionRecord> {
+    const existing = this.sessionsById.get(input.bookingSessionId);
+    if (!existing) {
+      throw new Error(`Booking session ${input.bookingSessionId} was not found.`);
+    }
+    if (existing.status !== "paypal_order_created") {
+      throw new Error(
+        `Cannot transition booking session ${input.bookingSessionId} to booking_confirmed: expected paypal_order_created, got ${existing.status}.`
+      );
+    }
+
+    return this.save({
+      ...existing,
+      status: "booking_confirmed",
+      confirmedAt: input.confirmedAt,
       updatedAt: new Date().toISOString(),
     });
   }

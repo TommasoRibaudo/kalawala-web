@@ -11,6 +11,8 @@ const DEFAULT_SMOOBU_BASE_BACKOFF_MS = 250;
 const DEFAULT_SMOOBU_MAX_BACKOFF_MS = 2_000;
 const DEFAULT_SMOOBU_MAX_RATE_LIMIT_DELAY_MS = 60_000;
 const DEFAULT_SMOOBU_HOLD_CHANNEL_ID = 11;
+const DEFAULT_PAYPAL_BASE_URL = "https://api-m.sandbox.paypal.com";
+const DEFAULT_PAYPAL_TIMEOUT_MS = 10_000;
 const DEFAULT_PAYPAL_HOLD_TTL_MINUTES = 60;
 const DEFAULT_IDEMPOTENCY_TTL_MINUTES = 24 * 60;
 const DEFAULT_STALE_IDEMPOTENCY_LOCK_SECONDS = 120;
@@ -94,6 +96,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
         DEFAULT_SMOOBU_MAX_RATE_LIMIT_DELAY_MS
       ),
       holdChannelId: parseSmoobuHoldChannelId(env.SMOOBU_HOLD_CHANNEL_ID),
+    },
+    paypal: {
+      baseUrl: normalizeBaseUrl(env.PAYPAL_BASE_URL, DEFAULT_PAYPAL_BASE_URL),
+      timeoutMs: parsePositiveInteger(env.PAYPAL_TIMEOUT_MS, DEFAULT_PAYPAL_TIMEOUT_MS),
+      orderReturnUrl: env.PAYPAL_ORDER_RETURN_URL?.trim() ?? "",
+      orderCancelUrl: env.PAYPAL_ORDER_CANCEL_URL?.trim() ?? "",
     },
     hold: {
       defaultTtlMinutes: parsePositiveInteger(env.PAYPAL_HOLD_TTL_MINUTES, DEFAULT_PAYPAL_HOLD_TTL_MINUTES),

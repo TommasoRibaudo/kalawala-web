@@ -578,7 +578,7 @@ gantt
 [x] 4.4 Manual deposit handoff analytics/notification: track handoff clicks and optionally notify staff through existing email/WhatsApp process; no custom receipt upload. (6h)  
 [x] 4.5 Removed from MVP: custom admin review UI, approve/reject queue, receipt upload review, and hold-extension controls. (0h)  
 
-[ ] 5.1 PayPal Orders integration: create order + capture endpoints; store PayPal-Request-Id and internal idempotency keys. (14h)  
+[x] 5.1 PayPal Orders integration: create order + capture endpoints; store PayPal-Request-Id and internal idempotency keys. (14h)  
 [ ] 5.2 PayPal webhooks endpoint: implement signature verification (postback or self verification), dedupe, and state transitions. (14h)  
 [ ] 5.3 Payment reconciliation job: periodic check of “pending PayPal” sessions; resolve missing webhooks; alert anomalies. (10h)  
 

@@ -33,6 +33,12 @@ function createTestConfig(): BookingApiConfig {
       maxRateLimitDelayMs: 60_000,
       holdChannelId: 11,
     },
+    paypal: {
+      baseUrl: "https://api-m.sandbox.paypal.com",
+      timeoutMs: 10_000,
+      orderReturnUrl: "",
+      orderCancelUrl: "",
+    },
     bookingSessions,
     holds,
     hold: {

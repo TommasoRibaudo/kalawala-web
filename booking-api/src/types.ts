@@ -1,5 +1,6 @@
 import type { BookingSessionRepository } from "./bookingSessions";
 import type { HoldRepository } from "./holds";
+import type { PaymentRepository } from "./payments";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS";
 
@@ -86,13 +87,25 @@ export interface RouteDefinition {
   handler: RouteHandler;
 }
 
+export interface PayPalClientConfig {
+  /** Base URL of the PayPal API. Use the sandbox URL for non-production environments. */
+  baseUrl: string;
+  timeoutMs: number;
+  /** Return URL after buyer approves (redirect flow). Leave empty when using the JS SDK. */
+  orderReturnUrl: string;
+  /** Cancel URL if buyer cancels (redirect flow). Leave empty when using the JS SDK. */
+  orderCancelUrl: string;
+}
+
 export interface BookingApiConfig {
   allowedOrigins: string[];
   maxBodyBytes: number;
   secrets: BookingSecretProvider;
   smoobu: SmoobuClientConfig;
+  paypal: PayPalClientConfig;
   bookingSessions?: BookingSessionRepository;
   holds?: HoldRepository;
+  payments?: PaymentRepository;
   hold: HoldConfig;
   abuseProtection: AbuseProtectionConfig;
   observability: ObservabilityConfig;

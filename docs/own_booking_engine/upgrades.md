@@ -11,3 +11,5 @@ create a document with all the manual test we should do to confirm this update w
 discount codes?
 
 on first load: load last searched date and number of people (even from previous session). if no dates select the closest weekend (friday to saturday)
+
+when you put how many people are coming you can either just add people normally (+ - on the booking engine) or open a small panel where you can specify (adultos, niños, bebé, que no cuentan, mascotas)

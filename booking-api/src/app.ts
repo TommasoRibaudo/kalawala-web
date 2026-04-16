@@ -3,6 +3,7 @@ import { AbuseGuard } from "./abuseProtection";
 import { InMemoryBookingSessionRepository } from "./bookingSessions";
 import { InMemoryHoldRepository } from "./holds";
 import { InMemoryPaymentRepository } from "./payments";
+import { InMemoryWebhookEventRepository } from "./paypalWebhooks";
 import { assertRouteHardening } from "./http/router";
 import { createObservability } from "./observability";
 import {
@@ -27,6 +28,7 @@ export function createBookingApiHandler(config: BookingApiConfig = loadConfig())
     bookingSessions: config.bookingSessions ?? new InMemoryBookingSessionRepository(),
     holds: config.holds ?? new InMemoryHoldRepository(),
     payments: config.payments ?? new InMemoryPaymentRepository(),
+    webhookEvents: config.webhookEvents ?? new InMemoryWebhookEventRepository(),
   };
   const router = createRouter(runtimeConfig);
   const abuseGuard = new AbuseGuard(runtimeConfig.abuseProtection);

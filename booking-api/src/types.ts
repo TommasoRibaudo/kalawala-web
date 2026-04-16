@@ -1,6 +1,7 @@
 import type { BookingSessionRepository } from "./bookingSessions";
 import type { HoldRepository } from "./holds";
 import type { PaymentRepository } from "./payments";
+import type { WebhookEventRepository } from "./paypalWebhooks";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS";
 
@@ -106,6 +107,7 @@ export interface BookingApiConfig {
   bookingSessions?: BookingSessionRepository;
   holds?: HoldRepository;
   payments?: PaymentRepository;
+  webhookEvents?: WebhookEventRepository;
   hold: HoldConfig;
   abuseProtection: AbuseProtectionConfig;
   observability: ObservabilityConfig;

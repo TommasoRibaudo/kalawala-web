@@ -35,6 +35,20 @@ export interface PayPalCaptureResult {
   amountCents: number;
 }
 
+export interface PayPalVerifySignatureInput {
+  auth_algo: string;
+  cert_url: string;
+  transmission_id: string;
+  transmission_sig: string;
+  transmission_time: string;
+  webhook_id: string;
+  webhook_event: unknown;
+}
+
+export interface PayPalVerifySignatureResult {
+  verification_status: string;
+}
+
 // ─── Error class ─────────────────────────────────────────────────────────────
 
 export class PayPalProviderError extends ApiError {
@@ -257,6 +271,46 @@ export class PayPalClient {
       observability.recordProviderCall({
         provider: "paypal",
         operation: "captureOrder",
+        durationMs: this.now() - startedAtMs,
+        statusCode,
+        errorCode,
+      });
+    }
+  }
+
+  async verifyWebhookSignature(
+    input: PayPalVerifySignatureInput,
+    observability: RouteObservability
+  ): Promise<PayPalVerifySignatureResult> {
+    const accessToken = await this.getAccessToken();
+    const startedAtMs = this.now();
+    let statusCode: number | undefined;
+    let errorCode: string | undefined;
+
+    try {
+      const response = await this.fetchWithTimeout(
+        "/v1/notifications/verify-webhook-signature",
+        "POST",
+        input,
+        {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        }
+      );
+      statusCode = response.status;
+
+      if (!response.ok) {
+        const err = await buildPayPalHttpError(response, "paypal_verify_signature_failed");
+        errorCode = err.code;
+        throw err;
+      }
+
+      const data = await parseJsonResponse<{ verification_status?: string }>(response);
+      return { verification_status: data.verification_status ?? "FAILURE" };
+    } finally {
+      observability.recordProviderCall({
+        provider: "paypal",
+        operation: "verifyWebhookSignature",
         durationMs: this.now() - startedAtMs,
         statusCode,
         errorCode,

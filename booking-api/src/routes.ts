@@ -7,6 +7,7 @@ import { handleCalendarRequest, invalidateCalendarRatesCacheFromWebhook } from "
 import { handleManualDepositHandoff, handleManualDepositHandoffEvent } from "./depositHandoff";
 import { handleCreatePayPalHold } from "./holds";
 import { handleCreatePayPalOrder, handleCapturePayPalOrder } from "./paypalOrders";
+import { handlePayPalWebhook } from "./paypalWebhooks";
 import { handleAvailabilitySearch } from "./search";
 import { BookingApiConfig, RouteRequest } from "./types";
 import {
@@ -89,7 +90,7 @@ export function createRouter(config: BookingApiConfig): Router {
     async (request) => {
       assertJsonObject(request.body);
       assertPayPalWebhookHeaders(request);
-      throw notImplemented("PayPal webhook route is scaffolded; signature verification and state transitions land in task 5.2.");
+      return handlePayPalWebhook(request, config);
     },
     { requireJsonBody: true, preserveRawBody: true, abuseProtection: "webhook" }
   );

@@ -1,4 +1,4 @@
-import { createNoAvailabilitySession, getBookingSessionRepository } from "./bookingSessions";
+import { createNoAvailabilitySession } from "./bookingSessions";
 import { ApiError } from "./http/errors";
 import { jsonResponse } from "./http/response";
 import { BOOKING_PROPERTIES, BOOKING_PROPERTIES_BY_SMOOBU_ID, BookingProperty, listingUrlForLanguage } from "./propertyCatalog";
@@ -62,6 +62,14 @@ export async function handleAvailabilitySearch(
     observability
   );
   const normalized = normalizeAvailability(availability.data, request);
+
+  const bookingSessions = config.bookingSessions;
+  if (!bookingSessions) {
+    throw new ApiError(503, "database_unavailable", "Booking session storage is not configured.", {
+      retryable: true,
+    });
+  }
+
   const bookingSessionInput = {
     arrivalDate: request.arrivalDate,
     departureDate: request.departureDate,
@@ -81,7 +89,7 @@ export async function handleAvailabilitySearch(
   };
   const bookingSession =
     normalized.properties.length > 0
-      ? await getBookingSessionRepository(config).createQuotedSession(bookingSessionInput)
+      ? await bookingSessions.createQuotedSession(bookingSessionInput)
       : createNoAvailabilitySession(bookingSessionInput);
 
   observability.recordStateTransition({

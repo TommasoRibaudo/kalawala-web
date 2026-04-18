@@ -1,5 +1,7 @@
 import { BookingApiConfig, CaptchaProvider, CaptchaVerifierConfig, LogLevel } from "./types";
 import { createSecretProvider } from "./secrets";
+import { InMemoryBookingSessionRepository } from "./bookingSessions";
+import { InMemoryHoldRepository } from "./holds";
 
 const DEFAULT_MAX_BODY_BYTES = 64 * 1024;
 const DEFAULT_MAX_TRACKED_RATE_LIMIT_BUCKETS = 10_000;
@@ -82,10 +84,11 @@ function parseLogLevel(value: string | undefined): LogLevel {
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConfig {
+  const secrets = createSecretProvider(env);
   return {
     allowedOrigins: splitCsv(env.BOOKING_API_ALLOWED_ORIGINS),
     maxBodyBytes: parseMaxBodyBytes(env.BOOKING_API_MAX_BODY_BYTES),
-    secrets: createSecretProvider(env),
+    secrets,
     smoobu: {
       baseUrl: normalizeBaseUrl(env.SMOOBU_BASE_URL, DEFAULT_SMOOBU_BASE_URL),
       customerId: parseOptionalPositiveInteger(env.SMOOBU_CUSTOMER_ID, "SMOOBU_CUSTOMER_ID"),
@@ -105,6 +108,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
       orderReturnUrl: env.PAYPAL_ORDER_RETURN_URL?.trim() ?? "",
       orderCancelUrl: env.PAYPAL_ORDER_CANCEL_URL?.trim() ?? "",
     },
+    bookingSessions: new InMemoryBookingSessionRepository(),
+    holds: new InMemoryHoldRepository(),
     hold: {
       defaultTtlMinutes: parsePositiveInteger(env.PAYPAL_HOLD_TTL_MINUTES, DEFAULT_PAYPAL_HOLD_TTL_MINUTES),
       idempotencyTtlMinutes: parsePositiveInteger(

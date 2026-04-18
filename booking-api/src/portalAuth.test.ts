@@ -41,6 +41,7 @@ function createTestConfig(): BookingApiConfig {
       smoobuWebhookSecret: "smoobu-webhook-secret-value",
       bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
       portalSessionSecret: PORTAL_SECRET,
+      rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
     }),
     smoobu: {
       baseUrl: "https://login.smoobu.com",

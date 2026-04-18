@@ -1,5 +1,5 @@
 import { createHash, randomUUID, scrypt as scryptCallback, ScryptOptions } from "crypto";
-import { BookingSessionQuotedProperty, BookingSessionRecord, HoldGuestDetails } from "./bookingSessions";
+import { BookingSessionQuotedProperty, BookingSessionRecord, HoldGuestDetails, createNoAvailabilitySession } from "./bookingSessions";
 import { createEmailClient } from "./email";
 import { ApiError } from "./http/errors";
 import { getHeader } from "./http/request";
@@ -304,8 +304,15 @@ export async function handleCreatePayPalHold(
   request: RouteRequest,
   config: BookingApiConfig
 ): Promise<ApiResponse> {
-  const bookingSessions = getRequiredBookingSessionRepository(config);
-  const holds = getHoldRepository(config);
+  const bookingSessions = config.bookingSessions;
+  const holds = config.holds;
+
+  if (!bookingSessions || !holds) {
+    throw new ApiError(503, "database_unavailable", "Booking storage is not configured.", {
+      retryable: true,
+    });
+  }
+
   const idempotencyKey = getHeader(request.headers, "idempotency-key");
   if (!idempotencyKey) {
     throw new ApiError(400, "missing_idempotency_key", "Idempotency-Key header is required.");
@@ -433,11 +440,11 @@ export async function handleCreatePayPalHold(
       await holds.failHold({
         holdId: creatingHold.id,
         reason: safeProviderErrorCode(error),
-      });
+      }).catch(() => {});
       await bookingSessions.markFailed({
         bookingSessionId: holdRequest.bookingSessionId,
         reason: safeProviderErrorCode(error),
-      });
+      }).catch(() => {});
     }
     await holds.releaseIdempotencyKey(HOLD_IDEMPOTENCY_SCOPE, idempotencyKey, requestHash);
     request.observability.recordStateTransition({
@@ -452,19 +459,6 @@ export async function handleCreatePayPalHold(
     });
     throw error;
   }
-}
-
-export function getHoldRepository(config: BookingApiConfig): HoldRepository {
-  return config.holds ?? new InMemoryHoldRepository();
-}
-
-function getRequiredBookingSessionRepository(config: BookingApiConfig) {
-  if (!config.bookingSessions) {
-    throw new ApiError(503, "database_unavailable", "Booking session storage is not configured.", {
-      retryable: true,
-    });
-  }
-  return config.bookingSessions;
 }
 
 async function maybeReplayIdempotentResponse(

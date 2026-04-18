@@ -363,7 +363,10 @@ async function handleCaptureCompleted(
     return;
   }
 
-  const sessions = getBookingSessionRepository(config);
+  const sessions = config.bookingSessions;
+  if (!sessions) {
+    throw new ApiError(503, "database_unavailable", "Booking storage is not configured.", { retryable: true });
+  }
   const payments = getPaymentRepository(config);
 
   const session = await sessions.getById(bookingSessionId);
@@ -472,7 +475,10 @@ async function handleCaptureFailed(
     return;
   }
 
-  const sessions = getBookingSessionRepository(config);
+  const sessions = config.bookingSessions;
+  if (!sessions) {
+    throw new ApiError(503, "database_unavailable", "Booking storage is not configured.", { retryable: true });
+  }
   const payments = getPaymentRepository(config);
 
   const session = await sessions.getById(bookingSessionId);

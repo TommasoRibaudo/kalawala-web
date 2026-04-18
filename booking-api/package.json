@@ -23,7 +23,11 @@
     "@aws-sdk/client-ses": "^3.1030.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
     "jest": "^30.3.0",
     "ts-jest": "^29.4.9"
+  },
+  "dependencies": {
+    "pg": "^8.20.0"
   }
 }

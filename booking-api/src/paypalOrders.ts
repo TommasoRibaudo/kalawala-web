@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import { BookingSessionRecord, BookingSessionRepository } from "./bookingSessions";
 import { createEmailClient } from "./email";
-import { getHoldRepository } from "./holds";
+import { HoldRepository } from "./holds";
 import { ApiError } from "./http/errors";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
@@ -9,6 +9,13 @@ import { InMemoryPaymentRepository, PaymentRecord, PaymentRepository } from "./p
 import { createPayPalClient, PayPalProviderError } from "./paypalClient";
 import { BOOKING_PROPERTIES_BY_ID, listingUrlForLanguage } from "./propertyCatalog";
 import { ApiResponse, BookingApiConfig, RouteObservability, RouteRequest } from "./types";
+
+function getHoldRepository(config: BookingApiConfig): HoldRepository {
+  if (!config.holds) {
+    throw new ApiError(503, "database_unavailable", "Hold storage is not configured.", { retryable: true });
+  }
+  return config.holds;
+}
 
 // ─── Repository accessor ─────────────────────────────────────────────────────
 

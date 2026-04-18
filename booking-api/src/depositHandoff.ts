@@ -1,9 +1,18 @@
-import { getBookingSessionRepository } from "./bookingSessions";
+import { BookingSessionRepository } from "./bookingSessions";
 import { createEmailClient } from "./email";
 import { ApiError } from "./http/errors";
 import { jsonResponse } from "./http/response";
 import { BOOKING_PROPERTIES_BY_ID, listingUrlForLanguage } from "./propertyCatalog";
 import { ApiResponse, BookingApiConfig, HeadersMap, RouteObservability } from "./types";
+
+function getBookingSessionRepository(config: BookingApiConfig): BookingSessionRepository {
+  if (!config.bookingSessions) {
+    throw new ApiError(503, "database_unavailable", "Booking session storage is not configured.", {
+      retryable: true,
+    });
+  }
+  return config.bookingSessions;
+}
 
 export interface DepositHandoffQuery {
   language: "en" | "es";
@@ -104,7 +113,10 @@ export async function handleManualDepositHandoffEvent(
   // Send deposit handoff email — non-fatal
   if (bookingContext) {
     try {
-      const repository = getBookingSessionRepository(config);
+      const repository = config.bookingSessions;
+  if (!repository) {
+    throw new ApiError(503, "database_unavailable", "Booking storage is not configured.", { retryable: true });
+  }
       const session = event.quoteId ? await repository.getByQuoteId(event.quoteId) : undefined;
       const guestEmail = session?.guest?.email;
       const guestFirstName = session?.guest?.firstName ?? "";
@@ -143,7 +155,10 @@ export async function handleManualDepositHandoffEvent(
 }
 
 async function buildBookingContext(query: DepositHandoffQuery, config: BookingApiConfig) {
-  const repository = getBookingSessionRepository(config);
+  const repository = config.bookingSessions;
+  if (!repository) {
+    throw new ApiError(503, "database_unavailable", "Booking storage is not configured.", { retryable: true });
+  }
   const session = query.quoteId ? await repository.getByQuoteId(query.quoteId) : undefined;
   const property = query.propertyId ? BOOKING_PROPERTIES_BY_ID.get(query.propertyId) : undefined;
 

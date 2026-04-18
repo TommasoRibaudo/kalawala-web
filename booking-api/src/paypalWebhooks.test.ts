@@ -30,6 +30,7 @@ function createTestConfig(): BookingApiConfig {
       smoobuWebhookSecret: "smoobu-webhook-secret-value",
       bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
       portalSessionSecret: "portal-session-secret-value",
+      rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
     }),
     smoobu: {
       baseUrl: "https://login.smoobu.com",
@@ -103,8 +104,8 @@ function jsonResp(body: unknown, init: ResponseInit = {}): Response {
 }
 
 const SMOOBU_AVAILABILITY_RESPONSE = {
-  availableApartments: [1],
-  prices: { "1": { price: 510, currency: "USD" } },
+  availableApartments: [301061],
+  prices: { "301061": { price: 510, currency: "USD" } },
   errorMessages: {},
 };
 const SMOOBU_RESERVATION_RESPONSE = { id: 987654 };

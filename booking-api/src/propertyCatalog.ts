@@ -13,13 +13,10 @@ export interface BookingProperty {
   amenities: PublicAmenity[];
 }
 
-// TODO: Replace placeholder smoobuApartmentId values (1–10) with real Smoobu apartment IDs before deployment.
-// WARNING: Using wrong IDs will cause availability checks and hold creation to target incorrect apartments.
-// Real IDs can be found in the Smoobu dashboard under Settings → Apartments, or via GET /api/apartments.
 export const BOOKING_PROPERTIES: BookingProperty[] = [
   {
     propertyId: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111",
-    smoobuApartmentId: 1,
+    smoobuApartmentId: 301061,
     slug: "Geco",
     name: "Casa Geco",
     guestCapacity: 5,
@@ -35,7 +32,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
   },
   {
     propertyId: "d06f7d50-cbbe-4ec6-954c-3e0f9ac2f2e7",
-    smoobuApartmentId: 2,
+    smoobuApartmentId: 301064,
     slug: "Rana",
     name: "Casa Rana",
     guestCapacity: 5,
@@ -51,7 +48,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
   },
   {
     propertyId: "64dff2f1-f1cc-4b68-883e-ea3f43efc5a1",
-    smoobuApartmentId: 3,
+    smoobuApartmentId: 301055,
     slug: "Tucano",
     name: "Casa Tucano",
     guestCapacity: 5,
@@ -67,7 +64,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
   },
   {
     propertyId: "a75f112f-5aa4-46a7-9f64-1a3b5f30b54c",
-    smoobuApartmentId: 4,
+    smoobuApartmentId: 301058,
     slug: "Pappagallo",
     name: "Casa Pappagallo",
     guestCapacity: 5,
@@ -83,7 +80,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
   },
   {
     propertyId: "8d7d5ed0-67a6-44fd-9d57-cb65b104e907",
-    smoobuApartmentId: 5,
+    smoobuApartmentId: 1829402,
     slug: "VillaMar",
     name: "Villa Mar",
     guestCapacity: 2,
@@ -99,7 +96,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
   },
   {
     propertyId: "ec4b9d58-2cf8-4669-88b5-23b9d15c32f6",
-    smoobuApartmentId: 6,
+    smoobuApartmentId: 1819085,
     slug: "VillaCoral",
     name: "Villa Coral",
     guestCapacity: 2,
@@ -115,7 +112,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
   },
   {
     propertyId: "3548c2c7-f7b2-4d5f-8e6f-e01f717f4557",
-    smoobuApartmentId: 7,
+    smoobuApartmentId: 1516846,
     slug: "Areka",
     name: "Areka",
     guestCapacity: 2,
@@ -130,7 +127,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
   },
   {
     propertyId: "cba02c24-e7e4-4898-a7d8-c7ae2277a8b1",
-    smoobuApartmentId: 8,
+    smoobuApartmentId: 1516849,
     slug: "Plumeria",
     name: "Plumeria",
     guestCapacity: 2,
@@ -145,7 +142,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
   },
   {
     propertyId: "c4ff5d9f-ef6d-43f8-8edc-41b0037215de",
-    smoobuApartmentId: 9,
+    smoobuApartmentId: 1597723,
     slug: "Giulia",
     name: "Giulia",
     guestCapacity: 4,
@@ -160,7 +157,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
   },
   {
     propertyId: "bc2470e7-3f18-43e3-91eb-ac3bf3c82ca4",
-    smoobuApartmentId: 10,
+    smoobuApartmentId: 2946826,
     slug: "Delfin",
     name: "Delfin",
     guestCapacity: 6,

@@ -1,5 +1,6 @@
 import { createBookingApiHandler } from "./app";
 import { InMemoryBookingSessionRepository } from "./bookingSessions";
+import { BOOKING_PROPERTIES } from "./propertyCatalog";
 import { StaticSecretProvider } from "./secrets";
 import { BookingApiConfig, LambdaHttpRequest } from "./types";
 
@@ -14,6 +15,7 @@ const config: BookingApiConfig = {
     smoobuWebhookSecret: "smoobu-webhook-secret-value",
     bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
     portalSessionSecret: "portal-session-secret-value",
+    rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
   }),
   smoobu: {
     baseUrl: "https://login.smoobu.com",
@@ -31,6 +33,7 @@ const config: BookingApiConfig = {
     orderReturnUrl: "",
     orderCancelUrl: "",
   },
+  bookingSessions: new InMemoryBookingSessionRepository(),
   hold: {
     defaultTtlMinutes: 60,
     idempotencyTtlMinutes: 1440,
@@ -97,10 +100,10 @@ function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
 test("POST /api/search calls Smoobu availability and returns safe property summaries", async () => {
   const fetchFn = jest.fn(async (_url: string | URL, _init?: RequestInit) =>
     jsonResponse({
-      availableApartments: [1, 6],
+      availableApartments: [301061, 1819085],
       prices: {
-        "1": { price: 510, currency: "USD" },
-        "6": { price: 820, currency: "USD" },
+        "301061": { price: 510, currency: "USD" },
+        "1819085": { price: 820, currency: "USD" },
       },
       errorMessages: {},
     })
@@ -161,7 +164,7 @@ test("POST /api/search calls Smoobu availability and returns safe property summa
   expect(JSON.parse(init?.body as string)).toEqual({
     arrivalDate: "2099-06-10",
     departureDate: "2099-06-14",
-    apartments: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    apartments: BOOKING_PROPERTIES.map((p) => p.smoobuApartmentId),
     customerId: 9,
     guests: 2,
     discountCode: "5OFF",
@@ -172,9 +175,9 @@ test("POST /api/search persists quoted booking session language for server-side 
   const bookingSessions = new InMemoryBookingSessionRepository();
   global.fetch = jest.fn(async () =>
     jsonResponse({
-      availableApartments: [1],
+      availableApartments: [301061],
       prices: {
-        "1": { price: 510, currency: "USD" },
+        "301061": { price: 510, currency: "USD" },
       },
       errorMessages: {},
     })
@@ -243,12 +246,12 @@ test("POST /api/search returns structured 200 response when no houses are availa
 test("POST /api/search maps Smoobu restriction details to safe warning codes", async () => {
   global.fetch = jest.fn(async () =>
     jsonResponse({
-      availableApartments: [2],
+      availableApartments: [301064],
       prices: {
-        "2": { price: 300, currency: "USD" },
+        "301064": { price: 300, currency: "USD" },
       },
       errorMessages: {
-        "2": {
+        "301064": {
           errorCode: 401,
           message: "The duration of the booking is too short.",
           minimumLengthOfStay: 5,
@@ -328,15 +331,14 @@ test("POST /api/search surfaces upstream Smoobu failures as provider errors", as
 test("POST /api/search uses English listing URLs and drops unknown or unpriced Smoobu apartments", async () => {
   global.fetch = jest.fn(async () =>
     jsonResponse({
-      availableApartments: [1, 999, 3],
+      availableApartments: [301061, 999, 301055],
       prices: {
-        "1": { price: 510, currency: "USD" },
+        "301061": { price: 510, currency: "USD" },
         "999": { price: 250, currency: "USD" },
       },
       errorMessages: {},
     })
-  ) as typeof fetch;
-  const handler = createBookingApiHandler(config);
+  ) as typeof fetch;  const handler = createBookingApiHandler(config);
 
   const response = await handler(
     makeSearchEvent({

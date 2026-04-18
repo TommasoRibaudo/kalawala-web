@@ -249,10 +249,8 @@ export class InMemoryBookingSessionRepository implements BookingSessionRepositor
   }
 }
 
-export function getBookingSessionRepository(config: {
-  bookingSessions?: BookingSessionRepository;
-}): BookingSessionRepository {
-  return config.bookingSessions ?? new InMemoryBookingSessionRepository();
+export function getBookingSessionRepository(): BookingSessionRepository {
+  return new InMemoryBookingSessionRepository();
 }
 
 export function createNoAvailabilitySession(input: CreateQuotedBookingSessionInput): BookingSessionRecord {

@@ -314,3 +314,9 @@ variable "encryption_secret_name" {
   type        = string
   default     = "kalawala/encryption"
 }
+
+variable "booking_api_secret_name" {
+  description = "AWS Secrets Manager secret name that holds the combined booking API secrets (Smoobu key, PayPal creds, webhook secret, encryption key, portal session secret)."
+  type        = string
+  default     = "kalawala/booking-api"
+}

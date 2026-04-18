@@ -20,6 +20,7 @@ const VALID_SECRETS: BookingProviderSecrets = {
   smoobuWebhookSecret: "smoobu-webhook-secret-123456",
   bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
   portalSessionSecret: "portal-session-secret-123456",
+  rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
 };
 
 const originalFetch = global.fetch;
@@ -52,6 +53,15 @@ test("validateBookingSecrets: requires a 32-byte base64 encryption key", () => {
   ).toThrow("invalid");
 });
 
+test("validateBookingSecrets: requires a Postgres RDS connection string", () => {
+  expect(() =>
+    validateBookingSecrets({
+      ...VALID_SECRETS,
+      rdsConnectionString: "mysql://booking_user:booking_password@db.example.com:3306/kalawala_booking",
+    })
+  ).toThrow("invalid");
+});
+
 test("createSecretProvider: prefers Secrets Manager secret id over raw environment secrets", () => {
   const provider = createSecretProvider({
     BOOKING_API_SECRETS_MANAGER_SECRET_ID: "kalawala/dev/booking-api",
@@ -72,6 +82,7 @@ test("createSecretProvider: blocks raw provider secrets outside local override m
     SMOOBU_WEBHOOK_SECRET: VALID_SECRETS.smoobuWebhookSecret,
     BOOKING_API_ENCRYPTION_KEY_BASE64: VALID_SECRETS.bookingEncryptionKeyBase64,
     BOOKING_API_PORTAL_SESSION_SECRET: VALID_SECRETS.portalSessionSecret,
+    BOOKING_API_RDS_CONNECTION_STRING: VALID_SECRETS.rdsConnectionString,
   });
 
   expect(provider.source).toBe("invalid");

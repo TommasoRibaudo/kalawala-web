@@ -159,6 +159,7 @@ export interface BookingProviderSecrets {
   smoobuWebhookSecret: string;
   bookingEncryptionKeyBase64: string;
   portalSessionSecret: string;
+  rdsConnectionString: string;
 }
 
 export interface BookingSecretProvider {

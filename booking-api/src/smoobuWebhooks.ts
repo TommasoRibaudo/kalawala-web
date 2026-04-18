@@ -182,7 +182,10 @@ async function handleCancelReservation(
   await holds.cancelHold(hold.id);
 
   // Fail the associated booking session
-  const sessions = getBookingSessionRepository(config);
+  const sessions = config.bookingSessions;
+  if (!sessions) {
+    throw new ApiError(503, "database_unavailable", "Booking storage is not configured.", { retryable: true });
+  }
   const session = await sessions.getById(hold.bookingSessionId);
   if (session && session.status !== "booking_confirmed" && session.status !== "failed") {
     await sessions.markFailed({

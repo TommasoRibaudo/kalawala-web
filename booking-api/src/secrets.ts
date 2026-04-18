@@ -12,6 +12,7 @@ const REQUIRED_FIELDS: Array<keyof BookingProviderSecrets> = [
   "smoobuWebhookSecret",
   "bookingEncryptionKeyBase64",
   "portalSessionSecret",
+  "rdsConnectionString",
 ];
 
 interface CachedSecrets {
@@ -219,6 +220,7 @@ export function validateBookingSecrets(value: unknown, sourceLabel = "secrets"):
   }
 
   validateBase64Key(result.bookingEncryptionKeyBase64, "bookingEncryptionKeyBase64", errors);
+  validateRdsConnectionString(result.rdsConnectionString, "rdsConnectionString", errors);
 
   if (Object.keys(errors).length > 0) {
     throw secretProviderError("secrets_invalid", `Secret payload '${sourceLabel}' is invalid.`, errors);
@@ -236,6 +238,7 @@ function readRawEnvSecrets(env: NodeJS.ProcessEnv): Partial<BookingProviderSecre
     smoobuWebhookSecret: trimOptional(env.SMOOBU_WEBHOOK_SECRET),
     bookingEncryptionKeyBase64: trimOptional(env.BOOKING_API_ENCRYPTION_KEY_BASE64),
     portalSessionSecret: trimOptional(env.BOOKING_API_PORTAL_SESSION_SECRET),
+    rdsConnectionString: trimOptional(env.BOOKING_API_RDS_CONNECTION_STRING),
   };
 
   return Object.values(raw).some(Boolean) ? raw : null;
@@ -270,6 +273,22 @@ function validateBase64Key(value: string | undefined, field: string, errors: Fie
   const normalizedRoundTrip = decoded.toString("base64").replace(/=+$/, "");
   if (decoded.length !== 32 || normalizedInput !== normalizedRoundTrip) {
     addError(errors, field, "must_be_base64_32_bytes");
+  }
+}
+
+function validateRdsConnectionString(value: string | undefined, field: string, errors: FieldErrors): void {
+  if (!value) {
+    return;
+  }
+
+  try {
+    const parsed = new URL(value);
+    const isPostgres = parsed.protocol === "postgres:" || parsed.protocol === "postgresql:";
+    if (!isPostgres || !parsed.hostname) {
+      addError(errors, field, "must_be_postgres_connection_string");
+    }
+  } catch {
+    addError(errors, field, "must_be_postgres_connection_string");
   }
 }
 

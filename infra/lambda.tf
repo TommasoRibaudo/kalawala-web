@@ -87,13 +87,14 @@ data "aws_iam_policy_document" "lambda_secrets_read" {
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.redis_secret_name}*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.webhook_secret_name}*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.encryption_secret_name}*",
+      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.booking_api_secret_name}*",
     ]
   }
 }
 
 resource "aws_iam_policy" "lambda_secrets_read" {
   name        = "${var.project}-${var.environment}-lambda-secrets-read"
-  description = "Allows Lambda functions to read Smoobu, PayPal, webhook, and encryption secrets."
+  description = "Allows Lambda functions to read Smoobu, PayPal, webhook, encryption, and combined booking-api secrets."
   policy      = data.aws_iam_policy_document.lambda_secrets_read.json
 
   tags = {
@@ -171,6 +172,10 @@ locals {
     SES_FROM_EMAIL    = local.ses_from_email
     WEBHOOK_SECRET    = var.webhook_secret_name
     ENCRYPTION_SECRET = var.encryption_secret_name
+
+    # The booking API reads all provider secrets from a single combined
+    # Secrets Manager entry via the Lambda Extensions HTTP cache layer.
+    BOOKING_API_SECRETS_MANAGER_SECRET_ID = var.booking_api_secret_name
   }
 }
 

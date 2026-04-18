@@ -22,6 +22,7 @@ function createTestConfig(): BookingApiConfig {
       smoobuWebhookSecret: "smoobu-webhook-secret-value",
       bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
       portalSessionSecret: "portal-session-secret-value",
+      rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
     }),
     smoobu: {
       baseUrl: "https://login.smoobu.com",
@@ -146,9 +147,9 @@ test("POST /api/holds creates a local hold and Smoobu blocked-channel provisiona
     const pathname = new URL(url.toString()).pathname;
     if (pathname === "/booking/checkApartmentAvailability") {
       return jsonResponse({
-        availableApartments: [1],
+        availableApartments: [301061],
         prices: {
-          "1": { price: 510, currency: "USD" },
+          "301061": { price: 510, currency: "USD" },
         },
         errorMessages: {},
       });
@@ -225,7 +226,7 @@ test("POST /api/holds creates a local hold and Smoobu blocked-channel provisiona
   expect(JSON.parse(holdAvailabilityInit?.body as string)).toEqual({
     arrivalDate: "2099-06-10",
     departureDate: "2099-06-14",
-    apartments: [1],
+    apartments: [301061],
     customerId: 9,
     guests: 2,
   });
@@ -237,7 +238,7 @@ test("POST /api/holds creates a local hold and Smoobu blocked-channel provisiona
     arrivalDate: "2099-06-10",
     departureDate: "2099-06-14",
     channelId: 11,
-    apartmentId: 1,
+    apartmentId: 301061,
     firstName: "Ana",
     lastName: "Mora",
     email: "ana@example.com",
@@ -278,9 +279,9 @@ test("POST /api/holds replays successful responses for the same idempotency key 
     const pathname = new URL(url.toString()).pathname;
     if (pathname === "/booking/checkApartmentAvailability") {
       return jsonResponse({
-        availableApartments: [1],
+        availableApartments: [301061],
         prices: {
-          "1": { price: 510, currency: "USD" },
+          "301061": { price: 510, currency: "USD" },
         },
         errorMessages: {},
       });
@@ -321,9 +322,9 @@ test("POST /api/holds rejects when the just-in-time Smoobu availability recheck 
       availabilityCall += 1;
       if (availabilityCall === 1) {
         return jsonResponse({
-          availableApartments: [1],
+          availableApartments: [301061],
           prices: {
-            "1": { price: 510, currency: "USD" },
+            "301061": { price: 510, currency: "USD" },
           },
           errorMessages: {},
         });
@@ -332,7 +333,7 @@ test("POST /api/holds rejects when the just-in-time Smoobu availability recheck 
         availableApartments: [],
         prices: {},
         errorMessages: {
-          "1": {
+          "301061": {
             errorCode: 401,
             message: "The duration of the booking is too short.",
           },
@@ -396,7 +397,7 @@ test("POST /api/holds rejects with 409 when the quote has expired", async () => 
   global.fetch = jest.fn(async (url: string | URL) => {
     const pathname = new URL(url.toString()).pathname;
     if (pathname === "/booking/checkApartmentAvailability") {
-      return jsonResponse({ availableApartments: [1], prices: { "1": { price: 510, currency: "USD" } }, errorMessages: {} });
+      return jsonResponse({ availableApartments: [301061], prices: { "301061": { price: 510, currency: "USD" } }, errorMessages: {} });
     }
     return jsonResponse({ id: 987654 });
   }) as typeof fetch;
@@ -430,7 +431,7 @@ test("POST /api/holds rejects with 409 when the quoted price changed before hold
     if (pathname === "/booking/checkApartmentAvailability") {
       availabilityCall += 1;
       const price = availabilityCall === 1 ? 510 : 600;
-      return jsonResponse({ availableApartments: [1], prices: { "1": { price, currency: "USD" } }, errorMessages: {} });
+      return jsonResponse({ availableApartments: [301061], prices: { "301061": { price, currency: "USD" } }, errorMessages: {} });
     }
     return jsonResponse({ id: 987654 });
   }) as typeof fetch;
@@ -462,7 +463,7 @@ test("POST /api/holds rejects with 409 when the same idempotency key is reused w
   global.fetch = jest.fn(async (url: string | URL) => {
     const pathname = new URL(url.toString()).pathname;
     if (pathname === "/booking/checkApartmentAvailability") {
-      return jsonResponse({ availableApartments: [1], prices: { "1": { price: 510, currency: "USD" } }, errorMessages: {} });
+      return jsonResponse({ availableApartments: [301061], prices: { "301061": { price: 510, currency: "USD" } }, errorMessages: {} });
     }
     return jsonResponse({ id: 987654 });
   }) as typeof fetch;
@@ -492,7 +493,7 @@ test("POST /api/holds rejects with 409 when the booking session already has an a
   global.fetch = jest.fn(async (url: string | URL) => {
     const pathname = new URL(url.toString()).pathname;
     if (pathname === "/booking/checkApartmentAvailability") {
-      return jsonResponse({ availableApartments: [1], prices: { "1": { price: 510, currency: "USD" } }, errorMessages: {} });
+      return jsonResponse({ availableApartments: [301061], prices: { "301061": { price: 510, currency: "USD" } }, errorMessages: {} });
     }
     return jsonResponse({ id: 987654 });
   }) as typeof fetch;
@@ -526,7 +527,7 @@ test("POST /api/holds rolls back to failed state when Smoobu reservation creatio
     const pathname = new URL(url.toString()).pathname;
     if (pathname === "/booking/checkApartmentAvailability") {
       availabilityCall += 1;
-      return jsonResponse({ availableApartments: [1], prices: { "1": { price: 510, currency: "USD" } }, errorMessages: {} });
+      return jsonResponse({ availableApartments: [301061], prices: { "301061": { price: 510, currency: "USD" } }, errorMessages: {} });
     }
     if (pathname === "/api/reservations") {
       return jsonResponse({ error: "internal_server_error" }, { status: 500 });
@@ -563,8 +564,8 @@ test("POST /api/holds rejects with 409 when a different user races for the same 
     const pathname = new URL(url.toString()).pathname;
     if (pathname === "/booking/checkApartmentAvailability") {
       return jsonResponse({
-        availableApartments: [1],
-        prices: { "1": { price: 510, currency: "USD" } },
+        availableApartments: [301061],
+        prices: { "301061": { price: 510, currency: "USD" } },
         errorMessages: {},
       });
     }

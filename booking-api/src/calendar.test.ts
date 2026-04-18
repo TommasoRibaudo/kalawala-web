@@ -14,6 +14,7 @@ const config: BookingApiConfig = {
     smoobuWebhookSecret: "smoobu-webhook-secret-value",
     bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
     portalSessionSecret: "portal-session-secret-value",
+    rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
   }),
   smoobu: {
     baseUrl: "https://login.smoobu.com",
@@ -126,7 +127,7 @@ test("GET /api/calendar/:apartmentSlug returns full-month Smoobu rates with stat
   const fetchFn = jest.fn(async (_url: string | URL, _init?: RequestInit) =>
     jsonResponse({
       data: {
-        "1": {
+        "301061": {
           "2099-06-01": { price: 100, min_length_of_stay: 2, available: 1 },
           "2099-06-02": { price: 120, min_length_of_stay: null, available: 1 },
           "2099-06-03": { price: 150, min_length_of_stay: 3, available: 1 },
@@ -216,7 +217,7 @@ test("GET /api/calendar/:apartmentSlug returns full-month Smoobu rates with stat
   const [url, init] = fetchFn.mock.calls[0];
   const parsedUrl = new URL(url.toString());
   expect(parsedUrl.pathname).toBe("/api/rates");
-  expect(parsedUrl.searchParams.getAll("apartments[]")).toEqual(["1"]);
+  expect(parsedUrl.searchParams.getAll("apartments[]")).toEqual(["301061"]);
   expect(parsedUrl.searchParams.get("start_date")).toBe("2099-06-01");
   expect(parsedUrl.searchParams.get("end_date")).toBe("2099-06-30");
   expect((init?.headers as Record<string, string>)["Api-Key"]).toBe("smoobu-secret-value");
@@ -226,7 +227,7 @@ test("GET /api/calendar/:apartmentSlug caches responses per apartment and month"
   global.fetch = jest.fn(async () =>
     jsonResponse({
       data: {
-        "1": {
+        "301061": {
           "2099-07-01": { price: 100, min_length_of_stay: 2, available: 1 },
         },
       },
@@ -248,7 +249,7 @@ test("POST /api/webhooks/smoobu updateRates invalidates cached calendar rates", 
   const fetchFn = jest.fn(async () =>
     jsonResponse({
       data: {
-        "1": {
+        "301061": {
           "2099-08-01": { price: 100, min_length_of_stay: 2, available: 1 },
         },
       },
@@ -265,7 +266,7 @@ test("POST /api/webhooks/smoobu updateRates invalidates cached calendar rates", 
     makeSmoobuWebhookEvent({
       action: "updateRates",
       data: {
-        apartmentId: 1,
+        apartmentId: 301061,
         date: "2099-08-12",
       },
     })

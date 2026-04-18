@@ -64,6 +64,7 @@ npm run booking-api:build
 | `BOOKING_API_ENVIRONMENT` | Optional structured-log/metric environment, defaults to `NODE_ENV` or `local`. |
 | `BOOKING_API_LOG_LEVEL` | Optional log level: `debug`, `info`, `warn`, `error`, or `silent`; defaults to `info`. |
 | `BOOKING_API_METRICS_ENABLED` | Optional boolean for CloudWatch EMF metrics, defaults to `true`. |
+| `BOOKING_API_RDS_CONNECTION_STRING` | Local-only raw RDS/PostgreSQL connection string when insecure env secrets are explicitly enabled. Prefer Secrets Manager for deployed environments. |
 | `SMOOBU_BASE_URL` | Optional Smoobu API origin, defaults to `https://login.smoobu.com`. |
 | `SMOOBU_CUSTOMER_ID` | Required for `POST /api/search`; Smoobu customer/user ID used with configured apartment IDs. |
 | `SMOOBU_TIMEOUT_MS` | Optional outbound Smoobu fetch timeout, defaults to `8000`. |
@@ -86,7 +87,8 @@ The Secrets Manager value must be a JSON object with this shape:
   "paypalWebhookId": "stored only in Secrets Manager",
   "smoobuWebhookSecret": "shared header value for X-Smoobu-Webhook-Secret",
   "bookingEncryptionKeyBase64": "base64-encoded 32-byte key",
-  "portalSessionSecret": "high-entropy signing secret"
+  "portalSessionSecret": "high-entropy signing secret",
+  "rdsConnectionString": "postgres://user:password@host:5432/kalawala_booking"
 }
 ```
 
@@ -94,7 +96,7 @@ For local tests only, `BOOKING_API_SECRETS_JSON` or individual raw env vars can
 be enabled with `BOOKING_API_ALLOW_INSECURE_ENV_SECRETS=true`. Do not use those
 raw secret modes for deployed environments.
 
-Provider integrations, database adapters, durable Redis/WAF rate-limit backing,
+Provider integrations, durable repository adapters, Redis/WAF rate-limit backing,
 and Terraform-managed CloudWatch alarms/dashboards are implemented in later
 booking-engine tasks.
 

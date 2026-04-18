@@ -105,6 +105,7 @@ export interface ManualDepositHandoffClickedProps {
   property_id: string;
   property_slug: string;
   language: BookingAnalyticsLanguage;
+  analytics_consent?: boolean;
 }
 
 export interface BookingCancelledProps {
@@ -355,15 +356,29 @@ export function trackBookingConfirmed(props: BookingConfirmedProps): void {
 export function trackManualDepositHandoffClicked(props: ManualDepositHandoffClickedProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('manual_deposit_handoff_clicked', props);
+  const eventProps =
+    typeof props.analytics_consent === 'boolean'
+      ? {
+          ...props,
+          analytics_consent: props.analytics_consent,
+        }
+      : props;
 
-  gtag('manual_deposit_handoff_clicked', {
+  posthog.capture('manual_deposit_handoff_clicked', eventProps);
+
+  const gtagProps: Record<string, unknown> = {
     event_category: 'booking',
     contact_method: props.contact_method,
     property_id: props.property_id,
     property_slug: props.property_slug,
     language: props.language,
-  });
+  };
+
+  if (typeof props.analytics_consent === 'boolean') {
+    gtagProps.analytics_consent = props.analytics_consent;
+  }
+
+  gtag('manual_deposit_handoff_clicked', gtagProps);
 
   // Meta: Lead is optional per the event map; fire it to capture funnel intent
   fbq('Lead', {

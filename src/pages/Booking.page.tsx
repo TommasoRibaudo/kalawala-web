@@ -22,6 +22,7 @@ import {
   trackAvailabilityResults,
   trackManualDepositHandoffClicked,
 } from '../services/BookingAnalytics.service';
+import { CookieConsentService } from '../services/CookieConsent.service';
 import { bookingStrings, BookingStrings } from './Booking.i18n';
 import './Booking.style.scss';
 
@@ -521,12 +522,15 @@ const ManualDepositHandoffPanel = ({
       return;
     }
 
+    const analyticsConsent = CookieConsentService.hasConsent('analytics');
+
     trackManualDepositHandoffClicked({
       contact_method: method.type,
       language,
       quote_id: context.quoteId,
       property_id: property.propertyId,
       property_slug: property.slug,
+      analytics_consent: analyticsConsent,
     });
 
     void recordDepositHandoffEvent({
@@ -534,6 +538,7 @@ const ManualDepositHandoffPanel = ({
       propertyId: property.propertyId,
       language,
       contactMethod: method.type,
+      analyticsConsent,
     }).catch(() => undefined);
   };
 

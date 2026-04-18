@@ -45,6 +45,15 @@ database, and webhook secrets never enter the browser bundle.
 ```bash
 npm run booking-api:typecheck
 npm run booking-api:build
+npm run booking-api:migrate
+```
+
+From inside `booking-api/`, use:
+
+```bash
+npm run typecheck
+npm run build
+npm run migrate
 ```
 
 ## Environment
@@ -65,6 +74,9 @@ npm run booking-api:build
 | `BOOKING_API_LOG_LEVEL` | Optional log level: `debug`, `info`, `warn`, `error`, or `silent`; defaults to `info`. |
 | `BOOKING_API_METRICS_ENABLED` | Optional boolean for CloudWatch EMF metrics, defaults to `true`. |
 | `BOOKING_API_RDS_CONNECTION_STRING` | Local-only raw RDS/PostgreSQL connection string when insecure env secrets are explicitly enabled. Prefer Secrets Manager for deployed environments. |
+| `DATABASE_URL` | Optional fallback connection string for `npm run migrate` only. |
+| `BOOKING_API_MIGRATION_SSL` | Optional migration runner override. Defaults to TLS enabled; set to `false` only for local PostgreSQL. |
+| `BOOKING_API_MIGRATION_SSL_REJECT_UNAUTHORIZED` | Optional migration runner override. Defaults to `true`; set to `false` only when using a local/self-signed test database. |
 | `SMOOBU_BASE_URL` | Optional Smoobu API origin, defaults to `https://login.smoobu.com`. |
 | `SMOOBU_CUSTOMER_ID` | Required for `POST /api/search`; Smoobu customer/user ID used with configured apartment IDs. |
 | `SMOOBU_TIMEOUT_MS` | Optional outbound Smoobu fetch timeout, defaults to `8000`. |

@@ -67,12 +67,16 @@ create type booking_language as enum ('en', 'es');
 create type booking_status as enum (
   'search_started',
   'quoted',
+  'no_availability',      -- search returned no bookable properties
   'hold_creating',
   'hold_active',
   'paypal_pending',
+  'paypal_order_created', -- PayPal order exists, awaiting buyer approval
   'paypal_captured',
   'paid',
   'confirmed',
+  'booking_confirmed',    -- alias used after Smoobu reservation is confirmed
+  'hold_expired',         -- hold TTL elapsed before payment
   'expired',
   'cancelled',
   'failed'
@@ -105,6 +109,7 @@ create type webhook_provider as enum ('paypal', 'smoobu');
 
 create type webhook_processing_status as enum (
   'received',
+  'pending',    -- queued for async processing
   'verified',
   'processing',
   'processed',
@@ -121,6 +126,8 @@ create type idempotency_status as enum (
 );
 
 create type actor_type as enum ('guest', 'system', 'provider');
+
+create type portal_session_status as enum ('active', 'expired', 'revoked');
 ```
 
 ## Core Tables
@@ -172,6 +179,7 @@ create table booking_sessions (
   arrival_date date not null,
   departure_date date not null,
   guests integer not null check (guests > 0),
+  source text,                          -- optional UTM/referral source tag
 
   payment_method payment_method,
   currency char(3),
@@ -179,6 +187,9 @@ create table booking_sessions (
   quote_id text unique,
   quote_hash text,
   quote_expires_at timestamptz,
+  quoted_properties jsonb not null default '[]'::jsonb,  -- snapshot of available properties at quote time
+
+  paypal_order_id text,                 -- denormalised for fast webhook lookup; authoritative copy is in payments
 
   guest_first_name text,
   guest_last_name text,
@@ -205,16 +216,20 @@ create table booking_sessions (
     (currency is null and total_amount_cents is null)
     or (currency is not null and total_amount_cents is not null)
   ),
-  constraint booking_sessions_language_required check (language in ('en', 'es'))
+  constraint booking_sessions_currency_uppercase check (currency is null or currency = upper(currency)),
+  constraint booking_sessions_language_required check (language in ('en', 'es')),
+  -- Composite unique is the FK target for portal_sessions(booking_session_id, reservation_public_id),
+  -- preventing a portal token from being rebound to a different booking by swapping either half.
+  constraint booking_sessions_id_public_id_uidx unique (id, reservation_public_id)
 );
 
 create index booking_sessions_status_idx on booking_sessions (status, created_at desc);
 create index booking_sessions_property_dates_idx on booking_sessions (property_id, arrival_date, departure_date);
 create index booking_sessions_guest_email_idx on booking_sessions (lower(guest_email)) where guest_email is not null;
-create index booking_sessions_expiry_idx on booking_sessions (expires_at) where status in (
-  'hold_active',
-  'paypal_pending'
-);
+create index booking_sessions_quote_expiry_idx on booking_sessions (quote_expires_at)
+  where status in ('quoted', 'no_availability');
+create index booking_sessions_expiry_idx on booking_sessions (expires_at)
+  where status in ('hold_active', 'paypal_pending', 'paypal_order_created');
 ```
 
 Rules:
@@ -319,7 +334,8 @@ create table payments (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
 
-  constraint payments_provider_method_match check (provider = 'paypal' and method = 'paypal')
+  constraint payments_provider_method_match check (provider = 'paypal' and method = 'paypal'),
+  constraint payments_currency_uppercase check (currency = upper(currency))
 );
 
 create unique index payments_paypal_order_id_uidx on payments (paypal_order_id)
@@ -477,9 +493,7 @@ Operational rule: application roles should have insert/select permissions only. 
 
 ## Supporting Tables
 
-### booking_state_transitions
-
-Optional but recommended for easier debugging and metrics. This is narrower than `audit_log` and optimized for state-machine history.
+### booking_state_transitionsOptional but recommended for easier debugging and metrics. This is narrower than `audit_log` and optimized for state-machine history.
 
 ```sql
 create table booking_state_transitions (
@@ -501,6 +515,47 @@ create index booking_state_transitions_booking_idx
 
 create index booking_state_transitions_to_status_idx
   on booking_state_transitions (to_status, created_at desc);
+```
+
+### portal_sessions
+
+Short-lived bearer tokens issued after a guest authenticates to the reservation
+portal. The composite FK to `booking_sessions(id, reservation_public_id)` ensures
+a token cannot be rebound to a different booking by swapping either half.
+
+```sql
+create table portal_sessions (
+  id uuid primary key default gen_random_uuid(),
+  booking_session_id uuid not null,
+  reservation_public_id text not null,
+  token_hash text not null unique,
+  status portal_session_status not null default 'active',
+  issued_at timestamptz not null default now(),
+  expires_at timestamptz not null,
+  revoked_at timestamptz,
+  last_seen_at timestamptz,
+  request_ip inet,
+  user_agent_hash text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+
+  constraint portal_sessions_booking_public_fk
+    foreign key (booking_session_id, reservation_public_id)
+    references booking_sessions(id, reservation_public_id)
+    on delete restrict,
+  constraint portal_sessions_expiry_order check (expires_at > issued_at),
+  constraint portal_sessions_revoked_timestamp check (status <> 'revoked' or revoked_at is not null)
+);
+
+create index portal_sessions_booking_idx
+  on portal_sessions (booking_session_id, created_at desc);
+
+create index portal_sessions_public_id_idx
+  on portal_sessions (reservation_public_id, created_at desc);
+
+create index portal_sessions_active_expiry_idx
+  on portal_sessions (expires_at)
+  where status = 'active';
 ```
 
 ### portal_login_attempts

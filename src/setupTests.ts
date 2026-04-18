@@ -29,3 +29,4 @@ Object.defineProperty(window, 'fbq', {
 process.env.REACT_APP_META_PIXEL_ID = '1167925005402403';
 process.env.REACT_APP_META_PIXEL_ENABLED = 'true';
 process.env.REACT_APP_META_PIXEL_DEBUG = 'false';
+process.env.REACT_APP_BOOKING_API_BASE_URL = '';

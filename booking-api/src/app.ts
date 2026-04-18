@@ -1,5 +1,7 @@
 import { loadConfig } from "./config";
 import { AbuseGuard } from "./abuseProtection";
+import { RdsBookingSessionRepository } from "./bookingSessions";
+import { getPool } from "./db";
 import { assertRouteHardening } from "./http/router";
 import { createObservability } from "./observability";
 import {
@@ -17,6 +19,11 @@ import {
 import { buildHeaders, errorResponse, optionsResponse } from "./http/response";
 import { createRouter } from "./routes";
 import { ApiResponse, BookingApiConfig, HttpMethod, LambdaHttpRequest, RouteRequest } from "./types";
+
+// Holds the in-flight or resolved repository initialisation promise so that
+// concurrent requests that arrive before the first pool connection completes
+// all await the same Promise rather than each spawning a separate getPool() call.
+const bookingSessionRepositoryByConfig = new WeakMap<BookingApiConfig, Promise<void>>();
 
 export function createBookingApiHandler(config: BookingApiConfig = loadConfig()) {
   const runtimeConfig: BookingApiConfig = { ...config };
@@ -75,6 +82,7 @@ export function createBookingApiHandler(config: BookingApiConfig = loadConfig())
 
       assertRouteHardening(request, route.options);
       await abuseGuard.assertAllowed(request, route.options.abuseProtection);
+      await ensureBookingSessionRepository(runtimeConfig, route.pattern, body);
 
       response = await route.handler(request);
       return response;
@@ -98,4 +106,56 @@ export function createBookingApiHandler(config: BookingApiConfig = loadConfig())
       });
     }
   };
+}
+
+function bookingSessionRepositoryRequired(routePattern: string, body: unknown): boolean {
+  if (routePattern === "/api/webhooks/smoobu") {
+    return !isSmoobuRatesOnlyWebhook(body);
+  }
+
+  return (
+    routePattern === "/api/search" ||
+    routePattern === "/api/holds" ||
+    routePattern === "/api/paypal/order" ||
+    routePattern === "/api/paypal/capture" ||
+    routePattern === "/api/deposit-handoff" ||
+    routePattern === "/api/deposit-handoff/events" ||
+    routePattern === "/api/webhooks/paypal" ||
+    routePattern === "/api/portal/login" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/help-request" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/cancellation-request"
+  );
+}
+
+async function ensureBookingSessionRepository(
+  config: BookingApiConfig,
+  routePattern: string,
+  body: unknown
+): Promise<void> {
+  if (config.bookingSessions || !bookingSessionRepositoryRequired(routePattern, body)) {
+    return;
+  }
+
+  // Reuse an existing in-flight initialisation promise so concurrent requests
+  // that arrive before the pool is ready all await the same work rather than
+  // each calling getPool() independently.
+  let initPromise = bookingSessionRepositoryByConfig.get(config);
+  if (!initPromise) {
+    initPromise = getPool({ secretProvider: config.secrets }).then((pool) => {
+      config.bookingSessions = new RdsBookingSessionRepository(pool);
+    });
+    bookingSessionRepositoryByConfig.set(config, initPromise);
+  }
+
+  await initPromise;
+}
+
+function isSmoobuRatesOnlyWebhook(body: unknown): boolean {
+  return Boolean(
+    body &&
+      typeof body === "object" &&
+      !Array.isArray(body) &&
+      (body as { action?: unknown }).action === "updateRates"
+  );
 }

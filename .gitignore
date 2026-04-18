@@ -23,11 +23,34 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Environment files (may contain secrets or internal config)
 .env
+booking-api/.env
 
 # Terraform state — belt-and-suspenders (also in infra/.gitignore)
 *.tfstate
 *.tfstate.*
 
+# Terraform environment configs (contain VPC CIDRs, domain names, resource sizing)
+infra/environments/*.tfvars
+infra/backend*.hcl
+
+# Sensitive operational docs — keep local only
+docs/own_booking_engine/threat_model.md
+docs/own_booking_engine/runbooks.md
+docs/own_booking_engine/prompts.md
+docs/own_booking_engine/tasks_remaining.md
+
+# Third-party API docs (redistribution concern)
+docs/own_booking_engine/Introduction*Smoobu*.pdf
+
+# AI agent instructions (contain full internal architecture details)
+AGENTS.md
+CLAUDE.md
+
+# IDE / editor
 .vscode/settings.json
+
+# Legacy
 /public/smoobu-config.php

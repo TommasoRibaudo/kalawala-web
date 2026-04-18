@@ -6,14 +6,15 @@
 # Terraform plan output files
 *.tfplan
 
-# Local backend override file — environment-specific, not shared
+# Local backend override files — environment-specific, not shared
 backend.hcl
+backend-*.hcl
 
 # Terraform working directories
 .terraform/
 .terraform.lock.hcl
 
-# Sensitive variable overrides (use environments/*.tfvars for committed values)
+# Sensitive variable overrides
 *.auto.tfvars
 override.tf
 override.tf.json

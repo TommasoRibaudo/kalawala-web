@@ -385,11 +385,11 @@ describe("GET /api/portal/reservation/:reservationPublicId", () => {
     expect(body.error.code).toBe("session_expired");
   });
 
-  it("returns 503 when holds storage is not configured", async () => {
+  it("initializes missing hold storage from RDS and returns 503 when the database is unavailable", async () => {
     const reservationPublicId = await seedConfirmedSession();
     const token = bearerToken(reservationPublicId);
 
-    // Remove holds from config to simulate misconfiguration
+    // Remove holds from config to exercise lazy RDS repository initialization.
     const brokenConfig: BookingApiConfig = { ...config, holds: undefined };
     const brokenHandler = createBookingApiHandler(brokenConfig);
 
@@ -397,7 +397,7 @@ describe("GET /api/portal/reservation/:reservationPublicId", () => {
 
     expect(response.statusCode).toBe(503);
     const body = JSON.parse(response.body);
-    expect(body.error.code).toBe("database_unavailable");
+    expect(body.error.code).toBe("database_health_check_failed");
   });
 
   it("returns 503 when payments storage is not configured", async () => {

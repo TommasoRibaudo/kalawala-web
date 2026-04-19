@@ -2,6 +2,7 @@ import { loadConfig } from "./config";
 import { AbuseGuard } from "./abuseProtection";
 import { RdsBookingSessionRepository } from "./bookingSessions";
 import { getPool } from "./db";
+import { RdsHoldRepository } from "./holds";
 import { assertRouteHardening } from "./http/router";
 import { createObservability } from "./observability";
 import {
@@ -23,7 +24,7 @@ import { ApiResponse, BookingApiConfig, HttpMethod, LambdaHttpRequest, RouteRequ
 // Holds the in-flight or resolved repository initialisation promise so that
 // concurrent requests that arrive before the first pool connection completes
 // all await the same Promise rather than each spawning a separate getPool() call.
-const bookingSessionRepositoryByConfig = new WeakMap<BookingApiConfig, Promise<void>>();
+const repositoryInitializationByConfig = new WeakMap<BookingApiConfig, Promise<void>>();
 
 export function createBookingApiHandler(config: BookingApiConfig = loadConfig()) {
   const runtimeConfig: BookingApiConfig = { ...config };
@@ -82,7 +83,7 @@ export function createBookingApiHandler(config: BookingApiConfig = loadConfig())
 
       assertRouteHardening(request, route.options);
       await abuseGuard.assertAllowed(request, route.options.abuseProtection);
-      await ensureBookingSessionRepository(runtimeConfig, route.pattern, body);
+      await ensurePersistenceRepositories(runtimeConfig, route.pattern, body);
 
       response = await route.handler(request);
       return response;
@@ -108,7 +109,7 @@ export function createBookingApiHandler(config: BookingApiConfig = loadConfig())
   };
 }
 
-function bookingSessionRepositoryRequired(routePattern: string, body: unknown): boolean {
+function persistenceRepositoriesRequired(routePattern: string, body: unknown): boolean {
   if (routePattern === "/api/webhooks/smoobu") {
     return !isSmoobuRatesOnlyWebhook(body);
   }
@@ -128,27 +129,53 @@ function bookingSessionRepositoryRequired(routePattern: string, body: unknown): 
   );
 }
 
-async function ensureBookingSessionRepository(
+async function ensurePersistenceRepositories(
   config: BookingApiConfig,
   routePattern: string,
   body: unknown
 ): Promise<void> {
-  if (config.bookingSessions || !bookingSessionRepositoryRequired(routePattern, body)) {
+  if (!persistenceRepositoriesRequired(routePattern, body)) {
+    return;
+  }
+
+  const holdsRequired = holdRepositoryRequired(routePattern, body);
+  if (config.bookingSessions && (!holdsRequired || config.holds)) {
     return;
   }
 
   // Reuse an existing in-flight initialisation promise so concurrent requests
   // that arrive before the pool is ready all await the same work rather than
   // each calling getPool() independently.
-  let initPromise = bookingSessionRepositoryByConfig.get(config);
+  let initPromise = repositoryInitializationByConfig.get(config);
   if (!initPromise) {
     initPromise = getPool({ secretProvider: config.secrets }).then((pool) => {
-      config.bookingSessions = new RdsBookingSessionRepository(pool);
+      if (!config.bookingSessions) {
+        config.bookingSessions = new RdsBookingSessionRepository(pool);
+      }
+      if (!config.holds) {
+        config.holds = new RdsHoldRepository(pool);
+      }
     });
-    bookingSessionRepositoryByConfig.set(config, initPromise);
+    repositoryInitializationByConfig.set(config, initPromise);
   }
 
   await initPromise;
+}
+
+function holdRepositoryRequired(routePattern: string, body: unknown): boolean {
+  if (routePattern === "/api/webhooks/smoobu") {
+    return !isSmoobuRatesOnlyWebhook(body);
+  }
+
+  return (
+    routePattern === "/api/holds" ||
+    routePattern === "/api/paypal/order" ||
+    routePattern === "/api/paypal/capture" ||
+    routePattern === "/api/webhooks/paypal" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/help-request" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/cancellation-request"
+  );
 }
 
 function isSmoobuRatesOnlyWebhook(body: unknown): boolean {

@@ -1,6 +1,5 @@
 import { BookingApiConfig, CaptchaProvider, CaptchaVerifierConfig, LogLevel } from "./types";
 import { createSecretProvider } from "./secrets";
-import { InMemoryHoldRepository } from "./holds";
 
 const DEFAULT_MAX_BODY_BYTES = 64 * 1024;
 const DEFAULT_MAX_TRACKED_RATE_LIMIT_BUCKETS = 10_000;
@@ -107,7 +106,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
       orderReturnUrl: env.PAYPAL_ORDER_RETURN_URL?.trim() ?? "",
       orderCancelUrl: env.PAYPAL_ORDER_CANCEL_URL?.trim() ?? "",
     },
-    holds: new InMemoryHoldRepository(),
     hold: {
       defaultTtlMinutes: parsePositiveInteger(env.PAYPAL_HOLD_TTL_MINUTES, DEFAULT_PAYPAL_HOLD_TTL_MINUTES),
       idempotencyTtlMinutes: parsePositiveInteger(

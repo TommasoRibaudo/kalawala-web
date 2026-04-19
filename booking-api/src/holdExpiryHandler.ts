@@ -1,4 +1,7 @@
 import { loadConfig } from "./config";
+import { RdsBookingSessionRepository } from "./bookingSessions";
+import { getPool } from "./db";
+import { RdsHoldRepository } from "./holds";
 import { createObservability } from "./observability";
 import { createSmoobuClient } from "./smoobuClient";
 import { processExpiredHolds, HoldExpiryResult } from "./holdExpiry";
@@ -9,14 +12,11 @@ import { BookingApiConfig } from "./types";
  * Triggered by EventBridge rule (e.g. rate(1 minute)).
  *
  * IMPORTANT — Repository wiring:
- * loadConfig() does not yet populate `bookingSessions` or `holds` because
- * the RDS persistence layer has not landed. When it does, loadConfig() must
- * be updated to instantiate the RDS-backed repositories and assign them to
- * config.bookingSessions and config.holds. Without that change this handler
- * remains a no-op. The same applies to paymentReconciliationHandler.ts.
+ * Default Lambda config gets RDS repositories from the Secrets Manager/RDS
+ * pool path before the sweep runs.
  *
  * The core logic in processExpiredHolds is fully tested with in-memory
- * repositories and ready for real ones.
+ * repositories and is reused unchanged by the RDS-backed worker.
  */
 export async function handler(): Promise<HoldExpiryResult> {
   const config = loadConfig();
@@ -24,11 +24,13 @@ export async function handler(): Promise<HoldExpiryResult> {
   const observability = createObservability(config.observability);
   const logger = observability.createLogger({ worker: "hold-expiry" });
 
+  await ensureRepositories(config);
+
   if (!config.bookingSessions || !config.holds) {
     logger.warn("hold_expiry_no_repositories", {
       hasBookingSessions: !!config.bookingSessions,
       hasHolds: !!config.holds,
-      note: "RDS-backed repositories not yet wired. Worker is a no-op until persistence layer lands.",
+      note: "RDS-backed repositories could not be initialised. Worker is a no-op.",
     });
     return {
       processed: 0,
@@ -49,4 +51,18 @@ export async function handler(): Promise<HoldExpiryResult> {
     logger,
     emailConfig: config.email,
   });
+}
+
+async function ensureRepositories(config: BookingApiConfig): Promise<void> {
+  if (config.bookingSessions && config.holds) {
+    return;
+  }
+
+  const pool = await getPool({ secretProvider: config.secrets });
+  if (!config.bookingSessions) {
+    config.bookingSessions = new RdsBookingSessionRepository(pool);
+  }
+  if (!config.holds) {
+    config.holds = new RdsHoldRepository(pool);
+  }
 }

@@ -1,12 +1,32 @@
 import { createBookingApiHandler } from "./app";
 import { InMemoryBookingSessionRepository } from "./bookingSessions";
-import { InMemoryHoldRepository } from "./holds";
+import { InMemoryHoldRepository, RdsHoldRepository } from "./holds";
 import { StaticSecretProvider } from "./secrets";
 import { BookingApiConfig, LambdaHttpRequest } from "./types";
 
 let bookingSessions: InMemoryBookingSessionRepository;
 let holds: InMemoryHoldRepository;
 let config: BookingApiConfig;
+
+const BASE_HOLD_ROW = {
+  id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  booking_session_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+  property_id: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111",
+  arrival_date: "2099-06-10",
+  departure_date: "2099-06-14",
+  status: "creating",
+  expires_at: "2026-04-15T19:00:00.000Z",
+  smoobu_reservation_id: null,
+  smoobu_channel_id: 11,
+  smoobu_create_payload_hash: "payload-hash",
+  last_smoobu_error: null,
+  created_at: "2026-04-15T18:00:00.000Z",
+  updated_at: "2026-04-15T18:00:00.000Z",
+};
+
+function createPool(query: jest.Mock) {
+  return { query } as unknown as ConstructorParameters<typeof RdsHoldRepository>[0];
+}
 
 function createTestConfig(): BookingApiConfig {
   bookingSessions = new InMemoryBookingSessionRepository();
@@ -141,6 +161,247 @@ function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
     },
   });
 }
+
+test("RdsHoldRepository.createCreatingHold inserts and maps a creating hold", async () => {
+  const query = jest.fn(async (_sql: string, values: unknown[]) => ({
+    rows: [
+      {
+        ...BASE_HOLD_ROW,
+        booking_session_id: values[0],
+        property_id: values[1],
+        arrival_date: values[2],
+        departure_date: values[3],
+        expires_at: values[4],
+        smoobu_channel_id: values[5],
+        smoobu_create_payload_hash: values[6],
+      },
+    ],
+  }));
+  const repo = new RdsHoldRepository(createPool(query));
+
+  const record = await repo.createCreatingHold({
+    bookingSessionId: BASE_HOLD_ROW.booking_session_id,
+    propertyId: BASE_HOLD_ROW.property_id,
+    arrivalDate: "2099-06-10",
+    departureDate: "2099-06-14",
+    expiresAt: "2026-04-15T19:00:00.000Z",
+    smoobuChannelId: 11,
+    smoobuCreatePayloadHash: "payload-hash",
+  });
+
+  expect(query).toHaveBeenCalledWith(expect.stringContaining("insert into holds"), expect.any(Array));
+  expect(record).toMatchObject({
+    bookingSessionId: BASE_HOLD_ROW.booking_session_id,
+    propertyId: BASE_HOLD_ROW.property_id,
+    status: "creating",
+    arrivalDate: "2099-06-10",
+    departureDate: "2099-06-14",
+    smoobuChannelId: 11,
+    smoobuCreatePayloadHash: "payload-hash",
+  });
+});
+
+test("RdsHoldRepository.createCreatingHold maps overlap constraint failures to no-longer-available", async () => {
+  const query = jest.fn(async () => {
+    throw { code: "23P01", constraint: "holds_no_overlapping_active_inventory" };
+  });
+  const repo = new RdsHoldRepository(createPool(query));
+
+  await expect(
+    repo.createCreatingHold({
+      bookingSessionId: BASE_HOLD_ROW.booking_session_id,
+      propertyId: BASE_HOLD_ROW.property_id,
+      arrivalDate: "2099-06-10",
+      departureDate: "2099-06-14",
+      expiresAt: "2026-04-15T19:00:00.000Z",
+      smoobuChannelId: 11,
+      smoobuCreatePayloadHash: "payload-hash",
+    })
+  ).rejects.toMatchObject({
+    statusCode: 409,
+    code: "property_no_longer_available",
+    retryable: false,
+  });
+});
+
+test("RdsHoldRepository.activateHold stores the Smoobu reservation id", async () => {
+  const query = jest.fn(async (_sql: string, values: unknown[]) => ({
+    rows: [
+      {
+        ...BASE_HOLD_ROW,
+        status: "active",
+        smoobu_reservation_id: values[1],
+        updated_at: "2026-04-15T18:01:00.000Z",
+      },
+    ],
+  }));
+  const repo = new RdsHoldRepository(createPool(query));
+
+  const record = await repo.activateHold({ holdId: BASE_HOLD_ROW.id, smoobuReservationId: 987654 });
+
+  expect(record.status).toBe("active");
+  expect(record.smoobuReservationId).toBe(987654);
+  expect(query).toHaveBeenCalledWith(expect.stringContaining("smoobu_reservation_id = $2"), [
+    BASE_HOLD_ROW.id,
+    987654,
+  ]);
+});
+
+test("RdsHoldRepository.activateHold guards on creating status", async () => {
+  const query = jest
+    .fn()
+    .mockResolvedValueOnce({ rows: [] })
+    .mockResolvedValueOnce({ rows: [{ ...BASE_HOLD_ROW, status: "expired" }] });
+  const repo = new RdsHoldRepository(createPool(query));
+
+  await expect(repo.activateHold({ holdId: BASE_HOLD_ROW.id, smoobuReservationId: 987654 })).rejects.toThrow(
+    `Cannot transition hold ${BASE_HOLD_ROW.id} to active: expected creating, got expired.`
+  );
+
+  expect(query).toHaveBeenNthCalledWith(1, expect.stringContaining("and status = 'creating'"), [
+    BASE_HOLD_ROW.id,
+    987654,
+  ]);
+});
+
+test("RdsHoldRepository.failHold leaves terminal holds unchanged", async () => {
+  const terminalRow = {
+    ...BASE_HOLD_ROW,
+    status: "converted",
+    smoobu_reservation_id: 987654,
+  };
+  const query = jest
+    .fn()
+    .mockResolvedValueOnce({ rows: [] })
+    .mockResolvedValueOnce({ rows: [terminalRow] });
+  const repo = new RdsHoldRepository(createPool(query));
+
+  const record = await repo.failHold({ holdId: BASE_HOLD_ROW.id, reason: "late_smoobu_error" });
+
+  expect(record.status).toBe("converted");
+  expect(record.lastSmoobuError).toBeUndefined();
+  expect(query).toHaveBeenNthCalledWith(1, expect.stringContaining("status not in ('converted', 'expired', 'cancelled')"), [
+    BASE_HOLD_ROW.id,
+    "late_smoobu_error",
+  ]);
+});
+
+test("RdsHoldRepository.listExpiredHolds atomically claims rows with skip-locked semantics", async () => {
+  const query = jest.fn(async () => ({
+    rows: [
+      {
+        ...BASE_HOLD_ROW,
+        status: "expired",
+        smoobu_reservation_id: 987654,
+        updated_at: "2026-04-15T19:01:00.000Z",
+      },
+    ],
+  }));
+  const repo = new RdsHoldRepository(createPool(query));
+
+  const records = await repo.listExpiredHolds("2026-04-15T19:01:00.000Z");
+
+  expect(records).toHaveLength(1);
+  expect(records[0]).toMatchObject({ status: "expired", smoobuReservationId: 987654 });
+  expect(query).toHaveBeenCalledWith(expect.stringContaining("for update skip locked"), [
+    "2026-04-15T19:01:00.000Z",
+  ]);
+  expect(query).toHaveBeenCalledWith(expect.stringContaining("update holds"), [
+    "2026-04-15T19:01:00.000Z",
+  ]);
+});
+
+test("RdsHoldRepository reserves, completes, replays, and releases idempotency keys", async () => {
+  const completedBody = { ok: true };
+  const query = jest
+    .fn()
+    // reserve insert succeeds
+    .mockResolvedValueOnce({ rows: [{ id: "idem-row" }] })
+    // store response succeeds
+    .mockResolvedValueOnce({ rows: [{ id: "idem-row" }] })
+    // get replay
+    .mockResolvedValueOnce({
+      rows: [
+        {
+          scope: "booking.hold.create",
+          idempotency_key: "idem-hold-0000000001",
+          request_hash: "hash-a",
+          status: "completed",
+          response_status: 200,
+          response_body: completedBody,
+          expires_at: "2026-04-16T18:00:00.000Z",
+          created_at: "2026-04-15T18:00:00.000Z",
+        },
+      ],
+    })
+    // release
+    .mockResolvedValueOnce({ rows: [] });
+  const repo = new RdsHoldRepository(createPool(query));
+
+  await repo.reserveIdempotencyKey({
+    scope: "booking.hold.create",
+    key: "idem-hold-0000000001",
+    requestHash: "hash-a",
+    expiresAt: "2026-04-16T18:00:00.000Z",
+    staleBefore: "2026-04-15T17:58:00.000Z",
+  });
+  await repo.storeIdempotencyResponse({
+    scope: "booking.hold.create",
+    key: "idem-hold-0000000001",
+    requestHash: "hash-a",
+    response: { statusCode: 200, body: completedBody },
+  });
+  const replay = await repo.getIdempotencyRecord("booking.hold.create", "idem-hold-0000000001");
+  await repo.releaseIdempotencyKey("booking.hold.create", "idem-hold-0000000001", "hash-a");
+
+  expect(replay).toMatchObject({
+    scope: "booking.hold.create",
+    key: "idem-hold-0000000001",
+    requestHash: "hash-a",
+    status: "completed",
+    response: { statusCode: 200, body: completedBody },
+  });
+  expect(query).toHaveBeenNthCalledWith(
+    2,
+    expect.stringContaining("response_body = $5::jsonb"),
+    ["booking.hold.create", "idem-hold-0000000001", "hash-a", 200, JSON.stringify(completedBody)]
+  );
+});
+
+test("RdsHoldRepository.reserveIdempotencyKey rejects fresh conflicting requests", async () => {
+  const query = jest
+    .fn()
+    .mockResolvedValueOnce({ rows: [] })
+    .mockResolvedValueOnce({ rows: [] })
+    .mockResolvedValueOnce({
+      rows: [
+        {
+          scope: "booking.hold.create",
+          idempotency_key: "idem-hold-0000000001",
+          request_hash: "hash-existing",
+          status: "in_progress",
+          response_status: null,
+          response_body: null,
+          expires_at: "2026-04-16T18:00:00.000Z",
+          created_at: "2026-04-15T18:00:00.000Z",
+        },
+      ],
+    });
+  const repo = new RdsHoldRepository(createPool(query));
+
+  await expect(
+    repo.reserveIdempotencyKey({
+      scope: "booking.hold.create",
+      key: "idem-hold-0000000001",
+      requestHash: "hash-new",
+      expiresAt: "2026-04-16T18:00:00.000Z",
+      staleBefore: "2026-04-15T17:58:00.000Z",
+    })
+  ).rejects.toMatchObject({
+    statusCode: 409,
+    code: "idempotency_conflict",
+  });
+});
 
 test("POST /api/holds creates a local hold and Smoobu blocked-channel provisional reservation", async () => {
   const fetchFn = jest.fn(async (url: string | URL, _init?: RequestInit) => {

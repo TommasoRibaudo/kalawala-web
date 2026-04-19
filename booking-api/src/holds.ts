@@ -24,6 +24,56 @@ interface SmoobuCreateReservationResponse {
   id?: unknown;
 }
 
+interface Queryable {
+  query<Row extends object = Record<string, unknown>>(text: string, values?: unknown[]): Promise<{ rows: Row[] }>;
+}
+
+interface HoldRow {
+  id: string;
+  booking_session_id: string;
+  property_id: string;
+  arrival_date: string | Date;
+  departure_date: string | Date;
+  status: string;
+  expires_at: string | Date;
+  smoobu_reservation_id: string | number | null;
+  smoobu_channel_id: number;
+  smoobu_create_payload_hash: string | null;
+  last_smoobu_error: string | null;
+  created_at: string | Date;
+  updated_at: string | Date;
+}
+
+interface IdempotencyRow {
+  scope: string;
+  idempotency_key: string;
+  request_hash: string;
+  status: string;
+  response_status: number | null;
+  response_body: unknown;
+  locked_until: string | Date | null;
+  expires_at: string | Date;
+  created_at: string | Date;
+}
+
+const HOLD_COLUMNS = `
+  id,
+  booking_session_id,
+  property_id,
+  arrival_date,
+  departure_date,
+  status,
+  expires_at,
+  smoobu_reservation_id,
+  smoobu_channel_id,
+  smoobu_create_payload_hash,
+  last_smoobu_error,
+  created_at,
+  updated_at
+`;
+
+const HOLD_SELECT = `select ${HOLD_COLUMNS} from holds`;
+
 export interface HoldRecord {
   id: string;
   bookingSessionId: string;
@@ -90,6 +140,335 @@ export interface HoldRepository {
   expireHold(holdId: string): Promise<HoldRecord>;
   cancelHold(holdId: string): Promise<HoldRecord>;
   listExpiredHolds(now: string): Promise<HoldRecord[]>;
+}
+
+export class RdsHoldRepository implements HoldRepository {
+  constructor(private readonly pool: Queryable) {}
+
+  async getIdempotencyRecord(scope: string, key: string): Promise<IdempotencyRecord | undefined> {
+    const result = await this.pool.query<IdempotencyRow>(
+      `
+        select
+          scope,
+          idempotency_key,
+          request_hash,
+          status,
+          response_status,
+          response_body,
+          locked_until,
+          expires_at,
+          created_at
+        from idempotency_keys
+        where scope = $1
+          and idempotency_key = $2
+          and expires_at > now()
+        limit 1
+      `,
+      [scope, key]
+    );
+
+    return mapOptionalIdempotencyRow(result.rows[0]);
+  }
+
+  async reserveIdempotencyKey(input: {
+    scope: string;
+    key: string;
+    requestHash: string;
+    expiresAt: string;
+    staleBefore: string;
+  }): Promise<void> {
+    const insertResult = await this.pool.query(
+      `
+        insert into idempotency_keys (
+          scope,
+          idempotency_key,
+          request_hash,
+          status,
+          expires_at,
+          created_at,
+          updated_at
+        )
+        values ($1, $2, $3, 'in_progress', $4, now(), now())
+        on conflict (scope, idempotency_key) do nothing
+        returning id
+      `,
+      [input.scope, input.key, input.requestHash, input.expiresAt]
+    );
+
+    if (insertResult.rows[0]) {
+      return;
+    }
+
+    const updateResult = await this.pool.query(
+      `
+        update idempotency_keys
+        set
+          request_hash = $3,
+          status = 'in_progress',
+          response_status = null,
+          response_body = null,
+          expires_at = $4,
+          created_at = now(),
+          updated_at = now()
+        where scope = $1
+          and idempotency_key = $2
+          and (
+            expires_at <= now()
+            or (status = 'in_progress' and created_at < $5)
+          )
+        returning id
+      `,
+      [input.scope, input.key, input.requestHash, input.expiresAt, input.staleBefore]
+    );
+
+    if (updateResult.rows[0]) {
+      return;
+    }
+
+    const existing = await this.getIdempotencyRecord(input.scope, input.key);
+    if (existing?.requestHash !== input.requestHash) {
+      throw idempotencyConflict();
+    }
+
+    throw new ApiError(409, "idempotency_in_progress", "This request is already being processed.", {
+      retryable: true,
+    });
+  }
+
+  async storeIdempotencyResponse(input: {
+    scope: string;
+    key: string;
+    requestHash: string;
+    response: StoredIdempotencyResponse;
+  }): Promise<void> {
+    const result = await this.pool.query(
+      `
+        update idempotency_keys
+        set
+          status = 'completed',
+          response_status = $4,
+          response_body = $5::jsonb,
+          updated_at = now()
+        where scope = $1
+          and idempotency_key = $2
+          and request_hash = $3
+        returning id
+      `,
+      [
+        input.scope,
+        input.key,
+        input.requestHash,
+        input.response.statusCode,
+        JSON.stringify(input.response.body),
+      ]
+    );
+
+    if (!result.rows[0]) {
+      throw new ApiError(500, "idempotency_state_invalid", "Idempotency state is invalid.");
+    }
+  }
+
+  async releaseIdempotencyKey(scope: string, key: string, requestHash: string): Promise<void> {
+    await this.pool.query(
+      `
+        delete from idempotency_keys
+        where scope = $1
+          and idempotency_key = $2
+          and request_hash = $3
+          and status = 'in_progress'
+      `,
+      [scope, key, requestHash]
+    );
+  }
+
+  async createCreatingHold(input: {
+    bookingSessionId: string;
+    propertyId: string;
+    arrivalDate: string;
+    departureDate: string;
+    expiresAt: string;
+    smoobuChannelId: 11 | 13;
+    smoobuCreatePayloadHash: string;
+  }): Promise<HoldRecord> {
+    try {
+      const result = await this.pool.query<HoldRow>(
+        `
+          insert into holds (
+            booking_session_id,
+            property_id,
+            arrival_date,
+            departure_date,
+            status,
+            expires_at,
+            smoobu_channel_id,
+            smoobu_create_payload_hash
+          )
+          values ($1, $2, $3, $4, 'creating', $5, $6, $7)
+          returning ${HOLD_COLUMNS}
+        `,
+        [
+          input.bookingSessionId,
+          input.propertyId,
+          input.arrivalDate,
+          input.departureDate,
+          input.expiresAt,
+          input.smoobuChannelId,
+          input.smoobuCreatePayloadHash,
+        ]
+      );
+
+      return mapRequiredHoldRow(result.rows[0], input.bookingSessionId);
+    } catch (error) {
+      throw mapHoldInsertError(error);
+    }
+  }
+
+  async activateHold(input: {
+    holdId: string;
+    smoobuReservationId: number;
+  }): Promise<HoldRecord> {
+    const result = await this.pool.query<HoldRow>(
+      `
+        update holds
+        set
+          status = 'active',
+          smoobu_reservation_id = $2,
+          updated_at = now()
+        where id = $1
+          and status = 'creating'
+        returning ${HOLD_COLUMNS}
+      `,
+      [input.holdId, input.smoobuReservationId]
+    );
+
+    if (result.rows[0]) {
+      return mapHoldRow(result.rows[0]);
+    }
+
+    return this.throwMissingOrInvalidTransition(input.holdId, "creating", "active");
+  }
+
+  async failHold(input: { holdId: string; reason: string }): Promise<HoldRecord> {
+    const result = await this.pool.query<HoldRow>(
+      `
+        update holds
+        set
+          status = 'failed',
+          last_smoobu_error = $2,
+          updated_at = now()
+        where id = $1
+          and status not in ('converted', 'expired', 'cancelled')
+        returning ${HOLD_COLUMNS}
+      `,
+      [input.holdId, input.reason]
+    );
+
+    if (result.rows[0]) {
+      return mapHoldRow(result.rows[0]);
+    }
+
+    const existing = await this.getById(input.holdId);
+    if (existing) {
+      return existing;
+    }
+
+    throw new ApiError(500, "hold_state_invalid", `Hold ${input.holdId} is missing.`);
+  }
+
+  async getByBookingSessionId(bookingSessionId: string): Promise<HoldRecord | undefined> {
+    const result = await this.pool.query<HoldRow>(
+      `${HOLD_SELECT} where booking_session_id = $1 limit 1`,
+      [bookingSessionId]
+    );
+    return mapOptionalHoldRow(result.rows[0]);
+  }
+
+  async getBySmoobuReservationId(smoobuReservationId: number): Promise<HoldRecord | undefined> {
+    const result = await this.pool.query<HoldRow>(
+      `${HOLD_SELECT} where smoobu_reservation_id = $1 limit 1`,
+      [smoobuReservationId]
+    );
+    return mapOptionalHoldRow(result.rows[0]);
+  }
+
+  async expireHold(holdId: string): Promise<HoldRecord> {
+    const result = await this.pool.query<HoldRow>(
+      `
+        update holds
+        set
+          status = 'expired',
+          expired_at = coalesce(expired_at, now()),
+          updated_at = now()
+        where id = $1
+        returning ${HOLD_COLUMNS}
+      `,
+      [holdId]
+    );
+
+    return mapRequiredHoldRow(result.rows[0], holdId);
+  }
+
+  async cancelHold(holdId: string): Promise<HoldRecord> {
+    const result = await this.pool.query<HoldRow>(
+      `
+        update holds
+        set
+          status = 'cancelled',
+          cancelled_at = coalesce(cancelled_at, now()),
+          updated_at = now()
+        where id = $1
+        returning ${HOLD_COLUMNS}
+      `,
+      [holdId]
+    );
+
+    return mapRequiredHoldRow(result.rows[0], holdId);
+  }
+
+  async listExpiredHolds(now: string): Promise<HoldRecord[]> {
+    const result = await this.pool.query<HoldRow>(
+      `
+        with expired_candidates as (
+          select id
+          from holds
+          where status in ('creating', 'active')
+            and expires_at <= $1
+          order by expires_at asc
+          for update skip locked
+        )
+        update holds
+        set
+          status = 'expired',
+          expired_at = coalesce(expired_at, now()),
+          updated_at = now()
+        where id in (select id from expired_candidates)
+        returning ${HOLD_COLUMNS}
+      `,
+      [now]
+    );
+
+    return result.rows.map(mapHoldRow);
+  }
+
+  private async getById(holdId: string): Promise<HoldRecord | undefined> {
+    const result = await this.pool.query<HoldRow>(`${HOLD_SELECT} where id = $1 limit 1`, [holdId]);
+    return mapOptionalHoldRow(result.rows[0]);
+  }
+
+  private async throwMissingOrInvalidTransition(
+    holdId: string,
+    expectedStatus: HoldStatus,
+    nextStatus: HoldStatus
+  ): Promise<never> {
+    const existing = await this.getById(holdId);
+    if (!existing) {
+      throw new ApiError(500, "hold_state_invalid", `Hold ${holdId} is missing.`);
+    }
+
+    throw new Error(
+      `Cannot transition hold ${holdId} to ${nextStatus}: expected ${expectedStatus}, got ${existing.status}.`
+    );
+  }
 }
 
 export class InMemoryHoldRepository implements HoldRepository {
@@ -813,8 +1192,150 @@ function idempotencyConflict(): ApiError {
   return new ApiError(409, "idempotency_conflict", "Idempotency-Key was reused for a different request.");
 }
 
+function mapOptionalHoldRow(row: HoldRow | undefined): HoldRecord | undefined {
+  return row ? mapHoldRow(row) : undefined;
+}
+
+function mapRequiredHoldRow(row: HoldRow | undefined, id: string): HoldRecord {
+  if (!row) {
+    throw new ApiError(500, "hold_state_invalid", `Hold ${id} is missing.`);
+  }
+
+  return mapHoldRow(row);
+}
+
+function mapHoldRow(row: HoldRow): HoldRecord {
+  const smoobuReservationId = parseNullableInteger(row.smoobu_reservation_id);
+  const smoobuChannelId = parseSmoobuChannelId(row.smoobu_channel_id);
+
+  return {
+    id: row.id,
+    bookingSessionId: row.booking_session_id,
+    propertyId: row.property_id,
+    arrivalDate: toDateOnly(row.arrival_date),
+    departureDate: toDateOnly(row.departure_date),
+    status: parseHoldStatus(row.status),
+    expiresAt: toIsoString(row.expires_at),
+    ...(smoobuReservationId !== undefined ? { smoobuReservationId } : {}),
+    smoobuChannelId,
+    ...(row.smoobu_create_payload_hash ? { smoobuCreatePayloadHash: row.smoobu_create_payload_hash } : {}),
+    ...(row.last_smoobu_error ? { lastSmoobuError: row.last_smoobu_error } : {}),
+    createdAt: toIsoString(row.created_at),
+    updatedAt: toIsoString(row.updated_at),
+  };
+}
+
+function parseHoldStatus(status: string): HoldStatus {
+  if (
+    status === "creating" ||
+    status === "active" ||
+    status === "failed" ||
+    status === "expired" ||
+    status === "cancelled" ||
+    status === "converted"
+  ) {
+    return status;
+  }
+
+  throw new Error(`Unsupported hold status from database: ${status}`);
+}
+
+function parseSmoobuChannelId(value: number): 11 | 13 {
+  if (value === 11 || value === 13) {
+    return value;
+  }
+
+  throw new Error(`Unsupported Smoobu hold channel from database: ${value}`);
+}
+
+function parseNullableInteger(value: string | number | null): number | undefined {
+  if (value === null) {
+    return undefined;
+  }
+
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isInteger(parsed) ? parsed : undefined;
+}
+
+function mapOptionalIdempotencyRow(row: IdempotencyRow | undefined): IdempotencyRecord | undefined {
+  if (!row) {
+    return undefined;
+  }
+
+  const responseStatus = row.response_status;
+  const responseBody = parseJsonbValue(row.response_body);
+  return {
+    scope: row.scope,
+    key: row.idempotency_key,
+    requestHash: row.request_hash,
+    status: parseIdempotencyStatus(row.status),
+    ...(typeof responseStatus === "number" && responseBody !== undefined
+      ? {
+          response: {
+            statusCode: responseStatus,
+            body: responseBody,
+          },
+        }
+      : {}),
+    startedAt: toIsoString(row.created_at),
+    expiresAt: toIsoString(row.expires_at),
+  };
+}
+
+function parseIdempotencyStatus(status: string): IdempotencyStatus {
+  if (status === "in_progress" || status === "completed") {
+    return status;
+  }
+
+  throw new Error(`Unsupported idempotency status from database: ${status}`);
+}
+
 function rangesOverlap(leftStart: string, leftEnd: string, rightStart: string, rightEnd: string): boolean {
   return leftStart < rightEnd && rightStart < leftEnd;
+}
+
+function toDateOnly(value: string | Date): string {
+  if (value instanceof Date) {
+    return value.toISOString().slice(0, 10);
+  }
+
+  return value.slice(0, 10);
+}
+
+function toIsoString(value: string | Date): string {
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+
+  const timestampMs = Date.parse(value);
+  return Number.isNaN(timestampMs) ? value : new Date(timestampMs).toISOString();
+}
+
+function parseJsonbValue(value: unknown): unknown {
+  if (typeof value !== "string") {
+    return value;
+  }
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return undefined;
+  }
+}
+
+function mapHoldInsertError(error: unknown): unknown {
+  const pgError = error as { code?: string; constraint?: string };
+  if (pgError.code === "23P01" || pgError.constraint === "holds_no_overlapping_active_inventory") {
+    return new ApiError(409, "property_no_longer_available", "This property is no longer available.", {
+      retryable: false,
+    });
+  }
+
+  if (pgError.code === "23505") {
+    return new ApiError(409, "hold_already_exists", "A hold already exists for this booking session.");
+  }
+
+  return error;
 }
 
 function safeProviderErrorCode(error: unknown): string {

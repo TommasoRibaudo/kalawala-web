@@ -193,6 +193,6 @@ test("RdsPaymentRepository.listByStatus returns matching PayPal payments", async
   expect(records[0].bookingSessionId).toBe(BASE_PAYMENT_ROW.booking_session_id);
   expect(query).toHaveBeenCalledWith(
     expect.stringContaining("where provider = 'paypal' and status = $1"),
-    ["order_created"]
+    ["order_created", 500]
   );
 });

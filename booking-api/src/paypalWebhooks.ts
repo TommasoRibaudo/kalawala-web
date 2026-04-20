@@ -31,9 +31,113 @@ export interface WebhookEventRepository {
     externalEventId: string;
     eventType: string;
     payloadHash: string;
+    payload?: unknown;
   }): Promise<{ inserted: boolean; record: WebhookEventRecord }>;
 
   markProcessed(provider: "paypal" | "smoobu", externalEventId: string, status: WebhookEventStatus): Promise<void>;
+}
+
+interface Queryable {
+  query<Row extends object = Record<string, unknown>>(text: string, values?: unknown[]): Promise<{ rows: Row[] }>;
+}
+
+interface WebhookEventRow {
+  id: string;
+  provider: "paypal" | "smoobu";
+  external_event_id: string | null;
+  dedupe_key: string;
+  event_type: string;
+  received_at: string | Date;
+  processed_at: string | Date | null;
+  processing_status: string;
+  payload_hash: string;
+}
+
+const WEBHOOK_EVENT_COLUMNS = `
+  id,
+  provider,
+  external_event_id,
+  dedupe_key,
+  event_type,
+  received_at,
+  processed_at,
+  processing_status,
+  payload_hash
+`;
+
+export class RdsWebhookEventRepository implements WebhookEventRepository {
+  constructor(private readonly pool: Queryable) {}
+
+  async insertIfNew(input: {
+    provider: "paypal" | "smoobu";
+    externalEventId: string;
+    eventType: string;
+    payloadHash: string;
+    payload?: unknown;
+  }): Promise<{ inserted: boolean; record: WebhookEventRecord }> {
+    const payload = input.payload === undefined ? {} : input.payload;
+    const result = await this.pool.query<WebhookEventRow>(
+      `
+        insert into webhook_events (
+          provider,
+          external_event_id,
+          dedupe_key,
+          event_type,
+          payload_hash,
+          payload,
+          processing_status,
+          received_at,
+          updated_at
+        )
+        values ($1, $2, $2, $3, $4, $5::jsonb, 'pending', now(), now())
+        on conflict do nothing
+        returning ${WEBHOOK_EVENT_COLUMNS}
+      `,
+      [
+        input.provider,
+        input.externalEventId,
+        input.eventType,
+        input.payloadHash,
+        JSON.stringify(payload),
+      ]
+    );
+
+    if (result.rows[0]) {
+      return { inserted: true, record: mapWebhookEventRow(result.rows[0]) };
+    }
+
+    const existing = await this.pool.query<WebhookEventRow>(
+      `
+        select ${WEBHOOK_EVENT_COLUMNS}
+        from webhook_events
+        where provider = $1
+          and (external_event_id = $2 or dedupe_key = $2)
+        limit 1
+      `,
+      [input.provider, input.externalEventId]
+    );
+
+    if (!existing.rows[0]) {
+      throw new Error(`Webhook event ${input.provider}:${input.externalEventId} conflicted but was not found.`);
+    }
+
+    return { inserted: false, record: mapWebhookEventRow(existing.rows[0]) };
+  }
+
+  async markProcessed(provider: "paypal" | "smoobu", externalEventId: string, status: WebhookEventStatus): Promise<void> {
+    await this.pool.query(
+      `
+        update webhook_events
+        set
+          processing_status = $3,
+          processed_at = now(),
+          updated_at = now()
+        where provider = $1
+          and (external_event_id = $2 or dedupe_key = $2)
+      `,
+      [provider, externalEventId, status]
+    );
+  }
 }
 
 export class InMemoryWebhookEventRepository implements WebhookEventRepository {
@@ -44,6 +148,7 @@ export class InMemoryWebhookEventRepository implements WebhookEventRepository {
     externalEventId: string;
     eventType: string;
     payloadHash: string;
+    payload?: unknown;
   }): Promise<{ inserted: boolean; record: WebhookEventRecord }> {
     const dedupeKey = `${input.provider}:${input.externalEventId}`;
     const existing = this.records.get(dedupeKey);
@@ -268,6 +373,7 @@ export async function handlePayPalWebhook(
     externalEventId,
     eventType,
     payloadHash,
+    payload: event,
   });
 
   if (!inserted) {
@@ -540,4 +646,48 @@ function getPaymentRepository(config: BookingApiConfig): PaymentRepository {
 
 function sha256(input: string): string {
   return createHash("sha256").update(input).digest("hex");
+}
+
+function mapWebhookEventRow(row: WebhookEventRow): WebhookEventRecord {
+  return {
+    id: row.id,
+    provider: row.provider,
+    externalEventId: row.external_event_id ?? row.dedupe_key,
+    eventType: row.event_type,
+    receivedAt: toIsoString(row.received_at),
+    ...(row.processed_at ? { processedAt: toIsoString(row.processed_at) } : {}),
+    status: parseWebhookEventStatus(row.processing_status),
+    payloadHash: row.payload_hash,
+  };
+}
+
+function parseWebhookEventStatus(status: string): WebhookEventStatus {
+  if (
+    status === "pending" ||
+    status === "processed" ||
+    status === "duplicate" ||
+    status === "ignored" ||
+    status === "failed"
+  ) {
+    return status;
+  }
+
+  if (status === "received" || status === "verified" || status === "processing") {
+    return "pending";
+  }
+
+  if (status === "rejected_signature") {
+    return "failed";
+  }
+
+  throw new Error(`Unsupported webhook processing status from database: ${status}`);
+}
+
+function toIsoString(value: string | Date): string {
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+
+  const timestampMs = Date.parse(value);
+  return Number.isNaN(timestampMs) ? value : new Date(timestampMs).toISOString();
 }

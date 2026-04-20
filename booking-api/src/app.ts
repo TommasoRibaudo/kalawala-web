@@ -4,6 +4,7 @@ import { RdsBookingSessionRepository } from "./bookingSessions";
 import { getPool } from "./db";
 import { RdsHoldRepository } from "./holds";
 import { RdsPaymentRepository } from "./payments";
+import { RdsWebhookEventRepository } from "./paypalWebhooks";
 import { assertRouteHardening } from "./http/router";
 import { createObservability } from "./observability";
 import {
@@ -141,10 +142,12 @@ async function ensurePersistenceRepositories(
 
   const holdsRequired = holdRepositoryRequired(routePattern, body);
   const paymentsRequired = paymentRepositoryRequired(routePattern);
+  const webhookEventsRequired = webhookEventRepositoryRequired(routePattern, body);
   if (
     config.bookingSessions &&
     (!holdsRequired || config.holds) &&
-    (!paymentsRequired || config.payments)
+    (!paymentsRequired || config.payments) &&
+    (!webhookEventsRequired || config.webhookEvents)
   ) {
     return;
   }
@@ -163,6 +166,9 @@ async function ensurePersistenceRepositories(
       }
       if (!config.payments) {
         config.payments = new RdsPaymentRepository(pool);
+      }
+      if (!config.webhookEvents) {
+        config.webhookEvents = new RdsWebhookEventRepository(pool);
       }
     });
     repositoryInitializationByConfig.set(config, initPromise);
@@ -196,6 +202,14 @@ function paymentRepositoryRequired(routePattern: string): boolean {
     routePattern === "/api/portal/reservation/:reservationPublicId/help-request" ||
     routePattern === "/api/portal/reservation/:reservationPublicId/cancellation-request"
   );
+}
+
+function webhookEventRepositoryRequired(routePattern: string, body: unknown): boolean {
+  if (routePattern === "/api/webhooks/smoobu") {
+    return !isSmoobuRatesOnlyWebhook(body);
+  }
+
+  return routePattern === "/api/webhooks/paypal";
 }
 
 function isSmoobuRatesOnlyWebhook(body: unknown): boolean {

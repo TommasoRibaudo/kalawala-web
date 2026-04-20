@@ -53,6 +53,7 @@ export async function handleSmoobuWebhook(
     externalEventId: dedupeKey,
     eventType: payload.action,
     payloadHash,
+    payload: body,
   });
 
   if (!inserted) {

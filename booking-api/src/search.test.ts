@@ -234,7 +234,17 @@ test("POST /api/search returns structured 200 response when no houses are availa
   const body = JSON.parse(response.body);
   expect(body.resultsCount).toBe(0);
   expect(body.properties).toEqual([]);
-  expect(await bookingSessions.getById(body.bookingSessionId)).toBeUndefined();
+  const session = await bookingSessions.getById(body.bookingSessionId);
+  expect(session).toMatchObject({
+    id: body.bookingSessionId,
+    quoteId: body.quoteId,
+    status: "no_availability",
+    language: "en",
+    arrivalDate: "2099-07-01",
+    departureDate: "2099-07-03",
+    guests: 2,
+    quotedProperties: [],
+  });
   expect(body.availabilityWarnings).toEqual([
     {
       code: "no_properties_available",

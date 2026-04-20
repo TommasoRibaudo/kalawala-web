@@ -1,5 +1,10 @@
 import { createHash, randomUUID, scrypt as scryptCallback, ScryptOptions } from "crypto";
-import { BookingSessionQuotedProperty, BookingSessionRecord, HoldGuestDetails, createNoAvailabilitySession } from "./bookingSessions";
+import {
+  BookingSessionQuotedProperty,
+  BookingSessionRecord,
+  BookingSessionRepository,
+  HoldGuestDetails,
+} from "./bookingSessions";
 import { createEmailClient } from "./email";
 import { ApiError } from "./http/errors";
 import { getHeader } from "./http/request";
@@ -881,11 +886,12 @@ async function reserveHoldIdempotency(
 }
 
 async function requireQuotedSession(
-  bookingSessions: { getById(id: string): Promise<BookingSessionRecord | undefined> },
+  bookingSessions: Pick<BookingSessionRepository, "getById" | "getByQuoteId">,
   holdRequest: HoldRequest
 ): Promise<BookingSessionRecord> {
-  const session = await bookingSessions.getById(holdRequest.bookingSessionId);
-  if (!session || session.quoteId !== holdRequest.quoteId) {
+  const session = await bookingSessions.getByQuoteId(holdRequest.quoteId);
+
+  if (!session || session.id !== holdRequest.bookingSessionId || session.quoteId !== holdRequest.quoteId) {
     throw new ApiError(404, "not_found", "The quote was not found.");
   }
 

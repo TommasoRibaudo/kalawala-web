@@ -88,6 +88,43 @@ test("RdsBookingSessionRepository.createQuotedSession inserts and maps a quoted 
   expect(record.quotedProperties).toEqual(BASE_ROW.quoted_properties);
 });
 
+test("RdsBookingSessionRepository.createNoAvailabilitySession inserts and maps a no-availability quote", async () => {
+  const query = jest.fn(async (_sql: string, values: unknown[]) => ({
+    rows: [
+      {
+        ...BASE_ROW,
+        id: values[0],
+        reservation_public_id: values[1],
+        quote_id: values[2],
+        status: values[3],
+        language: values[4],
+        arrival_date: values[5],
+        departure_date: values[6],
+        guests: values[7],
+        source: values[8],
+        quote_expires_at: values[9],
+        quoted_properties: JSON.parse(values[10] as string),
+        created_at: values[11],
+        updated_at: values[12],
+      },
+    ],
+  }));
+  const repo = new RdsBookingSessionRepository(createPool(query));
+
+  const record = await repo.createNoAvailabilitySession({
+    arrivalDate: "2026-05-01",
+    departureDate: "2026-05-04",
+    guests: 2,
+    language: "en",
+    source: "booking-page",
+  });
+
+  expect(query).toHaveBeenCalledWith(expect.stringContaining("insert into booking_sessions"), expect.any(Array));
+  expect(query.mock.calls[0][1][3]).toBe("no_availability");
+  expect(record.status).toBe("no_availability");
+  expect(record.quotedProperties).toEqual([]);
+});
+
 test("RdsBookingSessionRepository.markHoldCreating persists selected property, price, guest, and portal password", async () => {
   const query = jest.fn(async (_sql: string, values: unknown[]) => ({
     rows: [

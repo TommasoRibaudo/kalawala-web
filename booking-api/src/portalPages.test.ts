@@ -18,7 +18,7 @@ import { InMemoryBookingSessionRepository } from "./bookingSessions";
 import { InMemoryHoldRepository } from "./holds";
 import { InMemoryPaymentRepository } from "./payments";
 import { StaticSecretProvider } from "./secrets";
-import { issuePortalSessionToken } from "./portalSessions";
+import { InMemoryPortalSessionRepository, issuePortalSessionToken } from "./portalSessions";
 import { BookingApiConfig, LambdaHttpRequest } from "./types";
 
 // ── test helpers ──────────────────────────────────────────────────────────────
@@ -322,6 +322,34 @@ describe("GET /api/portal/reservation/:reservationPublicId", () => {
     expect(body.payment.status).toBe("captured");
     expect(body.payment.paypalOrderId).toBe("PAYPAL-ORDER-TEST");
     expect(body.payment.capturedAt).toBeDefined();
+  });
+
+  it("rejects a validly signed token when persisted portal session storage has no active record", async () => {
+    const reservationPublicId = await seedConfirmedSession("en");
+    config.portalSessions = new InMemoryPortalSessionRepository();
+    const strictHandler = createBookingApiHandler(config);
+    const token = bearerToken(reservationPublicId);
+
+    const response = await strictHandler(getReservationRequest(reservationPublicId, token));
+
+    expect(response.statusCode).toBe(401);
+    expect(JSON.parse(response.body).error.code).toBe("unauthorized");
+  });
+
+  it("fails closed in production when portal session storage is not configured", async () => {
+    const prodConfig = createTestConfig();
+    prodConfig.observability = { ...prodConfig.observability, environment: "prod" };
+    const prodHandler = createBookingApiHandler(prodConfig);
+    const reservationPublicId = await seedConfirmedSession("en");
+    const token = bearerToken(reservationPublicId);
+
+    const response = await prodHandler(getReservationRequest(reservationPublicId, token));
+
+    expect(response.statusCode).toBe(503);
+    expect(JSON.parse(response.body).error).toMatchObject({
+      code: "database_unavailable",
+      retryable: true,
+    });
   });
 
   it("returns Spanish listing URL when language is es", async () => {

@@ -19,7 +19,7 @@ import { BookingSessionRepository } from "./bookingSessions";
 import { ApiError } from "./http/errors";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
-import { issuePortalSessionToken } from "./portalSessions";
+import { issuePortalSessionToken, PORTAL_SESSION_TTL_SECONDS } from "./portalSessions";
 import { ApiResponse, BookingApiConfig, RouteRequest } from "./types";
 
 // Must match the parameters used in holds.ts hashPortalPassword()
@@ -74,7 +74,26 @@ export async function handlePortalLogin(
     throw new ApiError(403, "booking_not_confirmed", "This reservation is not yet confirmed.");
   }
 
-  const token = issuePortalSessionToken(session.reservationPublicId, portalSessionSecret);
+  const issuedAtSeconds = Math.floor(Date.now() / 1000);
+  const token = issuePortalSessionToken(session.reservationPublicId, portalSessionSecret, issuedAtSeconds);
+  const issuedAt = new Date(issuedAtSeconds * 1000).toISOString();
+  const expiresAt = new Date((issuedAtSeconds + PORTAL_SESSION_TTL_SECONDS) * 1000).toISOString();
+
+  if (config.portalSessions) {
+    await config.portalSessions.createSession({
+      bookingSessionId: session.id,
+      reservationPublicId: session.reservationPublicId,
+      token,
+      issuedAt,
+      expiresAt,
+      requestIp: request.clientIp,
+      userAgent: request.userAgent,
+    });
+  } else if (portalSessionPersistenceRequired(config)) {
+    throw new ApiError(503, "database_unavailable", "Portal session storage is not configured.", {
+      retryable: true,
+    });
+  }
 
   request.observability.recordStateTransition({
     entityType: "portal_session",
@@ -97,7 +116,7 @@ export async function handlePortalLogin(
     {
       token,
       reservationPublicId: session.reservationPublicId,
-      expiresIn: 24 * 60 * 60, // seconds
+      expiresIn: PORTAL_SESSION_TTL_SECONDS,
     },
     request.responseHeaders
   );
@@ -112,6 +131,11 @@ function requireBookingSessionRepository(config: BookingApiConfig): BookingSessi
     });
   }
   return config.bookingSessions;
+}
+
+function portalSessionPersistenceRequired(config: BookingApiConfig): boolean {
+  const environment = config.observability.environment.trim().toLowerCase();
+  return environment === "prod" || environment === "production";
 }
 
 async function findSessionByPublicId(

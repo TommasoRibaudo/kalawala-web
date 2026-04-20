@@ -244,6 +244,25 @@ describe("POST /api/portal/login", () => {
     expect(payload.sub).toBe(reservationPublicId);
   });
 
+  it("fails closed in production when portal session storage is not configured", async () => {
+    const prodConfig = createTestConfig();
+    prodConfig.observability = { ...prodConfig.observability, environment: "prod" };
+    const prodHandler = createBookingApiHandler(prodConfig);
+    const reservationPublicId = await seedConfirmedSession("correct-password-123");
+
+    const response = await prodHandler(loginRequest({
+      reservationPublicId,
+      password: "correct-password-123",
+      language: "en",
+    }));
+
+    expect(response.statusCode).toBe(503);
+    expect(JSON.parse(response.body).error).toMatchObject({
+      code: "database_unavailable",
+      retryable: true,
+    });
+  });
+
   it("returns 401 for wrong password (uniform error)", async () => {
     const reservationPublicId = await seedConfirmedSession("correct-password-123");
 

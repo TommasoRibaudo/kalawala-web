@@ -425,6 +425,7 @@ test("POST /api/holds creates a local hold and Smoobu blocked-channel provisiona
 
   const searchResponse = await handler(makeSearchEvent());
   const searchBody = JSON.parse(searchResponse.body);
+  const getByQuoteIdSpy = jest.spyOn(bookingSessions, "getByQuoteId");
   const holdRequest = {
     quoteId: searchBody.quoteId,
     bookingSessionId: searchBody.bookingSessionId,
@@ -446,6 +447,7 @@ test("POST /api/holds creates a local hold and Smoobu blocked-channel provisiona
   const response = await handler(makeHoldEvent(holdRequest));
 
   expect(response.statusCode).toBe(200);
+  expect(getByQuoteIdSpy).toHaveBeenCalledWith(searchBody.quoteId);
   const body = JSON.parse(response.body);
   expect(body).toMatchObject({
     booking: {

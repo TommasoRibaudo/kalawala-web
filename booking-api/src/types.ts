@@ -3,6 +3,7 @@ import type { EmailConfig } from "./email";
 import type { HoldRepository } from "./holds";
 import type { PaymentRepository } from "./payments";
 import type { WebhookEventRepository } from "./paypalWebhooks";
+import type { PortalSessionRepository } from "./portalSessions";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS";
 
@@ -110,6 +111,7 @@ export interface BookingApiConfig {
   holds?: HoldRepository;
   payments?: PaymentRepository;
   webhookEvents?: WebhookEventRepository;
+  portalSessions?: PortalSessionRepository;
   hold: HoldConfig;
   abuseProtection: AbuseProtectionConfig;
   observability: ObservabilityConfig;

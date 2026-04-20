@@ -5,6 +5,7 @@ import { getPool } from "./db";
 import { RdsHoldRepository } from "./holds";
 import { RdsPaymentRepository } from "./payments";
 import { RdsWebhookEventRepository } from "./paypalWebhooks";
+import { RdsPortalSessionRepository } from "./portalSessions";
 import { assertRouteHardening } from "./http/router";
 import { createObservability } from "./observability";
 import {
@@ -169,6 +170,9 @@ async function ensurePersistenceRepositories(
       }
       if (!config.webhookEvents) {
         config.webhookEvents = new RdsWebhookEventRepository(pool);
+      }
+      if (!config.portalSessions) {
+        config.portalSessions = new RdsPortalSessionRepository(pool);
       }
     });
     repositoryInitializationByConfig.set(config, initPromise);

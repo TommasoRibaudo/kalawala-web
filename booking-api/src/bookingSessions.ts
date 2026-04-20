@@ -81,6 +81,7 @@ export interface BookingSessionRecord {
 
 export interface BookingSessionRepository {
   createQuotedSession(input: CreateQuotedBookingSessionInput): Promise<BookingSessionRecord>;
+  createNoAvailabilitySession(input: CreateQuotedBookingSessionInput): Promise<BookingSessionRecord>;
   getById(id: string): Promise<BookingSessionRecord | undefined>;
   getByQuoteId(quoteId: string): Promise<BookingSessionRecord | undefined>;
   getByReservationPublicId(reservationPublicId: string): Promise<BookingSessionRecord | undefined>;
@@ -195,7 +196,18 @@ export class RdsBookingSessionRepository implements BookingSessionRepository {
   constructor(private readonly pool: Queryable) {}
 
   async createQuotedSession(input: CreateQuotedBookingSessionInput): Promise<BookingSessionRecord> {
-    const record = createBookingSessionRecord(input, "quoted");
+    return this.createSearchSession(input, "quoted");
+  }
+
+  async createNoAvailabilitySession(input: CreateQuotedBookingSessionInput): Promise<BookingSessionRecord> {
+    return this.createSearchSession(input, "no_availability");
+  }
+
+  private async createSearchSession(
+    input: CreateQuotedBookingSessionInput,
+    status: "quoted" | "no_availability"
+  ): Promise<BookingSessionRecord> {
+    const record = createBookingSessionRecord(input, status);
     const result = await this.pool.query<BookingSessionRow>(
       `
         insert into booking_sessions (
@@ -466,6 +478,15 @@ export class InMemoryBookingSessionRepository implements BookingSessionRepositor
 
   async createQuotedSession(input: CreateQuotedBookingSessionInput): Promise<BookingSessionRecord> {
     const record = createBookingSessionRecord(input, "quoted");
+
+    this.sessionsById.set(record.id, record);
+    this.sessionsByQuoteId.set(record.quoteId, record);
+    this.sessionsByPublicId.set(record.reservationPublicId, record);
+    return record;
+  }
+
+  async createNoAvailabilitySession(input: CreateQuotedBookingSessionInput): Promise<BookingSessionRecord> {
+    const record = createBookingSessionRecord(input, "no_availability");
 
     this.sessionsById.set(record.id, record);
     this.sessionsByQuoteId.set(record.quoteId, record);

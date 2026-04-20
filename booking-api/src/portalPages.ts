@@ -27,7 +27,7 @@
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
 import { ApiError } from "./http/errors";
-import { requirePortalSession } from "./portalSessions";
+import { extractPortalSessionToken, verifyPortalSessionToken } from "./portalSessions";
 import { BOOKING_PROPERTIES_BY_ID, listingUrlForLanguage } from "./propertyCatalog";
 import { ApiResponse, BookingApiConfig, RouteRequest } from "./types";
 import { BookingSessionRecord, BookingSessionRepository } from "./bookingSessions";
@@ -169,9 +169,11 @@ async function requireAuthenticatedSession(
   const { portalSessionSecret } = await config.secrets.getSecrets();
   const authHeader = getHeader(request.headers, "authorization");
 
+  let token: string;
   let tokenPayload: { sub: string };
   try {
-    tokenPayload = requirePortalSession(authHeader, portalSessionSecret);
+    token = extractPortalSessionToken(authHeader);
+    tokenPayload = verifyPortalSessionToken(token, portalSessionSecret);
   } catch (err) {
     request.observability.recordSecurityEvent({
       name: "portal_auth_failed",
@@ -191,6 +193,27 @@ async function requireAuthenticatedSession(
       errorCode: "reservation_id_mismatch",
     });
     throw new ApiError(403, "forbidden", "You are not authorized to access this reservation.");
+  }
+
+  if (config.portalSessions) {
+    const storedSession = await config.portalSessions.touchActiveSession({
+      token,
+      reservationPublicId,
+      seenAt: new Date().toISOString(),
+    });
+    if (!storedSession) {
+      request.observability.recordSecurityEvent({
+        name: "portal_auth_session_not_active",
+        severity: "warn",
+        route: request.path,
+        errorCode: "portal_session_not_active",
+      });
+      throw new ApiError(401, "unauthorized", "Invalid or expired session token.");
+    }
+  } else if (portalSessionPersistenceRequired(config)) {
+    throw new ApiError(503, "database_unavailable", "Portal session storage is not configured.", {
+      retryable: true,
+    });
   }
 
   const session = await requireBookingSessionRepository(config).getByReservationPublicId(reservationPublicId);
@@ -295,6 +318,11 @@ function requirePaymentRepository(config: BookingApiConfig): PaymentRepository {
     });
   }
   return config.payments;
+}
+
+function portalSessionPersistenceRequired(config: BookingApiConfig): boolean {
+  const environment = config.observability.environment.trim().toLowerCase();
+  return environment === "prod" || environment === "production";
 }
 
 // ── i18n strings ──────────────────────────────────────────────────────────────

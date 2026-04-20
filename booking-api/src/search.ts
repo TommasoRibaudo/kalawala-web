@@ -1,4 +1,3 @@
-import { createNoAvailabilitySession } from "./bookingSessions";
 import { ApiError } from "./http/errors";
 import { jsonResponse } from "./http/response";
 import { BOOKING_PROPERTIES, BOOKING_PROPERTIES_BY_SMOOBU_ID, BookingProperty, listingUrlForLanguage } from "./propertyCatalog";
@@ -6,7 +5,6 @@ import { createSmoobuClient } from "./smoobuClient";
 import { ApiResponse, BookingApiConfig, HeadersMap, RouteObservability } from "./types";
 import { SearchRequest } from "./validation";
 
-// TODO: Replace the request-local in-memory fallback with RDS persistence before hold creation (task 4.1).
 const QUOTE_TTL_MS = 10 * 60 * 1000;
 
 interface SmoobuAvailabilityResponse {
@@ -90,7 +88,7 @@ export async function handleAvailabilitySearch(
   const bookingSession =
     normalized.properties.length > 0
       ? await bookingSessions.createQuotedSession(bookingSessionInput)
-      : createNoAvailabilitySession(bookingSessionInput);
+      : await bookingSessions.createNoAvailabilitySession(bookingSessionInput);
 
   observability.recordStateTransition({
     entityType: "booking_session",

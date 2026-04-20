@@ -104,6 +104,8 @@ export const bookingStrings = {
     warningArrivalDay: 'Some homes have arrival-day restrictions.',
     warningLeadTime: 'Some homes require more advance notice.',
     warningGapRule: 'Some homes are unavailable because of calendar spacing rules.',
+    captchaRequired: 'Please complete the security check to continue.',
+    captchaError: 'Security check failed. Please try again.',
   },
   es: {
     siteTitle: 'Reservas Kalawala',
@@ -208,6 +210,8 @@ export const bookingStrings = {
     warningArrivalDay: 'Algunas casas tienen restricciones para el d\u00eda de llegada.',
     warningLeadTime: 'Algunas casas requieren m\u00e1s anticipaci\u00f3n.',
     warningGapRule: 'Algunas casas no est\u00e1n disponibles por reglas de espacio entre reservas.',
+    captchaRequired: 'Por favor completa la verificaci\u00f3n de seguridad para continuar.',
+    captchaError: 'La verificaci\u00f3n de seguridad fall\u00f3. Int\u00e9ntalo de nuevo.',
   },
 };
 

@@ -103,6 +103,7 @@ jobs:
           REACT_APP_META_PIXEL_ID: ${{ secrets.REACT_APP_META_PIXEL_ID }}
           REACT_APP_SMOOBU_URL: ${{ secrets.REACT_APP_SMOOBU_URL }}
           REACT_APP_HOUSE_CODES: ${{ secrets.REACT_APP_HOUSE_CODES }}
+          REACT_APP_CAPTCHA_SITE_KEY: ${{ secrets.REACT_APP_CAPTCHA_SITE_KEY }}
       - name: Generate PHP config from secrets
         run: |
           cat > build/smoobu-config.php << 'PHPEOF'

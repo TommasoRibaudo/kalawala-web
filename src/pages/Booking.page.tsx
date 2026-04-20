@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDays, faUser, faWifi, faSnowflake, faCar, faKitchenSet } from '@fortawesome/free-solid-svg-icons';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
 import FixedNavigationES from '../components/FixedNavigation/FixedNavigation.componentES';
 import { useLanguageDetection } from '../hooks/useLanguageDetection';
@@ -103,6 +104,30 @@ const paypalCheckoutStorageKey = 'kalawala_paypal_checkout';
 const bookingConfirmationStorageKey = 'kalawala_booking_confirmation';
 const bookingConfirmationTrackedPrefix = 'kalawala_booking_confirmation_tracked_';
 
+// hCaptcha tokens expire after ~120 seconds. After CAPTCHA_TOKEN_TTL_MS the
+// token is cleared and the widget resets so the user is re-prompted rather
+// than silently sending a stale token to the backend.
+const CAPTCHA_TOKEN_TTL_MS = 110_000;
+
+/**
+ * Clears a CAPTCHA token and resets the widget after CAPTCHA_TOKEN_TTL_MS.
+ * Returns a cleanup function suitable for useEffect.
+ */
+function scheduleCaptchaExpiry(
+  token: string | null,
+  clearToken: () => void,
+  widgetRef: React.RefObject<HCaptcha>
+): (() => void) | undefined {
+  if (!token) {
+    return undefined;
+  }
+  const id = window.setTimeout(() => {
+    clearToken();
+    widgetRef.current?.resetCaptcha();
+  }, CAPTCHA_TOKEN_TTL_MS);
+  return () => window.clearTimeout(id);
+}
+
 const BookingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -145,6 +170,42 @@ const BookingPage = () => {
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const Navigation = language === 'es' ? FixedNavigationES : FixedNavigation;
+
+  // CAPTCHA state — search flow
+  const [searchCaptchaRequired, setSearchCaptchaRequired] = React.useState(false);
+  const [searchCaptchaToken, setSearchCaptchaToken] = React.useState<string | null>(null);
+  const searchCaptchaRef = React.useRef<HCaptcha>(null);
+  // CAPTCHA state — hold flow
+  const [holdCaptchaRequired, setHoldCaptchaRequired] = React.useState(false);
+  const [holdCaptchaToken, setHoldCaptchaToken] = React.useState<string | null>(null);
+  const holdCaptchaRef = React.useRef<HCaptcha>(null);
+
+  const captchaSiteKey = process.env.REACT_APP_CAPTCHA_SITE_KEY || '';
+
+  // Auto-expire CAPTCHA tokens after CAPTCHA_TOKEN_TTL_MS to avoid sending stale tokens.
+  React.useEffect(
+    () => scheduleCaptchaExpiry(
+      searchCaptchaToken,
+      () => {
+        setSearchCaptchaToken(null);
+        setError(strings.captchaRequired);
+      },
+      searchCaptchaRef
+    ),
+    [searchCaptchaToken, strings.captchaRequired]
+  );
+
+  React.useEffect(
+    () => scheduleCaptchaExpiry(
+      holdCaptchaToken,
+      () => {
+        setHoldCaptchaToken(null);
+        setHoldError(strings.captchaRequired);
+      },
+      holdCaptchaRef
+    ),
+    [holdCaptchaToken, strings.captchaRequired]
+  );
 
   const minDepartureDate = addDays(arrivalDate || today, 1);
 
@@ -228,6 +289,9 @@ const BookingPage = () => {
 
   const handleArrivalChange = (value: string) => {
     setArrivalDate(value);
+    setSearchCaptchaRequired(false);
+    setSearchCaptchaToken(null);
+    searchCaptchaRef.current?.resetCaptcha();
     const updates: Record<string, string> = { arrivalDate: value };
     if (value && departureDate <= value) {
       const nextDepartureDate = addDays(value, 1);
@@ -240,77 +304,104 @@ const BookingPage = () => {
   const handleGuestInputChange = (value: number) => {
     const nextGuests = Number.isFinite(value) ? value : 0;
     setGuests(nextGuests);
+    setSearchCaptchaRequired(false);
+    setSearchCaptchaToken(null);
+    searchCaptchaRef.current?.resetCaptcha();
     updateBookingQuery({ guests: nextGuests });
   };
 
   const handleGuestStepChange = (value: number) => {
     const nextGuests = Math.max(1, value);
     setGuests(nextGuests);
+    setSearchCaptchaRequired(false);
+    setSearchCaptchaToken(null);
+    searchCaptchaRef.current?.resetCaptcha();
     updateBookingQuery({ guests: nextGuests });
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  // Core search logic, callable from both the form submit and the post-CAPTCHA retry button.
+  const doSearch = React.useCallback(
+    async (captchaToken?: string) => {
+      setError(null);
+      setDepositError(null);
+      setDepositHandoff(null);
+      setCheckoutProperty(null);
+      setHoldError(null);
+      setHoldResponse(null);
+      setHoldFieldErrors({});
+      setPayPalOrderError(null);
+      setSearchCaptchaRequired(false);
+      setIsSubmitting(true);
+
+      try {
+        trackBookingSearch({
+          arrival_date: arrivalDate,
+          departure_date: departureDate,
+          guests,
+          language,
+          source: 'booking_page',
+        });
+
+        const response = await searchAvailability({
+          arrivalDate,
+          departureDate,
+          guests,
+          language,
+          source: 'booking_page',
+          ...(captchaToken ? { captchaToken } : {}),
+        });
+        setResult(response);
+        setSearchCaptchaToken(null);
+        searchCaptchaRef.current?.resetCaptcha();
+
+        const minPriceCents =
+          response.properties.length > 0
+            ? Math.min(
+                ...response.properties
+                  .map((p) => p.price?.totalAmountCents)
+                  .filter((v): v is number => v != null)
+              )
+            : null;
+        const firstCurrency = response.properties.find((p) => p.price?.currency)?.price?.currency ?? null;
+
+        trackAvailabilityResults({
+          available_count: response.properties.length,
+          min_price_cents: minPriceCents === Infinity ? null : minPriceCents,
+          currency: firstCurrency,
+          arrival_date: arrivalDate,
+          departure_date: departureDate,
+          guests,
+          language,
+        });
+      } catch (searchError) {
+        if (
+          searchError instanceof BookingApiError &&
+          searchError.status === 403 &&
+          searchError.code === 'captcha_required'
+        ) {
+          setSearchCaptchaRequired(true);
+          setError(strings.captchaRequired);
+        } else {
+          setResult(null);
+          setError(getSearchErrorMessage(searchError, strings));
+        }
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [arrivalDate, departureDate, guests, language, strings]
+  );
+
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const validation = validateSearch(arrivalDate, departureDate, guests, today, strings);
     setFieldErrors(validation);
-    setError(null);
-    setDepositError(null);
-    setDepositHandoff(null);
-    setCheckoutProperty(null);
-    setHoldError(null);
-    setHoldResponse(null);
-    setHoldFieldErrors({});
-    setPayPalOrderError(null);
-
     if (Object.keys(validation).length > 0) {
       setResult(null);
       return;
     }
-
-    setIsSubmitting(true);
-    try {
-      trackBookingSearch({
-        arrival_date: arrivalDate,
-        departure_date: departureDate,
-        guests,
-        language,
-        source: 'booking_page',
-      });
-
-      const response = await searchAvailability({
-        arrivalDate,
-        departureDate,
-        guests,
-        language,
-        source: 'booking_page',
-      });
-      setResult(response);
-
-      const minPriceCents =
-        response.properties.length > 0
-          ? Math.min(
-              ...response.properties
-                .map((p) => p.price?.totalAmountCents)
-                .filter((v): v is number => v != null)
-            )
-          : null;
-      const firstCurrency = response.properties.find((p) => p.price?.currency)?.price?.currency ?? null;
-
-      trackAvailabilityResults({
-        available_count: response.properties.length,
-        min_price_cents: minPriceCents === Infinity ? null : minPriceCents,
-        currency: firstCurrency,
-        arrival_date: arrivalDate,
-        departure_date: departureDate,
-        guests,
-        language,
-      });
-    } catch (searchError) {
-      setResult(null);
-      setError(getSearchErrorMessage(searchError, strings));
-    } finally {
-      setIsSubmitting(false);
-    }
+    doSearch();
   };
 
   const handleManualDepositHandoff = async (property: BookingAvailableProperty) => {
@@ -378,7 +469,7 @@ const BookingPage = () => {
     });
   };
 
-  const handleCreatePayPalHold = async (event: React.FormEvent) => {
+  const handleCreatePayPalHold = async (event: React.FormEvent, captchaTokenOverride?: string) => {
     event.preventDefault();
 
     if (!result || !checkoutProperty) {
@@ -389,10 +480,13 @@ const BookingPage = () => {
     const validation = validatePayPalHoldForm(holdForm, strings);
     setHoldFieldErrors(validation);
     setHoldError(null);
+    setHoldCaptchaRequired(false);
 
     if (Object.keys(validation).length > 0) {
       return;
     }
+
+    const tokenToUse = captchaTokenOverride ?? holdCaptchaToken ?? undefined;
 
     setIsCreatingHold(true);
     try {
@@ -411,10 +505,13 @@ const BookingPage = () => {
         },
         portalPassword: holdForm.portalPassword,
         termsAccepted: holdForm.termsAccepted,
+        ...(tokenToUse ? { captchaToken: tokenToUse } : {}),
       });
 
       setHoldResponse(response);
       setPayPalOrderError(null);
+      setHoldCaptchaToken(null);
+      holdCaptchaRef.current?.resetCaptcha();
 
       if (checkoutProperty.price) {
         trackCheckoutStarted({
@@ -431,8 +528,13 @@ const BookingPage = () => {
         });
       }
     } catch (holdCreationError) {
-      setHoldResponse(null);
-      setHoldError(getHoldErrorMessage(holdCreationError, strings));
+      if (holdCreationError instanceof BookingApiError && holdCreationError.status === 403 && holdCreationError.code === 'captcha_required') {
+        setHoldCaptchaRequired(true);
+        setHoldError(strings.captchaRequired);
+      } else {
+        setHoldResponse(null);
+        setHoldError(getHoldErrorMessage(holdCreationError, strings));
+      }
     } finally {
       setIsCreatingHold(false);
     }
@@ -569,6 +671,9 @@ const BookingPage = () => {
                         isInvalid={Boolean(fieldErrors.departureDate)}
                         onChange={(event) => {
                           setDepartureDate(event.target.value);
+                          setSearchCaptchaRequired(false);
+                          setSearchCaptchaToken(null);
+                          searchCaptchaRef.current?.resetCaptcha();
                           updateBookingQuery({ departureDate: event.target.value });
                         }}
                       />
@@ -630,6 +735,29 @@ const BookingPage = () => {
                 </Alert>
               )}
 
+              {searchCaptchaRequired && captchaSiteKey && (
+                <div className="booking-captcha-widget" aria-live="polite">
+                  <HCaptcha
+                    ref={searchCaptchaRef}
+                    sitekey={captchaSiteKey}
+                    onVerify={(token) => {
+                      setSearchCaptchaToken(token);
+                      setError(null);
+                      // Auto-retry the search as soon as the challenge is solved.
+                      doSearch(token);
+                    }}
+                    onExpire={() => {
+                      setSearchCaptchaToken(null);
+                      setError(strings.captchaRequired);
+                    }}
+                    onError={() => {
+                      setSearchCaptchaToken(null);
+                      setError(strings.captchaError);
+                    }}
+                  />
+                </div>
+              )}
+
               {depositError && (
                 <Alert className="booking-search-alert" variant="danger" role="alert">
                   {depositError}
@@ -661,12 +789,40 @@ const BookingPage = () => {
                   onChange={updateHoldForm}
                   onSubmit={handleCreatePayPalHold}
                   onCreatePayPalOrder={handleCreatePayPalOrder}
+                  captchaChallenge={
+                    holdCaptchaRequired && captchaSiteKey
+                      ? {
+                          siteKey: captchaSiteKey,
+                          token: holdCaptchaToken,
+                          ref: holdCaptchaRef,
+                          onVerify: (token: string) => {
+                            setHoldCaptchaToken(token);
+                            setHoldError(null);
+                            // Synthetic event — auto-submit the hold form after solving.
+                            handleCreatePayPalHold(
+                              { preventDefault: () => {} } as React.FormEvent,
+                              token
+                            );
+                          },
+                          onExpire: () => {
+                            setHoldCaptchaToken(null);
+                            setHoldError(strings.captchaRequired);
+                          },
+                          onError: () => {
+                            setHoldCaptchaToken(null);
+                            setHoldError(strings.captchaError);
+                          },
+                        }
+                      : null
+                  }
                   onBack={() => {
                     setCheckoutProperty(null);
                     setHoldError(null);
                     setHoldResponse(null);
                     setHoldFieldErrors({});
                     setPayPalOrderError(null);
+                    setHoldCaptchaRequired(false);
+                    setHoldCaptchaToken(null);
                   }}
                 />
               )}
@@ -864,6 +1020,15 @@ const BookingPropertyCard = ({
   );
 };
 
+interface CaptchaChallenge {
+  siteKey: string;
+  token: string | null;
+  ref: React.RefObject<HCaptcha>;
+  onVerify: (token: string) => void;
+  onExpire: () => void;
+  onError: () => void;
+}
+
 const PayPalCheckoutPanel = ({
   result,
   property,
@@ -879,6 +1044,7 @@ const PayPalCheckoutPanel = ({
   onChange,
   onSubmit,
   onCreatePayPalOrder,
+  captchaChallenge,
   onBack,
 }: {
   result: BookingSearchResponse;
@@ -895,6 +1061,7 @@ const PayPalCheckoutPanel = ({
   onChange: (updates: Partial<PayPalHoldFormState>) => void;
   onSubmit: (event: React.FormEvent) => void;
   onCreatePayPalOrder: () => void;
+  captchaChallenge: CaptchaChallenge | null;
   onBack: () => void;
 }) => {
   const price = property.price ?? holdResponse?.booking.price;
@@ -1046,8 +1213,24 @@ const PayPalCheckoutPanel = ({
             </Col>
           </Row>
 
+          {captchaChallenge && (
+            <div className="booking-captcha-widget" aria-live="polite">
+              <HCaptcha
+                ref={captchaChallenge.ref}
+                sitekey={captchaChallenge.siteKey}
+                onVerify={captchaChallenge.onVerify}
+                onExpire={captchaChallenge.onExpire}
+                onError={captchaChallenge.onError}
+              />
+            </div>
+          )}
+
           <div className="booking-checkout-panel__actions">
-            <Button type="submit" className="booking-search-submit" disabled={isCreatingHold}>
+            <Button
+              type="submit"
+              className="booking-search-submit"
+              disabled={isCreatingHold || (captchaChallenge !== null && !captchaChallenge.token)}
+            >
               {isCreatingHold ? (
                 <>
                   <Spinner animation="border" size="sm" /> {strings.creatingHold}

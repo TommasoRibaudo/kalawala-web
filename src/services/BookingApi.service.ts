@@ -7,6 +7,7 @@ export interface BookingSearchRequest {
   language: BookingLanguage;
   discountCode?: string;
   source?: string;
+  captchaToken?: string;
 }
 
 export interface BookingAmenity {
@@ -80,6 +81,7 @@ export interface CreatePayPalHoldRequest {
   portalPassword: string;
   termsAccepted: boolean;
   marketingConsent?: boolean;
+  captchaToken?: string;
 }
 
 export interface PayPalHoldResponse {
@@ -406,14 +408,21 @@ export class BookingApiError extends Error {
 const apiBaseUrl = (process.env.REACT_APP_BOOKING_API_BASE_URL || '').replace(/\/$/, '');
 
 export async function searchAvailability(request: BookingSearchRequest): Promise<BookingSearchResponse> {
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    'Accept-Language': request.language,
+    'Content-Type': 'application/json',
+  };
+  if (request.captchaToken) {
+    headers['X-Captcha-Token'] = request.captchaToken;
+  }
+
+  const { captchaToken: _captchaToken, ...requestBody } = request;
+
   const response = await fetch(`${apiBaseUrl}/api/search`, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Accept-Language': request.language,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(request),
+    headers,
+    body: JSON.stringify(requestBody),
   });
 
   const body = await parseJson(response);
@@ -426,14 +435,19 @@ export async function searchAvailability(request: BookingSearchRequest): Promise
 }
 
 export async function createPayPalHold(request: CreatePayPalHoldRequest): Promise<PayPalHoldResponse> {
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    'Accept-Language': request.language,
+    'Content-Type': 'application/json',
+    'Idempotency-Key': createIdempotencyKey('hold'),
+  };
+  if (request.captchaToken) {
+    headers['X-Captcha-Token'] = request.captchaToken;
+  }
+
   const response = await fetch(`${apiBaseUrl}/api/holds`, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Accept-Language': request.language,
-      'Content-Type': 'application/json',
-      'Idempotency-Key': createIdempotencyKey('hold'),
-    },
+    headers,
     body: JSON.stringify({
       quoteId: request.quoteId,
       bookingSessionId: request.bookingSessionId,

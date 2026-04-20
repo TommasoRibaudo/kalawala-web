@@ -871,3 +871,11 @@
     flex: 1 1 100%;
   }
 }
+
+.booking-captcha-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 18px;
+}

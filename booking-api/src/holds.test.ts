@@ -528,7 +528,7 @@ test("POST /api/holds creates a local hold and Smoobu blocked-channel provisiona
     totalAmountCents: 51000,
     expiresAt: "2026-04-15T19:00:00.000Z",
   });
-  expect(storedSession?.portalPasswordHash).toMatch(/^scrypt\$N16384r8p1\$/);
+  expect(storedSession?.portalPasswordHash).toMatch(/^scryptN16384r8p1/);
   expect(storedSession?.portalPasswordHash).not.toContain("correct horse battery staple");
   expect(storedHold).toMatchObject({
     status: "active",

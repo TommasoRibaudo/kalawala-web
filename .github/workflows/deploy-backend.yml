@@ -357,15 +357,10 @@ jobs:
           aws lambda wait function-updated \
             --function-name ${{ needs.terraform-apply.outputs.webhooks_lambda_name }}
 
-      - name: Smoke test — booking API health check
+      - name: Smoke test — post-deploy checks
+        env:
+          BOOKING_API_BASE_URL: ${{ secrets.BOOKING_API_BASE_URL }}
+          SMOKE_ORIGIN: https://kalawala.com
         run: |
           sleep 5
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Origin: https://kalawala.com" \
-            "${{ secrets.BOOKING_API_BASE_URL }}/health" || echo "000")
-          echo "Health check status: $HTTP_STATUS"
-          if [[ "$HTTP_STATUS" != "200" ]]; then
-            echo "::error::Smoke test failed — /health returned $HTTP_STATUS (expected 200)"
-            exit 1
-          fi
-          echo "Smoke test passed."
+          bash scripts/smoke-test.sh

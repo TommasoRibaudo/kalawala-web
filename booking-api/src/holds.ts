@@ -1065,8 +1065,9 @@ function buildHoldResponse(
 
 // Explicit scrypt cost parameters: N=16384, r=8, p=1 (Node.js defaults).
 // Encoded in the version tag so future cost-factor upgrades are auditable.
+// Format: <SCRYPT_VERSION_TAG><salt-hex><base64-derived> — must match portalAuth.ts verifyPortalPassword().
 const SCRYPT_PARAMS: ScryptOptions = { N: 16384, r: 8, p: 1 };
-const SCRYPT_VERSION_TAG = "N16384r8p1";
+const SCRYPT_VERSION_TAG = "scryptN16384r8p1";
 
 function scryptWithOptions(password: string, salt: string, keylen: number, options: ScryptOptions): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -1080,7 +1081,7 @@ function scryptWithOptions(password: string, salt: string, keylen: number, optio
 async function hashPortalPassword(password: string): Promise<string> {
   const salt = randomUUID().replace(/-/g, "");
   const derived = await scryptWithOptions(password, salt, 64, SCRYPT_PARAMS);
-  return `scrypt$${SCRYPT_VERSION_TAG}$${salt}$${derived.toString("base64")}`;
+  return `${SCRYPT_VERSION_TAG}${salt}${derived.toString("base64")}`;
 }
 
 function parseSmoobuReservationId(data: SmoobuCreateReservationResponse): number {

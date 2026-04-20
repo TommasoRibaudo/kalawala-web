@@ -21,6 +21,7 @@ import SocialStatement from "../../../components/SocialStatement/SocialStatement
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
+import CalendarWithPriceDots from "../../../components/CalendarWithPriceDots/CalendarWithPriceDots.component";
 
 
 const ListingVillaMarES = () => {
@@ -129,6 +130,7 @@ const ListingVillaMarES = () => {
                     {/* Add price and confirmation section above Smoobu */}
                     <PriceConfirmationSection propertyKey="VillaMar" isSpanish={true} />
                     <Smoobu homeCode={houseData!.houseCode} />
+                    <CalendarWithPriceDots apartmentSlug="VillaMar" language="es" />
                 </Col>
             </Row>
 

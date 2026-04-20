@@ -21,6 +21,7 @@ import SocialStatement from "../../../components/SocialStatement/SocialStatement
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
+import CalendarWithPriceDots from "../../../components/CalendarWithPriceDots/CalendarWithPriceDots.component";
 
 
 const ListingGecoES = () => {
@@ -135,6 +136,7 @@ const ListingGecoES = () => {
                     {/* Add price and confirmation above Smoobu */}
                     <PriceConfirmationSection propertyKey="Geco" isSpanish={true} />
                     <Smoobu homeCode={houseData!.houseCode} />
+                    <CalendarWithPriceDots apartmentSlug="Geco" language="es" />
                 </Col>
             </Row>
 

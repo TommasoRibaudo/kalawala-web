@@ -21,6 +21,7 @@ import SocialStatement from "../../../components/SocialStatement/SocialStatement
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
+import CalendarWithPriceDots from "../../../components/CalendarWithPriceDots/CalendarWithPriceDots.component";
 
 
 const ListingArekaES = () => {
@@ -122,6 +123,7 @@ const ListingArekaES = () => {
                     {/* Add price and confirmation section above Smoobu */}
                     <PriceConfirmationSection propertyKey="Areka" isSpanish={true} />
                     <Smoobu homeCode={houseData!.houseCode} />
+                    <CalendarWithPriceDots apartmentSlug="Areka" language="es" />
                 </Col>
             </Row>
 

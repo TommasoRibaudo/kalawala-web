@@ -21,6 +21,7 @@ import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHigh
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
+import CalendarWithPriceDots from "../../../components/CalendarWithPriceDots/CalendarWithPriceDots.component";
 
 
 const ListingVillaCoral = () => {
@@ -129,6 +130,7 @@ const ListingVillaCoral = () => {
                     {/* Add price and confirmation above Smoobu */}
                     <PriceConfirmationSection propertyKey="VillaCoral" isSpanish={false} />
                     <Smoobu homeCode={houseData!.houseCode} />
+                    <CalendarWithPriceDots apartmentSlug="VillaCoral" language="en" />
                 </Col>
             </Row>
 

@@ -21,6 +21,7 @@ import SocialStatement from "../../../components/SocialStatement/SocialStatement
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
+import CalendarWithPriceDots from "../../../components/CalendarWithPriceDots/CalendarWithPriceDots.component";
 
 
 const ListingPlumeriaES = () => {
@@ -121,6 +122,7 @@ const ListingPlumeriaES = () => {
                     {/* Add price and confirmation section above Smoobu */}
                     <PriceConfirmationSection propertyKey="Plumeria" isSpanish={true} />
                     <Smoobu homeCode={houseData!.houseCode} />
+                    <CalendarWithPriceDots apartmentSlug="Plumeria" language="es" />
                 </Col>
             </Row>
 

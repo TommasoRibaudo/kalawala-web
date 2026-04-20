@@ -21,6 +21,7 @@ import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHigh
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
+import CalendarWithPriceDots from "../../../components/CalendarWithPriceDots/CalendarWithPriceDots.component";
 
 
 const ListingPappagallo = () => {
@@ -129,6 +130,7 @@ const ListingPappagallo = () => {
                     {/* Add price and confirmation above Smoobu */}
                     <PriceConfirmationSection propertyKey="Pappagallo" isSpanish={false} />
                     <Smoobu homeCode={houseData!.houseCode} />
+                    <CalendarWithPriceDots apartmentSlug="Pappagallo" language="en" />
                 </Col>
             </Row>
 

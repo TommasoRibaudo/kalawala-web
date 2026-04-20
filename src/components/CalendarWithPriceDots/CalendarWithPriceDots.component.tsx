@@ -72,6 +72,8 @@ const CalendarWithPriceDots: React.FC<CalendarWithPriceDotsProps> = ({ apartment
   const [monthData, setMonthData] = React.useState<MonthDataByKey>({});
   const [loadingMonth, setLoadingMonth] = React.useState<string | null>(null);
   const [errorMonth, setErrorMonth] = React.useState<string | null>(null);
+  const [isInView, setIsInView] = React.useState(false);
+  const sectionRef = React.useRef<HTMLElement>(null);
   const visibleMonthDataKey = getMonthDataKey(apartmentSlug, language, visibleMonth);
   const data = monthData[visibleMonthDataKey];
   const monthDataRef = React.useRef(monthData);
@@ -83,11 +85,36 @@ const CalendarWithPriceDots: React.FC<CalendarWithPriceDotsProps> = ({ apartment
     [data]
   );
 
+  // Lazy-load: only fetch calendar data once the component scrolls into view
+  React.useEffect(() => {
+    if (!sectionRef.current || typeof IntersectionObserver === 'undefined') {
+      setIsInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   React.useEffect(() => {
     monthDataRef.current = monthData;
   }, [monthData]);
 
   React.useEffect(() => {
+    if (!isInView) {
+      return;
+    }
+
     let isCancelled = false;
     const requestKey = getMonthDataKey(apartmentSlug, language, visibleMonth);
     const loadedResponse = loadedMonthResponsesRef.current[requestKey];
@@ -174,7 +201,7 @@ const CalendarWithPriceDots: React.FC<CalendarWithPriceDotsProps> = ({ apartment
     return () => {
       isCancelled = true;
     };
-  }, [apartmentSlug, language, visibleMonth]);
+  }, [apartmentSlug, language, visibleMonth, isInView]);
 
   const goToMonth = (offset: number) => {
     setVisibleMonth((month) => {
@@ -202,7 +229,7 @@ const CalendarWithPriceDots: React.FC<CalendarWithPriceDotsProps> = ({ apartment
   const calendarDays = getCalendarDays(visibleMonth);
 
   return (
-    <section className="calendar-with-price-dots" aria-labelledby={`calendar-title-${apartmentSlug}`}>
+    <section ref={sectionRef} className="calendar-with-price-dots" aria-labelledby={`calendar-title-${apartmentSlug}`}>
       <div className="calendar-with-price-dots__header">
         <div>
           <h2 id={`calendar-title-${apartmentSlug}`}>{strings.title}</h2>

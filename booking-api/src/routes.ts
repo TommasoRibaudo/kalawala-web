@@ -15,6 +15,7 @@ import { handleSmoobuWebhook } from "./smoobuWebhooks";
 import { BookingApiConfig, RouteRequest } from "./types";
 import {
   assertJsonObject,
+  validateBookingSessionPathParams,
   validateBookingSessionRequest,
   validateCalendarRequest,
   validateCancellationRequest,
@@ -22,6 +23,7 @@ import {
   validateDepositHandoffQuery,
   validateHoldRequest,
   validatePayPalCaptureRequest,
+  validatePayPalCapturePathRequest,
   validatePortalLogin,
   validatePortalMessage,
   validateReservationPublicId,
@@ -66,9 +68,27 @@ export function createRouter(config: BookingApiConfig): Router {
   );
 
   router.post(
+    "/api/bookings/:bookingSessionId/paypal/create-order",
+    async (request) => {
+      const body = validateBookingSessionPathParams(request.pathParams);
+      return handleCreatePayPalOrder(body, request, config);
+    },
+    { requireIdempotencyKey: true, abuseProtection: "paymentCreate" }
+  );
+
+  router.post(
     "/api/paypal/capture",
     async (request) => {
       const body = validatePayPalCaptureRequest(request.body);
+      return handleCapturePayPalOrder(body, request, config);
+    },
+    { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "paymentCapture" }
+  );
+
+  router.post(
+    "/api/bookings/:bookingSessionId/paypal/capture",
+    async (request) => {
+      const body = validatePayPalCapturePathRequest(request.pathParams, request.body);
       return handleCapturePayPalOrder(body, request, config);
     },
     { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "paymentCapture" }

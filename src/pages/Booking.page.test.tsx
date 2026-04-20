@@ -12,11 +12,18 @@ jest.mock('posthog-js', () => ({
 }));
 
 const originalFetch = global.fetch;
+const originalLocation = window.location;
 
 afterEach(() => {
   global.fetch = originalFetch;
+  Object.defineProperty(window, 'location', {
+    configurable: true,
+    value: originalLocation,
+  });
+  window.sessionStorage.clear();
   CookieConsentService.clearConsent();
   delete (window as any).gtag;
+  delete (window as any).fbq;
   jest.clearAllMocks();
   jest.restoreAllMocks();
 });
@@ -83,6 +90,18 @@ function mockJsonResponses(responses: Array<{ body: unknown; status?: number }>)
       headers: { 'Content-Type': 'application/json' },
     });
   }) as typeof fetch;
+}
+
+function mockLocationAssign(): jest.Mock {
+  const assign = jest.fn();
+  Object.defineProperty(window, 'location', {
+    configurable: true,
+    value: {
+      ...originalLocation,
+      assign,
+    },
+  });
+  return assign;
 }
 
 test('submits availability search and renders available properties', async () => {
@@ -254,6 +273,488 @@ test('builds Spanish listing links from the property slug and opens them in a ne
   expect(imageListingLink).toHaveAttribute('href', '/GecoES');
   expect(imageListingLink).toHaveAttribute('target', '_blank');
   expect(imageListingLink).toHaveAttribute('rel', 'noopener noreferrer');
+});
+
+test('creates a PayPal hold from the property result card and shows the live hold timer', async () => {
+  const propertyId = 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111';
+  mockJsonResponses([
+    {
+      body: {
+        bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+        quoteId: 'qt_TEST',
+        quoteExpiresAt: '2099-06-01T12:00:00Z',
+        arrivalDate: '2099-06-10',
+        departureDate: '2099-06-14',
+        guests: 2,
+        language: 'en',
+        resultsCount: 1,
+        properties: [
+          {
+            propertyId,
+            slug: 'Geco',
+            listingUrl: '/Geco',
+            name: 'Casa Geco',
+            guestCapacity: 5,
+            thumbnailUrl: 'https://example.com/geco.jpg',
+            amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
+            price: {
+              currency: 'USD',
+              totalAmountCents: 51000,
+              nightlyAverageCents: 12750,
+              nights: 4,
+              includesTaxes: false,
+              rateSource: 'smoobu',
+            },
+            actions: {
+              viewListingUrl: '/Geco',
+              canCreatePayPalHold: true,
+              canUseManualDepositHandoff: true,
+            },
+          },
+        ],
+        availabilityWarnings: [],
+      },
+    },
+    {
+      body: {
+        booking: {
+          bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+          reservationPublicId: 'res_PUBLIC123',
+          status: 'hold_active',
+          language: 'en',
+          arrivalDate: '2099-06-10',
+          departureDate: '2099-06-14',
+          guests: 2,
+          property: {
+            propertyId,
+            slug: 'Geco',
+            listingUrl: '/Geco',
+            name: 'Casa Geco',
+            guestCapacity: 5,
+            thumbnailUrl: 'https://example.com/geco.jpg',
+            amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
+          },
+          price: {
+            currency: 'USD',
+            totalAmountCents: 51000,
+            nightlyAverageCents: 12750,
+            nights: 4,
+            includesTaxes: false,
+            rateSource: 'smoobu',
+          },
+          hold: {
+            status: 'active',
+            expiresAt: '2099-06-01T12:15:00Z',
+          },
+          payment: {
+            method: 'paypal',
+            status: 'pending',
+          },
+        },
+        nextAction: 'create_paypal_order',
+      },
+    },
+    {
+      body: {
+        booking: {
+          bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+          reservationPublicId: 'res_PUBLIC123',
+          status: 'paypal_order_created',
+          language: 'en',
+          arrivalDate: '2099-06-10',
+          departureDate: '2099-06-14',
+          guests: 2,
+          property: {
+            propertyId,
+            slug: 'Geco',
+            listingUrl: '/Geco',
+            name: 'Casa Geco',
+          },
+          price: {
+            currency: 'USD',
+            totalAmountCents: 51000,
+          },
+          hold: {
+            expiresAt: '2099-06-01T12:15:00Z',
+          },
+        },
+        paypal: {
+          orderId: 'PAY-ORDER-123',
+          approvalUrl: 'https://www.sandbox.paypal.com/checkoutnow?token=PAY-ORDER-123',
+        },
+        nextAction: 'approve_paypal_order',
+      },
+    },
+  ]);
+  const assign = mockLocationAssign();
+
+  renderBookingPage();
+
+  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Casa Geco');
+
+  fireEvent.click(screen.getByRole('button', { name: /book with paypal/i }));
+  await screen.findByRole('heading', { name: 'Checkout' });
+
+  fireEvent.change(screen.getByLabelText('First name'), { target: { value: 'Ana' } });
+  fireEvent.change(screen.getByLabelText('Last name'), { target: { value: 'Guest' } });
+  fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'ana@example.com' } });
+  fireEvent.change(screen.getByLabelText('Phone'), { target: { value: '+50688888888' } });
+  fireEvent.change(screen.getByLabelText('Country'), { target: { value: 'Costa Rica' } });
+  fireEvent.change(screen.getByLabelText('Reservation portal password'), { target: { value: 'long-secure-password' } });
+  fireEvent.change(screen.getByLabelText('Message for Kalawala'), { target: { value: 'Late arrival' } });
+  fireEvent.click(screen.getByLabelText('I accept the booking terms.'));
+  fireEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
+
+  await screen.findByText('Your stay is on hold');
+  expect(screen.getByText('Your reservation expires in')).toBeInTheDocument();
+  expect(screen.getByText(/Hold expires at/)).toBeInTheDocument();
+  expect(screen.getByText('res_PUBLIC123')).toBeInTheDocument();
+
+  const holdCall = (global.fetch as jest.Mock).mock.calls[1];
+  const holdOptions = holdCall[1] as RequestInit & { headers: Record<string, string>; body: string };
+  expect(holdCall[0]).toBe('/api/holds');
+  expect(holdOptions.method).toBe('POST');
+  expect(holdOptions.headers).toMatchObject({
+    Accept: 'application/json',
+    'Accept-Language': 'en',
+    'Content-Type': 'application/json',
+  });
+  expect(holdOptions.headers['Idempotency-Key']).toMatch(/^hold-/);
+  expect(JSON.parse(holdOptions.body)).toEqual({
+    quoteId: 'qt_TEST',
+    bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+    propertyId,
+    paymentMethod: 'paypal',
+    guest: {
+      firstName: 'Ana',
+      lastName: 'Guest',
+      email: 'ana@example.com',
+      phone: '+50688888888',
+      country: 'Costa Rica',
+      message: 'Late arrival',
+    },
+    portalPassword: 'long-secure-password',
+    termsAccepted: true,
+    marketingConsent: false,
+  });
+
+  fireEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
+
+  await waitFor(() => {
+    expect(assign).toHaveBeenCalledWith('https://www.sandbox.paypal.com/checkoutnow?token=PAY-ORDER-123');
+  });
+  const orderCall = (global.fetch as jest.Mock).mock.calls[2];
+  const orderOptions = orderCall[1] as RequestInit & { headers: Record<string, string> };
+  expect(orderCall[0]).toBe('/api/bookings/3d0f8ac0-5c30-4b09-bb49-12fd1df120f1/paypal/create-order');
+  expect(orderOptions.method).toBe('POST');
+  expect(orderOptions.headers).toMatchObject({
+    Accept: 'application/json',
+    'Accept-Language': 'en',
+  });
+  expect(orderOptions.headers['Idempotency-Key']).toMatch(/^paypal-order-/);
+});
+
+test('shows a clear message when PayPal hold creation loses the availability race', async () => {
+  const propertyId = 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111';
+  mockJsonResponses([
+    {
+      body: {
+        bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+        quoteId: 'qt_TEST',
+        quoteExpiresAt: '2099-06-01T12:00:00Z',
+        arrivalDate: '2099-06-10',
+        departureDate: '2099-06-14',
+        guests: 2,
+        language: 'en',
+        resultsCount: 1,
+        properties: [
+          {
+            propertyId,
+            slug: 'Geco',
+            listingUrl: '/Geco',
+            name: 'Casa Geco',
+            guestCapacity: 5,
+            thumbnailUrl: 'https://example.com/geco.jpg',
+            amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
+            price: {
+              currency: 'USD',
+              totalAmountCents: 51000,
+              nightlyAverageCents: 12750,
+              nights: 4,
+              includesTaxes: false,
+              rateSource: 'smoobu',
+            },
+            actions: {
+              viewListingUrl: '/Geco',
+              canCreatePayPalHold: true,
+              canUseManualDepositHandoff: true,
+            },
+          },
+        ],
+        availabilityWarnings: [],
+      },
+    },
+    {
+      status: 409,
+      body: {
+        error: {
+          code: 'property_no_longer_available',
+          message: 'No longer available',
+          retryable: false,
+        },
+      },
+    },
+  ]);
+
+  renderBookingPage();
+
+  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Casa Geco');
+
+  fireEvent.click(screen.getByRole('button', { name: /book with paypal/i }));
+  fireEvent.change(screen.getByLabelText('First name'), { target: { value: 'Ana' } });
+  fireEvent.change(screen.getByLabelText('Last name'), { target: { value: 'Guest' } });
+  fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'ana@example.com' } });
+  fireEvent.change(screen.getByLabelText('Reservation portal password'), { target: { value: 'long-secure-password' } });
+  fireEvent.click(screen.getByLabelText('I accept the booking terms.'));
+  fireEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
+
+  await screen.findByText('This home is no longer available for those dates.');
+  expect(screen.queryByText('Your stay is on hold')).not.toBeInTheDocument();
+});
+
+test('captures PayPal payment on the return route using token and stored booking session', async () => {
+  CookieConsentService.acceptAll();
+  (window as any).gtag = jest.fn();
+  (window as any).fbq = jest.fn();
+  window.sessionStorage.setItem(
+    'kalawala_paypal_checkout',
+    JSON.stringify({
+      bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+      paypalOrderId: 'PAY-ORDER-123',
+      reservationPublicId: 'res_PUBLIC123',
+      language: 'en',
+    })
+  );
+  mockJsonResponse({
+    booking: {
+      bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+      reservationPublicId: 'res_PUBLIC123',
+      status: 'booking_confirmed',
+      language: 'en',
+      arrivalDate: '2099-06-10',
+      departureDate: '2099-06-14',
+      guests: 2,
+      confirmedAt: '2099-06-01T12:20:00Z',
+      property: {
+        propertyId: 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111',
+        slug: 'Geco',
+        listingUrl: '/Geco',
+        name: 'Casa Geco',
+      },
+      price: {
+        currency: 'USD',
+        totalAmountCents: 51000,
+      },
+    },
+    payment: {
+      method: 'paypal',
+      status: 'captured',
+      paypalOrderId: 'PAY-ORDER-123',
+      paypalCaptureId: 'PAY-CAP-456',
+      capturedAt: '2099-06-01T12:20:00Z',
+    },
+  });
+
+  renderBookingPage('/book/return?token=PAY-ORDER-123&PayerID=PAYER-456');
+
+  expect(screen.getByText('Processing your PayPal payment')).toBeInTheDocument();
+  await screen.findByText('Your stay is booked.');
+
+  expect(global.fetch).toHaveBeenCalledWith(
+    '/api/bookings/3d0f8ac0-5c30-4b09-bb49-12fd1df120f1/paypal/capture',
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-Language': 'en',
+        'Content-Type': 'application/json',
+        'Idempotency-Key': expect.stringMatching(/^paypal-capture-/),
+      },
+      body: JSON.stringify({
+        paypalOrderId: 'PAY-ORDER-123',
+        payerId: 'PAYER-456',
+      }),
+    }
+  );
+  expect(screen.getByText('res_PUBLIC123')).toBeInTheDocument();
+  expect(screen.getByText('Casa Geco')).toBeInTheDocument();
+  expect(screen.getByText('Jun 10, 2099 to Jun 14, 2099')).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Manage booking' })).toHaveAttribute(
+    'href',
+    '/portal?reservationId=res_PUBLIC123'
+  );
+  expect(window.sessionStorage.getItem('kalawala_paypal_checkout')).toBeNull();
+  expect(window.sessionStorage.getItem('kalawala_booking_confirmation')).toContain('res_PUBLIC123');
+  await waitFor(() =>
+    expect(posthog.capture).toHaveBeenCalledWith(
+      'booking_confirmed',
+      expect.objectContaining({
+        reservation_id: 'res_PUBLIC123',
+        property_id: 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111',
+        property_slug: 'Geco',
+        value: 510,
+        currency: 'USD',
+        payment_method: 'paypal',
+        language: 'en',
+      })
+    )
+  );
+  expect(window.gtag).toHaveBeenCalledWith(
+    'event',
+    'purchase',
+    expect.objectContaining({
+      transaction_id: 'res_PUBLIC123',
+      value: 510,
+      currency: 'USD',
+    })
+  );
+  expect(window.fbq).toHaveBeenCalledWith(
+    'track',
+    'Purchase',
+    expect.objectContaining({
+      value: 510,
+      currency: 'USD',
+      content_ids: ['b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111'],
+    })
+  );
+});
+
+test('renders the confirmed route from stored confirmation data without firing purchase twice', async () => {
+  CookieConsentService.acceptAll();
+  window.sessionStorage.setItem(
+    'kalawala_booking_confirmation',
+    JSON.stringify({
+      booking: {
+        bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+        reservationPublicId: 'res_PUBLIC123',
+        status: 'booking_confirmed',
+        language: 'en',
+        arrivalDate: '2099-06-10',
+        departureDate: '2099-06-14',
+        guests: 2,
+        property: {
+          propertyId: 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111',
+          slug: 'Geco',
+          listingUrl: '/Geco',
+          name: 'Casa Geco',
+        },
+        price: {
+          currency: 'USD',
+          totalAmountCents: 51000,
+        },
+      },
+      payment: {
+        method: 'paypal',
+        status: 'captured',
+        paypalOrderId: 'PAY-ORDER-123',
+      },
+    })
+  );
+  window.sessionStorage.setItem('kalawala_booking_confirmation_tracked_res_PUBLIC123', '1');
+
+  renderBookingPage('/book/confirmed');
+
+  await screen.findByRole('heading', { name: 'Booking confirmed' });
+  expect(screen.getByText('res_PUBLIC123')).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Manage booking' })).toHaveAttribute(
+    'href',
+    '/portal?reservationId=res_PUBLIC123'
+  );
+  expect(posthog.capture).not.toHaveBeenCalledWith('booking_confirmed', expect.anything());
+});
+
+test('renders Spanish confirmation copy and portal link', async () => {
+  window.sessionStorage.setItem(
+    'kalawala_booking_confirmation',
+    JSON.stringify({
+      booking: {
+        bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+        reservationPublicId: 'res_PUBLIC123',
+        status: 'booking_confirmed',
+        language: 'es',
+        arrivalDate: '2099-06-10',
+        departureDate: '2099-06-14',
+        guests: 2,
+        property: {
+          propertyId: 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111',
+          slug: 'Geco',
+          listingUrl: '/GecoES',
+          name: 'Casa Geco',
+        },
+        price: {
+          currency: 'USD',
+          totalAmountCents: 51000,
+        },
+      },
+      payment: {
+        method: 'paypal',
+        status: 'captured',
+        paypalOrderId: 'PAY-ORDER-123',
+      },
+    })
+  );
+
+  renderBookingPage('/bookES/confirmed');
+
+  await screen.findByRole('heading', { name: 'Reserva confirmada' });
+  expect(screen.getByText('Tu estad\u00eda est\u00e1 reservada.')).toBeInTheDocument();
+  expect(screen.getByText('Pago confirmado')).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Gestionar reserva' })).toHaveAttribute(
+    'href',
+    '/portalES?reservationId=res_PUBLIC123'
+  );
+});
+
+test('shows a return error without calling capture when PayPal return context is missing', async () => {
+  global.fetch = jest.fn() as typeof fetch;
+
+  renderBookingPage('/book/return?token=PAY-ORDER-123&PayerID=PAYER-456');
+
+  await screen.findByText('We could not find the PayPal return details for this booking.');
+  expect(global.fetch).not.toHaveBeenCalled();
+});
+
+test('shows capture error and keeps the return page when the capture API fails', async () => {
+  window.sessionStorage.setItem(
+    'kalawala_paypal_checkout',
+    JSON.stringify({
+      bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+      paypalOrderId: 'PAY-ORDER-123',
+      language: 'en',
+    })
+  );
+  mockJsonResponse(
+    {
+      error: {
+        code: 'internal_error',
+        message: 'Capture failed',
+        retryable: false,
+      },
+    },
+    500
+  );
+
+  renderBookingPage('/book/return?token=PAY-ORDER-123&PayerID=PAYER-456');
+
+  expect(screen.getByText('Processing your PayPal payment')).toBeInTheDocument();
+  await screen.findByText('We could not verify the PayPal payment right now. Please contact Kalawala.');
+  expect(screen.queryByText('Your stay is booked.')).not.toBeInTheDocument();
 });
 
 test('validates past arrival date before calling the booking API', async () => {

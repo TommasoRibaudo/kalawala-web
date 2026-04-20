@@ -129,6 +129,13 @@ export function validateBookingSessionRequest(value: unknown): { bookingSessionI
   return { bookingSessionId };
 }
 
+export function validateBookingSessionPathParams(params: Record<string, string>): { bookingSessionId: string } {
+  const errors: FieldErrors = {};
+  const bookingSessionId = requireUuid(params, "bookingSessionId", errors);
+  assertNoErrors(errors);
+  return { bookingSessionId };
+}
+
 export function validatePayPalCaptureRequest(value: unknown): {
   bookingSessionId: string;
   paypalOrderId: string;
@@ -136,6 +143,21 @@ export function validatePayPalCaptureRequest(value: unknown): {
   const body = assertJsonObject(value);
   const errors: FieldErrors = {};
   const bookingSessionId = requireUuid(body, "bookingSessionId", errors);
+  const paypalOrderId = requireTrimmedString(body, "paypalOrderId", errors, 128);
+  assertNoErrors(errors);
+  return { bookingSessionId, paypalOrderId };
+}
+
+export function validatePayPalCapturePathRequest(
+  params: Record<string, string>,
+  value: unknown
+): {
+  bookingSessionId: string;
+  paypalOrderId: string;
+} {
+  const body = assertJsonObject(value);
+  const errors: FieldErrors = {};
+  const bookingSessionId = requireUuid(params, "bookingSessionId", errors);
   const paypalOrderId = requireTrimmedString(body, "paypalOrderId", errors, 128);
   assertNoErrors(errors);
   return { bookingSessionId, paypalOrderId };

@@ -168,7 +168,11 @@ const AppRouter = () => {
       <Routes>
       <Route path="/" element={<Home />} />
       <Route path='/book' element={<BookingPage />} />
+      <Route path='/book/return' element={<BookingPage />} />
+      <Route path='/book/confirmed' element={<BookingPage />} />
       <Route path='/bookES' element={<BookingPage />} />
+      <Route path='/bookES/return' element={<BookingPage />} />
+      <Route path='/bookES/confirmed' element={<BookingPage />} />
       {/*   <Route path='listing'>
         <Route path=':listing' element={<Listing />} />
       </Route> */}

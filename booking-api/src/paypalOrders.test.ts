@@ -224,6 +224,25 @@ function makeOrderEvent(body: unknown, idempotencyKey = "idem-order-pp-test-001"
   };
 }
 
+function makeScopedOrderEvent(bookingSessionId: string, idempotencyKey = "idem-order-scoped-pp-test-001"): LambdaHttpRequest {
+  return {
+    version: "2.0",
+    rawPath: `/api/bookings/${bookingSessionId}/paypal/create-order`,
+    headers: {
+      "idempotency-key": idempotencyKey,
+      origin: "https://kalawala.test",
+      "x-kalawala-device-id": "device-pp-test",
+    },
+    requestContext: {
+      http: {
+        method: "POST",
+        path: `/api/bookings/${bookingSessionId}/paypal/create-order`,
+        sourceIp: "203.0.113.30",
+      },
+    },
+  };
+}
+
 function makeCaptureEvent(body: unknown, idempotencyKey = "idem-capture-pp-test-001"): LambdaHttpRequest {
   return {
     version: "2.0",
@@ -237,6 +256,31 @@ function makeCaptureEvent(body: unknown, idempotencyKey = "idem-capture-pp-test-
     body: JSON.stringify(body),
     requestContext: {
       http: { method: "POST", path: "/api/paypal/capture", sourceIp: "203.0.113.30" },
+    },
+  };
+}
+
+function makeScopedCaptureEvent(
+  bookingSessionId: string,
+  body: unknown,
+  idempotencyKey = "idem-capture-scoped-pp-test-001"
+): LambdaHttpRequest {
+  return {
+    version: "2.0",
+    rawPath: `/api/bookings/${bookingSessionId}/paypal/capture`,
+    headers: {
+      "content-type": "application/json",
+      "idempotency-key": idempotencyKey,
+      origin: "https://kalawala.test",
+      "x-kalawala-device-id": "device-pp-test",
+    },
+    body: JSON.stringify(body),
+    requestContext: {
+      http: {
+        method: "POST",
+        path: `/api/bookings/${bookingSessionId}/paypal/capture`,
+        sourceIp: "203.0.113.30",
+      },
     },
   };
 }
@@ -297,6 +341,29 @@ test("POST /api/paypal/order creates a PayPal order and returns orderId + approv
     nextAction: "approve_paypal_order",
   });
   expect(body.booking.reservationPublicId).toMatch(/^KWL-[A-Z2-9]{8}$/);
+});
+
+test("POST /api/bookings/:bookingSessionId/paypal/create-order creates a PayPal order from the path session ID", async () => {
+  const fetchFn = makeHappyPathFetch();
+  global.fetch = fetchFn as typeof fetch;
+  const handler = createBookingApiHandler(config);
+  const { bookingSessionId } = await setupSessionWithActiveHold(handler);
+
+  const response = await handler(makeScopedOrderEvent(bookingSessionId));
+
+  expect(response.statusCode).toBe(200);
+  const body = JSON.parse(response.body);
+  expect(body).toMatchObject({
+    booking: {
+      bookingSessionId,
+      status: "paypal_order_created",
+    },
+    paypal: {
+      orderId: "PAY-ORDER-123",
+      approvalUrl: "https://www.sandbox.paypal.com/checkoutnow?token=PAY-ORDER-123",
+    },
+    nextAction: "approve_paypal_order",
+  });
 });
 
 test("POST /api/paypal/order sends PayPal-Request-Id header and correct order payload to PayPal", async () => {
@@ -476,6 +543,33 @@ test("POST /api/paypal/capture captures payment and transitions to booking_confi
   });
   expect(body.booking.reservationPublicId).toMatch(/^KWL-[A-Z2-9]{8}$/);
   expect(body.payment.capturedAt).toBe("2026-04-15T18:00:00.000Z");
+});
+
+test("POST /api/bookings/:bookingSessionId/paypal/capture captures using the path session ID", async () => {
+  global.fetch = makeHappyPathFetch() as typeof fetch;
+  const handler = createBookingApiHandler(config);
+  const { bookingSessionId } = await setupSessionWithActiveHold(handler);
+
+  await handler(makeOrderEvent({ bookingSessionId }));
+
+  const captureResp = await handler(
+    makeScopedCaptureEvent(bookingSessionId, { paypalOrderId: "PAY-ORDER-123" })
+  );
+
+  expect(captureResp.statusCode).toBe(200);
+  const body = JSON.parse(captureResp.body);
+  expect(body).toMatchObject({
+    booking: {
+      bookingSessionId,
+      status: "booking_confirmed",
+    },
+    payment: {
+      method: "paypal",
+      status: "captured",
+      paypalOrderId: "PAY-ORDER-123",
+      paypalCaptureId: "PAY-CAP-456",
+    },
+  });
 });
 
 test("POST /api/paypal/capture sends stored PayPal-Request-Id (capture key) to PayPal", async () => {

@@ -120,8 +120,8 @@ function persistenceRepositoriesRequired(routePattern: string, body: unknown): b
   return (
     routePattern === "/api/search" ||
     routePattern === "/api/holds" ||
-    routePattern === "/api/paypal/order" ||
-    routePattern === "/api/paypal/capture" ||
+    isPayPalOrderRoute(routePattern) ||
+    isPayPalCaptureRoute(routePattern) ||
     routePattern === "/api/deposit-handoff" ||
     routePattern === "/api/deposit-handoff/events" ||
     routePattern === "/api/webhooks/paypal" ||
@@ -188,8 +188,8 @@ function holdRepositoryRequired(routePattern: string, body: unknown): boolean {
 
   return (
     routePattern === "/api/holds" ||
-    routePattern === "/api/paypal/order" ||
-    routePattern === "/api/paypal/capture" ||
+    isPayPalOrderRoute(routePattern) ||
+    isPayPalCaptureRoute(routePattern) ||
     routePattern === "/api/webhooks/paypal" ||
     routePattern === "/api/portal/reservation/:reservationPublicId" ||
     routePattern === "/api/portal/reservation/:reservationPublicId/help-request" ||
@@ -199,8 +199,8 @@ function holdRepositoryRequired(routePattern: string, body: unknown): boolean {
 
 function paymentRepositoryRequired(routePattern: string): boolean {
   return (
-    routePattern === "/api/paypal/order" ||
-    routePattern === "/api/paypal/capture" ||
+    isPayPalOrderRoute(routePattern) ||
+    isPayPalCaptureRoute(routePattern) ||
     routePattern === "/api/webhooks/paypal" ||
     routePattern === "/api/portal/reservation/:reservationPublicId" ||
     routePattern === "/api/portal/reservation/:reservationPublicId/help-request" ||
@@ -214,6 +214,20 @@ function webhookEventRepositoryRequired(routePattern: string, body: unknown): bo
   }
 
   return routePattern === "/api/webhooks/paypal";
+}
+
+function isPayPalOrderRoute(routePattern: string): boolean {
+  return (
+    routePattern === "/api/paypal/order" ||
+    routePattern === "/api/bookings/:bookingSessionId/paypal/create-order"
+  );
+}
+
+function isPayPalCaptureRoute(routePattern: string): boolean {
+  return (
+    routePattern === "/api/paypal/capture" ||
+    routePattern === "/api/bookings/:bookingSessionId/paypal/capture"
+  );
 }
 
 function isSmoobuRatesOnlyWebhook(body: unknown): boolean {

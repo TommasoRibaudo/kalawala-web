@@ -64,6 +64,127 @@ export interface DepositHandoffRequest {
   propertyId?: string;
 }
 
+export interface CreatePayPalHoldRequest {
+  quoteId: string;
+  bookingSessionId: string;
+  propertyId: string;
+  language: BookingLanguage;
+  guest: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    country?: string;
+    message?: string;
+  };
+  portalPassword: string;
+  termsAccepted: boolean;
+  marketingConsent?: boolean;
+}
+
+export interface PayPalHoldResponse {
+  booking: {
+    bookingSessionId: string;
+    reservationPublicId: string;
+    status: 'hold_active' | string;
+    language: BookingLanguage;
+    arrivalDate: string;
+    departureDate: string;
+    guests: number;
+    property: {
+      propertyId: string;
+      slug: string;
+      listingUrl: string;
+      name: string;
+      guestCapacity: number;
+      thumbnailUrl: string;
+      amenities: BookingAmenity[];
+    };
+    price: BookingPrice;
+    hold: {
+      status: 'active' | string;
+      expiresAt: string;
+    };
+    payment: {
+      method: 'paypal' | string;
+      status: 'pending' | string;
+    };
+  };
+  nextAction: 'create_paypal_order' | string;
+}
+
+export interface CreatePayPalOrderRequest {
+  bookingSessionId: string;
+  language: BookingLanguage;
+}
+
+export interface PayPalOrderResponse {
+  booking: {
+    bookingSessionId: string;
+    reservationPublicId: string;
+    status: 'paypal_order_created' | 'booking_confirmed' | string;
+    language: BookingLanguage;
+    arrivalDate: string;
+    departureDate: string;
+    guests: number;
+    property?: {
+      propertyId: string;
+      slug: string;
+      listingUrl: string;
+      name: string;
+    };
+    price?: {
+      currency?: string;
+      totalAmountCents?: number;
+    };
+    hold?: {
+      expiresAt?: string;
+    };
+  };
+  paypal?: {
+    orderId: string;
+    approvalUrl: string;
+  };
+  nextAction?: 'approve_paypal_order' | string;
+}
+
+export interface CapturePayPalOrderRequest {
+  bookingSessionId: string;
+  paypalOrderId: string;
+  payerId?: string;
+  language: BookingLanguage;
+}
+
+export interface PayPalCaptureResponse {
+  booking: {
+    bookingSessionId: string;
+    reservationPublicId: string;
+    status: 'booking_confirmed' | string;
+    language: BookingLanguage;
+    arrivalDate: string;
+    departureDate: string;
+    guests: number;
+    confirmedAt?: string;
+    property?: {
+      propertyId: string;
+      slug: string;
+      listingUrl: string;
+      name: string;
+    };
+    price?: {
+      currency?: string;
+      totalAmountCents?: number;
+    };
+  };
+  payment: {
+    method: 'paypal' | string;
+    status: 'captured' | string;
+    paypalOrderId: string;
+    paypalCaptureId?: string;
+    capturedAt?: string;
+  };
+}
+
 export interface DepositHandoffEventRequest {
   quoteId: string;
   propertyId: string;
@@ -227,6 +348,85 @@ export async function searchAvailability(request: BookingSearchRequest): Promise
   return body as BookingSearchResponse;
 }
 
+export async function createPayPalHold(request: CreatePayPalHoldRequest): Promise<PayPalHoldResponse> {
+  const response = await fetch(`${apiBaseUrl}/api/holds`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-Language': request.language,
+      'Content-Type': 'application/json',
+      'Idempotency-Key': createIdempotencyKey('hold'),
+    },
+    body: JSON.stringify({
+      quoteId: request.quoteId,
+      bookingSessionId: request.bookingSessionId,
+      propertyId: request.propertyId,
+      paymentMethod: 'paypal',
+      guest: pruneOptionalFields(request.guest),
+      portalPassword: request.portalPassword,
+      termsAccepted: request.termsAccepted,
+      marketingConsent: request.marketingConsent === true,
+    }),
+  });
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as PayPalHoldResponse;
+}
+
+export async function createPayPalOrder(request: CreatePayPalOrderRequest): Promise<PayPalOrderResponse> {
+  const response = await fetch(
+    `${apiBaseUrl}/api/bookings/${encodeURIComponent(request.bookingSessionId)}/paypal/create-order`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-Language': request.language,
+        'Idempotency-Key': createIdempotencyKey('paypal-order'),
+      },
+    }
+  );
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as PayPalOrderResponse;
+}
+
+export async function capturePayPalOrder(request: CapturePayPalOrderRequest): Promise<PayPalCaptureResponse> {
+  const response = await fetch(
+    `${apiBaseUrl}/api/bookings/${encodeURIComponent(request.bookingSessionId)}/paypal/capture`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-Language': request.language,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': createIdempotencyKey('paypal-capture'),
+      },
+      body: JSON.stringify({
+        paypalOrderId: request.paypalOrderId,
+        payerId: request.payerId,
+      }),
+    }
+  );
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as PayPalCaptureResponse;
+}
+
 export async function getDepositHandoff(request: DepositHandoffRequest): Promise<DepositHandoffResponse> {
   const params = new URLSearchParams({ language: request.language });
   if (request.quoteId) {
@@ -262,7 +462,7 @@ export async function recordDepositHandoffEvent(
       Accept: 'application/json',
       'Accept-Language': request.language,
       'Content-Type': 'application/json',
-      'Idempotency-Key': createIdempotencyKey(),
+      'Idempotency-Key': createIdempotencyKey('deposit'),
     },
     body: JSON.stringify(request),
     keepalive: true,
@@ -393,11 +593,29 @@ function max(values: number[]): number | null {
   return values.length > 0 ? Math.max(...values) : null;
 }
 
-function createIdempotencyKey(): string {
+function createIdempotencyKey(prefix: string): string {
   const randomId =
     typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
       ? crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
-  return `deposit-${randomId}`;
+  return `${prefix}-${randomId}`;
+}
+
+function pruneOptionalFields<T extends Record<string, unknown>>(value: T): T {
+  return Object.entries(value).reduce<Record<string, unknown>>((accumulator, [key, item]) => {
+    if (typeof item === 'string') {
+      const trimmed = item.trim();
+      if (trimmed) {
+        accumulator[key] = trimmed;
+      }
+      return accumulator;
+    }
+
+    if (item !== undefined && item !== null) {
+      accumulator[key] = item;
+    }
+
+    return accumulator;
+  }, {}) as T;
 }

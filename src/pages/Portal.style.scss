@@ -1,0 +1,101 @@
+@import '../styles/variables';
+
+.portal-page {
+  min-height: 100vh;
+  background: $kalawala-light-cream;
+  color: $kalawala-text-gray;
+  font-family: $primary-font;
+}
+
+.portal-login-container {
+  padding: 120px 0 70px;
+}
+
+.portal-login-card {
+  background: $kalawala-opaque-beige;
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 12px;
+  padding: 40px 36px;
+
+  @media (max-width: 576px) {
+    padding: 28px 20px;
+  }
+}
+
+.portal-login-eyebrow {
+  color: $kalawala-dark-green;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.portal-login-card h1 {
+  color: $kalawala-darker-green;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 10px;
+}
+
+.portal-login-subtitle {
+  color: $kalawala-text-gray;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+.portal-login-alert {
+  margin-bottom: 20px;
+}
+
+.portal-login-field {
+  margin-bottom: 20px;
+
+  .form-label {
+    color: $kalawala-darker-green;
+    font-weight: 700;
+  }
+
+  .form-control {
+    border: 1px solid rgba(41, 79, 68, 0.28);
+    border-radius: 8px;
+    color: $kalawala-text-gray;
+    min-height: 48px;
+
+    &:focus {
+      border-color: $kalawala-dark-green;
+      box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
+    }
+  }
+
+  .form-text {
+    color: rgba(23, 23, 23, 0.72);
+    font-size: 13px;
+  }
+}
+
+.portal-login-submit {
+  background-color: $kalawala-darker-green;
+  border-color: $kalawala-darker-green;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  min-height: 52px;
+  margin-top: 8px;
+  padding: 0 28px;
+  width: 100%;
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    background-color: $kalawala-dark-green;
+    border-color: $kalawala-dark-green;
+  }
+
+  &:disabled {
+    opacity: 0.72;
+  }
+}

@@ -1,0 +1,294 @@
+@import '../styles/variables';
+
+.portal-detail-container {
+  padding: 120px 0 70px;
+}
+
+.portal-detail-loading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 0;
+  color: $kalawala-text-gray;
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.portal-detail-card {
+  background: $kalawala-opaque-beige;
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 12px;
+  padding: 40px 36px;
+  margin-bottom: 24px;
+
+  @media (max-width: 576px) {
+    padding: 28px 20px;
+  }
+
+  h1 {
+    color: $kalawala-darker-green;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 28px;
+  }
+}
+
+.portal-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.portal-detail-logout {
+  color: $kalawala-dark-green;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 4px 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    text-decoration: underline;
+    color: $kalawala-darker-green;
+  }
+}
+
+.portal-detail-eyebrow {
+  color: $kalawala-dark-green;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.portal-detail-summary {
+  margin: 0 0 32px;
+  padding: 0;
+
+  &__row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 8px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(41, 79, 68, 0.1);
+
+    &:first-child {
+      border-top: 1px solid rgba(41, 79, 68, 0.1);
+    }
+
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+
+  dt {
+    color: $kalawala-dark-green;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  dd {
+    color: $kalawala-text-gray;
+    font-size: 15px;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__reservation-id {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    font-size: 16px;
+    color: $kalawala-darker-green;
+    letter-spacing: 0.04em;
+  }
+
+  &__property-link {
+    color: $kalawala-darker-green;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.portal-detail-status {
+  display: inline-block;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 10px;
+
+  &--paid,
+  &--captured,
+  &--confirmed,
+  &--booking_confirmed {
+    background: rgba(11, 48, 40, 0.1);
+    color: $kalawala-darker-green;
+  }
+
+  &--pending {
+    background: rgba(255, 193, 7, 0.15);
+    color: #7a5a00;
+  }
+
+  &--failed,
+  &--cancelled {
+    background: rgba(220, 53, 69, 0.1);
+    color: #c82333;
+  }
+
+  &--expired,
+  &--unknown {
+    background: rgba(23, 23, 23, 0.08);
+    color: rgba(23, 23, 23, 0.6);
+  }
+}
+
+.portal-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  &__help {
+    background-color: $kalawala-darker-green;
+    border-color: $kalawala-darker-green;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 700;
+    min-height: 48px;
+    padding: 0 24px;
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      background-color: $kalawala-dark-green;
+      border-color: $kalawala-dark-green;
+    }
+  }
+
+  &__cancel {
+    border-color: rgba(41, 79, 68, 0.4);
+    border-radius: 8px;
+    color: $kalawala-darker-green;
+    font-weight: 700;
+    min-height: 48px;
+    padding: 0 24px;
+
+    &:hover:not(:disabled) {
+      border-color: $kalawala-darker-green;
+      background: rgba(11, 48, 40, 0.05);
+      color: $kalawala-darker-green;
+    }
+  }
+}
+
+.portal-request-panel {
+  background: $kalawala-opaque-beige;
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 12px;
+  padding: 32px 36px;
+  margin-bottom: 24px;
+
+  @media (max-width: 576px) {
+    padding: 24px 20px;
+  }
+
+  h2 {
+    color: $kalawala-darker-green;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  p {
+    color: $kalawala-text-gray;
+    font-size: 15px;
+    margin: 0 0 20px;
+  }
+
+  .form-label {
+    color: $kalawala-darker-green;
+    font-weight: 700;
+  }
+
+  .form-control,
+  .form-select {
+    border: 1px solid rgba(41, 79, 68, 0.28);
+    border-radius: 8px;
+    color: $kalawala-text-gray;
+    min-height: 44px;
+
+    &:focus {
+      border-color: $kalawala-dark-green;
+      box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
+    }
+  }
+
+  &__alert {
+    margin-bottom: 16px;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  &__submit {
+    background-color: $kalawala-darker-green;
+    border-color: $kalawala-darker-green;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 700;
+    min-height: 48px;
+    padding: 0 24px;
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      background-color: $kalawala-dark-green;
+      border-color: $kalawala-dark-green;
+    }
+
+    &:disabled {
+      opacity: 0.72;
+    }
+
+    &--danger {
+      background-color: #c82333;
+      border-color: #c82333;
+
+      &:hover:not(:disabled),
+      &:focus-visible {
+        background-color: #a71d2a;
+        border-color: #a71d2a;
+      }
+    }
+  }
+
+  &__back {
+    color: $kalawala-dark-green;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 0;
+
+    &:hover {
+      text-decoration: underline;
+      color: $kalawala-darker-green;
+    }
+  }
+}

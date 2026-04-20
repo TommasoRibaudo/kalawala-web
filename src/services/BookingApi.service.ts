@@ -232,6 +232,83 @@ export interface DepositHandoffEventResponse {
   messageKey: string;
 }
 
+export interface PortalLoginRequest {
+  reservationPublicId: string;
+  password: string;
+  language: BookingLanguage;
+}
+
+export interface PortalLoginResponse {
+  token: string;
+  reservationPublicId: string;
+  expiresIn: number;
+}
+
+export interface PortalReservationResponse {
+  reservation: {
+    reservationPublicId: string;
+    status: string;
+    language: BookingLanguage;
+    arrivalDate: string;
+    departureDate: string;
+    guests: number;
+    confirmedAt?: string;
+    property?: {
+      propertyId: string;
+      slug: string;
+      listingUrl: string;
+      name: string;
+      guestCapacity: number;
+      thumbnailUrl: string;
+      amenities: BookingAmenity[];
+    };
+    price?: {
+      currency: string;
+      totalAmountCents: number;
+    };
+    guest?: {
+      firstName: string;
+      lastName: string;
+      email: string;
+    };
+  };
+  hold: {
+    status: string;
+    expiresAt: string;
+    smoobuReservationId?: number;
+  } | null;
+  payment: {
+    method: string;
+    status: string;
+    paypalOrderId?: string;
+    currency?: string;
+    totalAmountCents?: number;
+    capturedAt?: string;
+  } | null;
+}
+
+export type PortalHelpRequestType =
+  | 'general'
+  | 'date_change'
+  | 'guest_count_change'
+  | 'arrival_time'
+  | 'other';
+
+export interface PortalHelpRequestBody {
+  type: PortalHelpRequestType;
+  message: string;
+}
+
+export interface PortalCancellationRequestBody {
+  reason: string;
+  message?: string;
+}
+
+export interface PortalRequestResponse {
+  status: string;
+  message: string;
+}
+
 export type CalendarDot = 'green' | 'yellow' | 'red' | 'grey';
 
 export interface CalendarProperty {
@@ -475,6 +552,116 @@ export async function recordDepositHandoffEvent(
   }
 
   return body as DepositHandoffEventResponse;
+}
+
+export async function portalLogin(request: PortalLoginRequest): Promise<PortalLoginResponse> {
+  const response = await fetch(`${apiBaseUrl}/api/portal/login`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-Language': request.language,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      reservationPublicId: request.reservationPublicId,
+      password: request.password,
+      language: request.language,
+    }),
+  });
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as PortalLoginResponse;
+}
+
+export async function getPortalReservation(
+  reservationPublicId: string,
+  token: string,
+  language: BookingLanguage
+): Promise<PortalReservationResponse> {
+  const response = await fetch(
+    `${apiBaseUrl}/api/portal/reservation/${encodeURIComponent(reservationPublicId)}`,
+    {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Accept-Language': language,
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as PortalReservationResponse;
+}
+
+export async function submitPortalHelpRequest(
+  reservationPublicId: string,
+  token: string,
+  request: PortalHelpRequestBody,
+  language: BookingLanguage
+): Promise<PortalRequestResponse> {
+  const response = await fetch(
+    `${apiBaseUrl}/api/portal/reservation/${encodeURIComponent(reservationPublicId)}/help-request`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-Language': language,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        'Idempotency-Key': createIdempotencyKey('portal-help'),
+      },
+      body: JSON.stringify(request),
+    }
+  );
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as PortalRequestResponse;
+}
+
+export async function submitPortalCancellationRequest(
+  reservationPublicId: string,
+  token: string,
+  request: PortalCancellationRequestBody,
+  language: BookingLanguage
+): Promise<PortalRequestResponse> {
+  const response = await fetch(
+    `${apiBaseUrl}/api/portal/reservation/${encodeURIComponent(reservationPublicId)}/cancellation-request`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-Language': language,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        'Idempotency-Key': createIdempotencyKey('portal-cancel'),
+      },
+      body: JSON.stringify(request),
+    }
+  );
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as PortalRequestResponse;
 }
 
 export async function getCalendarMonth(

@@ -7,6 +7,7 @@ import { faCalendarDays, faUser, faWifi, faSnowflake, faCar, faKitchenSet } from
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
 import FixedNavigationES from '../components/FixedNavigation/FixedNavigation.componentES';
 import { useLanguageDetection } from '../hooks/useLanguageDetection';
+import { readPortalToken } from '../services/PortalSession.service';
 import {
   BookingApiError,
   BookingAvailableProperty,
@@ -1530,8 +1531,11 @@ function confirmedBookingPath(language: BookingLanguage): string {
 }
 
 function portalPath(language: BookingLanguage, reservationPublicId: string): string {
-  const basePath = language === 'es' ? '/portalES' : '/portal';
-  return `${basePath}?reservationId=${encodeURIComponent(reservationPublicId)}`;
+  const base = language === 'es' ? '/portalES' : '/portal';
+  if (readPortalToken()) {
+    return `${base}/${encodeURIComponent(reservationPublicId)}`;
+  }
+  return `${base}?reservationId=${encodeURIComponent(reservationPublicId)}`;
 }
 
 function persistPayPalCheckoutState(state: StoredPayPalCheckout): void {

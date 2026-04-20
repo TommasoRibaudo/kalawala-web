@@ -52,6 +52,9 @@ import BestTimeToVisitPuertoES from '../pages/Blog/staticPages_ES/BestTimeToVisi
 import PuertoHiddenGems from '../pages/Blog/staticPages/PuertoHiddenGems';
 import PuertoHiddenGemsES from '../pages/Blog/staticPages_ES/PuertoHiddenGemsES';
 import BookingPage from '../pages/Booking.page';
+import PortalLoginPage from '../pages/Portal.page';
+import PortalDetailPage from '../pages/PortalDetail.page';
+import PortalGuard from '../components/PortalGuard/PortalGuard.component';
 // import About from './About';
 // import Contact from './Contact';
 
@@ -173,6 +176,10 @@ const AppRouter = () => {
       <Route path='/bookES' element={<BookingPage />} />
       <Route path='/bookES/return' element={<BookingPage />} />
       <Route path='/bookES/confirmed' element={<BookingPage />} />
+      <Route path='/portal' element={<PortalLoginPage />} />
+      <Route path='/portalES' element={<PortalLoginPage />} />
+      <Route path='/portal/:reservationPublicId' element={<PortalGuard><PortalDetailPage /></PortalGuard>} />
+      <Route path='/portalES/:reservationPublicId' element={<PortalGuard><PortalDetailPage /></PortalGuard>} />
       {/*   <Route path='listing'>
         <Route path=':listing' element={<Listing />} />
       </Route> */}

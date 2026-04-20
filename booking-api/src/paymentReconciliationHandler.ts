@@ -1,7 +1,11 @@
 import { loadConfig } from "./config";
+import { RdsBookingSessionRepository } from "./bookingSessions";
+import { getPool } from "./db";
 import { createObservability } from "./observability";
+import { RdsPaymentRepository } from "./payments";
 import { createPayPalClient } from "./paypalClient";
 import { reconcilePendingPayments, ReconciliationResult } from "./paymentReconciliation";
+import { BookingApiConfig } from "./types";
 
 /**
  * Lambda entry point for the scheduled payment reconciliation worker.
@@ -11,14 +15,11 @@ import { reconcilePendingPayments, ReconciliationResult } from "./paymentReconci
  * and resolves missing webhooks or stale/abandoned payments.
  *
  * IMPORTANT — Repository wiring:
- * loadConfig() does not yet populate `bookingSessions` or `payments` because
- * the RDS persistence layer has not landed. When it does, loadConfig() must
- * be updated to instantiate the RDS-backed repositories and assign them to
- * config.bookingSessions and config.payments. Without that change this
- * handler remains a no-op. The same applies to holdExpiryHandler.ts.
+ * Default Lambda config gets RDS repositories from the Secrets Manager/RDS
+ * pool path before reconciliation runs.
  *
  * The core logic in reconcilePendingPayments is fully tested with in-memory
- * repositories and ready for real ones.
+ * repositories and is reused unchanged by the RDS-backed worker.
  */
 export async function handler(): Promise<ReconciliationResult> {
   const config = loadConfig();
@@ -26,14 +27,13 @@ export async function handler(): Promise<ReconciliationResult> {
   const observability = createObservability(config.observability);
   const logger = observability.createLogger({ worker: "payment-reconciliation" });
 
-  // Guard: repositories are undefined until loadConfig() is updated to wire
-  // RDS-backed implementations. Log a warning every invocation so the no-op
-  // state is visible in CloudWatch and easy to catch during persistence work.
+  await ensureRepositories(config);
+
   if (!config.bookingSessions || !config.payments) {
     logger.warn("payment_reconciliation_no_repositories", {
       hasBookingSessions: !!config.bookingSessions,
       hasPayments: !!config.payments,
-      note: "Repositories not wired in loadConfig(). Worker is a no-op. See paymentReconciliationHandler.ts header comment.",
+      note: "RDS-backed repositories could not be initialised. Worker is a no-op.",
     });
     return {
       processed: 0,
@@ -53,4 +53,18 @@ export async function handler(): Promise<ReconciliationResult> {
     paypalClient,
     logger,
   });
+}
+
+async function ensureRepositories(config: BookingApiConfig): Promise<void> {
+  if (config.bookingSessions && config.payments) {
+    return;
+  }
+
+  const pool = await getPool({ secretProvider: config.secrets });
+  if (!config.bookingSessions) {
+    config.bookingSessions = new RdsBookingSessionRepository(pool);
+  }
+  if (!config.payments) {
+    config.payments = new RdsPaymentRepository(pool);
+  }
 }

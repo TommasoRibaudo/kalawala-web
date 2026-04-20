@@ -400,7 +400,7 @@ describe("GET /api/portal/reservation/:reservationPublicId", () => {
     expect(body.error.code).toBe("database_health_check_failed");
   });
 
-  it("returns 503 when payments storage is not configured", async () => {
+  it("initializes missing payment storage from RDS and returns 503 when the database is unavailable", async () => {
     const reservationPublicId = await seedConfirmedSession();
     const token = bearerToken(reservationPublicId);
 
@@ -411,7 +411,7 @@ describe("GET /api/portal/reservation/:reservationPublicId", () => {
 
     expect(response.statusCode).toBe(503);
     const body = JSON.parse(response.body);
-    expect(body.error.code).toBe("database_unavailable");
+    expect(body.error.code).toBe("database_health_check_failed");
   });
 });
 

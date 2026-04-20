@@ -1,7 +1,14 @@
 import { randomUUID } from "crypto";
 import { ApiError } from "./http/errors";
 
-export type PaymentStatus = "order_created" | "captured" | "failed";
+export type PaymentStatus =
+  | "pending"
+  | "order_created"
+  | "captured"
+  | "paid"
+  | "failed"
+  | "cancelled"
+  | "refund_flagged";
 
 export interface PaymentRecord {
   id: string;
@@ -42,7 +49,169 @@ export interface PaymentRepository {
   markFailed(bookingSessionId: string): Promise<PaymentRecord>;
 
   /** List all payments with the given status. Used by the reconciliation job. */
-  listByStatus(status: PaymentStatus): Promise<PaymentRecord[]>;
+  listByStatus(status: PaymentStatus, limit?: number): Promise<PaymentRecord[]>;
+}
+
+interface Queryable {
+  query<Row extends object = Record<string, unknown>>(text: string, values?: unknown[]): Promise<{ rows: Row[] }>;
+}
+
+interface PaymentRow {
+  id: string;
+  booking_session_id: string;
+  status: string;
+  amount_cents: number;
+  currency: string;
+  paypal_order_id: string | null;
+  paypal_capture_id: string | null;
+  paypal_order_request_id: string | null;
+  paypal_capture_request_id: string | null;
+  paid_at: string | Date | null;
+  created_at: string | Date;
+  updated_at: string | Date;
+}
+
+const PAYMENT_COLUMNS = `
+  id,
+  booking_session_id,
+  status,
+  amount_cents,
+  currency,
+  paypal_order_id,
+  paypal_capture_id,
+  paypal_order_request_id,
+  paypal_capture_request_id,
+  paid_at,
+  created_at,
+  updated_at
+`;
+
+const PAYMENT_SELECT = `select ${PAYMENT_COLUMNS} from payments`;
+
+export class RdsPaymentRepository implements PaymentRepository {
+  constructor(private readonly pool: Queryable) {}
+
+  async createOrderPayment(input: {
+    bookingSessionId: string;
+    paypalOrderId: string;
+    paypalRequestIdOrder: string;
+    paypalRequestIdCapture: string;
+    currency: string;
+    totalAmountCents: number;
+  }): Promise<PaymentRecord> {
+    try {
+      const result = await this.pool.query<PaymentRow>(
+        `
+          insert into payments (
+            booking_session_id,
+            provider,
+            method,
+            status,
+            amount_cents,
+            currency,
+            paypal_order_id,
+            paypal_order_request_id,
+            paypal_capture_request_id
+          )
+          values ($1, 'paypal', 'paypal', 'order_created', $2, $3, $4, $5, $6)
+          returning ${PAYMENT_COLUMNS}
+        `,
+        [
+          input.bookingSessionId,
+          input.totalAmountCents,
+          input.currency.trim().toUpperCase(),
+          input.paypalOrderId,
+          input.paypalRequestIdOrder,
+          input.paypalRequestIdCapture,
+        ]
+      );
+
+      return mapRequiredPaymentRow(result.rows[0], input.bookingSessionId);
+    } catch (error) {
+      throw mapPaymentInsertError(error);
+    }
+  }
+
+  async getByBookingSessionId(bookingSessionId: string): Promise<PaymentRecord | undefined> {
+    const result = await this.pool.query<PaymentRow>(
+      `${PAYMENT_SELECT} where booking_session_id = $1 limit 1`,
+      [bookingSessionId]
+    );
+    return mapOptionalPaymentRow(result.rows[0]);
+  }
+
+  async markCaptured(input: {
+    bookingSessionId: string;
+    paypalCaptureId: string;
+    capturedAt: string;
+  }): Promise<PaymentRecord> {
+    const result = await this.pool.query<PaymentRow>(
+      `
+        update payments
+        set
+          status = 'captured',
+          paypal_capture_id = $2,
+          paypal_capture_status = 'COMPLETED',
+          paid_at = $3,
+          updated_at = now()
+        where booking_session_id = $1
+          and status = 'order_created'
+        returning ${PAYMENT_COLUMNS}
+      `,
+      [input.bookingSessionId, input.paypalCaptureId, input.capturedAt]
+    );
+
+    if (result.rows[0]) {
+      return mapPaymentRow(result.rows[0]);
+    }
+
+    const existing = await this.getByBookingSessionId(input.bookingSessionId);
+    if (!existing) {
+      throw paymentMissing();
+    }
+    if (existing.status === "captured" && existing.paypalCaptureId === input.paypalCaptureId) {
+      return existing;
+    }
+
+    throw new Error(
+      `Cannot transition payment for booking session ${input.bookingSessionId} to captured: expected order_created, got ${existing.status}.`
+    );
+  }
+
+  async markFailed(bookingSessionId: string): Promise<PaymentRecord> {
+    const result = await this.pool.query<PaymentRow>(
+      `
+        update payments
+        set
+          status = 'failed',
+          failed_at = coalesce(failed_at, now()),
+          updated_at = now()
+        where booking_session_id = $1
+          and status not in ('captured', 'failed')
+        returning ${PAYMENT_COLUMNS}
+      `,
+      [bookingSessionId]
+    );
+
+    if (result.rows[0]) {
+      return mapPaymentRow(result.rows[0]);
+    }
+
+    const existing = await this.getByBookingSessionId(bookingSessionId);
+    if (existing) {
+      return existing;
+    }
+
+    throw paymentMissing();
+  }
+
+  async listByStatus(status: PaymentStatus, limit = 500): Promise<PaymentRecord[]> {
+    const result = await this.pool.query<PaymentRow>(
+      `${PAYMENT_SELECT} where provider = 'paypal' and status = $1 order by created_at asc limit $2`,
+      [status, limit]
+    );
+    return result.rows.map(mapPaymentRow);
+  }
 }
 
 export class InMemoryPaymentRepository implements PaymentRepository {
@@ -127,4 +296,78 @@ export class InMemoryPaymentRepository implements PaymentRepository {
     }
     return record;
   }
+}
+
+function mapOptionalPaymentRow(row: PaymentRow | undefined): PaymentRecord | undefined {
+  return row ? mapPaymentRow(row) : undefined;
+}
+
+function mapRequiredPaymentRow(row: PaymentRow | undefined, bookingSessionId: string): PaymentRecord {
+  if (!row) {
+    throw new Error(`Payment for booking session ${bookingSessionId} was not found.`);
+  }
+
+  return mapPaymentRow(row);
+}
+
+function mapPaymentRow(row: PaymentRow): PaymentRecord {
+  const paypalOrderId = row.paypal_order_id;
+  const paypalRequestIdOrder = row.paypal_order_request_id;
+  const paypalRequestIdCapture = row.paypal_capture_request_id;
+  if (!paypalOrderId || !paypalRequestIdOrder || !paypalRequestIdCapture) {
+    throw new Error(`Payment ${row.id} is missing PayPal identifiers.`);
+  }
+
+  return {
+    id: row.id,
+    bookingSessionId: row.booking_session_id,
+    paypalOrderId,
+    ...(row.paypal_capture_id ? { paypalCaptureId: row.paypal_capture_id } : {}),
+    paypalRequestIdOrder,
+    paypalRequestIdCapture,
+    status: parsePaymentStatus(row.status),
+    currency: row.currency.trim().toUpperCase(),
+    totalAmountCents: row.amount_cents,
+    ...(row.paid_at ? { capturedAt: toIsoString(row.paid_at) } : {}),
+    createdAt: toIsoString(row.created_at),
+    updatedAt: toIsoString(row.updated_at),
+  };
+}
+
+function parsePaymentStatus(status: string): PaymentStatus {
+  if (
+    status === "pending" ||
+    status === "order_created" ||
+    status === "captured" ||
+    status === "paid" ||
+    status === "failed" ||
+    status === "cancelled" ||
+    status === "refund_flagged"
+  ) {
+    return status;
+  }
+
+  throw new Error(`Unsupported payment status from database: ${status}`);
+}
+
+function toIsoString(value: string | Date): string {
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+
+  const timestampMs = Date.parse(value);
+  return Number.isNaN(timestampMs) ? value : new Date(timestampMs).toISOString();
+}
+
+function mapPaymentInsertError(error: unknown): unknown {
+  const pgError = error as { code?: string };
+  if (pgError.code === "23505") {
+    return new ApiError(409, "payment_already_exists", "A payment record already exists for this booking session.");
+  }
+
+  return error;
+}
+
+function paymentMissing(): ApiError {
+  return new ApiError(500, "payment_state_invalid", "Payment record is missing.");
 }

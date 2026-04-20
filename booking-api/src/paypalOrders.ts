@@ -5,7 +5,7 @@ import { HoldRepository } from "./holds";
 import { ApiError } from "./http/errors";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
-import { InMemoryPaymentRepository, PaymentRecord, PaymentRepository } from "./payments";
+import { PaymentRecord, PaymentRepository } from "./payments";
 import { createPayPalClient, PayPalProviderError } from "./paypalClient";
 import { BOOKING_PROPERTIES_BY_ID, listingUrlForLanguage } from "./propertyCatalog";
 import { ApiResponse, BookingApiConfig, RouteObservability, RouteRequest } from "./types";

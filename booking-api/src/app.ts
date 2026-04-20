@@ -3,6 +3,7 @@ import { AbuseGuard } from "./abuseProtection";
 import { RdsBookingSessionRepository } from "./bookingSessions";
 import { getPool } from "./db";
 import { RdsHoldRepository } from "./holds";
+import { RdsPaymentRepository } from "./payments";
 import { assertRouteHardening } from "./http/router";
 import { createObservability } from "./observability";
 import {
@@ -139,7 +140,12 @@ async function ensurePersistenceRepositories(
   }
 
   const holdsRequired = holdRepositoryRequired(routePattern, body);
-  if (config.bookingSessions && (!holdsRequired || config.holds)) {
+  const paymentsRequired = paymentRepositoryRequired(routePattern);
+  if (
+    config.bookingSessions &&
+    (!holdsRequired || config.holds) &&
+    (!paymentsRequired || config.payments)
+  ) {
     return;
   }
 
@@ -155,6 +161,9 @@ async function ensurePersistenceRepositories(
       if (!config.holds) {
         config.holds = new RdsHoldRepository(pool);
       }
+      if (!config.payments) {
+        config.payments = new RdsPaymentRepository(pool);
+      }
     });
     repositoryInitializationByConfig.set(config, initPromise);
   }
@@ -169,6 +178,17 @@ function holdRepositoryRequired(routePattern: string, body: unknown): boolean {
 
   return (
     routePattern === "/api/holds" ||
+    routePattern === "/api/paypal/order" ||
+    routePattern === "/api/paypal/capture" ||
+    routePattern === "/api/webhooks/paypal" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/help-request" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/cancellation-request"
+  );
+}
+
+function paymentRepositoryRequired(routePattern: string): boolean {
+  return (
     routePattern === "/api/paypal/order" ||
     routePattern === "/api/paypal/capture" ||
     routePattern === "/api/webhooks/paypal" ||

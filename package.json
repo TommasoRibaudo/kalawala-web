@@ -7,7 +7,6 @@
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@hcaptcha/react-hcaptcha": "^1.11.0",
     "@react-hook/media-query": "^1.1.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -23,6 +22,7 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
+    "react-google-recaptcha-v3": "^1.10.1",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
@@ -35,13 +35,22 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "postbuild": "react-snap && node scripts/generate-md-pages.js && node scripts/generate-llms-full.js",
     "build-local": "react-scripts build",
     "booking-api:build": "npm --prefix booking-api run build",
     "booking-api:migrate": "npm --prefix booking-api run migrate",
     "booking-api:typecheck": "npm --prefix booking-api run typecheck",
     "booking-api:test": "npm --prefix booking-api run test",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test:e2e": "playwright test --project=chromium",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:report": "playwright show-report",
+    "eject": "react-scripts eject",
+    "local:up": "docker compose up -d",
+    "local:down": "docker compose down",
+    "local:migrate": "npm --prefix booking-api run migrate:local",
+    "local:api": "npm --prefix booking-api run dev"
   },
   "eslintConfig": {
     "extends": [
@@ -62,6 +71,7 @@
     ]
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@types/bonjour": "^3.5.13",
     "@types/express": "^4.17.25",
     "@types/html-minifier-terser": "^7.0.2",
@@ -69,10 +79,74 @@
     "@types/react-helmet": "^6.1.11",
     "@types/react-slick": "^0.23.13",
     "@types/serve-static": "^2.2.0",
+    "react-snap": "^1.23.0",
     "require-context.macro": "^1.2.2"
   },
   "overrides": {
     "serialize-javascript": "6.0.2",
     "underscore": "1.13.8"
-  }
+  },
+  "reactSnap": {
+    "source": "build",
+    "minifyHtml": {
+      "collapseWhitespace": true,
+      "removeComments": true
+    },
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ],
+    "skipThirdPartyRequests": true,
+    "headless": true,
+    "crawl": false,
+    "include": [
+      "/",
+      "/Geco",
+      "/Rana",
+      "/Tucano",
+      "/Pappagallo",
+      "/Delfin",
+      "/Areka",
+      "/Giulia",
+      "/Plumeria",
+      "/VillaMar",
+      "/VillaCoral",
+      "/HomeES",
+      "/GecoES",
+      "/RanaES",
+      "/TucanoES",
+      "/PappagalloES",
+      "/DelfinES",
+      "/ArekaES",
+      "/GiuliaES",
+      "/PlumeriaES",
+      "/VillaMarES",
+      "/VillaCoralES",
+      "/HomeNam",
+      "/HomeNamES",
+      "/HomeVillas",
+      "/HomeVillasES",
+      "/twodaysinpuertoviejo",
+      "/gettingtogandoca",
+      "/travellingtopuertoviejo",
+      "/puertoviejobyplane",
+      "/TenHoursInPuerto",
+      "/bushours",
+      "/cahuitaparkwhattodo",
+      "/indigenousTravelPV",
+      "/bestTimeToVisitPuerto",
+      "/puertoHiddenGems",
+      "/twodaysinpuertoviejoES",
+      "/gettingtogandocaES",
+      "/travellingtopuertoviejoES",
+      "/puertoviejobyplaneES",
+      "/TenHoursInPuertoES",
+      "/bushoursES",
+      "/cahuitaparkwhattodoES",
+      "/indigenousTravelPVES",
+      "/bestTimeToVisitPuertoES",
+      "/puertoHiddenGemsES"
+    ]
+  },
+  "proxy": "http://localhost:4000"
 }

@@ -179,6 +179,53 @@ test("RdsPaymentRepository.markFailed leaves captured and already-failed payment
   ]);
 });
 
+test("RdsPaymentRepository.markRefundFlagged hands a captured payment to staff for a manual refund", async () => {
+  const query = jest.fn(async (_sql: string, values: unknown[]) => ({
+    rows: [
+      {
+        ...BASE_PAYMENT_ROW,
+        status: "refund_flagged",
+        paypal_capture_id: "CAPTURE-123",
+        paid_at: "2026-04-15T18:01:00.000Z",
+        refund_flagged_at: values[1],
+      },
+    ],
+  }));
+  const repo = new RdsPaymentRepository(createPool(query));
+
+  const record = await repo.markRefundFlagged({
+    bookingSessionId: BASE_PAYMENT_ROW.booking_session_id,
+    flaggedAt: "2026-04-20T09:00:00.000Z",
+  });
+
+  expect(record.status).toBe("refund_flagged");
+  expect(record.refundFlaggedAt).toBe("2026-04-20T09:00:00.000Z");
+  // The capture id is what staff needs to issue the refund in PayPal.
+  expect(record.paypalCaptureId).toBe("CAPTURE-123");
+
+  const [sql] = query.mock.calls[0];
+  expect(sql).toContain("status in ('captured', 'paid', 'refund_flagged')");
+  expect(sql).toContain("refund_flagged_at = coalesce(refund_flagged_at, $2)");
+});
+
+test("RdsPaymentRepository.markRefundFlagged leaves an unflaggable payment untouched", async () => {
+  // A cancellation must never fail because the payment never reached 'captured'.
+  const failedRow = { ...BASE_PAYMENT_ROW, status: "failed" };
+  const query = jest
+    .fn()
+    .mockResolvedValueOnce({ rows: [] })
+    .mockResolvedValueOnce({ rows: [failedRow] });
+  const repo = new RdsPaymentRepository(createPool(query));
+
+  const record = await repo.markRefundFlagged({
+    bookingSessionId: BASE_PAYMENT_ROW.booking_session_id,
+    flaggedAt: "2026-04-20T09:00:00.000Z",
+  });
+
+  expect(record.status).toBe("failed");
+  expect(record.refundFlaggedAt).toBeUndefined();
+});
+
 test("RdsPaymentRepository.listByStatus returns matching PayPal payments", async () => {
   const rows = [
     BASE_PAYMENT_ROW,

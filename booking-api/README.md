@@ -56,6 +56,25 @@ npm run build
 npm run migrate
 ```
 
+## Writing migrations
+
+`scripts/migrate.js` applies every pending file in **one transaction**, and
+checksums each one after it is applied — so a file that has already run can
+never be edited. Fix a mistake with a new numbered migration.
+
+Two rules that are easy to trip over:
+
+- **Extending an enum needs its own run.** PostgreSQL allows
+  `alter type ... add value` inside a transaction block, but the new label cannot
+  be *used* until that transaction commits. Keep the `alter type` as a
+  top-level statement (it is rejected inside a `do $$` block), and make sure no
+  migration pending in the same run references the new value in a CHECK, index
+  predicate, INSERT or UPDATE. Land it, then deploy the code that writes it.
+  See `0014_manual_deposit.sql`.
+- **Local Postgres has no TLS.** `npm run migrate:local` sets
+  `BOOKING_API_MIGRATION_SSL=false` and loads `.env.local` for you; the plain
+  `npm run migrate` keeps TLS on for RDS.
+
 ## Environment
 
 | Variable | Purpose |
@@ -69,6 +88,9 @@ npm run migrate
 | `BOOKING_API_ABUSE_PROTECTION_ENABLED` | Optional boolean, defaults to `true`. |
 | `BOOKING_API_CAPTCHA_CHALLENGES_ENABLED` | Optional boolean, defaults to `true`. |
 | `BOOKING_API_RATE_LIMIT_MAX_BUCKETS` | Optional in-memory limiter bucket cap, defaults to `10000`. |
+| `CAPTCHA_PROVIDER` | `recaptcha` (default) or `hcaptcha`. Must match the widget the frontend ships — a mismatch fails every verification and makes challenges unclearable. |
+| `CAPTCHA_SECRET_KEY` | Optional local-dev override for the verification secret. Deployed environments read `captchaSecretKey` from the combined Secrets Manager entry instead. |
+| `CAPTCHA_VERIFY_URL` | Optional verification endpoint override, for tests only. Defaults to the provider's production URL. |
 | `BOOKING_API_SERVICE_NAME` | Optional structured-log/metric service name, defaults to `booking-api`. |
 | `BOOKING_API_ENVIRONMENT` | Optional structured-log/metric environment, defaults to `NODE_ENV` or `local`. |
 | `BOOKING_API_LOG_LEVEL` | Optional log level: `debug`, `info`, `warn`, `error`, or `silent`; defaults to `info`. |

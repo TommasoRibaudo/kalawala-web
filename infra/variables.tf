@@ -49,15 +49,21 @@ variable "availability_zones" {
 }
 
 variable "public_subnet_cidrs" {
-  description = "CIDR blocks for public subnets (API Gateway, NAT gateway)."
+  description = "CIDR blocks for public subnets (NAT gateway, internet-facing resources)."
   type        = list(string)
   default     = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
-variable "private_subnet_cidrs" {
-  description = "CIDR blocks for private subnets (Lambda, RDS, ElastiCache)."
+variable "app_subnet_cidrs" {
+  description = "CIDR blocks for the private application subnets (Lambda functions)."
   type        = list(string)
   default     = ["10.0.11.0/24", "10.0.12.0/24"]
+}
+
+variable "data_subnet_cidrs" {
+  description = "CIDR blocks for the private data subnets (RDS). Kept separate from the app subnets to enforce app/data network segmentation."
+  type        = list(string)
+  default     = ["10.0.21.0/24", "10.0.22.0/24"]
 }
 
 # ---------------------------------------------------------------------------
@@ -80,6 +86,11 @@ variable "booking_api_allowed_origins" {
   description = "Comma-separated list of allowed CORS origins for the booking API."
   type        = string
   default     = ""
+}
+
+variable "smoobu_customer_id" {
+  description = "Smoobu account customer ID, required for availability search."
+  type        = number
 }
 
 variable "booking_api_log_level" {
@@ -155,6 +166,12 @@ variable "frontend_cdn_price_class" {
 # Database (RDS PostgreSQL)
 # ---------------------------------------------------------------------------
 
+variable "db_snapshot_identifier" {
+  description = "Optional RDS snapshot ARN to restore from when creating the DB instance. Leave null for a fresh database. Used during region migration to restore data from a snapshot copied from us-east-1."
+  type        = string
+  default     = null
+}
+
 variable "db_instance_class" {
   description = "RDS instance class."
   type        = string
@@ -195,28 +212,6 @@ variable "db_backup_retention_days" {
   description = "Number of days to retain automated RDS backups (0 disables backups)."
   type        = number
   default     = 7
-}
-
-# ---------------------------------------------------------------------------
-# Cache (ElastiCache Redis)
-# ---------------------------------------------------------------------------
-
-variable "redis_node_type" {
-  description = "ElastiCache node type for the Redis cluster."
-  type        = string
-  default     = "cache.t4g.micro"
-}
-
-variable "redis_engine_version" {
-  description = "Redis engine major/minor version for the ElastiCache replication group."
-  type        = string
-  default     = "7.1"
-}
-
-variable "redis_num_cache_nodes" {
-  description = "Number of cache nodes in the Redis cluster."
-  type        = number
-  default     = 1
 }
 
 # ---------------------------------------------------------------------------
@@ -264,6 +259,27 @@ variable "cloudwatch_alarm_actions_enabled" {
 }
 
 # ---------------------------------------------------------------------------
+# Cost optimization toggles
+# ---------------------------------------------------------------------------
+
+variable "waf_enabled" {
+  description = "Provision the WAF WebACL and its API Gateway association. When false, API Gateway built-in throttling is the only rate control (~$8/month saved)."
+  type        = bool
+  default     = true
+}
+
+variable "nat_gateway_type" {
+  description = "NAT strategy: 'managed' uses the AWS-managed NAT Gateway (~$32/month); 'fck-nat' uses a t4g.nano EC2 instance (~$3/month)."
+  type        = string
+  default     = "managed"
+
+  validation {
+    condition     = contains(["managed", "fck-nat"], var.nat_gateway_type)
+    error_message = "nat_gateway_type must be either \"managed\" or \"fck-nat\"."
+  }
+}
+
+# ---------------------------------------------------------------------------
 # WAF / rate limiting
 # ---------------------------------------------------------------------------
 
@@ -297,12 +313,6 @@ variable "db_secret_name" {
   default     = "kalawala/db"
 }
 
-variable "redis_secret_name" {
-  description = "AWS Secrets Manager secret name that holds the Redis AUTH token and cache endpoint metadata."
-  type        = string
-  default     = "kalawala/redis"
-}
-
 variable "webhook_secret_name" {
   description = "AWS Secrets Manager secret name that holds webhook HMAC signing secrets."
   type        = string
@@ -316,7 +326,47 @@ variable "encryption_secret_name" {
 }
 
 variable "booking_api_secret_name" {
-  description = "AWS Secrets Manager secret name that holds the combined booking API secrets (Smoobu key, PayPal creds, webhook secret, encryption key, portal session secret)."
+  description = "AWS Secrets Manager secret name that holds the combined booking API secrets (Smoobu key, PayPal creds, webhook secret, encryption key, portal session secret, and the optional captchaSecretKey)."
   type        = string
   default     = "kalawala/booking-api"
+}
+
+variable "deposit_receipt_retention_days" {
+  description = "How long uploaded deposit receipts are kept before the S3 lifecycle rule expires them."
+  type        = number
+  default     = 730
+
+  validation {
+    condition     = var.deposit_receipt_retention_days >= 30
+    error_message = "deposit_receipt_retention_days must be at least 30 so receipts outlive a booking dispute."
+  }
+}
+
+variable "staff_notification_email" {
+  description = "Internal address that receives operational alerts (guest cancellations, deposit reviews). Must be a verified SES identity while the account is in the SES sandbox. Leave empty to disable staff notifications."
+  type        = string
+  default     = ""
+}
+
+variable "contact_email" {
+  description = "Guest-facing contact address shown in emails and the deposit handoff."
+  type        = string
+  default     = "reservas.kalawala@gmail.com"
+}
+
+variable "contact_whatsapp_url" {
+  description = "Guest-facing WhatsApp link shown in emails and the deposit handoff."
+  type        = string
+  default     = "https://wa.me/50684632276"
+}
+
+variable "captcha_provider" {
+  description = "CAPTCHA provider used for server-side token verification. Must match the widget the frontend ships (currently Google reCAPTCHA v3 via REACT_APP_CAPTCHA_SITE_KEY). The secret itself lives in the combined booking API secret as `captchaSecretKey`."
+  type        = string
+  default     = "recaptcha"
+
+  validation {
+    condition     = contains(["recaptcha", "hcaptcha"], var.captcha_provider)
+    error_message = "captcha_provider must be either \"recaptcha\" or \"hcaptcha\"."
+  }
 }

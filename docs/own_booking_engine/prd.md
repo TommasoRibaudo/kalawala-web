@@ -252,12 +252,55 @@ Out of MVP:
 - Replacing Smoobu as property management system of record.
 - Multi-property cart bookings.
 - Guest self-service date/property changes.
-- Automated PayPal refunds.
+- Automated PayPal refunds. *(Still out of scope — guest cancellation flags the
+  payment and emails staff the capture ID; the API never calls PayPal's refund
+  endpoint.)*
 - Supporting payment providers beyond PayPal and manual deposit.
-- Custom admin panel or admin accounting/reporting suite.
-- Custom deposit receipt upload and approval workflow.
+- Custom admin panel or admin accounting/reporting suite. *(Still out of scope.
+  Deposit confirmation uses a signed emailed link, not a dashboard or login.)*
+- ~~Custom deposit receipt upload and approval workflow.~~ **Shipped** — see
+  change-control entries CC-1 and CC-2 below.
 
 ## Change Control
+
+### Approved changes
+
+**CC-1 — Guest self-service cancellation.** Guests may now cancel their own
+confirmed bookings from the portal. This changes a state transition gate that was
+previously staff-only.
+
+- Flexible bookings can be cancelled up to 24 hours before check-in, where
+  check-in is defined as 15:00 America/Costa Rica. `arrival_date` is a bare date,
+  so without a fixed hour the boundary would be ambiguous by up to a day.
+- Non-refundable bookings cannot be cancelled online at all.
+- Bookings created before migration 0013 carry no `rate_plan` and fail closed —
+  they cannot be classified retroactively, so those guests are routed to staff.
+- Cancelling deletes the Smoobu reservation, releasing the dates.
+- **Refunds remain manual.** The payment moves to `refund_flagged` and staff are
+  emailed the PayPal capture ID. This deliberately does not automate a refund.
+
+**CC-2 — Manual deposit becomes a real booking.** Reverses the MVP position that
+manual deposit is an offline handoff. That position rested on confirmation
+needing an admin review interface; a signed one-click staff link removed the
+need.
+
+- Deposit checkout collects guest details and a portal password, then creates a
+  Smoobu blocked-channel hold — inventory is now committed on a form submission,
+  which is the material risk in this change.
+- Mitigated by a sliding hold TTL (never past half the time remaining until
+  check-in, capped at `DEPOSIT_HOLD_TTL_HOURS`, default 36) and the existing
+  per-IP hold-creation abuse policy. A per-email concurrent cap is the next lever
+  if abused.
+- Receipts upload directly from the browser to a private S3 bucket.
+- Staff confirm or reject via a signed link. No admin panel, no staff login.
+- The price is frozen at hold creation for the life of the hold — up to 36 hours.
+  If Smoobu rates move in that window, the frozen price is honoured. Accepted.
+- **Not implemented**: magic-byte sniffing and virus scanning on uploads. Both
+  are in the plan's upload-security list and should land before real volume.
+
+### Requires approval
+
+The following require a new task or explicit approval before implementation changes:
 
 The following require a new task or explicit approval before implementation changes:
 

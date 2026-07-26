@@ -1,6 +1,14 @@
 ##############################################################################
-# vpc.tf — VPC, subnets, internet gateway, NAT gateway, route tables,
-#          and security groups for Lambda / RDS / ElastiCache.
+# vpc.tf — VPC, subnets, internet gateway, NAT, route tables, and security
+#          groups for Lambda and RDS.
+#
+# Subnet layout (10.40.0.0/16):
+#   Public   10.40.0.0/22  — NAT, internet-facing
+#   App      10.40.12.0/23 — Lambda functions
+#   Data     10.40.22.0/23 — RDS
+#
+# App and data are separate tiers so database access is constrained by subnet
+# as well as by security group.
 ##############################################################################
 
 ##############################################################################
@@ -51,18 +59,35 @@ resource "aws_subnet" "public" {
 }
 
 # Private subnets — one per AZ.
-# Used for: Lambda functions, RDS, ElastiCache.
+# Used for: Lambda functions (app tier).
 # No direct inbound from internet; outbound via NAT gateway.
 resource "aws_subnet" "private" {
   count = length(var.availability_zones)
 
   vpc_id            = aws_vpc.main.id
-  cidr_block        = var.private_subnet_cidrs[count.index]
+  cidr_block        = var.app_subnet_cidrs[count.index]
   availability_zone = var.availability_zones[count.index]
 
   tags = {
-    Name = "${var.project}-${var.environment}-private-${count.index + 1}"
-    Tier = "private"
+    Name = "${var.project}-${var.environment}-app-${count.index + 1}"
+    Tier = "app"
+  }
+}
+
+# Data subnets — one per AZ.
+# Used for: RDS PostgreSQL.
+# Separate from app subnets to enforce network segmentation between
+# application and data tiers (Req 8.3, 8.4).
+resource "aws_subnet" "data" {
+  count = length(var.availability_zones)
+
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.data_subnet_cidrs[count.index]
+  availability_zone = var.availability_zones[count.index]
+
+  tags = {
+    Name = "${var.project}-${var.environment}-data-${count.index + 1}"
+    Tier = "data"
   }
 }
 
@@ -72,9 +97,30 @@ resource "aws_subnet" "private" {
 # A single NAT gateway is sufficient for dev/staging and keeps costs low.
 # For production HA: provision one NAT GW per AZ and one private route table
 # per AZ, each pointing at the local AZ's NAT gateway.
+#
+# nat_gateway_type = "managed" → AWS-managed NAT Gateway (~$32/month)
+# nat_gateway_type = "fck-nat" → fck-nat t4g.nano EC2 instance (~$3/month)
 ##############################################################################
 
+# fck-nat AMI — resolved only when nat_gateway_type = "fck-nat"
+data "aws_ami" "fck_nat" {
+  count       = var.nat_gateway_type == "fck-nat" ? 1 : 0
+  most_recent = true
+  owners      = ["568608671756"]
+
+  filter {
+    name   = "name"
+    values = ["fck-nat-al2023-*"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["arm64"]
+  }
+}
+
 resource "aws_eip" "nat" {
+  count  = var.nat_gateway_type == "managed" ? 1 : 0
   domain = "vpc"
 
   # EIP must be requested after the IGW is attached so AWS can route it.
@@ -86,7 +132,8 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "main" {
-  allocation_id = aws_eip.nat.id
+  count         = var.nat_gateway_type == "managed" ? 1 : 0
+  allocation_id = aws_eip.nat[0].id
   subnet_id     = aws_subnet.public[0].id
 
   depends_on = [aws_internet_gateway.main]
@@ -114,14 +161,10 @@ resource "aws_route_table" "public" {
   }
 }
 
-# Private route table: default route → NAT gateway.
+# Private route table: default route managed by a separate aws_route resource
+# (see task 5.4) to avoid conflicts between managed NAT and fck-nat modes.
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main.id
-  }
 
   tags = {
     Name = "${var.project}-${var.environment}-rt-private"
@@ -136,12 +179,56 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# Associate each private subnet with the private route table.
+# Associate each app subnet with the private route table.
 resource "aws_route_table_association" "private" {
   count = length(aws_subnet.private)
 
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private.id
+}
+
+# Associate each data subnet with the private route table.
+# Data subnets share the same outbound route (NAT) as app subnets but are
+# in separate CIDRs to enforce network segmentation.
+resource "aws_route_table_association" "data" {
+  count = length(aws_subnet.data)
+
+  subnet_id      = aws_subnet.data[count.index].id
+  route_table_id = aws_route_table.private.id
+}
+
+# Default route for private subnets — managed NAT Gateway mode.
+# Created only when nat_gateway_type = "managed".
+resource "aws_route" "private_nat_managed" {
+  count                  = var.nat_gateway_type == "managed" ? 1 : 0
+  route_table_id         = aws_route_table.private.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.main[0].id
+}
+
+# Default route for private subnets — fck-nat mode.
+# Terraform creates the route entry; fck-nat replaces the target on every boot
+# via ec2:ReplaceRoute (using the IAM policy from task 5.2). The initial target
+# is the IGW as a placeholder — fck-nat will replace it with the actual instance
+# ENI on first boot. lifecycle.ignore_changes prevents Terraform from fighting
+# fck-nat over the route target on subsequent applies.
+resource "aws_route" "private_nat_fck" {
+  count                  = var.nat_gateway_type == "fck-nat" ? 1 : 0
+  route_table_id         = aws_route_table.private.id
+  destination_cidr_block = "0.0.0.0/0"
+  # Placeholder target: fck-nat will replace this with the actual instance ENI
+  # on first boot via ec2:ReplaceRoute. The IGW is used here only so Terraform
+  # can create a valid route entry; it is never used for actual NAT traffic.
+  gateway_id = aws_internet_gateway.main.id
+
+  lifecycle {
+    # fck-nat manages the actual route target (network_interface_id) after the
+    # initial apply via ec2:ReplaceRoute. Ignoring changes here prevents
+    # Terraform from reverting fck-nat's route updates on subsequent applies.
+    ignore_changes = [gateway_id, network_interface_id]
+  }
+
+  depends_on = [aws_autoscaling_group.fck_nat]
 }
 
 ##############################################################################
@@ -211,26 +298,226 @@ resource "aws_security_group" "rds" {
 }
 
 # ---------------------------------------------------------------------------
-# ElastiCache security group
-#
-# Inbound:  Redis (6379) from Lambda SG only.
-# Outbound: none needed (ElastiCache never initiates connections).
+# fck-nat security group
 # ---------------------------------------------------------------------------
-resource "aws_security_group" "elasticache" {
-  name_prefix = "${var.project}-${var.environment}-elasticache-"
-  description = "ElastiCache Redis: accept connections from Lambda SG only."
+resource "aws_security_group" "fck_nat" {
+  count = var.nat_gateway_type == "fck-nat" ? 1 : 0
+
+  name_prefix = "${var.project}-${var.environment}-fck-nat-"
+  description = "fck-nat instance: allow all outbound, inbound only from VPC CIDR."
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description     = "Redis from Lambda."
-    from_port       = 6379
-    to_port         = 6379
-    protocol        = "tcp"
-    security_groups = [aws_security_group.lambda.id]
+    description = "Allow all inbound from VPC (traffic to be NATted)."
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.vpc_cidr]
+  }
+
+  egress {
+    description = "Allow all outbound (internet egress for NATted traffic)."
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
-    Name = "${var.project}-${var.environment}-sg-elasticache"
+    Name = "${var.project}-${var.environment}-sg-fck-nat"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# ---------------------------------------------------------------------------
+# fck-nat IAM role and instance profile
+# ---------------------------------------------------------------------------
+
+data "aws_iam_policy_document" "fck_nat_assume_role" {
+  count = var.nat_gateway_type == "fck-nat" ? 1 : 0
+
+  statement {
+    sid     = "AllowEC2AssumeRole"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "fck_nat" {
+  count = var.nat_gateway_type == "fck-nat" ? 1 : 0
+
+  name               = "${var.project}-${var.environment}-fck-nat"
+  description        = "Allows the fck-nat EC2 instance to self-configure EIP association and route table updates."
+  assume_role_policy = data.aws_iam_policy_document.fck_nat_assume_role[0].json
+
+  tags = {
+    Name = "${var.project}-${var.environment}-fck-nat-role"
+  }
+}
+
+resource "aws_iam_instance_profile" "fck_nat" {
+  count = var.nat_gateway_type == "fck-nat" ? 1 : 0
+
+  name = "${var.project}-${var.environment}-fck-nat"
+  role = aws_iam_role.fck_nat[0].name
+
+  tags = {
+    Name = "${var.project}-${var.environment}-fck-nat-instance-profile"
+  }
+}
+
+data "aws_iam_policy_document" "fck_nat_self_configure" {
+  count = var.nat_gateway_type == "fck-nat" ? 1 : 0
+
+  statement {
+    sid    = "FckNatSelfConfigure"
+    effect = "Allow"
+
+    actions = [
+      "ec2:AssociateAddress",
+      "ec2:ReplaceRoute",
+      "ec2:ModifyInstanceAttribute",
+    ]
+
+    # Scoped to resources tagged with this project to limit blast radius.
+    # The provider's default_tags block stamps Project = "kalawala" onto the
+    # EIP and route table, and the launch template tag_specifications block
+    # stamps it onto the instance, so all three targets match this condition.
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Project"
+      values   = [var.project]
+    }
+  }
+
+  # Describe* actions do NOT support resource-level permissions or
+  # aws:ResourceTag conditions — a conditioned statement denies them outright.
+  # They must be granted separately on "*" with no condition. fck-nat calls
+  # these on boot to resolve its own ENI, the EIP allocation, and the route
+  # table before it can call AssociateAddress / ReplaceRoute.
+  statement {
+    sid    = "FckNatDescribe"
+    effect = "Allow"
+
+    actions = [
+      "ec2:DescribeAddresses",
+      "ec2:DescribeInstances",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DescribeRouteTables",
+      "ec2:DescribeSubnets",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy" "fck_nat_self_configure" {
+  count = var.nat_gateway_type == "fck-nat" ? 1 : 0
+
+  name   = "fck-nat-self-configure"
+  role   = aws_iam_role.fck_nat[0].id
+  policy = data.aws_iam_policy_document.fck_nat_self_configure[0].json
+}
+
+# Session Manager access. The instance has no inbound SSH and sits behind no
+# bastion, so without this there is no way to read its logs and diagnose a
+# failed boot. Also makes the instance usable as the SSM bastion for RDS port
+# forwarding (see MIGRATION_RUNBOOK.md).
+resource "aws_iam_role_policy_attachment" "fck_nat_ssm" {
+  count = var.nat_gateway_type == "fck-nat" ? 1 : 0
+
+  role       = aws_iam_role.fck_nat[0].name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+# ---------------------------------------------------------------------------
+# fck-nat EIP, launch template, and Auto Scaling Group
+# ---------------------------------------------------------------------------
+
+resource "aws_eip" "fck_nat" {
+  count      = var.nat_gateway_type == "fck-nat" ? 1 : 0
+  domain     = "vpc"
+  depends_on = [aws_internet_gateway.main]
+
+  tags = {
+    Name = "${var.project}-${var.environment}-fck-nat-eip"
+  }
+}
+
+resource "aws_launch_template" "fck_nat" {
+  count         = var.nat_gateway_type == "fck-nat" ? 1 : 0
+  name_prefix   = "${var.project}-${var.environment}-fck-nat-"
+  image_id      = data.aws_ami.fck_nat[0].id
+  instance_type = "t4g.nano"
+
+  iam_instance_profile {
+    name = aws_iam_instance_profile.fck_nat[0].name
+  }
+
+  network_interfaces {
+    associate_public_ip_address = true
+    security_groups             = [aws_security_group.fck_nat[0].id]
+    # source_dest_check is disabled by fck-nat on boot via ec2:ModifyInstanceAttribute
+    # (the IAM policy grants this permission; the launch template cannot set it directly)
+  }
+
+  user_data = base64encode(<<-EOT
+    #!/bin/bash
+    echo "eip_id=${aws_eip.fck_nat[0].id}" >> /etc/fck-nat.conf
+    echo "route_table_id=${aws_route_table.private.id}" >> /etc/fck-nat.conf
+
+    # fck-nat.service starts at boot, before cloud-init runs this script, so it
+    # has already read an empty /etc/fck-nat.conf. Without this restart the
+    # instance never claims the EIP and never takes over the private route
+    # table, and NAT silently does not work.
+    service fck-nat restart
+
+    # AL2023 ships the SSM agent enabled, but make it explicit so a failed boot
+    # is always diagnosable via Session Manager.
+    systemctl enable --now amazon-ssm-agent 2>/dev/null || true
+  EOT
+  )
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name    = "${var.project}-${var.environment}-fck-nat"
+      Project = var.project
+    }
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_autoscaling_group" "fck_nat" {
+  count               = var.nat_gateway_type == "fck-nat" ? 1 : 0
+  name_prefix         = "${var.project}-${var.environment}-fck-nat-"
+  min_size            = 1
+  max_size            = 1
+  desired_capacity    = 1
+  vpc_zone_identifier = [aws_subnet.public[0].id]
+
+  launch_template {
+    id      = aws_launch_template.fck_nat[0].id
+    version = "$Latest"
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "${var.project}-${var.environment}-fck-nat"
+    propagate_at_launch = true
   }
 
   lifecycle {

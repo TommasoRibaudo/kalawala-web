@@ -1,12 +1,14 @@
 import { createHash, randomUUID } from "crypto";
 import { BookingSessionRepository } from "./bookingSessions";
 import { createEmailClient } from "./email";
+import { HoldRepository } from "./holds";
 import { ApiError } from "./http/errors";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
 import { PaymentRepository } from "./payments";
 import { BOOKING_PROPERTIES_BY_ID } from "./propertyCatalog";
 import { createPayPalClient, PayPalVerifySignatureInput } from "./paypalClient";
+import { promoteSmoobuReservation } from "./smoobuPromotion";
 import { ApiResponse, BookingApiConfig, RouteRequest } from "./types";
 
 // ─── Webhook event repository ─────────────────────────────────────────────────
@@ -543,6 +545,39 @@ async function handleCaptureCompleted(
     providerObjectId: captureId,
   });
 
+  // Promote the Smoobu reservation from Blocked channel to Direct booking.
+  // Non-fatal: must not affect webhook 2xx response.
+  try {
+    const holds = getHoldRepository(config);
+    if (holds) {
+      const hold = await holds.getByBookingSessionId(session.id).catch(() => undefined);
+      if (hold) {
+        // Extract amount from webhook event; fall back to session totalAmountCents
+        const captureAmount = capture?.amount?.value
+          ? Math.round(parseFloat(capture.amount.value) * 100)
+          : session.totalAmountCents ?? 0;
+
+        await promoteSmoobuReservation(
+          {
+            session,
+            hold,
+            captureId,
+            amountCents: captureAmount,
+            confirmedAt,
+          },
+          holds,
+          config,
+          request.observability
+        );
+      }
+    }
+  } catch (promoError) {
+    request.observability.logger.warn("smoobu_promotion_webhook_error", {
+      bookingSessionId: session.id,
+      error: promoError instanceof Error ? promoError.message : String(promoError),
+    });
+  }
+
   // Send booking_confirmed email — non-fatal; must not affect webhook 2xx response
   try {
     const property = BOOKING_PROPERTIES_BY_ID.get(session.propertyId ?? "");
@@ -640,6 +675,10 @@ function getPaymentRepository(config: BookingApiConfig): PaymentRepository {
     });
   }
   return config.payments;
+}
+
+function getHoldRepository(config: BookingApiConfig): HoldRepository | undefined {
+  return config.holds ?? undefined;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

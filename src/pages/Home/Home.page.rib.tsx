@@ -9,11 +9,9 @@ import OurHomesRIB from "../../components/OurHomes/OurHomes.componentRIB";
 import DiscoverRIB from "../../components/Discover/Discover.componentRIB";
 import PortfolioRIB from "../../components/Portfolio/Portfolio.componentRIB";
 import OurOtherHomesRIB from "../../components/OurOtherHomes/OurOtherHomes.componentRIB";
-import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
+import BookingSearchWidget from "../../components/BookingSearchWidget/BookingSearchWidget.component";
 
 const HomeRib = () => {
-  // Show discount tip when Smoobu component changes size
-  useSmoobuSizeChange({ isSpanishPage: false });
  
 
   return (
@@ -29,6 +27,7 @@ const HomeRib = () => {
       </Helmet>
       <WelcomeSliderRib />
       <FixedNavigationRib isBlog={false} />
+      <BookingSearchWidget isSpanish={false} variant="hero" />
       <OurHomesRIB houseDataList={ribHouseDataEngList} />
       <OurOtherHomesRIB />
       <DiscoverRIB />

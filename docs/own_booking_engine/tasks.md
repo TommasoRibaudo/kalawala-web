@@ -94,11 +94,14 @@ stateDiagram-v2
   PAYPAL_APPROVED --> PAYPAL_CAPTURED
   PAYPAL_CAPTURED --> BOOKING_CONFIRMED
 
-  PAYMENT_METHOD_SELECTED --> DEPOSIT_INSTRUCTIONS_SHOWN
-  DEPOSIT_INSTRUCTIONS_SHOWN --> DEPOSIT_RECEIPT_UPLOADED
-  DEPOSIT_RECEIPT_UPLOADED --> DEPOSIT_UNDER_REVIEW
-  DEPOSIT_UNDER_REVIEW --> BOOKING_CONFIRMED
-  DEPOSIT_UNDER_REVIEW --> DEPOSIT_REJECTED
+  %% Manual deposit reuses the PayPal hold states rather than the DEPOSIT_*
+  %% states originally sketched here. None of those were ever added to the
+  %% booking_status enum or the TS union, and adding them would have meant
+  %% editing ~10 status guards plus the hold-expiry worker. Reusing HOLD_ACTIVE
+  %% means an abandoned deposit is swept by the existing worker for free.
+  PAYMENT_METHOD_SELECTED --> HOLD_ACTIVE
+  HOLD_ACTIVE --> BOOKING_CONFIRMED
+  HOLD_ACTIVE --> BOOKING_CANCELLED
 
   HOLD_ACTIVE --> HOLD_EXPIRED
   HOLD_EXPIRED --> BOOKING_CANCELLED
@@ -159,7 +162,25 @@ Smoobu gives you two building blocks you can use for deposit-based holds:
 - A dedicated **Blocked channel** (`channelId = 11`) (and related “blocked channel auto”), which is a natural fit for temporary holds. citeturn17search0  
 - A **cancel reservation endpoint** (`DELETE /api/reservations/<reservationId>`) which keeps the cancellation in the system as “cancelled booking.” citeturn16search0  
 
-#### MVP decision
+#### Decision — superseded
+
+The MVP position below was reversed once the confirmation step turned out not to
+need an admin UI. What ships now:
+
+- Manual deposit **does** create a Smoobu blocked-channel hold, so the dates come
+  off sale while the transfer clears.
+- Receipt files **are** uploaded, direct from the browser to a private S3 bucket
+  via a presigned URL.
+- There is still **no** review queue or dashboard. Confirmation is a signed
+  one-click staff link with a GET-review / POST-act split.
+- Confirmation is a real state transition to `booking_confirmed`, which grants
+  the guest portal access.
+
+PayPal remains the only *automatic* confirmation path — a deposit booking always
+waits on a human verifying the money arrived.
+
+<details>
+<summary>Original MVP decision (no longer accurate)</summary>
 
 - Do not create an automated Smoobu hold for manual deposit in MVP.
 - Do not upload receipt files in the custom booking engine.
@@ -168,7 +189,7 @@ Smoobu gives you two building blocks you can use for deposit-based holds:
 - Clearly state that manual deposit is not confirmed by the custom engine.
 - Staff handle any accepted manual deposit booking directly in Smoobu or existing business channels.
 
-PayPal remains the only automatic confirmation path in the custom engine.
+</details>
 
 #### Manual deposit handoff flow
 

@@ -16,9 +16,14 @@ import {
   EmailTemplateInput,
   renderBookingConfirmedEmail,
   renderCancelledEmail,
+  renderDepositConfirmedEmail,
   renderDepositHandoffEmail,
+  renderDepositInstructionsEmail,
+  renderGuestCancellationEmail,
+  renderStaffDepositReviewEmail,
   renderHoldCreatedEmail,
   renderPaymentPendingEmail,
+  renderStaffCancellationEmail,
 } from "./emailTemplates";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
@@ -30,6 +35,14 @@ export interface EmailConfig {
   region: string;
   /** Set to true to skip actual SES calls (useful in local/test environments). */
   disabled?: boolean;
+  /** SES configuration set name for delivery tracking (bounces, complaints, etc.). */
+  configurationSetName?: string;
+  /**
+   * Internal address for operational alerts (guest cancellations, deposit
+   * reviews). Unset means those notifications are skipped with a warning rather
+   * than failing the guest request that triggered them.
+   */
+  staffNotificationEmail?: string;
   /** WhatsApp contact URL shown in deposit handoff emails. Defaults to env CONTACT_WHATSAPP_URL. */
   contactWhatsAppUrl?: string;
   /** Contact email address shown in deposit handoff emails. Defaults to env CONTACT_EMAIL. */
@@ -45,6 +58,7 @@ interface SesInput {
   html: string;
   text: string;
   region: string;
+  configurationSetName?: string;
 }
 
 /**
@@ -68,6 +82,7 @@ async function sesSend(input: SesInput): Promise<void> {
         Text: { Data: input.text, Charset: "UTF-8" },
       },
     },
+    ...(input.configurationSetName ? { ConfigurationSetName: input.configurationSetName } : {}),
   });
 
   await client.send(command);
@@ -101,6 +116,7 @@ export class EmailClient {
         html,
         text,
         region: this.config.region,
+        configurationSetName: this.config.configurationSetName,
       });
       this.logger.info("email_sent", { to, subject, ...context });
     } catch (error) {
@@ -159,6 +175,136 @@ export class EmailClient {
     const { subject, html, text } = renderBookingConfirmedEmail(input);
     await this.send(session.guest.email, subject, html, text, {
       template: "booking_confirmed",
+      reservationPublicId: session.reservationPublicId,
+      bookingSessionId: session.id,
+    });
+  }
+
+  /**
+   * Guest-facing confirmation of a self-service cancellation.
+   *
+   * `refundExpected` is false for cancellations inside the no-refund window, so
+   * the guest is not told to expect money back that isn't coming.
+   */
+  async sendGuestCancellation(
+    session: BookingSessionRecord,
+    propertyName: string,
+    options: { paypalCaptureId?: string; refundExpected: boolean }
+  ): Promise<void> {
+    if (!session.guest?.email) return;
+    const input: EmailTemplateInput = {
+      ...buildTemplateInput(session, propertyName),
+      ...(options.paypalCaptureId ? { paypalCaptureId: options.paypalCaptureId } : {}),
+      refundExpected: options.refundExpected,
+      ...(session.cancellationReason ? { cancellationReason: session.cancellationReason } : {}),
+    };
+    const { subject, html, text } = renderGuestCancellationEmail(input);
+    await this.send(session.guest.email, subject, html, text, {
+      template: "guest_cancellation",
+      reservationPublicId: session.reservationPublicId,
+      bookingSessionId: session.id,
+    });
+  }
+
+  /**
+   * Operational alert so staff know to issue the refund by hand. Skipped with a
+   * warning when no staff address is configured — a missing internal address
+   * must never fail the guest's cancellation.
+   */
+  async sendStaffCancellationAlert(
+    session: BookingSessionRecord,
+    propertyName: string,
+    options: { paypalCaptureId?: string; refundExpected: boolean }
+  ): Promise<void> {
+    const recipient = this.config.staffNotificationEmail;
+    if (!recipient) {
+      this.logger.warn("staff_notification_email_not_configured", {
+        template: "staff_cancellation",
+        reservationPublicId: session.reservationPublicId,
+      });
+      return;
+    }
+
+    const input: EmailTemplateInput = {
+      ...buildTemplateInput(session, propertyName),
+      ...(options.paypalCaptureId ? { paypalCaptureId: options.paypalCaptureId } : {}),
+      refundExpected: options.refundExpected,
+      ...(session.cancellationReason ? { cancellationReason: session.cancellationReason } : {}),
+    };
+    const { subject, html, text } = renderStaffCancellationEmail(input);
+    await this.send(recipient, subject, html, text, {
+      template: "staff_cancellation",
+      reservationPublicId: session.reservationPublicId,
+      bookingSessionId: session.id,
+    });
+  }
+
+  /** Guest-facing bank details and hold deadline for a manual deposit booking. */
+  async sendDepositInstructions(
+    session: BookingSessionRecord,
+    propertyName: string,
+    bankInfo: EmailTemplateInput["bankInfo"],
+    depositUploadUrl?: string
+  ): Promise<void> {
+    if (!session.guest?.email) return;
+    const input: EmailTemplateInput = {
+      ...buildTemplateInput(session, propertyName),
+      ...(bankInfo ? { bankInfo } : {}),
+      ...(depositUploadUrl ? { depositUploadUrl } : {}),
+    };
+    const { subject, html, text } = renderDepositInstructionsEmail(input);
+    await this.send(session.guest.email, subject, html, text, {
+      template: "deposit_instructions",
+      reservationPublicId: session.reservationPublicId,
+      bookingSessionId: session.id,
+    });
+  }
+
+  /** Guest-facing confirmation once staff verify the transfer. */
+  async sendDepositConfirmed(session: BookingSessionRecord, propertyName: string): Promise<void> {
+    if (!session.guest?.email) return;
+    const { subject, html, text } = renderDepositConfirmedEmail(buildTemplateInput(session, propertyName));
+    await this.send(session.guest.email, subject, html, text, {
+      template: "deposit_confirmed",
+      reservationPublicId: session.reservationPublicId,
+      bookingSessionId: session.id,
+    });
+  }
+
+  /**
+   * Staff-facing review request carrying the signed confirm/reject links.
+   * Skipped with a warning when no staff address is configured — the guest's
+   * booking must not fail because an internal address is missing.
+   */
+  async sendStaffDepositReview(
+    session: BookingSessionRecord,
+    propertyName: string,
+    options: {
+      confirmUrl: string;
+      rejectUrl: string;
+      bankInfo?: EmailTemplateInput["bankInfo"];
+      receiptUrl?: string;
+    }
+  ): Promise<void> {
+    const recipient = this.config.staffNotificationEmail;
+    if (!recipient) {
+      this.logger.warn("staff_notification_email_not_configured", {
+        template: "staff_deposit_review",
+        reservationPublicId: session.reservationPublicId,
+      });
+      return;
+    }
+
+    const input: EmailTemplateInput = {
+      ...buildTemplateInput(session, propertyName),
+      depositConfirmUrl: options.confirmUrl,
+      depositRejectUrl: options.rejectUrl,
+      ...(options.bankInfo ? { bankInfo: options.bankInfo } : {}),
+      ...(options.receiptUrl ? { depositReceiptUrl: options.receiptUrl } : {}),
+    };
+    const { subject, html, text } = renderStaffDepositReviewEmail(input);
+    await this.send(recipient, subject, html, text, {
+      template: "staff_deposit_review",
       reservationPublicId: session.reservationPublicId,
       bookingSessionId: session.id,
     });

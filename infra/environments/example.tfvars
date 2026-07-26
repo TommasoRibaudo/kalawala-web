@@ -4,7 +4,7 @@
 #
 # Apply: terraform apply -var-file=environments/<env>.tfvars
 
-environment = "dev"       # dev | staging | prod
+environment = "dev" # dev | staging | prod
 aws_region  = "us-east-1"
 
 # Networking
@@ -23,7 +23,7 @@ frontend_static_hosting_enabled = false
 # Booking API Lambda
 booking_api_lambda_memory_mb       = 256
 booking_api_lambda_timeout_seconds = 30
-booking_api_log_level              = "debug"   # debug | info | warn | error
+booking_api_log_level              = "debug" # debug | info | warn | error
 booking_api_allowed_origins        = "http://localhost:3000"
 
 # RDS PostgreSQL
@@ -33,11 +33,6 @@ db_max_allocated_storage_gb = 50
 db_name                     = "kalawala_booking"
 db_multi_az                 = false
 db_backup_retention_days    = 1
-
-# ElastiCache Redis
-redis_node_type       = "cache.t4g.micro"
-redis_engine_version  = "7.1"
-redis_num_cache_nodes = 1
 
 # SES transactional email
 ses_domain_name = "example.com"
@@ -54,6 +49,5 @@ waf_rate_limit_per_5min = 1000
 smoobu_secret_name     = "kalawala/dev/smoobu"
 paypal_secret_name     = "kalawala/dev/paypal"
 db_secret_name         = "kalawala/dev/db"
-redis_secret_name      = "kalawala/dev/redis"
 webhook_secret_name    = "kalawala/dev/webhooks"
 encryption_secret_name = "kalawala/dev/encryption"

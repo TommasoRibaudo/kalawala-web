@@ -3,12 +3,12 @@ import { Alert, Button, Col, Container, Form, Row, Spinner } from 'react-bootstr
 import { Helmet } from 'react-helmet';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarDays, faUser, faWifi, faSnowflake, faCar, faKitchenSet } from '@fortawesome/free-solid-svg-icons';
-import HCaptcha from '@hcaptcha/react-hcaptcha';
+import { faCalendarDays, faUser, faWifi, faSnowflake, faCar, faKitchenSet, faArrowLeft, faCheck, faPlus, faLocationDot, faBath, faPaw, faSwimmingPool } from '@fortawesome/free-solid-svg-icons';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
 import FixedNavigationES from '../components/FixedNavigation/FixedNavigation.componentES';
 import { useLanguageDetection } from '../hooks/useLanguageDetection';
-import { readPortalToken } from '../services/PortalSession.service';
+import { persistPortalSession, savePortalCredentials, readPortalCredentials, removePortalCredentials } from '../services/PortalSession.service';
 import {
   BookingApiError,
   BookingAvailableProperty,
@@ -16,13 +16,17 @@ import {
   BookingLanguage,
   BookingSearchResponse,
   PayPalCaptureResponse,
+  DepositHoldResponse,
   PayPalHoldResponse,
   capturePayPalOrder,
+  createDepositHold,
   createPayPalHold,
   createPayPalOrder,
   getDepositHandoff,
+  portalLogin,
   recordDepositHandoffEvent,
   searchAvailability,
+  uploadDepositReceipt,
 } from '../services/BookingApi.service';
 import {
   trackBookingSearch,
@@ -36,6 +40,8 @@ import { CookieConsentService } from '../services/CookieConsent.service';
 import { bookingStrings, BookingStrings } from './Booking.i18n';
 import './Booking.style.scss';
 
+type WizardStep = 'search' | 'results' | 'checkout' | 'deposit' | 'confirmation';
+
 type WarningStringKey =
   | 'warningMinimumStay'
   | 'warningGuestCapacity'
@@ -43,18 +49,15 @@ type WarningStringKey =
   | 'warningLeadTime'
   | 'warningGapRule';
 
-type DepositInstructionStringKey =
-  | 'depositBankInstructions'
-  | 'depositStaffWillConfirm'
-  | 'depositNoReceiptUpload'
-  | 'depositContactUs';
+const amenityIcons: Record<string, typeof faWifi> = { ac: faSnowflake, kitchen: faKitchenSet, parking: faCar, wifi: faWifi, bath: faBath, pet: faPaw, pool: faSwimmingPool };
 
-const amenityIcons: Record<string, typeof faWifi> = {
-  ac: faSnowflake,
-  kitchen: faKitchenSet,
-  parking: faCar,
-  wifi: faWifi,
-};
+const PUERTO_VIEJO_CENTER_SLUGS = new Set(['geco', 'rana', 'tucano', 'pappagallo', 'delfin']);
+
+function getPropertyLocation(slug: string, strings: BookingStrings): string {
+  return PUERTO_VIEJO_CENTER_SLUGS.has(slug.toLowerCase())
+    ? strings.locationPuertoViejo
+    : strings.locationPlayaChiquita;
+}
 
 const warningMessages: Record<string, WarningStringKey> = {
   minimum_stay_not_met: 'warningMinimumStay',
@@ -62,13 +65,6 @@ const warningMessages: Record<string, WarningStringKey> = {
   arrival_day_restricted: 'warningArrivalDay',
   lead_time_restricted: 'warningLeadTime',
   gap_rule_restricted: 'warningGapRule',
-};
-
-const depositInstructionMessages: Record<string, DepositInstructionStringKey> = {
-  'deposit.bankInstructions': 'depositBankInstructions',
-  'deposit.staffWillConfirm': 'depositStaffWillConfirm',
-  'deposit.noReceiptUpload': 'depositNoReceiptUpload',
-  'deposit.contactUs': 'depositContactUs',
 };
 
 interface PayPalHoldFormState {
@@ -83,15 +79,14 @@ interface PayPalHoldFormState {
 }
 
 const initialPayPalHoldForm: PayPalHoldFormState = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  country: '',
-  message: '',
-  portalPassword: '',
-  termsAccepted: false,
+  firstName: '', lastName: '', email: '', phone: '', country: '', message: '', portalPassword: '', termsAccepted: false,
 };
+
+type DepositReceiptState =
+  | { status: 'idle' }
+  | { status: 'uploading' }
+  | { status: 'uploaded' }
+  | { status: 'error'; message: string };
 
 interface StoredPayPalCheckout {
   bookingSessionId: string;
@@ -103,30 +98,40 @@ interface StoredPayPalCheckout {
 const paypalCheckoutStorageKey = 'kalawala_paypal_checkout';
 const bookingConfirmationStorageKey = 'kalawala_booking_confirmation';
 const bookingConfirmationTrackedPrefix = 'kalawala_booking_confirmation_tracked_';
+const portalAutoLoginKey = 'kalawala_portal_autologin';
 
-// hCaptcha tokens expire after ~120 seconds. After CAPTCHA_TOKEN_TTL_MS the
-// token is cleared and the widget resets so the user is re-prompted rather
-// than silently sending a stale token to the backend.
-const CAPTCHA_TOKEN_TTL_MS = 110_000;
+// Step indicator
+const WIZARD_STEPS: { key: WizardStep; labelKey: 'stepSearch' | 'stepResults' | 'stepCheckout' | 'stepConfirmation' }[] = [
+  { key: 'search', labelKey: 'stepSearch' },
+  { key: 'results', labelKey: 'stepResults' },
+  { key: 'checkout', labelKey: 'stepCheckout' },
+  { key: 'confirmation', labelKey: 'stepConfirmation' },
+];
 
-/**
- * Clears a CAPTCHA token and resets the widget after CAPTCHA_TOKEN_TTL_MS.
- * Returns a cleanup function suitable for useEffect.
- */
-function scheduleCaptchaExpiry(
-  token: string | null,
-  clearToken: () => void,
-  widgetRef: React.RefObject<HCaptcha>
-): (() => void) | undefined {
-  if (!token) {
-    return undefined;
-  }
-  const id = window.setTimeout(() => {
-    clearToken();
-    widgetRef.current?.resetCaptcha();
-  }, CAPTCHA_TOKEN_TTL_MS);
-  return () => window.clearTimeout(id);
+function stepIndex(step: WizardStep): number {
+  if (step === 'deposit') return 2;
+  return WIZARD_STEPS.findIndex((s) => s.key === step);
 }
+
+const StepIndicator = ({ currentStep, strings }: { currentStep: WizardStep; strings: BookingStrings }) => {
+  const current = stepIndex(currentStep);
+  return (
+    <nav className="booking-wizard-steps" aria-label="Booking progress">
+      <ol>
+        {WIZARD_STEPS.map((s, i) => {
+          const isDone = i < current;
+          const isActive = i === current;
+          return (
+            <li key={s.key} className={`booking-wizard-step${isActive ? ' booking-wizard-step--active' : ''}${isDone ? ' booking-wizard-step--done' : ''}`} aria-current={isActive ? 'step' : undefined}>
+              <span className="booking-wizard-step__dot">{isDone ? <FontAwesomeIcon icon={faCheck} /> : i + 1}</span>
+              <span className="booking-wizard-step__label">{strings[s.labelKey]}</span>
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+};
 
 const BookingPage = () => {
   const location = useLocation();
@@ -141,18 +146,18 @@ const BookingPage = () => {
   const paypalReturnAttemptedRef = React.useRef(false);
   const confirmationTrackedRef = React.useRef<string | null>(null);
   const today = React.useMemo(() => getCostaRicaToday(), []);
-  const [arrivalDate, setArrivalDate] = React.useState(() =>
-    getInitialArrivalDate(searchParams.get('arrivalDate'), today)
-  );
-  const [departureDate, setDepartureDate] = React.useState(() =>
-    getInitialDepartureDate(searchParams.get('departureDate'), searchParams.get('arrivalDate'), today)
-  );
+  const [arrivalDate, setArrivalDate] = React.useState(() => getInitialArrivalDate(searchParams.get('arrivalDate'), today));
+  const [departureDate, setDepartureDate] = React.useState(() => getInitialDepartureDate(searchParams.get('departureDate'), searchParams.get('arrivalDate'), today));
   const [guests, setGuests] = React.useState(() => getInitialGuestCount(searchParams.get('guests')));
   const [result, setResult] = React.useState<BookingSearchResponse | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [depositHandoff, setDepositHandoff] = React.useState<DepositHandoffResponse | null>(null);
   const [depositError, setDepositError] = React.useState<string | null>(null);
   const [depositLoadingPropertyId, setDepositLoadingPropertyId] = React.useState<string | null>(null);
+  const [depositProperty, setDepositProperty] = React.useState<BookingAvailableProperty | null>(null);
+  const [depositHoldResponse, setDepositHoldResponse] = React.useState<DepositHoldResponse | null>(null);
+  const [isCreatingDepositHold, setIsCreatingDepositHold] = React.useState(false);
+  const [receiptState, setReceiptState] = React.useState<DepositReceiptState>({ status: 'idle' });
   const [checkoutProperty, setCheckoutProperty] = React.useState<BookingAvailableProperty | null>(null);
   const [holdForm, setHoldForm] = React.useState<PayPalHoldFormState>(initialPayPalHoldForm);
   const [holdFieldErrors, setHoldFieldErrors] = React.useState<Record<string, string>>({});
@@ -164,1087 +169,498 @@ const BookingPage = () => {
   const [paypalCaptureResult, setPayPalCaptureResult] = React.useState<PayPalCaptureResponse | null>(null);
   const [paypalCaptureError, setPayPalCaptureError] = React.useState<string | null>(null);
   const [isCapturingPayPal, setIsCapturingPayPal] = React.useState(isPayPalReturnRoute);
-  const [bookingConfirmation, setBookingConfirmation] = React.useState<PayPalCaptureResponse | null>(() =>
-    isConfirmationRoute ? readBookingConfirmationState() : null
-  );
+  const [bookingConfirmation, setBookingConfirmation] = React.useState<PayPalCaptureResponse | null>(() => isConfirmationRoute ? readBookingConfirmationState() : null);
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const Navigation = language === 'es' ? FixedNavigationES : FixedNavigation;
-
-  // CAPTCHA state — search flow
   const [searchCaptchaRequired, setSearchCaptchaRequired] = React.useState(false);
-  const [searchCaptchaToken, setSearchCaptchaToken] = React.useState<string | null>(null);
-  const searchCaptchaRef = React.useRef<HCaptcha>(null);
-  // CAPTCHA state — hold flow
   const [holdCaptchaRequired, setHoldCaptchaRequired] = React.useState(false);
-  const [holdCaptchaToken, setHoldCaptchaToken] = React.useState<string | null>(null);
-  const holdCaptchaRef = React.useRef<HCaptcha>(null);
-
-  const captchaSiteKey = process.env.REACT_APP_CAPTCHA_SITE_KEY || '';
-
-  // Auto-expire CAPTCHA tokens after CAPTCHA_TOKEN_TTL_MS to avoid sending stale tokens.
-  React.useEffect(
-    () => scheduleCaptchaExpiry(
-      searchCaptchaToken,
-      () => {
-        setSearchCaptchaToken(null);
-        setError(strings.captchaRequired);
-      },
-      searchCaptchaRef
-    ),
-    [searchCaptchaToken, strings.captchaRequired]
-  );
-
-  React.useEffect(
-    () => scheduleCaptchaExpiry(
-      holdCaptchaToken,
-      () => {
-        setHoldCaptchaToken(null);
-        setHoldError(strings.captchaRequired);
-      },
-      holdCaptchaRef
-    ),
-    [holdCaptchaToken, strings.captchaRequired]
-  );
-
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const [nonRefundable, setNonRefundable] = React.useState(false);
   const minDepartureDate = addDays(arrivalDate || today, 1);
 
-  const updateBookingQuery = React.useCallback(
-    (updates: Record<string, string | number>) => {
-      const nextParams = new URLSearchParams(searchParams.toString());
-      Object.entries(updates).forEach(([key, value]) => {
-        nextParams.set(key, String(value));
-      });
-      setSearchParams(nextParams, { replace: true });
-    },
-    [searchParams, setSearchParams]
-  );
+  // Derive wizard step
+  const wizardStep: WizardStep = React.useMemo(() => {
+    if (isConfirmationRoute || bookingConfirmation) return 'confirmation';
+    if (isPayPalReturnRoute) return 'confirmation';
+    if (depositProperty) return 'deposit';
+    if (checkoutProperty) return 'checkout';
+    if (result) return 'results';
+    return 'search';
+  }, [isConfirmationRoute, bookingConfirmation, isPayPalReturnRoute, depositProperty, checkoutProperty, result]);
 
+  React.useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [wizardStep]);
+
+  const updateBookingQuery = React.useCallback((updates: Record<string, string | number>) => {
+    const nextParams = new URLSearchParams(searchParams.toString());
+    Object.entries(updates).forEach(([key, value]) => { nextParams.set(key, String(value)); });
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  // PayPal return capture
   React.useEffect(() => {
-    if (!isPayPalReturnRoute || paypalReturnAttemptedRef.current) {
-      return;
-    }
-
+    if (!isPayPalReturnRoute || paypalReturnAttemptedRef.current) return;
     paypalReturnAttemptedRef.current = true;
     const paypalOrderId = searchParams.get('token')?.trim() ?? '';
     const payerId = searchParams.get('PayerID')?.trim() ?? searchParams.get('payerId')?.trim() ?? '';
     const storedCheckout = readPayPalCheckoutState();
     const bookingSessionId = searchParams.get('bookingSessionId')?.trim() || storedCheckout?.bookingSessionId || '';
     const captureLanguage = storedCheckout?.language ?? language;
-
-    if (!paypalOrderId || !payerId || !bookingSessionId) {
-      setIsCapturingPayPal(false);
-      setPayPalCaptureError(strings.paypalReturnMissing);
-      return;
-    }
-
-    setIsCapturingPayPal(true);
-    setPayPalCaptureError(null);
-
-    capturePayPalOrder({
-      bookingSessionId,
-      paypalOrderId,
-      payerId,
-      language: captureLanguage,
-    })
-      .then((response) => {
-        setPayPalCaptureResult(response);
-        persistBookingConfirmationState(response);
-        clearPayPalCheckoutState(bookingSessionId);
-        navigate(confirmedBookingPath(language), { replace: true });
-      })
-      .catch((captureError) => {
-        setPayPalCaptureError(getPayPalCaptureErrorMessage(captureError, strings));
-      })
-      .finally(() => {
-        setIsCapturingPayPal(false);
-      });
+    if (!paypalOrderId || !payerId || !bookingSessionId) { setIsCapturingPayPal(false); setPayPalCaptureError(strings.paypalReturnMissing); return; }
+    setIsCapturingPayPal(true); setPayPalCaptureError(null);
+    capturePayPalOrder({ bookingSessionId, paypalOrderId, payerId, language: captureLanguage })
+      .then((response) => { setPayPalCaptureResult(response); setBookingConfirmation(response); persistBookingConfirmationState(response); clearPayPalCheckoutState(bookingSessionId); navigate(confirmedBookingPath(language), { replace: true }); })
+      .catch((captureError) => { setPayPalCaptureError(getPayPalCaptureErrorMessage(captureError, strings)); })
+      .finally(() => { setIsCapturingPayPal(false); });
   }, [isPayPalReturnRoute, language, navigate, searchParams, strings]);
 
+  // Confirmation analytics
   React.useEffect(() => {
-    if (!isConfirmationRoute) {
-      return;
-    }
-
+    if (!isConfirmationRoute) return;
     const confirmation = readBookingConfirmationState();
     setBookingConfirmation(confirmation);
-
-    if (!confirmation) {
-      return;
-    }
-
+    if (!confirmation) return;
     const reservationId = confirmation.booking.reservationPublicId;
-    if (confirmationTrackedRef.current === reservationId || wasBookingConfirmationTracked(reservationId)) {
-      return;
-    }
-
-    if (!CookieConsentService.hasConsent('analytics')) {
-      return;
-    }
-
+    if (confirmationTrackedRef.current === reservationId || wasBookingConfirmationTracked(reservationId)) return;
+    if (!CookieConsentService.hasConsent('analytics')) return;
     maybeTrackBookingConfirmation(confirmation);
     markBookingConfirmationTracked(reservationId);
     confirmationTrackedRef.current = reservationId;
   }, [isConfirmationRoute]);
 
   const handleArrivalChange = (value: string) => {
-    setArrivalDate(value);
-    setSearchCaptchaRequired(false);
-    setSearchCaptchaToken(null);
-    searchCaptchaRef.current?.resetCaptcha();
+    setArrivalDate(value); setSearchCaptchaRequired(false);
     const updates: Record<string, string> = { arrivalDate: value };
-    if (value && departureDate <= value) {
-      const nextDepartureDate = addDays(value, 1);
-      setDepartureDate(nextDepartureDate);
-      updates.departureDate = nextDepartureDate;
-    }
+    if (value && departureDate <= value) { const nd = addDays(value, 1); setDepartureDate(nd); updates.departureDate = nd; }
     updateBookingQuery(updates);
   };
+  const handleGuestInputChange = (value: number) => { const n = Number.isFinite(value) ? value : 0; setGuests(n); setSearchCaptchaRequired(false); updateBookingQuery({ guests: n }); };
+  const handleGuestStepChange = (value: number) => { const n = Math.max(1, value); setGuests(n); setSearchCaptchaRequired(false); updateBookingQuery({ guests: n }); };
 
-  const handleGuestInputChange = (value: number) => {
-    const nextGuests = Number.isFinite(value) ? value : 0;
-    setGuests(nextGuests);
-    setSearchCaptchaRequired(false);
-    setSearchCaptchaToken(null);
-    searchCaptchaRef.current?.resetCaptcha();
-    updateBookingQuery({ guests: nextGuests });
-  };
+  const doSearch = React.useCallback(async (captchaToken?: string) => {
+    setError(null); setDepositError(null); setCheckoutProperty(null); setHoldError(null); setHoldResponse(null); setHoldFieldErrors({}); setPayPalOrderError(null); setSearchCaptchaRequired(false); setIsSubmitting(true);
+    try {
+      trackBookingSearch({ arrival_date: arrivalDate, departure_date: departureDate, guests, language, source: 'booking_page' });
+      const response = await searchAvailability({ arrivalDate, departureDate, guests, language, source: 'booking_page', ...(captchaToken ? { captchaToken } : {}) });
+      setResult(response);
+      const minPriceCents = response.properties.length > 0 ? Math.min(...response.properties.map((p) => p.price?.totalAmountCents).filter((v): v is number => v != null)) : null;
+      const firstCurrency = response.properties.find((p) => p.price?.currency)?.price?.currency ?? null;
+      trackAvailabilityResults({ available_count: response.properties.length, min_price_cents: minPriceCents === Infinity ? null : minPriceCents, currency: firstCurrency, arrival_date: arrivalDate, departure_date: departureDate, guests, language });
+    } catch (searchError) {
+      if (searchError instanceof BookingApiError && searchError.status === 403 && searchError.code === 'captcha_required' && !captchaToken && executeRecaptcha) {
+        setSearchCaptchaRequired(true);
+        executeRecaptcha('search').then((token) => { setSearchCaptchaRequired(false); void doSearch(token); }).catch(() => setError(strings.captchaError));
+      } else { setResult(null); setError(getSearchErrorMessage(searchError, strings)); }
+    } finally { setIsSubmitting(false); }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [arrivalDate, departureDate, guests, language, strings, executeRecaptcha]);
 
-  const handleGuestStepChange = (value: number) => {
-    const nextGuests = Math.max(1, value);
-    setGuests(nextGuests);
-    setSearchCaptchaRequired(false);
-    setSearchCaptchaToken(null);
-    searchCaptchaRef.current?.resetCaptcha();
-    updateBookingQuery({ guests: nextGuests });
-  };
-
-  // Core search logic, callable from both the form submit and the post-CAPTCHA retry button.
-  const doSearch = React.useCallback(
-    async (captchaToken?: string) => {
-      setError(null);
-      setDepositError(null);
-      setDepositHandoff(null);
-      setCheckoutProperty(null);
-      setHoldError(null);
-      setHoldResponse(null);
-      setHoldFieldErrors({});
-      setPayPalOrderError(null);
-      setSearchCaptchaRequired(false);
-      setIsSubmitting(true);
-
-      try {
-        trackBookingSearch({
-          arrival_date: arrivalDate,
-          departure_date: departureDate,
-          guests,
-          language,
-          source: 'booking_page',
-        });
-
-        const response = await searchAvailability({
-          arrivalDate,
-          departureDate,
-          guests,
-          language,
-          source: 'booking_page',
-          ...(captchaToken ? { captchaToken } : {}),
-        });
-        setResult(response);
-        setSearchCaptchaToken(null);
-        searchCaptchaRef.current?.resetCaptcha();
-
-        const minPriceCents =
-          response.properties.length > 0
-            ? Math.min(
-                ...response.properties
-                  .map((p) => p.price?.totalAmountCents)
-                  .filter((v): v is number => v != null)
-              )
-            : null;
-        const firstCurrency = response.properties.find((p) => p.price?.currency)?.price?.currency ?? null;
-
-        trackAvailabilityResults({
-          available_count: response.properties.length,
-          min_price_cents: minPriceCents === Infinity ? null : minPriceCents,
-          currency: firstCurrency,
-          arrival_date: arrivalDate,
-          departure_date: departureDate,
-          guests,
-          language,
-        });
-      } catch (searchError) {
-        if (
-          searchError instanceof BookingApiError &&
-          searchError.status === 403 &&
-          searchError.code === 'captcha_required'
-        ) {
-          setSearchCaptchaRequired(true);
-          setError(strings.captchaRequired);
-        } else {
-          setResult(null);
-          setError(getSearchErrorMessage(searchError, strings));
-        }
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [arrivalDate, departureDate, guests, language, strings]
-  );
+  // Auto-search when arriving from BookingSearchWidget with autoSearch=true
+  const autoSearchFiredRef = React.useRef(false);
+  React.useEffect(() => {
+    if (autoSearchFiredRef.current) return;
+    if (searchParams.get('autoSearch') !== 'true') return;
+    if (!arrivalDate || !departureDate) return;
+    if (isPayPalReturnRoute || isConfirmationRoute) return;
+    autoSearchFiredRef.current = true;
+    // Remove autoSearch param so refreshing doesn't re-trigger
+    const nextParams = new URLSearchParams(searchParams.toString());
+    nextParams.delete('autoSearch');
+    setSearchParams(nextParams, { replace: true });
+    doSearch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const validation = validateSearch(arrivalDate, departureDate, guests, today, strings);
     setFieldErrors(validation);
-    if (Object.keys(validation).length > 0) {
-      setResult(null);
-      return;
-    }
+    if (Object.keys(validation).length > 0) { setResult(null); return; }
     doSearch();
   };
 
-  const handleManualDepositHandoff = async (property: BookingAvailableProperty) => {
-    if (!result?.quoteId) {
-      setDepositError(strings.contactHandoffError);
-      return;
-    }
+  // Opens the deposit checkout. The old behaviour — fetching contact details and
+  // reserving nothing — is gone; the guest now fills in the same form as the
+  // PayPal path and gets real dates held.
+  const handleStartDepositCheckout = (property: BookingAvailableProperty) => {
+    if (!result?.quoteId || !result.bookingSessionId) { setDepositError(strings.checkoutUnavailable); return; }
+    setDepositError(null); setCheckoutProperty(null); setHoldError(null); setHoldResponse(null); setPayPalOrderError(null);
+    setDepositProperty(property); setDepositHoldResponse(null); setReceiptState({ status: 'idle' });
+    setHoldForm(initialPayPalHoldForm); setHoldFieldErrors({});
+    if (property.price) { trackPaymentMethodSelected({ quote_id: result.quoteId, property_id: property.propertyId, payment_type: 'manual_deposit', value_cents: property.price.totalAmountCents, currency: property.price.currency, language }); }
+  };
 
-    setDepositLoadingPropertyId(property.propertyId);
-    setDepositError(null);
-    setCheckoutProperty(null);
-    setHoldError(null);
-    setHoldResponse(null);
-    setPayPalOrderError(null);
+  const handleCreateDepositHold = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!result || !depositProperty) { setDepositError(strings.checkoutUnavailable); return; }
 
+    const validation = validatePayPalHoldForm(holdForm, strings);
+    setHoldFieldErrors(validation); setDepositError(null);
+    if (Object.keys(validation).length > 0) return;
+
+    persistPortalAutoLogin(holdForm.portalPassword);
+    setIsCreatingDepositHold(true);
     try {
-      const response = await getDepositHandoff({
-        language,
-        quoteId: result.quoteId,
-        propertyId: property.propertyId,
-      });
-      setDepositHandoff(response);
-    } catch {
-      setDepositError(strings.contactHandoffError);
+      const response = await createDepositHold({ quoteId: result.quoteId, bookingSessionId: result.bookingSessionId, propertyId: depositProperty.propertyId, language, guest: { firstName: holdForm.firstName, lastName: holdForm.lastName, email: holdForm.email, phone: holdForm.phone, country: holdForm.country, message: holdForm.message }, portalPassword: holdForm.portalPassword, termsAccepted: holdForm.termsAccepted });
+      setDepositHoldResponse(response);
+      // The booking is not confirmed yet, but the guest will need these to log in
+      // once staff verify the transfer.
+      if (response.booking?.reservationPublicId) { savePortalCredentials(response.booking.reservationPublicId, holdForm.portalPassword); }
+      if (depositProperty.price) { trackCheckoutStarted({ quote_id: result.quoteId, property_id: depositProperty.propertyId, property_slug: depositProperty.slug, property_name: depositProperty.name, value_cents: depositProperty.price.totalAmountCents, currency: depositProperty.price.currency, arrival_date: result.arrivalDate, departure_date: result.departureDate, guests: result.guests, language }); }
+    } catch (error) {
+      setDepositError(getHoldErrorMessage(error, strings));
     } finally {
-      setDepositLoadingPropertyId(null);
+      setIsCreatingDepositHold(false);
+    }
+  };
+
+  const handleUploadReceipt = async (file: File) => {
+    if (!depositHoldResponse) return;
+    setReceiptState({ status: 'uploading' });
+    try {
+      await uploadDepositReceipt({ bookingSessionId: depositHoldResponse.booking.bookingSessionId, depositAccessToken: depositHoldResponse.depositAccessToken, file, language });
+      setReceiptState({ status: 'uploaded' });
+    } catch (error) {
+      setReceiptState({ status: 'error', message: getReceiptErrorMessage(error, strings) });
     }
   };
 
   const handleStartPayPalHold = (property: BookingAvailableProperty) => {
-    if (!result?.quoteId || !result.bookingSessionId) {
-      setHoldError(strings.checkoutUnavailable);
-      return;
-    }
-
-    setDepositError(null);
-    setDepositHandoff(null);
-    setCheckoutProperty(property);
-    setHoldForm(initialPayPalHoldForm);
-    setHoldFieldErrors({});
-    setHoldError(null);
-    setHoldResponse(null);
-    setPayPalOrderError(null);
-
-    if (property.price) {
-      trackPaymentMethodSelected({
-        quote_id: result.quoteId,
-        property_id: property.propertyId,
-        payment_type: 'paypal',
-        value_cents: property.price.totalAmountCents,
-        currency: property.price.currency,
-        language,
-      });
-    }
+    if (!result?.quoteId || !result.bookingSessionId) { setHoldError(strings.checkoutUnavailable); return; }
+    setDepositError(null); setCheckoutProperty(property); setHoldForm(initialPayPalHoldForm); setHoldFieldErrors({}); setHoldError(null); setHoldResponse(null); setPayPalOrderError(null);
+    if (property.price) { trackPaymentMethodSelected({ quote_id: result.quoteId, property_id: property.propertyId, payment_type: 'paypal', value_cents: property.price.totalAmountCents, currency: property.price.currency, language }); }
   };
 
   const updateHoldForm = (updates: Partial<PayPalHoldFormState>) => {
-    setHoldForm((current) => ({ ...current, ...updates }));
-    setHoldFieldErrors((current) => {
-      const next = { ...current };
-      Object.keys(updates).forEach((key) => {
-        delete next[key];
-      });
-      return next;
-    });
+    setHoldForm((c) => ({ ...c, ...updates }));
+    setHoldFieldErrors((c) => { const n = { ...c }; Object.keys(updates).forEach((k) => { delete n[k]; }); return n; });
   };
+
+  const handleBackToResults = () => { setCheckoutProperty(null); setHoldError(null); setHoldResponse(null); setHoldFieldErrors({}); setPayPalOrderError(null); setHoldCaptchaRequired(false); setDepositError(null); setDepositProperty(null); setDepositHoldResponse(null); setReceiptState({ status: 'idle' }); };
+  const handleBackToSearch = () => { setResult(null); setError(null); handleBackToResults(); };
 
   const handleCreatePayPalHold = async (event: React.FormEvent, captchaTokenOverride?: string) => {
     event.preventDefault();
-
-    if (!result || !checkoutProperty) {
-      setHoldError(strings.checkoutUnavailable);
-      return;
-    }
-
+    if (!result || !checkoutProperty) { setHoldError(strings.checkoutUnavailable); return; }
     const validation = validatePayPalHoldForm(holdForm, strings);
-    setHoldFieldErrors(validation);
-    setHoldError(null);
-    setHoldCaptchaRequired(false);
-
-    if (Object.keys(validation).length > 0) {
-      return;
-    }
-
-    const tokenToUse = captchaTokenOverride ?? holdCaptchaToken ?? undefined;
-
+    setHoldFieldErrors(validation); setHoldError(null); setHoldCaptchaRequired(false);
+    if (Object.keys(validation).length > 0) return;
+    persistPortalAutoLogin(holdForm.portalPassword);
     setIsCreatingHold(true);
     try {
-      const response = await createPayPalHold({
-        quoteId: result.quoteId,
-        bookingSessionId: result.bookingSessionId,
-        propertyId: checkoutProperty.propertyId,
-        language,
-        guest: {
-          firstName: holdForm.firstName,
-          lastName: holdForm.lastName,
-          email: holdForm.email,
-          phone: holdForm.phone,
-          country: holdForm.country,
-          message: holdForm.message,
-        },
-        portalPassword: holdForm.portalPassword,
-        termsAccepted: holdForm.termsAccepted,
-        ...(tokenToUse ? { captchaToken: tokenToUse } : {}),
-      });
-
-      setHoldResponse(response);
-      setPayPalOrderError(null);
-      setHoldCaptchaToken(null);
-      holdCaptchaRef.current?.resetCaptcha();
-
-      if (checkoutProperty.price) {
-        trackCheckoutStarted({
-          quote_id: result.quoteId,
-          property_id: checkoutProperty.propertyId,
-          property_slug: checkoutProperty.slug,
-          property_name: checkoutProperty.name,
-          value_cents: checkoutProperty.price.totalAmountCents,
-          currency: checkoutProperty.price.currency,
-          arrival_date: result.arrivalDate,
-          departure_date: result.departureDate,
-          guests: result.guests,
-          language,
-        });
-      }
+      const response = await createPayPalHold({ quoteId: result.quoteId, bookingSessionId: result.bookingSessionId, propertyId: checkoutProperty.propertyId, language, guest: { firstName: holdForm.firstName, lastName: holdForm.lastName, email: holdForm.email, phone: holdForm.phone, country: holdForm.country, message: holdForm.message }, portalPassword: holdForm.portalPassword, termsAccepted: holdForm.termsAccepted, ...(nonRefundable ? { nonRefundable: true } : {}), ...(captchaTokenOverride ? { captchaToken: captchaTokenOverride } : {}) });
+      setHoldResponse(response); setPayPalOrderError(null);
+      // Persist credentials to the durable cache now that we have the reservation ID.
+      if (response.booking?.reservationPublicId) { savePortalCredentials(response.booking.reservationPublicId, holdForm.portalPassword); }
+      if (checkoutProperty.price) { trackCheckoutStarted({ quote_id: result.quoteId, property_id: checkoutProperty.propertyId, property_slug: checkoutProperty.slug, property_name: checkoutProperty.name, value_cents: checkoutProperty.price.totalAmountCents, currency: checkoutProperty.price.currency, arrival_date: result.arrivalDate, departure_date: result.departureDate, guests: result.guests, language }); }
     } catch (holdCreationError) {
-      if (holdCreationError instanceof BookingApiError && holdCreationError.status === 403 && holdCreationError.code === 'captcha_required') {
+      if (holdCreationError instanceof BookingApiError && holdCreationError.status === 403 && holdCreationError.code === 'captcha_required' && !captchaTokenOverride && executeRecaptcha) {
         setHoldCaptchaRequired(true);
-        setHoldError(strings.captchaRequired);
-      } else {
-        setHoldResponse(null);
-        setHoldError(getHoldErrorMessage(holdCreationError, strings));
-      }
-    } finally {
-      setIsCreatingHold(false);
-    }
+        executeRecaptcha('hold').then((token) => { setHoldCaptchaRequired(false); void handleCreatePayPalHold({ preventDefault: () => {} } as React.FormEvent, token); }).catch(() => setHoldError(strings.captchaError));
+      } else { setHoldResponse(null); setHoldError(getHoldErrorMessage(holdCreationError, strings)); }
+    } finally { setIsCreatingHold(false); }
   };
 
-  const handleCreatePayPalOrder = async () => {
-    if (!holdResponse) {
-      setPayPalOrderError(strings.paymentNotReady);
-      return;
-    }
-
-    setIsCreatingPayPalOrder(true);
-    setPayPalOrderError(null);
-
+  const handleCreatePayPalOrder = async (captchaTokenOverride?: string) => {
+    if (!holdResponse) { setPayPalOrderError(strings.paymentNotReady); return; }
+    setIsCreatingPayPalOrder(true); setPayPalOrderError(null);
     try {
-      const response = await createPayPalOrder({
-        bookingSessionId: holdResponse.booking.bookingSessionId,
-        language,
-      });
-
+      const response = await createPayPalOrder({ bookingSessionId: holdResponse.booking.bookingSessionId, language, ...(captchaTokenOverride ? { captchaToken: captchaTokenOverride } : {}) });
       const paypalOrder = response.paypal;
-      if (!paypalOrder?.approvalUrl) {
-        setPayPalOrderError(strings.paymentNotReady);
-        return;
-      }
-
-      persistPayPalCheckoutState({
-        bookingSessionId: holdResponse.booking.bookingSessionId,
-        paypalOrderId: paypalOrder.orderId,
-        reservationPublicId: holdResponse.booking.reservationPublicId,
-        language,
-      });
+      if (!paypalOrder?.approvalUrl) { setPayPalOrderError(strings.paymentNotReady); return; }
+      persistPayPalCheckoutState({ bookingSessionId: holdResponse.booking.bookingSessionId, paypalOrderId: paypalOrder.orderId, reservationPublicId: holdResponse.booking.reservationPublicId, language });
       redirectToUrl(paypalOrder.approvalUrl);
     } catch (orderError) {
-      setPayPalOrderError(getPayPalOrderErrorMessage(orderError, strings));
-    } finally {
-      setIsCreatingPayPalOrder(false);
+      // The backend's paymentCreate policy escalates to a CAPTCHA challenge; mint a
+      // token and retry once before surfacing an error.
+      if (orderError instanceof BookingApiError && orderError.status === 403 && orderError.code === 'captcha_required' && !captchaTokenOverride && executeRecaptcha) {
+        executeRecaptcha('paypal_order').then((token) => { void handleCreatePayPalOrder(token); }).catch(() => setPayPalOrderError(strings.captchaError));
+      } else { setPayPalOrderError(getPayPalOrderErrorMessage(orderError, strings)); }
     }
+    finally { setIsCreatingPayPalOrder(false); }
   };
 
-  if (isPayPalReturnRoute) {
+  const handleManageBooking = async (reservationPublicId: string) => {
+    // Try the durable credential cache first, then fall back to the session-only auto-login.
+    const cached = readPortalCredentials(reservationPublicId);
+    const storedPassword = cached?.password ?? readPortalAutoLogin();
+    const base = language === 'es' ? '/portalES' : '/portal';
+    if (!storedPassword) { navigate(`${base}?reservationId=${encodeURIComponent(reservationPublicId)}`); return; }
+    try {
+      const response = await portalLogin({ reservationPublicId, password: storedPassword, language });
+      persistPortalSession(response.token, response.reservationPublicId);
+      clearPortalAutoLogin();
+      navigate(`${base}/${encodeURIComponent(response.reservationPublicId)}`);
+    } catch { removePortalCredentials(reservationPublicId); clearPortalAutoLogin(); navigate(`${base}?reservationId=${encodeURIComponent(reservationPublicId)}`); }
+  };
+
+  // PayPal return — transient processing state
+  if (isPayPalReturnRoute && !bookingConfirmation) {
     return (
       <div id="body" className="booking-page">
-        <Helmet>
-          <title>{strings.paypalReturnTitle} | {strings.siteTitle}</title>
-          <meta name="description" content={strings.metaDescription} />
-          <link rel="canonical" href={`https://www.reservaskalawala.com/${language === 'es' ? 'bookES/return' : 'book/return'}`} />
-        </Helmet>
+        <Helmet><title>{strings.paypalReturnTitle} | {strings.siteTitle}</title><meta name="description" content={strings.metaDescription} /><link rel="canonical" href={`https://www.reservaskalawala.com/${language === 'es' ? 'bookES/return' : 'book/return'}`} /></Helmet>
         <Navigation isBlog={false} />
-
-        <main className="booking-search-container">
-          <Container>
-            <Row className="justify-content-center">
-              <Col lg={8} xl={7}>
-                <PayPalReturnPanel
-                  strings={strings}
-                  language={language}
-                  isProcessing={isCapturingPayPal}
-                  error={paypalCaptureError}
-                  result={paypalCaptureResult}
-                />
-              </Col>
-            </Row>
-          </Container>
-        </main>
-      </div>
-    );
-  }
-
-  if (isConfirmationRoute) {
-    return (
-      <div id="body" className="booking-page">
-        <Helmet>
-          <title>{strings.confirmationTitle} | {strings.siteTitle}</title>
-          <meta name="description" content={strings.metaDescription} />
-          <link rel="canonical" href={`https://www.reservaskalawala.com/${language === 'es' ? 'bookES/confirmed' : 'book/confirmed'}`} />
-        </Helmet>
-        <Navigation isBlog={false} />
-
-        <main className="booking-search-container">
-          <Container>
-            <Row className="justify-content-center">
-              <Col lg={8} xl={7}>
-                <BookingConfirmationPanel result={bookingConfirmation} strings={strings} language={language} />
-              </Col>
-            </Row>
-          </Container>
-        </main>
+        <main className="booking-wizard"><Container><Row className="justify-content-center"><Col lg={8} xl={7}>
+          <PayPalReturnPanel strings={strings} language={language} isProcessing={isCapturingPayPal} error={paypalCaptureError} result={paypalCaptureResult} />
+        </Col></Row></Container></main>
       </div>
     );
   }
 
   return (
     <div id="body" className="booking-page">
-      <Helmet>
-        <title>{strings.documentTitle} | {strings.siteTitle}</title>
-        <meta name="description" content={strings.metaDescription} />
-        <link rel="canonical" href={`https://www.reservaskalawala.com/${language === 'es' ? 'bookES' : 'book'}`} />
-      </Helmet>
+      <Helmet><title>{isConfirmationRoute ? strings.confirmationTitle : strings.documentTitle} | {strings.siteTitle}</title><meta name="description" content={strings.metaDescription} /><link rel="canonical" href={`https://www.reservaskalawala.com/${language === 'es' ? 'bookES' : 'book'}`} /></Helmet>
       <Navigation isBlog={false} />
-
-      <main className="booking-search-container">
+      <main className="booking-wizard">
         <Container>
-          <Row className="justify-content-center">
-            <Col lg={10} xl={9}>
-              <section className="booking-search-header" aria-labelledby="booking-search-title">
-                <p className="booking-search-eyebrow">{strings.eyebrow}</p>
-                <h1 id="booking-search-title">{strings.title}</h1>
-                <p>{strings.subtitle}</p>
-              </section>
-
-              <Form className="booking-search-form" onSubmit={handleSubmit} noValidate>
-                <Row className="g-3 align-items-end">
-                  <Col md={4}>
-                    <Form.Group controlId="bookingArrivalDate">
-                      <Form.Label>{strings.checkIn}</Form.Label>
-                      <Form.Control
-                        type="date"
-                        value={arrivalDate}
-                        min={today}
-                        isInvalid={Boolean(fieldErrors.arrivalDate)}
-                        onChange={(event) => handleArrivalChange(event.target.value)}
-                      />
-                      <Form.Control.Feedback type="invalid">{fieldErrors.arrivalDate}</Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                  <Col md={4}>
-                    <Form.Group controlId="bookingDepartureDate">
-                      <Form.Label>{strings.checkOut}</Form.Label>
-                      <Form.Control
-                        type="date"
-                        value={departureDate}
-                        min={minDepartureDate}
-                        isInvalid={Boolean(fieldErrors.departureDate)}
-                        onChange={(event) => {
-                          setDepartureDate(event.target.value);
-                          setSearchCaptchaRequired(false);
-                          setSearchCaptchaToken(null);
-                          searchCaptchaRef.current?.resetCaptcha();
-                          updateBookingQuery({ departureDate: event.target.value });
-                        }}
-                      />
-                      <Form.Control.Feedback type="invalid">{fieldErrors.departureDate}</Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                  <Col md={4}>
-                    <Form.Group controlId="bookingGuestCount">
-                      <Form.Label>{strings.guests}</Form.Label>
-                      <div className="booking-guest-control">
-                        <Button
-                          type="button"
-                          variant="outline-secondary"
-                          aria-label={strings.decreaseGuests}
-                          onClick={() => handleGuestStepChange(guests - 1)}
-                          disabled={guests <= 1}
-                        >
-                          -
-                        </Button>
-                        <Form.Control
-                          type="number"
-                          value={guests}
-                          min={1}
-                          inputMode="numeric"
-                          isInvalid={Boolean(fieldErrors.guests)}
-                          onChange={(event) => handleGuestInputChange(Number(event.target.value))}
-                        />
-                        <Button
-                          type="button"
-                          variant="outline-secondary"
-                          aria-label={strings.increaseGuests}
-                          onClick={() => handleGuestStepChange(guests + 1)}
-                        >
-                          +
-                        </Button>
-                      </div>
-                      <Form.Text>{strings.guestsHelp}</Form.Text>
-                      {fieldErrors.guests && <div className="booking-field-error">{fieldErrors.guests}</div>}
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                <Button className="booking-search-submit" type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <Spinner animation="border" size="sm" /> {strings.searching}
-                    </>
-                  ) : (
-                    <>
-                      <FontAwesomeIcon icon={faCalendarDays} /> {strings.search}
-                    </>
-                  )}
-                </Button>
-              </Form>
-
-              {error && (
-                <Alert className="booking-search-alert" variant="danger" role="alert">
-                  {error}
-                </Alert>
-              )}
-
-              {searchCaptchaRequired && captchaSiteKey && (
-                <div className="booking-captcha-widget" aria-live="polite">
-                  <HCaptcha
-                    ref={searchCaptchaRef}
-                    sitekey={captchaSiteKey}
-                    onVerify={(token) => {
-                      setSearchCaptchaToken(token);
-                      setError(null);
-                      // Auto-retry the search as soon as the challenge is solved.
-                      doSearch(token);
-                    }}
-                    onExpire={() => {
-                      setSearchCaptchaToken(null);
-                      setError(strings.captchaRequired);
-                    }}
-                    onError={() => {
-                      setSearchCaptchaToken(null);
-                      setError(strings.captchaError);
-                    }}
-                  />
-                </div>
-              )}
-
-              {depositError && (
-                <Alert className="booking-search-alert" variant="danger" role="alert">
-                  {depositError}
-                </Alert>
-              )}
-
-              {depositHandoff && (
-                <ManualDepositHandoffPanel
-                  handoff={depositHandoff}
-                  strings={strings}
-                  language={language}
-                  onBack={() => setDepositHandoff(null)}
-                />
-              )}
-
-              {result && checkoutProperty && (
-                <PayPalCheckoutPanel
-                  result={result}
-                  property={checkoutProperty}
-                  strings={strings}
-                  language={language}
-                  form={holdForm}
-                  fieldErrors={holdFieldErrors}
-                  holdError={holdError}
-                  holdResponse={holdResponse}
-                  paypalOrderError={paypalOrderError}
-                  isCreatingHold={isCreatingHold}
-                  isCreatingPayPalOrder={isCreatingPayPalOrder}
-                  onChange={updateHoldForm}
-                  onSubmit={handleCreatePayPalHold}
-                  onCreatePayPalOrder={handleCreatePayPalOrder}
-                  captchaChallenge={
-                    holdCaptchaRequired && captchaSiteKey
-                      ? {
-                          siteKey: captchaSiteKey,
-                          token: holdCaptchaToken,
-                          ref: holdCaptchaRef,
-                          onVerify: (token: string) => {
-                            setHoldCaptchaToken(token);
-                            setHoldError(null);
-                            // Synthetic event — auto-submit the hold form after solving.
-                            handleCreatePayPalHold(
-                              { preventDefault: () => {} } as React.FormEvent,
-                              token
-                            );
-                          },
-                          onExpire: () => {
-                            setHoldCaptchaToken(null);
-                            setHoldError(strings.captchaRequired);
-                          },
-                          onError: () => {
-                            setHoldCaptchaToken(null);
-                            setHoldError(strings.captchaError);
-                          },
-                        }
-                      : null
-                  }
-                  onBack={() => {
-                    setCheckoutProperty(null);
-                    setHoldError(null);
-                    setHoldResponse(null);
-                    setHoldFieldErrors({});
-                    setPayPalOrderError(null);
-                    setHoldCaptchaRequired(false);
-                    setHoldCaptchaToken(null);
-                  }}
-                />
-              )}
-
-              {result && (
-                <BookingSearchResults
-                  result={result}
-                  strings={strings}
-                  language={language}
-                  onManualDepositHandoff={handleManualDepositHandoff}
-                  onStartPayPalHold={handleStartPayPalHold}
-                  depositLoadingPropertyId={depositLoadingPropertyId}
-                  selectedPropertyId={checkoutProperty?.propertyId ?? null}
-                />
-              )}
-            </Col>
-          </Row>
+          <Row className="justify-content-center"><Col lg={10} xl={9}><StepIndicator currentStep={wizardStep} strings={strings} /></Col></Row>
+          <div className="booking-wizard-viewport">
+            {/* Step 1: Search */}
+            <div className={`booking-wizard-slide${wizardStep === 'search' ? ' booking-wizard-slide--active' : ' booking-wizard-slide--left'}`} aria-hidden={wizardStep !== 'search'}>
+              <Row className="justify-content-center"><Col lg={10} xl={9}>
+                <section className="booking-search-header" aria-labelledby="booking-search-title">
+                  <p className="booking-search-eyebrow">{strings.eyebrow}</p>
+                  <h1 id="booking-search-title">{strings.title}</h1>
+                  <p>{strings.subtitle}</p>
+                </section>
+                <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={false} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} />
+                {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
+              </Col></Row>
+            </div>
+            {/* Step 2: Results */}
+            <div className={`booking-wizard-slide${wizardStep === 'results' ? ' booking-wizard-slide--active' : stepIndex(wizardStep) > stepIndex('results') ? ' booking-wizard-slide--left' : ' booking-wizard-slide--right'}`} aria-hidden={wizardStep !== 'results'}>
+              <Row className="justify-content-center"><Col lg={10} xl={9}>
+                <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={true} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} onBack={handleBackToSearch} />
+                {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
+                {depositError && <Alert className="booking-search-alert" variant="danger" role="alert">{depositError}</Alert>}
+                {result && <BookingSearchResults result={result} strings={strings} language={language} nonRefundable={nonRefundable} onManualDepositHandoff={handleStartDepositCheckout} onStartPayPalHold={handleStartPayPalHold} selectedPropertyId={checkoutProperty?.propertyId ?? null} />}
+              </Col></Row>
+            </div>
+            {/* Step 3: Checkout / Deposit */}
+            <div className={`booking-wizard-slide${wizardStep === 'checkout' || wizardStep === 'deposit' ? ' booking-wizard-slide--active' : stepIndex(wizardStep) > 2 ? ' booking-wizard-slide--left' : ' booking-wizard-slide--right'}`} aria-hidden={wizardStep !== 'checkout' && wizardStep !== 'deposit'}>
+              <Row className="justify-content-center"><Col lg={8} xl={7}>
+                {result && depositProperty && <DepositCheckoutPanel result={result} property={depositProperty} strings={strings} language={language} form={holdForm} fieldErrors={holdFieldErrors} holdError={depositError} holdResponse={depositHoldResponse} isCreatingHold={isCreatingDepositHold} receiptState={receiptState} onChange={updateHoldForm} onSubmit={handleCreateDepositHold} onUploadReceipt={handleUploadReceipt} onBack={handleBackToResults} />}
+                {result && checkoutProperty && <PayPalCheckoutPanel result={result} property={checkoutProperty} strings={strings} language={language} form={holdForm} fieldErrors={holdFieldErrors} holdError={holdError} holdResponse={holdResponse} paypalOrderError={paypalOrderError} isCreatingHold={isCreatingHold} isCreatingPayPalOrder={isCreatingPayPalOrder} onChange={updateHoldForm} onSubmit={handleCreatePayPalHold} onCreatePayPalOrder={handleCreatePayPalOrder} holdCaptchaRequired={holdCaptchaRequired} onBack={handleBackToResults} />}
+              </Col></Row>
+            </div>
+            {/* Step 4: Confirmation */}
+            <div className={`booking-wizard-slide${wizardStep === 'confirmation' ? ' booking-wizard-slide--active' : ' booking-wizard-slide--right'}`} aria-hidden={wizardStep !== 'confirmation'}>
+              <Row className="justify-content-center"><Col lg={8} xl={7}>
+                <BookingConfirmationPanel result={bookingConfirmation} strings={strings} language={language} onManageBooking={handleManageBooking} />
+              </Col></Row>
+            </div>
+          </div>
         </Container>
       </main>
     </div>
   );
 };
 
-interface BookingSearchResultsProps {
-  result: BookingSearchResponse;
-  strings: BookingStrings;
-  language: BookingLanguage;
-  onManualDepositHandoff: (property: BookingAvailableProperty) => void;
-  onStartPayPalHold: (property: BookingAvailableProperty) => void;
-  depositLoadingPropertyId: string | null;
-  selectedPropertyId: string | null;
+// SearchForm — full or compact
+interface SearchFormProps {
+  arrivalDate: string; departureDate: string; guests: number; today: string; minDepartureDate: string;
+  fieldErrors: Record<string, string>; isSubmitting: boolean; searchCaptchaRequired: boolean;
+  strings: BookingStrings; compact: boolean;
+  nonRefundable: boolean; onNonRefundableChange: (value: boolean) => void;
+  onArrivalChange: (value: string) => void; onDepartureChange: (value: string) => void;
+  onGuestInputChange: (value: number) => void; onGuestStepChange: (value: number) => void;
+  onSubmit: (event: React.FormEvent) => void; onBack?: () => void;
 }
 
-const BookingSearchResults = ({
-  result,
-  strings,
-  language,
-  onManualDepositHandoff,
-  onStartPayPalHold,
-  depositLoadingPropertyId,
-  selectedPropertyId,
-}: BookingSearchResultsProps) => {
-  const hasResults = result.properties.length > 0;
-  const warnings = result.availabilityWarnings
-    .map((warning) => warningMessages[warning.code])
-    .filter((key): key is WarningStringKey => Boolean(key));
-
-  if (!hasResults) {
+const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDate, fieldErrors, isSubmitting, searchCaptchaRequired, strings, compact, nonRefundable, onNonRefundableChange, onArrivalChange, onDepartureChange, onGuestInputChange, onGuestStepChange, onSubmit, onBack }: SearchFormProps) => {
+  if (compact) {
     return (
-      <section className="booking-results-empty" aria-live="polite">
-        <h2>{strings.noResultsTitle}</h2>
-        <p>{strings.noResultsBody}</p>
-        <WarningList warnings={warnings} strings={strings} />
-      </section>
+      <div className="booking-search-compact">
+        <div className="booking-search-compact__top">
+          {onBack && <button type="button" className="booking-search-compact__back" onClick={onBack} aria-label={strings.changeSearch}><FontAwesomeIcon icon={faArrowLeft} /></button>}
+          <Form className="booking-search-compact__form" onSubmit={onSubmit} noValidate>
+            <div className="booking-search-compact__fields">
+              <Form.Group controlId="bookingArrivalDateCompact" className="booking-search-compact__field">
+                <Form.Label className="visually-hidden">{strings.checkIn}</Form.Label>
+                <Form.Control type="date" value={arrivalDate} min={today} isInvalid={Boolean(fieldErrors.arrivalDate)} onChange={(e) => onArrivalChange(e.target.value)} />
+              </Form.Group>
+              <Form.Group controlId="bookingDepartureDateCompact" className="booking-search-compact__field">
+                <Form.Label className="visually-hidden">{strings.checkOut}</Form.Label>
+                <Form.Control type="date" value={departureDate} min={minDepartureDate} isInvalid={Boolean(fieldErrors.departureDate)} onChange={(e) => onDepartureChange(e.target.value)} />
+              </Form.Group>
+              <Form.Group controlId="bookingGuestCountCompact" className="booking-search-compact__field booking-search-compact__field--guests">
+                <Form.Label className="visually-hidden">{strings.guests}</Form.Label>
+                <div className="booking-search-compact__guest-control">
+                  <Button type="button" variant="outline-secondary" size="sm" aria-label={strings.decreaseGuests} onClick={() => onGuestStepChange(guests - 1)} disabled={guests <= 1}>-</Button>
+                  <span className="booking-search-compact__guest-count"><FontAwesomeIcon icon={faUser} /> {guests}</span>
+                  <Button type="button" variant="outline-secondary" size="sm" aria-label={strings.increaseGuests} onClick={() => onGuestStepChange(guests + 1)}>+</Button>
+                </div>
+              </Form.Group>
+              <Button className="booking-search-compact__submit" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? <Spinner animation="border" size="sm" /> : <FontAwesomeIcon icon={faCalendarDays} />}
+                <span className="visually-hidden">{strings.search}</span>
+              </Button>
+            </div>
+          </Form>
+        </div>
+        <div className="booking-search-compact__rate-row">
+          <Form.Check type="switch" id="rateToggleCompact" className="booking-rate-toggle" label={nonRefundable ? strings.rateNonRefundable : strings.rateFlexible} checked={nonRefundable} onChange={(e) => onNonRefundableChange(e.target.checked)} />
+          {nonRefundable && <span className="booking-rate-toggle__badge">{strings.nonRefundableSave}</span>}
+        </div>
+        {searchCaptchaRequired && <div className="booking-captcha-widget" aria-live="polite"><Spinner animation="border" size="sm" /> {strings.searching}</div>}
+      </div>
     );
   }
 
   return (
-    <section className="booking-results" aria-live="polite" aria-labelledby="booking-results-title">
-      <div className="booking-results-summary">
-        <div>
-          <p className="booking-results-kicker">{strings.resultCount(result.resultsCount)}</p>
-          <h2 id="booking-results-title">{strings.resultsTitle}</h2>
+    <>
+      <Form className="booking-search-form" onSubmit={onSubmit} noValidate>
+        <Row className="g-3 align-items-end">
+          <Col md={3}><Form.Group controlId="bookingArrivalDate"><Form.Label>{strings.checkIn}</Form.Label><Form.Control type="date" value={arrivalDate} min={today} isInvalid={Boolean(fieldErrors.arrivalDate)} onChange={(e) => onArrivalChange(e.target.value)} /><Form.Control.Feedback type="invalid">{fieldErrors.arrivalDate}</Form.Control.Feedback></Form.Group></Col>
+          <Col md={3}><Form.Group controlId="bookingDepartureDate"><Form.Label>{strings.checkOut}</Form.Label><Form.Control type="date" value={departureDate} min={minDepartureDate} isInvalid={Boolean(fieldErrors.departureDate)} onChange={(e) => onDepartureChange(e.target.value)} /><Form.Control.Feedback type="invalid">{fieldErrors.departureDate}</Form.Control.Feedback></Form.Group></Col>
+          <Col md={3}>
+            <Form.Group controlId="bookingGuestCount">
+              <Form.Label>{strings.guests}</Form.Label>
+              <div className="booking-guest-control">
+                <Button type="button" variant="outline-secondary" aria-label={strings.decreaseGuests} onClick={() => onGuestStepChange(guests - 1)} disabled={guests <= 1}>-</Button>
+                <Form.Control type="number" value={guests} min={1} inputMode="numeric" isInvalid={Boolean(fieldErrors.guests)} onChange={(e) => onGuestInputChange(Number(e.target.value))} />
+                <Button type="button" variant="outline-secondary" aria-label={strings.increaseGuests} onClick={() => onGuestStepChange(guests + 1)}>+</Button>
+              </div>
+              <Form.Text>{strings.guestsHelp}</Form.Text>
+              {fieldErrors.guests && <div className="booking-field-error">{fieldErrors.guests}</div>}
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Button className="booking-search-submit" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? <><Spinner animation="border" size="sm" /> {strings.searching}</> : <><FontAwesomeIcon icon={faCalendarDays} /> {strings.search}</>}
+            </Button>
+          </Col>
+        </Row>
+        <div className="booking-rate-toggle-row">
+          <Form.Check type="switch" id="rateToggleFull" className="booking-rate-toggle" label={nonRefundable ? strings.rateNonRefundable : strings.rateFlexible} checked={nonRefundable} onChange={(e) => onNonRefundableChange(e.target.checked)} />
+          {nonRefundable && <span className="booking-rate-toggle__badge">{strings.nonRefundableSave}</span>}
+          <small className="booking-rate-toggle__note">{nonRefundable ? strings.nonRefundableNote : strings.flexibleNote}</small>
         </div>
-        <p className="booking-quote-expiry">
-          {strings.quoteExpires}: {formatDateTime(result.quoteExpiresAt, language)}
-        </p>
-      </div>
+      </Form>
+      {searchCaptchaRequired && <div className="booking-captcha-widget" aria-live="polite"><Spinner animation="border" size="sm" /> {strings.searching}</div>}
+    </>
+  );
+};
+
+// BookingSearchResults
+const BookingSearchResults = ({ result, strings, language, nonRefundable, onManualDepositHandoff, onStartPayPalHold, selectedPropertyId }: { result: BookingSearchResponse; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean; onManualDepositHandoff: (p: BookingAvailableProperty) => void; onStartPayPalHold: (p: BookingAvailableProperty) => void; selectedPropertyId: string | null }) => {
+  const hasResults = result.properties.length > 0;
+  const warnings = result.availabilityWarnings.map((w) => warningMessages[w.code]).filter((k): k is WarningStringKey => Boolean(k));
+  if (!hasResults) return (<section className="booking-results-empty" aria-live="polite"><h2>{strings.noResultsTitle}</h2><p>{strings.noResultsBody}</p><WarningList warnings={warnings} strings={strings} /></section>);
+  return (
+    <section className="booking-results" aria-live="polite" aria-labelledby="booking-results-title">
+      <div className="booking-results-summary"><div><p className="booking-results-kicker">{strings.resultCount(result.resultsCount)}</p><h2 id="booking-results-title">{strings.resultsTitle}</h2></div><p className="booking-quote-expiry">{strings.quoteExpires}: {formatDateTime(result.quoteExpiresAt, language)}</p></div>
       <WarningList warnings={warnings} strings={strings} />
       <Row className="booking-results-grid g-4">
-        {result.properties.map((property) => (
-          <Col className="booking-results-col" key={property.propertyId} md={6} xl={4}>
-            <BookingPropertyCard
-              property={property}
-              strings={strings}
-              language={language}
-              onManualDepositHandoff={onManualDepositHandoff}
-              onStartPayPalHold={onStartPayPalHold}
-              isDepositLoading={depositLoadingPropertyId === property.propertyId}
-              isSelectedForCheckout={selectedPropertyId === property.propertyId}
-            />
-          </Col>
-        ))}
+        {result.properties.map((property) => (<Col className="booking-results-col" key={property.propertyId} md={6} xl={4}><BookingPropertyCard property={property} strings={strings} language={language} nonRefundable={nonRefundable} onManualDepositHandoff={onManualDepositHandoff} onStartPayPalHold={onStartPayPalHold} isSelectedForCheckout={selectedPropertyId === property.propertyId} /></Col>))}
       </Row>
     </section>
   );
 };
 
 const WarningList = ({ warnings, strings }: { warnings: WarningStringKey[]; strings: BookingStrings }) => {
-  if (warnings.length === 0) {
-    return null;
-  }
-
-  const uniqueWarnings = Array.from(new Set(warnings));
-
-  return (
-    <ul className="booking-warning-list">
-      {uniqueWarnings.map((warning) => (
-        <li key={warning}>{strings[warning]}</li>
-      ))}
-    </ul>
-  );
+  if (warnings.length === 0) return null;
+  return (<ul className="booking-warning-list">{Array.from(new Set(warnings)).map((w) => <li key={w}>{strings[w]}</li>)}</ul>);
 };
 
-const BookingPropertyCard = ({
-  property,
-  strings,
-  language,
-  onManualDepositHandoff,
-  onStartPayPalHold,
-  isDepositLoading,
-  isSelectedForCheckout,
-}: {
-  property: BookingAvailableProperty;
-  strings: BookingStrings;
-  language: BookingLanguage;
-  onManualDepositHandoff: (property: BookingAvailableProperty) => void;
-  onStartPayPalHold: (property: BookingAvailableProperty) => void;
-  isDepositLoading: boolean;
-  isSelectedForCheckout: boolean;
-}) => {
+// BookingPropertyCard
+const BookingPropertyCard = ({ property, strings, language, nonRefundable, onManualDepositHandoff, onStartPayPalHold, isSelectedForCheckout }: { property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean; onManualDepositHandoff: (p: BookingAvailableProperty) => void; onStartPayPalHold: (p: BookingAvailableProperty) => void; isSelectedForCheckout: boolean }) => {
   const listingUrl = buildListingUrl(property.slug, language);
   const titleId = `booking-result-title-${property.propertyId}`;
   const canCreatePayPalHold = property.actions?.canCreatePayPalHold !== false;
   const canUseManualDeposit = property.actions?.canUseManualDepositHandoff !== false;
-
+  const [amenitiesExpanded, setAmenitiesExpanded] = React.useState(false);
+  const visibleAmenities = property.amenities.slice(0, 5);
   return (
     <article className="booking-result-card" aria-labelledby={titleId}>
       <div className="booking-result-card__media-frame">
-        <a
-          className="booking-result-card__media"
-          href={listingUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`${strings.viewListing}: ${property.name}`}
-        >
+        <a className="booking-result-card__media" href={listingUrl} target="_blank" rel="noopener noreferrer" aria-label={`${strings.viewListing}: ${property.name}`}>
           <img src={property.thumbnailUrl} alt={property.name} />
-          <span className="booking-result-card__overlay" aria-hidden="true" />
+          <span className="booking-result-card__media-hover" aria-hidden="true">{strings.viewListing}</span>
         </a>
         <span className="booking-result-card__status">{strings.available}</span>
-        <h3 className="booking-result-card__media-title" id={titleId}>
-          {property.name}
-        </h3>
       </div>
       <div className="booking-result-card__content">
-        <div className="booking-result-card__heading">
-          <p className="booking-result-card__guest-badge">
-            <FontAwesomeIcon icon={faUser} /> {strings.sleeps(property.guestCapacity)}
-          </p>
-        </div>
-        <ul className="booking-result-card__amenities" aria-label={strings.amenitiesLabel(property.name)}>
-          {property.amenities.slice(0, 5).map((amenity) => (
-            <li key={`${property.propertyId}-${amenity.code}`}>
-              <FontAwesomeIcon icon={amenityIcons[amenity.code] ?? faWifi} />
-              <span>{amenity.label}</span>
+        <h3 className="booking-result-card__content-title" id={titleId}>{property.name}</h3>
+        <p className="booking-result-card__location"><FontAwesomeIcon icon={faLocationDot} /> {getPropertyLocation(property.slug, strings)}</p>
+        <div className="booking-result-card__heading"><p className="booking-result-card__guest-badge"><FontAwesomeIcon icon={faUser} /> {strings.sleeps(property.guestCapacity)}</p></div>
+        <ul className={`booking-result-card__amenities${amenitiesExpanded ? ' booking-result-card__amenities--expanded' : ''}`} aria-label={strings.amenitiesLabel(property.name)}>
+          {visibleAmenities.map((a) => (
+            <li key={`${property.propertyId}-${a.code}`} title={a.label}>
+              <FontAwesomeIcon icon={amenityIcons[a.code] ?? faWifi} />
+              <span>{a.label}</span>
             </li>
           ))}
+          <li className="booking-result-card__amenities-toggle">
+            <button type="button" aria-expanded={amenitiesExpanded} aria-label={amenitiesExpanded ? strings.amenitiesLabel(property.name) : strings.amenitiesLabel(property.name)} onClick={() => setAmenitiesExpanded((v) => !v)}>
+              <FontAwesomeIcon icon={faPlus} />
+            </button>
+          </li>
         </ul>
-        {property.price && (
-          <div className="booking-result-card__price">
-            <span>{strings.priceForStay}</span>
-            <strong>{formatMoney(property.price.totalAmountCents, property.price.currency, language)}</strong>
-            <small>
-              {formatMoney(property.price.nightlyAverageCents, property.price.currency, language)} {strings.averageNight}
-            </small>
-          </div>
-        )}
-        <a className="booking-result-card__link" href={listingUrl} target="_blank" rel="noopener noreferrer">
-          {strings.viewListing}
-        </a>
-        {canCreatePayPalHold && (
-          <Button
-            className="booking-result-card__book-button"
-            type="button"
-            variant="primary"
-            aria-pressed={isSelectedForCheckout}
-            onClick={() => onStartPayPalHold(property)}
-          >
-            {strings.bookNow}
-          </Button>
-        )}
-        {canUseManualDeposit && (
-          <Button
-            className="booking-result-card__deposit-button"
-            type="button"
-            variant="outline-secondary"
-            disabled={isDepositLoading}
-            onClick={() => onManualDepositHandoff(property)}
-          >
-            {isDepositLoading ? strings.manualDepositLoading : strings.manualDepositButton}
-          </Button>
-        )}
+        {property.price && (<div className="booking-result-card__price">{nonRefundable && (<><span className="booking-result-card__price-label">{strings.nonRefundableSave}</span><span className="booking-result-card__price-original"><del>{formatMoney(property.price.totalAmountCents, property.price.currency, language)}</del></span></>)}<span>{strings.priceForStay}</span><strong>{formatMoney(nonRefundable ? Math.round(property.price.totalAmountCents * 0.9) : property.price.totalAmountCents, property.price.currency, language)}</strong><small>{nonRefundable && <del>{formatMoney(property.price.nightlyAverageCents, property.price.currency, language)} </del>}{formatMoney(nonRefundable ? Math.round(property.price.nightlyAverageCents * 0.9) : property.price.nightlyAverageCents, property.price.currency, language)} {strings.averageNight}</small></div>)}
+        <a className="booking-result-card__link" href={listingUrl} target="_blank" rel="noopener noreferrer">{strings.viewListing}</a>
+        {canCreatePayPalHold && <Button className="booking-result-card__book-button" type="button" variant="primary" aria-pressed={isSelectedForCheckout} onClick={() => onStartPayPalHold(property)}>{strings.bookNow}</Button>}
+        {canUseManualDeposit && <Button className="booking-result-card__deposit-button" type="button" variant="outline-secondary" onClick={() => onManualDepositHandoff(property)}>{strings.manualDepositButton}</Button>}
       </div>
     </article>
   );
 };
 
-interface CaptchaChallenge {
-  siteKey: string;
-  token: string | null;
-  ref: React.RefObject<HCaptcha>;
-  onVerify: (token: string) => void;
-  onExpire: () => void;
-  onError: () => void;
-}
+/**
+ * Guest details form shared by the PayPal and deposit checkouts. Both collect
+ * exactly the same information — the difference is only what happens after
+ * submit — so the fields live in one place.
+ *
+ * `idPrefix` keeps control ids unique when more than one instance is mounted.
+ */
+const GuestDetailsFields = ({ idPrefix, form, fieldErrors, strings, onChange }: { idPrefix: string; form: PayPalHoldFormState; fieldErrors: Record<string, string>; strings: BookingStrings; onChange: (u: Partial<PayPalHoldFormState>) => void }) => (
+  <Row className="g-3">
+    <Col md={6}><Form.Group controlId={`${idPrefix}FirstName`}><Form.Label>{strings.firstName}</Form.Label><Form.Control value={form.firstName} isInvalid={Boolean(fieldErrors.firstName)} onChange={(e) => onChange({ firstName: e.target.value })} /><Form.Control.Feedback type="invalid">{fieldErrors.firstName}</Form.Control.Feedback></Form.Group></Col>
+    <Col md={6}><Form.Group controlId={`${idPrefix}LastName`}><Form.Label>{strings.lastName}</Form.Label><Form.Control value={form.lastName} isInvalid={Boolean(fieldErrors.lastName)} onChange={(e) => onChange({ lastName: e.target.value })} /><Form.Control.Feedback type="invalid">{fieldErrors.lastName}</Form.Control.Feedback></Form.Group></Col>
+    <Col md={6}><Form.Group controlId={`${idPrefix}Email`}><Form.Label>{strings.email}</Form.Label><Form.Control type="email" value={form.email} isInvalid={Boolean(fieldErrors.email)} onChange={(e) => onChange({ email: e.target.value })} /><Form.Control.Feedback type="invalid">{fieldErrors.email}</Form.Control.Feedback></Form.Group></Col>
+    <Col md={6}><Form.Group controlId={`${idPrefix}Phone`}><Form.Label>{strings.phone}</Form.Label><Form.Control value={form.phone} onChange={(e) => onChange({ phone: e.target.value })} /></Form.Group></Col>
+    <Col md={6}><Form.Group controlId={`${idPrefix}Country`}><Form.Label>{strings.country}</Form.Label><Form.Control value={form.country} onChange={(e) => onChange({ country: e.target.value })} /></Form.Group></Col>
+    <Col md={6}><Form.Group controlId={`${idPrefix}PortalPassword`}><Form.Label>{strings.portalPassword}</Form.Label><Form.Control type="password" autoComplete="new-password" value={form.portalPassword} isInvalid={Boolean(fieldErrors.portalPassword)} onChange={(e) => onChange({ portalPassword: e.target.value })} /><Form.Text>{strings.portalPasswordHelp}</Form.Text><Form.Control.Feedback type="invalid">{fieldErrors.portalPassword}</Form.Control.Feedback></Form.Group></Col>
+    <Col xs={12}><Form.Group controlId={`${idPrefix}Message`}><Form.Label>{strings.specialRequests}</Form.Label><Form.Control as="textarea" rows={3} value={form.message} onChange={(e) => onChange({ message: e.target.value })} /></Form.Group></Col>
+    <Col xs={12}><Form.Check id={`${idPrefix}TermsAccepted`} label={strings.termsAccepted} checked={form.termsAccepted} isInvalid={Boolean(fieldErrors.termsAccepted)} feedback={fieldErrors.termsAccepted} feedbackType="invalid" onChange={(e) => onChange({ termsAccepted: e.target.checked })} /></Col>
+  </Row>
+);
 
-const PayPalCheckoutPanel = ({
-  result,
-  property,
-  strings,
-  language,
-  form,
-  fieldErrors,
-  holdError,
-  holdResponse,
-  paypalOrderError,
-  isCreatingHold,
-  isCreatingPayPalOrder,
-  onChange,
-  onSubmit,
-  onCreatePayPalOrder,
-  captchaChallenge,
-  onBack,
-}: {
-  result: BookingSearchResponse;
-  property: BookingAvailableProperty;
-  strings: BookingStrings;
-  language: BookingLanguage;
-  form: PayPalHoldFormState;
-  fieldErrors: Record<string, string>;
-  holdError: string | null;
-  holdResponse: PayPalHoldResponse | null;
-  paypalOrderError: string | null;
-  isCreatingHold: boolean;
-  isCreatingPayPalOrder: boolean;
-  onChange: (updates: Partial<PayPalHoldFormState>) => void;
-  onSubmit: (event: React.FormEvent) => void;
-  onCreatePayPalOrder: () => void;
-  captchaChallenge: CaptchaChallenge | null;
-  onBack: () => void;
-}) => {
+// PayPalCheckoutPanel
+const PayPalCheckoutPanel = ({ result, property, strings, language, form, fieldErrors, holdError, holdResponse, paypalOrderError, isCreatingHold, isCreatingPayPalOrder, onChange, onSubmit, onCreatePayPalOrder, holdCaptchaRequired, onBack }: { result: BookingSearchResponse; property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; form: PayPalHoldFormState; fieldErrors: Record<string, string>; holdError: string | null; holdResponse: PayPalHoldResponse | null; paypalOrderError: string | null; isCreatingHold: boolean; isCreatingPayPalOrder: boolean; onChange: (u: Partial<PayPalHoldFormState>) => void; onSubmit: (e: React.FormEvent) => void; onCreatePayPalOrder: () => void; holdCaptchaRequired: boolean; onBack: () => void }) => {
   const price = property.price ?? holdResponse?.booking.price;
-
   return (
     <section className="booking-checkout-panel" aria-labelledby="booking-checkout-title">
-      <div className="booking-checkout-panel__header">
-        <p className="booking-results-kicker">{strings.paypalTitle}</p>
-        <h2 id="booking-checkout-title">{strings.checkoutTitle}</h2>
-        <p>{strings.paypalDescription}</p>
-      </div>
-
+      <Button type="button" variant="link" className="booking-wizard-back" onClick={onBack}><FontAwesomeIcon icon={faArrowLeft} /> {strings.backToResults}</Button>
+      <div className="booking-checkout-panel__header"><p className="booking-results-kicker">{strings.paypalTitle}</p><h2 id="booking-checkout-title">{strings.checkoutTitle}</h2><p>{strings.paypalDescription}</p></div>
       <div className="booking-checkout-panel__summary" aria-label={strings.checkoutSummary}>
-        <div>
-          <span>{strings.depositContextTitle}</span>
-          <strong>{property.name}</strong>
-          <small>{strings.depositDates(formatDate(result.arrivalDate, language), formatDate(result.departureDate, language))}</small>
-        </div>
-        {price && (
-          <div>
-            <span>{strings.priceForStay}</span>
-            <strong>{formatMoney(price.totalAmountCents, price.currency, language)}</strong>
-          </div>
-        )}
+        <div><span>{strings.depositContextTitle}</span><strong>{property.name}</strong><small>{strings.depositDates(formatDate(result.arrivalDate, language), formatDate(result.departureDate, language))}</small></div>
+        {price && <div><span>{strings.priceForStay}</span><strong>{formatMoney(price.totalAmountCents, price.currency, language)}</strong></div>}
       </div>
-
-      {holdError && (
-        <Alert className="booking-search-alert" variant="danger" role="alert">
-          {holdError}
-        </Alert>
-      )}
-
+      {holdError && <Alert className="booking-search-alert" variant="danger" role="alert">{holdError}</Alert>}
       {holdResponse ? (
         <div className="booking-checkout-panel__hold" aria-live="polite">
-          <h3>{strings.holdActiveTitle}</h3>
-          <p>{strings.holdActiveBody}</p>
-          <div className="booking-checkout-panel__timer">
-            <span>{strings.holdExpiring}</span>
-            <HoldCountdown expiresAt={holdResponse.booking.hold.expiresAt} />
-            <small>{strings.holdExpiresAt(formatDateTime(holdResponse.booking.hold.expiresAt, language))}</small>
-          </div>
-          <p className="booking-checkout-panel__reservation">
-            {strings.reservationId}: <strong>{holdResponse.booking.reservationPublicId}</strong>
-          </p>
-          {paypalOrderError && (
-            <Alert className="booking-checkout-panel__notice" variant="danger" role="alert">
-              {paypalOrderError}
-            </Alert>
-          )}
-          <div className="booking-checkout-panel__actions">
-            <Button className="booking-search-submit" type="button" disabled={isCreatingPayPalOrder} onClick={onCreatePayPalOrder}>
-              {isCreatingPayPalOrder ? (
-                <>
-                  <Spinner animation="border" size="sm" /> {strings.creatingPayPalOrder}
-                </>
-              ) : (
-                strings.continueToPayment
-              )}
-            </Button>
-            <Button type="button" variant="link" className="booking-deposit-handoff__back" onClick={onBack}>
-              {strings.backToResults}
-            </Button>
-          </div>
+          <h3>{strings.holdActiveTitle}</h3><p>{strings.holdActiveBody}</p>
+          <div className="booking-checkout-panel__timer"><span>{strings.holdExpiring}</span><HoldCountdown expiresAt={holdResponse.booking.hold.expiresAt} /><small>{strings.holdExpiresAt(formatDateTime(holdResponse.booking.hold.expiresAt, language))}</small></div>
+          <p className="booking-checkout-panel__reservation">{strings.reservationId}: <strong>{holdResponse.booking.reservationPublicId}</strong></p>
+          {paypalOrderError && <Alert className="booking-checkout-panel__notice" variant="danger" role="alert">{paypalOrderError}</Alert>}
+          <div className="booking-checkout-panel__actions"><Button className="booking-search-submit" type="button" disabled={isCreatingPayPalOrder} onClick={() => onCreatePayPalOrder()}>{isCreatingPayPalOrder ? <><Spinner animation="border" size="sm" /> {strings.creatingPayPalOrder}</> : strings.continueToPayment}</Button></div>
         </div>
       ) : (
         <Form className="booking-checkout-panel__form" onSubmit={onSubmit} noValidate>
           <h3>{strings.guestDetails}</h3>
-          <Row className="g-3">
-            <Col md={6}>
-              <Form.Group controlId="paypalHoldFirstName">
-                <Form.Label>{strings.firstName}</Form.Label>
-                <Form.Control
-                  value={form.firstName}
-                  isInvalid={Boolean(fieldErrors.firstName)}
-                  onChange={(event) => onChange({ firstName: event.target.value })}
-                />
-                <Form.Control.Feedback type="invalid">{fieldErrors.firstName}</Form.Control.Feedback>
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group controlId="paypalHoldLastName">
-                <Form.Label>{strings.lastName}</Form.Label>
-                <Form.Control
-                  value={form.lastName}
-                  isInvalid={Boolean(fieldErrors.lastName)}
-                  onChange={(event) => onChange({ lastName: event.target.value })}
-                />
-                <Form.Control.Feedback type="invalid">{fieldErrors.lastName}</Form.Control.Feedback>
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group controlId="paypalHoldEmail">
-                <Form.Label>{strings.email}</Form.Label>
-                <Form.Control
-                  type="email"
-                  value={form.email}
-                  isInvalid={Boolean(fieldErrors.email)}
-                  onChange={(event) => onChange({ email: event.target.value })}
-                />
-                <Form.Control.Feedback type="invalid">{fieldErrors.email}</Form.Control.Feedback>
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group controlId="paypalHoldPhone">
-                <Form.Label>{strings.phone}</Form.Label>
-                <Form.Control value={form.phone} onChange={(event) => onChange({ phone: event.target.value })} />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group controlId="paypalHoldCountry">
-                <Form.Label>{strings.country}</Form.Label>
-                <Form.Control value={form.country} onChange={(event) => onChange({ country: event.target.value })} />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group controlId="paypalHoldPortalPassword">
-                <Form.Label>{strings.portalPassword}</Form.Label>
-                <Form.Control
-                  type="password"
-                  value={form.portalPassword}
-                  isInvalid={Boolean(fieldErrors.portalPassword)}
-                  onChange={(event) => onChange({ portalPassword: event.target.value })}
-                />
-                <Form.Text>{strings.portalPasswordHelp}</Form.Text>
-                <Form.Control.Feedback type="invalid">{fieldErrors.portalPassword}</Form.Control.Feedback>
-              </Form.Group>
-            </Col>
-            <Col xs={12}>
-              <Form.Group controlId="paypalHoldMessage">
-                <Form.Label>{strings.specialRequests}</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={form.message}
-                  onChange={(event) => onChange({ message: event.target.value })}
-                />
-              </Form.Group>
-            </Col>
-            <Col xs={12}>
-              <Form.Check
-                id="paypalHoldTermsAccepted"
-                label={strings.termsAccepted}
-                checked={form.termsAccepted}
-                isInvalid={Boolean(fieldErrors.termsAccepted)}
-                feedback={fieldErrors.termsAccepted}
-                feedbackType="invalid"
-                onChange={(event) => onChange({ termsAccepted: event.target.checked })}
-              />
-            </Col>
-          </Row>
-
-          {captchaChallenge && (
-            <div className="booking-captcha-widget" aria-live="polite">
-              <HCaptcha
-                ref={captchaChallenge.ref}
-                sitekey={captchaChallenge.siteKey}
-                onVerify={captchaChallenge.onVerify}
-                onExpire={captchaChallenge.onExpire}
-                onError={captchaChallenge.onError}
-              />
-            </div>
-          )}
-
-          <div className="booking-checkout-panel__actions">
-            <Button
-              type="submit"
-              className="booking-search-submit"
-              disabled={isCreatingHold || (captchaChallenge !== null && !captchaChallenge.token)}
-            >
-              {isCreatingHold ? (
-                <>
-                  <Spinner animation="border" size="sm" /> {strings.creatingHold}
-                </>
-              ) : (
-                strings.continueToPayment
-              )}
-            </Button>
-            <Button type="button" variant="link" className="booking-deposit-handoff__back" onClick={onBack}>
-              {strings.backToResults}
-            </Button>
-          </div>
+          <GuestDetailsFields idPrefix="paypalHold" form={form} fieldErrors={fieldErrors} strings={strings} onChange={onChange} />
+          {holdCaptchaRequired && <div className="booking-captcha-widget" aria-live="polite"><Spinner animation="border" size="sm" /> {strings.searching}</div>}
+          <div className="booking-checkout-panel__actions"><Button type="submit" className="booking-search-submit" disabled={isCreatingHold || holdCaptchaRequired}>{isCreatingHold ? <><Spinner animation="border" size="sm" /> {strings.creatingHold}</> : strings.continueToPayment}</Button></div>
         </Form>
       )}
+      <div className="booking-checkout-panel__contacts">
+        <h3>{strings.needHelp}</h3>
+        <div className="booking-checkout-panel__contacts-grid">
+          <a className="booking-checkout-panel__contact" href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer"><span>{strings.contactByWhatsapp}</span><strong>+506 8463 2276</strong></a>
+          <a className="booking-checkout-panel__contact" href="mailto:reservas.kalawala@gmail.com"><span>{strings.contactByEmail}</span><strong>reservas.kalawala@gmail.com</strong></a>
+        </div>
+      </div>
     </section>
   );
 };
@@ -1252,593 +668,248 @@ const PayPalCheckoutPanel = ({
 const HoldCountdown = ({ expiresAt }: { expiresAt: string }) => {
   const [nowMs, setNowMs] = React.useState(() => Date.now());
   const expiresAtMs = Date.parse(expiresAt);
-
-  React.useEffect(() => {
-    const intervalId = window.setInterval(() => setNowMs(Date.now()), 1000);
-    return () => window.clearInterval(intervalId);
-  }, []);
-
+  React.useEffect(() => { const id = window.setInterval(() => setNowMs(Date.now()), 1000); return () => window.clearInterval(id); }, []);
   return <strong>{formatDuration(Number.isFinite(expiresAtMs) ? expiresAtMs - nowMs : 0)}</strong>;
 };
 
-const PayPalReturnPanel = ({
-  strings,
-  language,
-  isProcessing,
-  error,
-  result,
-}: {
-  strings: BookingStrings;
-  language: BookingLanguage;
-  isProcessing: boolean;
-  error: string | null;
-  result: PayPalCaptureResponse | null;
-}) => {
+const PayPalReturnPanel = ({ strings, language, isProcessing, error, result }: { strings: BookingStrings; language: BookingLanguage; isProcessing: boolean; error: string | null; result: PayPalCaptureResponse | null }) => {
   const propertyName = result?.booking.property?.name;
-
   return (
     <section className="booking-return-panel" aria-labelledby="booking-return-title" aria-live="polite">
-      <p className="booking-results-kicker">{strings.paypalTitle}</p>
-      <h1 id="booking-return-title">{strings.paypalReturnTitle}</h1>
-
-      {isProcessing && (
-        <div className="booking-return-panel__status">
-          <Spinner animation="border" role="status" />
-          <div>
-            <h2>{strings.paypalReturnProcessing}</h2>
-            <p>{strings.paypalReturnProcessingBody}</p>
-          </div>
-        </div>
-      )}
-
-      {!isProcessing && error && (
-        <Alert className="booking-return-panel__notice" variant="danger" role="alert">
-          {error}
-        </Alert>
-      )}
-
-      {!isProcessing && result && (
-        <div className="booking-return-panel__confirmed">
-          <h2>{strings.confirmationTitle}</h2>
-          <p>{strings.paypalReturnSuccessBody}</p>
-          <dl>
-            <div>
-              <dt>{strings.reservationId}</dt>
-              <dd>{result.booking.reservationPublicId}</dd>
-            </div>
-            {propertyName && (
-              <div>
-                <dt>{strings.depositContextTitle}</dt>
-                <dd>{propertyName}</dd>
-              </div>
-            )}
-            <div>
-              <dt>{strings.status}</dt>
-              <dd>{formatPaymentStatus(result.payment.status, strings)}</dd>
-            </div>
-            <div>
-              <dt>{strings.depositDates(formatDate(result.booking.arrivalDate, language), formatDate(result.booking.departureDate, language))}</dt>
-              <dd>{strings.depositGuests(result.booking.guests)}</dd>
-            </div>
-          </dl>
-        </div>
-      )}
+      <p className="booking-results-kicker">{strings.paypalTitle}</p><h1 id="booking-return-title">{strings.paypalReturnTitle}</h1>
+      {isProcessing && <div className="booking-return-panel__status"><Spinner animation="border" role="status" /><div><h2>{strings.paypalReturnProcessing}</h2><p>{strings.paypalReturnProcessingBody}</p></div></div>}
+      {!isProcessing && error && <Alert className="booking-return-panel__notice" variant="danger" role="alert">{error}</Alert>}
+      {!isProcessing && result && <div className="booking-return-panel__confirmed"><h2>{strings.confirmationTitle}</h2><p>{strings.paypalReturnSuccessBody}</p><dl><div><dt>{strings.reservationId}</dt><dd>{result.booking.reservationPublicId}</dd></div>{propertyName && <div><dt>{strings.depositContextTitle}</dt><dd>{propertyName}</dd></div>}<div><dt>{strings.status}</dt><dd>{formatPaymentStatus(result.payment.status, strings)}</dd></div><div><dt>{strings.depositDates(formatDate(result.booking.arrivalDate, language), formatDate(result.booking.departureDate, language))}</dt><dd>{strings.depositGuests(result.booking.guests)}</dd></div></dl></div>}
     </section>
   );
 };
 
-const BookingConfirmationPanel = ({
-  result,
-  strings,
-  language,
-}: {
-  result: PayPalCaptureResponse | null;
-  strings: BookingStrings;
-  language: BookingLanguage;
-}) => {
-  if (!result) {
-    return (
-      <section className="booking-confirmation-panel" aria-labelledby="booking-confirmation-title">
-        <p className="booking-results-kicker">{strings.paypalTitle}</p>
-        <h1 id="booking-confirmation-title">{strings.confirmationTitle}</h1>
-        <Alert className="booking-return-panel__notice" variant="warning" role="alert">
-          {strings.confirmationMissing}
-        </Alert>
-      </section>
-    );
-  }
-
+// BookingConfirmationPanel — with auto-login
+const BookingConfirmationPanel = ({ result, strings, language, onManageBooking }: { result: PayPalCaptureResponse | null; strings: BookingStrings; language: BookingLanguage; onManageBooking: (id: string) => void }) => {
+  const [isNavigating, setIsNavigating] = React.useState(false);
+  if (!result) return (<section className="booking-confirmation-panel" aria-labelledby="booking-confirmation-title"><p className="booking-results-kicker">{strings.paypalTitle}</p><h1 id="booking-confirmation-title">{strings.confirmationTitle}</h1><Alert className="booking-return-panel__notice" variant="warning" role="alert">{strings.confirmationMissing}</Alert></section>);
   const propertyName = result.booking.property?.name ?? strings.notAvailable;
-  const manageBookingUrl = portalPath(language, result.booking.reservationPublicId);
-
+  const handleManageClick = () => { setIsNavigating(true); onManageBooking(result.booking.reservationPublicId); };
   return (
     <section className="booking-confirmation-panel" aria-labelledby="booking-confirmation-title">
-      <p className="booking-results-kicker">{strings.paypalTitle}</p>
-      <h1 id="booking-confirmation-title">{strings.confirmationTitle}</h1>
-      <p>{strings.confirmationSubtitle}</p>
-
+      <div className="booking-confirmation-panel__icon"><FontAwesomeIcon icon={faCheck} /></div>
+      <p className="booking-results-kicker">{strings.paypalTitle}</p><h1 id="booking-confirmation-title">{strings.confirmationTitle}</h1><p>{strings.confirmationSubtitle}</p>
       <dl className="booking-confirmation-panel__details">
-        <div>
-          <dt>{strings.reservationId}</dt>
-          <dd>{result.booking.reservationPublicId}</dd>
-        </div>
-        <div>
-          <dt>{strings.depositContextTitle}</dt>
-          <dd>{propertyName}</dd>
-        </div>
-        <div>
-          <dt>{strings.stayDates}</dt>
-          <dd>{strings.depositDates(formatDate(result.booking.arrivalDate, language), formatDate(result.booking.departureDate, language))}</dd>
-        </div>
-        <div>
-          <dt>{strings.guests}</dt>
-          <dd>{strings.depositGuests(result.booking.guests)}</dd>
-        </div>
-        <div>
-          <dt>{strings.status}</dt>
-          <dd>{strings.paymentConfirmed}</dd>
-        </div>
+        <div><dt>{strings.reservationId}</dt><dd>{result.booking.reservationPublicId}</dd></div>
+        <div><dt>{strings.depositContextTitle}</dt><dd>{propertyName}</dd></div>
+        <div><dt>{strings.stayDates}</dt><dd>{strings.depositDates(formatDate(result.booking.arrivalDate, language), formatDate(result.booking.departureDate, language))}</dd></div>
+        <div><dt>{strings.guests}</dt><dd>{strings.depositGuests(result.booking.guests)}</dd></div>
+        <div><dt>{strings.status}</dt><dd>{strings.paymentConfirmed}</dd></div>
       </dl>
-
-      <a className="booking-confirmation-panel__manage" href={manageBookingUrl}>
-        {strings.manageBooking}
-      </a>
-    </section>
-  );
-};
-
-const ManualDepositHandoffPanel = ({
-  handoff,
-  strings,
-  language,
-  onBack,
-}: {
-  handoff: DepositHandoffResponse;
-  strings: BookingStrings;
-  language: BookingLanguage;
-  onBack: () => void;
-}) => {
-  const context = handoff.bookingContext;
-  const instructionCopies = handoff.instructions.bodyKeys
-    .map((bodyKey) => getDepositInstructionCopy(bodyKey, strings))
-    .filter((copy): copy is string => Boolean(copy));
-  const bodyCopies =
-    instructionCopies.length > 0
-      ? instructionCopies
-      : [
-          strings.depositBankInstructions,
-          strings.depositStaffWillConfirm,
-          strings.depositNoReceiptUpload,
-          strings.depositContactUs,
-        ];
-
-  const handleContactClick = (method: DepositHandoffResponse['instructions']['contactMethods'][number]) => {
-    const property = context?.property;
-
-    if (!context?.quoteId || !property?.propertyId) {
-      return;
-    }
-
-    const analyticsConsent = CookieConsentService.hasConsent('analytics');
-
-    trackManualDepositHandoffClicked({
-      contact_method: method.type,
-      language,
-      quote_id: context.quoteId,
-      property_id: property.propertyId,
-      property_slug: property.slug,
-      analytics_consent: analyticsConsent,
-    });
-
-    void recordDepositHandoffEvent({
-      quoteId: context.quoteId,
-      propertyId: property.propertyId,
-      language,
-      contactMethod: method.type,
-      analyticsConsent,
-    }).catch(() => undefined);
-  };
-
-  return (
-    <section className="booking-deposit-handoff" aria-labelledby="booking-deposit-title">
-      <div className="booking-deposit-handoff__header">
-        <p className="booking-results-kicker">{strings.manualDepositTitle}</p>
-        <h2 id="booking-deposit-title">{strings.depositTitle}</h2>
-        <p>{strings.depositInstructions}</p>
-      </div>
-
-      <Alert className="booking-deposit-handoff__notice" variant="warning">
-        <strong>{strings.depositNotConfirmedTitle}</strong>
-        <span>{strings.depositNotConfirmed}</span>
-      </Alert>
-
-      {context && (
-        <div className="booking-deposit-handoff__context" aria-label={strings.depositContextTitle}>
-          <h3>{strings.depositContextTitle}</h3>
-          {context.property && <p>{context.property.name}</p>}
-          {context.arrivalDate && context.departureDate && (
-            <p>{strings.depositDates(formatDate(context.arrivalDate, language), formatDate(context.departureDate, language))}</p>
-          )}
-          {typeof context.guests === 'number' && <p>{strings.depositGuests(context.guests)}</p>}
-        </div>
-      )}
-
-      <div className="booking-deposit-handoff__body">
-        {bodyCopies.map((copy) => (
-          <p key={copy}>{copy}</p>
-        ))}
-      </div>
-
-      <div className="booking-deposit-handoff__contacts">
-        {handoff.instructions.contactMethods.map((method) => (
-          <a
-            key={`${method.type}-${method.url}`}
-            className="booking-deposit-handoff__contact"
-            href={method.url}
-            target={method.type === 'email' ? undefined : '_blank'}
-            rel={method.type === 'email' ? undefined : 'noopener noreferrer'}
-            onClick={() => handleContactClick(method)}
-          >
-            <span>{method.type === 'email' ? strings.contactByEmail : strings.contactByWhatsapp}</span>
-            <strong>{method.label}</strong>
-          </a>
-        ))}
-      </div>
-
-      <Button className="booking-deposit-handoff__back" type="button" variant="link" onClick={onBack}>
-        {strings.backToResults}
+      <Button className="booking-confirmation-panel__manage" type="button" disabled={isNavigating} onClick={handleManageClick}>
+        {isNavigating ? <><Spinner animation="border" size="sm" /> {strings.manageBooking}</> : strings.manageBooking}
       </Button>
     </section>
   );
 };
 
-function getDepositInstructionCopy(bodyKey: string, strings: BookingStrings): string | null {
-  const stringKey = depositInstructionMessages[bodyKey];
-  if (!stringKey) {
-    return null;
-  }
+/**
+ * Deposit checkout: collects the same guest details as the PayPal path, creates
+ * a real hold that takes the dates off sale, then shows where to send the money
+ * and lets the guest attach their receipt.
+ *
+ * This replaces the old contact-only handoff, which told guests to get in touch
+ * and reserved nothing.
+ */
+const DepositCheckoutPanel = ({ result, property, strings, language, form, fieldErrors, holdError, holdResponse, isCreatingHold, receiptState, onChange, onSubmit, onUploadReceipt, onBack }: { result: BookingSearchResponse; property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; form: PayPalHoldFormState; fieldErrors: Record<string, string>; holdError: string | null; holdResponse: DepositHoldResponse | null; isCreatingHold: boolean; receiptState: DepositReceiptState; onChange: (u: Partial<PayPalHoldFormState>) => void; onSubmit: (e: React.FormEvent) => void; onUploadReceipt: (file: File) => void; onBack: () => void }) => {
+  const price = property.price ?? holdResponse?.booking.price;
+  const bankInfo = holdResponse?.bankInfo;
 
-  return strings[stringKey];
-}
+  return (
+    <section className="booking-checkout-panel booking-deposit-checkout" aria-labelledby="booking-deposit-checkout-title">
+      <Button type="button" variant="link" className="booking-wizard-back" onClick={onBack}><FontAwesomeIcon icon={faArrowLeft} /> {strings.backToResults}</Button>
+      <div className="booking-checkout-panel__header">
+        <p className="booking-results-kicker">{strings.manualDepositTitle}</p>
+        <h2 id="booking-deposit-checkout-title">{holdResponse ? strings.depositTitle : strings.checkoutTitle}</h2>
+        <p>{holdResponse ? strings.depositInstructions : strings.manualDepositDescription}</p>
+      </div>
 
-function validateSearch(
-  arrivalDate: string,
-  departureDate: string,
-  guests: number,
-  today: string,
-  strings: BookingStrings
-): Record<string, string> {
+      <div className="booking-checkout-panel__summary" aria-label={strings.checkoutSummary}>
+        <div><span>{strings.depositContextTitle}</span><strong>{property.name}</strong><small>{strings.depositDates(formatDate(result.arrivalDate, language), formatDate(result.departureDate, language))}</small></div>
+        {price && <div><span>{strings.priceForStay}</span><strong>{formatMoney(price.totalAmountCents, price.currency, language)}</strong></div>}
+      </div>
+
+      {holdError && <Alert className="booking-search-alert" variant="danger" role="alert">{holdError}</Alert>}
+
+      {holdResponse ? (
+        <div className="booking-deposit-checkout__held" aria-live="polite">
+          <Alert variant="warning" className="booking-deposit-handoff__notice">
+            <strong>{strings.depositNotConfirmedTitle}</strong>
+            <span>{strings.depositNotConfirmed}</span>
+          </Alert>
+
+          <div className="booking-checkout-panel__timer">
+            <span>{strings.holdExpiring}</span>
+            <HoldCountdown expiresAt={holdResponse.booking.hold.expiresAt} />
+            <small>{strings.holdExpiresAt(formatDateTime(holdResponse.booking.hold.expiresAt, language))}</small>
+          </div>
+
+          <p className="booking-checkout-panel__reservation">{strings.reservationId}: <strong>{holdResponse.booking.reservationPublicId}</strong></p>
+
+          {bankInfo && (
+            <div className="booking-deposit-handoff__bank-info">
+              <div className="booking-deposit-handoff__bank-card">
+                <h3>{strings.depositSinpeTitle}</h3>
+                <dl>
+                  <dt>{strings.depositSinpePhone}</dt><dd>{bankInfo.sinpePhone}</dd>
+                  <dt>{strings.depositSinpeName}</dt><dd>{bankInfo.sinpeName}</dd>
+                </dl>
+              </div>
+              <div className="booking-deposit-handoff__bank-card">
+                <h3>{strings.depositBankTitle}</h3>
+                <dl>
+                  <dt>{strings.depositBankAccountHolder}</dt><dd>{bankInfo.bankAccount.accountHolder}</dd>
+                  <dt>{strings.depositBankColones}</dt><dd className="booking-deposit-handoff__iban">{bankInfo.bankAccount.colonesIban}</dd>
+                  <dt>{strings.depositBankDolares}</dt><dd className="booking-deposit-handoff__iban">{bankInfo.bankAccount.dolaresIban}</dd>
+                </dl>
+              </div>
+            </div>
+          )}
+
+          <div className="booking-deposit-checkout__upload">
+            <h3>{strings.depositUploadTitle}</h3>
+            <p>{strings.depositUploadReceiptNote}</p>
+            {receiptState.status === 'uploaded' ? (
+              <Alert variant="success" role="status">{strings.depositUploadSuccess}</Alert>
+            ) : (
+              <>
+                <Form.Control
+                  type="file"
+                  accept="image/jpeg,image/png,application/pdf"
+                  disabled={receiptState.status === 'uploading'}
+                  onChange={(event) => {
+                    const file = (event.target as HTMLInputElement).files?.[0];
+                    if (file) onUploadReceipt(file);
+                  }}
+                />
+                {receiptState.status === 'uploading' && <p className="booking-deposit-checkout__uploading"><Spinner animation="border" size="sm" /> {strings.depositUploading}</p>}
+                {receiptState.status === 'error' && <Alert variant="danger" role="alert">{receiptState.message}</Alert>}
+              </>
+            )}
+            <p className="booking-deposit-checkout__staff-note">{strings.depositStaffWillConfirm}</p>
+          </div>
+        </div>
+      ) : (
+        <Form className="booking-checkout-panel__form" onSubmit={onSubmit} noValidate>
+          <h3>{strings.guestDetails}</h3>
+          <GuestDetailsFields idPrefix="depositHold" form={form} fieldErrors={fieldErrors} strings={strings} onChange={onChange} />
+          <div className="booking-checkout-panel__actions">
+            <Button type="submit" className="booking-search-submit" disabled={isCreatingHold}>
+              {isCreatingHold ? <><Spinner animation="border" size="sm" /> {strings.creatingHold}</> : strings.depositReserveDates}
+            </Button>
+          </div>
+        </Form>
+      )}
+
+      <div className="booking-checkout-panel__contacts">
+        <h3>{strings.needHelp}</h3>
+        <div className="booking-checkout-panel__contacts-grid">
+          <a className="booking-checkout-panel__contact" href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer"><span>{strings.contactByWhatsapp}</span><strong>+506 8463 2276</strong></a>
+          <a className="booking-checkout-panel__contact" href="mailto:reservas.kalawala@gmail.com"><span>{strings.contactByEmail}</span><strong>reservas.kalawala@gmail.com</strong></a>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+
+
+// Helper functions
+function validateSearch(arrivalDate: string, departureDate: string, guests: number, today: string, strings: BookingStrings): Record<string, string> {
   const errors: Record<string, string> = {};
-
-  if (!arrivalDate || arrivalDate < today) {
-    errors.arrivalDate = strings.validationArrival;
-  }
-
-  if (!departureDate || departureDate <= arrivalDate) {
-    errors.departureDate = strings.validationDateOrder;
-  }
-
-  if (!Number.isInteger(guests) || guests < 1) {
-    errors.guests = strings.validationGuests;
-  }
-
+  if (!arrivalDate || arrivalDate < today) errors.arrivalDate = strings.validationArrival;
+  if (!departureDate || departureDate <= arrivalDate) errors.departureDate = strings.validationDateOrder;
+  if (!Number.isInteger(guests) || guests < 1) errors.guests = strings.validationGuests;
   return errors;
 }
 
 function validatePayPalHoldForm(form: PayPalHoldFormState, strings: BookingStrings): Record<string, string> {
   const errors: Record<string, string> = {};
-
-  if (!form.firstName.trim()) {
-    errors.firstName = strings.validationRequired;
-  }
-
-  if (!form.lastName.trim()) {
-    errors.lastName = strings.validationRequired;
-  }
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-    errors.email = strings.validationEmail;
-  }
-
-  if (form.portalPassword.length < 12) {
-    errors.portalPassword = strings.validationPortalPassword;
-  }
-
-  if (!form.termsAccepted) {
-    errors.termsAccepted = strings.validationTerms;
-  }
-
+  if (!form.firstName.trim()) errors.firstName = strings.validationRequired;
+  if (!form.lastName.trim()) errors.lastName = strings.validationRequired;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) errors.email = strings.validationEmail;
+  if (form.portalPassword.length < 12) errors.portalPassword = strings.validationPortalPassword;
+  if (!form.termsAccepted) errors.termsAccepted = strings.validationTerms;
   return errors;
 }
 
-function getInitialArrivalDate(value: string | null, today: string): string {
-  return value && isYmd(value) && value >= today ? value : today;
-}
+function getInitialArrivalDate(value: string | null, today: string): string { return value && isYmd(value) && value >= today ? value : today; }
+function getInitialDepartureDate(value: string | null, arrivalValue: string | null, today: string): string { const a = getInitialArrivalDate(arrivalValue, today); return value && isYmd(value) && value > a ? value : addDays(a, 2); }
+function getInitialGuestCount(value: string | null): number { const p = Number(value); return Number.isInteger(p) && p >= 1 ? p : 2; }
+function isYmd(value: string): boolean { if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false; const d = new Date(`${value}T00:00:00Z`); return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value; }
 
-function getInitialDepartureDate(value: string | null, arrivalValue: string | null, today: string): string {
-  const arrivalDate = getInitialArrivalDate(arrivalValue, today);
-  return value && isYmd(value) && value > arrivalDate ? value : addDays(arrivalDate, 2);
-}
-
-function getInitialGuestCount(value: string | null): number {
-  const parsed = Number(value);
-  return Number.isInteger(parsed) && parsed >= 1 ? parsed : 2;
-}
-
-function isYmd(value: string): boolean {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return false;
-  }
-
-  const date = new Date(`${value}T00:00:00Z`);
-  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
-}
-
-function getSearchErrorMessage(error: unknown, strings: BookingStrings): string {
-  if (error instanceof BookingApiError && (error.status === 503 || error.retryable)) {
-    return strings.providerUnavailable;
-  }
-
-  return strings.genericError;
-}
-
-function getHoldErrorMessage(error: unknown, strings: BookingStrings): string {
+function getSearchErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError && (error.status === 503 || error.retryable)) return strings.providerUnavailable; return strings.genericError; }
+function getHoldErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError) { if (error.code === 'property_no_longer_available' || error.code === 'no_longer_available') return strings.propertyNoLongerAvailable; if (error.status === 503 || error.retryable) return strings.providerUnavailable; } return strings.checkoutUnavailable; }
+function getPayPalOrderErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError) { if (error.code === 'hold_expired') return strings.bookingExpired; if (error.status === 503 || error.retryable) return strings.providerUnavailable; } return strings.paymentNotReady; }
+function getReceiptErrorMessage(error: unknown, strings: BookingStrings): string {
   if (error instanceof BookingApiError) {
-    if (error.code === 'property_no_longer_available' || error.code === 'no_longer_available') {
-      return strings.propertyNoLongerAvailable;
-    }
-
-    if (error.status === 503 || error.retryable) {
-      return strings.providerUnavailable;
-    }
+    if (error.code === 'invalid_content_type') return strings.depositUploadWrongType;
+    if (error.code === 'upload_too_large') return strings.depositUploadTooLarge;
   }
-
-  return strings.checkoutUnavailable;
+  return strings.depositUploadError;
 }
 
-function getPayPalOrderErrorMessage(error: unknown, strings: BookingStrings): string {
-  if (error instanceof BookingApiError) {
-    if (error.code === 'hold_expired') {
-      return strings.bookingExpired;
-    }
-
-    if (error.status === 503 || error.retryable) {
-      return strings.providerUnavailable;
-    }
-  }
-
-  return strings.paymentNotReady;
-}
-
-function getPayPalCaptureErrorMessage(error: unknown, strings: BookingStrings): string {
-  if (error instanceof BookingApiError) {
-    if (error.code === 'hold_expired') {
-      return strings.bookingExpired;
-    }
-
-    if (error.code === 'paypal_order_not_approved') {
-      return strings.paymentNotReady;
-    }
-
-    if (error.status === 503 || error.retryable) {
-      return strings.providerUnavailable;
-    }
-  }
-
-  return strings.paypalCaptureError;
-}
+function getPayPalCaptureErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError) { if (error.code === 'hold_expired') return strings.bookingExpired; if (error.code === 'paypal_order_not_approved') return strings.paymentNotReady; if (error.status === 503 || error.retryable) return strings.providerUnavailable; } return strings.paypalCaptureError; }
 
 function getCostaRicaToday(): string {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Costa_Rica',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(new Date());
-  const byType = parts.reduce<Record<string, string>>((accumulator, part) => {
-    accumulator[part.type] = part.value;
-    return accumulator;
-  }, {});
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Costa_Rica', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+  const byType = parts.reduce<Record<string, string>>((acc, part) => { acc[part.type] = part.value; return acc; }, {});
   return `${byType.year}-${byType.month}-${byType.day}`;
 }
 
-function addDays(dateString: string, days: number): string {
-  const date = new Date(`${dateString}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + days);
-  return date.toISOString().slice(0, 10);
-}
-
-function formatMoney(amountCents: number, currency: string, language: BookingLanguage): string {
-  return new Intl.NumberFormat(language === 'es' ? 'es-CR' : 'en-US', {
-    style: 'currency',
-    currency,
-  }).format(amountCents / 100);
-}
-
-function formatDateTime(value: string, language: BookingLanguage): string {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(date);
-}
-
-function formatDate(value: string, language: BookingLanguage): string {
-  const date = new Date(`${value}T00:00:00Z`);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
-    dateStyle: 'medium',
-    timeZone: 'UTC',
-  }).format(date);
-}
-
+function addDays(dateString: string, days: number): string { const d = new Date(`${dateString}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + days); return d.toISOString().slice(0, 10); }
+function formatMoney(amountCents: number, currency: string, language: BookingLanguage): string { return new Intl.NumberFormat(language === 'es' ? 'es-CR' : 'en-US', { style: 'currency', currency }).format(amountCents / 100); }
+function formatDateTime(value: string, language: BookingLanguage): string { const d = new Date(value); if (Number.isNaN(d.getTime())) return value; return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', { dateStyle: 'medium', timeStyle: 'short' }).format(d); }
+function formatDate(value: string, language: BookingLanguage): string { const d = new Date(`${value}T00:00:00Z`); if (Number.isNaN(d.getTime())) return value; return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', { dateStyle: 'medium', timeZone: 'UTC' }).format(d); }
+/**
+ * A PayPal hold lasts about an hour, so mm:ss reads naturally. A deposit hold
+ * lasts up to 36 hours, where the same format produces "2159:42" — technically
+ * correct and completely unreadable. Switch to hours and minutes past an hour.
+ */
 function formatDuration(durationMs: number): string {
-  const safeMs = Math.max(0, durationMs);
-  const totalSeconds = Math.floor(safeMs / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-}
+  const totalSeconds = Math.floor(Math.max(0, durationMs) / 1000);
 
-function formatPaymentStatus(status: string, strings: BookingStrings): string {
-  if (status === 'captured') {
-    return strings.paymentConfirmed;
+  if (totalSeconds >= 3600) {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    return `${hours}h ${minutes.toString().padStart(2, '0')}m`;
   }
 
-  return status;
+  return `${Math.floor(totalSeconds / 60)}:${(totalSeconds % 60).toString().padStart(2, '0')}`;
 }
+function formatPaymentStatus(status: string, strings: BookingStrings): string { return status === 'captured' ? strings.paymentConfirmed : status; }
+function redirectToUrl(url: string): void { window.location.assign(url); }
+function isBookingReturnPath(pathname: string): boolean { const n = pathname.replace(/\/+$/, '').toLowerCase(); return n === '/book/return' || n === '/bookes/return'; }
+function isBookingConfirmedPath(pathname: string): boolean { const n = pathname.replace(/\/+$/, '').toLowerCase(); return n === '/book/confirmed' || n === '/bookes/confirmed'; }
+function confirmedBookingPath(language: BookingLanguage): string { return language === 'es' ? '/bookES/confirmed' : '/book/confirmed'; }
+function persistPayPalCheckoutState(state: StoredPayPalCheckout): void { try { window.sessionStorage.setItem(paypalCheckoutStorageKey, JSON.stringify(state)); } catch { /* non-critical */ } }
+function readPayPalCheckoutState(): StoredPayPalCheckout | null { try { const raw = window.sessionStorage.getItem(paypalCheckoutStorageKey); if (!raw) return null; const p = JSON.parse(raw) as Partial<StoredPayPalCheckout>; if (typeof p.bookingSessionId !== 'string' || typeof p.paypalOrderId !== 'string' || (p.language !== 'en' && p.language !== 'es')) return null; return { bookingSessionId: p.bookingSessionId, paypalOrderId: p.paypalOrderId, reservationPublicId: typeof p.reservationPublicId === 'string' ? p.reservationPublicId : undefined, language: p.language }; } catch { return null; } }
+function clearPayPalCheckoutState(bookingSessionId: string): void { try { const s = readPayPalCheckoutState(); if (!s || s.bookingSessionId === bookingSessionId) window.sessionStorage.removeItem(paypalCheckoutStorageKey); } catch { /* non-critical */ } }
+function persistBookingConfirmationState(state: PayPalCaptureResponse): void { try { window.sessionStorage.setItem(bookingConfirmationStorageKey, JSON.stringify(state)); } catch { /* non-critical */ } }
+function readBookingConfirmationState(): PayPalCaptureResponse | null { try { const raw = window.sessionStorage.getItem(bookingConfirmationStorageKey); if (!raw) return null; const p = JSON.parse(raw) as PayPalCaptureResponse; if (!p?.booking?.reservationPublicId || !p.booking.bookingSessionId || p.booking.status !== 'booking_confirmed' || !p.payment?.paypalOrderId) return null; return p; } catch { return null; } }
+function maybeTrackBookingConfirmation(result: PayPalCaptureResponse): void { const property = result.booking.property; const price = result.booking.price; if (!property?.propertyId || !property.slug || !property.name || !price?.currency || typeof price.totalAmountCents !== 'number') return; trackBookingConfirmed({ reservation_id: result.booking.reservationPublicId, property_id: property.propertyId, property_slug: property.slug, property_name: property.name, value_cents: price.totalAmountCents, currency: price.currency, arrival_date: result.booking.arrivalDate, departure_date: result.booking.departureDate, payment_method: 'paypal', language: result.booking.language }); }
+function wasBookingConfirmationTracked(reservationPublicId: string): boolean { try { return window.sessionStorage.getItem(`${bookingConfirmationTrackedPrefix}${reservationPublicId}`) === '1'; } catch { return false; } }
+function markBookingConfirmationTracked(reservationPublicId: string): void { try { window.sessionStorage.setItem(`${bookingConfirmationTrackedPrefix}${reservationPublicId}`, '1'); } catch { /* non-critical */ } }
+function buildListingUrl(slug: string, language: BookingLanguage): string { return `/${slug.replace(/^\/+/, '')}${language === 'es' ? 'ES' : ''}`; }
 
-function redirectToUrl(url: string): void {
-  window.location.assign(url);
-}
+// Portal auto-login helpers
+// The password is stashed in sessionStorage temporarily during the checkout→confirmation flow.
+// Once we have the reservationPublicId (after hold creation / capture), we persist the pair
+// into the durable localStorage credential cache via savePortalCredentials.
+function persistPortalAutoLogin(password: string): void { try { window.sessionStorage.setItem(portalAutoLoginKey, password); } catch { /* non-critical */ } }
+function readPortalAutoLogin(): string | null { try { return window.sessionStorage.getItem(portalAutoLoginKey); } catch { return null; } }
+function clearPortalAutoLogin(): void { try { window.sessionStorage.removeItem(portalAutoLoginKey); } catch { /* non-critical */ } }
 
-function isBookingReturnPath(pathname: string): boolean {
-  const normalized = pathname.replace(/\/+$/, '').toLowerCase();
-  return normalized === '/book/return' || normalized === '/bookes/return';
-}
+// Wrapper with reCAPTCHA provider
+const BookingPageWithCaptcha = () => {
+  const siteKey = process.env.REACT_APP_CAPTCHA_SITE_KEY || '';
+  if (!siteKey) return <BookingPage />;
+  return <GoogleReCaptchaProvider reCaptchaKey={siteKey}><BookingPage /></GoogleReCaptchaProvider>;
+};
 
-function isBookingConfirmedPath(pathname: string): boolean {
-  const normalized = pathname.replace(/\/+$/, '').toLowerCase();
-  return normalized === '/book/confirmed' || normalized === '/bookes/confirmed';
-}
-
-function confirmedBookingPath(language: BookingLanguage): string {
-  return language === 'es' ? '/bookES/confirmed' : '/book/confirmed';
-}
-
-function portalPath(language: BookingLanguage, reservationPublicId: string): string {
-  const base = language === 'es' ? '/portalES' : '/portal';
-  if (readPortalToken()) {
-    return `${base}/${encodeURIComponent(reservationPublicId)}`;
-  }
-  return `${base}?reservationId=${encodeURIComponent(reservationPublicId)}`;
-}
-
-function persistPayPalCheckoutState(state: StoredPayPalCheckout): void {
-  try {
-    window.sessionStorage.setItem(paypalCheckoutStorageKey, JSON.stringify(state));
-  } catch {
-    // Returning from PayPal can still work if the backend includes bookingSessionId in the URL.
-  }
-}
-
-function readPayPalCheckoutState(): StoredPayPalCheckout | null {
-  try {
-    const raw = window.sessionStorage.getItem(paypalCheckoutStorageKey);
-    if (!raw) {
-      return null;
-    }
-
-    const parsed = JSON.parse(raw) as Partial<StoredPayPalCheckout>;
-    if (
-      typeof parsed.bookingSessionId !== 'string' ||
-      typeof parsed.paypalOrderId !== 'string' ||
-      (parsed.language !== 'en' && parsed.language !== 'es')
-    ) {
-      return null;
-    }
-
-    return {
-      bookingSessionId: parsed.bookingSessionId,
-      paypalOrderId: parsed.paypalOrderId,
-      reservationPublicId: typeof parsed.reservationPublicId === 'string' ? parsed.reservationPublicId : undefined,
-      language: parsed.language,
-    };
-  } catch {
-    return null;
-  }
-}
-
-function clearPayPalCheckoutState(bookingSessionId: string): void {
-  try {
-    const stored = readPayPalCheckoutState();
-    if (!stored || stored.bookingSessionId === bookingSessionId) {
-      window.sessionStorage.removeItem(paypalCheckoutStorageKey);
-    }
-  } catch {
-    // Non-critical cleanup.
-  }
-}
-
-function persistBookingConfirmationState(state: PayPalCaptureResponse): void {
-  try {
-    window.sessionStorage.setItem(bookingConfirmationStorageKey, JSON.stringify(state));
-  } catch {
-    // The confirmation route will show a recoverable message if storage is unavailable.
-  }
-}
-
-function readBookingConfirmationState(): PayPalCaptureResponse | null {
-  try {
-    const raw = window.sessionStorage.getItem(bookingConfirmationStorageKey);
-    if (!raw) {
-      return null;
-    }
-
-    const parsed = JSON.parse(raw) as PayPalCaptureResponse;
-    if (
-      !parsed?.booking?.reservationPublicId ||
-      !parsed.booking.bookingSessionId ||
-      parsed.booking.status !== 'booking_confirmed' ||
-      !parsed.payment?.paypalOrderId
-    ) {
-      return null;
-    }
-
-    return parsed;
-  } catch {
-    return null;
-  }
-}
-
-function maybeTrackBookingConfirmation(result: PayPalCaptureResponse): void {
-  const property = result.booking.property;
-  const price = result.booking.price;
-
-  if (!property?.propertyId || !property.slug || !property.name || !price?.currency || typeof price.totalAmountCents !== 'number') {
-    return;
-  }
-
-  trackBookingConfirmed({
-    reservation_id: result.booking.reservationPublicId,
-    property_id: property.propertyId,
-    property_slug: property.slug,
-    property_name: property.name,
-    value_cents: price.totalAmountCents,
-    currency: price.currency,
-    arrival_date: result.booking.arrivalDate,
-    departure_date: result.booking.departureDate,
-    payment_method: 'paypal',
-    language: result.booking.language,
-  });
-}
-
-function wasBookingConfirmationTracked(reservationPublicId: string): boolean {
-  try {
-    return window.sessionStorage.getItem(`${bookingConfirmationTrackedPrefix}${reservationPublicId}`) === '1';
-  } catch {
-    return false;
-  }
-}
-
-function markBookingConfirmationTracked(reservationPublicId: string): void {
-  try {
-    window.sessionStorage.setItem(`${bookingConfirmationTrackedPrefix}${reservationPublicId}`, '1');
-  } catch {
-    // Non-critical analytics dedupe marker.
-  }
-}
-
-function buildListingUrl(slug: string, language: BookingLanguage): string {
-  const normalizedSlug = slug.replace(/^\/+/, '');
-  return `/${normalizedSlug}${language === 'es' ? 'ES' : ''}`;
-}
-
-export default BookingPage;
+export default BookingPageWithCaptcha;

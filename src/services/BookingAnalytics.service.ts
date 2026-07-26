@@ -24,7 +24,12 @@ import { CookieConsentService } from './CookieConsent.service';
 // ---------------------------------------------------------------------------
 
 export type BookingAnalyticsLanguage = 'en' | 'es';
-export type PaymentType = 'paypal' | 'manual_deposit_handoff';
+export type PaymentType =
+  | 'paypal'
+  /** Deposit booking that creates a real hold and awaits staff confirmation. */
+  | 'manual_deposit'
+  /** Legacy contact-only handoff, kept for continuity of historical events. */
+  | 'manual_deposit_handoff';
 
 export interface BookingSearchProps {
   arrival_date: string;

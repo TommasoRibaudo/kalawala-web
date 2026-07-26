@@ -40,10 +40,10 @@ function createTestConfig(): BookingApiConfig {
     maxBodyBytes: 64 * 1024,
     secrets: new StaticSecretProvider({
       smoobuApiKey: "smoobu-secret-value",
+      smoobuWebhookSecret: "smoobu-webhook-secret-value",
       paypalClientId: "paypal-client-id-value",
       paypalClientSecret: "paypal-client-secret-value",
       paypalWebhookId: "paypal-webhook-id-value",
-      smoobuWebhookSecret: "smoobu-webhook-secret-value",
       bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
       portalSessionSecret: PORTAL_SECRET,
       rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
@@ -114,6 +114,7 @@ async function seedConfirmedSession(language: "en" | "es" = "en"): Promise<strin
     bookingSessionId: session.id,
     propertyId: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111", // Casa Geco
     paymentMethod: "paypal",
+    ratePlan: "flexible",
     price: {
       propertyId: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111",
       currency: "USD",
@@ -181,6 +182,7 @@ async function seedHoldActiveSession(): Promise<string> {
     bookingSessionId: session.id,
     propertyId: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111",
     paymentMethod: "paypal",
+    ratePlan: "flexible",
     price: {
       propertyId: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111",
       currency: "USD",

@@ -54,3 +54,19 @@ CLAUDE.md
 
 # Legacy
 /public/smoobu-config.php
+scripts/seed-booking-api-secret.ps1
+scripts/update-lambda-env.ps1
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+/.claude
+
+# Build artifacts — Lambda bundles are rebuilt by CI, not versioned
+/booking-api-bundle.zip
+/booking-api/lambda-package.zip
+*.zip
+
+# Stray Lambda invoke output
+/infra/response.json

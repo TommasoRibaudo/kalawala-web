@@ -1,13 +1,15 @@
-import { timingSafeEqual } from "crypto";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
 import { ApiError } from "./http/errors";
 import { Router } from "./http/router";
 import { handleCalendarRequest } from "./calendar";
 import { handlePortalLogin } from "./portalAuth";
-import { handlePortalReservation, handlePortalHelpRequest, handlePortalCancellationRequest } from "./portalPages";
+import { handlePortalReservation, handlePortalHelpRequest, handlePortalCancellationRequest, handlePortalCancelBooking, handlePortalGuestUpdate } from "./portalPages";
 import { handleManualDepositHandoff, handleManualDepositHandoffEvent } from "./depositHandoff";
+import { handleDepositReceiptUploadUrl, handleDepositReceiptConfirm } from "./depositReceipt";
 import { handleCreatePayPalHold } from "./holds";
+import { handleCreateDepositHold } from "./depositHolds";
+import { handleStaffDepositReviewPage, handleStaffDepositReviewSubmit } from "./depositConfirm";
 import { handleCreatePayPalOrder, handleCapturePayPalOrder } from "./paypalOrders";
 import { handlePayPalWebhook } from "./paypalWebhooks";
 import { handleAvailabilitySearch } from "./search";
@@ -18,9 +20,15 @@ import {
   validateBookingSessionPathParams,
   validateBookingSessionRequest,
   validateCalendarRequest,
+  validateDepositHoldRequest,
+  validateStaffReviewToken,
+  validateStaffReviewSubmit,
   validateCancellationRequest,
   validateDepositHandoffEvent,
   validateDepositHandoffQuery,
+  validateDepositReceiptUploadUrlRequest,
+  validateDepositReceiptConfirmRequest,
+  validateGuestUpdateRequest,
   validateHoldRequest,
   validatePayPalCaptureRequest,
   validatePayPalCapturePathRequest,
@@ -94,6 +102,32 @@ export function createRouter(config: BookingApiConfig): Router {
     { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "paymentCapture" }
   );
 
+  router.post(
+    "/api/deposit-holds",
+    async (request) => {
+      const holdRequest = validateDepositHoldRequest(request.body);
+      return handleCreateDepositHold(holdRequest, request, config);
+    },
+    { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "holdCreate" }
+  );
+
+  // Staff deposit review. GET renders a one-screen summary with a single button;
+  // the POST performs the action. Splitting them keeps email scanners and
+  // link-preview bots from confirming bookings by merely fetching the URL.
+  router.get("/api/staff/deposit-review/:token", async (request) => {
+    const token = validateStaffReviewToken(request.pathParams);
+    return handleStaffDepositReviewPage(token, request, config);
+  }, { abuseProtection: "portalRead" });
+
+  router.post(
+    "/api/staff/deposit-review",
+    async (request) => {
+      const token = validateStaffReviewSubmit(request.rawBody, request.body);
+      return handleStaffDepositReviewSubmit(token, request, config);
+    },
+    { allowFormEncodedBody: true, preserveRawBody: true, abuseProtection: "portalWrite" }
+  );
+
   router.get("/api/deposit-handoff", async (request) => {
     const query = validateDepositHandoffQuery(request.query);
     return handleManualDepositHandoff(query, config, request.responseHeaders, request.observability);
@@ -104,6 +138,36 @@ export function createRouter(config: BookingApiConfig): Router {
     async (request) => {
       const event = validateDepositHandoffEvent(request.body);
       return handleManualDepositHandoffEvent(event, config, request.responseHeaders, request.observability);
+    },
+    { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "depositEvent" }
+  );
+
+  router.post(
+    "/api/deposit-receipt/upload-url",
+    async (request) => {
+      const body = validateDepositReceiptUploadUrlRequest(request.body);
+      return handleDepositReceiptUploadUrl(
+        body,
+        config,
+        request.responseHeaders,
+        request.observability,
+        getHeader(request.headers, "authorization")
+      );
+    },
+    { requireJsonBody: true, abuseProtection: "depositEvent" }
+  );
+
+  router.post(
+    "/api/deposit-receipt/confirm",
+    async (request) => {
+      const body = validateDepositReceiptConfirmRequest(request.body);
+      return handleDepositReceiptConfirm(
+        body,
+        config,
+        request.responseHeaders,
+        request.observability,
+        getHeader(request.headers, "authorization")
+      );
     },
     { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "depositEvent" }
   );
@@ -122,7 +186,6 @@ export function createRouter(config: BookingApiConfig): Router {
     "/api/webhooks/smoobu",
     async (request) => {
       const body = assertJsonObject(request.body);
-      await assertSmoobuWebhookSecret(request, config);
       return handleSmoobuWebhook(request, config, body);
     },
     { requireJsonBody: true, preserveRawBody: true, rejectQuerySecrets: true, abuseProtection: "webhook" }
@@ -160,6 +223,26 @@ export function createRouter(config: BookingApiConfig): Router {
       return handlePortalCancellationRequest(reservationPublicId, body, request, config);
     },
     { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "portalWrite" }
+  );
+
+  router.post(
+    "/api/portal/reservation/:reservationPublicId/cancel",
+    async (request) => {
+      const reservationPublicId = validateReservationPublicId(request.pathParams);
+      const body = validateCancellationRequest(request.body);
+      return handlePortalCancelBooking(reservationPublicId, body, request, config);
+    },
+    { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "portalWrite" }
+  );
+
+  router.put(
+    "/api/portal/reservation/:reservationPublicId/guests",
+    async (request) => {
+      const reservationPublicId = validateReservationPublicId(request.pathParams);
+      const body = validateGuestUpdateRequest(request.body);
+      return handlePortalGuestUpdate(reservationPublicId, body, request, config);
+    },
+    { requireJsonBody: true, abuseProtection: "portalWrite" }
   );
 
   return router;
@@ -213,13 +296,3 @@ function assertPayPalWebhookHeaders(request: RouteRequest): void {
   }
 }
 
-async function assertSmoobuWebhookSecret(request: RouteRequest, config: BookingApiConfig): Promise<void> {
-  const { smoobuWebhookSecret } = await config.secrets.getSecrets();
-
-  const provided = getHeader(request.headers, "x-smoobu-webhook-secret");
-  const expected = Buffer.from(smoobuWebhookSecret);
-  const actual = Buffer.from(provided ?? "");
-  if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) {
-    throw new ApiError(401, "unauthorized", "Webhook secret is invalid.");
-  }
-}

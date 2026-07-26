@@ -49,15 +49,19 @@ if (CookieConsentService.hasConsent('analytics')) {
   posthog.opt_in_capturing();
 }
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const rootElement = document.getElementById('root') as HTMLElement;
 
-root.render(
-  // <React.StrictMode>
-    <App />
-  // </React.StrictMode>
-);
+if (rootElement.hasChildNodes()) {
+  // Pre-rendered by react-snap — hydrate instead of full render
+  ReactDOM.hydrateRoot(rootElement, <App />);
+} else {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    // <React.StrictMode>
+      <App />
+    // </React.StrictMode>
+  );
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

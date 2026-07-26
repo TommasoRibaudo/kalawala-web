@@ -35,10 +35,10 @@ function createTestConfig(): BookingApiConfig {
     maxBodyBytes: 64 * 1024,
     secrets: new StaticSecretProvider({
       smoobuApiKey: "smoobu-secret-value",
+      smoobuWebhookSecret: "smoobu-webhook-secret-value",
       paypalClientId: "paypal-client-id-value",
       paypalClientSecret: "paypal-client-secret-value",
       paypalWebhookId: "paypal-webhook-id-value",
-      smoobuWebhookSecret: "smoobu-webhook-secret-value",
       bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
       portalSessionSecret: PORTAL_SECRET,
       rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
@@ -130,6 +130,7 @@ async function seedConfirmedSession(password: string): Promise<string> {
     bookingSessionId: session.id,
     propertyId: "00000000-0000-0000-0000-000000000001",
     paymentMethod: "paypal",
+    ratePlan: "flexible",
     price: {
       propertyId: "00000000-0000-0000-0000-000000000001",
       currency: "USD",
@@ -312,6 +313,7 @@ describe("POST /api/portal/login", () => {
       bookingSessionId: session.id,
       propertyId: "00000000-0000-0000-0000-000000000001",
       paymentMethod: "paypal",
+      ratePlan: "flexible",
       price: {
         propertyId: "00000000-0000-0000-0000-000000000001",
         currency: "USD",

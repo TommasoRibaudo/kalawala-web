@@ -21,10 +21,10 @@ function createTestConfig(): BookingApiConfig {
     maxBodyBytes: 64 * 1024,
     secrets: new StaticSecretProvider({
       smoobuApiKey: "smoobu-secret-value",
+      smoobuWebhookSecret: "smoobu-webhook-secret-value",
       paypalClientId: "paypal-client-id-value",
       paypalClientSecret: "paypal-client-secret-value",
       paypalWebhookId: "paypal-webhook-id-value",
-      smoobuWebhookSecret: "smoobu-webhook-secret-value",
       bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
       portalSessionSecret: "portal-session-secret-value",
       rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
@@ -42,8 +42,8 @@ function createTestConfig(): BookingApiConfig {
     paypal: {
       baseUrl: "https://api-m.sandbox.paypal.com",
       timeoutMs: 10_000,
-      orderReturnUrl: "https://kalawala.test/booking/return",
-      orderCancelUrl: "https://kalawala.test/booking/cancel",
+      orderReturnUrl: "https://kalawala.test/book/return",
+      orderCancelUrl: "https://kalawala.test/book",
     },
     bookingSessions,
     holds,
@@ -414,8 +414,8 @@ test("POST /api/paypal/order sends PayPal-Request-Id header and correct order pa
       locale: "en-US",
       shipping_preference: "NO_SHIPPING",
       user_action: "PAY_NOW",
-      return_url: "https://kalawala.test/booking/return",
-      cancel_url: "https://kalawala.test/booking/cancel",
+      return_url: "https://kalawala.test/book/return",
+      cancel_url: "https://kalawala.test/book",
     },
   });
   expect(orderPayload.purchase_units[0].description).toContain("Casa Geco");

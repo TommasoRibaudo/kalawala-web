@@ -1,18 +1,8 @@
-import { BookingSessionRepository } from "./bookingSessions";
 import { createEmailClient } from "./email";
 import { ApiError } from "./http/errors";
 import { jsonResponse } from "./http/response";
-import { BOOKING_PROPERTIES_BY_ID, listingUrlForLanguage } from "./propertyCatalog";
+import { BookingProperty, BOOKING_PROPERTIES_BY_ID, listingUrlForLanguage } from "./propertyCatalog";
 import { ApiResponse, BookingApiConfig, HeadersMap, RouteObservability } from "./types";
-
-function getBookingSessionRepository(config: BookingApiConfig): BookingSessionRepository {
-  if (!config.bookingSessions) {
-    throw new ApiError(503, "database_unavailable", "Booking session storage is not configured.", {
-      retryable: true,
-    });
-  }
-  return config.bookingSessions;
-}
 
 export interface DepositHandoffQuery {
   language: "en" | "es";
@@ -41,6 +31,53 @@ const CONTACT_METHODS = [
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Bank transfer / SINPE payment details
+// ---------------------------------------------------------------------------
+
+export interface BankAccount {
+  accountHolder: string;
+  colonesIban: string;
+  dolaresIban: string;
+}
+
+export interface DepositBankInfo {
+  sinpePhone: string;
+  sinpeName: string;
+  bankAccount: BankAccount;
+}
+
+/** Properties managed under Xelion srl (Geco, Rana, Pappagallo, Tucano). */
+const XELION_BANK: BankAccount = {
+  accountHolder: "Xelion srl",
+  colonesIban: "CR61010200009629385364",
+  dolaresIban: "CR71010200009629385281",
+};
+
+/** Properties managed under AO DIMME (VillaMar, VillaCoral, Areka, Plumeria, Giulia, Delfin). */
+const DIMME_BANK: BankAccount = {
+  accountHolder: "AO DIMME",
+  colonesIban: "CR84010200009660483247",
+  dolaresIban: "CR94010200009660483164",
+};
+
+const XELION_SLUGS = new Set(["Geco", "Rana", "Pappagallo", "Tucano"]);
+
+function bankAccountForProperty(property: BookingProperty | undefined): BankAccount {
+  if (property && XELION_SLUGS.has(property.slug)) {
+    return XELION_BANK;
+  }
+  return DIMME_BANK;
+}
+
+export function buildBankInfo(property: BookingProperty | undefined): DepositBankInfo {
+  return {
+    sinpePhone: "8772 7355",
+    sinpeName: "Luciano Ribaudo",
+    bankAccount: bankAccountForProperty(property),
+  };
+}
+
 export async function handleManualDepositHandoff(
   query: DepositHandoffQuery,
   config: BookingApiConfig,
@@ -48,12 +85,15 @@ export async function handleManualDepositHandoff(
   observability: RouteObservability
 ): Promise<ApiResponse> {
   const bookingContext = await buildBookingContext(query, config);
+  const property = query.propertyId ? BOOKING_PROPERTIES_BY_ID.get(query.propertyId) : undefined;
+  const bankInfo = buildBankInfo(property);
 
   observability.logger.info("manual_deposit_handoff_instructions_served", {
     language: query.language,
     quoteId: query.quoteId,
     propertyId: query.propertyId,
     hasBookingContext: Boolean(bookingContext),
+    bankAccountHolder: bankInfo.bankAccount.accountHolder,
   });
 
   return jsonResponse(
@@ -67,14 +107,14 @@ export async function handleManualDepositHandoff(
       instructions: {
         titleKey: "deposit.title",
         bodyKeys: [
-          "deposit.bankInstructions",
-          "deposit.notConfirmed",
+          "deposit.bankTransferInstructions",
+          "deposit.uploadReceiptNote",
           "deposit.staffWillConfirm",
-          "deposit.noReceiptUpload",
           "deposit.contactUs",
         ],
         contactMethods: CONTACT_METHODS,
       },
+      bankInfo,
       ...(bookingContext ? { bookingContext } : {}),
     },
     responseHeaders

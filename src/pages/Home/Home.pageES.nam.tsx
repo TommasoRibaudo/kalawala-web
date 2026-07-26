@@ -10,7 +10,7 @@ import DiscoverNamES from "../../components/Discover/Discover.componentNamES";
 import OurOtherHomesNamES from "../../components/OurOtherHomes/OurOtherHomes.componentNamES";
 import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
-import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
+import BookingSearchWidget from "../../components/BookingSearchWidget/BookingSearchWidget.component";
 import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
 
 const helpMeChooseOptionsES = [
@@ -45,8 +45,6 @@ const helpMeChooseOptionsES = [
 ];
 
 const HomeNamES = () => {
-  // Show discount tip when Smoobu component changes size
-  useSmoobuSizeChange({ isSpanishPage: true });
   
 
   return (
@@ -63,6 +61,7 @@ const HomeNamES = () => {
       <WelcomeSliderNamES />
       <FixedNavigationES isBlog={false}/>
       <HelpMeChoose title="Elige tu" titleHighlight="Estadía Ideal" options={helpMeChooseOptionsES} />
+      <BookingSearchWidget isSpanish={true} variant="hero" />
       <HomeReviews isSpanish={true} />
       <OurHomes houseDataList={NamDataListES}/>
       <OurOtherHomesNamES />

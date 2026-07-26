@@ -1,5 +1,7 @@
 import { createHash, randomUUID, scrypt as scryptCallback, ScryptOptions } from "crypto";
 import {
+  BookingPaymentMethod,
+  BookingRatePlan,
   BookingSessionQuotedProperty,
   BookingSessionRecord,
   BookingSessionRepository,
@@ -18,6 +20,11 @@ const HOLD_IDEMPOTENCY_SCOPE = "booking.hold.create";
 
 type HoldStatus = "creating" | "active" | "failed" | "expired" | "cancelled" | "converted";
 type IdempotencyStatus = "in_progress" | "completed";
+
+/** Channel IDs used when creating holds (Blocked or Direct booking). */
+export type SmoobuHoldChannelId = 11 | 13;
+/** All channel IDs that may appear on a hold record (includes promotion targets). */
+export type SmoobuChannelId = 11 | 13 | 70;
 
 interface SmoobuAvailabilityResponse {
   availableApartments?: unknown;
@@ -88,7 +95,7 @@ export interface HoldRecord {
   status: HoldStatus;
   expiresAt: string;
   smoobuReservationId?: number;
-  smoobuChannelId: 11 | 13;
+  smoobuChannelId: SmoobuChannelId;
   smoobuCreatePayloadHash?: string;
   lastSmoobuError?: string;
   createdAt: string;
@@ -132,7 +139,7 @@ export interface HoldRepository {
     arrivalDate: string;
     departureDate: string;
     expiresAt: string;
-    smoobuChannelId: 11 | 13;
+    smoobuChannelId: SmoobuHoldChannelId;
     smoobuCreatePayloadHash: string;
   }): Promise<HoldRecord>;
   activateHold(input: {
@@ -142,6 +149,11 @@ export interface HoldRepository {
   failHold(input: { holdId: string; reason: string }): Promise<HoldRecord>;
   getByBookingSessionId(bookingSessionId: string): Promise<HoldRecord | undefined>;
   getBySmoobuReservationId(smoobuReservationId: number): Promise<HoldRecord | undefined>;
+  convertHold(input: {
+    holdId: string;
+    newSmoobuReservationId: number;
+    newSmoobuChannelId: SmoobuChannelId;
+  }): Promise<HoldRecord>;
   expireHold(holdId: string): Promise<HoldRecord>;
   cancelHold(holdId: string): Promise<HoldRecord>;
   listExpiredHolds(now: string): Promise<HoldRecord[]>;
@@ -292,7 +304,7 @@ export class RdsHoldRepository implements HoldRepository {
     arrivalDate: string;
     departureDate: string;
     expiresAt: string;
-    smoobuChannelId: 11 | 13;
+    smoobuChannelId: SmoobuHoldChannelId;
     smoobuCreatePayloadHash: string;
   }): Promise<HoldRecord> {
     try {
@@ -430,6 +442,34 @@ export class RdsHoldRepository implements HoldRepository {
     return mapRequiredHoldRow(result.rows[0], holdId);
   }
 
+  async convertHold(input: {
+    holdId: string;
+    newSmoobuReservationId: number;
+    newSmoobuChannelId: SmoobuChannelId;
+  }): Promise<HoldRecord> {
+    const result = await this.pool.query<HoldRow>(
+      `
+        update holds
+        set
+          status = 'converted',
+          converted_at = coalesce(converted_at, now()),
+          smoobu_reservation_id = $2,
+          smoobu_channel_id = $3,
+          updated_at = now()
+        where id = $1
+          and status = 'active'
+        returning ${HOLD_COLUMNS}
+      `,
+      [input.holdId, input.newSmoobuReservationId, input.newSmoobuChannelId]
+    );
+
+    if (result.rows[0]) {
+      return mapHoldRow(result.rows[0]);
+    }
+
+    return this.throwMissingOrInvalidTransition(input.holdId, "active", "converted");
+  }
+
   async listExpiredHolds(now: string): Promise<HoldRecord[]> {
     const result = await this.pool.query<HoldRow>(
       `
@@ -555,7 +595,7 @@ export class InMemoryHoldRepository implements HoldRepository {
     arrivalDate: string;
     departureDate: string;
     expiresAt: string;
-    smoobuChannelId: 11 | 13;
+    smoobuChannelId: SmoobuHoldChannelId;
     smoobuCreatePayloadHash: string;
   }): Promise<HoldRecord> {
     const existingHoldId = this.holdIdByBookingSessionId.get(input.bookingSessionId);
@@ -650,6 +690,23 @@ export class InMemoryHoldRepository implements HoldRepository {
     return updated;
   }
 
+  async convertHold(input: {
+    holdId: string;
+    newSmoobuReservationId: number;
+    newSmoobuChannelId: SmoobuChannelId;
+  }): Promise<HoldRecord> {
+    const existing = this.getRequiredHold(input.holdId);
+    const updated: HoldRecord = {
+      ...existing,
+      status: "converted",
+      smoobuReservationId: input.newSmoobuReservationId,
+      smoobuChannelId: input.newSmoobuChannelId,
+      updatedAt: new Date().toISOString(),
+    };
+    this.holdsById.set(updated.id, updated);
+    return updated;
+  }
+
   async expireHold(holdId: string): Promise<HoldRecord> {
     const existing = this.getRequiredHold(holdId);
     const updated: HoldRecord = {
@@ -683,7 +740,74 @@ export class InMemoryHoldRepository implements HoldRepository {
   }
 }
 
+/**
+ * The two payment paths differ only in a handful of parameters, but they share
+ * the whole delicate sequence: idempotency reserve/replay, quote validation,
+ * just-in-time availability recheck, create-then-activate across two systems,
+ * and rollback if Smoobu rejects the reservation. Forking that would double the
+ * surface for the next bug, so the flavour is passed in instead.
+ */
+export interface HoldFlavour {
+  paymentMethod: BookingPaymentMethod;
+  ratePlan: BookingRatePlan;
+  idempotencyScope: string;
+  /**
+   * Hold lifetime, resolved once the quoted session is known. PayPal holds last
+   * minutes; a bank transfer needs a day or two, and the deposit flavour shortens
+   * it further for stays that are imminent.
+   */
+  ttlMsFor(session: BookingSessionRecord): number;
+  /**
+   * Written onto the Smoobu reservation so staff opening it in the dashboard can
+   * see what it is and what would confirm it. Each flavour supplies its own
+   * wording — "verified" means something different for a card and a transfer.
+   */
+  noticePrefix: string;
+  noticeCaveat: string;
+  /** Whether the #norefundallowed discount applies. Deposit bookings are always flexible. */
+  allowNonRefundable: boolean;
+  /**
+   * Runs after the hold is active but before the response is stored for
+   * idempotent replay. Returns extra response fields and sends any emails.
+   */
+  finalize(context: {
+    session: BookingSessionRecord;
+    hold: HoldRecord;
+    property: BookingProperty;
+    price: BookingSessionQuotedProperty;
+    config: BookingApiConfig;
+    request: RouteRequest;
+  }): Promise<Record<string, unknown>>;
+}
+
 export async function handleCreatePayPalHold(
+  holdRequest: HoldRequest,
+  request: RouteRequest,
+  config: BookingApiConfig
+): Promise<ApiResponse> {
+  return createSmoobuBackedHold(
+    {
+      paymentMethod: "paypal",
+      ratePlan: holdRequest.nonRefundable ? "non_refundable" : "flexible",
+      idempotencyScope: HOLD_IDEMPOTENCY_SCOPE,
+      ttlMsFor: () => config.hold.defaultTtlMinutes * 60_000,
+      noticePrefix: "Kalawala PayPal provisional hold.",
+      noticeCaveat: "Not confirmed until PayPal payment is verified.",
+      allowNonRefundable: true,
+      async finalize({ session, property, config: cfg, request: req }) {
+        const emailClient = createEmailClient(cfg.email, req.observability.logger);
+        await emailClient.sendHoldCreated(session, property.name);
+        return { nextAction: "create_paypal_order" };
+      },
+    },
+    holdRequest,
+    request,
+    config
+  );
+}
+
+export async function createSmoobuBackedHold(
+  flavour: HoldFlavour,
   holdRequest: HoldRequest,
   request: RouteRequest,
   config: BookingApiConfig
@@ -703,19 +827,25 @@ export async function handleCreatePayPalHold(
   }
   const requestHash = hashJson(holdRequest);
 
-  const replay = await maybeReplayIdempotentResponse(holds, idempotencyKey, requestHash, request.responseHeaders);
+  const replay = await maybeReplayIdempotentResponse(
+    holds,
+    idempotencyKey,
+    requestHash,
+    request.responseHeaders,
+    flavour.idempotencyScope
+  );
   if (replay) {
     return replay;
   }
 
-  await reserveHoldIdempotency(config, holds, idempotencyKey, requestHash);
+  await reserveHoldIdempotency(config, holds, idempotencyKey, requestHash, flavour.idempotencyScope);
 
   let creatingHold: HoldRecord | undefined;
   try {
     const session = await requireQuotedSession(bookingSessions, holdRequest);
     const property = requireProperty(holdRequest.propertyId);
     const quotedPrice = requireQuotedPrice(session, property.propertyId);
-    const expiresAt = new Date(Date.now() + config.hold.defaultTtlMinutes * 60_000).toISOString();
+    const expiresAt = new Date(Date.now() + flavour.ttlMsFor(session)).toISOString();
     const portalPasswordHash = await hashPortalPassword(holdRequest.portalPassword);
 
     const customerId = config.smoobu.customerId;
@@ -726,15 +856,33 @@ export async function handleCreatePayPalHold(
     }
     const smoobuClient = await createSmoobuClient(config);
     const recheckedPrice = await recheckPropertyAvailability(holdRequest, session, property, smoobuClient, customerId, request.observability);
-    assertPriceMatchesQuote(quotedPrice, recheckedPrice);
+
+    // When non-refundable, the recheck includes the #norefundallowed discount
+    // code so Smoobu returns the 10%-off price. Use that discounted price for
+    // the reservation instead of the original quoted price.
+    let effectivePrice: BookingSessionQuotedProperty;
+    if (flavour.allowNonRefundable && holdRequest.nonRefundable) {
+      // Sanity check: discounted price should be lower than or equal to the quote
+      if (recheckedPrice.currency !== quotedPrice.currency || recheckedPrice.nights !== quotedPrice.nights) {
+        throw new ApiError(409, "property_no_longer_available", "The quote changed before hold creation.", {
+          fieldErrors: { quoteId: ["quote_changed"] },
+        });
+      }
+      effectivePrice = recheckedPrice;
+    } else {
+      assertPriceMatchesQuote(quotedPrice, recheckedPrice);
+      effectivePrice = quotedPrice;
+    }
 
     const reservationPayload = buildSmoobuHoldPayload({
       session,
       property,
       guest: holdRequest.guest,
-      price: quotedPrice,
+      price: effectivePrice,
       expiresAt,
       channelId: config.smoobu.holdChannelId,
+      noticePrefix: flavour.noticePrefix,
+      noticeCaveat: flavour.noticeCaveat,
     });
     const payloadHash = hashJson(reservationPayload);
 
@@ -751,8 +899,12 @@ export async function handleCreatePayPalHold(
     await bookingSessions.markHoldCreating({
       bookingSessionId: session.id,
       propertyId: property.propertyId,
-      paymentMethod: "paypal",
-      price: quotedPrice,
+      paymentMethod: flavour.paymentMethod,
+      // Persist which rate was booked — the cancellation policy needs to tell a
+      // non-refundable booking from a flexible one long after the discount code
+      // was sent to Smoobu.
+      ratePlan: flavour.ratePlan,
+      price: effectivePrice,
       guest: holdRequest.guest,
       portalPasswordHash,
       expiresAt,
@@ -803,9 +955,25 @@ export async function handleCreatePayPalHold(
       providerObjectId: String(smoobuReservationId),
     });
 
-    const responseBody = buildHoldResponse(activeSession, activeHold, property, quotedPrice);
+    // Flavour-specific tail: extra response fields and any notifications. Runs
+    // before the response is stored so an idempotent replay returns the same
+    // body, including anything finalize() contributed.
+    const extraFields = await flavour.finalize({
+      session: activeSession,
+      hold: activeHold,
+      property,
+      price: effectivePrice,
+      config,
+      request,
+    });
+
+    const responseBody = {
+      ...buildHoldResponse(activeSession, activeHold, property, effectivePrice),
+      ...extraFields,
+    };
+
     await holds.storeIdempotencyResponse({
-      scope: HOLD_IDEMPOTENCY_SCOPE,
+      scope: flavour.idempotencyScope,
       key: idempotencyKey,
       requestHash,
       response: {
@@ -813,10 +981,6 @@ export async function handleCreatePayPalHold(
         body: responseBody,
       },
     });
-
-    // Send hold_created email — non-fatal; errors are logged inside EmailClient
-    const emailClient = createEmailClient(config.email, request.observability.logger);
-    await emailClient.sendHoldCreated(activeSession, property.name);
 
     return jsonResponse(200, responseBody, request.responseHeaders);
   } catch (error) {
@@ -830,7 +994,7 @@ export async function handleCreatePayPalHold(
         reason: safeProviderErrorCode(error),
       }).catch(() => {});
     }
-    await holds.releaseIdempotencyKey(HOLD_IDEMPOTENCY_SCOPE, idempotencyKey, requestHash);
+    await holds.releaseIdempotencyKey(flavour.idempotencyScope, idempotencyKey, requestHash);
     request.observability.recordStateTransition({
       entityType: "hold",
       fromState: creatingHold ? "creating" : undefined,
@@ -849,9 +1013,10 @@ async function maybeReplayIdempotentResponse(
   holds: HoldRepository,
   idempotencyKey: string,
   requestHash: string,
-  responseHeaders: HeadersMap
+  responseHeaders: HeadersMap,
+  scope: string
 ): Promise<ApiResponse | undefined> {
-  const existing = await holds.getIdempotencyRecord(HOLD_IDEMPOTENCY_SCOPE, idempotencyKey);
+  const existing = await holds.getIdempotencyRecord(scope, idempotencyKey);
   if (!existing) {
     return undefined;
   }
@@ -873,11 +1038,12 @@ async function reserveHoldIdempotency(
   config: BookingApiConfig,
   holds: HoldRepository,
   idempotencyKey: string,
-  requestHash: string
+  requestHash: string,
+  scope: string
 ): Promise<void> {
   const nowMs = Date.now();
   await holds.reserveIdempotencyKey({
-    scope: HOLD_IDEMPOTENCY_SCOPE,
+    scope,
     key: idempotencyKey,
     requestHash,
     expiresAt: new Date(nowMs + config.hold.idempotencyTtlMinutes * 60_000).toISOString(),
@@ -937,12 +1103,23 @@ async function recheckPropertyAvailability(
       apartments: [property.smoobuApartmentId],
       customerId,
       guests: session.guests,
+      ...(holdRequest.nonRefundable ? { discountCode: "#norefundallowed" } : {}),
     },
     observability
   );
 
   const availableIds = parseAvailableApartmentIds(response.data.availableApartments);
   const unavailableIds = parseUnavailableApartmentIds(response.data.errorMessages);
+
+  observability.logger.info("smoobu_recheck_debug", {
+    apartmentId: property.smoobuApartmentId,
+    availableIdsRaw: JSON.stringify(response.data.availableApartments).slice(0, 500),
+    errorMessagesRaw: JSON.stringify(response.data.errorMessages).slice(0, 500),
+    pricesRaw: JSON.stringify(response.data.prices).slice(0, 500),
+    availableIdsParsed: availableIds,
+    unavailableIdsParsed: Array.from(unavailableIds),
+  });
+
   if (!availableIds.includes(property.smoobuApartmentId) || unavailableIds.has(property.smoobuApartmentId)) {
     throw new ApiError(409, "property_no_longer_available", "This property is no longer available.");
   }
@@ -981,7 +1158,9 @@ function buildSmoobuHoldPayload(input: {
   guest: HoldGuestDetails;
   price: BookingSessionQuotedProperty;
   expiresAt: string;
-  channelId: 11 | 13;
+  channelId: SmoobuHoldChannelId;
+  noticePrefix: string;
+  noticeCaveat: string;
 }) {
   return {
     arrivalDate: input.session.arrivalDate,
@@ -993,7 +1172,7 @@ function buildSmoobuHoldPayload(input: {
     email: input.guest.email,
     ...(input.guest.phone ? { phone: input.guest.phone } : {}),
     ...(input.guest.country ? { country: input.guest.country } : {}),
-    notice: buildSmoobuNotice(input.session, input.guest, input.expiresAt),
+    notice: buildSmoobuNotice(input.session, input.guest, input.expiresAt, input.noticePrefix, input.noticeCaveat),
     adults: input.session.guests,
     children: 0,
     price: centsToAmount(input.price.totalAmountCents),
@@ -1006,10 +1185,14 @@ function buildSmoobuHoldPayload(input: {
   };
 }
 
-function buildSmoobuNotice(session: BookingSessionRecord, guest: HoldGuestDetails, expiresAt: string): string {
-  const parts = [
-    `Kalawala PayPal provisional hold. Quote ${session.quoteId}. Hold expires ${expiresAt}. Not confirmed until PayPal payment is verified.`,
-  ];
+function buildSmoobuNotice(
+  session: BookingSessionRecord,
+  guest: HoldGuestDetails,
+  expiresAt: string,
+  noticePrefix: string,
+  noticeCaveat: string
+): string {
+  const parts = [`${noticePrefix} Quote ${session.quoteId}. Hold expires ${expiresAt}. ${noticeCaveat}`];
 
   if (guest.message) {
     parts.push(`Guest note: ${guest.message}`);
@@ -1132,6 +1315,16 @@ function parseUnavailableApartmentIds(errorMessages: unknown): Set<number> {
   );
 }
 
+const CURRENCY_SYMBOL_MAP: Record<string, string> = {
+  "$": "USD", "€": "EUR", "£": "GBP", "¥": "JPY", "₡": "CRC",
+};
+
+function normalizeCurrencyCode(raw: string): string {
+  const upper = raw.trim().toUpperCase();
+  if (/^[A-Z]{3}$/.test(upper)) return upper;
+  return CURRENCY_SYMBOL_MAP[raw.trim()] ?? "USD";
+}
+
 function parsePrice(
   prices: unknown,
   apartmentId: number,
@@ -1155,7 +1348,7 @@ function parsePrice(
   const nights = nightsBetween(session.arrivalDate, session.departureDate);
   const totalAmountCents = Math.round(rawPrice * 100);
   return {
-    currency: currency.toUpperCase(),
+    currency: normalizeCurrencyCode(currency),
     totalAmountCents,
     nightlyAverageCents: Math.round(totalAmountCents / nights),
     nights,
@@ -1247,8 +1440,8 @@ function parseHoldStatus(status: string): HoldStatus {
   throw new Error(`Unsupported hold status from database: ${status}`);
 }
 
-function parseSmoobuChannelId(value: number): 11 | 13 {
-  if (value === 11 || value === 13) {
+function parseSmoobuChannelId(value: number): SmoobuChannelId {
+  if (value === 11 || value === 13 || value === 70) {
     return value;
   }
 

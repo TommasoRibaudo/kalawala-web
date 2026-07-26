@@ -32,7 +32,7 @@ const repositoryInitializationByConfig = new WeakMap<BookingApiConfig, Promise<v
 export function createBookingApiHandler(config: BookingApiConfig = loadConfig()) {
   const runtimeConfig: BookingApiConfig = { ...config };
   const router = createRouter(runtimeConfig);
-  const abuseGuard = new AbuseGuard(runtimeConfig.abuseProtection);
+  const abuseGuard = new AbuseGuard(runtimeConfig.abuseProtection, Date.now, runtimeConfig.secrets);
   const observability = createObservability(runtimeConfig.observability);
 
   return async function bookingApiHandler(event: LambdaHttpRequest): Promise<ApiResponse> {
@@ -60,7 +60,12 @@ export function createBookingApiHandler(config: BookingApiConfig = loadConfig())
       routePattern = route.pattern;
       abusePolicy = route.options.abuseProtection;
       const rawBody = getRawBody(event, runtimeConfig.maxBodyBytes);
-      const body = parseJsonBody(rawBody, headers, route.options.requireJsonBody ?? false);
+      const body = parseJsonBody(
+        rawBody,
+        headers,
+        route.options.requireJsonBody ?? false,
+        route.options.allowFormEncodedBody ?? false
+      );
 
       const request: RouteRequest = {
         method,
@@ -120,15 +125,21 @@ function persistenceRepositoriesRequired(routePattern: string, body: unknown): b
   return (
     routePattern === "/api/search" ||
     routePattern === "/api/holds" ||
+    routePattern === "/api/deposit-holds" ||
+    isStaffDepositReviewRoute(routePattern) ||
     isPayPalOrderRoute(routePattern) ||
     isPayPalCaptureRoute(routePattern) ||
     routePattern === "/api/deposit-handoff" ||
     routePattern === "/api/deposit-handoff/events" ||
+    routePattern === "/api/deposit-receipt/upload-url" ||
+    routePattern === "/api/deposit-receipt/confirm" ||
     routePattern === "/api/webhooks/paypal" ||
     routePattern === "/api/portal/login" ||
     routePattern === "/api/portal/reservation/:reservationPublicId" ||
     routePattern === "/api/portal/reservation/:reservationPublicId/help-request" ||
-    routePattern === "/api/portal/reservation/:reservationPublicId/cancellation-request"
+    routePattern === "/api/portal/reservation/:reservationPublicId/cancellation-request" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/cancel" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/guests"
   );
 }
 
@@ -174,11 +185,21 @@ async function ensurePersistenceRepositories(
       if (!config.portalSessions) {
         config.portalSessions = new RdsPortalSessionRepository(pool);
       }
+    }).catch((err) => {
+      // Remove the failed promise so the next request retries pool initialization.
+      repositoryInitializationByConfig.delete(config);
+      throw err;
     });
     repositoryInitializationByConfig.set(config, initPromise);
   }
 
   await initPromise;
+}
+
+function isStaffDepositReviewRoute(routePattern: string): boolean {
+  return (
+    routePattern === "/api/staff/deposit-review/:token" || routePattern === "/api/staff/deposit-review"
+  );
 }
 
 function holdRepositoryRequired(routePattern: string, body: unknown): boolean {
@@ -188,12 +209,17 @@ function holdRepositoryRequired(routePattern: string, body: unknown): boolean {
 
   return (
     routePattern === "/api/holds" ||
+    routePattern === "/api/deposit-holds" ||
+    isStaffDepositReviewRoute(routePattern) ||
     isPayPalOrderRoute(routePattern) ||
     isPayPalCaptureRoute(routePattern) ||
+    routePattern === "/api/deposit-receipt/confirm" ||
     routePattern === "/api/webhooks/paypal" ||
     routePattern === "/api/portal/reservation/:reservationPublicId" ||
     routePattern === "/api/portal/reservation/:reservationPublicId/help-request" ||
-    routePattern === "/api/portal/reservation/:reservationPublicId/cancellation-request"
+    routePattern === "/api/portal/reservation/:reservationPublicId/cancellation-request" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/cancel" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/guests"
   );
 }
 
@@ -204,7 +230,9 @@ function paymentRepositoryRequired(routePattern: string): boolean {
     routePattern === "/api/webhooks/paypal" ||
     routePattern === "/api/portal/reservation/:reservationPublicId" ||
     routePattern === "/api/portal/reservation/:reservationPublicId/help-request" ||
-    routePattern === "/api/portal/reservation/:reservationPublicId/cancellation-request"
+    routePattern === "/api/portal/reservation/:reservationPublicId/cancellation-request" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/cancel" ||
+    routePattern === "/api/portal/reservation/:reservationPublicId/guests"
   );
 }
 

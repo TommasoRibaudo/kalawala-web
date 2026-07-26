@@ -21,6 +21,8 @@ export interface PayPalOrderInput {
   totalAmountCents: number;
   propertyName: string;
   language: "en" | "es";
+  returnUrl?: string;
+  cancelUrl?: string;
 }
 
 export interface PayPalOrderResult {
@@ -486,11 +488,13 @@ function buildCreateOrderPayload(input: PayPalOrderInput, config: PayPalClientCo
     user_action: "PAY_NOW",
   };
 
-  if (config.orderReturnUrl) {
-    applicationContext.return_url = config.orderReturnUrl;
+  const returnUrl = input.returnUrl || config.orderReturnUrl;
+  const cancelUrl = input.cancelUrl || config.orderCancelUrl;
+  if (returnUrl) {
+    applicationContext.return_url = returnUrl;
   }
-  if (config.orderCancelUrl) {
-    applicationContext.cancel_url = config.orderCancelUrl;
+  if (cancelUrl) {
+    applicationContext.cancel_url = cancelUrl;
   }
 
   return {

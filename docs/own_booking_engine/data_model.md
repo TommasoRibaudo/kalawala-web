@@ -82,7 +82,10 @@ create type booking_status as enum (
   'failed'
 );
 
-create type payment_method as enum ('paypal');
+-- 'manual_deposit' added by migration 0014. Extending an enum must land in its
+-- own migration run: PostgreSQL allows `alter type ... add value` inside a
+-- transaction, but the new label is unusable until that transaction commits.
+create type payment_method as enum ('paypal', 'manual_deposit');
 
 create type hold_status as enum (
   'creating',
@@ -206,7 +209,20 @@ create table booking_sessions (
   confirmed_at timestamptz,
   cancelled_at timestamptz,
   cancellation_reason text,
+  cancelled_by text,               -- 'guest' | 'staff' | 'system'      (0013)
   failure_reason text,
+
+  -- Which rate the guest booked. Drives the cancellation policy: non-refundable
+  -- bookings get no self-service cancellation. NULL on rows created before
+  -- migration 0013 — those cannot be classified retroactively and fail closed.
+  rate_plan text,                  -- 'flexible' | 'non_refundable'     (0013)
+
+  -- Manual deposit lifecycle                                            (0014)
+  deposit_receipt_s3_key text,     --                                    (0012)
+  deposit_receipt_uploaded_at timestamptz,
+  deposit_confirmed_at timestamptz,
+  deposit_confirmed_by text,
+  deposit_confirm_token_jti text,  -- which signed staff link was spent
 
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -330,6 +346,9 @@ create table payments (
   provider_payload jsonb,
   paid_at timestamptz,
   failed_at timestamptz,
+  -- Set when a guest cancellation hands the payment to staff for a manual
+  -- PayPal refund. The API never calls PayPal's refund endpoint.      (0013)
+  refund_flagged_at timestamptz,
 
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -360,10 +379,14 @@ Idempotency rules:
 - Webhook completion must match expected booking, amount, currency, and provider IDs before setting `paid_at`.
 - Manual deposit handoff does not mark a payment paid; only PayPal capture/webhook reconciliation can set `paid_at` in MVP.
 - A verified `PAYMENT.CAPTURE.REFUNDED` or `PAYMENT.CAPTURE.REVERSED` webhook sets `status = 'refund_flagged'`, writes an audit entry, and alerts staff. Automated refunds are out of MVP; staff resolve these manually.
+- A guest self-service cancellation sets `status = 'refund_flagged'` and `refund_flagged_at`, then emails staff the capture ID. Refunds remain manual.
 
 ### uploaded_files
 
-Out of MVP. Do not create custom receipt upload tables unless a future PRD explicitly adds an automated deposit approval workflow.
+Not used. Deposit receipts are stored in S3 and referenced from
+`booking_sessions.deposit_receipt_s3_key` rather than in a table of their own —
+the object key plus its upload timestamp is the whole record. See
+`booking-api/src/depositReceipt.ts` and `infra/s3_deposit_receipts.tf`.
 
 ### webhook_events
 

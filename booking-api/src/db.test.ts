@@ -25,10 +25,10 @@ const CONNECTION_STRING = "postgres://booking_user:booking_password@db.example.c
 
 const VALID_SECRETS: BookingProviderSecrets = {
   smoobuApiKey: "smoobu-api-key-123456",
+  smoobuWebhookSecret: "smoobu-webhook-secret-123456",
   paypalClientId: "paypal-client-id-123456",
   paypalClientSecret: "paypal-client-secret-123456",
   paypalWebhookId: "paypal-webhook-id-123456",
-  smoobuWebhookSecret: "smoobu-webhook-secret-123456",
   bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
   portalSessionSecret: "portal-session-secret-123456",
   rdsConnectionString: CONNECTION_STRING,

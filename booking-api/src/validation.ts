@@ -28,6 +28,7 @@ export interface HoldRequest {
   portalPassword: string;
   termsAccepted: true;
   marketingConsent?: boolean;
+  nonRefundable?: boolean;
 }
 
 export function assertJsonObject(value: unknown): JsonBody {
@@ -118,7 +119,83 @@ export function validateHoldRequest(value: unknown): HoldRequest {
     portalPassword,
     termsAccepted: true,
     marketingConsent: body.marketingConsent === true,
+    nonRefundable: body.nonRefundable === true,
   };
+}
+
+/**
+ * Deposit holds take the same shape as PayPal holds minus the payment method and
+ * rate options: the deposit path is always the flexible rate, and the discount
+ * code is tied to immediate card capture.
+ */
+export function validateDepositHoldRequest(value: unknown): HoldRequest {
+  const body = assertJsonObject(value);
+  const errors: FieldErrors = {};
+  const guest = validateGuestDetails(body.guest, errors);
+
+  const quoteId = requireTrimmedString(body, "quoteId", errors, 128);
+  const bookingSessionId = requireUuid(body, "bookingSessionId", errors);
+  const propertyId = requireUuid(body, "propertyId", errors);
+  const portalPassword = requireTrimmedString(body, "portalPassword", errors, 256);
+
+  if (portalPassword && portalPassword.length < 12) {
+    addError(errors, "portalPassword", "portal_password_too_short");
+  }
+
+  if (body.termsAccepted !== true) {
+    addError(errors, "termsAccepted", "terms_must_be_accepted");
+  }
+
+  assertNoErrors(errors);
+
+  return {
+    quoteId,
+    bookingSessionId,
+    propertyId,
+    paymentMethod: "paypal",
+    guest,
+    portalPassword,
+    termsAccepted: true,
+    marketingConsent: body.marketingConsent === true,
+    nonRefundable: false,
+  };
+}
+
+/** Extracts the signed staff token from a path parameter. */
+export function validateStaffReviewToken(pathParams: Record<string, string>): string {
+  const token = pathParams.token?.trim();
+  if (!token || token.length < 32 || token.length > 4096) {
+    throw new ApiError(400, "invalid_token", "This link is not valid.");
+  }
+  return token;
+}
+
+/**
+ * Extracts the signed staff token from the review page's submission.
+ *
+ * The page is plain HTML with no JavaScript — its CSP allows inline styles and
+ * nothing else — so the browser sends `application/x-www-form-urlencoded` rather
+ * than JSON. JSON is still accepted for scripted callers and tests.
+ */
+export function validateStaffReviewSubmit(rawBody: string | undefined, parsedBody: unknown): string {
+  let token = "";
+
+  if (parsedBody && typeof parsedBody === "object" && !Array.isArray(parsedBody)) {
+    const candidate = (parsedBody as Record<string, unknown>).token;
+    if (typeof candidate === "string") {
+      token = candidate.trim();
+    }
+  }
+
+  if (!token && rawBody) {
+    token = new URLSearchParams(rawBody).get("token")?.trim() ?? "";
+  }
+
+  if (!token || token.length < 32 || token.length > 4096) {
+    throw new ApiError(400, "invalid_token", "This link is not valid.");
+  }
+
+  return token;
 }
 
 export function validateBookingSessionRequest(value: unknown): { bookingSessionId: string } {
@@ -201,6 +278,34 @@ export function validateDepositHandoffEvent(value: unknown): {
   };
 }
 
+export function validateDepositReceiptUploadUrlRequest(value: unknown): {
+  bookingSessionId: string;
+  fileName: string;
+  contentType: string;
+} {
+  const body = assertJsonObject(value);
+  const errors: FieldErrors = {};
+  const bookingSessionId = requireUuid(body, "bookingSessionId", errors);
+  const fileName = requireTrimmedString(body, "fileName", errors, 128);
+  const contentType = requireTrimmedString(body, "contentType", errors, 64);
+
+  assertNoErrors(errors);
+  return { bookingSessionId, fileName, contentType };
+}
+
+export function validateDepositReceiptConfirmRequest(value: unknown): {
+  bookingSessionId: string;
+  s3Key: string;
+} {
+  const body = assertJsonObject(value);
+  const errors: FieldErrors = {};
+  const bookingSessionId = requireUuid(body, "bookingSessionId", errors);
+  const s3Key = requireTrimmedString(body, "s3Key", errors, 512);
+
+  assertNoErrors(errors);
+  return { bookingSessionId, s3Key };
+}
+
 export function validatePortalLogin(value: unknown): {
   reservationPublicId: string;
   password: string;
@@ -242,6 +347,14 @@ export function validateReservationPublicId(params: Record<string, string>): str
   return value;
 }
 
+export function validateGuestUpdateRequest(value: unknown): { guests: number } {
+  const body = assertJsonObject(value);
+  const errors: FieldErrors = {};
+  const guests = requirePositiveInteger(body, "guests", errors);
+  assertNoErrors(errors);
+  return { guests };
+}
+
 function validateGuestDetails(value: unknown, errors: FieldErrors): GuestDetails {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     addError(errors, "guest", "guest_must_be_object");
@@ -253,7 +366,7 @@ function validateGuestDetails(value: unknown, errors: FieldErrors): GuestDetails
   const lastName = requireTrimmedString(body, "lastName", errors, 80, "guest.lastName");
   const email = requireTrimmedString(body, "email", errors, 254, "guest.email");
   const phone = optionalTrimmedString(body, "phone", errors, 40, "guest.phone");
-  const country = optionalTrimmedString(body, "country", errors, 2, "guest.country");
+  const country = optionalTrimmedString(body, "country", errors, 100, "guest.country");
   const message = optionalTrimmedString(body, "message", errors, 2000, "guest.message");
 
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {

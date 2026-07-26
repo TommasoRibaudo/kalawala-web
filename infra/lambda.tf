@@ -5,7 +5,7 @@
 # Two Lambda functions:
 #   booking_api  — handles all booking flows (availability, holds, PayPal
 #                  orders/captures, deposit handoff, portal). Runs in VPC
-#                  private subnets for direct access to RDS + ElastiCache.
+#                  private subnets for direct access to RDS.
 #   webhooks     — receives Smoobu and PayPal webhook events. Isolated from
 #                  the booking flow so misbehaving webhook processing cannot
 #                  affect the main booking path.
@@ -84,7 +84,6 @@ data "aws_iam_policy_document" "lambda_secrets_read" {
     resources = [
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.smoobu_secret_name}*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.paypal_secret_name}*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.redis_secret_name}*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.webhook_secret_name}*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.encryption_secret_name}*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.booking_api_secret_name}*",
@@ -160,18 +159,46 @@ resource "aws_cloudwatch_log_group" "webhooks" {
 
 locals {
   lambda_common_env = {
-    ENVIRONMENT       = var.environment
-    LOG_LEVEL         = var.booking_api_log_level
-    DB_SECRET_NAME    = var.db_secret_name
-    SMOOBU_SECRET     = var.smoobu_secret_name
-    PAYPAL_SECRET     = var.paypal_secret_name
-    REDIS_HOST        = aws_elasticache_replication_group.cache.primary_endpoint_address
-    REDIS_PORT        = tostring(aws_elasticache_replication_group.cache.port)
-    REDIS_SECRET_NAME = var.redis_secret_name
+    BOOKING_API_ENVIRONMENT = var.environment
+    BOOKING_API_LOG_LEVEL   = var.booking_api_log_level
+    DB_SECRET_NAME          = var.db_secret_name
+    SMOOBU_SECRET           = var.smoobu_secret_name
+    SMOOBU_CUSTOMER_ID      = tostring(var.smoobu_customer_id)
+    PAYPAL_SECRET           = var.paypal_secret_name
+
+    # In-Lambda TTL cache (src/memoryCache.ts). There is no Redis client in
+    # booking-api's dependencies — src/cacheFactory.ts:71 RedisAdapter is a
+    # stub — so "redis" is not a usable value here. See cacheFactory.getCacheBackend().
+    CACHE_BACKEND = "memory"
+
     SES_CONFIG_SET    = aws_ses_configuration_set.booking.name
-    SES_FROM_EMAIL    = local.ses_from_email
+    SES_FROM_ADDRESS  = local.ses_from_email
     WEBHOOK_SECRET    = var.webhook_secret_name
     ENCRYPTION_SECRET = var.encryption_secret_name
+
+    # Guest-facing contact details used by the deposit handoff and email
+    # templates. Previously read by config.ts but never supplied, so deployed
+    # Lambdas silently fell back to hardcoded defaults.
+    CONTACT_EMAIL        = var.contact_email
+    CONTACT_WHATSAPP_URL = var.contact_whatsapp_url
+
+    # Internal alerts (guest cancellations, deposit reviews). When empty the
+    # booking API logs a warning and skips the notification rather than failing
+    # the guest request that triggered it.
+    STAFF_NOTIFICATION_EMAIL = var.staff_notification_email
+
+    # Deposit receipt uploads. Presigned PUT/GET are issued against this bucket.
+    S3_DEPOSIT_RECEIPT_BUCKET = aws_s3_bucket.deposit_receipts.bucket
+    S3_DEPOSIT_RECEIPT_REGION = data.aws_region.current.name
+
+    # CAPTCHA provider for server-side verification of inbound X-Captcha-Token
+    # headers. This MUST match the widget the frontend ships
+    # (react-google-recaptcha-v3 / REACT_APP_CAPTCHA_SITE_KEY) — a mismatch makes
+    # every verification fail, which turns a CAPTCHA challenge into a hard 403 the
+    # guest cannot clear. The verification secret itself is NOT set here: it is read
+    # from the combined Secrets Manager entry below as `captchaSecretKey`, so the
+    # live secret never lands in Lambda env vars or Terraform state.
+    CAPTCHA_PROVIDER = var.captcha_provider
 
     # The booking API reads all provider secrets from a single combined
     # Secrets Manager entry via the Lambda Extensions HTTP cache layer.
@@ -185,7 +212,7 @@ locals {
 # Handles: POST /api/availability/quote, GET /api/calendar/{slug},
 #          POST /api/bookings/hold, POST /api/bookings/{id}/paypal/*,
 #          GET /api/deposit-handoff, portal routes.
-# VPC placement: private subnets → can reach RDS and ElastiCache directly.
+# VPC placement: private subnets → can reach RDS directly.
 ##############################################################################
 
 resource "aws_lambda_function" "booking_api" {
@@ -204,7 +231,7 @@ resource "aws_lambda_function" "booking_api" {
   memory_size = var.booking_api_lambda_memory_mb
   timeout     = var.booking_api_lambda_timeout_seconds
 
-  # Private VPC subnets — allows direct connections to RDS and ElastiCache.
+  # Private VPC subnets — allows direct connections to RDS.
   # Outbound internet access (Smoobu API, PayPal API, Secrets Manager) routes
   # through the NAT gateway.
   vpc_config {
@@ -214,7 +241,8 @@ resource "aws_lambda_function" "booking_api" {
 
   environment {
     variables = merge(local.lambda_common_env, {
-      ALLOWED_ORIGINS = var.booking_api_allowed_origins
+      ALLOWED_ORIGINS             = var.booking_api_allowed_origins
+      BOOKING_API_ALLOWED_ORIGINS = var.booking_api_allowed_origins
     })
   }
 
@@ -312,7 +340,7 @@ resource "aws_lambda_permission" "webhooks_apigw" {
 #   2. Cancels the corresponding Smoobu reservation (if one exists).
 #   3. Marks the booking session as "hold_expired".
 #
-# Same VPC placement as booking_api so it can reach RDS and ElastiCache.
+# Same VPC placement as booking_api so it can reach RDS.
 # Uses the shared execution role (same secrets and network access).
 ##############################################################################
 
@@ -336,7 +364,7 @@ resource "aws_lambda_function" "hold_expiry" {
   description   = "Kalawala hold expiry worker: expires stale holds and cancels Smoobu reservations."
 
   runtime       = "nodejs22.x"
-  handler       = "index.handler"
+  handler       = "holdExpiryHandler.handler"
   architectures = ["arm64"]
 
   role = aws_iam_role.lambda_exec.arn
@@ -406,7 +434,7 @@ resource "aws_lambda_permission" "hold_expiry_eventbridge" {
 #   4. If stale (>2h pending) → marks as failed (abandoned).
 #   5. Alerts on any missed-webhook confirmations.
 #
-# Same VPC placement as booking_api so it can reach RDS and ElastiCache.
+# Same VPC placement as booking_api so it can reach RDS.
 # Uses the shared execution role (same secrets and network access).
 ##############################################################################
 
@@ -430,7 +458,7 @@ resource "aws_lambda_function" "payment_reconciliation" {
   description   = "Kalawala payment reconciliation: resolves pending PayPal sessions and alerts anomalies."
 
   runtime       = "nodejs22.x"
-  handler       = "index.handler"
+  handler       = "paymentReconciliationHandler.handler"
   architectures = ["arm64"]
 
   role = aws_iam_role.lambda_exec.arn

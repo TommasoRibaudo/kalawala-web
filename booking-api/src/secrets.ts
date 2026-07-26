@@ -1,3 +1,4 @@
+import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import { ApiError } from "./http/errors";
 import { BookingProviderSecrets, BookingSecretProvider, FieldErrors, JsonBody } from "./types";
 
@@ -6,10 +7,10 @@ const DEFAULT_SECRET_CACHE_TTL_MS = 5 * 60 * 1000;
 const DEFAULT_FETCH_TIMEOUT_MS = 2_000;
 const REQUIRED_FIELDS: Array<keyof BookingProviderSecrets> = [
   "smoobuApiKey",
+  "smoobuWebhookSecret",
   "paypalClientId",
   "paypalClientSecret",
   "paypalWebhookId",
-  "smoobuWebhookSecret",
   "bookingEncryptionKeyBase64",
   "portalSessionSecret",
   "rdsConnectionString",
@@ -62,22 +63,19 @@ export class InvalidSecretProvider implements BookingSecretProvider {
   }
 }
 
-export class LambdaExtensionSecretProvider implements BookingSecretProvider {
-  readonly source = "aws-secrets-manager-extension";
+export class AwsSdkSecretProvider implements BookingSecretProvider {
+  readonly source = "aws-secrets-manager-sdk";
   private readonly secretId: string;
-  private readonly endpoint: string;
-  private readonly sessionToken?: string;
+  private readonly region: string;
   private readonly cacheTtlMs: number;
-  private readonly fetchTimeoutMs: number;
   private readonly now: () => number;
   private cached?: CachedSecrets;
+  private client?: SecretsManagerClient;
 
   constructor(options: LambdaExtensionSecretProviderOptions) {
     this.secretId = options.secretId;
-    this.endpoint = (options.endpoint ?? DEFAULT_EXTENSION_ENDPOINT).replace(/\/+$/, "");
-    this.sessionToken = options.sessionToken;
+    this.region = process.env.AWS_REGION ?? process.env.AWS_DEFAULT_REGION ?? "us-east-1";
     this.cacheTtlMs = options.cacheTtlMs ?? DEFAULT_SECRET_CACHE_TTL_MS;
-    this.fetchTimeoutMs = options.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS;
     this.now = options.now ?? Date.now;
   }
 
@@ -87,44 +85,21 @@ export class LambdaExtensionSecretProvider implements BookingSecretProvider {
       return this.cached.value;
     }
 
-    if (!this.sessionToken) {
-      throw secretProviderError("secrets_unavailable", "Secrets Manager extension session token is unavailable.", {
-        awsSessionToken: ["required_for_lambda_extension"],
-      });
-    }
-
-    const url = `${this.endpoint}/secretsmanager/get?secretId=${encodeURIComponent(this.secretId)}`;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.fetchTimeoutMs);
-
     try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "X-Aws-Parameters-Secrets-Token": this.sessionToken,
-        },
-        signal: controller.signal,
-      });
-
-      if (!response.ok) {
-        throw secretProviderError("secrets_unavailable", "Secrets Manager returned an error.", {
-          secretsManager: [`http_${response.status}`],
-        });
+      if (!this.client) {
+        this.client = new SecretsManagerClient({ region: this.region });
       }
-
-      const payload = (await response.json()) as JsonBody;
-      const secretString = payload.SecretString;
+      const response = await this.client.send(
+        new GetSecretValueCommand({ SecretId: this.secretId })
+      );
+      const secretString = response.SecretString;
       if (typeof secretString !== "string" || secretString.trim().length === 0) {
         throw secretProviderError("secrets_invalid", "Secrets Manager secret has no SecretString.", {
           secretString: ["required"],
         });
       }
-
       const parsed = parseSecretJson(secretString, `secret:${this.secretId}`);
-      this.cached = {
-        value: parsed,
-        expiresAt: now + this.cacheTtlMs,
-      };
+      this.cached = { value: parsed, expiresAt: now + this.cacheTtlMs };
       return parsed;
     } catch (error) {
       if (error instanceof ApiError) {
@@ -133,8 +108,6 @@ export class LambdaExtensionSecretProvider implements BookingSecretProvider {
       throw secretProviderError("secrets_unavailable", "Secrets Manager secret could not be loaded.", {
         secretsManager: ["fetch_failed"],
       });
-    } finally {
-      clearTimeout(timeout);
     }
   }
 }
@@ -142,10 +115,8 @@ export class LambdaExtensionSecretProvider implements BookingSecretProvider {
 export function createSecretProvider(env: NodeJS.ProcessEnv = process.env): BookingSecretProvider {
   const secretId = trimOptional(env.BOOKING_API_SECRETS_MANAGER_SECRET_ID);
   if (secretId) {
-    return new LambdaExtensionSecretProvider({
+    return new AwsSdkSecretProvider({
       secretId,
-      endpoint: trimOptional(env.BOOKING_API_SECRETS_EXTENSION_ENDPOINT),
-      sessionToken: trimOptional(env.AWS_SESSION_TOKEN),
       cacheTtlMs: parsePositiveInteger(env.BOOKING_API_SECRETS_CACHE_TTL_MS, DEFAULT_SECRET_CACHE_TTL_MS),
       fetchTimeoutMs: parsePositiveInteger(env.BOOKING_API_SECRETS_FETCH_TIMEOUT_MS, DEFAULT_FETCH_TIMEOUT_MS),
     });
@@ -219,6 +190,14 @@ export function validateBookingSecrets(value: unknown, sourceLabel = "secrets"):
     }
   }
 
+  // Optional fields: absence is valid, but a present-and-non-string value is not.
+  const captchaSecretKey = body.captchaSecretKey;
+  if (typeof captchaSecretKey === "string" && captchaSecretKey.trim()) {
+    result.captchaSecretKey = captchaSecretKey.trim();
+  } else if (captchaSecretKey !== undefined && captchaSecretKey !== null && typeof captchaSecretKey !== "string") {
+    errors.captchaSecretKey = ["string_required"];
+  }
+
   validateBase64Key(result.bookingEncryptionKeyBase64, "bookingEncryptionKeyBase64", errors);
   validateRdsConnectionString(result.rdsConnectionString, "rdsConnectionString", errors);
 
@@ -232,16 +211,23 @@ export function validateBookingSecrets(value: unknown, sourceLabel = "secrets"):
 function readRawEnvSecrets(env: NodeJS.ProcessEnv): Partial<BookingProviderSecrets> | null {
   const raw: Partial<BookingProviderSecrets> = {
     smoobuApiKey: trimOptional(env.SMOOBU_API_KEY),
+    smoobuWebhookSecret: trimOptional(env.SMOOBU_WEBHOOK_SECRET),
     paypalClientId: trimOptional(env.PAYPAL_CLIENT_ID),
     paypalClientSecret: trimOptional(env.PAYPAL_CLIENT_SECRET),
     paypalWebhookId: trimOptional(env.PAYPAL_WEBHOOK_ID),
-    smoobuWebhookSecret: trimOptional(env.SMOOBU_WEBHOOK_SECRET),
     bookingEncryptionKeyBase64: trimOptional(env.BOOKING_API_ENCRYPTION_KEY_BASE64),
     portalSessionSecret: trimOptional(env.BOOKING_API_PORTAL_SESSION_SECRET),
     rdsConnectionString: trimOptional(env.BOOKING_API_RDS_CONNECTION_STRING),
   };
 
-  return Object.values(raw).some(Boolean) ? raw : null;
+  // CAPTCHA_SECRET_KEY is optional and must not, on its own, switch the API into
+  // env-secret mode — doing so would fail required-field validation and 503.
+  if (!Object.values(raw).some(Boolean)) {
+    return null;
+  }
+
+  const captchaSecretKey = trimOptional(env.CAPTCHA_SECRET_KEY);
+  return captchaSecretKey ? { ...raw, captchaSecretKey } : raw;
 }
 
 function requireSecretString(

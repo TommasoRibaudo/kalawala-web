@@ -1,9 +1,42 @@
+<IfModule mod_headers.c>
+    # HTTP Link header pointing AI agents to the markdown summary
+    Header set Link "</llms.txt>; rel=\"alternate\"; type=\"text/markdown\"; title=\"LLM-friendly site summary\""
+
+    # Serve .md files as text/markdown with UTF-8
+    <FilesMatch "\.md$">
+        Header set Content-Type "text/markdown; charset=UTF-8"
+    </FilesMatch>
+
+    # Serve llms.txt and llms-full.txt as text/markdown
+    <FilesMatch "^llms(-full)?\.txt$">
+        Header set Content-Type "text/markdown; charset=UTF-8"
+    </FilesMatch>
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
+
+    # Serve .md files directly if they exist (AI agent markdown routes)
+    RewriteCond %{REQUEST_URI} \.md$
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
+    # Serve llms.txt and llms-full.txt directly
+    RewriteRule ^llms\.txt$ - [L]
+    RewriteRule ^llms-full\.txt$ - [L]
+
+    # Standard SPA fallback
     RewriteRule ^index\.html$ - [L]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-l
     RewriteRule . /index.html [L]
 </IfModule>
+
+# Log AI crawler access for analytics (if mod_log_config available)
+# AI bot requests to /llms.txt, /llms-full.txt, and *.md will appear in access logs
+# with their User-Agent strings. Filter with:
+#   grep -E "(GPTBot|ClaudeBot|PerplexityBot|OAI-SearchBot|ChatGPT-User|Google-Extended|Applebot-Extended)" access.log
+# Or for llms.txt specifically:
+#   grep "llms" access.log

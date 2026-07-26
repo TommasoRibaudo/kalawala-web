@@ -18,6 +18,10 @@ export class Router {
     this.routes.push({ method: "POST", pattern, handler, options });
   }
 
+  put(pattern: string, handler: RouteHandler, options: RouteOptions = {}): void {
+    this.routes.push({ method: "PUT", pattern, handler, options });
+  }
+
   match(request: Pick<RouteRequest, "method" | "path">): MatchResult {
     for (const route of this.routes) {
       if (route.method !== request.method) {

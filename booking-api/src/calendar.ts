@@ -3,8 +3,9 @@ import { jsonResponse } from "./http/response";
 import { BOOKING_PROPERTIES, BookingProperty } from "./propertyCatalog";
 import { createSmoobuClient } from "./smoobuClient";
 import { ApiResponse, BookingApiConfig, HeadersMap, JsonBody, RouteObservability } from "./types";
+import { CacheAdapter } from "./memoryCache";
+import { createCacheAdapter, getCacheBackend, TTL_SCOPES } from "./cacheFactory";
 
-const CALENDAR_CACHE_TTL_MS = 5 * 60 * 1000;
 const DEFAULT_CURRENCY = "USD";
 const LOW_PRICE_THRESHOLD = 0.9;
 const HIGH_PRICE_THRESHOLD = 1.1;
@@ -59,10 +60,11 @@ interface CalendarPayload {
 interface CalendarCacheEntry {
   payload: CalendarPayload;
   generatedAt: string;
-  expiresAtMs: number;
+  expiresAtMs: number; // stored so cache-hit responses can report accurate remaining TTL
 }
 
-const calendarRatesCache = new Map<string, CalendarCacheEntry>();
+// Module-level CacheAdapter instance — survives Lambda warm starts
+const adapter: CacheAdapter = createCacheAdapter(getCacheBackend());
 
 export async function handleCalendarRequest(
   request: CalendarRequest,
@@ -77,17 +79,20 @@ export async function handleCalendarRequest(
   }
 
   const cacheKey = calendarCacheKey(property.smoobuApartmentId, request.month);
-  const cached = calendarRatesCache.get(cacheKey);
+  const ttlSeconds = TTL_SCOPES["calendar-rates"];
   const nowMs = now();
-  if (cached && cached.expiresAtMs > nowMs) {
+
+  const cachedRaw = await adapter.get(cacheKey);
+  if (cachedRaw !== null) {
+    const cached: CalendarCacheEntry = JSON.parse(cachedRaw);
+    // Report the actual remaining TTL, not the full TTL, so callers know how
+    // stale the entry is (mirrors the behaviour of the original Map-based cache).
+    const remainingTtlSeconds = Math.max(0, Math.ceil((cached.expiresAtMs - nowMs) / 1_000));
     return jsonResponse(
       200,
-      withCache(cached.payload, "hit", cached.generatedAt, Math.ceil((cached.expiresAtMs - nowMs) / 1_000)),
+      withCache(cached.payload, "hit", cached.generatedAt, remainingTtlSeconds),
       responseHeaders
     );
-  }
-  if (cached) {
-    calendarRatesCache.delete(cacheKey);
   }
 
   const { startDate, endDate } = monthBounds(request.month);
@@ -103,44 +108,43 @@ export async function handleCalendarRequest(
 
   const payload = normalizeCalendarPayload(property, request.month, rates.data);
   const generatedAt = new Date(nowMs).toISOString();
-  calendarRatesCache.set(cacheKey, {
-    payload,
-    generatedAt,
-    expiresAtMs: nowMs + CALENDAR_CACHE_TTL_MS,
-  });
+  const expiresAtMs = nowMs + ttlSeconds * 1_000;
+  const entry: CalendarCacheEntry = { payload, generatedAt, expiresAtMs };
+  await adapter.set(cacheKey, JSON.stringify(entry), ttlSeconds);
 
   return jsonResponse(
     200,
-    withCache(payload, "miss", generatedAt, CALENDAR_CACHE_TTL_MS / 1_000),
+    withCache(payload, "miss", generatedAt, ttlSeconds),
     responseHeaders
   );
 }
 
-export function invalidateCalendarRatesCache(filters: { apartmentId?: number; month?: string } = {}): number {
-  let invalidated = 0;
-
-  for (const key of Array.from(calendarRatesCache.keys())) {
-    const [apartmentId, month] = key.split(":");
-    const matchesApartment = filters.apartmentId === undefined || apartmentId === String(filters.apartmentId);
-    const matchesMonth = filters.month === undefined || month === filters.month;
-
-    if (matchesApartment && matchesMonth) {
-      calendarRatesCache.delete(key);
-      invalidated += 1;
-    }
+export async function invalidateCalendarRatesCache(filters: { apartmentId?: number; month?: string } = {}): Promise<number> {
+  if (filters.apartmentId !== undefined && filters.month !== undefined) {
+    // Exact key match
+    const key = calendarCacheKey(filters.apartmentId, filters.month);
+    const count = await adapter.invalidateByPrefix(key);
+    return count;
   }
 
-  return invalidated;
+  if (filters.apartmentId !== undefined) {
+    // All months for a specific apartment
+    const prefix = `${filters.apartmentId}:`;
+    return adapter.invalidateByPrefix(prefix);
+  }
+
+  // No filters — clear everything
+  return adapter.invalidateByPrefix("");
 }
 
-export function clearCalendarRatesCache(): void {
-  calendarRatesCache.clear();
+export async function clearCalendarRatesCache(): Promise<void> {
+  await adapter.invalidateByPrefix("");
 }
 
-export function invalidateCalendarRatesCacheFromWebhook(
+export async function invalidateCalendarRatesCacheFromWebhook(
   body: JsonBody,
   observability: RouteObservability
-): { action?: string; invalidatedEntries: number } {
+): Promise<{ action?: string; invalidatedEntries: number }> {
   const action = typeof body.action === "string" ? body.action : undefined;
   if (action !== "updateRates") {
     return { action, invalidatedEntries: 0 };
@@ -151,12 +155,12 @@ export function invalidateCalendarRatesCacheFromWebhook(
   let invalidatedEntries = 0;
 
   if (!apartmentId) {
-    invalidatedEntries = invalidateCalendarRatesCache();
+    invalidatedEntries = await invalidateCalendarRatesCache();
   } else if (months.length === 0) {
-    invalidatedEntries = invalidateCalendarRatesCache({ apartmentId });
+    invalidatedEntries = await invalidateCalendarRatesCache({ apartmentId });
   } else {
     for (const month of months) {
-      invalidatedEntries += invalidateCalendarRatesCache({ apartmentId, month });
+      invalidatedEntries += await invalidateCalendarRatesCache({ apartmentId, month });
     }
   }
 

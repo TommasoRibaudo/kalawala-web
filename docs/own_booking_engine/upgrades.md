@@ -1,16 +1,23 @@
-when a booking is made by deposit with a uploaded image, the s3 bucket link is added to the notes of the booking reservation. 
+[x] [ ] when a booking is made by deposit with a uploaded image, the s3 bucket link is added to the notes of the booking reservation. 
 
-Hitting search from main page should redirect to a second page, with a map and all of the listings available. like airbnb 
+[ ] [ ] Hitting search from main page should redirect to a second page, with a map and all of the listings available. like airbnb 
 
 update terms and condition to protect yourself from manage reservation page. 
 
 Rethink entire communication (since part of it comes from the website, part from smoobu)
 
-create a document with all the manual test we should do to confirm this update works as intended. implement UI testing (I believe david or santi know how to) 
+create a document with all the manual test we should do to confirm this update works as intended. 
+
+implement UI testing (I believe david or santi know how to) 
 
 discount codes?
+discount codes should be a thing. 
 
-on first load: load last searched date and number of people (even from previous session). if no dates select the closest weekend (friday to saturday)
+
+
+We know for a fact that there will always be a 10% non refundable discount "#norefundallowed". this needs to be shown as a checkbox (we show cancellation policy and it changes from flexible, 24h before check in, to non refundable when selecting the discount from either the search component or the single house component, or the form with the guest info)
+
+on first load: load last searched date and number of people (even from previous session). if no dates select the closest weekend (friday to sunday)
 
 when you put how many people are coming you can either just add people normally (+ - on the booking engine) or open a small panel where you can specify (adultos, niños, bebé, que no cuentan, mascotas)
 
@@ -35,3 +42,13 @@ remove popup message about discount code, since we will show it natively.
 Actively show discounts as they are being applied to the base price, by salshing it and showing the new price with more visual emphasis. (this applies to discount codes, weekly, monthly stays, smoobu still is always the source of truth of this information)
 
 implement testing using real values (even maybe create a booking? do the happy paths)
+
+
+when no available message shows up, offer alternatives (first weekend that is available if looking for a weekend etc..)
+
+check if the reservation is actually confirmed when in the portal 
+
+---
+UI PROBLEMS
+textbox look funky (dark until clicked on)
+the flow of choosing a house and inserting the info for payment sucks ass. 

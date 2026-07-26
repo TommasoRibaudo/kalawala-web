@@ -107,10 +107,9 @@ test("GET /api/deposit-handoff returns read-only manual deposit instructions", a
     messageKey: "deposit.handoffIntro",
   });
   expect(body.instructions.bodyKeys).toEqual([
-    "deposit.bankInstructions",
-    "deposit.notConfirmed",
+    "deposit.bankTransferInstructions",
+    "deposit.uploadReceiptNote",
     "deposit.staffWillConfirm",
-    "deposit.noReceiptUpload",
     "deposit.contactUs",
   ]);
   expect(body.instructions.contactMethods).toEqual([
@@ -125,6 +124,16 @@ test("GET /api/deposit-handoff returns read-only manual deposit instructions", a
       url: "mailto:reservas.kalawala@gmail.com",
     },
   ]);
+  // Default bank info (no propertyId) should use DIMME account
+  expect(body.bankInfo).toEqual({
+    sinpePhone: "8772 7355",
+    sinpeName: "Luciano Ribaudo",
+    bankAccount: {
+      accountHolder: "AO DIMME",
+      colonesIban: "CR84010200009660483247",
+      dolaresIban: "CR94010200009660483164",
+    },
+  });
 });
 
 test("GET /api/deposit-handoff echoes Spanish language without booking context", async () => {
@@ -185,6 +194,16 @@ test("GET /api/deposit-handoff includes localized booking context when quote and
       slug: property.slug,
       listingUrl: "/GecoES",
       name: property.name,
+    },
+  });
+  // Geco uses Xelion bank account
+  expect(body.bankInfo).toEqual({
+    sinpePhone: "8772 7355",
+    sinpeName: "Luciano Ribaudo",
+    bankAccount: {
+      accountHolder: "Xelion srl",
+      colonesIban: "CR61010200009629385364",
+      dolaresIban: "CR71010200009629385281",
     },
   });
 });

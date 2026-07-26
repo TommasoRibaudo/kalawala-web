@@ -1,0 +1,11 @@
+{
+  "token": "mock-jwt-token-abc123",
+  "reservationPublicId": "RES-MOCK-12345",
+  "reservation": {
+    "propertyName": "Casa Geco",
+    "arrivalDate": "2025-03-15",
+    "departureDate": "2025-03-20",
+    "guests": 2,
+    "status": "confirmed"
+  }
+}

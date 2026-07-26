@@ -10,17 +10,17 @@ locals {
   booking_api_service_name      = "booking-api"
 
   lambda_alarm_functions = {
-    booking_api             = aws_lambda_function.booking_api.function_name
-    webhooks                = aws_lambda_function.webhooks.function_name
-    hold_expiry             = aws_lambda_function.hold_expiry.function_name
-    payment_reconciliation  = aws_lambda_function.payment_reconciliation.function_name
+    booking_api            = aws_lambda_function.booking_api.function_name
+    webhooks               = aws_lambda_function.webhooks.function_name
+    hold_expiry            = aws_lambda_function.hold_expiry.function_name
+    payment_reconciliation = aws_lambda_function.payment_reconciliation.function_name
   }
 
   booking_lambda_log_groups = {
-    booking_api             = aws_cloudwatch_log_group.booking_api.name
-    webhooks                = aws_cloudwatch_log_group.webhooks.name
-    hold_expiry             = aws_cloudwatch_log_group.hold_expiry.name
-    payment_reconciliation  = aws_cloudwatch_log_group.payment_reconciliation.name
+    booking_api            = aws_cloudwatch_log_group.booking_api.name
+    webhooks               = aws_cloudwatch_log_group.webhooks.name
+    hold_expiry            = aws_cloudwatch_log_group.hold_expiry.name
+    payment_reconciliation = aws_cloudwatch_log_group.payment_reconciliation.name
   }
 
   # The booking API emits named operational_alert logs now. These metric
@@ -89,23 +89,6 @@ resource "aws_cloudwatch_log_group" "api_gateway_access" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "redis_engine" {
-  name              = "/aws/elasticache/${var.project}-${var.environment}-redis-engine"
-  retention_in_days = local.cloudwatch_log_retention_days
-
-  tags = {
-    Name = "${var.project}-${var.environment}-redis-engine-logs"
-  }
-}
-
-resource "aws_cloudwatch_log_group" "redis_slow" {
-  name              = "/aws/elasticache/${var.project}-${var.environment}-redis-slow"
-  retention_in_days = local.cloudwatch_log_retention_days
-
-  tags = {
-    Name = "${var.project}-${var.environment}-redis-slow-logs"
-  }
-}
 
 ##############################################################################
 # API Gateway account role for execution/access logs
@@ -412,82 +395,6 @@ resource "aws_cloudwatch_metric_alarm" "api_gateway_latency" {
 
   tags = {
     Name = "${var.project}-${var.environment}-api-latency"
-  }
-}
-
-##############################################################################
-# Redis alarms
-##############################################################################
-
-resource "aws_cloudwatch_metric_alarm" "redis_engine_cpu" {
-  alarm_name          = "${var.project}-${var.environment}-redis-engine-cpu"
-  alarm_description   = "Redis engine CPU is high."
-  namespace           = "AWS/ElastiCache"
-  metric_name         = "EngineCPUUtilization"
-  statistic           = "Average"
-  period              = 300
-  evaluation_periods  = 3
-  datapoints_to_alarm = 2
-  threshold           = 75
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "notBreaching"
-  alarm_actions       = local.cloudwatch_alarm_actions
-  ok_actions          = local.cloudwatch_alarm_actions
-
-  dimensions = {
-    ReplicationGroupId = aws_elasticache_replication_group.cache.id
-  }
-
-  tags = {
-    Name = "${var.project}-${var.environment}-redis-engine-cpu"
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "redis_memory" {
-  alarm_name          = "${var.project}-${var.environment}-redis-memory"
-  alarm_description   = "Redis memory usage is high."
-  namespace           = "AWS/ElastiCache"
-  metric_name         = "DatabaseMemoryUsagePercentage"
-  statistic           = "Average"
-  period              = 300
-  evaluation_periods  = 3
-  datapoints_to_alarm = 2
-  threshold           = 80
-  comparison_operator = "GreaterThanThreshold"
-  treat_missing_data  = "notBreaching"
-  alarm_actions       = local.cloudwatch_alarm_actions
-  ok_actions          = local.cloudwatch_alarm_actions
-
-  dimensions = {
-    ReplicationGroupId = aws_elasticache_replication_group.cache.id
-  }
-
-  tags = {
-    Name = "${var.project}-${var.environment}-redis-memory"
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "redis_evictions" {
-  alarm_name          = "${var.project}-${var.environment}-redis-evictions"
-  alarm_description   = "Redis evicted cache keys. This can be normal under pressure, but repeated alarms indicate undersized cache capacity."
-  namespace           = "AWS/ElastiCache"
-  metric_name         = "Evictions"
-  statistic           = "Sum"
-  period              = 300
-  evaluation_periods  = 1
-  datapoints_to_alarm = 1
-  threshold           = 1
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "notBreaching"
-  alarm_actions       = local.cloudwatch_alarm_actions
-  ok_actions          = local.cloudwatch_alarm_actions
-
-  dimensions = {
-    ReplicationGroupId = aws_elasticache_replication_group.cache.id
-  }
-
-  tags = {
-    Name = "${var.project}-${var.environment}-redis-evictions"
   }
 }
 

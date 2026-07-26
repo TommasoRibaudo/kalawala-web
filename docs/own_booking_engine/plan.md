@@ -576,31 +576,60 @@ async function handlePayPalWebhook(req, res) {
 - **Webhook processing**: store PayPal `event.id` in `webhook_events` with a UNIQUE constraint to prevent double-processing from retries.
 - **Booking confirmation**: your internal `booking_id` should be the idempotency anchor; confirmation must be safe to retry.
 
-### Manual deposit handoff
+### Manual deposit booking
 
-You described:
+> **Superseded.** This section previously scoped manual deposit out of the MVP as
+> an offline handoff, on the grounds that confirming one needed an admin review
+> interface. That constraint was resolved by a signed one-click staff link
+> instead of a back-office UI, and the flow shipped. See the change-control entry
+> in `prd.md`.
 
-- ask for guest info
-- block the house
-- show deposit instructions page with 1-hour timer (fake)
-- guest uploads deposit picture
-- guest can contact you to explain problems (skips timer, which does nothing)
+Guests paying by bank transfer or SINPE Móvil now get a real booking rather than
+a contact card:
 
-This custom automated flow is now **out of MVP scope** because it requires an admin approval/review interface that you do not want. The MVP keeps manual deposit as an offline handoff only.
+1. The guest fills in the same details as the PayPal checkout — name, email,
+   phone, and a portal password.
+2. `POST /api/deposit-holds` creates a Smoobu blocked-channel reservation, so the
+   dates come off sale immediately while the transfer clears.
+3. The guest sees the SINPE and bank details, a countdown to the hold expiry, and
+   an upload for their receipt. The file goes straight to S3 from the browser via
+   a presigned URL — it never passes through the API.
+4. Staff receive an email carrying signed confirm and reject links.
+5. Confirming moves the booking to `booking_confirmed` and emails the guest their
+   portal access. Rejecting cancels the Smoobu reservation and frees the dates.
+6. If nobody acts, the existing hold-expiry worker releases the hold — the
+   deposit path deliberately reuses the PayPal lifecycle states so that worker
+   needed no changes.
 
-#### MVP deposit behavior
+#### Why there is still no admin panel
 
-1. Guest can choose manual deposit/contact instead of PayPal.
-2. The site shows bank/contact instructions and clearly says the booking is not confirmed by the custom engine.
-3. The site does not upload receipt files, approve deposits, or show a custom confirmed state for deposit.
-4. Staff handles the deposit conversation and any accepted booking directly in Smoobu or existing business tools.
-5. Any future automated deposit workflow requires a separate PRD update because it reintroduces privileged approval operations.
+The staff link is an HMAC-signed token scoped to one booking and one action, with
+its own `typ` header so it can never be confused with a guest portal session. The
+GET renders a review page; a separate POST performs the action. That split
+matters: email scanners and link-preview bots fetch URLs in messages unattended,
+so a mutation on the GET would let a scanner confirm bookings.
+
+#### Inventory risk
+
+A deposit hold blocks the property on every channel for up to
+`DEPOSIT_HOLD_TTL_HOURS` (default 36) on nothing more than a form submission. Two
+mitigations are in place: a sliding TTL that never holds past half the time
+remaining until check-in, and the existing per-IP `holdCreate` abuse policy.
+Watch the rate of expired deposit holds; a per-email concurrent cap is the next
+lever if it is abused.
 
 ## Guest portal access and communications
 
 ### Deposit proof upload security
 
-MVP does not include custom deposit receipt upload. If this feature is added later, the OWASP File Upload Cheat Sheet controls below still apply.
+Receipt upload has shipped (`booking-api/src/depositReceipt.ts`, bucket in
+`infra/s3_deposit_receipts.tf`). Implemented from the list below: signed upload
+URLs, a private bucket read only through presigned GETs, a size cap enforced
+server-side against the stored object, and an extension/MIME allowlist. The
+endpoints additionally require a `deposit_access` token scoped to the booking.
+
+**Still outstanding**: magic-byte sniffing and virus scanning. Both are listed
+below and neither is implemented — worth adding before the flow sees real volume.
 
 A secure approach:
 
@@ -768,9 +797,22 @@ Minimum observability signals:
 
 Because Smoobu recommends webhooks for real-time correctness and warns cron jobs can’t guarantee correctness, you should still run a **periodic reconciliation** as a defense-in-depth backup (e.g., every 15–60 minutes fetch upcoming reservations and compare with DB). citeturn20search1turn21search0
 
-### No custom admin panel in MVP
+### Still no custom admin panel
 
-The MVP does not include an admin dashboard, deposit review queue, hold-extension button, or custom booking-cancellation UI. Staff handle manual deposit exceptions directly in Smoobu or existing business tools.
+There is no admin dashboard, deposit review queue, or hold-extension button, and
+no staff login anywhere in the system. Two things that previously required one
+now work without it:
+
+- **Deposit confirmation** — a signed, single-purpose link emailed to staff
+  (`/api/staff/deposit-review/:token`), rendering one review screen with one
+  button. No session, no account, no dashboard.
+- **Booking cancellation** — guests cancel their own bookings from the portal
+  within the policy; staff no longer need a UI for the common case.
+
+Everything else — date changes, exceptions, refunds — is still handled directly
+in Smoobu or PayPal. Refunds in particular are deliberately manual: a guest
+cancellation flags the payment and emails staff the capture ID, but the API never
+calls PayPal's refund endpoint.
 
 ### Edge cases and recovery table
 

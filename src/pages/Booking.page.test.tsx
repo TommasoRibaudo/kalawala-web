@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import posthog from 'posthog-js';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { CookieConsentService } from '../services/CookieConsent.service';
@@ -21,6 +21,7 @@ afterEach(() => {
     value: originalLocation,
   });
   window.sessionStorage.clear();
+  window.localStorage.clear();
   CookieConsentService.clearConsent();
   delete (window as any).gtag;
   delete (window as any).fbq;
@@ -32,6 +33,7 @@ function renderBookingPage(path = '/book') {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <BookingPage />
+      <LocationProbe />
     </MemoryRouter>
   );
 }
@@ -92,6 +94,12 @@ function mockJsonResponses(responses: Array<{ body: unknown; status?: number }>)
   }) as typeof fetch;
 }
 
+function activeSlide() {
+  const el = document.querySelector('.booking-wizard-slide--active');
+  if (!el) throw new Error('No active booking wizard slide found');
+  return within(el as HTMLElement);
+}
+
 function mockLocationAssign(): jest.Mock {
   const assign = jest.fn();
   Object.defineProperty(window, 'location', {
@@ -146,9 +154,9 @@ test('submits availability search and renders available properties', async () =>
 
   renderBookingPage();
 
-  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
-  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.change(screen.getByLabelText('Guests'), { target: { value: '2' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.change(activeSlide().getByLabelText('Guests'), { target: { value: '2' } });
   fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
 
   await screen.findByText('Casa Geco');
@@ -192,8 +200,8 @@ test('renders Spanish no-availability state for bookES route', async () => {
 
   renderBookingPage('/bookES');
 
-  fireEvent.change(screen.getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
-  fireEvent.change(screen.getByLabelText('Salida'), { target: { value: '2099-07-14' } });
+  fireEvent.change(activeSlide().getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Salida'), { target: { value: '2099-07-14' } });
   fireEvent.click(screen.getByRole('button', { name: /buscar disponibilidad/i }));
 
   await screen.findByText('No hay casas disponibles para estas fechas');
@@ -206,18 +214,18 @@ test('renders Spanish no-availability state for bookES route', async () => {
 test('language switcher toggles booking routes and preserves search query state', () => {
   renderBookingRoutes('/book?arrivalDate=2099-10-01&departureDate=2099-10-05&guests=4');
 
-  expect(screen.getByLabelText('Check-in')).toHaveValue('2099-10-01');
-  expect(screen.getByLabelText('Check-out')).toHaveValue('2099-10-05');
-  expect(screen.getByLabelText('Guests')).toHaveValue(4);
+  expect(activeSlide().getByLabelText('Check-in')).toHaveValue('2099-10-01');
+  expect(activeSlide().getByLabelText('Check-out')).toHaveValue('2099-10-05');
+  expect(activeSlide().getByLabelText('Guests')).toHaveValue(4);
 
   fireEvent.click(screen.getAllByRole('button', { name: /switch language to espa/i })[0]);
 
   expect(screen.getByTestId('location')).toHaveTextContent(
     '/bookES?arrivalDate=2099-10-01&departureDate=2099-10-05&guests=4'
   );
-  expect(screen.getByLabelText('Llegada')).toHaveValue('2099-10-01');
-  expect(screen.getByLabelText('Salida')).toHaveValue('2099-10-05');
-  expect(screen.getByLabelText('Huéspedes')).toHaveValue(4);
+  expect(activeSlide().getByLabelText('Llegada')).toHaveValue('2099-10-01');
+  expect(activeSlide().getByLabelText('Salida')).toHaveValue('2099-10-05');
+  expect(activeSlide().getByLabelText('Huéspedes')).toHaveValue(4);
 });
 
 test('builds Spanish listing links from the property slug and opens them in a new tab', async () => {
@@ -259,8 +267,8 @@ test('builds Spanish listing links from the property slug and opens them in a ne
 
   renderBookingPage('/bookES');
 
-  fireEvent.change(screen.getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
-  fireEvent.change(screen.getByLabelText('Salida'), { target: { value: '2099-07-14' } });
+  fireEvent.change(activeSlide().getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Salida'), { target: { value: '2099-07-14' } });
   fireEvent.click(screen.getByRole('button', { name: /buscar disponibilidad/i }));
 
   await screen.findByText('Casa Geco');
@@ -390,8 +398,8 @@ test('creates a PayPal hold from the property result card and shows the live hol
 
   renderBookingPage();
 
-  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
-  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
   fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
   await screen.findByText('Casa Geco');
 
@@ -403,7 +411,7 @@ test('creates a PayPal hold from the property result card and shows the live hol
   fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'ana@example.com' } });
   fireEvent.change(screen.getByLabelText('Phone'), { target: { value: '+50688888888' } });
   fireEvent.change(screen.getByLabelText('Country'), { target: { value: 'Costa Rica' } });
-  fireEvent.change(screen.getByLabelText('Reservation portal password'), { target: { value: 'long-secure-password' } });
+  fireEvent.change(screen.getByLabelText('Create a password to manage your booking'), { target: { value: 'long-secure-password' } });
   fireEvent.change(screen.getByLabelText('Message for Kalawala'), { target: { value: 'Late arrival' } });
   fireEvent.click(screen.getByLabelText('I accept the booking terms.'));
   fireEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
@@ -511,8 +519,8 @@ test('shows a clear message when PayPal hold creation loses the availability rac
 
   renderBookingPage();
 
-  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
-  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
   fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
   await screen.findByText('Casa Geco');
 
@@ -520,7 +528,7 @@ test('shows a clear message when PayPal hold creation loses the availability rac
   fireEvent.change(screen.getByLabelText('First name'), { target: { value: 'Ana' } });
   fireEvent.change(screen.getByLabelText('Last name'), { target: { value: 'Guest' } });
   fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'ana@example.com' } });
-  fireEvent.change(screen.getByLabelText('Reservation portal password'), { target: { value: 'long-secure-password' } });
+  fireEvent.change(screen.getByLabelText('Create a password to manage your booking'), { target: { value: 'long-secure-password' } });
   fireEvent.click(screen.getByLabelText('I accept the booking terms.'));
   fireEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
 
@@ -595,10 +603,8 @@ test('captures PayPal payment on the return route using token and stored booking
   expect(screen.getByText('res_PUBLIC123')).toBeInTheDocument();
   expect(screen.getByText('Casa Geco')).toBeInTheDocument();
   expect(screen.getByText('Jun 10, 2099 to Jun 14, 2099')).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: 'Manage booking' })).toHaveAttribute(
-    'href',
-    '/portal?reservationId=res_PUBLIC123'
-  );
+  fireEvent.click(screen.getByRole('button', { name: 'Manage booking' }));
+  expect(screen.getByTestId('location')).toHaveTextContent('/portal?reservationId=res_PUBLIC123');
   expect(window.sessionStorage.getItem('kalawala_paypal_checkout')).toBeNull();
   expect(window.sessionStorage.getItem('kalawala_booking_confirmation')).toContain('res_PUBLIC123');
   await waitFor(() =>
@@ -672,10 +678,8 @@ test('renders the confirmed route from stored confirmation data without firing p
 
   await screen.findByRole('heading', { name: 'Booking confirmed' });
   expect(screen.getByText('res_PUBLIC123')).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: 'Manage booking' })).toHaveAttribute(
-    'href',
-    '/portal?reservationId=res_PUBLIC123'
-  );
+  fireEvent.click(screen.getByRole('button', { name: 'Manage booking' }));
+  expect(screen.getByTestId('location')).toHaveTextContent('/portal?reservationId=res_PUBLIC123');
   expect(posthog.capture).not.toHaveBeenCalledWith('booking_confirmed', expect.anything());
 });
 
@@ -715,10 +719,8 @@ test('renders Spanish confirmation copy and portal link', async () => {
   await screen.findByRole('heading', { name: 'Reserva confirmada' });
   expect(screen.getByText('Tu estad\u00eda est\u00e1 reservada.')).toBeInTheDocument();
   expect(screen.getByText('Pago confirmado')).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: 'Gestionar reserva' })).toHaveAttribute(
-    'href',
-    '/portalES?reservationId=res_PUBLIC123'
-  );
+  fireEvent.click(screen.getByRole('button', { name: 'Gestionar reserva' }));
+  expect(screen.getByTestId('location')).toHaveTextContent('/portalES?reservationId=res_PUBLIC123');
 });
 
 test('shows a return error without calling capture when PayPal return context is missing', async () => {
@@ -761,8 +763,8 @@ test('validates past arrival date before calling the booking API', async () => {
   global.fetch = jest.fn() as typeof fetch;
   renderBookingPage();
 
-  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2020-01-01' } });
-  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2020-01-01' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
   fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
 
   await waitFor(() => {
@@ -775,8 +777,8 @@ test('validates departure date before calling the booking API', async () => {
   global.fetch = jest.fn() as typeof fetch;
   renderBookingPage();
 
-  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
-  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-10' } });
   fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
 
   await waitFor(() => {
@@ -789,9 +791,9 @@ test('validates guest count before calling the booking API', async () => {
   global.fetch = jest.fn() as typeof fetch;
   renderBookingPage();
 
-  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
-  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.change(screen.getByLabelText('Guests'), { target: { value: '0' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.change(activeSlide().getByLabelText('Guests'), { target: { value: '0' } });
   fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
 
   await waitFor(() => {
@@ -814,11 +816,11 @@ test('shows provider-unavailable message for retryable API errors', async () => 
 
   renderBookingPage();
 
-  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-08-10' } });
-  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-08-14' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-08-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-08-14' } });
   fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
 
-  await screen.findByText('Availability is temporarily unavailable. Please try again in a moment.');
+  await activeSlide().findByText('Availability is temporarily unavailable. Please try again in a moment.');
 });
 
 test('shows generic message for non-retryable API errors', async () => {
@@ -835,434 +837,172 @@ test('shows generic message for non-retryable API errors', async () => {
 
   renderBookingPage();
 
-  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-09-10' } });
-  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-09-14' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-09-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-09-14' } });
   fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
 
-  await screen.findByText('We could not search availability right now. Please try again.');
+  await activeSlide().findByText('We could not search availability right now. Please try again.');
 });
 
-test('renders English manual deposit handoff instructions from the booking API', async () => {
-  const propertyId = 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111';
-  mockJsonResponses([
+// ── deposit checkout ─────────────────────────────────────────────────────────
+//
+// Replaces the old contact-only handoff tests. The deposit path now collects the
+// same guest details as PayPal and creates a real hold that blocks the dates.
+
+const SEARCH_RESULT_FIXTURE = {
+  bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+  quoteId: 'qt_TEST',
+  quoteExpiresAt: '2099-06-01T12:00:00Z',
+  arrivalDate: '2099-06-10',
+  departureDate: '2099-06-14',
+  guests: 2,
+  language: 'en',
+  resultsCount: 1,
+  properties: [
     {
-      body: {
-        bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
-        quoteId: 'qt_TEST',
-        quoteExpiresAt: '2099-06-01T12:00:00Z',
-        arrivalDate: '2099-06-10',
-        departureDate: '2099-06-14',
-        guests: 2,
-        language: 'en',
-        resultsCount: 1,
-        properties: [
-          {
-            propertyId,
-            slug: 'Geco',
-            listingUrl: '/Geco',
-            name: 'Casa Geco',
-            guestCapacity: 5,
-            thumbnailUrl: 'https://example.com/geco.jpg',
-            amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
-            actions: {
-              viewListingUrl: '/Geco',
-              canCreatePayPalHold: true,
-              canUseManualDepositHandoff: true,
-            },
-          },
-        ],
-        availabilityWarnings: [],
+      propertyId: 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111',
+      slug: 'Geco',
+      listingUrl: '/Geco',
+      name: 'Casa Geco',
+      guestCapacity: 5,
+      thumbnailUrl: 'https://example.com/geco.jpg',
+      amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
+      price: {
+        currency: 'USD',
+        totalAmountCents: 51000,
+        nightlyAverageCents: 12750,
+        nights: 4,
+        includesTaxes: false,
+        rateSource: 'smoobu',
       },
+      actions: { viewListingUrl: '/Geco', canCreatePayPalHold: true, canUseManualDepositHandoff: true },
     },
-    {
-      body: {
-        language: 'en',
-        status: 'manual_deposit_handoff',
-        isBookingConfirmed: false,
-        doesCreateHold: false,
-        messageKey: 'deposit.handoffIntro',
-        instructions: {
-          titleKey: 'deposit.title',
-          bodyKeys: [
-            'deposit.bankInstructions',
-            'deposit.notConfirmed',
-            'deposit.staffWillConfirm',
-            'deposit.noReceiptUpload',
-            'deposit.contactUs',
-          ],
-          contactMethods: [
-            {
-              type: 'whatsapp',
-              label: '+506 8463 2276',
-              url: 'https://wa.me/50684632276',
-            },
-            {
-              type: 'email',
-              label: 'reservas.kalawala@gmail.com',
-              url: 'mailto:reservas.kalawala@gmail.com',
-            },
-          ],
-        },
-        bookingContext: {
-          quoteId: 'qt_TEST',
-          property: {
-            propertyId,
-            slug: 'Geco',
-            listingUrl: '/Geco',
-            name: 'Casa Geco',
-          },
-          arrivalDate: '2099-06-10',
-          departureDate: '2099-06-14',
-          guests: 2,
-        },
-      },
-    },
-  ]);
+  ],
+  availabilityWarnings: [],
+};
 
-  renderBookingPage();
-
-  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
-  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
-  await screen.findByText('Casa Geco');
-
-  fireEvent.click(screen.getByRole('button', { name: /manual deposit/i }));
-
-  await screen.findByRole('heading', { name: 'Manual deposit instructions' });
-  expect(global.fetch).toHaveBeenLastCalledWith(`/api/deposit-handoff?language=en&quoteId=qt_TEST&propertyId=${propertyId}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Accept-Language': 'en',
-    },
-  });
-  expect(screen.getByText('This is not a confirmed booking')).toBeInTheDocument();
-  expect(screen.getByText('Your booking is not confirmed by the custom booking engine.')).toBeInTheDocument();
-  expect(
-    screen.getByText('For bank transfer or SINPE, contact Kalawala staff for the current payment instructions before sending money.')
-  ).toBeInTheDocument();
-  expect(
-    screen.getByText('Do not upload receipt files here. Send any proof of payment through the staff channel you choose below.')
-  ).toBeInTheDocument();
-  expect(screen.getAllByText('Casa Geco').length).toBeGreaterThan(0);
-  expect(screen.getByText('Jun 10, 2099 to Jun 14, 2099')).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: /contact by whatsapp/i })).toHaveAttribute('href', 'https://wa.me/50684632276');
-  expect(screen.getByRole('link', { name: /contact by email/i })).toHaveAttribute('href', 'mailto:reservas.kalawala@gmail.com');
-  expect(screen.queryByText('Booking confirmed')).not.toBeInTheDocument();
-});
-
-test('renders Spanish manual deposit handoff instructions', async () => {
-  const propertyId = 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111';
-  mockJsonResponses([
-    {
-      body: {
-        bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
-        quoteId: 'qt_TEST',
-        quoteExpiresAt: '2099-06-01T12:00:00Z',
-        arrivalDate: '2099-06-10',
-        departureDate: '2099-06-14',
-        guests: 2,
-        language: 'es',
-        resultsCount: 1,
-        properties: [
-          {
-            propertyId,
-            slug: 'Geco',
-            listingUrl: '/Geco',
-            name: 'Casa Geco',
-            guestCapacity: 5,
-            thumbnailUrl: 'https://example.com/geco.jpg',
-            amenities: [{ code: 'wifi', label: 'WiFi' }],
-            actions: {
-              viewListingUrl: '/GecoES',
-              canCreatePayPalHold: true,
-              canUseManualDepositHandoff: true,
-            },
-          },
-        ],
-        availabilityWarnings: [],
-      },
-    },
-    {
-      body: {
-        language: 'es',
-        status: 'manual_deposit_handoff',
-        isBookingConfirmed: false,
-        doesCreateHold: false,
-        messageKey: 'deposit.handoffIntro',
-        instructions: {
-          titleKey: 'deposit.title',
-          bodyKeys: [
-            'deposit.bankInstructions',
-            'deposit.notConfirmed',
-            'deposit.staffWillConfirm',
-            'deposit.noReceiptUpload',
-            'deposit.contactUs',
-          ],
-          contactMethods: [
-            {
-              type: 'whatsapp',
-              label: '+506 8463 2276',
-              url: 'https://wa.me/50684632276',
-            },
-          ],
-        },
-      },
-    },
-  ]);
-
-  renderBookingPage('/bookES');
-
-  fireEvent.change(screen.getByLabelText('Llegada'), { target: { value: '2099-06-10' } });
-  fireEvent.change(screen.getByLabelText('Salida'), { target: { value: '2099-06-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /buscar disponibilidad/i }));
-  await screen.findByText('Casa Geco');
-
-  fireEvent.click(screen.getByRole('button', { name: /manual/i }));
-
-  await screen.findByText('Esto no es una reserva confirmada');
-  expect(global.fetch).toHaveBeenLastCalledWith(`/api/deposit-handoff?language=es&quoteId=qt_TEST&propertyId=${propertyId}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Accept-Language': 'es',
-    },
-  });
-  expect(screen.getByText('Tu reserva no queda confirmada por el motor de reservas personalizado.')).toBeInTheDocument();
-  expect(
-    screen.getByText(
-      'Para transferencia bancaria o SINPE, contacta al equipo de Kalawala para recibir las instrucciones de pago actualizadas antes de enviar dinero.'
-    )
-  ).toBeInTheDocument();
-  expect(screen.getByText('No subas comprobantes aqu\u00ed. Env\u00eda cualquier comprobante de pago por el canal de contacto que elijas abajo.')).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: /contactar por whatsapp/i })).toHaveAttribute('href', 'https://wa.me/50684632276');
-});
-
-test('records manual deposit contact clicks with consent-aware analytics', async () => {
-  CookieConsentService.acceptAll();
-  (window as any).gtag = jest.fn();
-  const propertyId = 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111';
-  mockJsonResponses([
-    {
-      body: {
-        bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
-        quoteId: 'qt_TEST',
-        quoteExpiresAt: '2099-06-01T12:00:00Z',
-        arrivalDate: '2099-06-10',
-        departureDate: '2099-06-14',
-        guests: 2,
-        language: 'en',
-        resultsCount: 1,
-        properties: [
-          {
-            propertyId,
-            slug: 'Geco',
-            listingUrl: '/Geco',
-            name: 'Casa Geco',
-            guestCapacity: 5,
-            thumbnailUrl: 'https://example.com/geco.jpg',
-            amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
-            actions: {
-              viewListingUrl: '/Geco',
-              canCreatePayPalHold: true,
-              canUseManualDepositHandoff: true,
-            },
-          },
-        ],
-        availabilityWarnings: [],
-      },
-    },
-    {
-      body: {
-        language: 'en',
-        status: 'manual_deposit_handoff',
-        isBookingConfirmed: false,
-        doesCreateHold: false,
-        messageKey: 'deposit.handoffIntro',
-        instructions: {
-          titleKey: 'deposit.title',
-          bodyKeys: ['deposit.bankInstructions', 'deposit.notConfirmed', 'deposit.contactUs'],
-          contactMethods: [
-            {
-              type: 'whatsapp',
-              label: '+506 8463 2276',
-              url: 'https://wa.me/50684632276',
-            },
-          ],
-        },
-        bookingContext: {
-          quoteId: 'qt_TEST',
-          property: {
-            propertyId,
-            slug: 'Geco',
-            listingUrl: '/Geco',
-            name: 'Casa Geco',
-          },
-          arrivalDate: '2099-06-10',
-          departureDate: '2099-06-14',
-          guests: 2,
-        },
-      },
-    },
-    {
-      body: {
-        recorded: true,
-        status: 'manual_deposit_handoff',
-        isBookingConfirmed: false,
-        doesCreateHold: false,
-        messageKey: 'deposit.contactEventRecorded',
-      },
-    },
-  ]);
-
-  renderBookingPage();
-
-  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
-  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
-  await screen.findByText('Casa Geco');
-
-  fireEvent.click(screen.getByRole('button', { name: /manual deposit/i }));
-  await screen.findByRole('heading', { name: 'Manual deposit instructions' });
-
-  fireEvent.click(screen.getByRole('link', { name: /contact by whatsapp/i }));
-
-  await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(3));
-  const eventCall = (global.fetch as jest.Mock).mock.calls[2];
-  const eventOptions = eventCall[1] as RequestInit & { headers: Record<string, string>; body: string };
-
-  expect(eventCall[0]).toBe('/api/deposit-handoff/events');
-  expect(eventOptions.method).toBe('POST');
-  expect(eventOptions.keepalive).toBe(true);
-  expect(eventOptions.headers).toMatchObject({
-    Accept: 'application/json',
-    'Accept-Language': 'en',
-    'Content-Type': 'application/json',
-  });
-  expect(eventOptions.headers['Idempotency-Key']).toMatch(/^deposit-/);
-  expect(JSON.parse(eventOptions.body)).toEqual({
-    quoteId: 'qt_TEST',
-    propertyId,
+const DEPOSIT_HOLD_FIXTURE = {
+  booking: {
+    bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+    reservationPublicId: 'KWL-DEP12345',
+    status: 'hold_active',
     language: 'en',
-    contactMethod: 'whatsapp',
-    analyticsConsent: true,
-  });
-  expect(posthog.capture).toHaveBeenCalledWith(
-    'manual_deposit_handoff_clicked',
-    expect.objectContaining({
-      analytics_consent: true,
-      contact_method: 'whatsapp',
-      language: 'en',
-      quote_id: 'qt_TEST',
-      property_id: propertyId,
-      property_slug: 'Geco',
-    })
-  );
-  expect(window.gtag).toHaveBeenCalledWith(
-    'event',
-    'manual_deposit_handoff_clicked',
-    expect.objectContaining({
-      event_category: 'booking',
-      contact_method: 'whatsapp',
-      analytics_consent: true,
-    })
-  );
-});
+    arrivalDate: '2099-06-10',
+    departureDate: '2099-06-14',
+    guests: 2,
+    property: {
+      propertyId: 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111',
+      slug: 'Geco',
+      listingUrl: '/Geco',
+      name: 'Casa Geco',
+      guestCapacity: 5,
+      thumbnailUrl: 'https://example.com/geco.jpg',
+      amenities: [],
+    },
+    price: { currency: 'USD', totalAmountCents: 51000, nightlyAverageCents: 12750, nights: 4, includesTaxes: false, rateSource: 'smoobu' },
+    hold: { status: 'active', expiresAt: '2099-06-02T12:00:00Z' },
+    payment: { method: 'manual_deposit', status: 'pending' },
+  },
+  bankInfo: {
+    sinpePhone: '8772 7355',
+    sinpeName: 'Luciano Ribaudo',
+    bankAccount: { accountHolder: 'Xelion srl', colonesIban: 'CR61010200009629385364', dolaresIban: 'CR71010200009629385281' },
+  },
+  depositAccessToken: 'deposit-access-token-value',
+  depositAccessTokenExpiresInSeconds: 86400,
+  nextAction: 'upload_deposit_receipt',
+};
 
-test('suppresses analytics but still posts event when consent is not given', async () => {
-  const propertyId = 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111';
-  mockJsonResponses([
-    {
-      body: {
-        bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
-        quoteId: 'qt_TEST',
-        quoteExpiresAt: '2099-06-01T12:00:00Z',
-        arrivalDate: '2099-06-10',
-        departureDate: '2099-06-14',
-        guests: 2,
-        language: 'en',
-        resultsCount: 1,
-        properties: [
-          {
-            propertyId,
-            slug: 'Geco',
-            listingUrl: '/Geco',
-            name: 'Casa Geco',
-            guestCapacity: 5,
-            thumbnailUrl: 'https://example.com/geco.jpg',
-            amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
-            actions: {
-              viewListingUrl: '/Geco',
-              canCreatePayPalHold: true,
-              canUseManualDepositHandoff: true,
-            },
-          },
-        ],
-        availabilityWarnings: [],
-      },
-    },
-    {
-      body: {
-        language: 'en',
-        status: 'manual_deposit_handoff',
-        isBookingConfirmed: false,
-        doesCreateHold: false,
-        messageKey: 'deposit.handoffIntro',
-        instructions: {
-          titleKey: 'deposit.title',
-          bodyKeys: ['deposit.bankInstructions', 'deposit.notConfirmed', 'deposit.contactUs'],
-          contactMethods: [
-            {
-              type: 'whatsapp',
-              label: '+506 8463 2276',
-              url: 'https://wa.me/50684632276',
-            },
-          ],
-        },
-        bookingContext: {
-          quoteId: 'qt_TEST',
-          property: {
-            propertyId,
-            slug: 'Geco',
-            listingUrl: '/Geco',
-            name: 'Casa Geco',
-          },
-          arrivalDate: '2099-06-10',
-          departureDate: '2099-06-14',
-          guests: 2,
-        },
-      },
-    },
-    {
-      body: {
-        recorded: true,
-        status: 'manual_deposit_handoff',
-        isBookingConfirmed: false,
-        doesCreateHold: false,
-        messageKey: 'deposit.contactEventRecorded',
-      },
-    },
-  ]);
-
+async function reachDepositCheckout() {
   renderBookingPage();
 
-  fireEvent.change(screen.getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
-  fireEvent.change(screen.getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
   fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
   await screen.findByText('Casa Geco');
 
-  fireEvent.click(screen.getByRole('button', { name: /manual deposit/i }));
-  await screen.findByRole('heading', { name: 'Manual deposit instructions' });
+  fireEvent.click(screen.getByRole('button', { name: 'Bank transfer / SINPE' }));
+  await screen.findByRole('heading', { name: 'Checkout' });
+}
 
-  fireEvent.click(screen.getByRole('link', { name: /contact by whatsapp/i }));
+function fillGuestDetails() {
+  fireEvent.change(screen.getByLabelText('First name'), { target: { value: 'Ana' } });
+  fireEvent.change(screen.getByLabelText('Last name'), { target: { value: 'Guest' } });
+  fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'ana@example.com' } });
+  fireEvent.change(screen.getByLabelText('Create a password to manage your booking'), { target: { value: 'long-secure-password' } });
+  fireEvent.click(screen.getByLabelText('I accept the booking terms.'));
+}
 
-  await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(3));
-  const eventCall = (global.fetch as jest.Mock).mock.calls[2];
-  const eventOptions = eventCall[1] as RequestInit & { body: string };
+test('deposit checkout collects guest details and creates a real hold', async () => {
+  mockJsonResponses([{ body: SEARCH_RESULT_FIXTURE }, { body: DEPOSIT_HOLD_FIXTURE }]);
 
-  expect(JSON.parse(eventOptions.body)).toEqual(
-    expect.objectContaining({ analyticsConsent: false })
+  await reachDepositCheckout();
+  fillGuestDetails();
+  fireEvent.click(screen.getByRole('button', { name: 'Reserve these dates' }));
+
+  // Bank details only appear once the dates are actually held.
+  await screen.findByText('CR61010200009629385364');
+  expect(screen.getByText('KWL-DEP12345')).toBeInTheDocument();
+
+  const holdCall = (global.fetch as jest.Mock).mock.calls[1];
+  expect(holdCall[0]).toBe('/api/deposit-holds');
+  const holdBody = JSON.parse((holdCall[1] as RequestInit & { body: string }).body);
+  expect(holdBody).toEqual(
+    expect.objectContaining({
+      quoteId: 'qt_TEST',
+      propertyId: 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111',
+      portalPassword: 'long-secure-password',
+      termsAccepted: true,
+    })
   );
-  expect(posthog.capture).not.toHaveBeenCalled();
-  expect(window.gtag).toBeUndefined();
+  // The deposit path never sends a rate option — it is always flexible.
+  expect(holdBody).not.toHaveProperty('nonRefundable');
+});
+
+test('deposit checkout validates the portal password before calling the API', async () => {
+  mockJsonResponses([{ body: SEARCH_RESULT_FIXTURE }]);
+
+  await reachDepositCheckout();
+  fireEvent.change(screen.getByLabelText('First name'), { target: { value: 'Ana' } });
+  fireEvent.change(screen.getByLabelText('Last name'), { target: { value: 'Guest' } });
+  fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'ana@example.com' } });
+  fireEvent.change(screen.getByLabelText('Create a password to manage your booking'), { target: { value: 'short' } });
+  fireEvent.click(screen.getByLabelText('I accept the booking terms.'));
+  fireEvent.click(screen.getByRole('button', { name: 'Reserve these dates' }));
+
+  await screen.findByText('Use at least 12 characters.');
+  // Only the search call — the hold was never attempted.
+  expect((global.fetch as jest.Mock).mock.calls).toHaveLength(1);
+});
+
+test('deposit receipt upload goes to S3 and then confirms with the API', async () => {
+  mockJsonResponses([
+    { body: SEARCH_RESULT_FIXTURE },
+    { body: DEPOSIT_HOLD_FIXTURE },
+    { body: { uploadUrl: 'https://s3.example.test/put', s3Key: 'deposit-receipts/abc/1-receipt.jpg' } },
+    { body: {} },
+    { body: { confirmed: true, s3Key: 'deposit-receipts/abc/1-receipt.jpg', receiptUrl: 'https://s3.example.test/get' } },
+  ]);
+
+  await reachDepositCheckout();
+  fillGuestDetails();
+  fireEvent.click(screen.getByRole('button', { name: 'Reserve these dates' }));
+  await screen.findByText('CR61010200009629385364');
+
+  const file = new File(['receipt'], 'receipt.jpg', { type: 'image/jpeg' });
+  const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+  fireEvent.change(input, { target: { files: [file] } });
+
+  await screen.findByText('Receipt received. Our team will verify it and confirm your booking.');
+
+  const calls = (global.fetch as jest.Mock).mock.calls;
+  expect(calls[2][0]).toBe('/api/deposit-receipt/upload-url');
+  // The file goes straight to S3, never through the booking API.
+  expect(calls[3][0]).toBe('https://s3.example.test/put');
+  expect((calls[3][1] as RequestInit).method).toBe('PUT');
+  expect(calls[4][0]).toBe('/api/deposit-receipt/confirm');
+
+  // Both API calls carry the scoped deposit token.
+  const uploadHeaders = (calls[2][1] as RequestInit).headers as Record<string, string>;
+  expect(uploadHeaders.Authorization).toBe('Bearer deposit-access-token-value');
 });

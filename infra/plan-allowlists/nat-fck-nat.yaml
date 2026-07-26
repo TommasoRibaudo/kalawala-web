@@ -1,0 +1,18 @@
+variable_change: "nat_gateway_type: managed -> fck-nat"
+allowed_actions:
+  destroy:
+    - "aws_nat_gateway.main[0]"
+    - "aws_eip.nat[0]"
+    - "aws_route.private_nat_managed[0]"
+  create:
+    - "aws_eip.fck_nat[0]"
+    - "aws_launch_template.fck_nat[0]"
+    - "aws_autoscaling_group.fck_nat[0]"
+    - "aws_security_group.fck_nat[0]"
+    - "aws_iam_role.fck_nat[0]"
+    - "aws_iam_instance_profile.fck_nat[0]"
+    - "aws_iam_role_policy.fck_nat_self_configure[0]"
+    - "aws_iam_role_policy_attachment.fck_nat_ssm[0]"
+    - "aws_route.private_nat_fck[0]"
+  update:
+    - "aws_route_table.private"

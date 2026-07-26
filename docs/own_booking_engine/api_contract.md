@@ -43,7 +43,7 @@ Smoobu API facts that shape this contract:
 - Empty availability is a successful `200` response with an empty `properties` array.
 - All public write endpoints require `Idempotency-Key`.
 - Only backend code can move a booking into `confirmed`, `paid`, `cancelled`, or `expired`.
-- Manual deposit is an offline inquiry/handoff. It cannot create a payment, paid state, confirmed state, or custom-engine hold in MVP.
+- Manual deposit creates a real booking: `POST /api/deposit-holds` takes the dates off sale with a Smoobu blocked-channel hold, and staff confirm it via a signed link. It still never creates a `payments` row — the money arrives by bank transfer with no provider record — and it only reaches `booking_confirmed` when a human confirms.
 - PayPal browser approval or return URLs are not proof of payment. Final confirmation requires verified PayPal webhook processing or trusted server-side PayPal reconciliation.
 - API routes use safe public property IDs and public slugs. Smoobu apartment IDs remain server-side implementation details.
 
@@ -685,7 +685,99 @@ Rules:
 - This endpoint may read a quote but must not create a hold.
 - This endpoint must not create a `payments` row.
 - This endpoint must not return "confirmed" copy.
-- Receipt upload instructions are out of MVP unless a future PRD changes that decision.
+
+> **Legacy.** This read-only handoff has no frontend caller since the deposit
+> checkout shipped — the booking page now goes to `POST /api/deposit-holds`
+> instead. The endpoint is retained only so older bundles do not 404, and can be
+> removed once none are in circulation.
+
+## Endpoint: Create Deposit Hold
+
+```text
+POST /api/deposit-holds
+```
+
+Purpose:
+
+- Take the dates off sale while a bank transfer or SINPE payment clears.
+- Collect the same guest details and portal password as the PayPal checkout.
+
+Headers:
+
+```text
+Idempotency-Key: <required>
+```
+
+Request: same shape as `POST /api/holds` without `paymentMethod` or
+`nonRefundable` — deposit bookings are always on the flexible rate.
+
+Success response (200): the hold response, plus
+
+```json
+{
+  "payment": { "method": "manual_deposit", "status": "pending" },
+  "bankInfo": { "sinpePhone": "...", "sinpeName": "...", "bankAccount": { "...": "..." } },
+  "depositAccessToken": "<signed, scoped to this booking session>",
+  "depositAccessTokenExpiresInSeconds": 86400,
+  "nextAction": "upload_deposit_receipt"
+}
+```
+
+Rules:
+
+- Creates a Smoobu reservation on the blocked channel, same as a PayPal hold.
+- Session reaches `hold_active` with `payment_method = 'manual_deposit'`. It does
+  **not** create a `payments` row, and portal login stays refused (403
+  `booking_not_confirmed`) until staff confirm.
+- Hold TTL is `min(DEPOSIT_HOLD_TTL_HOURS, half the time until check-in)`, floored
+  at one hour, so an imminent stay is not blocked for a day and a half.
+- If nobody confirms, the existing hold-expiry worker releases it.
+
+## Endpoint: Deposit Receipt Upload
+
+```text
+POST /api/deposit-receipt/upload-url
+POST /api/deposit-receipt/confirm
+```
+
+Both require `Authorization: Bearer <depositAccessToken>` scoped to the booking
+session in the body. Without it the only gate would be a booking session id.
+
+- `upload-url` returns a presigned S3 PUT. It deliberately does **not** sign a
+  `Content-Length`: SigV4 signs whatever headers are present, so pinning the
+  length would force the browser to upload exactly that many bytes or get a 403.
+- `confirm` verifies the object exists, enforces the size cap against what
+  actually landed, stores the key on the booking session, adds a presigned link
+  to the Smoobu reservation notice, and returns `receiptUrl` (presigned GET — the
+  bucket is private, so a plain object URL would 403).
+
+## Endpoint: Staff Deposit Review
+
+```text
+GET  /api/staff/deposit-review/:token
+POST /api/staff/deposit-review
+```
+
+The only non-guest surface in the system, and it has no login. Access is a signed
+token carried in the emailed link, scoped to one booking session and one action
+(`deposit_confirm` or `deposit_reject`), expiring after
+`DEPOSIT_CONFIRM_TOKEN_TTL_HOURS` (default 7 days).
+
+- The token uses the same envelope as portal sessions but a distinct `typ`
+  header, compared before the signature — so neither family can be replayed
+  against the other's routes.
+- The signing key is derived from `portalSessionSecret`, not stored separately.
+  Adding a field to `BookingProviderSecrets` would put it in `REQUIRED_FIELDS`
+  and 503 the whole API in any environment whose secret lagged the deploy.
+- **GET renders, POST mutates.** Email scanners and link-preview bots fetch URLs
+  in messages unattended; a mutation on the GET would let a scanner confirm
+  bookings. The GET returns a one-screen HTML review with a single button.
+- Confirming is idempotent by status guard: the update requires `hold_active`, so
+  a second click reports "already confirmed" rather than acting twice. The
+  token's `jti` is recorded in `deposit_confirm_token_jti`, making a forwarded
+  and reused link auditable.
+- Confirming also flips the hold to `converted`. Left `active`, the expiry worker
+  would cancel the Smoobu reservation of a confirmed booking when the TTL elapsed.
 
 ## Endpoint: Manual Deposit Handoff Event
 
@@ -970,18 +1062,32 @@ Success response:
       "method": "paypal",
       "status": "paid"
     },
+    "ratePlan": "flexible",
+    "cancellation": {
+      "cancellable": true,
+      "deadline": "2026-06-09T21:00:00.000Z"
+    },
     "availableActions": [
       "request_help",
-      "request_cancellation"
+      "update_guests",
+      "cancel_booking"
     ]
   }
 }
 ```
 
+`cancellation.deadline` is 24 hours before check-in (15:00 America/Costa_Rica).
+When `cancellable` is false a `reasonCode` is present: `non_refundable_rate`,
+`rate_plan_unknown`, `cancellation_window_closed`, `invalid_booking_state` or
+`already_cancelled`.
+
 Rules:
 
 - Portal reads must not trigger provider writes.
-- The portal may show `request_cancellation`, but cancellation is a request workflow in MVP, not direct guest cancellation.
+- `availableActions` and `cancellation` are evaluated server-side from
+  `cancellationPolicy.ts`. Clients render from them rather than re-deriving the
+  policy, so the action a guest is offered always matches what the API allows.
+- `cancel_booking` performs a real cancellation — see Portal Cancel Booking.
 
 ## Endpoint: Portal Help Request
 
@@ -1029,21 +1135,45 @@ Success response:
 }
 ```
 
-## Endpoint: Portal Cancellation Request
+## Endpoint: Portal Cancellation Request (deprecated)
 
 ```text
 POST /api/portal/reservation/:reservationPublicId/cancellation-request
 ```
 
+Superseded by Portal Cancel Booking below. Retained for one release so browser
+sessions running an older bundle do not 404. It records a request and changes
+nothing — no Smoobu call, no state transition.
+
+Success response:
+
+```json
+{
+  "status": "received",
+  "message": "Your cancellation request has been received..."
+}
+```
+
+## Endpoint: Portal Cancel Booking
+
+```text
+POST /api/portal/reservation/:reservationPublicId/cancel
+```
+
 Purpose:
 
-- Let the guest request cancellation review.
-- Record and notify staff.
-- Do not cancel Smoobu or PayPal automatically in MVP.
+- Cancel a confirmed booking on the guest's own authority.
+- Release the dates by deleting the Smoobu reservation.
+- Flag any captured payment for a manual refund by staff.
+
+This replaces the MVP position that cancellation is request-only. Refunds are
+still never automatic: the API does not call PayPal's refund endpoint. It sets
+the payment to `refund_flagged` and emails staff with the capture ID.
 
 Headers:
 
 ```text
+Authorization: Bearer <portal session token>
 Idempotency-Key: <required>
 ```
 
@@ -1052,24 +1182,54 @@ Request:
 ```json
 {
   "reason": "Travel plans changed",
-  "message": "Please let us know the cancellation options."
+  "message": "Optional extra detail for staff."
 }
 ```
 
-Success response:
+Success response (200):
 
 ```json
 {
-  "requestId": "req_01HXEXAMPLE",
-  "recorded": true,
-  "messageKey": "portal.cancellationRequestReceived"
+  "status": "cancelled",
+  "message": "Your booking has been cancelled and the dates released...",
+  "reservation": { "status": "cancelled", "cancelledAt": "...", "cancellationReason": "..." },
+  "hold": { "status": "cancelled" },
+  "payment": { "status": "refund_flagged" },
+  "refund": { "status": "manual_review", "paypalCaptureId": "3XY..." }
 }
 ```
 
+`refund.status` is `not_applicable` when no payment was ever captured.
+
+Policy (see `booking-api/src/cancellationPolicy.ts`):
+
+- Check-in is treated as 15:00 America/Costa_Rica. `arrival_date` is a bare
+  `date`, so without a fixed hour the 24-hour boundary is ambiguous by a day.
+- Flexible bookings can be cancelled until 24 hours before check-in.
+- Non-refundable bookings cannot be cancelled online at all.
+- Bookings predating migration 0013 have no `rate_plan` and fail closed — they
+  cannot be classified retroactively, so those guests are routed to staff.
+
+Errors:
+
+| Status | Code | When |
+| --- | --- | --- |
+| 403 | `cancellation_window_closed` | inside the 24-hour window |
+| 403 | `cancellation_not_allowed` | non-refundable, or unknown rate plan |
+| 409 | `invalid_booking_state` | the booking was never confirmed |
+| 502 | `provider_error` | Smoobu rejected the cancellation |
+
 Rules:
 
-- This endpoint does not call `DELETE /api/reservations/<reservationId>`.
-- Staff or a later explicit cancellation/refund workflow handles provider-side cancellation.
+- Smoobu is called **before** any local write. On a provider failure the endpoint
+  returns 502 having changed nothing, so a retry is safe.
+- A Smoobu 404 is treated as success — the reservation is already gone, which is
+  the outcome being asked for.
+- Local writes go session-first, then hold, then payment. The session reaches its
+  terminal state before the hold moves, which makes the `cancelReservation`
+  webhook Smoobu echoes back a no-op rather than a race.
+- Repeat submits return 200 with the same terminal state and do not call Smoobu
+  again.
 
 ## Internal Workers And Non-Public Routes
 

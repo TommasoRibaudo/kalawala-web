@@ -8,10 +8,10 @@ const config: BookingApiConfig = {
   maxBodyBytes: 64 * 1024,
   secrets: new StaticSecretProvider({
     smoobuApiKey: "smoobu-secret-value",
+    smoobuWebhookSecret: "smoobu-webhook-secret-value",
     paypalClientId: "paypal-client-id-value",
     paypalClientSecret: "paypal-client-secret-value",
     paypalWebhookId: "paypal-webhook-id-value",
-    smoobuWebhookSecret: "smoobu-webhook-secret-value",
     bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
     portalSessionSecret: "portal-session-secret-value",
     rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",

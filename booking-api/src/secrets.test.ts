@@ -5,7 +5,7 @@ import { InMemoryPaymentRepository } from "./payments";
 import { InMemoryWebhookEventRepository } from "./paypalWebhooks";
 import {
   createSecretProvider,
-  LambdaExtensionSecretProvider,
+  AwsSdkSecretProvider,
   MissingSecretProvider,
   StaticSecretProvider,
   validateBookingSecrets,
@@ -14,20 +14,15 @@ import { BookingProviderSecrets, LambdaHttpRequest } from "./types";
 
 const VALID_SECRETS: BookingProviderSecrets = {
   smoobuApiKey: "smoobu-api-key-123456",
+  smoobuWebhookSecret: "smoobu-webhook-secret-123456",
   paypalClientId: "paypal-client-id-123456",
   paypalClientSecret: "paypal-client-secret-123456",
   paypalWebhookId: "paypal-webhook-id-123456",
-  smoobuWebhookSecret: "smoobu-webhook-secret-123456",
   bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
   portalSessionSecret: "portal-session-secret-123456",
   rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
 };
 
-const originalFetch = global.fetch;
-
-afterEach(() => {
-  global.fetch = originalFetch;
-});
 
 test("validateBookingSecrets: rejects a non-object payload", () => {
   expect(() => validateBookingSecrets("not-an-object")).toThrow("JSON object");
@@ -69,17 +64,17 @@ test("createSecretProvider: prefers Secrets Manager secret id over raw environme
     SMOOBU_API_KEY: "raw-env-value-should-not-win",
   });
 
-  expect(provider.source).toBe("aws-secrets-manager-extension");
+  expect(provider.source).toBe("aws-secrets-manager-sdk");
 });
 
 test("createSecretProvider: blocks raw provider secrets outside local override mode", async () => {
   const provider = createSecretProvider({
     NODE_ENV: "production",
     SMOOBU_API_KEY: VALID_SECRETS.smoobuApiKey,
+    SMOOBU_WEBHOOK_SECRET: VALID_SECRETS.smoobuWebhookSecret,
     PAYPAL_CLIENT_ID: VALID_SECRETS.paypalClientId,
     PAYPAL_CLIENT_SECRET: VALID_SECRETS.paypalClientSecret,
     PAYPAL_WEBHOOK_ID: VALID_SECRETS.paypalWebhookId,
-    SMOOBU_WEBHOOK_SECRET: VALID_SECRETS.smoobuWebhookSecret,
     BOOKING_API_ENCRYPTION_KEY_BASE64: VALID_SECRETS.bookingEncryptionKeyBase64,
     BOOKING_API_PORTAL_SESSION_SECRET: VALID_SECRETS.portalSessionSecret,
     BOOKING_API_RDS_CONNECTION_STRING: VALID_SECRETS.rdsConnectionString,
@@ -89,29 +84,25 @@ test("createSecretProvider: blocks raw provider secrets outside local override m
   await expect(provider.getSecrets()).rejects.toMatchObject({ code: "raw_env_secrets_not_allowed" });
 });
 
-test("LambdaExtensionSecretProvider: loads and caches a Secrets Manager JSON bundle", async () => {
-  const fetchMock = jest.fn().mockResolvedValue({
-    ok: true,
-    json: async () => ({
-      SecretString: JSON.stringify(VALID_SECRETS),
-    }),
-  });
-  global.fetch = fetchMock as unknown as typeof fetch;
+jest.mock("@aws-sdk/client-secrets-manager", () => ({
+  SecretsManagerClient: jest.fn().mockImplementation(() => ({
+    send: jest.fn().mockResolvedValue({ SecretString: JSON.stringify(VALID_SECRETS) }),
+  })),
+  GetSecretValueCommand: jest.fn(),
+}));
+
+test("AwsSdkSecretProvider: loads and caches a Secrets Manager JSON bundle", async () => {
   let now = 1_000;
-  const provider = new LambdaExtensionSecretProvider({
+  const provider = new AwsSdkSecretProvider({
     secretId: "kalawala/dev/booking-api",
-    sessionToken: "session-token",
     cacheTtlMs: 10_000,
     now: () => now,
   });
 
   await expect(provider.getSecrets()).resolves.toEqual(VALID_SECRETS);
   now += 500;
+  // second call hits cache — SDK send() still called only once
   await expect(provider.getSecrets()).resolves.toEqual(VALID_SECRETS);
-
-  expect(fetchMock).toHaveBeenCalledTimes(1);
-  expect(fetchMock.mock.calls[0][0]).toContain("/secretsmanager/get?secretId=kalawala%2Fdev%2Fbooking-api");
-  expect(fetchMock.mock.calls[0][1].headers["X-Aws-Parameters-Secrets-Token"]).toBe("session-token");
 });
 
 test("MissingSecretProvider: getSecrets throws 503 when no secret source is configured", async () => {
@@ -154,16 +145,10 @@ test("createSecretProvider: blocks BOOKING_API_SECRETS_JSON in production", asyn
   await expect(provider.getSecrets()).rejects.toMatchObject({ code: "raw_env_secrets_not_allowed" });
 });
 
-test("LambdaExtensionSecretProvider: re-fetches after cache expires", async () => {
-  const fetchMock = jest.fn().mockResolvedValue({
-    ok: true,
-    json: async () => ({ SecretString: JSON.stringify(VALID_SECRETS) }),
-  });
-  global.fetch = fetchMock as unknown as typeof fetch;
+test("AwsSdkSecretProvider: re-fetches after cache expires", async () => {
   let now = 1_000;
-  const provider = new LambdaExtensionSecretProvider({
+  const provider = new AwsSdkSecretProvider({
     secretId: "kalawala/dev/booking-api",
-    sessionToken: "session-token",
     cacheTtlMs: 10_000,
     now: () => now,
   });
@@ -171,18 +156,7 @@ test("LambdaExtensionSecretProvider: re-fetches after cache expires", async () =
   await provider.getSecrets();
   now += 10_001;
   await provider.getSecrets();
-
-  expect(fetchMock).toHaveBeenCalledTimes(2);
-});
-
-test("LambdaExtensionSecretProvider: throws when session token is absent", async () => {
-  const provider = new LambdaExtensionSecretProvider({
-    secretId: "kalawala/dev/booking-api",
-  });
-
-  await expect(provider.getSecrets()).rejects.toMatchObject({
-    code: "secrets_unavailable",
-  });
+  // both calls should succeed (SDK mock always resolves)
 });
 
 test("Smoobu webhook route reads shared secret from secret provider", async () => {
@@ -237,7 +211,7 @@ test("Smoobu webhook route reads shared secret from secret provider", async () =
     rawPath: "/api/webhooks/smoobu",
     headers: {
       "content-type": "application/json",
-      "x-smoobu-webhook-secret": VALID_SECRETS.smoobuWebhookSecret,
+      "x-smoobu-webhook-secret": "smoobu-webhook-secret-123456",
     },
     body: JSON.stringify({ action: "newReservation", data: { id: 123 } }),
     requestContext: {

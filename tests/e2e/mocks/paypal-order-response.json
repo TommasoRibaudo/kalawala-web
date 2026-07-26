@@ -1,0 +1,6 @@
+{
+  "paypal": {
+    "orderId": "PAYPAL-ORDER-MOCK-001",
+    "approvalUrl": "http://localhost:3000/book/return?token=PAYPAL-ORDER-MOCK-001&PayerID=MOCK-PAYER"
+  }
+}

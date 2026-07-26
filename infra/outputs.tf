@@ -21,8 +21,13 @@ output "vpc_id" {
 }
 
 output "private_subnet_ids" {
-  description = "IDs of the private subnets (Lambda, RDS, ElastiCache)."
+  description = "IDs of the Kalawala app-tier private subnets (Lambda functions)."
   value       = aws_subnet.private[*].id
+}
+
+output "data_subnet_ids" {
+  description = "IDs of the data-tier private subnets (RDS)."
+  value       = aws_subnet.data[*].id
 }
 
 output "public_subnet_ids" {
@@ -31,8 +36,8 @@ output "public_subnet_ids" {
 }
 
 output "nat_gateway_public_ip" {
-  description = "Public IP of the NAT gateway (add to Smoobu/PayPal IP allowlists)."
-  value       = aws_eip.nat.public_ip
+  description = "Public IP of the NAT gateway (add to Smoobu/PayPal IP allowlists). Null when nat_gateway_type is not 'managed'."
+  value       = try(aws_eip.nat[0].public_ip, null)
 }
 
 output "sg_lambda_id" {
@@ -43,11 +48,6 @@ output "sg_lambda_id" {
 output "sg_rds_id" {
   description = "Security group ID assigned to the RDS instance."
   value       = aws_security_group.rds.id
-}
-
-output "sg_elasticache_id" {
-  description = "Security group ID assigned to the ElastiCache Redis cluster."
-  value       = aws_security_group.elasticache.id
 }
 
 # ---------------------------------------------------------------------------
@@ -179,41 +179,18 @@ output "frontend_cloudfront_hosted_zone_id" {
 # ---------------------------------------------------------------------------
 
 output "waf_web_acl_arn" {
-  description = "ARN of the WAF WebACL protecting the booking API stage."
-  value       = aws_wafv2_web_acl.booking_api.arn
+  description = "ARN of the WAF WebACL protecting the booking API stage. Null when waf_enabled is false."
+  value       = try(aws_wafv2_web_acl.booking_api[0].arn, null)
 }
 
 output "waf_web_acl_id" {
-  description = "ID of the WAF WebACL (used if the WebACL is later associated with a CloudFront distribution)."
-  value       = aws_wafv2_web_acl.booking_api.id
+  description = "ID of the WAF WebACL (used if the WebACL is later associated with a CloudFront distribution). Null when waf_enabled is false."
+  value       = try(aws_wafv2_web_acl.booking_api[0].id, null)
 }
 
 # ---------------------------------------------------------------------------
 # Supporting services  (task 2.10)
 # ---------------------------------------------------------------------------
-
-output "redis_primary_endpoint" {
-  description = "Primary Redis endpoint for availability/rates cache."
-  value       = aws_elasticache_replication_group.cache.primary_endpoint_address
-  sensitive   = true
-}
-
-output "redis_reader_endpoint" {
-  description = "Reader Redis endpoint for availability/rates cache."
-  value       = aws_elasticache_replication_group.cache.reader_endpoint_address
-  sensitive   = true
-}
-
-output "redis_port" {
-  description = "Redis TLS port."
-  value       = aws_elasticache_replication_group.cache.port
-}
-
-output "redis_secret_arn" {
-  description = "ARN of the Secrets Manager secret holding Redis AUTH token and endpoint metadata."
-  value       = aws_secretsmanager_secret.redis.arn
-  sensitive   = true
-}
 
 output "ses_domain_identity_arn" {
   description = "SES domain identity ARN used for transactional booking email."
@@ -244,4 +221,9 @@ output "cloudwatch_alert_topic_arn" {
 output "api_gateway_access_log_group_name" {
   description = "CloudWatch log group name for API Gateway access logs."
   value       = aws_cloudwatch_log_group.api_gateway_access.name
+}
+
+output "deposit_receipts_bucket_name" {
+  description = "Private S3 bucket holding guest deposit receipt uploads."
+  value       = aws_s3_bucket.deposit_receipts.bucket
 }

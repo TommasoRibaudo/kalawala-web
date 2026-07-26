@@ -19,7 +19,7 @@ export function getHeader(headers: HeadersMap, name: string): string | undefined
 }
 
 export function getMethod(event: LambdaHttpRequest): HttpMethod {
-  const method = event.requestContext?.http?.method ?? event.routeKey?.split(" ")[0] ?? "GET";
+  const method = event.httpMethod ?? event.requestContext?.http?.method ?? event.routeKey?.split(" ")[0] ?? "GET";
   const upper = method.toUpperCase();
 
   if (["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"].includes(upper)) {
@@ -72,7 +72,12 @@ export function getRawBody(event: LambdaHttpRequest, maxBodyBytes: number): stri
   return bytes.toString("utf8");
 }
 
-export function parseJsonBody(rawBody: string, headers: HeadersMap, required: boolean): unknown {
+export function parseJsonBody(
+  rawBody: string,
+  headers: HeadersMap,
+  required: boolean,
+  allowFormEncodedBody = false
+): unknown {
   if (!rawBody) {
     if (required) {
       throw new ApiError(400, "invalid_json", "Request body must be valid JSON.");
@@ -82,6 +87,12 @@ export function parseJsonBody(rawBody: string, headers: HeadersMap, required: bo
   }
 
   const contentType = getHeader(headers, "content-type");
+
+  // Form-encoded bodies are left unparsed for the handler to read from rawBody.
+  if (allowFormEncodedBody && contentType?.toLowerCase().includes("application/x-www-form-urlencoded")) {
+    return undefined;
+  }
+
   if (!contentType?.toLowerCase().includes("application/json")) {
     throw new ApiError(415, "unsupported_media_type", "Content-Type must be application/json.");
   }

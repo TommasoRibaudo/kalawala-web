@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row, Button } from "react-bootstrap";
 import '../Listing.style.scss'
-import Smoobu from "../../../components/Smoobu/Smoobu.component";
+import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
 import { homesSnippet } from "../../../utils/constants";
@@ -14,8 +14,7 @@ import { useMediaQuery } from '@react-hook/media-query';
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
-import { useSmoobuBookingTip } from "../../../hooks/useSmoobuBookingTip";
-import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
+
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
@@ -29,13 +28,6 @@ const ListingGecoES = () => {
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
 
     const [show, setShow] = useState(false);
-    // Show appropriate tip based on screen size when user interacts with Smoobu widget
-    useSmoobuBookingTip({ isSpanishPage: true, propertyName: 'Casa Geco' });
-    useSmoobuMobileScrollTip({ 
-        isSpanishPage: true, 
-        isScreenSmall: isScreenSmall 
-    });
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -133,9 +125,8 @@ const ListingGecoES = () => {
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    {/* Add price and confirmation above Smoobu */}
                     <PriceConfirmationSection propertyKey="Geco" isSpanish={true} />
-                    <Smoobu homeCode={houseData!.houseCode} />
+                    <BookingSearchWidget isSpanish={true} defaultGuests={houseData!.guestNumber} variant="sidebar" />
                     <CalendarWithPriceDots apartmentSlug="Geco" language="es" />
                 </Col>
             </Row>

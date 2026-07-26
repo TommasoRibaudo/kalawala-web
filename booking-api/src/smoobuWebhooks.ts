@@ -1,7 +1,7 @@
-import { createHash } from "crypto";
-import { BookingSessionRepository } from "./bookingSessions";
+import { createHash, timingSafeEqual } from "crypto";
 import { HoldRecord, HoldRepository } from "./holds";
 import { ApiError } from "./http/errors";
+import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
 import { invalidateCalendarRatesCacheFromWebhook } from "./calendar";
 import { getWebhookEventRepository } from "./paypalWebhooks";
@@ -36,6 +36,11 @@ export async function handleSmoobuWebhook(
   config: BookingApiConfig,
   body: JsonBody
 ): Promise<ApiResponse> {
+  // Authenticate the webhook using a shared secret header.
+  // Smoobu does not provide cryptographic signatures, so we rely on a
+  // high-entropy shared secret passed in the X-Smoobu-Webhook-Secret header.
+  await verifySmoobuWebhookSecret(request, config);
+
   const payload = parseSmoobuPayload(body);
 
   // 1. Cache invalidation for updateRates (handled inline for speed)
@@ -115,8 +120,8 @@ async function applySmoobuWebhookEvent(
 
 // ─── updateRates ──────────────────────────────────────────────────────────────
 
-function handleUpdateRates(request: RouteRequest, body: JsonBody): ApiResponse {
-  const cacheInvalidation = invalidateCalendarRatesCacheFromWebhook(body, request.observability);
+async function handleUpdateRates(request: RouteRequest, body: JsonBody): Promise<ApiResponse> {
+  const cacheInvalidation = await invalidateCalendarRatesCacheFromWebhook(body, request.observability);
   return jsonResponse(
     200,
     {
@@ -224,7 +229,7 @@ async function handleNewReservation(
     if (property) {
       // Invalidate all cached months for this apartment so the next availability
       // check reflects the new external booking immediately.
-      invalidateCalendarRatesCacheFromWebhook(
+      await invalidateCalendarRatesCacheFromWebhook(
         { action: "updateRates", data: { apartmentId } },
         request.observability
       );
@@ -308,6 +313,54 @@ async function handleUpdateReservation(
   });
 }
 
+// ─── Smoobu webhook authentication ────────────────────────────────────────────
+
+/**
+ * Verifies the Smoobu webhook shared secret.
+ *
+ * The secret is passed in the `X-Smoobu-Webhook-Secret` header and compared
+ * against the value stored in Secrets Manager using a timing-safe comparison
+ * to prevent timing-based secret extraction.
+ */
+async function verifySmoobuWebhookSecret(
+  request: RouteRequest,
+  config: BookingApiConfig
+): Promise<void> {
+  const { smoobuWebhookSecret } = await config.secrets.getSecrets();
+
+  const providedSecret = getHeader(request.headers, "x-smoobu-webhook-secret");
+
+  if (!providedSecret) {
+    request.observability.recordSecurityEvent({
+      name: "smoobu_webhook_missing_secret",
+      severity: "warn",
+      route: "/api/webhooks/smoobu",
+      provider: "smoobu",
+    });
+    throw new ApiError(401, "webhook_unauthorized", "Smoobu webhook secret is missing.");
+  }
+
+  const expected = Buffer.from(smoobuWebhookSecret, "utf8");
+  const provided = Buffer.from(providedSecret, "utf8");
+
+  // Timing-safe comparison: pad to equal length to prevent length-based leaks
+  const maxLen = Math.max(expected.length, provided.length);
+  const paddedExpected = Buffer.alloc(maxLen);
+  const paddedProvided = Buffer.alloc(maxLen);
+  expected.copy(paddedExpected);
+  provided.copy(paddedProvided);
+
+  if (expected.length !== provided.length || !timingSafeEqual(paddedExpected, paddedProvided)) {
+    request.observability.recordSecurityEvent({
+      name: "smoobu_webhook_invalid_secret",
+      severity: "warn",
+      route: "/api/webhooks/smoobu",
+      provider: "smoobu",
+    });
+    throw new ApiError(401, "webhook_unauthorized", "Smoobu webhook secret is invalid.");
+  }
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function parseSmoobuPayload(body: JsonBody): SmoobuWebhookPayload {
@@ -350,15 +403,6 @@ function getHoldRepository(config: BookingApiConfig): HoldRepository {
     });
   }
   return config.holds;
-}
-
-function getBookingSessionRepository(config: BookingApiConfig): BookingSessionRepository {
-  if (!config.bookingSessions) {
-    throw new ApiError(503, "database_unavailable", "Booking session storage is not configured.", {
-      retryable: true,
-    });
-  }
-  return config.bookingSessions;
 }
 
 function sha256(input: string): string {

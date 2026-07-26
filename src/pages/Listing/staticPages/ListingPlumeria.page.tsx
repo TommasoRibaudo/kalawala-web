@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Col, Row, Button } from "react-bootstrap";
 import '../Listing.style.scss'
 import OtherListings from "../components/OtherListings/OtherListings.component";
-import Smoobu from "../../../components/Smoobu/Smoobu.component";
+import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
 import { NamSnippet } from "../../../utils/constants";
@@ -14,12 +14,10 @@ import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
-import { useSmoobuBookingTip } from "../../../hooks/useSmoobuBookingTip";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
-import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
 import CalendarWithPriceDots from "../../../components/CalendarWithPriceDots/CalendarWithPriceDots.component";
 
@@ -27,12 +25,6 @@ import CalendarWithPriceDots from "../../../components/CalendarWithPriceDots/Cal
 const ListingPlumeria = () => {
     const listing = "Plumeria"
     const isScreenSmall = useMediaQuery('(max-width: 992px)');
-    // Show booking encouragement tip when user interacts with Smoobu widget
-    useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'House Plumeria' });
-    useSmoobuMobileScrollTip({ 
-        isSpanishPage: false, 
-        isScreenSmall: isScreenSmall 
-    });
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -116,9 +108,8 @@ const ListingPlumeria = () => {
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    {/* Add price and confirmation above Smoobu */}
                     <PriceConfirmationSection propertyKey="Plumeria" isSpanish={false} />
-                    <Smoobu homeCode={houseData!.houseCode} />
+                    <BookingSearchWidget isSpanish={false} defaultGuests={houseData!.guestNumber} variant="sidebar" />
                     <CalendarWithPriceDots apartmentSlug="Plumeria" language="en" />
                 </Col>
             </Row>

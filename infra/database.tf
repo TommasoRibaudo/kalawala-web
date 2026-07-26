@@ -21,8 +21,8 @@
 ##############################################################################
 
 resource "random_password" "db_master" {
-  length           = 32
-  special          = true
+  length  = 32
+  special = true
   # Exclude characters that require shell quoting in connection strings.
   override_special = "!#$%&*+-=?^_{|}~"
 }
@@ -78,8 +78,8 @@ resource "aws_secretsmanager_secret_version" "db" {
 
 resource "aws_db_subnet_group" "main" {
   name        = "${var.project}-${var.environment}-db-subnet-group"
-  description = "Private subnets for the Kalawala RDS PostgreSQL instance."
-  subnet_ids  = aws_subnet.private[*].id
+  description = "Data-tier subnets for the Kalawala RDS PostgreSQL instance (10.40.22.0/23)."
+  subnet_ids  = aws_subnet.data[*].id
 
   tags = {
     Name = "${var.project}-${var.environment}-db-subnet-group"
@@ -160,6 +160,10 @@ resource "aws_db_instance" "main" {
   username = var.db_username
   password = random_password.db_master.result
 
+  # Restore from snapshot during region migration (null = fresh database).
+  # When set, db_name/username/password are ignored by RDS (taken from snapshot).
+  snapshot_identifier = var.db_snapshot_identifier
+
   # Networking — private subnets only; no direct internet access.
   db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.rds.id]
@@ -169,11 +173,11 @@ resource "aws_db_instance" "main" {
   multi_az = var.db_multi_az
 
   # Backups and maintenance
-  backup_retention_period   = var.db_backup_retention_days
-  backup_window             = "03:00-04:00" # UTC, low-traffic window
-  maintenance_window        = "mon:04:00-mon:05:00"
-  copy_tags_to_snapshot     = true
-  delete_automated_backups  = var.environment != "prod"
+  backup_retention_period  = var.db_backup_retention_days
+  backup_window            = "03:00-04:00" # UTC, low-traffic window
+  maintenance_window       = "mon:04:00-mon:05:00"
+  copy_tags_to_snapshot    = true
+  delete_automated_backups = var.environment != "prod"
 
   # Minor version upgrades applied automatically during maintenance window.
   auto_minor_version_upgrade = true
@@ -198,6 +202,18 @@ resource "aws_db_instance" "main" {
 
   tags = {
     Name = "${var.project}-${var.environment}-db"
+  }
+
+  lifecycle {
+    # prevent_destroy must be a static literal — Terraform does not allow
+    # variable references in lifecycle blocks. This is the production booking
+    # database (reservations, payment state, guest PII); a stray
+    # `terraform destroy` must not be able to take it out.
+    #
+    # To decommission deliberately: `terraform state rm aws_db_instance.main`,
+    # then delete the instance explicitly. scripts/teardown-all.ps1 already
+    # does this.
+    prevent_destroy = true
   }
 }
 

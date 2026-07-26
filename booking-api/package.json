@@ -8,7 +8,11 @@
     "build": "tsc -p tsconfig.json",
     "migrate": "node scripts/migrate.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "jest"
+    "test": "jest",
+    "dev": "npm run build && node scripts/devAll.js",
+    "dev:api": "node scripts/devServer.js",
+    "dev:mocks": "node scripts/mockProviders.js",
+    "migrate:local": "node scripts/migrateLocal.js"
   },
   "jest": {
     "preset": "ts-jest",
@@ -25,10 +29,14 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^25.6.0",
     "@types/pg": "^8.20.0",
+    "fast-check": "^4.7.0",
     "jest": "^30.3.0",
     "ts-jest": "^29.4.9"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1039.0",
+    "@aws-sdk/client-secrets-manager": "^3.0.0",
+    "@aws-sdk/s3-request-presigner": "^3.1039.0",
     "pg": "^8.20.0"
   }
 }

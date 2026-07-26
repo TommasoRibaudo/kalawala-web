@@ -12,6 +12,37 @@
 # manual DNS setup.
 ##############################################################################
 
+##############################################################################
+# REGION MIGRATION PRE-FLIGHT CHECKLIST (us-east-1 → us-east-2)
+#
+# SES and ACM are region-scoped services. Before migrating to us-east-2:
+#
+# 1. REQUEST SES PRODUCTION ACCESS in us-east-2 (24-48h lead time):
+#    aws ses put-account-sending-attributes --sending-enabled --region us-east-2
+#    If the account is sandboxed in us-east-2, submit a production access request
+#    via the AWS console (SES → Account dashboard → Request production access).
+#    Do NOT proceed with migration until SES is out of sandbox in us-east-2.
+#
+# 2. CREATE SES DOMAIN IDENTITY in us-east-2:
+#    The aws_ses_domain_identity and aws_ses_domain_dkim resources below will
+#    be provisioned in us-east-2 once aws_region = "us-east-2" is set in tfvars.
+#    After terraform apply, add the new DKIM and verification DNS records.
+#
+# 3. VERIFY DKIM SIGNING in us-east-2:
+#    Send a test email via the SES console in us-east-2 to confirm DKIM works.
+#    Check email headers for DKIM-Signature with d=<your-domain>.
+#
+# 4. IF USING CUSTOM DOMAIN ON API GATEWAY:
+#    Issue a new ACM certificate in us-east-2 before migration.
+#    ACM certificates are region-scoped and cannot be transferred between regions.
+#    aws acm request-certificate --domain-name api.<domain> --region us-east-2
+#
+# 5. DO NOT PROCEED with migration until:
+#    - SES is verified and out of sandbox in us-east-2
+#    - DKIM signing is confirmed working
+#    - ACM certificate (if needed) is issued and validated in us-east-2
+##############################################################################
+
 locals {
   ses_domain_name = coalesce(var.ses_domain_name, var.domain_name)
   ses_from_email  = coalesce(var.ses_from_email, "reservations@${local.ses_domain_name}")

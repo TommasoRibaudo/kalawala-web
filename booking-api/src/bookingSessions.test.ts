@@ -134,17 +134,18 @@ test("RdsBookingSessionRepository.markHoldCreating persists selected property, p
         status: "hold_creating",
         property_id: values[1],
         payment_method: values[2],
-        currency: values[3],
-        total_amount_cents: values[4],
-        guest_first_name: values[5],
-        guest_last_name: values[6],
-        guest_email: values[7],
-        guest_phone: values[8],
-        guest_country: values[9],
-        guest_message: values[10],
-        portal_password_hash: values[11],
+        rate_plan: values[3],
+        currency: values[4],
+        total_amount_cents: values[5],
+        guest_first_name: values[6],
+        guest_last_name: values[7],
+        guest_email: values[8],
+        guest_phone: values[9],
+        guest_country: values[10],
+        guest_message: values[11],
+        portal_password_hash: values[12],
         portal_password_set_at: "2026-04-18T12:01:00.000Z",
-        expires_at: values[12],
+        expires_at: values[13],
         updated_at: "2026-04-18T12:01:00.000Z",
       },
     ],
@@ -155,6 +156,7 @@ test("RdsBookingSessionRepository.markHoldCreating persists selected property, p
     bookingSessionId: BASE_ROW.id,
     propertyId: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111",
     paymentMethod: "paypal",
+    ratePlan: "flexible",
     price: BASE_ROW.quoted_properties[0],
     guest: {
       firstName: "Jane",
@@ -169,11 +171,65 @@ test("RdsBookingSessionRepository.markHoldCreating persists selected property, p
   expect(record.status).toBe("hold_creating");
   expect(record.propertyId).toBe("b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111");
   expect(record.paymentMethod).toBe("paypal");
+  expect(record.ratePlan).toBe("flexible");
   expect(record.currency).toBe("USD");
   expect(record.totalAmountCents).toBe(45000);
   expect(record.guest).toMatchObject({ firstName: "Jane", lastName: "Doe", email: "jane@example.com" });
   expect(record.portalPasswordHash).toBe("scrypt$hash");
   expect(record.expiresAt).toBe("2026-04-18T13:00:00.000Z");
+});
+
+test("RdsBookingSessionRepository.markCancelled records the reason, actor and timestamp", async () => {
+  const query = jest.fn(async (_sql: string, values: unknown[]) => ({
+    rows: [
+      {
+        ...BASE_ROW,
+        status: "cancelled",
+        cancelled_at: values[3],
+        cancellation_reason: values[1],
+        cancelled_by: values[2],
+      },
+    ],
+  }));
+  const repo = new RdsBookingSessionRepository(createPool(query));
+
+  const record = await repo.markCancelled({
+    bookingSessionId: BASE_ROW.id,
+    reason: "change_of_plans",
+    cancelledBy: "guest",
+    cancelledAt: "2026-04-20T09:00:00.000Z",
+  });
+
+  expect(record.status).toBe("cancelled");
+  expect(record.cancellationReason).toBe("change_of_plans");
+  expect(record.cancelledBy).toBe("guest");
+  expect(record.cancelledAt).toBe("2026-04-20T09:00:00.000Z");
+
+  const [sql] = query.mock.calls[0];
+  // 'cancelled' is in the guard so a repeat cancellation is a no-op, not a throw.
+  expect(sql).toContain("status in ('booking_confirmed', 'hold_active', 'cancelled')");
+  // coalesce preserves the first cancellation's reason and actor.
+  expect(sql).toContain("cancelled_at = coalesce(cancelled_at, $4)");
+  expect(sql).toContain("cancellation_reason = coalesce(cancellation_reason, $2)");
+});
+
+test("RdsBookingSessionRepository.markCancelled rejects sessions that were never confirmed", async () => {
+  const query = jest
+    .fn()
+    .mockResolvedValueOnce({ rows: [] })
+    .mockResolvedValueOnce({ rows: [{ ...BASE_ROW, status: "quoted" }] });
+  const repo = new RdsBookingSessionRepository(createPool(query));
+
+  await expect(
+    repo.markCancelled({
+      bookingSessionId: BASE_ROW.id,
+      reason: "change_of_plans",
+      cancelledBy: "guest",
+      cancelledAt: "2026-04-20T09:00:00.000Z",
+    })
+  ).rejects.toThrow(
+    `Cannot transition booking session ${BASE_ROW.id} to cancelled: expected booking_confirmed, got quoted.`
+  );
 });
 
 test("RdsBookingSessionRepository.markPaypalOrderCreated rejects non-hold_active sessions", async () => {
@@ -212,6 +268,7 @@ test("RdsBookingSessionRepository.markHoldCreating guards on quoted status", asy
       bookingSessionId: BASE_ROW.id,
       propertyId: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111",
       paymentMethod: "paypal",
+      ratePlan: "flexible",
       price: BASE_ROW.quoted_properties[0],
       guest: { firstName: "Jane", lastName: "Doe", email: "jane@example.com" },
       portalPasswordHash: "scrypt$hash",

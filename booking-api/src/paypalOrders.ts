@@ -8,6 +8,7 @@ import { jsonResponse } from "./http/response";
 import { PaymentRecord, PaymentRepository } from "./payments";
 import { createPayPalClient, PayPalProviderError } from "./paypalClient";
 import { BOOKING_PROPERTIES_BY_ID, listingUrlForLanguage } from "./propertyCatalog";
+import { promoteSmoobuReservation } from "./smoobuPromotion";
 import { ApiResponse, BookingApiConfig, RouteObservability, RouteRequest } from "./types";
 
 function getHoldRepository(config: BookingApiConfig): HoldRepository {
@@ -73,6 +74,17 @@ export async function handleCreatePayPalOrder(
 
   const paypalClient = await createPayPalClient(config);
 
+  // Derive return/cancel URLs from the request's Origin header so the same
+  // Lambda serves both localhost and production without env var changes.
+  const requestOrigin = getHeader(request.headers, "origin")?.trim();
+  const bookPath = session.language === "es" ? "/bookES" : "/book";
+  const returnUrl = requestOrigin
+    ? `${requestOrigin}${bookPath}/return`
+    : config.paypal.orderReturnUrl;
+  const cancelUrl = requestOrigin
+    ? `${requestOrigin}${bookPath}`
+    : config.paypal.orderCancelUrl;
+
   let paypalOrderResult: { orderId: string; approvalUrl: string };
   try {
     paypalOrderResult = await paypalClient.createOrder(
@@ -85,6 +97,8 @@ export async function handleCreatePayPalOrder(
         totalAmountCents: session.totalAmountCents ?? 0,
         propertyName: property.name,
         language: session.language,
+        returnUrl,
+        cancelUrl,
       },
       paypalRequestIdOrder,
       request.observability
@@ -264,6 +278,30 @@ export async function handleCapturePayPalOrder(
     provider: "paypal",
     providerObjectId: captureResult.captureId,
   });
+
+  // Promote the Smoobu reservation from Blocked channel to Direct booking.
+  // Non-fatal: if this fails the booking is already captured in our DB.
+  const holds = getHoldRepository(config);
+  const hold = await holds.getByBookingSessionId(session.id).catch(() => undefined);
+  if (hold) {
+    await promoteSmoobuReservation(
+      {
+        session,
+        hold,
+        captureId: captureResult.captureId,
+        amountCents: captureResult.amountCents,
+        confirmedAt: capturedAt,
+      },
+      holds,
+      config,
+      request.observability
+    ).catch((err) => {
+      request.observability.logger.warn("smoobu_promotion_unexpected_error", {
+        bookingSessionId: session.id,
+        error: err instanceof Error ? err.message : String(err),
+      });
+    });
+  }
 
   const updatedPayment = await payments.getByBookingSessionId(session.id);
   return jsonResponse(

@@ -36,10 +36,10 @@ function createTestConfig(): BookingApiConfig {
     maxBodyBytes: 64 * 1024,
     secrets: new StaticSecretProvider({
       smoobuApiKey: "smoobu-secret-value",
+      smoobuWebhookSecret: "smoobu-webhook-secret-value",
       paypalClientId: "paypal-client-id-value",
       paypalClientSecret: "paypal-client-secret-value",
       paypalWebhookId: "paypal-webhook-id-value",
-      smoobuWebhookSecret: "smoobu-webhook-secret-value",
       bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
       portalSessionSecret: "portal-session-secret-value",
       rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
@@ -263,6 +263,66 @@ test("RdsHoldRepository.activateHold guards on creating status", async () => {
     987654,
   ]);
 });
+
+test("RdsHoldRepository.convertHold records converted_at", async () => {
+  const query = jest.fn(async (_sql: string, values: unknown[]) => ({
+    rows: [
+      {
+        ...BASE_HOLD_ROW,
+        status: "converted",
+        smoobu_reservation_id: values[1],
+        smoobu_channel_id: values[2],
+        updated_at: "2026-04-15T18:02:00.000Z",
+      },
+    ],
+  }));
+  const repo = new RdsHoldRepository(createPool(query));
+
+  const record = await repo.convertHold({
+    holdId: BASE_HOLD_ROW.id,
+    newSmoobuReservationId: 5544332,
+    newSmoobuChannelId: 70,
+  });
+
+  expect(record.status).toBe("converted");
+  expect(record.smoobuReservationId).toBe(5544332);
+  expect(query).toHaveBeenCalledWith(expect.stringContaining("converted_at = coalesce(converted_at, now())"), [
+    BASE_HOLD_ROW.id,
+    5544332,
+    70,
+  ]);
+});
+
+/**
+ * migrations/0004_holds.sql declares `holds_terminal_timestamps`, which requires the
+ * matching timestamp column to be set whenever a hold reaches a terminal status.
+ * The in-memory repository has no such constraint, so a missing timestamp here is
+ * invisible to every handler-level test and only fails against RDS (SQLSTATE 23514).
+ * This asserts the invariant against the emitted SQL instead.
+ */
+test.each([
+  ["expireHold", "expired", "expired_at", (repo: RdsHoldRepository) => repo.expireHold(BASE_HOLD_ROW.id)],
+  ["cancelHold", "cancelled", "cancelled_at", (repo: RdsHoldRepository) => repo.cancelHold(BASE_HOLD_ROW.id)],
+  [
+    "convertHold",
+    "converted",
+    "converted_at",
+    (repo: RdsHoldRepository) =>
+      repo.convertHold({ holdId: BASE_HOLD_ROW.id, newSmoobuReservationId: 5544332, newSmoobuChannelId: 70 }),
+  ],
+] as const)(
+  "RdsHoldRepository.%s satisfies holds_terminal_timestamps by setting %s -> %s",
+  async (_method, status, timestampColumn, call) => {
+    const query = jest.fn(async (_sql: string) => ({ rows: [{ ...BASE_HOLD_ROW, status }] }));
+    const repo = new RdsHoldRepository(createPool(query));
+
+    await call(repo);
+
+    const [sql] = query.mock.calls[0];
+    expect(sql).toContain(`status = '${status}'`);
+    expect(sql).toContain(`${timestampColumn} = coalesce(${timestampColumn}, now())`);
+  }
+);
 
 test("RdsHoldRepository.failHold leaves terminal holds unchanged", async () => {
   const terminalRow = {

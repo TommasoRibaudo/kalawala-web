@@ -1,4 +1,5 @@
-import { BookingApiConfig, CaptchaProvider, CaptchaVerifierConfig, LogLevel } from "./types";
+import { BookingApiConfig, CaptchaProvider, CaptchaVerifierConfig, LogLevel, S3UploadConfig } from "./types";
+import { SmoobuHoldChannelId } from "./holds";
 import { createSecretProvider } from "./secrets";
 
 const DEFAULT_MAX_BODY_BYTES = 64 * 1024;
@@ -16,8 +17,24 @@ const DEFAULT_PAYPAL_TIMEOUT_MS = 10_000;
 const DEFAULT_PAYPAL_HOLD_TTL_MINUTES = 60;
 const DEFAULT_IDEMPOTENCY_TTL_MINUTES = 24 * 60;
 const DEFAULT_STALE_IDEMPOTENCY_LOCK_SECONDS = 120;
+// Long enough for a bank transfer or SINPE to clear and for staff to see it,
+// short enough that an abandoned deposit does not hold inventory for days.
+const DEFAULT_DEPOSIT_HOLD_TTL_HOURS = 36;
+// The staff confirm link outlives the hold on purpose: a transfer that arrives
+// late should still be actionable, and confirming re-checks the hold state.
+const DEFAULT_DEPOSIT_CONFIRM_TOKEN_TTL_HOURS = 168;
 const DEFAULT_SES_REGION = "us-east-1";
 const DEFAULT_SES_FROM_ADDRESS = "reservations@kalawala.com";
+const DEFAULT_S3_PRESIGNED_PUT_EXPIRY_SECONDS = 300;
+const DEFAULT_S3_PRESIGNED_GET_EXPIRY_SECONDS = 604_800;
+const DEFAULT_S3_MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+const DEFAULT_S3_ALLOWED_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "application/pdf",
+];
 
 function splitCsv(value: string | undefined): string[] {
   if (!value) {
@@ -130,8 +147,19 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
       fromAddress: env.SES_FROM_ADDRESS?.trim() || DEFAULT_SES_FROM_ADDRESS,
       region: env.SES_REGION?.trim() || env.AWS_REGION?.trim() || DEFAULT_SES_REGION,
       disabled: parseBoolean(env.EMAIL_DISABLED, false),
+      configurationSetName: env.SES_CONFIG_SET?.trim() || undefined,
+      staffNotificationEmail: env.STAFF_NOTIFICATION_EMAIL?.trim() || undefined,
       contactWhatsAppUrl: env.CONTACT_WHATSAPP_URL?.trim() || undefined,
       contactEmail: env.CONTACT_EMAIL?.trim() || undefined,
+    },
+    s3Upload: parseS3UploadConfig(env),
+    deposit: {
+      holdTtlHours: parsePositiveInteger(env.DEPOSIT_HOLD_TTL_HOURS, DEFAULT_DEPOSIT_HOLD_TTL_HOURS),
+      confirmTokenTtlHours: parsePositiveInteger(
+        env.DEPOSIT_CONFIRM_TOKEN_TTL_HOURS,
+        DEFAULT_DEPOSIT_CONFIRM_TOKEN_TTL_HOURS
+      ),
+      staffConfirmBaseUrl: env.DEPOSIT_STAFF_CONFIRM_BASE_URL?.trim() || "",
     },
     observability: {
       serviceName: env.BOOKING_API_SERVICE_NAME?.trim() || DEFAULT_SERVICE_NAME,
@@ -142,7 +170,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
   };
 }
 
-function parseSmoobuHoldChannelId(value: string | undefined): 11 | 13 {
+function parseSmoobuHoldChannelId(value: string | undefined): SmoobuHoldChannelId {
   if (!value) {
     return DEFAULT_SMOOBU_HOLD_CHANNEL_ID;
   }
@@ -203,25 +231,67 @@ function normalizeBaseUrl(value: string | undefined, defaultValue: string): stri
   }
 }
 
+/**
+ * The browser mints Google reCAPTCHA v3 tokens (see `REACT_APP_CAPTCHA_SITE_KEY` and
+ * `react-google-recaptcha-v3` in the frontend), so "recaptcha" is the default here.
+ * A mismatched provider silently fails every verification and makes CAPTCHA
+ * challenges unbypassable, so the default must track what the client actually sends.
+ */
+const DEFAULT_CAPTCHA_PROVIDER: CaptchaProvider = "recaptcha";
+
 function parseCaptchaVerifierConfig(env: NodeJS.ProcessEnv): CaptchaVerifierConfig | undefined {
   const secretKey = env.CAPTCHA_SECRET_KEY?.trim();
-  if (!secretKey) {
-    return undefined;
-  }
-
   const rawProvider = env.CAPTCHA_PROVIDER?.trim().toLowerCase();
+
+  // No explicit configuration at all: the secret may still arrive via Secrets Manager,
+  // so build a verifier on the default provider rather than disabling verification.
   let provider: CaptchaProvider;
-  if (rawProvider === "recaptcha") {
-    provider = "recaptcha";
-  } else if (!rawProvider || rawProvider === "hcaptcha") {
-    provider = "hcaptcha";
+  if (rawProvider === "recaptcha" || rawProvider === "hcaptcha") {
+    provider = rawProvider;
   } else {
-    // eslint-disable-next-line no-console
-    console.warn(`[booking-api] Unrecognized CAPTCHA_PROVIDER value "${env.CAPTCHA_PROVIDER}"; expected "hcaptcha" or "recaptcha". Defaulting to "hcaptcha".`);
-    provider = "hcaptcha";
+    if (rawProvider) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[booking-api] Unrecognized CAPTCHA_PROVIDER value "${env.CAPTCHA_PROVIDER}"; expected "hcaptcha" or "recaptcha". Defaulting to "${DEFAULT_CAPTCHA_PROVIDER}".`
+      );
+    }
+    provider = DEFAULT_CAPTCHA_PROVIDER;
   }
 
   const verifyUrl = env.CAPTCHA_VERIFY_URL?.trim() || undefined;
 
-  return { provider, secretKey, verifyUrl };
+  return {
+    provider,
+    ...(secretKey ? { secretKey } : {}),
+    ...(verifyUrl ? { verifyUrl } : {}),
+  };
+}
+
+function parseS3UploadConfig(env: NodeJS.ProcessEnv): S3UploadConfig | undefined {
+  const bucketName = env.S3_DEPOSIT_RECEIPT_BUCKET?.trim();
+  if (!bucketName) {
+    return undefined;
+  }
+
+  return {
+    bucketName,
+    region: env.S3_DEPOSIT_RECEIPT_REGION?.trim() || env.AWS_REGION?.trim() || "us-east-1",
+    presignedPutExpirySeconds: parsePositiveInteger(
+      env.S3_PRESIGNED_PUT_EXPIRY_SECONDS,
+      DEFAULT_S3_PRESIGNED_PUT_EXPIRY_SECONDS
+    ),
+    presignedGetExpirySeconds: parsePositiveInteger(
+      env.S3_PRESIGNED_GET_EXPIRY_SECONDS,
+      DEFAULT_S3_PRESIGNED_GET_EXPIRY_SECONDS
+    ),
+    maxFileSizeBytes: parsePositiveInteger(
+      env.S3_MAX_FILE_SIZE_BYTES,
+      DEFAULT_S3_MAX_FILE_SIZE_BYTES
+    ),
+    allowedMimeTypes: env.S3_ALLOWED_MIME_TYPES
+      ? splitCsv(env.S3_ALLOWED_MIME_TYPES)
+      : DEFAULT_S3_ALLOWED_MIME_TYPES,
+    // Local development only (MinIO). Never set in AWS.
+    ...(env.S3_ENDPOINT_URL?.trim() ? { endpointUrl: env.S3_ENDPOINT_URL.trim() } : {}),
+  };
 }

@@ -43,6 +43,15 @@ export interface BookingSessionQuotedProperty {
   rateSource: "smoobu";
 }
 
+/** Must stay in sync with booking_sessions_rate_plan_check (migration 0013). */
+export type BookingRatePlan = "flexible" | "non_refundable";
+
+/** Must stay in sync with the payment_method enum (migrations 0001 and 0014). */
+export type BookingPaymentMethod = "paypal" | "manual_deposit";
+
+/** Must stay in sync with booking_sessions_cancelled_by_check (migration 0013). */
+export type BookingCancellationActor = "guest" | "staff" | "system";
+
 export interface HoldGuestDetails {
   firstName: string;
   lastName: string;
@@ -65,7 +74,13 @@ export interface BookingSessionRecord {
   quoteExpiresAt: string;
   quotedProperties: BookingSessionQuotedProperty[];
   propertyId?: string;
-  paymentMethod?: "paypal";
+  paymentMethod?: BookingPaymentMethod;
+  /**
+   * Which rate the guest booked. Drives the cancellation policy — non-refundable
+   * bookings get no self-service cancellation. Undefined on rows created before
+   * migration 0013, which the policy treats as not self-service cancellable.
+   */
+  ratePlan?: BookingRatePlan;
   currency?: string;
   totalAmountCents?: number;
   guest?: HoldGuestDetails;
@@ -75,6 +90,10 @@ export interface BookingSessionRecord {
   paypalOrderId?: string;
   confirmedAt?: string;
   failureReason?: string;
+  cancelledAt?: string;
+  cancellationReason?: string;
+  cancelledBy?: BookingCancellationActor;
+  depositReceiptS3Key?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -88,7 +107,8 @@ export interface BookingSessionRepository {
   markHoldCreating(input: {
     bookingSessionId: string;
     propertyId: string;
-    paymentMethod: "paypal";
+    paymentMethod: BookingPaymentMethod;
+    ratePlan: BookingRatePlan;
     price: BookingSessionQuotedProperty;
     guest: HoldGuestDetails;
     portalPasswordHash: string;
@@ -99,6 +119,30 @@ export interface BookingSessionRepository {
   markBookingConfirmed(input: { bookingSessionId: string; confirmedAt: string }): Promise<BookingSessionRecord>;
   markFailed(input: { bookingSessionId: string; reason: string }): Promise<BookingSessionRecord>;
   markHoldExpired(input: { bookingSessionId: string }): Promise<BookingSessionRecord>;
+  /**
+   * Terminal cancellation of a confirmed booking. Idempotent: re-cancelling an
+   * already-cancelled session returns the existing record rather than throwing,
+   * so a double-submit and the reflected Smoobu webhook are both safe.
+   */
+  markCancelled(input: {
+    bookingSessionId: string;
+    reason: string;
+    cancelledBy: BookingCancellationActor;
+    cancelledAt: string;
+  }): Promise<BookingSessionRecord>;
+  /**
+   * Staff confirmation of a manual deposit booking. Guarded on
+   * `hold_active` + `manual_deposit`, which makes a second click on the emailed
+   * link a no-op rather than a double confirmation.
+   */
+  markDepositConfirmed(input: {
+    bookingSessionId: string;
+    confirmedAt: string;
+    confirmedBy: string;
+    tokenJti: string;
+  }): Promise<BookingSessionRecord>;
+  setDepositReceiptS3Key(input: { bookingSessionId: string; s3Key: string }): Promise<BookingSessionRecord>;
+  updateGuests(input: { bookingSessionId: string; guests: number }): Promise<BookingSessionRecord>;
   listByStatus?(status: BookingSessionStatus): Promise<BookingSessionRecord[]>;
 }
 
@@ -119,7 +163,8 @@ interface BookingSessionRow {
   quote_expires_at: string | Date;
   quoted_properties: unknown;
   property_id: string | null;
-  payment_method: "paypal" | null;
+  payment_method: string | null;
+  rate_plan: string | null;
   currency: string | null;
   total_amount_cents: number | null;
   guest_first_name: string | null;
@@ -134,6 +179,10 @@ interface BookingSessionRow {
   paypal_order_id: string | null;
   confirmed_at: string | Date | null;
   failure_reason: string | null;
+  cancelled_at: string | Date | null;
+  cancellation_reason: string | null;
+  cancelled_by: string | null;
+  deposit_receipt_s3_key: string | null;
   created_at: string | Date;
   updated_at: string | Date;
 }
@@ -152,6 +201,7 @@ const BOOKING_SESSION_COLUMNS = `
   quoted_properties,
   property_id,
   payment_method,
+  rate_plan,
   currency,
   total_amount_cents,
   guest_first_name,
@@ -166,6 +216,10 @@ const BOOKING_SESSION_COLUMNS = `
   paypal_order_id,
   confirmed_at,
   failure_reason,
+  cancelled_at,
+  cancellation_reason,
+  cancelled_by,
+  deposit_receipt_s3_key,
   created_at,
   updated_at
 `;
@@ -272,7 +326,8 @@ export class RdsBookingSessionRepository implements BookingSessionRepository {
   async markHoldCreating(input: {
     bookingSessionId: string;
     propertyId: string;
-    paymentMethod: "paypal";
+    paymentMethod: BookingPaymentMethod;
+    ratePlan: BookingRatePlan;
     price: BookingSessionQuotedProperty;
     guest: HoldGuestDetails;
     portalPasswordHash: string;
@@ -285,17 +340,18 @@ export class RdsBookingSessionRepository implements BookingSessionRepository {
           status = 'hold_creating',
           property_id = $2,
           payment_method = $3,
-          currency = $4,
-          total_amount_cents = $5,
-          guest_first_name = $6,
-          guest_last_name = $7,
-          guest_email = $8,
-          guest_phone = $9,
-          guest_country = $10,
-          guest_message = $11,
-          portal_password_hash = $12,
+          rate_plan = $4,
+          currency = $5,
+          total_amount_cents = $6,
+          guest_first_name = $7,
+          guest_last_name = $8,
+          guest_email = $9,
+          guest_phone = $10,
+          guest_country = $11,
+          guest_message = $12,
+          portal_password_hash = $13,
           portal_password_set_at = now(),
-          expires_at = $13,
+          expires_at = $14,
           updated_at = now()
         where id = $1 and status = 'quoted'
         returning ${BOOKING_SESSION_COLUMNS}
@@ -304,6 +360,7 @@ export class RdsBookingSessionRepository implements BookingSessionRepository {
         input.bookingSessionId,
         input.propertyId,
         input.paymentMethod,
+        input.ratePlan,
         input.price.currency,
         input.price.totalAmountCents,
         input.guest.firstName,
@@ -439,12 +496,129 @@ export class RdsBookingSessionRepository implements BookingSessionRepository {
           status = 'hold_expired',
           updated_at = now()
         where id = $1
+          and status in ('hold_creating', 'hold_active', 'paypal_pending', 'paypal_order_created')
         returning ${BOOKING_SESSION_COLUMNS}
       `,
       [input.bookingSessionId]
     );
 
+    if (result.rows[0]) {
+      return mapBookingSessionRow(result.rows[0]);
+    }
+
+    // If the session is already in a terminal state (confirmed, failed, expired),
+    // return it as-is rather than throwing — the hold expiry worker should not
+    // fail on sessions that have already been resolved.
+    const existing = await this.getById(input.bookingSessionId);
+    if (existing) {
+      return existing;
+    }
+
+    throw new Error(`Booking session ${input.bookingSessionId} was not found.`);
+  }
+
+  async markDepositConfirmed(input: {
+    bookingSessionId: string;
+    confirmedAt: string;
+    confirmedBy: string;
+    tokenJti: string;
+  }): Promise<BookingSessionRecord> {
+    const result = await this.pool.query<BookingSessionRow>(
+      `
+        update booking_sessions
+        set
+          status = 'booking_confirmed',
+          confirmed_at = coalesce(confirmed_at, $2),
+          deposit_confirmed_at = coalesce(deposit_confirmed_at, $2),
+          deposit_confirmed_by = coalesce(deposit_confirmed_by, $3),
+          deposit_confirm_token_jti = coalesce(deposit_confirm_token_jti, $4),
+          updated_at = now()
+        where id = $1
+          and status = 'hold_active'
+          and payment_method = 'manual_deposit'
+        returning ${BOOKING_SESSION_COLUMNS}
+      `,
+      [input.bookingSessionId, input.confirmedAt, input.confirmedBy, input.tokenJti]
+    );
+
+    if (result.rows[0]) {
+      return mapBookingSessionRow(result.rows[0]);
+    }
+
+    return this.throwMissingOrInvalidTransition(input.bookingSessionId, "hold_active", "booking_confirmed");
+  }
+
+  async markCancelled(input: {
+    bookingSessionId: string;
+    reason: string;
+    cancelledBy: BookingCancellationActor;
+    cancelledAt: string;
+  }): Promise<BookingSessionRecord> {
+    // Two callers: a guest cancelling a confirmed booking, and staff rejecting a
+    // deposit booking that is still hold_active because the transfer never
+    // arrived. 'cancelled' is in the guard too, so a repeat cancellation
+    // (double-submit, or the cancelReservation webhook Smoobu reflects back at
+    // us) is a no-op that returns the existing record instead of throwing.
+    // coalesce keeps the first cancellation's reason and actor.
+    //
+    // Who may cancel what is decided by cancellationPolicy.ts in the handler,
+    // not here — this guard is only about which states can reach 'cancelled'.
+    const result = await this.pool.query<BookingSessionRow>(
+      `
+        update booking_sessions
+        set
+          status = 'cancelled',
+          cancelled_at = coalesce(cancelled_at, $4),
+          cancellation_reason = coalesce(cancellation_reason, $2),
+          cancelled_by = coalesce(cancelled_by, $3),
+          updated_at = now()
+        where id = $1 and status in ('booking_confirmed', 'hold_active', 'cancelled')
+        returning ${BOOKING_SESSION_COLUMNS}
+      `,
+      [input.bookingSessionId, input.reason, input.cancelledBy, input.cancelledAt]
+    );
+
+    if (result.rows[0]) {
+      return mapBookingSessionRow(result.rows[0]);
+    }
+
+    return this.throwMissingOrInvalidTransition(input.bookingSessionId, "booking_confirmed", "cancelled");
+  }
+
+  async setDepositReceiptS3Key(input: { bookingSessionId: string; s3Key: string }): Promise<BookingSessionRecord> {
+    const result = await this.pool.query<BookingSessionRow>(
+      `
+        update booking_sessions
+        set
+          deposit_receipt_s3_key = $2,
+          updated_at = now()
+        where id = $1
+        returning ${BOOKING_SESSION_COLUMNS}
+      `,
+      [input.bookingSessionId, input.s3Key]
+    );
+
     return mapRequiredBookingSessionRow(result.rows[0], input.bookingSessionId);
+  }
+
+  async updateGuests(input: { bookingSessionId: string; guests: number }): Promise<BookingSessionRecord> {
+    const result = await this.pool.query<BookingSessionRow>(
+      `
+        update booking_sessions
+        set
+          guests = $2,
+          updated_at = now()
+        where id = $1 and status = 'booking_confirmed'
+        returning ${BOOKING_SESSION_COLUMNS}
+      `,
+      [input.bookingSessionId, input.guests]
+    );
+
+    if (result.rows[0]) {
+      return mapBookingSessionRow(result.rows[0]);
+    }
+
+    return this.throwMissingOrInvalidTransition(input.bookingSessionId, "booking_confirmed", "booking_confirmed");
   }
 
   async listByStatus(status: BookingSessionStatus): Promise<BookingSessionRecord[]> {
@@ -509,7 +683,8 @@ export class InMemoryBookingSessionRepository implements BookingSessionRepositor
   async markHoldCreating(input: {
     bookingSessionId: string;
     propertyId: string;
-    paymentMethod: "paypal";
+    paymentMethod: BookingPaymentMethod;
+    ratePlan: BookingRatePlan;
     price: BookingSessionQuotedProperty;
     guest: HoldGuestDetails;
     portalPasswordHash: string;
@@ -525,6 +700,7 @@ export class InMemoryBookingSessionRepository implements BookingSessionRepositor
       status: "hold_creating",
       propertyId: input.propertyId,
       paymentMethod: input.paymentMethod,
+      ratePlan: input.ratePlan,
       currency: input.price.currency,
       totalAmountCents: input.price.totalAmountCents,
       guest: input.guest,
@@ -616,6 +792,92 @@ export class InMemoryBookingSessionRepository implements BookingSessionRepositor
     return this.save({
       ...existing,
       status: "hold_expired",
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  async markDepositConfirmed(input: {
+    bookingSessionId: string;
+    confirmedAt: string;
+    confirmedBy: string;
+    tokenJti: string;
+  }): Promise<BookingSessionRecord> {
+    const existing = this.sessionsById.get(input.bookingSessionId);
+    if (!existing) {
+      throw new Error(`Booking session ${input.bookingSessionId} was not found.`);
+    }
+    if (existing.status !== "hold_active" || existing.paymentMethod !== "manual_deposit") {
+      throw new Error(
+        `Cannot transition booking session ${input.bookingSessionId} to booking_confirmed: expected hold_active, got ${existing.status}.`
+      );
+    }
+
+    return this.save({
+      ...existing,
+      status: "booking_confirmed",
+      confirmedAt: existing.confirmedAt ?? input.confirmedAt,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  async markCancelled(input: {
+    bookingSessionId: string;
+    reason: string;
+    cancelledBy: BookingCancellationActor;
+    cancelledAt: string;
+  }): Promise<BookingSessionRecord> {
+    const existing = this.sessionsById.get(input.bookingSessionId);
+    if (!existing) {
+      throw new Error(`Booking session ${input.bookingSessionId} was not found.`);
+    }
+    if (
+      existing.status !== "booking_confirmed" &&
+      existing.status !== "hold_active" &&
+      existing.status !== "cancelled"
+    ) {
+      throw new Error(
+        `Cannot transition booking session ${input.bookingSessionId} to cancelled: expected booking_confirmed, got ${existing.status}.`
+      );
+    }
+
+    // Idempotent: keep the first cancellation's reason and actor.
+    return this.save({
+      ...existing,
+      status: "cancelled",
+      cancelledAt: existing.cancelledAt ?? input.cancelledAt,
+      cancellationReason: existing.cancellationReason ?? input.reason,
+      cancelledBy: existing.cancelledBy ?? input.cancelledBy,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  async setDepositReceiptS3Key(input: { bookingSessionId: string; s3Key: string }): Promise<BookingSessionRecord> {
+    const existing = this.sessionsById.get(input.bookingSessionId);
+    if (!existing) {
+      throw new Error(`Booking session ${input.bookingSessionId} was not found.`);
+    }
+
+    return this.save({
+      ...existing,
+      depositReceiptS3Key: input.s3Key,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  async updateGuests(input: { bookingSessionId: string; guests: number }): Promise<BookingSessionRecord> {
+    const existing = this.sessionsById.get(input.bookingSessionId);
+    if (!existing) {
+      throw new Error(`Booking session ${input.bookingSessionId} was not found.`);
+    }
+    if (existing.status !== "booking_confirmed") {
+      throw new Error(
+        `Cannot update guests for booking session ${input.bookingSessionId}: expected booking_confirmed, got ${existing.status}.`
+      );
+    }
+
+    return this.save({
+      ...existing,
+      guests: input.guests,
       updatedAt: new Date().toISOString(),
     });
   }
@@ -714,7 +976,8 @@ function mapBookingSessionRow(row: BookingSessionRow): BookingSessionRecord {
     quoteExpiresAt: toIsoString(row.quote_expires_at),
     quotedProperties: parseQuotedProperties(row.quoted_properties),
     ...(row.property_id ? { propertyId: row.property_id } : {}),
-    ...(row.payment_method ? { paymentMethod: row.payment_method } : {}),
+    ...(row.payment_method ? { paymentMethod: parsePaymentMethod(row.payment_method) } : {}),
+    ...(row.rate_plan ? { ratePlan: parseRatePlan(row.rate_plan) } : {}),
     ...(row.currency ? { currency: row.currency.trim().toUpperCase() } : {}),
     ...(row.total_amount_cents !== null ? { totalAmountCents: row.total_amount_cents } : {}),
     ...(guest ? { guest } : {}),
@@ -724,6 +987,10 @@ function mapBookingSessionRow(row: BookingSessionRow): BookingSessionRecord {
     ...(row.paypal_order_id ? { paypalOrderId: row.paypal_order_id } : {}),
     ...(row.confirmed_at ? { confirmedAt: toIsoString(row.confirmed_at) } : {}),
     ...(row.failure_reason ? { failureReason: row.failure_reason } : {}),
+    ...(row.cancelled_at ? { cancelledAt: toIsoString(row.cancelled_at) } : {}),
+    ...(row.cancellation_reason ? { cancellationReason: row.cancellation_reason } : {}),
+    ...(row.cancelled_by ? { cancelledBy: parseCancellationActor(row.cancelled_by) } : {}),
+    ...(row.deposit_receipt_s3_key ? { depositReceiptS3Key: row.deposit_receipt_s3_key } : {}),
     createdAt: toIsoString(row.created_at),
     updatedAt: toIsoString(row.updated_at),
   };
@@ -735,6 +1002,30 @@ function parseBookingSessionStatus(status: string): BookingSessionStatus {
   }
 
   throw new Error(`Unsupported booking session status from database: ${status}`);
+}
+
+function parsePaymentMethod(value: string): BookingPaymentMethod {
+  if (value === "paypal" || value === "manual_deposit") {
+    return value;
+  }
+
+  throw new Error(`Unsupported booking session payment method from database: ${value}`);
+}
+
+function parseRatePlan(value: string): BookingRatePlan {
+  if (value === "flexible" || value === "non_refundable") {
+    return value;
+  }
+
+  throw new Error(`Unsupported booking session rate plan from database: ${value}`);
+}
+
+function parseCancellationActor(value: string): BookingCancellationActor {
+  if (value === "guest" || value === "staff" || value === "system") {
+    return value;
+  }
+
+  throw new Error(`Unsupported booking session cancellation actor from database: ${value}`);
 }
 
 function mapGuest(row: BookingSessionRow): HoldGuestDetails | undefined {

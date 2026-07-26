@@ -1,0 +1,29 @@
+{
+  "booking": {
+    "bookingSessionId": "mock-session-001",
+    "reservationPublicId": "RES-MOCK-12345",
+    "status": "booking_confirmed",
+    "language": "en",
+    "arrivalDate": "2026-03-15",
+    "departureDate": "2026-03-20",
+    "guests": 2,
+    "confirmedAt": "2026-03-10T12:00:00Z",
+    "property": {
+      "propertyId": "prop-geco",
+      "slug": "geco",
+      "listingUrl": "/Geco",
+      "name": "Casa Geco"
+    },
+    "price": {
+      "currency": "USD",
+      "totalAmountCents": 45000
+    }
+  },
+  "payment": {
+    "method": "paypal",
+    "status": "captured",
+    "paypalOrderId": "PAYPAL-ORDER-MOCK-001",
+    "paypalCaptureId": "PAYPAL-CAPTURE-MOCK-001",
+    "capturedAt": "2026-03-10T12:00:00Z"
+  }
+}

@@ -8,6 +8,7 @@ const SECURITY_HEADERS: HeadersMap = {
   "X-Frame-Options": "DENY",
   "Referrer-Policy": "no-referrer",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+  "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
 };
 
 export function buildHeaders(
@@ -38,15 +39,39 @@ export function jsonResponse(statusCode: number, body: unknown, headers: Headers
   };
 }
 
+/**
+ * HTML response, used only by the staff deposit-review page.
+ *
+ * The API is otherwise JSON-only and SECURITY_HEADERS pins
+ * `Content-Type: application/json` with `default-src 'none'`, which would block
+ * the page's own inline styles. This overrides both, keeps the page out of
+ * frames and search indexes, and allows nothing but inline CSS.
+ */
+export function htmlResponse(statusCode: number, html: string, headers: HeadersMap): ApiResponse {
+  return {
+    statusCode,
+    headers: {
+      ...headers,
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; img-src https: data:; frame-ancestors 'none'",
+      "X-Robots-Tag": "noindex, nofollow",
+    },
+    body: html,
+    isBase64Encoded: false,
+  };
+}
+
 export function errorResponse(error: unknown, headers: HeadersMap, correlationId: string): ApiResponse {
   if (error instanceof ApiError) {
+    // Strip fieldErrors from 5xx responses to avoid leaking internal state
+    const includeFieldErrors = error.statusCode < 500;
     return jsonResponse(
       error.statusCode,
       {
         error: {
           code: error.code,
-          message: error.message,
-          fieldErrors: error.fieldErrors,
+          message: error.statusCode >= 500 ? "Unexpected server error." : error.message,
+          ...(includeFieldErrors && error.fieldErrors ? { fieldErrors: error.fieldErrors } : {}),
           retryable: error.retryable,
           correlationId,
         },
@@ -74,9 +99,9 @@ export function optionsResponse(headers: HeadersMap): ApiResponse {
     statusCode: 204,
     headers: {
       ...headers,
-      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+      "Access-Control-Allow-Methods": "GET,POST,PUT,OPTIONS",
       "Access-Control-Allow-Headers":
-        "Content-Type,Accept,Accept-Language,X-Correlation-Id,Idempotency-Key,X-Kalawala-Device-Id,X-Device-Id,X-Captcha-Token,X-Smoobu-Webhook-Secret,PAYPAL-AUTH-ALGO,PAYPAL-CERT-URL,PAYPAL-TRANSMISSION-ID,PAYPAL-TRANSMISSION-SIG,PAYPAL-TRANSMISSION-TIME",
+        "Authorization,Content-Type,Accept,Accept-Language,X-Correlation-Id,Idempotency-Key,X-Kalawala-Device-Id,X-Device-Id,X-Captcha-Token,X-Smoobu-Webhook-Secret,PAYPAL-AUTH-ALGO,PAYPAL-CERT-URL,PAYPAL-TRANSMISSION-ID,PAYPAL-TRANSMISSION-SIG,PAYPAL-TRANSMISSION-TIME",
       "Access-Control-Max-Age": "600",
     },
     body: "",

@@ -76,8 +76,13 @@
   }
 }
 
-.portal-login-submit {
-  background-color: $kalawala-darker-green;
+// Chained with .btn on purpose. A later stylesheet declares
+// `.btn { background: transparent }`, which ties on specificity with a bare
+// `.portal-login-submit` and wins on source order — leaving a transparent button
+// with white text, i.e. an invisible "Sign in" label. `.portal-login-submit.btn`
+// outranks it.
+.portal-login-submit.btn {
+  background: $kalawala-darker-green;
   border-color: $kalawala-darker-green;
   border-radius: 8px;
   color: #fff;

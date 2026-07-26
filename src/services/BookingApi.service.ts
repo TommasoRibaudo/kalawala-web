@@ -81,7 +81,38 @@ export interface CreatePayPalHoldRequest {
   portalPassword: string;
   termsAccepted: boolean;
   marketingConsent?: boolean;
+  nonRefundable?: boolean;
   captchaToken?: string;
+}
+
+/** Same shape as a PayPal hold minus the rate options — deposit is always flexible. */
+export type CreateDepositHoldRequest = Omit<CreatePayPalHoldRequest, 'nonRefundable'>;
+
+export interface DepositBankInfo {
+  sinpePhone: string;
+  sinpeName: string;
+  bankAccount: {
+    accountHolder: string;
+    colonesIban: string;
+    dolaresIban: string;
+  };
+}
+
+export interface DepositHoldResponse extends PayPalHoldResponse {
+  bankInfo: DepositBankInfo;
+  /** Scopes the receipt-upload calls to this booking, which has no portal session yet. */
+  depositAccessToken: string;
+  depositAccessTokenExpiresInSeconds: number;
+  nextAction: 'upload_deposit_receipt' | string;
+}
+
+export interface DepositReceiptConfirmResponse {
+  confirmed: boolean;
+  s3Key: string;
+  bookingSessionId: string;
+  receiptUrl: string;
+  receiptUrlExpiresInSeconds: number;
+  smoobuNoticeUpdated: boolean;
 }
 
 export interface PayPalHoldResponse {
@@ -118,6 +149,8 @@ export interface PayPalHoldResponse {
 export interface CreatePayPalOrderRequest {
   bookingSessionId: string;
   language: BookingLanguage;
+  /** Sent as X-Captcha-Token when retrying after a 403 captcha_required. */
+  captchaToken?: string;
 }
 
 export interface PayPalOrderResponse {
@@ -150,6 +183,11 @@ export interface PayPalOrderResponse {
   nextAction?: 'approve_paypal_order' | string;
 }
 
+/**
+ * Note: the backend's `paymentCapture` abuse policy deliberately has no
+ * `captchaAfter` — the guest has already paid by this point, so capture is
+ * never challenged and needs no token.
+ */
 export interface CapturePayPalOrderRequest {
   bookingSessionId: string;
   paypalOrderId: string;
@@ -201,6 +239,18 @@ export interface DepositHandoffContactMethod {
   url: string;
 }
 
+export interface DepositBankAccount {
+  accountHolder: string;
+  colonesIban: string;
+  dolaresIban: string;
+}
+
+export interface DepositBankInfo {
+  sinpePhone: string;
+  sinpeName: string;
+  bankAccount: DepositBankAccount;
+}
+
 export interface DepositHandoffResponse {
   language: BookingLanguage;
   status: 'manual_deposit_handoff';
@@ -212,6 +262,7 @@ export interface DepositHandoffResponse {
     bodyKeys: string[];
     contactMethods: DepositHandoffContactMethod[];
   };
+  bankInfo?: DepositBankInfo;
   bookingContext?: {
     quoteId?: string;
     property?: {
@@ -246,6 +297,16 @@ export interface PortalLoginResponse {
   expiresIn: number;
 }
 
+/** Why the server will not accept a self-service cancellation. */
+export type PortalCancellationBlockReason =
+  | 'already_cancelled'
+  | 'invalid_booking_state'
+  | 'non_refundable_rate'
+  | 'rate_plan_unknown'
+  | 'cancellation_window_closed';
+
+export type PortalRatePlan = 'flexible' | 'non_refundable';
+
 export interface PortalReservationResponse {
   reservation: {
     reservationPublicId: string;
@@ -255,6 +316,21 @@ export interface PortalReservationResponse {
     departureDate: string;
     guests: number;
     confirmedAt?: string;
+    /** Null on bookings made before the rate plan was persisted. */
+    ratePlan?: PortalRatePlan | null;
+    /**
+     * Server-evaluated cancellation policy. The UI renders from this rather than
+     * re-deriving the 24-hour rule, so the button always matches what the API
+     * will allow.
+     */
+    cancellation?: {
+      cancellable: boolean;
+      deadline: string | null;
+      reasonCode?: PortalCancellationBlockReason;
+    };
+    availableActions?: string[];
+    cancelledAt?: string;
+    cancellationReason?: string;
     property?: {
       propertyId: string;
       slug: string;
@@ -304,6 +380,34 @@ export interface PortalHelpRequestBody {
 export interface PortalCancellationRequestBody {
   reason: string;
   message?: string;
+}
+
+export interface PortalCancelBookingResponse {
+  status: string;
+  message: string;
+  reservation: PortalReservationResponse['reservation'];
+  hold: PortalReservationResponse['hold'];
+  payment: PortalReservationResponse['payment'];
+  /**
+   * `manual_review` means staff will issue the PayPal refund by hand — the API
+   * never moves money on a guest request.
+   */
+  refund: {
+    status: 'manual_review' | 'not_applicable';
+    paypalCaptureId?: string;
+  };
+}
+
+export interface PortalGuestUpdateRequest {
+  guests: number;
+}
+
+export interface PortalGuestUpdateResponse {
+  status: string;
+  message: string;
+  reservation: PortalReservationResponse['reservation'];
+  hold: PortalReservationResponse['hold'];
+  payment: PortalReservationResponse['payment'];
 }
 
 export interface PortalRequestResponse {
@@ -457,6 +561,7 @@ export async function createPayPalHold(request: CreatePayPalHoldRequest): Promis
       portalPassword: request.portalPassword,
       termsAccepted: request.termsAccepted,
       marketingConsent: request.marketingConsent === true,
+      ...(request.nonRefundable ? { nonRefundable: true } : {}),
     }),
   });
 
@@ -469,16 +574,123 @@ export async function createPayPalHold(request: CreatePayPalHoldRequest): Promis
   return body as PayPalHoldResponse;
 }
 
+/**
+ * Creates a manual-deposit booking: guest details, portal password, and a real
+ * Smoobu hold that takes the dates off sale while the transfer clears.
+ *
+ * Unlike the PayPal path this does not confirm anything — staff verify the
+ * transfer and confirm from their notification email.
+ */
+export async function createDepositHold(request: CreateDepositHoldRequest): Promise<DepositHoldResponse> {
+  const response = await fetch(`${apiBaseUrl}/api/deposit-holds`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-Language': request.language,
+      'Content-Type': 'application/json',
+      'Idempotency-Key': createIdempotencyKey('deposit-hold'),
+    },
+    body: JSON.stringify({
+      quoteId: request.quoteId,
+      bookingSessionId: request.bookingSessionId,
+      propertyId: request.propertyId,
+      guest: pruneOptionalFields(request.guest),
+      portalPassword: request.portalPassword,
+      termsAccepted: request.termsAccepted,
+      marketingConsent: request.marketingConsent === true,
+    }),
+  });
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as DepositHoldResponse;
+}
+
+/**
+ * Uploads a deposit receipt straight to S3 with a presigned URL, then tells the
+ * API where it landed. The file never passes through the booking API.
+ *
+ * `depositAccessToken` comes from createDepositHold and scopes both calls to
+ * that one booking, which has no portal session yet.
+ */
+export async function uploadDepositReceipt(request: {
+  bookingSessionId: string;
+  depositAccessToken: string;
+  file: File;
+  language: BookingLanguage;
+}): Promise<DepositReceiptConfirmResponse> {
+  const urlResponse = await fetch(`${apiBaseUrl}/api/deposit-receipt/upload-url`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-Language': request.language,
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${request.depositAccessToken}`,
+    },
+    body: JSON.stringify({
+      bookingSessionId: request.bookingSessionId,
+      fileName: request.file.name,
+      contentType: request.file.type,
+    }),
+  });
+
+  const urlBody = await parseJson(urlResponse);
+  if (!urlResponse.ok) {
+    throw new BookingApiError(urlResponse.status, urlBody as BookingErrorResponse);
+  }
+
+  const { uploadUrl, s3Key } = urlBody as { uploadUrl: string; s3Key: string };
+
+  // Direct to S3 — not our API, so a failure here is not a BookingApiError.
+  const putResponse = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': request.file.type },
+    body: request.file,
+  });
+
+  if (!putResponse.ok) {
+    throw new Error(`Receipt upload failed with status ${putResponse.status}`);
+  }
+
+  const confirmResponse = await fetch(`${apiBaseUrl}/api/deposit-receipt/confirm`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-Language': request.language,
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${request.depositAccessToken}`,
+      'Idempotency-Key': createIdempotencyKey('deposit-receipt'),
+    },
+    body: JSON.stringify({ bookingSessionId: request.bookingSessionId, s3Key }),
+  });
+
+  const confirmBody = await parseJson(confirmResponse);
+  if (!confirmResponse.ok) {
+    throw new BookingApiError(confirmResponse.status, confirmBody as BookingErrorResponse);
+  }
+
+  return confirmBody as DepositReceiptConfirmResponse;
+}
+
 export async function createPayPalOrder(request: CreatePayPalOrderRequest): Promise<PayPalOrderResponse> {
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    'Accept-Language': request.language,
+    'Idempotency-Key': createIdempotencyKey('paypal-order'),
+  };
+  if (request.captchaToken) {
+    headers['X-Captcha-Token'] = request.captchaToken;
+  }
+
   const response = await fetch(
     `${apiBaseUrl}/api/bookings/${encodeURIComponent(request.bookingSessionId)}/paypal/create-order`,
     {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-Language': request.language,
-        'Idempotency-Key': createIdempotencyKey('paypal-order'),
-      },
+      headers,
     }
   );
 
@@ -676,6 +888,72 @@ export async function submitPortalCancellationRequest(
   }
 
   return body as PortalRequestResponse;
+}
+
+/**
+ * Cancels the booking for real: the Smoobu reservation is released and any
+ * captured payment is flagged for a manual refund by staff.
+ *
+ * Distinct from submitPortalCancellationRequest, which only files a request for
+ * a human to action and changes nothing.
+ */
+export async function cancelPortalBooking(
+  reservationPublicId: string,
+  token: string,
+  request: PortalCancellationRequestBody,
+  language: BookingLanguage
+): Promise<PortalCancelBookingResponse> {
+  const response = await fetch(
+    `${apiBaseUrl}/api/portal/reservation/${encodeURIComponent(reservationPublicId)}/cancel`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-Language': language,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        'Idempotency-Key': createIdempotencyKey('portal-cancel'),
+      },
+      body: JSON.stringify(request),
+    }
+  );
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as PortalCancelBookingResponse;
+}
+
+export async function updatePortalGuests(
+  reservationPublicId: string,
+  token: string,
+  request: PortalGuestUpdateRequest,
+  language: BookingLanguage
+): Promise<PortalGuestUpdateResponse> {
+  const response = await fetch(
+    `${apiBaseUrl}/api/portal/reservation/${encodeURIComponent(reservationPublicId)}/guests`,
+    {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Accept-Language': language,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(request),
+    }
+  );
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as PortalGuestUpdateResponse;
 }
 
 export async function getCalendarMonth(

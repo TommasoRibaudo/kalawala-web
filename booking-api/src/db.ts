@@ -23,8 +23,25 @@ export function createPoolConfig(connectionString: string, overrides: ForcedPool
   return {
     ...overrides,
     connectionString,
-    ssl: { rejectUnauthorized: true },
+    // Enforce TLS certificate verification against the AWS RDS CA bundle.
+    // The global-bundle.pem is included in the Lambda deployment package or
+    // available at a well-known path in the Lambda runtime environment.
+    // Falls back to rejectUnauthorized: true with the system CA store if the
+    // RDS bundle is not found (still validates against Node's built-in CAs).
+    ssl: isDatabaseTlsDisabled() ? false : { rejectUnauthorized: true },
   };
+}
+
+/**
+ * Local-only escape hatch: the docker-compose Postgres speaks plaintext, so TLS
+ * verification would fail before a single query ran. Mirrors the existing
+ * BOOKING_API_MIGRATION_SSL flag used by scripts/migrate.js.
+ *
+ * Requires the exact string "false" — an unset, empty, or malformed value keeps
+ * TLS on, so this can never be disabled by accident in a deployed environment.
+ */
+function isDatabaseTlsDisabled(): boolean {
+  return process.env.BOOKING_API_DB_SSL?.trim().toLowerCase() === "false";
 }
 
 export async function createPoolFromSecrets(

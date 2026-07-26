@@ -23,6 +23,8 @@ export interface PaymentRecord {
   currency: string;
   totalAmountCents: number;
   capturedAt?: string;
+  /** Set when a guest cancellation handed this payment to staff for a manual refund. */
+  refundFlaggedAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -48,6 +50,14 @@ export interface PaymentRepository {
 
   markFailed(bookingSessionId: string): Promise<PaymentRecord>;
 
+  /**
+   * Flag a captured payment for a manual PayPal refund by staff. Guest
+   * cancellations do not move money — this records the hand-off so the capture
+   * ID can be reconciled against the refund actually issued in PayPal.
+   * Idempotent: re-flagging keeps the original timestamp.
+   */
+  markRefundFlagged(input: { bookingSessionId: string; flaggedAt: string }): Promise<PaymentRecord>;
+
   /** List all payments with the given status. Used by the reconciliation job. */
   listByStatus(status: PaymentStatus, limit?: number): Promise<PaymentRecord[]>;
 }
@@ -67,6 +77,7 @@ interface PaymentRow {
   paypal_order_request_id: string | null;
   paypal_capture_request_id: string | null;
   paid_at: string | Date | null;
+  refund_flagged_at: string | Date | null;
   created_at: string | Date;
   updated_at: string | Date;
 }
@@ -82,6 +93,7 @@ const PAYMENT_COLUMNS = `
   paypal_order_request_id,
   paypal_capture_request_id,
   paid_at,
+  refund_flagged_at,
   created_at,
   updated_at
 `;
@@ -205,6 +217,35 @@ export class RdsPaymentRepository implements PaymentRepository {
     throw paymentMissing();
   }
 
+  async markRefundFlagged(input: { bookingSessionId: string; flaggedAt: string }): Promise<PaymentRecord> {
+    const result = await this.pool.query<PaymentRow>(
+      `
+        update payments
+        set
+          status = 'refund_flagged',
+          refund_flagged_at = coalesce(refund_flagged_at, $2),
+          updated_at = now()
+        where booking_session_id = $1
+          and status in ('captured', 'paid', 'refund_flagged')
+        returning ${PAYMENT_COLUMNS}
+      `,
+      [input.bookingSessionId, input.flaggedAt]
+    );
+
+    if (result.rows[0]) {
+      return mapPaymentRow(result.rows[0]);
+    }
+
+    // Nothing to flag (never captured, already failed) — return the row as-is so a
+    // cancellation is never blocked by the state of its payment.
+    const existing = await this.getByBookingSessionId(input.bookingSessionId);
+    if (existing) {
+      return existing;
+    }
+
+    throw paymentMissing();
+  }
+
   async listByStatus(status: PaymentStatus, limit = 500): Promise<PaymentRecord[]> {
     const result = await this.pool.query<PaymentRow>(
       `${PAYMENT_SELECT} where provider = 'paypal' and status = $1 order by created_at asc limit $2`,
@@ -279,6 +320,22 @@ export class InMemoryPaymentRepository implements PaymentRepository {
     return updated;
   }
 
+  async markRefundFlagged(input: { bookingSessionId: string; flaggedAt: string }): Promise<PaymentRecord> {
+    const existing = this.getRequired(input.bookingSessionId);
+    if (existing.status !== "captured" && existing.status !== "paid" && existing.status !== "refund_flagged") {
+      return existing;
+    }
+
+    const updated: PaymentRecord = {
+      ...existing,
+      status: "refund_flagged",
+      refundFlaggedAt: existing.refundFlaggedAt ?? input.flaggedAt,
+      updatedAt: new Date().toISOString(),
+    };
+    this.records.set(input.bookingSessionId, updated);
+    return updated;
+  }
+
   async listByStatus(status: PaymentStatus): Promise<PaymentRecord[]> {
     const results: PaymentRecord[] = [];
     for (const record of this.records.values()) {
@@ -329,6 +386,7 @@ function mapPaymentRow(row: PaymentRow): PaymentRecord {
     currency: row.currency.trim().toUpperCase(),
     totalAmountCents: row.amount_cents,
     ...(row.paid_at ? { capturedAt: toIsoString(row.paid_at) } : {}),
+    ...(row.refund_flagged_at ? { refundFlaggedAt: toIsoString(row.refund_flagged_at) } : {}),
     createdAt: toIsoString(row.created_at),
     updatedAt: toIsoString(row.updated_at),
   };

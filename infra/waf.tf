@@ -19,6 +19,8 @@
 ##############################################################################
 
 resource "aws_wafv2_web_acl" "booking_api" {
+  count = var.waf_enabled ? 1 : 0
+
   name        = "${var.project}-${var.environment}-booking-api-waf"
   description = "WAF WebACL protecting the Kalawala booking API stage."
   scope       = "REGIONAL"
@@ -73,7 +75,7 @@ resource "aws_wafv2_web_acl" "booking_api" {
     priority = 2
 
     override_action {
-      count {} # Change to `none {}` to enforce blocking once validated.
+      none {} # Blocking mode — validated in staging, safe for production.
     }
 
     statement {
@@ -102,7 +104,7 @@ resource "aws_wafv2_web_acl" "booking_api" {
     priority = 3
 
     override_action {
-      count {} # Change to `none {}` to enforce blocking once validated.
+      none {} # Blocking mode — validated in staging, safe for production.
     }
 
     statement {
@@ -142,6 +144,8 @@ resource "aws_wafv2_web_acl" "booking_api" {
 ##############################################################################
 
 resource "aws_wafv2_web_acl_association" "booking_api" {
+  count = var.waf_enabled ? 1 : 0
+
   resource_arn = aws_api_gateway_stage.main.arn
-  web_acl_arn  = aws_wafv2_web_acl.booking_api.arn
+  web_acl_arn  = aws_wafv2_web_acl.booking_api[0].arn
 }

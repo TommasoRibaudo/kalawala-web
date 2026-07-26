@@ -4,6 +4,7 @@ import { getHeader } from "./http/request";
 import {
   AbuseProtectionConfig,
   AbuseProtectionPolicyName,
+  BookingSecretProvider,
   CaptchaVerifierConfig,
   HeadersMap,
   RouteRequest,
@@ -26,13 +27,19 @@ const CAPTCHA_VERIFY_TIMEOUT_MS = 5_000;
 export async function verifyCaptchaToken(
   token: string,
   cfg: CaptchaVerifierConfig,
-  clientIp?: string
+  clientIp?: string,
+  secretKeyOverride?: string
 ): Promise<boolean> {
+  const secretKey = secretKeyOverride ?? cfg.secretKey;
+  if (!secretKey) {
+    return false;
+  }
+
   const url =
     cfg.verifyUrl ??
     (cfg.provider === "hcaptcha" ? HCAPTCHA_VERIFY_URL : RECAPTCHA_VERIFY_URL);
 
-  const params = new URLSearchParams({ secret: cfg.secretKey, response: token });
+  const params = new URLSearchParams({ secret: secretKey, response: token });
   if (clientIp) {
     params.set("remoteip", clientIp);
   }
@@ -98,8 +105,8 @@ const DEFAULT_POLICIES: Record<AbuseProtectionPolicyName, AbusePolicy> = {
   availabilitySearch: {
     name: "availabilitySearch",
     rules: [
-      { scope: "ip", limit: 30, windowSeconds: 60 },
-      { scope: "device", limit: 20, windowSeconds: 60 },
+      { scope: "ip", limit: 30, windowSeconds: 60, captchaAfter: 20 },
+      { scope: "device", limit: 20, windowSeconds: 60, captchaAfter: 14 },
     ],
   },
   holdCreate: {
@@ -160,13 +167,43 @@ const DEFAULT_POLICIES: Record<AbuseProtectionPolicyName, AbusePolicy> = {
 export class AbuseGuard {
   private readonly store: InMemoryRateLimitStore;
   private readonly now: () => number;
+  private readonly secrets?: BookingSecretProvider;
+  private resolvedSecretKey?: string;
 
   constructor(
     private readonly config: AbuseProtectionConfig,
-    now: () => number = Date.now
+    now: () => number = Date.now,
+    secrets?: BookingSecretProvider
   ) {
     this.now = now;
     this.store = new InMemoryRateLimitStore(config.maxTrackedBuckets, now);
+    this.secrets = secrets;
+  }
+
+  /**
+   * Returns the CAPTCHA verification secret, preferring an explicitly configured
+   * value and otherwise reading it from the combined Secrets Manager entry. The
+   * secret provider caches its own fetches, so this only memoises the lookup.
+   */
+  private async resolveCaptchaSecretKey(): Promise<string | undefined> {
+    if (this.config.captchaVerifier?.secretKey) {
+      return this.config.captchaVerifier.secretKey;
+    }
+    if (this.resolvedSecretKey) {
+      return this.resolvedSecretKey;
+    }
+    if (!this.secrets) {
+      return undefined;
+    }
+
+    try {
+      const { captchaSecretKey } = await this.secrets.getSecrets();
+      this.resolvedSecretKey = captchaSecretKey;
+      return captchaSecretKey;
+    } catch {
+      // A secrets outage must not turn a CAPTCHA challenge into a 500 — fail closed.
+      return undefined;
+    }
   }
 
   async assertAllowed(request: RouteRequest, policyName: AbuseProtectionPolicyName | undefined): Promise<void> {
@@ -208,10 +245,17 @@ export class AbuseGuard {
     if (inboundToken && this.config.captchaVerifier) {
       let valid = false;
       try {
+        const secretKey = await this.resolveCaptchaSecretKey();
+        if (!secretKey) {
+          request.observability?.logger.warn("captcha_verify_secret_unavailable", {
+            provider: this.config.captchaVerifier.provider,
+          });
+        }
         valid = await verifyCaptchaToken(
           inboundToken,
           this.config.captchaVerifier,
-          request.clientIp ?? undefined
+          request.clientIp ?? undefined,
+          secretKey
         );
       } catch (err) {
         // verifyCaptchaToken already swallows most errors internally; this is a

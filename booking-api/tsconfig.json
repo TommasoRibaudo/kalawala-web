@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "lib": ["ES2020"],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "rootDir": "src",
     "outDir": "dist",
     "strict": true,
@@ -13,6 +13,6 @@
     "ignoreDeprecations": "6.0",
     "types": ["node", "jest"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src"],
   "exclude": ["dist", "node_modules"]
 }

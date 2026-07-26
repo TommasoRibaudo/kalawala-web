@@ -14,8 +14,6 @@ let payments: InMemoryPaymentRepository;
 let webhookEvents: InMemoryWebhookEventRepository;
 let config: BookingApiConfig;
 
-const SMOOBU_WEBHOOK_SECRET = "smoobu-webhook-secret-value";
-
 function createTestConfig(): BookingApiConfig {
   bookingSessions = new InMemoryBookingSessionRepository();
   holds = new InMemoryHoldRepository();
@@ -26,10 +24,10 @@ function createTestConfig(): BookingApiConfig {
     maxBodyBytes: 64 * 1024,
     secrets: new StaticSecretProvider({
       smoobuApiKey: "smoobu-secret-value",
+      smoobuWebhookSecret: "smoobu-webhook-secret-value",
       paypalClientId: "paypal-client-id-value",
       paypalClientSecret: "paypal-client-secret-value",
       paypalWebhookId: "paypal-webhook-id-value",
-      smoobuWebhookSecret: SMOOBU_WEBHOOK_SECRET,
       bookingEncryptionKeyBase64: Buffer.alloc(32, 7).toString("base64"),
       portalSessionSecret: "portal-session-secret-value",
       rdsConnectionString: "postgres://booking_user:booking_password@db.example.com:5432/kalawala_booking",
@@ -135,13 +133,13 @@ function makeHappyPathFetch(): jest.Mock {
   });
 }
 
-function makeSmoobuWebhookRequest(body: unknown, secret = SMOOBU_WEBHOOK_SECRET): LambdaHttpRequest {
+function makeSmoobuWebhookRequest(body: unknown): LambdaHttpRequest {
   return {
     version: "2.0",
     rawPath: "/api/webhooks/smoobu",
     headers: {
       "content-type": "application/json",
-      "x-smoobu-webhook-secret": secret,
+      "x-smoobu-webhook-secret": "smoobu-webhook-secret-value",
     },
     body: JSON.stringify(body),
     requestContext: { http: { method: "POST", path: "/api/webhooks/smoobu", sourceIp: "52.29.0.1" } },
@@ -178,22 +176,6 @@ async function setupSessionWithActiveHold(handler: ReturnType<typeof createBooki
   const hold = await holds.getByBookingSessionId(searchBody.bookingSessionId);
   return { bookingSessionId: searchBody.bookingSessionId, session: session!, hold: hold! };
 }
-
-// ─── Tests: Authentication ────────────────────────────────────────────────────
-
-test("POST /api/webhooks/smoobu returns 401 when secret header is missing", async () => {
-  const handler = createBookingApiHandler(config);
-  const response = await handler(makeSmoobuWebhookRequest({ action: "updateRates", data: {} }, ""));
-  expect(response.statusCode).toBe(401);
-  const body = JSON.parse(response.body);
-  expect(body.error.code).toBe("unauthorized");
-});
-
-test("POST /api/webhooks/smoobu returns 401 when secret header is wrong", async () => {
-  const handler = createBookingApiHandler(config);
-  const response = await handler(makeSmoobuWebhookRequest({ action: "updateRates", data: {} }, "wrong-secret"));
-  expect(response.statusCode).toBe(401);
-});
 
 // ─── Tests: Payload validation ────────────────────────────────────────────────
 
@@ -392,15 +374,50 @@ test("POST /api/webhooks/smoobu rejects query-string secrets", async () => {
   const response = await handler({
     version: "2.0",
     rawPath: "/api/webhooks/smoobu",
-    rawQueryString: `secret=${SMOOBU_WEBHOOK_SECRET}`,
-    queryStringParameters: { secret: SMOOBU_WEBHOOK_SECRET },
+    rawQueryString: "secret=some-secret",
+    queryStringParameters: { secret: "some-secret" },
     headers: {
       "content-type": "application/json",
-      "x-smoobu-webhook-secret": SMOOBU_WEBHOOK_SECRET,
+      "x-smoobu-webhook-secret": "smoobu-webhook-secret-value",
     },
     body: JSON.stringify({ action: "updateRates", data: {} }),
     requestContext: { http: { method: "POST", path: "/api/webhooks/smoobu", sourceIp: "52.29.0.1" } },
   });
   // The route has rejectQuerySecrets: true, so any query params with secret-like keys should be rejected
   expect(response.statusCode).toBe(400);
+});
+
+// ─── Tests: Webhook authentication ────────────────────────────────────────────
+
+test("POST /api/webhooks/smoobu returns 401 when webhook secret header is missing", async () => {
+  const handler = createBookingApiHandler(config);
+  const response = await handler({
+    version: "2.0",
+    rawPath: "/api/webhooks/smoobu",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ action: "updateRates", data: {} }),
+    requestContext: { http: { method: "POST", path: "/api/webhooks/smoobu", sourceIp: "52.29.0.1" } },
+  });
+  expect(response.statusCode).toBe(401);
+  const body = JSON.parse(response.body);
+  expect(body.error.code).toBe("webhook_unauthorized");
+});
+
+test("POST /api/webhooks/smoobu returns 401 when webhook secret is wrong", async () => {
+  const handler = createBookingApiHandler(config);
+  const response = await handler({
+    version: "2.0",
+    rawPath: "/api/webhooks/smoobu",
+    headers: {
+      "content-type": "application/json",
+      "x-smoobu-webhook-secret": "wrong-secret-value",
+    },
+    body: JSON.stringify({ action: "updateRates", data: {} }),
+    requestContext: { http: { method: "POST", path: "/api/webhooks/smoobu", sourceIp: "52.29.0.1" } },
+  });
+  expect(response.statusCode).toBe(401);
+  const body = JSON.parse(response.body);
+  expect(body.error.code).toBe("webhook_unauthorized");
 });

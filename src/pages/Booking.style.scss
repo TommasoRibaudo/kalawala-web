@@ -1,15 +1,217 @@
 @import '../styles/variables';
 
+// ---------------------------------------------------------------------------
+// Page shell
+// ---------------------------------------------------------------------------
+
 .booking-page {
   min-height: 100vh;
   background: $kalawala-light-cream;
   color: $kalawala-text-gray;
   font-family: $primary-font;
+
+  // Neutralise the global .btn overrides from _common.scss so that
+  // Bootstrap variant classes (btn-primary, btn-outline-secondary, etc.)
+  // work correctly inside the booking page.
+  .btn {
+    background-color: transparent;
+    color: inherit;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+
+    &:focus,
+    &:active:focus,
+    &.active:focus {
+      color: inherit;
+    }
+  }
+
+  .form-control {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid rgba(41, 79, 68, 0.28);
+    color: $kalawala-text-gray;
+
+    &:focus {
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
+    }
+
+    &::placeholder {
+      color: rgba(23, 23, 23, 0.45);
+    }
+
+    &::-webkit-input-placeholder {
+      color: rgba(23, 23, 23, 0.45);
+    }
+  }
 }
 
-.booking-search-container {
-  padding: 120px 0 70px;
+// ---------------------------------------------------------------------------
+// Wizard layout — sliding viewport
+// ---------------------------------------------------------------------------
+
+.booking-wizard {
+  padding: 100px 0 70px;
+  overflow: hidden;
 }
+
+.booking-wizard-viewport {
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-wizard-slide {
+  // Each slide occupies the full width and transitions horizontally.
+  width: 100%;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+  will-change: transform, opacity;
+
+  &--active {
+    position: relative;
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  &--left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &--right {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Step indicator
+// ---------------------------------------------------------------------------
+
+.booking-wizard-steps {
+  margin-bottom: 32px;
+
+  ol {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: step;
+  }
+}
+
+.booking-wizard-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  position: relative;
+
+  // Connector line between steps
+  &::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: rgba(41, 79, 68, 0.18);
+    margin: 0 8px;
+  }
+
+  &:last-child::after {
+    display: none;
+  }
+
+  &--done::after {
+    background: $kalawala-light-green;
+  }
+
+  &--active::after {
+    background: rgba(41, 79, 68, 0.18);
+  }
+}
+
+.booking-wizard-step__dot {
+  align-items: center;
+  background: rgba(41, 79, 68, 0.1);
+  border: 2px solid rgba(41, 79, 68, 0.2);
+  border-radius: 50%;
+  color: rgba(23, 23, 23, 0.5);
+  display: flex;
+  flex: 0 0 auto;
+  font-size: 13px;
+  font-weight: 700;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
+  transition: all 0.3s ease;
+
+  .booking-wizard-step--active & {
+    background: $kalawala-darker-green;
+    border-color: $kalawala-darker-green;
+    color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(11, 48, 40, 0.15);
+  }
+
+  .booking-wizard-step--done & {
+    background: $kalawala-light-green;
+    border-color: $kalawala-light-green;
+    color: #ffffff;
+  }
+}
+
+.booking-wizard-step__label {
+  color: rgba(23, 23, 23, 0.5);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+
+  .booking-wizard-step--active & {
+    color: $kalawala-darker-green;
+  }
+
+  .booking-wizard-step--done & {
+    color: $kalawala-dark-green;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Back button (used in checkout / deposit slides)
+// ---------------------------------------------------------------------------
+
+.booking-wizard-back {
+  align-items: center;
+  color: $kalawala-dark-green;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 0;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    color: $kalawala-darker-green;
+    text-decoration: none;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Search — full (step 1)
+// ---------------------------------------------------------------------------
 
 .booking-search-header {
   margin-bottom: 28px;
@@ -52,14 +254,20 @@
   }
 
   .form-control {
+    background-color: #ffffff;
     border: 1px solid rgba(41, 79, 68, 0.28);
     border-radius: 8px;
     color: $kalawala-text-gray;
     min-height: 48px;
 
     &:focus {
+      background-color: #ffffff;
       border-color: $kalawala-dark-green;
       box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
+    }
+
+    &::placeholder {
+      color: rgba(23, 23, 23, 0.45);
     }
   }
 
@@ -72,8 +280,11 @@
   display: grid;
   grid-template-columns: 48px minmax(72px, 1fr) 48px;
   gap: 8px;
+  position: relative;
+  margin-bottom: 0;
 
   .btn {
+    background-color: #ffffff;
     border-color: rgba(41, 79, 68, 0.4);
     border-radius: 8px;
     color: $kalawala-darker-green;
@@ -87,10 +298,21 @@
       border-color: $kalawala-light-green;
       color: #ffffff;
     }
+
+    &:disabled {
+      background-color: #f5f5f5;
+      border-color: rgba(41, 79, 68, 0.2);
+      color: rgba(23, 23, 23, 0.35);
+    }
   }
 
   input {
     text-align: center;
+  }
+
+  + .form-text {
+    position: absolute;
+    margin-top: 4px;
   }
 }
 
@@ -102,24 +324,29 @@
 
 .booking-search-submit {
   align-items: center;
-  background: $kalawala-darker-green;
+  background: $kalawala-light-green;
   border: 0;
   border-radius: 8px;
+  color: #ffffff;
   display: inline-flex;
   gap: 10px;
   font-weight: 700;
-  margin-top: 22px;
+  justify-content: center;
   min-height: 48px;
   padding: 12px 22px;
+  width: 100%;
 
   &:hover,
   &:disabled {
     background: $kalawala-dark-green;
+    color: #ffffff;
   }
 
+  &:focus,
   &:focus-visible {
     background: $kalawala-dark-green;
     box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.35);
+    color: #ffffff;
   }
 }
 
@@ -128,9 +355,156 @@
   margin-top: 24px;
 }
 
+// ---------------------------------------------------------------------------
+// Search — compact (step 2+)
+// ---------------------------------------------------------------------------
+
+.booking-search-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  background: $kalawala-opaque-beige;
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(11, 48, 40, 0.06);
+}
+
+.booking-search-compact__top {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.booking-search-compact__back {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: $kalawala-dark-green;
+  cursor: pointer;
+  display: flex;
+  flex: 0 0 auto;
+  font-size: 18px;
+  height: 40px;
+  justify-content: center;
+  padding: 0;
+  width: 40px;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(138, 162, 136, 0.18);
+    color: $kalawala-darker-green;
+  }
+}
+
+.booking-search-compact__form {
+  flex: 1;
+  min-width: 0;
+}
+
+.booking-search-compact__fields {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.booking-search-compact__field {
+  flex: 1 1 120px;
+  min-width: 0;
+
+  .form-control {
+    min-height: 40px;
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  &--guests {
+    flex: 0 0 auto;
+  }
+}
+
+.booking-search-compact__guest-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  .btn {
+    background-color: #ffffff;
+    border-color: rgba(41, 79, 68, 0.35);
+    border-radius: 6px;
+    color: $kalawala-darker-green;
+    font-size: 16px;
+    font-weight: 700;
+    height: 34px;
+    width: 34px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover,
+    &:focus {
+      background: $kalawala-light-green;
+      border-color: $kalawala-light-green;
+      color: #ffffff;
+    }
+
+    &:disabled {
+      background-color: #f5f5f5;
+      border-color: rgba(41, 79, 68, 0.2);
+      color: rgba(23, 23, 23, 0.35);
+    }
+  }
+}
+
+.booking-search-compact__guest-count {
+  align-items: center;
+  color: $kalawala-darker-green;
+  display: flex;
+  font-size: 14px;
+  font-weight: 700;
+  gap: 5px;
+  min-width: 36px;
+  justify-content: center;
+}
+
+.booking-search-compact__submit {
+  align-items: center;
+  background: $kalawala-darker-green;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  display: flex;
+  flex: 0 0 auto;
+  font-size: 16px;
+  height: 40px;
+  justify-content: center;
+  width: 40px;
+
+  &:hover,
+  &:disabled {
+    background: $kalawala-dark-green;
+    color: #ffffff;
+  }
+
+  &:focus,
+  &:focus-visible {
+    background: $kalawala-dark-green;
+    box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.35);
+    color: #ffffff;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Results
+// ---------------------------------------------------------------------------
+
 .booking-results,
 .booking-results-empty {
-  margin-top: 34px;
+  margin-top: 10px;
 }
 
 .booking-results-summary {
@@ -194,6 +568,10 @@
   display: flex;
 }
 
+// ---------------------------------------------------------------------------
+// Property cards
+// ---------------------------------------------------------------------------
+
 .booking-result-card {
   border: 1px solid rgba(41, 79, 68, 0.18);
   border-radius: 8px;
@@ -239,14 +617,26 @@
   }
 }
 
-.booking-result-card__overlay {
-  background: linear-gradient(180deg, rgba(11, 48, 40, 0.05) 28%, rgba(11, 48, 40, 0.86) 100%);
+.booking-result-card__media-hover {
+  align-items: center;
+  background: rgba(11, 48, 40, 0.55);
+  color: $white;
+  display: flex;
+  font-size: 16px;
+  font-weight: 700;
   inset: 0;
+  justify-content: center;
+  opacity: 0;
   position: absolute;
+  transition: opacity 0.2s ease;
+
+  .booking-result-card__media:hover &,
+  .booking-result-card__media:focus-visible & {
+    opacity: 1;
+  }
 }
 
-.booking-result-card__status,
-.booking-result-card__media-title {
+.booking-result-card__status {
   pointer-events: none;
   position: absolute;
   z-index: 1;
@@ -263,16 +653,26 @@
   top: 14px;
 }
 
-.booking-result-card__media-title {
-  bottom: 14px;
-  color: $white;
-  font-size: 24px;
+.booking-result-card__content-title {
+  color: $kalawala-darker-green;
+  font-size: 22px;
   font-weight: 700;
-  left: 14px;
-  line-height: 1.15;
+  line-height: 1.2;
   margin: 0;
-  max-width: calc(100% - 28px);
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.booking-result-card__location {
+  align-items: center;
+  color: $kalawala-dark-green;
+  display: flex;
+  font-size: 14px;
+  gap: 6px;
+  margin: -10px 0 0;
+  opacity: 0.8;
+
+  svg {
+    font-size: 12px;
+  }
 }
 
 .booking-result-card__content {
@@ -318,10 +718,10 @@
     align-items: center;
     background: rgba(138, 162, 136, 0.14);
     border-radius: 8px;
-    color: rgba(23, 23, 23, 0.82);
+    color: $kalawala-dark-green;
     display: flex;
     font-size: 14px;
-    gap: 8px;
+    justify-content: center;
     min-width: 0;
     padding: 8px 10px;
   }
@@ -332,7 +732,52 @@
   }
 
   span {
+    display: none;
     overflow-wrap: anywhere;
+  }
+
+  // Expanded state — show labels, match original full view
+  &--expanded li {
+    color: rgba(23, 23, 23, 0.82);
+    gap: 8px;
+    justify-content: flex-start;
+  }
+
+  &--expanded span {
+    display: inline;
+  }
+
+  &--expanded .booking-result-card__amenities-toggle button svg {
+    transform: rotate(45deg);
+  }
+}
+
+.booking-result-card__amenities-toggle {
+  background: transparent;
+  padding: 0;
+
+  button {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    color: $kalawala-dark-green;
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    height: 100%;
+    justify-content: center;
+    min-height: 36px;
+    padding: 8px 10px;
+    transition: background 0.15s ease, transform 0.2s ease;
+
+    &:hover {
+      background: rgba(138, 162, 136, 0.14);
+    }
+
+    svg {
+      transition: transform 0.2s ease;
+    }
   }
 }
 
@@ -352,6 +797,39 @@
     color: $kalawala-darker-green;
     font-size: 24px;
     line-height: 1.2;
+  }
+
+  del {
+    color: rgba(23, 23, 23, 0.45);
+    font-weight: 400;
+    text-decoration: line-through;
+  }
+
+  small del {
+    font-size: inherit;
+    margin-right: 2px;
+  }
+}
+
+.booking-result-card__price-label {
+  background: $kalawala-darker-green;
+  border-radius: 5px;
+  color: #ffffff;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 4px;
+  padding: 3px 7px;
+  width: fit-content;
+}
+
+.booking-result-card__price-original {
+  del {
+    color: rgba(23, 23, 23, 0.45);
+    font-size: 16px;
+    font-weight: 400;
+    text-decoration: line-through;
   }
 }
 
@@ -385,19 +863,21 @@
   background: $kalawala-darker-green;
   border: 0;
   border-radius: 8px;
-  color: $white;
+  color: #ffffff;
   font-weight: 700;
   min-height: 44px;
 
   &:hover,
+  &:focus,
   &:focus-visible,
   &[aria-pressed='true'] {
     background: $kalawala-dark-green;
-    color: $white;
+    color: #ffffff;
   }
 }
 
 .booking-result-card__deposit-button {
+  background-color: #ffffff;
   border-color: rgba(41, 79, 68, 0.45);
   border-radius: 8px;
   color: $kalawala-darker-green;
@@ -408,20 +888,24 @@
   &:focus-visible {
     background: $kalawala-light-green;
     border-color: $kalawala-light-green;
-    color: $white;
+    color: #ffffff;
   }
 
   &:disabled {
+    background-color: #f5f5f5;
     border-color: rgba(41, 79, 68, 0.2);
     color: rgba(23, 23, 23, 0.55);
   }
 }
 
+// ---------------------------------------------------------------------------
+// Checkout panel
+// ---------------------------------------------------------------------------
+
 .booking-checkout-panel {
   background: $kalawala-opaque-beige;
   border: 1px solid rgba(41, 79, 68, 0.18);
   border-radius: 8px;
-  margin-top: 34px;
   padding: 28px;
 
   h2,
@@ -483,14 +967,20 @@
   }
 
   .form-control {
+    background-color: #ffffff;
     border: 1px solid rgba(41, 79, 68, 0.28);
     border-radius: 8px;
     color: $kalawala-text-gray;
     min-height: 48px;
 
     &:focus {
+      background-color: #ffffff;
       border-color: $kalawala-dark-green;
       box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
+    }
+
+    &::placeholder {
+      color: rgba(23, 23, 23, 0.45);
     }
   }
 
@@ -550,6 +1040,57 @@
   border-radius: 8px;
   margin: 0;
 }
+
+.booking-checkout-panel__contacts {
+  border-top: 1px solid rgba(41, 79, 68, 0.16);
+  margin-top: 24px;
+  padding-top: 20px;
+
+  h3 {
+    color: $kalawala-darker-green;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+}
+
+.booking-checkout-panel__contacts-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.booking-checkout-panel__contact {
+  border: 1px solid rgba(41, 79, 68, 0.24);
+  border-radius: 8px;
+  color: $kalawala-darker-green;
+  display: grid;
+  gap: 4px;
+  min-height: 76px;
+  padding: 14px;
+  text-decoration: none;
+
+  span {
+    color: rgba(23, 23, 23, 0.72);
+    font-size: 14px;
+  }
+
+  strong {
+    overflow-wrap: anywhere;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(138, 162, 136, 0.14);
+    border-color: $kalawala-dark-green;
+    color: $kalawala-darker-green;
+    text-decoration: none;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// PayPal return panel
+// ---------------------------------------------------------------------------
 
 .booking-return-panel {
   background: $kalawala-opaque-beige;
@@ -632,12 +1173,16 @@
   }
 }
 
+// ---------------------------------------------------------------------------
+// Confirmation panel
+// ---------------------------------------------------------------------------
+
 .booking-confirmation-panel {
   background: $kalawala-opaque-beige;
   border: 1px solid rgba(41, 79, 68, 0.18);
   border-radius: 8px;
-  margin-top: 34px;
   padding: 28px;
+  text-align: center;
 
   h1 {
     color: $kalawala-darker-green;
@@ -653,6 +1198,19 @@
   }
 }
 
+.booking-confirmation-panel__icon {
+  align-items: center;
+  background: $kalawala-light-green;
+  border-radius: 50%;
+  color: #ffffff;
+  display: inline-flex;
+  font-size: 28px;
+  height: 64px;
+  justify-content: center;
+  margin-bottom: 18px;
+  width: 64px;
+}
+
 .booking-confirmation-panel__details {
   border-bottom: 1px solid rgba(41, 79, 68, 0.16);
   border-top: 1px solid rgba(41, 79, 68, 0.16);
@@ -660,6 +1218,7 @@
   gap: 14px;
   margin: 0 0 22px;
   padding: 18px 0;
+  text-align: left;
 
   div {
     display: grid;
@@ -683,13 +1242,15 @@
 .booking-confirmation-panel__manage {
   align-items: center;
   background: $kalawala-darker-green;
+  border: 0;
   border-radius: 8px;
   color: $white;
   display: inline-flex;
   font-weight: 700;
+  gap: 10px;
   justify-content: center;
   min-height: 48px;
-  padding: 12px 20px;
+  padding: 12px 24px;
   text-decoration: none;
 
   &:hover,
@@ -698,13 +1259,21 @@
     color: $white;
     text-decoration: none;
   }
+
+  &:disabled {
+    background: $kalawala-dark-green;
+    color: #ffffff;
+  }
 }
+
+// ---------------------------------------------------------------------------
+// Manual deposit handoff
+// ---------------------------------------------------------------------------
 
 .booking-deposit-handoff {
   background: $kalawala-opaque-beige;
   border: 1px solid rgba(41, 79, 68, 0.18);
   border-radius: 8px;
-  margin-top: 34px;
   padding: 28px;
 
   h2,
@@ -766,6 +1335,55 @@
   }
 }
 
+.booking-deposit-handoff__bank-info {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 22px;
+}
+
+.booking-deposit-handoff__bank-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 8px;
+  padding: 16px;
+
+  h3 {
+    font-size: 17px;
+    margin: 0 0 12px;
+  }
+
+  dl {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+  }
+
+  dt {
+    color: rgba(23, 23, 23, 0.6);
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 8px;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+
+  dd {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+  }
+}
+
+.booking-deposit-handoff__iban {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px !important;
+  letter-spacing: 0.5px;
+  word-break: break-all;
+}
+
 .booking-deposit-handoff__contacts {
   display: grid;
   gap: 12px;
@@ -800,31 +1418,140 @@
   }
 }
 
-.booking-deposit-handoff__back {
-  color: $kalawala-dark-green;
-  font-weight: 700;
-  margin-top: 18px;
-  padding: 0;
+// ---------------------------------------------------------------------------
+// Rate toggle (refundable / non-refundable)
+// ---------------------------------------------------------------------------
 
-  &:hover,
-  &:focus-visible {
+.booking-rate-toggle-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+
+  .form-switch {
+    margin-bottom: 0;
+  }
+
+  .form-switch .form-check-input {
+    margin-top: 0.1em;
+  }
+
+  .form-check-label {
     color: $kalawala-darker-green;
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .form-switch .form-check-input {
+    background-color: rgba(41, 79, 68, 0.2);
+    border-color: rgba(41, 79, 68, 0.3);
+    cursor: pointer;
+    height: 1.4em;
+    width: 2.6em;
+
+    &:checked {
+      background-color: $kalawala-darker-green;
+      border-color: $kalawala-darker-green;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
+    }
   }
 }
+
+.booking-rate-toggle__badge {
+  background: $kalawala-darker-green;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 4px 8px;
+}
+
+.booking-rate-toggle__note {
+  color: rgba(23, 23, 23, 0.65);
+  flex-basis: 100%;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+// Compact form rate toggle — own row below the search fields
+.booking-search-compact__rate-row {
+  align-items: center;
+  border-top: 1px solid rgba(41, 79, 68, 0.12);
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+
+  .form-switch {
+    margin-bottom: 0;
+  }
+
+  .form-switch .form-check-input {
+    background-color: rgba(41, 79, 68, 0.2);
+    border-color: rgba(41, 79, 68, 0.3);
+    cursor: pointer;
+    height: 1.4em;
+    margin-top: 0.1em;
+    width: 2.6em;
+
+    &:checked {
+      background-color: $kalawala-darker-green;
+      border-color: $kalawala-darker-green;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
+    }
+  }
+
+  .form-check-label {
+    color: $kalawala-darker-green;
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
+  .booking-rate-toggle__badge {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Captcha widget
+// ---------------------------------------------------------------------------
+
+.booking-captcha-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+// ---------------------------------------------------------------------------
+// Responsive
+// ---------------------------------------------------------------------------
 
 @media (max-width: 1199px) {
   .booking-result-card__content {
     padding: 16px;
   }
 
-  .booking-result-card__media-title {
+  .booking-result-card__content-title {
     font-size: 22px;
   }
 }
 
 @media (max-width: 992px) {
-  .booking-search-container {
-    padding: 105px 0 52px;
+  .booking-wizard {
+    padding: 90px 0 52px;
   }
 
   .booking-search-header h1 {
@@ -844,12 +1571,29 @@
     grid-template-columns: 1fr;
   }
 
+  .booking-deposit-handoff__bank-info {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-checkout-panel__contacts-grid {
+    grid-template-columns: 1fr;
+  }
+
   .booking-checkout-panel__summary {
     grid-template-columns: 1fr;
   }
 
   .booking-return-panel__status {
     align-items: flex-start;
+  }
+
+  // Step indicator: hide labels on tablet, show only dots
+  .booking-wizard-step__label {
+    display: none;
+  }
+
+  .booking-wizard-step {
+    gap: 0;
   }
 }
 
@@ -863,19 +1607,89 @@
     padding: 18px;
   }
 
-  .booking-result-card__media-title {
+  .booking-result-card__content-title {
     font-size: 21px;
   }
 
   .booking-result-card__amenities li {
     flex: 1 1 100%;
   }
+
+  .booking-search-compact {
+    padding: 10px 12px;
+  }
+
+  .booking-search-compact__top {
+    flex-wrap: wrap;
+  }
+
+  .booking-search-compact__fields {
+    flex-wrap: wrap;
+  }
+
+  .booking-search-compact__field {
+    flex: 1 1 100%;
+  }
+
+  .booking-search-compact__field--guests {
+    flex: 0 0 auto;
+  }
+
+  .booking-wizard-steps {
+    margin-bottom: 20px;
+  }
+
+  .booking-wizard-step__dot {
+    height: 28px;
+    width: 28px;
+    font-size: 12px;
+  }
 }
 
-.booking-captcha-widget {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
-  margin-top: 18px;
+// Deposit checkout — reuses the PayPal panel shell, adds the receipt upload step.
+.booking-deposit-checkout {
+  &__held {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__upload {
+    border-top: 1px solid rgba(41, 79, 68, 0.18);
+    padding-top: 20px;
+
+    h3 {
+      color: $kalawala-darker-green;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    p {
+      color: $kalawala-text-gray;
+      font-size: 14px;
+      margin: 0 0 12px;
+    }
+
+    input[type='file'] {
+      border: 1px dashed rgba(41, 79, 68, 0.35);
+      border-radius: 8px;
+      padding: 12px;
+      width: 100%;
+    }
+  }
+
+  &__uploading {
+    align-items: center;
+    color: $kalawala-dark-green;
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  &__staff-note {
+    color: #888;
+    font-size: 13px;
+    margin-top: 12px;
+  }
 }

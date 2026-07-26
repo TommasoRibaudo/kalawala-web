@@ -9,16 +9,60 @@ import {
   BookingApiError,
   BookingLanguage,
   PortalReservationResponse,
+  cancelPortalBooking,
   getPortalReservation,
-  submitPortalCancellationRequest,
   submitPortalHelpRequest,
+  updatePortalGuests,
 } from '../services/BookingApi.service';
 import { clearPortalSession, readPortalToken } from '../services/PortalSession.service';
 import { portalDetailStrings, PortalDetailStrings } from './PortalDetail.i18n';
 import './PortalDetail.style.scss';
 
+/** Coordinates and Google Maps place ID per property group. */
+const KALAWALA_LOCATION = { lat: 9.6587676, lng: -82.7499424, placeId: '0x8fa6515b59164895:0xcb6669ca079882c8' };
+const NAMAITAMI_LOCATION = { lat: 9.6340, lng: -82.7170, placeId: '' };
+
+const KALAWALA_SLUGS = new Set([
+  'Geco', 'GecoES',
+  'Rana', 'RanaES',
+  'Tucano', 'TucanoES',
+  'Pappagallo', 'PappagalloES',
+  'Delfin', 'DelfinES',
+]);
+
+function getPropertyLocation(slug: string | undefined) {
+  if (!slug) return KALAWALA_LOCATION;
+  if (KALAWALA_SLUGS.has(slug)) return KALAWALA_LOCATION;
+  return NAMAITAMI_LOCATION;
+}
+
+function getGoogleMapsUrl(slug: string | undefined): string {
+  const loc = getPropertyLocation(slug);
+  if (loc.placeId) {
+    return `https://www.google.com/maps/place/?q=place_id:${loc.placeId}`;
+  }
+  return `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}`;
+}
+
 function portalLoginPath(language: BookingLanguage): string {
   return language === 'es' ? '/portalES' : '/portal';
+}
+
+/**
+ * The cancellation deadline is an instant, not a day, so it is rendered with the
+ * time and in Costa Rica time — the guest's own timezone would misrepresent when
+ * the window actually closes.
+ */
+function formatDateTime(value: string, language: BookingLanguage): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+  return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'America/Costa_Rica',
+  }).format(date);
 }
 
 function formatDate(value: string, language: BookingLanguage): string {
@@ -100,7 +144,27 @@ function getRequestError(error: unknown, strings: PortalDetailStrings): string {
   return strings.requestErrorGeneric;
 }
 
-type PanelState = 'closed' | 'help' | 'cancellation';
+/**
+ * Cancellation has its own failure modes. A 502 in particular is worth naming:
+ * the server rolled nothing back, so retrying is safe and the guest should be
+ * told their booking is untouched rather than left guessing.
+ */
+function getCancellationError(error: unknown, strings: PortalDetailStrings): string {
+  if (error instanceof BookingApiError) {
+    if (error.code === 'cancellation_window_closed') {
+      return strings.cancellationErrorWindow;
+    }
+    if (error.code === 'cancellation_not_allowed') {
+      return strings.cancellationErrorNotAllowed;
+    }
+    if (error.status === 502 || error.code === 'provider_error') {
+      return strings.cancellationErrorProvider;
+    }
+  }
+  return getRequestError(error, strings);
+}
+
+type PanelState = 'closed' | 'help' | 'cancellation' | 'editGuests';
 
 type HelpRequestType = 'general' | 'date_change' | 'guest_count_change' | 'arrival_time' | 'other';
 
@@ -113,6 +177,37 @@ interface CancellationFormState {
   reason: string;
   message: string;
 }
+
+/**
+ * Weather card that links to Microsoft Weather for Puerto Viejo de Talamanca.
+ * MSN Weather doesn't allow iframe embedding, so we provide a branded link-out.
+ */
+const WeatherWidget = ({ language }: { language: BookingLanguage }) => {
+  const msnUrl =
+    language === 'es'
+      ? 'https://www.msn.com/es-xl/clima/pronostico/in-Puerto-Viejo-de-Talamanca,Limón,Costa-Rica'
+      : 'https://www.msn.com/en-us/weather/forecast/in-Puerto-Viejo-de-Talamanca,Limón,Costa-Rica';
+
+  const label = language === 'es' ? 'Ver pronóstico del clima' : 'View weather forecast';
+  const poweredBy = language === 'es' ? 'Con tecnología de' : 'Powered by';
+
+  return (
+    <a
+      className="portal-weather-link"
+      href={msnUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+    >
+      <span className="portal-weather-link__icon" aria-hidden="true">🌤️</span>
+      <span className="portal-weather-link__text">
+        <strong>{label}</strong>
+        <small>{poweredBy} Microsoft Weather</small>
+      </span>
+      <span className="portal-weather-link__arrow" aria-hidden="true">→</span>
+    </a>
+  );
+};
 
 const PortalDetailPage = () => {
   const { reservationPublicId } = useParams<{ reservationPublicId: string }>();
@@ -144,6 +239,12 @@ const PortalDetailPage = () => {
   const [cancellationError, setCancellationError] = React.useState<string | null>(null);
   const [cancellationSuccess, setCancellationSuccess] = React.useState(false);
   const [isSubmittingCancellation, setIsSubmittingCancellation] = React.useState(false);
+  const [refundStatus, setRefundStatus] = React.useState<'manual_review' | 'not_applicable' | null>(null);
+
+  const [guestCount, setGuestCount] = React.useState<number>(1);
+  const [guestEditError, setGuestEditError] = React.useState<string | null>(null);
+  const [guestEditSuccess, setGuestEditSuccess] = React.useState(false);
+  const [isSubmittingGuestEdit, setIsSubmittingGuestEdit] = React.useState(false);
 
   const loadAttemptedRef = React.useRef(false);
 
@@ -243,7 +344,7 @@ const PortalDetailPage = () => {
 
     setIsSubmittingCancellation(true);
     try {
-      await submitPortalCancellationRequest(
+      const response = await cancelPortalBooking(
         reservationPublicId,
         token,
         {
@@ -252,11 +353,72 @@ const PortalDetailPage = () => {
         },
         language
       );
+
+      // The response carries the post-cancellation state, so apply it directly.
+      // loadAttemptedRef guards the initial fetch against re-running, which means
+      // a refetch is not available to us here.
+      setData({
+        reservation: response.reservation,
+        hold: response.hold,
+        payment: response.payment,
+      });
+      setRefundStatus(response.refund.status);
       setCancellationSuccess(true);
     } catch (err) {
-      setCancellationError(getRequestError(err, strings));
+      setCancellationError(getCancellationError(err, strings));
     } finally {
       setIsSubmittingCancellation(false);
+    }
+  };
+
+  const handleGuestEditSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setGuestEditError(null);
+
+    const maxGuests = reservation?.property?.guestCapacity;
+    if (guestCount < 1) {
+      setGuestEditError(strings.editGuestsValidation);
+      return;
+    }
+    if (maxGuests && guestCount > maxGuests) {
+      setGuestEditError(strings.editGuestsExceedsCapacity(maxGuests));
+      return;
+    }
+
+    if (!reservationPublicId) {
+      return;
+    }
+
+    const token = readPortalToken();
+    if (!token) {
+      clearPortalSession();
+      navigate(portalLoginPath(language), { replace: true });
+      return;
+    }
+
+    setIsSubmittingGuestEdit(true);
+    try {
+      const response = await updatePortalGuests(
+        reservationPublicId,
+        token,
+        { guests: guestCount },
+        language
+      );
+      setData((current) =>
+        current
+          ? {
+              ...current,
+              reservation: response.reservation,
+              hold: response.hold,
+              payment: response.payment,
+            }
+          : current
+      );
+      setGuestEditSuccess(true);
+    } catch (err) {
+      setGuestEditError(getRequestError(err, strings));
+    } finally {
+      setIsSubmittingGuestEdit(false);
     }
   };
 
@@ -264,6 +426,38 @@ const PortalDetailPage = () => {
   const payment = data?.payment;
   const isConfirmed =
     reservation?.status === 'confirmed' || reservation?.status === 'booking_confirmed';
+  const isCancelled = reservation?.status === 'cancelled';
+
+  // The server evaluates the cancellation policy and reports the outcome; the UI
+  // renders from that rather than re-deriving the 24-hour rule here. Bookings
+  // made before the policy shipped carry no `availableActions`, so fall back to
+  // the old behaviour of offering the request form.
+  const availableActions = reservation?.availableActions;
+  const canCancelOnline = availableActions
+    ? availableActions.includes('cancel_booking')
+    : isConfirmed;
+  const cancellationBlockReason = reservation?.cancellation?.cancellable
+    ? undefined
+    : reservation?.cancellation?.reasonCode;
+  const cancellationDeadline = reservation?.cancellation?.deadline;
+
+  // Only worth explaining when the guest could otherwise have expected to cancel.
+  // Deposit bookings are paid by bank transfer, so promising a PayPal refund
+  // would be wrong. Pick the wording from how the guest actually paid.
+  const refundNote =
+    payment?.method === 'manual_deposit'
+      ? strings.cancellationRefundNoteDeposit
+      : strings.cancellationRefundNote;
+
+  const blockedNotice =
+    isConfirmed && !canCancelOnline
+      ? cancellationBlockReason === 'cancellation_window_closed'
+        ? strings.cancellationBlockedWindow
+        : cancellationBlockReason === 'non_refundable_rate' ||
+            cancellationBlockReason === 'rate_plan_unknown'
+          ? strings.cancellationBlockedNonRefundable
+          : null
+      : null;
 
   return (
     <div id="body" className="portal-page">
@@ -347,7 +541,24 @@ const PortalDetailPage = () => {
 
                       <div className="portal-detail-summary__row">
                         <dt>{strings.guests}</dt>
-                        <dd>{strings.guestsCount(reservation.guests)}</dd>
+                        <dd className="portal-detail-summary__guests-cell">
+                          {strings.guestsCount(reservation.guests)}
+                          {isConfirmed && panel === 'closed' && (
+                            <Button
+                              type="button"
+                              variant="link"
+                              className="portal-detail-summary__edit-btn"
+                              onClick={() => {
+                                setGuestCount(reservation.guests);
+                                setGuestEditSuccess(false);
+                                setGuestEditError(null);
+                                setPanel('editGuests');
+                              }}
+                            >
+                              {strings.editGuestsButton}
+                            </Button>
+                          )}
+                        </dd>
                       </div>
 
                       {reservation.price && (
@@ -380,6 +591,21 @@ const PortalDetailPage = () => {
                       </div>
                     </dl>
 
+                    {isCancelled && (
+                      <Alert variant="secondary" className="portal-detail-cancelled-banner">
+                        {strings.statusCancelledBanner}
+                      </Alert>
+                    )}
+
+                    {blockedNotice && panel === 'closed' && (
+                      <Alert variant="light" className="portal-detail-cancel-blocked">
+                        <span>{blockedNotice}</span>
+                        <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">
+                          {strings.cancellationBlockedContact}
+                        </a>
+                      </Alert>
+                    )}
+
                     {isConfirmed && panel === 'closed' && (
                       <div className="portal-detail-actions">
                         <Button
@@ -389,6 +615,7 @@ const PortalDetailPage = () => {
                         >
                           {strings.requestHelpButton}
                         </Button>
+                        {canCancelOnline && (
                         <Button
                           type="button"
                           variant="outline-secondary"
@@ -397,6 +624,7 @@ const PortalDetailPage = () => {
                         >
                           {strings.requestCancellationButton}
                         </Button>
+                        )}
                       </div>
                     )}
                   </section>
@@ -497,16 +725,42 @@ const PortalDetailPage = () => {
                   )}
 
                   {panel === 'cancellation' && (
-                    <section className="portal-request-panel" aria-labelledby="portal-cancellation-title">
+                    <section
+                      className="portal-request-panel portal-request-panel--danger"
+                      aria-labelledby="portal-cancellation-title"
+                    >
                       <h2 id="portal-cancellation-title">{strings.cancellationTitle}</h2>
                       <p>{strings.cancellationDescription}</p>
 
                       {cancellationSuccess ? (
-                        <Alert variant="success" role="alert">
-                          {strings.cancellationSuccess}
-                        </Alert>
+                        <>
+                          <Alert variant="success" role="alert">
+                            {strings.cancellationSuccess}
+                          </Alert>
+                          <p className="portal-request-panel__refund-note">
+                            {refundStatus === 'manual_review'
+                              ? refundNote
+                              : strings.cancellationNoRefundNote}
+                          </p>
+                          <Button
+                            type="button"
+                            variant="link"
+                            className="portal-request-panel__back"
+                            onClick={() => setPanel('closed')}
+                          >
+                            {strings.cancel}
+                          </Button>
+                        </>
                       ) : (
                         <Form onSubmit={handleCancellationSubmit} noValidate>
+                          {cancellationDeadline && (
+                            <p className="portal-request-panel__deadline">
+                              {strings.cancellationDeadline(formatDateTime(cancellationDeadline, language))}
+                            </p>
+                          )}
+                          <Alert variant="warning" className="portal-request-panel__warning">
+                            {refundNote}
+                          </Alert>
                           {cancellationError && (
                             <Alert
                               variant="danger"
@@ -593,6 +847,111 @@ const PortalDetailPage = () => {
                       )}
                     </section>
                   )}
+
+                  {panel === 'editGuests' && (
+                    <section className="portal-request-panel" aria-labelledby="portal-edit-guests-title">
+                      <h2 id="portal-edit-guests-title">{strings.editGuestsTitle}</h2>
+                      <p>{strings.editGuestsDescription}</p>
+
+                      {guestEditSuccess ? (
+                        <Alert variant="success" role="alert">
+                          {strings.editGuestsSuccess}
+                        </Alert>
+                      ) : (
+                        <Form onSubmit={handleGuestEditSubmit} noValidate>
+                          {guestEditError && (
+                            <Alert variant="danger" role="alert" className="portal-request-panel__alert">
+                              {guestEditError}
+                            </Alert>
+                          )}
+
+                          <Row className="g-3">
+                            <Col md={6}>
+                              <Form.Group controlId="portalGuestCount">
+                                <Form.Label>{strings.editGuestsLabel}</Form.Label>
+                                <Form.Select
+                                  value={guestCount}
+                                  onChange={(event) => {
+                                    setGuestCount(Number(event.target.value));
+                                    setGuestEditError(null);
+                                  }}
+                                >
+                                  {Array.from(
+                                    { length: reservation?.property?.guestCapacity ?? 10 },
+                                    (_, i) => i + 1
+                                  ).map((n) => (
+                                    <option key={n} value={n}>
+                                      {strings.guestsCount(n)}
+                                    </option>
+                                  ))}
+                                </Form.Select>
+                                {reservation?.property?.guestCapacity && (
+                                  <Form.Text>
+                                    {strings.editGuestsCapacity(reservation.property.guestCapacity)}
+                                  </Form.Text>
+                                )}
+                              </Form.Group>
+                            </Col>
+                          </Row>
+
+                          <div className="portal-request-panel__actions">
+                            <Button
+                              type="submit"
+                              className="portal-request-panel__submit"
+                              disabled={isSubmittingGuestEdit || guestCount === reservation?.guests}
+                            >
+                              {isSubmittingGuestEdit ? (
+                                <>
+                                  <Spinner animation="border" size="sm" /> {strings.editGuestsSubmitting}
+                                </>
+                              ) : (
+                                strings.editGuestsSubmit
+                              )}
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="link"
+                              className="portal-request-panel__back"
+                              onClick={() => {
+                                setPanel('closed');
+                                setGuestEditError(null);
+                              }}
+                            >
+                              {strings.editGuestsCancel}
+                            </Button>
+                          </div>
+                        </Form>
+                      )}
+                    </section>
+                  )}
+
+                  <section className="portal-weather-widget" aria-labelledby="portal-weather-title">
+                    <h2 id="portal-weather-title">{strings.weatherTitle}</h2>
+                    <p>{strings.weatherDescription}</p>
+                    <WeatherWidget language={language} />
+                    <a
+                      className="portal-weather-widget__map-link"
+                      href={getGoogleMapsUrl(reservation.property?.slug)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      📍 {strings.findUsOnMap}
+                    </a>
+                  </section>
+
+                  <section className="portal-detail-contacts">
+                    <h2>{strings.needHelp}</h2>
+                    <div className="portal-detail-contacts__grid">
+                      <a className="portal-detail-contacts__link" href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">
+                        <span>{strings.contactByWhatsapp}</span>
+                        <strong>+506 8463 2276</strong>
+                      </a>
+                      <a className="portal-detail-contacts__link" href="mailto:reservas.kalawala@gmail.com">
+                        <span>{strings.contactByEmail}</span>
+                        <strong>reservas.kalawala@gmail.com</strong>
+                      </a>
+                    </div>
+                  </section>
                 </>
               )}
             </Col>

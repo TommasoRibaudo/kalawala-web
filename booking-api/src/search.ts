@@ -247,14 +247,28 @@ function parsePriceQuote(prices: unknown, apartmentId: number, request: SearchRe
   const nights = nightsBetween(request.arrivalDate, request.departureDate);
   const totalAmountCents = Math.round(rawPrice * 100);
 
+  const normalizedCurrency = normalizeCurrencyCode(currency);
+
   return {
-    currency: currency.toUpperCase(),
+    currency: normalizedCurrency,
     totalAmountCents,
     nightlyAverageCents: Math.round(totalAmountCents / nights),
     nights,
     includesTaxes: false,
     rateSource: "smoobu",
   };
+}
+
+const CURRENCY_SYMBOL_MAP: Record<string, string> = {
+  "$": "USD", "€": "EUR", "£": "GBP", "¥": "JPY", "₡": "CRC",
+};
+
+function normalizeCurrencyCode(raw: string): string {
+  const upper = raw.trim().toUpperCase();
+  if (/^[A-Z]{3}$/.test(upper)) {
+    return upper;
+  }
+  return CURRENCY_SYMBOL_MAP[raw.trim()] ?? "USD";
 }
 
 function mapAvailabilityWarnings(errorMessages: unknown): AvailabilityWarning[] {

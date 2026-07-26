@@ -6,7 +6,7 @@ import FixedNavigation from '../components/FixedNavigation/FixedNavigation.compo
 import FixedNavigationES from '../components/FixedNavigation/FixedNavigation.componentES';
 import { useLanguageDetection } from '../hooks/useLanguageDetection';
 import { BookingApiError, BookingLanguage, portalLogin } from '../services/BookingApi.service';
-import { persistPortalSession } from '../services/PortalSession.service';
+import { persistPortalSession, readLatestPortalCredentials, readPortalCredentials, removePortalCredentials } from '../services/PortalSession.service';
 import { portalStrings, PortalStrings } from './Portal.i18n';
 import './Portal.style.scss';
 
@@ -42,6 +42,30 @@ const PortalLoginPage = () => {
     () => searchParams.get('reservationId') ?? ''
   );
   const [password, setPassword] = React.useState('');
+
+  // Pre-fill from cached credentials when the form loads.
+  const prefillAttemptedRef = React.useRef(false);
+  React.useEffect(() => {
+    if (prefillAttemptedRef.current) return;
+    prefillAttemptedRef.current = true;
+
+    const paramId = searchParams.get('reservationId')?.trim() ?? '';
+    // If a specific reservation ID was passed in the URL, look up its cached password.
+    if (paramId) {
+      const cached = readPortalCredentials(paramId);
+      if (cached) {
+        setReservationPublicId(cached.reservationPublicId);
+        setPassword(cached.password);
+      }
+      return;
+    }
+    // Otherwise load the most recent cached credential.
+    const latest = readLatestPortalCredentials();
+    if (latest) {
+      setReservationPublicId(latest.reservationPublicId);
+      setPassword(latest.password);
+    }
+  }, [searchParams]);
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [loginError, setLoginError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -75,6 +99,14 @@ const PortalLoginPage = () => {
       persistPortalSession(response.token, response.reservationPublicId);
       navigate(portalDetailPath(language, response.reservationPublicId), { replace: true });
     } catch (err) {
+      // If the credentials are wrong, remove them from the cache so stale
+      // passwords don't keep getting pre-filled.
+      if (
+        err instanceof BookingApiError &&
+        (err.status === 401 || err.code === 'invalid_credentials' || err.code === 'invalid_portal_credentials')
+      ) {
+        removePortalCredentials(reservationPublicId.trim());
+      }
       setLoginError(getLoginError(err, strings));
     } finally {
       setIsSubmitting(false);

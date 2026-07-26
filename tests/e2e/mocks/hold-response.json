@@ -1,0 +1,41 @@
+{
+  "booking": {
+    "bookingSessionId": "mock-session-001",
+    "reservationPublicId": "RES-MOCK-12345",
+    "status": "hold_active",
+    "language": "en",
+    "arrivalDate": "2026-03-15",
+    "departureDate": "2026-03-20",
+    "guests": 2,
+    "property": {
+      "propertyId": "prop-geco",
+      "slug": "geco",
+      "listingUrl": "/Geco",
+      "name": "Casa Geco",
+      "guestCapacity": 4,
+      "thumbnailUrl": "/images/geco-1.jpg",
+      "amenities": [
+        { "code": "wifi", "label": "WiFi" },
+        { "code": "ac", "label": "A/C" },
+        { "code": "kitchen", "label": "Kitchen" },
+        { "code": "parking", "label": "Parking" }
+      ]
+    },
+    "price": {
+      "totalAmountCents": 45000,
+      "currency": "USD",
+      "nightlyRateCents": 9000,
+      "nightlyAverageCents": 9000,
+      "nights": 5
+    },
+    "hold": {
+      "status": "active",
+      "expiresAt": "2099-12-31T23:59:59Z"
+    },
+    "payment": {
+      "method": "paypal",
+      "status": "pending"
+    }
+  },
+  "nextAction": "create_paypal_order"
+}

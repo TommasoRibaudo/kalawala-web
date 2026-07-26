@@ -25,6 +25,24 @@ export interface EmailTemplateInput {
   paypalCaptureId?: string;
   confirmedAt?: string;
   cancellationReason?: string;
+  /**
+   * Whether a refund is owed for a cancellation. Defaults to true when a capture
+   * id is present; set false for cancellations inside the no-refund window.
+   */
+  refundExpected?: boolean;
+  /** Manual deposit flow — SINPE and bank account details shown to the guest. */
+  bankInfo?: {
+    sinpePhone: string;
+    sinpeName: string;
+    bankAccount: { accountHolder: string; colonesIban: string; dolaresIban: string };
+  };
+  /** Where the guest uploads their transfer receipt. */
+  depositUploadUrl?: string;
+  /** Presigned link to an uploaded receipt, for the staff review email. */
+  depositReceiptUrl?: string;
+  /** Signed one-click staff links. */
+  depositConfirmUrl?: string;
+  depositRejectUrl?: string;
   /** Override default WhatsApp contact URL (falls back to config/env default) */
   contactWhatsApp?: string;
   /** Override default contact email address (falls back to config/env default) */
@@ -87,6 +105,54 @@ const strings = {
       warning: "Your booking is NOT confirmed until our team verifies your deposit and confirms it manually.",
       contactLabel: "Contact us",
     },
+    cancellationReason: "Reason",
+    bankTransfer: "Bank transfer",
+    sinpe: "SINPE Móvil",
+    accountHolder: "Account holder",
+    colones: "Colones account",
+    dolares: "Dólares account",
+    depositInstructions: {
+      subject: (id: string) => `Complete your bank transfer — ${id}`,
+      intro:
+        "We are holding your dates while you complete the transfer. Send the amount below by bank transfer or SINPE Móvil, then upload your receipt so our team can verify it.",
+      warning:
+        "Your dates are held only until the time shown above. If the transfer is not confirmed by then, the hold is released and the property goes back on sale.",
+      uploadCta: "Upload your receipt",
+      note: "Once our team confirms the payment you will receive a confirmation email with your portal access.",
+    },
+    depositConfirmed: {
+      subject: (id: string) => `Booking confirmed — ${id}`,
+      intro: "We have verified your deposit and your booking is confirmed. We look forward to welcoming you!",
+      portalCta:
+        "You can now manage your booking online using your reservation ID and the password you chose during checkout.",
+      note: "If anything about your stay changes, contact us and we will help.",
+    },
+    staffDepositReview: {
+      subject: (id: string) => `[ACTION] Deposit booking awaiting confirmation — ${id}`,
+      intro:
+        "A guest booked by bank transfer / SINPE. The dates are held in Smoobu on the blocked channel until you confirm or reject.",
+      action: "Confirm once the money has landed. Rejecting releases the hold and frees the dates immediately.",
+      receiptLabel: "Uploaded receipt",
+      noReceipt: "No receipt uploaded yet.",
+      guestContact: "Guest contact",
+      confirmLabel: "Review and confirm",
+      rejectLabel: "Reject and release the dates",
+    },
+    guestCancelled: {
+      subject: (id: string) => `Your booking has been cancelled — ${id}`,
+      intro: "Your booking has been cancelled as requested. The dates have been released and you will not be charged again.",
+      refundPending:
+        "Your refund is being processed manually by our team and will be returned to the PayPal account used for payment. Please allow a few business days for it to appear.",
+      noRefund: "As this booking was cancelled within 24 hours of check-in, no refund applies.",
+      note: "If you did not request this cancellation, please contact us straight away.",
+    },
+    staffCancelled: {
+      subject: (id: string) => `[ACTION] Guest cancelled ${id} — refund required`,
+      intro: "A guest cancelled their booking through the guest portal. The Smoobu reservation has already been cancelled and the dates released.",
+      action: "Issue the refund in PayPal for the capture below. The payment is flagged as refund_flagged until you do.",
+      noRefundAction: "No refund is due — the booking was cancelled inside the 24-hour window.",
+      guestContact: "Guest contact",
+    },
   },
   es: {
     greeting: (name: string) => `Hola ${name},`,
@@ -134,6 +200,54 @@ const strings = {
       step3: "Nuestro equipo confirmará tu reserva directamente en nuestro sistema.",
       warning: "Tu reserva NO está confirmada hasta que nuestro equipo verifique tu depósito y lo confirme manualmente.",
       contactLabel: "Contáctanos",
+    },
+    cancellationReason: "Motivo",
+    bankTransfer: "Transferencia bancaria",
+    sinpe: "SINPE Móvil",
+    accountHolder: "Titular de la cuenta",
+    colones: "Cuenta en colones",
+    dolares: "Cuenta en dólares",
+    depositInstructions: {
+      subject: (id: string) => `Completa tu transferencia — ${id}`,
+      intro:
+        "Estamos reservando tus fechas mientras completas la transferencia. Envía el monto indicado por transferencia bancaria o SINPE Móvil y luego sube tu comprobante para que nuestro equipo lo verifique.",
+      warning:
+        "Tus fechas quedan reservadas solo hasta la hora indicada arriba. Si la transferencia no se confirma antes, la reserva se libera y la propiedad vuelve a estar disponible.",
+      uploadCta: "Sube tu comprobante",
+      note: "Cuando nuestro equipo confirme el pago recibirás un correo de confirmación con el acceso a tu portal.",
+    },
+    depositConfirmed: {
+      subject: (id: string) => `Reserva confirmada — ${id}`,
+      intro: "Hemos verificado tu depósito y tu reserva está confirmada. ¡Te esperamos!",
+      portalCta:
+        "Ya puedes gestionar tu reserva en línea con tu ID de reserva y la contraseña que elegiste durante el proceso de pago.",
+      note: "Si algo cambia en tu estadía, contáctanos y te ayudamos.",
+    },
+    staffDepositReview: {
+      subject: (id: string) => `[ACCIÓN] Reserva por depósito pendiente de confirmar — ${id}`,
+      intro:
+        "Un huésped reservó por transferencia / SINPE. Las fechas están bloqueadas en Smoobu en el canal Blocked hasta que confirmes o rechaces.",
+      action: "Confirma cuando el dinero haya ingresado. Rechazar libera la reserva y las fechas de inmediato.",
+      receiptLabel: "Comprobante subido",
+      noReceipt: "Aún no se ha subido comprobante.",
+      guestContact: "Contacto del huésped",
+      confirmLabel: "Revisar y confirmar",
+      rejectLabel: "Rechazar y liberar las fechas",
+    },
+    guestCancelled: {
+      subject: (id: string) => `Tu reserva ha sido cancelada — ${id}`,
+      intro: "Tu reserva ha sido cancelada según lo solicitado. Las fechas quedaron liberadas y no se te volverá a cobrar.",
+      refundPending:
+        "Nuestro equipo está procesando tu reembolso manualmente y se devolverá a la cuenta de PayPal utilizada para el pago. Puede tardar algunos días hábiles en reflejarse.",
+      noRefund: "Como esta reserva se canceló dentro de las 24 horas previas al check-in, no corresponde reembolso.",
+      note: "Si no solicitaste esta cancelación, contáctanos de inmediato.",
+    },
+    staffCancelled: {
+      subject: (id: string) => `[ACCIÓN] Huésped canceló ${id} — reembolso requerido`,
+      intro: "Un huésped canceló su reserva desde el portal. La reserva en Smoobu ya fue cancelada y las fechas quedaron liberadas.",
+      action: "Emite el reembolso en PayPal para la captura indicada abajo. El pago queda marcado como refund_flagged hasta que lo hagas.",
+      noRefundAction: "No corresponde reembolso — la reserva se canceló dentro de la ventana de 24 horas.",
+      guestContact: "Contacto del huésped",
     },
   },
 } as const;
@@ -367,6 +481,262 @@ ${detailsTable(rows)}
     "",
     s.footer,
   ].join("\n");
+
+  return { subject: t.subject(input.reservationPublicId), html, text };
+}
+
+// ─── Template: deposit_instructions ──────────────────────────────────────────
+
+/**
+ * Guest-facing, sent when a deposit hold is created.
+ *
+ * Replaces renderDepositHandoffEmail for the new flow — that one told the guest
+ * to contact us to check availability, which is no longer true now that the
+ * dates are actually held.
+ */
+export function renderDepositInstructionsEmail(input: EmailTemplateInput): RenderedEmail {
+  const s = strings[input.language];
+  const t = s.depositInstructions;
+  const bank = input.bankInfo;
+
+  const rows: Array<[string, string]> = [
+    [s.reservationId, input.reservationPublicId],
+    [s.property, input.propertyName],
+    [s.arrival, formatDate(input.arrivalDate)],
+    [s.departure, formatDate(input.departureDate)],
+    [s.guests, String(input.guests)],
+    ...(input.totalAmountCents !== undefined && input.currency
+      ? ([[s.totalAmount, formatAmount(input.totalAmountCents, input.currency)]] as Array<[string, string]>)
+      : []),
+    ...(input.holdExpiresAt ? ([[s.holdExpires, input.holdExpiresAt]] as Array<[string, string]>) : []),
+  ];
+
+  const bankRows: Array<[string, string]> = bank
+    ? [
+        [s.sinpe, `${bank.sinpePhone} · ${bank.sinpeName}`],
+        [s.accountHolder, bank.bankAccount.accountHolder],
+        [s.colones, bank.bankAccount.colonesIban],
+        [s.dolares, bank.bankAccount.dolaresIban],
+      ]
+    : [];
+
+  const uploadLink = input.depositUploadUrl
+    ? `<p><a href="${input.depositUploadUrl}" style="color:#294F44;font-weight:700">${t.uploadCta}</a></p>`
+    : "";
+
+  const html = layout(
+    `<p>${s.greeting(input.guestFirstName)}</p>
+<p>${t.intro}</p>
+${detailsTable(rows)}
+${bankRows.length > 0 ? detailsTable(bankRows) : ""}
+<p style="color:#b03a2e;font-weight:600">${t.warning}</p>
+${uploadLink}
+<p style="color:#888;font-size:13px">${t.note}</p>`,
+    s.footer,
+    input.language
+  );
+
+  const text = [
+    s.greeting(input.guestFirstName),
+    "",
+    t.intro,
+    "",
+    detailsText(rows),
+    "",
+    ...(bankRows.length > 0 ? [detailsText(bankRows), ""] : []),
+    t.warning,
+    "",
+    ...(input.depositUploadUrl ? [`${t.uploadCta}: ${input.depositUploadUrl}`, ""] : []),
+    t.note,
+    "",
+    s.footer,
+  ].join("\n");
+
+  return { subject: t.subject(input.reservationPublicId), html, text };
+}
+
+// ─── Template: deposit_confirmed ─────────────────────────────────────────────
+
+export function renderDepositConfirmedEmail(input: EmailTemplateInput): RenderedEmail {
+  const s = strings[input.language];
+  const t = s.depositConfirmed;
+
+  const rows: Array<[string, string]> = [
+    [s.reservationId, input.reservationPublicId],
+    [s.property, input.propertyName],
+    [s.arrival, formatDate(input.arrivalDate)],
+    [s.departure, formatDate(input.departureDate)],
+    [s.guests, String(input.guests)],
+    ...(input.totalAmountCents !== undefined && input.currency
+      ? ([[s.totalAmount, formatAmount(input.totalAmountCents, input.currency)]] as Array<[string, string]>)
+      : []),
+  ];
+
+  const html = layout(
+    `<p>${s.greeting(input.guestFirstName)}</p>
+<p>${t.intro}</p>
+${detailsTable(rows)}
+<p style="color:#294F44;font-weight:600">${t.portalCta}</p>
+<p style="color:#888;font-size:13px">${t.note}</p>`,
+    s.footer,
+    input.language
+  );
+
+  const text = [s.greeting(input.guestFirstName), "", t.intro, "", detailsText(rows), "", t.portalCta, "", t.note, "", s.footer].join("\n");
+
+  return { subject: t.subject(input.reservationPublicId), html, text };
+}
+
+// ─── Template: staff_deposit_review ──────────────────────────────────────────
+
+/** Staff-facing. Carries the signed confirm and reject links. */
+export function renderStaffDepositReviewEmail(input: EmailTemplateInput): RenderedEmail {
+  const s = strings[input.language];
+  const t = s.staffDepositReview;
+
+  const rows: Array<[string, string]> = [
+    [s.reservationId, input.reservationPublicId],
+    [s.property, input.propertyName],
+    [s.arrival, formatDate(input.arrivalDate)],
+    [s.departure, formatDate(input.departureDate)],
+    [s.guests, String(input.guests)],
+    ...(input.totalAmountCents !== undefined && input.currency
+      ? ([[s.totalAmount, formatAmount(input.totalAmountCents, input.currency)]] as Array<[string, string]>)
+      : []),
+    ...(input.holdExpiresAt ? ([[s.holdExpires, input.holdExpiresAt]] as Array<[string, string]>) : []),
+    [t.guestContact, `${input.guestFirstName} · ${input.guestEmail}`],
+    [t.receiptLabel, input.depositReceiptUrl ? input.depositReceiptUrl : t.noReceipt],
+  ];
+
+  const actions = [
+    input.depositConfirmUrl
+      ? `<p><a href="${input.depositConfirmUrl}" style="color:#294F44;font-weight:700">${t.confirmLabel}</a></p>`
+      : "",
+    input.depositRejectUrl
+      ? `<p><a href="${input.depositRejectUrl}" style="color:#b03a2e;font-weight:700">${t.rejectLabel}</a></p>`
+      : "",
+  ].join("\n");
+
+  const html = layout(
+    `<p>${t.intro}</p>
+${detailsTable(rows)}
+<p style="font-weight:600">${t.action}</p>
+${actions}`,
+    s.footer,
+    input.language
+  );
+
+  const text = [
+    t.intro,
+    "",
+    detailsText(rows),
+    "",
+    t.action,
+    "",
+    ...(input.depositConfirmUrl ? [`${t.confirmLabel}: ${input.depositConfirmUrl}`] : []),
+    ...(input.depositRejectUrl ? [`${t.rejectLabel}: ${input.depositRejectUrl}`] : []),
+    "",
+    s.footer,
+  ].join("\n");
+
+  return { subject: t.subject(input.reservationPublicId), html, text };
+}
+
+// ─── Template: guest_cancellation ────────────────────────────────────────────
+
+/**
+ * Sent to the guest after a self-service cancellation.
+ *
+ * Distinct from renderCancelledEmail, which is worded for a hold that lapsed
+ * before payment ("your hold has expired") and is used by the hold-expiry worker.
+ * This one is for a paid booking the guest deliberately cancelled, so it has to
+ * say what happens to their money.
+ */
+export function renderGuestCancellationEmail(input: EmailTemplateInput): RenderedEmail {
+  const s = strings[input.language];
+  const t = s.guestCancelled;
+  const refundExpected = Boolean(input.paypalCaptureId) && input.refundExpected !== false;
+
+  const rows: Array<[string, string]> = [
+    [s.reservationId, input.reservationPublicId],
+    [s.property, input.propertyName],
+    [s.arrival, formatDate(input.arrivalDate)],
+    [s.departure, formatDate(input.departureDate)],
+    ...(input.totalAmountCents !== undefined && input.currency
+      ? ([[s.totalAmount, formatAmount(input.totalAmountCents, input.currency)]] as Array<[string, string]>)
+      : []),
+    ...(input.cancellationReason
+      ? ([[s.cancellationReason, input.cancellationReason]] as Array<[string, string]>)
+      : []),
+  ];
+
+  const refundCopy = refundExpected ? t.refundPending : t.noRefund;
+
+  const html = layout(
+    `<p>${s.greeting(input.guestFirstName)}</p>
+<p>${t.intro}</p>
+${detailsTable(rows)}
+<p style="color:#294F44;font-weight:600">${refundCopy}</p>
+<p style="color:#888;font-size:13px">${t.note}</p>`,
+    s.footer,
+    input.language
+  );
+
+  const text = [
+    s.greeting(input.guestFirstName),
+    "",
+    t.intro,
+    "",
+    detailsText(rows),
+    "",
+    refundCopy,
+    "",
+    t.note,
+    "",
+    s.footer,
+  ].join("\n");
+
+  return { subject: t.subject(input.reservationPublicId), html, text };
+}
+
+// ─── Template: staff_cancellation_alert ──────────────────────────────────────
+
+/**
+ * Sent to STAFF_NOTIFICATION_EMAIL, not the guest. Refunds are issued by hand,
+ * so this carries the PayPal capture ID and the guest's contact details.
+ */
+export function renderStaffCancellationEmail(input: EmailTemplateInput): RenderedEmail {
+  const s = strings[input.language];
+  const t = s.staffCancelled;
+  const refundExpected = Boolean(input.paypalCaptureId) && input.refundExpected !== false;
+
+  const rows: Array<[string, string]> = [
+    [s.reservationId, input.reservationPublicId],
+    [s.property, input.propertyName],
+    [s.arrival, formatDate(input.arrivalDate)],
+    [s.departure, formatDate(input.departureDate)],
+    [s.guests, String(input.guests)],
+    ...(input.totalAmountCents !== undefined && input.currency
+      ? ([[s.totalAmount, formatAmount(input.totalAmountCents, input.currency)]] as Array<[string, string]>)
+      : []),
+    ...(input.paypalCaptureId ? ([[s.paypalCaptureId, input.paypalCaptureId]] as Array<[string, string]>) : []),
+    ...(input.cancellationReason
+      ? ([[s.cancellationReason, input.cancellationReason]] as Array<[string, string]>)
+      : []),
+    [t.guestContact, `${input.guestFirstName} · ${input.guestEmail}`],
+  ];
+
+  const actionCopy = refundExpected ? t.action : t.noRefundAction;
+
+  const html = layout(
+    `<p>${t.intro}</p>
+${detailsTable(rows)}
+<p style="color:#294F44;font-weight:600">${actionCopy}</p>`,
+    s.footer,
+    input.language
+  );
+
+  const text = [t.intro, "", detailsText(rows), "", actionCopy, "", s.footer].join("\n");
 
   return { subject: t.subject(input.reservationPublicId), html, text };
 }

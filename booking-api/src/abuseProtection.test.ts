@@ -247,6 +247,84 @@ test("AbuseGuard: invalid CAPTCHA token still returns 403", async () => {
   await new Promise<void>((resolve) => server.close(() => resolve()));
 });
 
+test("AbuseGuard: resolves the CAPTCHA secret from Secrets Manager when the env var is unset", async () => {
+  const http = await import("http");
+  const seenSecrets: string[] = [];
+  const server = http.createServer((req, res) => {
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk;
+    });
+    req.on("end", () => {
+      seenSecrets.push(new URLSearchParams(body).get("secret") ?? "");
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ success: true }));
+    });
+  });
+  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const { port } = server.address() as { port: number };
+
+  const getSecrets = jest.fn(async () => ({ captchaSecretKey: "secret-from-secrets-manager" }));
+
+  const guardWithVerifier = new AbuseGuard(
+    {
+      ...config,
+      // No secretKey — it must come from the secret provider.
+      captchaVerifier: { provider: "recaptcha", verifyUrl: `http://127.0.0.1:${port}/siteverify` },
+    },
+    () => 1_000,
+    { source: "static", getSecrets } as unknown as ConstructorParameters<typeof AbuseGuard>[2]
+  );
+
+  const request = makeRequest();
+  await guardWithVerifier.assertAllowed(request, "holdCreate");
+  await guardWithVerifier.assertAllowed(request, "holdCreate");
+
+  const requestWithToken = makeRequest({
+    headers: { ...request.headers, "x-captcha-token": "valid-token-from-client" },
+  });
+  await expect(guardWithVerifier.assertAllowed(requestWithToken, "holdCreate")).resolves.toBeUndefined();
+
+  const secondToken = makeRequest({
+    headers: { ...request.headers, "x-captcha-token": "another-valid-token" },
+  });
+  await expect(guardWithVerifier.assertAllowed(secondToken, "holdCreate")).resolves.toBeUndefined();
+
+  expect(seenSecrets).toEqual(["secret-from-secrets-manager", "secret-from-secrets-manager"]);
+  // The resolved secret is memoised rather than re-fetched on every challenge.
+  expect(getSecrets).toHaveBeenCalledTimes(1);
+
+  await new Promise<void>((resolve) => server.close(() => resolve()));
+});
+
+test("AbuseGuard: a secrets outage fails the CAPTCHA check closed instead of throwing", async () => {
+  const guardWithVerifier = new AbuseGuard(
+    { ...config, captchaVerifier: { provider: "recaptcha" } },
+    () => 1_000,
+    {
+      source: "static",
+      getSecrets: async () => {
+        throw new Error("secrets manager unavailable");
+      },
+    } as unknown as ConstructorParameters<typeof AbuseGuard>[2]
+  );
+
+  const request = makeRequest();
+  await guardWithVerifier.assertAllowed(request, "holdCreate");
+  await guardWithVerifier.assertAllowed(request, "holdCreate");
+
+  const requestWithToken = makeRequest({
+    headers: { ...request.headers, "x-captcha-token": "valid-token-from-client" },
+  });
+
+  const error = await captureApiErrorAsync(() =>
+    guardWithVerifier.assertAllowed(requestWithToken, "holdCreate")
+  );
+
+  expect(error.statusCode).toBe(403);
+  expect(error.code).toBe("captcha_required");
+});
+
 test("AbuseGuard: no verifier configured — token header is ignored and 403 is still returned", async () => {
   // captchaVerifier is undefined (no CAPTCHA_SECRET_KEY set in env).
   const guardNoVerifier = new AbuseGuard(config, () => 1_000);

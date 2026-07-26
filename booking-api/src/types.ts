@@ -1,6 +1,6 @@
 import type { BookingSessionRepository } from "./bookingSessions";
 import type { EmailConfig } from "./email";
-import type { HoldRepository } from "./holds";
+import type { HoldRepository, SmoobuHoldChannelId } from "./holds";
 import type { PaymentRepository } from "./payments";
 import type { WebhookEventRepository } from "./paypalWebhooks";
 import type { PortalSessionRepository } from "./portalSessions";
@@ -14,6 +14,7 @@ export interface LambdaHttpRequest {
   routeKey?: string;
   rawPath?: string;
   path?: string;
+  httpMethod?: string;
   rawQueryString?: string;
   queryStringParameters?: Record<string, string | undefined> | null;
   headers?: Record<string, string | undefined> | null;
@@ -80,6 +81,13 @@ export interface RouteOptions {
   requireIdempotencyKey?: boolean;
   preserveRawBody?: boolean;
   rejectQuerySecrets?: boolean;
+  /**
+   * Accept `application/x-www-form-urlencoded` instead of rejecting it with 415.
+   * Only the staff deposit-review page needs this: it is server-rendered HTML
+   * whose CSP forbids scripts, so the browser submits a native form rather than
+   * a JSON fetch. The handler reads `request.rawBody`.
+   */
+  allowFormEncodedBody?: boolean;
   abuseProtection?: AbuseProtectionPolicyName;
 }
 
@@ -100,6 +108,39 @@ export interface PayPalClientConfig {
   orderCancelUrl: string;
 }
 
+export interface DepositConfig {
+  /**
+   * How long the Smoobu hold survives while the bank transfer clears. Longer
+   * than a PayPal hold by design, but it blocks inventory on all channels for
+   * that whole window, so it is capped by the sliding rule in depositHolds.ts.
+   */
+  holdTtlHours: number;
+  /** Lifetime of the signed confirm/reject link emailed to staff. */
+  confirmTokenTtlHours: number;
+  /** Public base URL the staff confirmation link points at. */
+  staffConfirmBaseUrl: string;
+}
+
+export interface S3UploadConfig {
+  /** S3 bucket name for deposit receipt uploads. */
+  bucketName: string;
+  /** AWS region of the S3 bucket. */
+  region: string;
+  /** Presigned PUT URL expiry in seconds. Default: 300 (5 minutes). */
+  presignedPutExpirySeconds: number;
+  /** Presigned GET URL expiry in seconds. Default: 604800 (7 days). */
+  presignedGetExpirySeconds: number;
+  /** Maximum upload size in bytes. Default: 10 MB. */
+  maxFileSizeBytes: number;
+  /** Allowed MIME types for deposit receipt uploads. */
+  allowedMimeTypes: string[];
+  /**
+   * Override the S3 endpoint. Only set for local development against MinIO —
+   * unset in AWS so the SDK resolves the real regional endpoint.
+   */
+  endpointUrl?: string;
+}
+
 export interface BookingApiConfig {
   allowedOrigins: string[];
   maxBodyBytes: number;
@@ -107,6 +148,8 @@ export interface BookingApiConfig {
   smoobu: SmoobuClientConfig;
   paypal: PayPalClientConfig;
   email: EmailConfig;
+  s3Upload?: S3UploadConfig;
+  deposit?: DepositConfig;
   bookingSessions?: BookingSessionRepository;
   holds?: HoldRepository;
   payments?: PaymentRepository;
@@ -125,7 +168,7 @@ export interface SmoobuClientConfig {
   baseBackoffMs: number;
   maxBackoffMs: number;
   maxRateLimitDelayMs: number;
-  holdChannelId: 11 | 13;
+  holdChannelId: SmoobuHoldChannelId;
 }
 
 export interface HoldConfig {
@@ -138,7 +181,12 @@ export type CaptchaProvider = "hcaptcha" | "recaptcha";
 
 export interface CaptchaVerifierConfig {
   provider: CaptchaProvider;
-  secretKey: string;
+  /**
+   * Verification secret. When omitted, it is resolved lazily from the combined
+   * Secrets Manager entry (`BookingProviderSecrets.captchaSecretKey`) so the live
+   * secret never has to be materialised into a Lambda environment variable.
+   */
+  secretKey?: string;
   /** Override the verification endpoint (useful for tests). Defaults to the provider's production URL. */
   verifyUrl?: string;
 }
@@ -155,17 +203,22 @@ export type FieldErrors = Record<string, string[]>;
 
 export interface BookingProviderSecrets {
   smoobuApiKey: string;
+  smoobuWebhookSecret: string;
   paypalClientId: string;
   paypalClientSecret: string;
   paypalWebhookId: string;
-  smoobuWebhookSecret: string;
   bookingEncryptionKeyBase64: string;
   portalSessionSecret: string;
   rdsConnectionString: string;
+  /**
+   * Optional — CAPTCHA provider verification secret. Absent entries simply leave
+   * CAPTCHA challenges unbypassable rather than failing secret validation.
+   */
+  captchaSecretKey?: string;
 }
 
 export interface BookingSecretProvider {
-  readonly source: "aws-secrets-manager-extension" | "static" | "missing" | "invalid";
+  readonly source: "aws-secrets-manager-extension" | "aws-secrets-manager-sdk" | "static" | "missing" | "invalid";
   getSecrets(): Promise<BookingProviderSecrets>;
 }
 

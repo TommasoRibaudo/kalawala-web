@@ -225,6 +225,23 @@ export class SmoobuClient {
     );
   }
 
+  async updateReservation<T = unknown>(
+    reservationId: number | string,
+    body: unknown,
+    observability?: RouteObservability
+  ): Promise<SmoobuResponse<T>> {
+    return this.request<T>(
+      {
+        method: "PUT",
+        path: `/api/reservations/${encodeURIComponent(String(reservationId))}`,
+        operation: "updateReservation",
+        body,
+        idempotent: true,
+      },
+      observability
+    );
+  }
+
   async cancelReservation<T = unknown>(
     reservationId: number | string,
     observability?: RouteObservability

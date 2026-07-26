@@ -16,6 +16,84 @@ and CC-2. Read this before touching the booking engine again.
 
 Nothing here has run against real Smoobu, real PayPal, real SES or real S3.
 
+## The objective
+
+**Prove the whole flow end to end against live infrastructure, and record the
+evidence.** Until that is done this engine is unproven, however green the test
+suites are — 436 backend tests all run against mocked providers, and the one bug
+that would have silently broken cancellation in production was invisible to every
+one of them.
+
+The pass to run is `live-acceptance-test.md`: three paths (PayPal, manual deposit,
+hold expiry) with the checks to make at each step.
+
+### What counts as proved
+
+Not "I clicked through it and nothing errored." Each path is proved when the
+evidence below exists and is recorded — a short note per line with the id,
+timestamp or screenshot is enough.
+
+**Path A — PayPal**
+
+- [ ] Smoobu shows a Blocked-channel (11) reservation immediately after the hold
+- [ ] After capture: the blocked reservation is gone and one exists on channel 70
+- [ ] `holds` row reads `converted`, `converted_at` set, channel 70, and its
+      `smoobu_reservation_id` matches the **new** Smoobu reservation
+      *(this is the specific check that catches the `convertHold` regression —
+      everything downstream looks fine while cancellation silently no-ops)*
+- [ ] `/api/webhooks/paypal` returned 2xx — signature verification passed
+- [ ] Guest received `hold_created` and `payment_pending`, and **no** confirmation
+      email from us (Smoobu owns that one)
+- [ ] Editing guest count in the portal changed `adults` on the channel-70
+      reservation
+- [ ] Cancelling deleted that reservation, freed the dates, set
+      `refund_flagged`, and emailed guest + staff with the capture id
+- [ ] Non-refundable booking offers no cancel button
+- [ ] Booking starting tomorrow shows the 24-hour notice instead
+
+**Path B — manual deposit**
+
+- [ ] Blocked-channel reservation created, dates off sale
+- [ ] Receipt uploaded from the browser straight to S3 (this is where a missing
+      CORS rule surfaces), object present under `deposit-receipts/<session-id>/`
+- [ ] Portal login refused with 403 `booking_not_confirmed` before staff act
+- [ ] Staff review page renders with a working presigned receipt link, and
+      **reloading it changes nothing** — the GET must not mutate
+- [ ] Confirming sets `booking_confirmed`, records `deposit_confirm_token_jti`,
+      flips the hold to `converted`, and emails the guest
+- [ ] Clicking the link a second time says "already confirmed" and sends no
+      second email
+- [ ] Portal now works, shows "Payment confirmed", and offers the **bank
+      transfer** refund wording rather than PayPal
+- [ ] Reject path on a second booking frees the dates
+
+**Path C — expiry**
+
+- [ ] An abandoned hold is expired by the worker, its Smoobu reservation
+      cancelled, the dates returned to sale, and the `cancelled` email sent
+
+**Across all paths**
+
+- [ ] No `email_send_failed` in CloudWatch (SES sandbox is the usual cause, and
+      it fails silently to the guest)
+- [ ] No `captcha_verify_secret_unavailable`
+- [ ] No `smoobu_promotion_hold_convert_failed`
+- [ ] Cleanup done: reservations removed on both channels, PayPal payments
+      refunded or voided, test receipts deleted from S3, any TTL you lowered for
+      Path C restored, and the test dates bookable again on the public site
+
+Record the outcome at the bottom of `live-acceptance-test.md` with the date and
+who ran it. If a path fails, note what failed there rather than in a chat log —
+the next person needs it.
+
+### Why this cannot be skipped
+
+Mocks proved the logic; they cannot prove the integration. Specifically untested
+against reality: PayPal webhook signature verification, Smoobu's real payload
+shapes, SES deliverability and sandbox status, presigned S3 uploads through a
+browser with real CORS, and migrations against RDS with TLS. Each of those is a
+plausible single point of failure that looks perfect locally.
+
 ## Start here
 
 ```bash
@@ -124,13 +202,19 @@ Blocking:
 - [ ] `terraform apply` the receipts bucket, its CORS rule, the IAM policy and the
       S3 gateway endpoint.
 
-Then verify what mocks cannot:
+Then run the acceptance pass — see **The objective** above and
+`live-acceptance-test.md`. That is what verifies the integrations themselves:
+real Smoobu payloads, PayPal webhook signature verification, SES deliverability,
+presigned S3 through a browser with real CORS, and migrations against RDS with
+TLS.
 
-- [ ] Real Smoobu availability, rate and reservation payloads.
-- [ ] PayPal sandbox redirect, capture, and webhook signature verification.
-- [ ] SES delivery for all seven templates.
-- [ ] Presigned S3 upload from a browser against the real bucket and its CORS.
-- [ ] Migrations against RDS — local Postgres has no TLS.
+There are ten email templates: `hold_created`, `payment_pending`,
+`booking_confirmed`, `cancelled`, `guest_cancellation`, `staff_cancellation`,
+`deposit_instructions`, `deposit_confirmed`, `staff_deposit_review`, and the
+legacy `deposit_handoff`. Two are unreachable in the normal flow —
+`booking_confirmed` fires only from the PayPal webhook, which early-returns
+because the browser capture already confirmed, and `deposit_handoff` belongs to
+the retired handoff path.
 
 ## Known gaps
 

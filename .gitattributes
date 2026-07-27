@@ -1,0 +1,22 @@
+# Normalise line endings in the repository.
+#
+# Without this, a Windows checkout produces CRLF for some files and LF for
+# others. That is invisible almost everywhere — except migrations, where
+# scripts/migrate.js and migrationHandler.ts checksum each file to prove an
+# applied migration was never edited. A CRLF/LF difference changes the hash and
+# is indistinguishable from tampering, which is exactly how the first production
+# deploy failed on 0011_allow_website_channel.sql.
+* text=auto eol=lf
+
+# Binary — never touch.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.zip binary

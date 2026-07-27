@@ -35,6 +35,8 @@ export interface MigrationResult {
   applied: string[];
   pending: string[];
   alreadyApplied: number;
+  /** Rows whose stored checksum was re-recorded after a line-ending-only change. */
+  healed: string[];
   dryRun: boolean;
   error?: string;
 }
@@ -70,6 +72,30 @@ function sha256(value: string): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
+/**
+ * Checksums are computed on LF-normalised content.
+ *
+ * A Windows checkout yields CRLF for some files and LF for others, so the same
+ * migration hashed on a laptop and on a Linux CI runner produced different
+ * values — indistinguishable from someone editing an applied migration, and it
+ * failed the first production deploy on 0011. Normalising makes the checksum a
+ * property of the SQL rather than of the machine that read it.
+ */
+function canonicalChecksum(sql: string): string {
+  return sha256(sql.replace(/\r\n/g, "\n"));
+}
+
+/**
+ * Checksums recorded before normalisation existed: the raw bytes as read, and
+ * the fully-CRLF form. Matching one of these proves the content is identical
+ * apart from line endings, so the row can be healed rather than rejected.
+ * Anything else is a genuine edit and still fails.
+ */
+function legacyChecksums(sql: string): string[] {
+  const lf = sql.replace(/\r\n/g, "\n");
+  return [sha256(sql), sha256(lf.replace(/\n/g, "\r\n"))];
+}
+
 async function loadAppliedMigrations(client: PoolClient): Promise<Map<string, string>> {
   const result = await client.query<{ filename: string; checksum: string }>(
     `select filename, checksum from ${MIGRATIONS_TABLE_IDENT}`
@@ -89,6 +115,7 @@ export async function handler(event: MigrationEvent = {}): Promise<MigrationResu
 
   const applied: string[] = [];
   const pending: string[] = [];
+  const healed: string[] = [];
   let alreadyApplied = 0;
 
   const client = await pool.connect();
@@ -108,15 +135,27 @@ export async function handler(event: MigrationEvent = {}): Promise<MigrationResu
 
     for (const filename of migrationFiles) {
       const sql = readFileSync(join(migrationsDir, filename), "utf8");
-      const checksum = sha256(sql);
+      const checksum = canonicalChecksum(sql);
       const appliedChecksum = appliedMap.get(filename);
 
       if (appliedChecksum) {
         if (appliedChecksum !== checksum) {
-          throw new Error(
-            `Applied migration ${filename} has checksum ${appliedChecksum}, but the packaged file is ${checksum}. ` +
-              `An applied migration must never be edited — fix it with a new numbered migration.`
-          );
+          if (!legacyChecksums(sql).includes(appliedChecksum)) {
+            throw new Error(
+              `Applied migration ${filename} has checksum ${appliedChecksum}, but the packaged file is ${checksum}. ` +
+                `An applied migration must never be edited — fix it with a new numbered migration.`
+            );
+          }
+
+          // Same SQL, different line endings. Re-record the canonical checksum
+          // so this file stops mismatching on every future run.
+          if (!dryRun) {
+            await client.query(`update ${MIGRATIONS_TABLE_IDENT} set checksum = $1 where filename = $2`, [
+              checksum,
+              filename,
+            ]);
+          }
+          healed.push(filename);
         }
         alreadyApplied += 1;
         continue;
@@ -140,7 +179,7 @@ export async function handler(event: MigrationEvent = {}): Promise<MigrationResu
     // leaves no trace on a database that has never been migrated.
     await client.query(dryRun ? "rollback" : "commit");
 
-    return { ok: true, applied, pending, alreadyApplied, dryRun };
+    return { ok: true, applied, pending, alreadyApplied, healed, dryRun };
   } catch (error) {
     await client.query("rollback").catch(() => undefined);
     return {
@@ -148,6 +187,7 @@ export async function handler(event: MigrationEvent = {}): Promise<MigrationResu
       applied: [],
       pending,
       alreadyApplied,
+      healed,
       dryRun,
       error: error instanceof Error ? error.message : String(error),
     };

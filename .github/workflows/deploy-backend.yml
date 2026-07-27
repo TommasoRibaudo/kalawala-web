@@ -32,6 +32,9 @@ env:
   # testing the deployed artifact on a different major than it runs on is how
   # runtime-specific bugs reach production unseen — and Node 18 is EOL.
   NODE_VERSION: '22.x'
+  # Region of the terraform STATE BUCKET, not of the deployed resources. The
+  # state bucket lives in us-east-1 while prod resources are in us-east-2, so
+  # anything addressing a real resource must use needs.setup.outputs.aws_region.
   AWS_REGION: 'us-east-1'
 
 jobs:
@@ -45,6 +48,7 @@ jobs:
       environment: ${{ steps.env.outputs.environment }}
       tfvars_file: ${{ steps.env.outputs.tfvars_file }}
       tf_state_key: ${{ steps.env.outputs.tf_state_key }}
+      aws_region: ${{ steps.env.outputs.aws_region }}
     steps:
       - name: Determine environment
         id: env
@@ -72,6 +76,13 @@ jobs:
           echo "environment=$ENV" >> $GITHUB_OUTPUT
           echo "tfvars_file=environments/${ENV}.tfvars" >> $GITHUB_OUTPUT
           echo "tf_state_key=kalawala/${ENV}/terraform.tfstate" >> $GITHUB_OUTPUT
+          # Where the resources actually live — must match aws_region in the
+          # matching tfvars, or CLI calls hit the wrong region and 404.
+          case "$ENV" in
+            prod) AWS_RESOURCE_REGION="us-east-2" ;;
+            *)    AWS_RESOURCE_REGION="us-east-1" ;;
+          esac
+          echo "aws_region=$AWS_RESOURCE_REGION" >> $GITHUB_OUTPUT
 
   # ---------------------------------------------------------------------------
   # Build, audit, and test the booking-api TypeScript code
@@ -404,12 +415,12 @@ jobs:
       # against a changed table fails with "column does not exist".
       - name: Update migration Lambda function code
         run: |
-          aws lambda update-function-code             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}             --zip-file fileb://lambda-migration.zip             --publish
-          aws lambda wait function-updated             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}
+          aws lambda update-function-code --region ${{ needs.setup.outputs.aws_region }}             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}             --zip-file fileb://lambda-migration.zip             --publish
+          aws lambda wait function-updated --region ${{ needs.setup.outputs.aws_region }}             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}
 
       - name: Run database migrations
         run: |
-          aws lambda invoke             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}             --cli-binary-format raw-in-base64-out             --payload '{}'             migration-result.json > /dev/null
+          aws lambda invoke --region ${{ needs.setup.outputs.aws_region }}             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}             --cli-binary-format raw-in-base64-out             --payload '{}'             migration-result.json > /dev/null
           cat migration-result.json
           # The handler reports failure in its body rather than throwing, so the
           # invoke itself succeeds either way — gate the deploy on ok:true.
@@ -421,20 +432,20 @@ jobs:
 
       - name: Update booking_api Lambda function code
         run: |
-          aws lambda update-function-code \
+          aws lambda update-function-code --region ${{ needs.setup.outputs.aws_region }} \
             --function-name ${{ needs.terraform-apply.outputs.booking_api_lambda_name }} \
             --zip-file fileb://lambda-booking-api.zip \
             --publish
-          aws lambda wait function-updated \
+          aws lambda wait function-updated --region ${{ needs.setup.outputs.aws_region }} \
             --function-name ${{ needs.terraform-apply.outputs.booking_api_lambda_name }}
 
       - name: Update webhooks Lambda function code
         run: |
-          aws lambda update-function-code \
+          aws lambda update-function-code --region ${{ needs.setup.outputs.aws_region }} \
             --function-name ${{ needs.terraform-apply.outputs.webhooks_lambda_name }} \
             --zip-file fileb://lambda-webhooks.zip \
             --publish
-          aws lambda wait function-updated \
+          aws lambda wait function-updated --region ${{ needs.setup.outputs.aws_region }} \
             --function-name ${{ needs.terraform-apply.outputs.webhooks_lambda_name }}
 
       # These two run on EventBridge schedules and were never redeployed by CI, so
@@ -443,8 +454,8 @@ jobs:
       - name: Update worker Lambda function code
         run: |
           for FN in "${{ needs.terraform-apply.outputs.hold_expiry_lambda_name }}"                     "${{ needs.terraform-apply.outputs.payment_reconciliation_lambda_name }}"; do
-            aws lambda update-function-code               --function-name "$FN"               --zip-file fileb://lambda-booking-api.zip               --publish
-            aws lambda wait function-updated --function-name "$FN"
+            aws lambda update-function-code --region ${{ needs.setup.outputs.aws_region }}               --function-name "$FN"               --zip-file fileb://lambda-booking-api.zip               --publish
+            aws lambda wait function-updated --region ${{ needs.setup.outputs.aws_region }} --function-name "$FN"
             echo "Updated $FN"
           done
 

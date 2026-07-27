@@ -51,6 +51,17 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             ENV="${{ github.event.inputs.environment }}"
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # A pull request's ref is refs/pull/N/merge, which matched none of the
+            # branch checks below and fell through to "dev" — an environment that
+            # has no tfvars and no state, so the plan could never run. Derive it
+            # from the branch being merged INTO instead: the point of plan-on-PR
+            # is showing a reviewer what merging will actually change.
+            case "${{ github.base_ref }}" in
+              main)    ENV="prod" ;;
+              staging) ENV="staging" ;;
+              *)       ENV="dev" ;;
+            esac
           elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
             ENV="staging"
           elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then

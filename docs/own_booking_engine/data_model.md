@@ -217,6 +217,11 @@ create table booking_sessions (
   -- migration 0013 — those cannot be classified retroactively and fail closed.
   rate_plan text,                  -- 'flexible' | 'non_refundable'     (0013)
 
+  -- Guest declared a pet at checkout. Only homes carrying the `pet` amenity
+  -- (Geco, Rana, Tucano, Pappagallo) can be held with this set; the hold route
+  -- rejects any other home with 409 property_not_pet_friendly.
+  has_pet boolean not null default false,  --                            (0015)
+
   -- Manual deposit lifecycle                                            (0014)
   deposit_receipt_s3_key text,     --                                    (0012)
   deposit_receipt_uploaded_at timestamptz,

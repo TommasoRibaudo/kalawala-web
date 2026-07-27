@@ -29,11 +29,21 @@ interface SmoobuRateDay {
   available?: unknown;
 }
 
-interface CalendarDay {
+/**
+ * A night exactly as Smoobu reported it, before any "is this night still in the
+ * future?" masking. This is what gets cached: the cache key is scoped to
+ * apartment + month but *not* to the current date, so a entry written just
+ * before midnight would otherwise keep advertising yesterday as bookable for
+ * the rest of its TTL.
+ */
+interface RawCalendarDay {
   date: string;
   available: boolean;
   priceCents: number | null;
   minStay: number | null;
+}
+
+interface CalendarDay extends RawCalendarDay {
   dot: PriceDot;
   ariaLabelKey: string;
 }
@@ -45,12 +55,21 @@ interface CalendarStats {
   averagePriceCents: number | null;
 }
 
+interface CalendarProperty {
+  propertyId: string;
+  slug: string;
+  name: string;
+}
+
+interface RawCalendarPayload {
+  property: CalendarProperty;
+  month: string;
+  currency: string;
+  days: RawCalendarDay[];
+}
+
 interface CalendarPayload {
-  property: {
-    propertyId: string;
-    slug: string;
-    name: string;
-  };
+  property: CalendarProperty;
   month: string;
   currency: string;
   days: CalendarDay[];
@@ -58,7 +77,7 @@ interface CalendarPayload {
 }
 
 interface CalendarCacheEntry {
-  payload: CalendarPayload;
+  raw: RawCalendarPayload;
   generatedAt: string;
   expiresAtMs: number; // stored so cache-hit responses can report accurate remaining TTL
 }
@@ -81,18 +100,23 @@ export async function handleCalendarRequest(
   const cacheKey = calendarCacheKey(property.smoobuApartmentId, request.month);
   const ttlSeconds = TTL_SCOPES["calendar-rates"];
   const nowMs = now();
+  const today = costaRicaToday(nowMs);
 
   const cachedRaw = await adapter.get(cacheKey);
   if (cachedRaw !== null) {
-    const cached: CalendarCacheEntry = JSON.parse(cachedRaw);
-    // Report the actual remaining TTL, not the full TTL, so callers know how
-    // stale the entry is (mirrors the behaviour of the original Map-based cache).
-    const remainingTtlSeconds = Math.max(0, Math.ceil((cached.expiresAtMs - nowMs) / 1_000));
-    return jsonResponse(
-      200,
-      withCache(cached.payload, "hit", cached.generatedAt, remainingTtlSeconds),
-      responseHeaders
-    );
+    const cached = parseCacheEntry(cachedRaw);
+    // An entry written by a previous deploy has a different shape; treat it as a
+    // miss rather than serving a payload we can no longer mask correctly.
+    if (cached) {
+      // Report the actual remaining TTL, not the full TTL, so callers know how
+      // stale the entry is (mirrors the behaviour of the original Map-based cache).
+      const remainingTtlSeconds = Math.max(0, Math.ceil((cached.expiresAtMs - nowMs) / 1_000));
+      return jsonResponse(
+        200,
+        withCache(finalizeCalendarPayload(cached.raw, today), "hit", cached.generatedAt, remainingTtlSeconds),
+        responseHeaders
+      );
+    }
   }
 
   const { startDate, endDate } = monthBounds(request.month);
@@ -106,17 +130,29 @@ export async function handleCalendarRequest(
     observability
   );
 
-  const payload = normalizeCalendarPayload(property, request.month, rates.data);
+  const raw = normalizeCalendarPayload(property, request.month, rates.data);
   const generatedAt = new Date(nowMs).toISOString();
   const expiresAtMs = nowMs + ttlSeconds * 1_000;
-  const entry: CalendarCacheEntry = { payload, generatedAt, expiresAtMs };
+  const entry: CalendarCacheEntry = { raw, generatedAt, expiresAtMs };
   await adapter.set(cacheKey, JSON.stringify(entry), ttlSeconds);
 
   return jsonResponse(
     200,
-    withCache(payload, "miss", generatedAt, ttlSeconds),
+    withCache(finalizeCalendarPayload(raw, today), "miss", generatedAt, ttlSeconds),
     responseHeaders
   );
+}
+
+function parseCacheEntry(serialized: string): CalendarCacheEntry | null {
+  try {
+    const parsed = JSON.parse(serialized) as Partial<CalendarCacheEntry>;
+    if (!parsed?.raw || !Array.isArray(parsed.raw.days) || typeof parsed.generatedAt !== "string") {
+      return null;
+    }
+    return parsed as CalendarCacheEntry;
+  } catch {
+    return null;
+  }
 }
 
 export async function invalidateCalendarRatesCache(filters: { apartmentId?: number; month?: string } = {}): Promise<number> {
@@ -176,9 +212,41 @@ export async function invalidateCalendarRatesCacheFromWebhook(
   return { action, invalidatedEntries };
 }
 
-function normalizeCalendarPayload(property: BookingProperty, month: string, response: SmoobuRatesResponse): CalendarPayload {
+function normalizeCalendarPayload(
+  property: BookingProperty,
+  month: string,
+  response: SmoobuRatesResponse
+): RawCalendarPayload {
   const rateDays = getApartmentRates(response, property.smoobuApartmentId);
   const days = enumerateMonthDates(month).map((date) => normalizeCalendarDay(date, rateDays[date]));
+
+  return {
+    property: {
+      propertyId: property.propertyId,
+      slug: property.slug,
+      name: property.name,
+    },
+    month,
+    currency: DEFAULT_CURRENCY,
+    days,
+  };
+}
+
+/**
+ * Turns raw Smoobu nights into the public payload.
+ *
+ * Smoobu keeps reporting `available: 1` for nights that have already passed —
+ * it has no notion of "now". Serving those through would advertise a night the
+ * guest physically cannot book (the search widget floors check-in at today), so
+ * anything before `today` in Costa Rica is forced unavailable *before* stats are
+ * computed. Otherwise dead nights would also drag the month average — and with
+ * it every dot colour — off the real bookable range.
+ */
+function finalizeCalendarPayload(raw: RawCalendarPayload, today: string): CalendarPayload {
+  const days: RawCalendarDay[] = raw.days.map((day) => ({
+    ...day,
+    available: day.available && day.date >= today,
+  }));
   const stats = computeStats(days);
   const classifiedDays = days.map((day) => {
     const dot = classifyDot(day, stats.averagePriceCents);
@@ -190,16 +258,19 @@ function normalizeCalendarPayload(property: BookingProperty, month: string, resp
   });
 
   return {
-    property: {
-      propertyId: property.propertyId,
-      slug: property.slug,
-      name: property.name,
-    },
-    month,
-    currency: DEFAULT_CURRENCY,
+    property: raw.property,
+    month: raw.month,
+    currency: raw.currency,
     days: classifiedDays,
     stats,
   };
+}
+
+/**
+ * Costa Rica sits at UTC-6 year-round (no DST), so a fixed offset is exact.
+ */
+function costaRicaToday(nowMs: number): string {
+  return new Date(nowMs - 6 * 60 * 60 * 1_000).toISOString().slice(0, 10);
 }
 
 function getApartmentRates(response: SmoobuRatesResponse, apartmentId: number): Record<string, SmoobuRateDay> {
@@ -216,22 +287,16 @@ function getApartmentRates(response: SmoobuRatesResponse, apartmentId: number): 
   return apartmentRates as Record<string, SmoobuRateDay>;
 }
 
-function normalizeCalendarDay(date: string, rateDay: SmoobuRateDay | undefined): CalendarDay {
-  const available = normalizeAvailable(rateDay?.available);
-  const priceCents = normalizePriceCents(rateDay?.price);
-  const minStay = normalizeMinStay(rateDay?.min_length_of_stay);
-
+function normalizeCalendarDay(date: string, rateDay: SmoobuRateDay | undefined): RawCalendarDay {
   return {
     date,
-    available,
-    priceCents,
-    minStay,
-    dot: "grey",
-    ariaLabelKey: "calendar.unavailable",
+    available: normalizeAvailable(rateDay?.available),
+    priceCents: normalizePriceCents(rateDay?.price),
+    minStay: normalizeMinStay(rateDay?.min_length_of_stay),
   };
 }
 
-function computeStats(days: CalendarDay[]): CalendarStats {
+function computeStats(days: RawCalendarDay[]): CalendarStats {
   const availablePrices = days
     .filter((day) => day.available && day.priceCents !== null)
     .map((day) => day.priceCents as number);
@@ -255,7 +320,7 @@ function computeStats(days: CalendarDay[]): CalendarStats {
   };
 }
 
-function classifyDot(day: CalendarDay, averagePriceCents: number | null): PriceDot {
+function classifyDot(day: RawCalendarDay, averagePriceCents: number | null): PriceDot {
   if (!day.available || day.priceCents === null || averagePriceCents === null) {
     return "grey";
   }

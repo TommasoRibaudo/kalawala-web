@@ -24,6 +24,7 @@ function createTestConfig(): BookingApiConfig {
     maxBodyBytes: 64 * 1024,
     secrets: new StaticSecretProvider({
       smoobuApiKey: "smoobu-secret-value",
+      smoobuApiSecret: "smoobu-api-secret-value",
       smoobuWebhookSecret: "smoobu-webhook-secret-value",
       paypalClientId: "paypal-client-id-value",
       paypalClientSecret: "paypal-client-secret-value",
@@ -190,6 +191,24 @@ function makeCaptureCompletedEvent(bookingSessionId: string, captureId = "PAY-CA
   };
 }
 
+// Real PAYPAL PAYMENT.CAPTURE.COMPLETED webhooks have no purchase_units at
+// all — the resource IS the capture, and custom_id sits directly on it,
+// carrying the reservationPublicId (not the bookingSessionId). Confirmed
+// against a real PayPal sandbox event during the live-acceptance-test.md pass.
+function makeRealShapeCaptureCompletedEvent(reservationPublicId: string, captureId = "72Y09143HH2073016"): object {
+  return {
+    id: "WH-EVT-CAPTURE-COMPLETED-REAL-SHAPE",
+    event_type: "PAYMENT.CAPTURE.COMPLETED",
+    resource: {
+      id: captureId,
+      status: "COMPLETED",
+      amount: { currency_code: "USD", value: "119.00" },
+      custom_id: reservationPublicId,
+      supplementary_data: { related_ids: { order_id: "7NX848339D737724P" } },
+    },
+  };
+}
+
 function makeCaptureDeniedEvent(bookingSessionId: string): object {
   return {
     id: "WH-EVT-CAPTURE-DENIED-001",
@@ -346,6 +365,28 @@ test("POST /api/webhooks/paypal PAYMENT.CAPTURE.COMPLETED transitions session to
   const payment = await payments.getByBookingSessionId(bookingSessionId);
   expect(payment?.status).toBe("captured");
   expect(payment?.paypalCaptureId).toBe("PAY-CAP-456");
+});
+
+test("POST /api/webhooks/paypal PAYMENT.CAPTURE.COMPLETED resolves the session from the real capture-resource shape (no purchase_units, custom_id = reservationPublicId)", async () => {
+  global.fetch = makeHappyPathFetch() as typeof fetch;
+  const handler = createBookingApiHandler(config);
+  const { bookingSessionId } = await setupSessionWithPaypalOrder(handler);
+  const { reservationPublicId } = (await bookingSessions.getById(bookingSessionId))!;
+
+  const response = await handler(
+    makeWebhookEvent(makeRealShapeCaptureCompletedEvent(reservationPublicId))
+  );
+
+  expect(response.statusCode).toBe(200);
+  const body = JSON.parse(response.body);
+  expect(body.received).toBe(true);
+
+  const session = await bookingSessions.getById(bookingSessionId);
+  expect(session?.status).toBe("booking_confirmed");
+
+  const payment = await payments.getByBookingSessionId(bookingSessionId);
+  expect(payment?.status).toBe("captured");
+  expect(payment?.paypalCaptureId).toBe("72Y09143HH2073016");
 });
 
 test("POST /api/webhooks/paypal PAYMENT.CAPTURE.COMPLETED is idempotent: duplicate event returns 200 without re-processing", async () => {

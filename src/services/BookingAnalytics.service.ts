@@ -14,6 +14,18 @@
  *   booking_confirmed         → GA4: purchase / Meta: Purchase  (server-side preferred)
  *   manual_deposit_handoff_clicked → GA4: custom / Meta: Lead (optional)
  *   booking_cancelled         → GA4: custom
+ *
+ * GA4 OWNERSHIP — read before adding a gtag() call here.
+ *
+ * search, begin_checkout, add_payment_info and purchase are reported to GA4 by
+ * the API (booking-api/src/serverConversions.ts), NOT from this file. The
+ * Measurement Protocol has no deduplication mechanism beyond transaction_id on
+ * purchase, so firing them from both sides double-counts every one. The Meta
+ * pixel still fires them here because Meta dedupes on eventID — which is why the
+ * eventID values below must stay identical to the server's event_id.
+ *
+ * view_item is the exception: listing pages are static and open in a new tab, so
+ * the server never observes them and the browser is the only possible source.
  */
 
 import posthog from 'posthog-js';
@@ -132,6 +144,21 @@ function canTrack(): boolean {
   }
 }
 
+/**
+ * Returns true when the user has consented to marketing tracking.
+ *
+ * The Meta Pixel is only loaded when BOTH analytics and marketing are granted
+ * (see App.tsx), so gating fbq on 'analytics' alone produced calls that silently
+ * no-opped for anyone who accepted analytics only.
+ */
+function canTrackMarketing(): boolean {
+  try {
+    return CookieConsentService.hasConsent('marketing');
+  } catch {
+    return false;
+  }
+}
+
 /** Safe gtag call — no-ops if gtag is unavailable. */
 function gtag(event: string, params: Record<string, unknown>): void {
   if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
@@ -139,14 +166,33 @@ function gtag(event: string, params: Record<string, unknown>): void {
   }
 }
 
-/** Safe fbq call — no-ops if fbq is unavailable. */
-function fbq(event: string, params?: Record<string, unknown>): void {
-  if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
-    if (params) {
-      (window as any).fbq('track', event, params);
-    } else {
-      (window as any).fbq('track', event);
-    }
+/**
+ * Generates a Meta event ID for browser/server deduplication.
+ *
+ * When the same conversion is later sent via the Conversions API with the same
+ * eventID, Meta collapses the pair instead of counting it twice. Pass a stable
+ * key (e.g. the reservation ID) wherever one exists so the server can reproduce it.
+ */
+function metaEventId(stableKey?: string): string {
+  if (stableKey) return stableKey;
+  try {
+    return crypto.randomUUID();
+  } catch {
+    return `evt-${Math.random().toString(36).slice(2)}-${performance.now().toFixed(0)}`;
+  }
+}
+
+/** Safe fbq call — no-ops if fbq is unavailable or marketing consent is absent. */
+function fbq(event: string, params?: Record<string, unknown>, eventId?: string): void {
+  if (!canTrackMarketing()) return;
+  if (typeof window === 'undefined' || typeof (window as any).fbq !== 'function') return;
+
+  const options = eventId ? { eventID: eventId } : undefined;
+
+  if (params) {
+    (window as any).fbq('track', event, params, options);
+  } else {
+    (window as any).fbq('track', event, {}, options);
   }
 }
 
@@ -168,16 +214,13 @@ export function trackBookingSearch(props: BookingSearchProps): void {
 
   posthog.capture('booking_search', props);
 
-  gtag('search', {
-    event_category: 'booking',
-    arrival_date: props.arrival_date,
-    departure_date: props.departure_date,
-    guests: props.guests,
-    language: props.language,
-  });
-
   fbq('Search', {
     content_category: 'booking',
+    content_type: 'property',
+    search_string: `${props.arrival_date} → ${props.departure_date} · ${props.guests}`,
+    checkin_date: props.arrival_date,
+    checkout_date: props.departure_date,
+    num_adults: props.guests,
   });
 }
 
@@ -243,29 +286,17 @@ export function trackCheckoutStarted(props: CheckoutStartedProps): void {
 
   posthog.capture('checkout_started', props);
 
-  gtag('begin_checkout', {
-    value: centsToDecimal(props.value_cents),
-    currency: props.currency,
-    items: [
-      {
-        item_id: props.property_id,
-        item_name: props.property_name,
-        quantity: 1,
-        price: centsToDecimal(props.value_cents),
-      },
-    ],
-    arrival_date: props.arrival_date,
-    departure_date: props.departure_date,
-    guests: props.guests,
-    language: props.language,
-  });
-
   fbq('InitiateCheckout', {
     value: centsToDecimal(props.value_cents),
     currency: props.currency,
     content_ids: [props.property_id],
+    content_name: props.property_name,
     content_type: 'property',
-  });
+    num_items: 1,
+    checkin_date: props.arrival_date,
+    checkout_date: props.departure_date,
+    num_adults: props.guests,
+  }, metaEventId(props.quote_id));
 }
 
 /**
@@ -277,18 +308,12 @@ export function trackPaymentMethodSelected(props: PaymentMethodSelectedProps): v
 
   posthog.capture('payment_method_selected', props);
 
-  gtag('add_payment_info', {
-    value: centsToDecimal(props.value_cents),
-    currency: props.currency,
-    payment_type: props.payment_type,
-    language: props.language,
-  });
-
   fbq('AddPaymentInfo', {
     value: centsToDecimal(props.value_cents),
     currency: props.currency,
     content_ids: [props.property_id],
-  });
+    content_type: 'property',
+  }, metaEventId(`${props.quote_id}-${props.payment_type}`));
 }
 
 /**
@@ -330,26 +355,19 @@ export function trackBookingConfirmed(props: BookingConfirmedProps): void {
     language: props.language,
   });
 
-  gtag('purchase', {
-    transaction_id: props.reservation_id,
-    value: centsToDecimal(props.value_cents),
-    currency: props.currency,
-    items: [
-      {
-        item_id: props.property_id,
-        item_name: props.property_name,
-        quantity: 1,
-        price: centsToDecimal(props.value_cents),
-      },
-    ],
-  });
-
+  // eventID is the reservation ID so a server-side Conversions API Purchase for
+  // the same booking deduplicates instead of double-counting revenue.
   fbq('Purchase', {
     value: centsToDecimal(props.value_cents),
     currency: props.currency,
     content_ids: [props.property_id],
+    content_name: props.property_name,
     content_type: 'property',
-  });
+    num_items: 1,
+    checkin_date: props.arrival_date,
+    checkout_date: props.departure_date,
+    order_id: props.reservation_id,
+  }, metaEventId(props.reservation_id));
 }
 
 /**

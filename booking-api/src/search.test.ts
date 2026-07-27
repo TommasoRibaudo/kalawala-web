@@ -1,5 +1,6 @@
 import { createBookingApiHandler } from "./app";
 import { InMemoryBookingSessionRepository } from "./bookingSessions";
+import { clearStayRatesCache } from "./search";
 import { BOOKING_PROPERTIES } from "./propertyCatalog";
 import { StaticSecretProvider } from "./secrets";
 import { BookingApiConfig, LambdaHttpRequest } from "./types";
@@ -9,6 +10,7 @@ const config: BookingApiConfig = {
   maxBodyBytes: 64 * 1024,
   secrets: new StaticSecretProvider({
     smoobuApiKey: "smoobu-secret-value",
+    smoobuApiSecret: "smoobu-api-secret-value",
     smoobuWebhookSecret: "smoobu-webhook-secret-value",
     paypalClientId: "paypal-client-id-value",
     paypalClientSecret: "paypal-client-secret-value",
@@ -160,7 +162,7 @@ test("POST /api/search calls Smoobu availability and returns safe property summa
 
   const [, init] = fetchFn.mock.calls[0];
   expect(new URL(fetchFn.mock.calls[0][0].toString()).pathname).toBe("/booking/checkApartmentAvailability");
-  expect((init?.headers as Record<string, string>)["Api-Key"]).toBe("smoobu-secret-value");
+  expect((init?.headers as Record<string, string>)["X-API-Key"]).toBe("smoobu-secret-value");
   expect(JSON.parse(init?.body as string)).toEqual({
     arrivalDate: "2099-06-10",
     departureDate: "2099-06-14",
@@ -373,4 +375,215 @@ test("POST /api/search uses English listing URLs and drops unknown or unpriced S
   });
   expect(JSON.stringify(body.properties)).not.toContain("999");
   expect(JSON.stringify(body.properties)).not.toContain("Tucano");
+});
+
+// ── Long-stay discounts ──────────────────────────────────────────────────────
+//
+// Smoobu applies them silently: the availability total simply arrives lower than
+// the rack rate, with no breakdown. The baseline is rebuilt from /api/rates,
+// which prices nights individually and so knows nothing about stay length.
+
+beforeEach(async () => {
+  await clearStayRatesCache();
+});
+
+/** Builds a Smoobu rates payload with one flat nightly price per apartment. */
+function ratesFor(apartmentId: number, dates: string[], nightlyPrice: number) {
+  return {
+    data: {
+      [String(apartmentId)]: Object.fromEntries(
+        dates.map((date) => [date, { price: nightlyPrice, min_length_of_stay: 1, available: 1 }])
+      ),
+    },
+  };
+}
+
+const SEVEN_NIGHTS = [
+  "2099-06-10",
+  "2099-06-11",
+  "2099-06-12",
+  "2099-06-13",
+  "2099-06-14",
+  "2099-06-15",
+  "2099-06-16",
+];
+
+function mockAvailabilityAndRates(availabilityBody: unknown, ratesBody: unknown) {
+  const fetchFn = jest.fn(async (url: string | URL) => {
+    const pathname = new URL(url.toString()).pathname;
+    if (pathname === "/api/rates") {
+      return jsonResponse(ratesBody);
+    }
+    return jsonResponse(availabilityBody);
+  });
+  global.fetch = fetchFn as typeof fetch;
+  return fetchFn;
+}
+
+test("POST /api/search reports the long-stay discount Smoobu applied silently", async () => {
+  // Rack rate 7 x $150 = $1050; Smoobu quotes $892.50 for the same nights.
+  const fetchFn = mockAvailabilityAndRates(
+    {
+      availableApartments: [301061],
+      prices: { "301061": { price: 892.5, currency: "USD" } },
+      errorMessages: {},
+    },
+    ratesFor(301061, SEVEN_NIGHTS, 150)
+  );
+  const handler = createBookingApiHandler(config);
+
+  const response = await handler(
+    makeSearchEvent({
+      arrivalDate: "2099-06-10",
+      departureDate: "2099-06-17",
+      guests: 2,
+      language: "en",
+    })
+  );
+
+  expect(response.statusCode).toBe(200);
+  const price = JSON.parse(response.body).properties[0].price;
+  expect(price).toMatchObject({
+    totalAmountCents: 89250,
+    nights: 7,
+    discount: {
+      source: "long_stay",
+      baseTotalCents: 105000,
+      baseNightlyAverageCents: 15000,
+      amountCents: 15750,
+      percentage: 15,
+    },
+  });
+
+  // Rates are asked for the nights slept in — the departure date is not one.
+  const ratesCall = fetchFn.mock.calls.find(([url]) => new URL(url.toString()).pathname === "/api/rates");
+  const ratesUrl = new URL(ratesCall![0].toString());
+  expect(ratesUrl.searchParams.get("start_date")).toBe("2099-06-10");
+  expect(ratesUrl.searchParams.get("end_date")).toBe("2099-06-16");
+});
+
+test("POST /api/search attributes the gap to the code when the search carried one", async () => {
+  mockAvailabilityAndRates(
+    {
+      availableApartments: [301061],
+      prices: { "301061": { price: 892.5, currency: "USD" } },
+      errorMessages: {},
+    },
+    ratesFor(301061, SEVEN_NIGHTS, 150)
+  );
+  const handler = createBookingApiHandler(config);
+
+  const response = await handler(
+    makeSearchEvent({
+      arrivalDate: "2099-06-10",
+      departureDate: "2099-06-17",
+      guests: 2,
+      language: "en",
+      discountCode: "5OFF",
+    })
+  );
+
+  expect(JSON.parse(response.body).properties[0].price.discount.source).toBe("discount_code");
+});
+
+test("POST /api/search spends no rates call on a stay too short to qualify", async () => {
+  const fetchFn = mockAvailabilityAndRates(
+    {
+      availableApartments: [301061],
+      prices: { "301061": { price: 510, currency: "USD" } },
+      errorMessages: {},
+    },
+    ratesFor(301061, ["2099-06-10"], 150)
+  );
+  const handler = createBookingApiHandler(config);
+
+  const response = await handler(
+    makeSearchEvent({
+      arrivalDate: "2099-06-10",
+      departureDate: "2099-06-14",
+      guests: 2,
+      language: "en",
+    })
+  );
+
+  expect(JSON.parse(response.body).properties[0].price).not.toHaveProperty("discount");
+  expect(fetchFn.mock.calls.some(([url]) => new URL(url.toString()).pathname === "/api/rates")).toBe(false);
+});
+
+test("POST /api/search shows no discount when the quote is above the rack rate", async () => {
+  // Extra-guest pricing puts the quote above the sum of nightly rates. That is a
+  // surcharge, not a negative saving, and must not be advertised either way.
+  mockAvailabilityAndRates(
+    {
+      availableApartments: [301061],
+      prices: { "301061": { price: 1200, currency: "USD" } },
+      errorMessages: {},
+    },
+    ratesFor(301061, SEVEN_NIGHTS, 150)
+  );
+  const handler = createBookingApiHandler(config);
+
+  const response = await handler(
+    makeSearchEvent({
+      arrivalDate: "2099-06-10",
+      departureDate: "2099-06-17",
+      guests: 2,
+      language: "en",
+    })
+  );
+
+  expect(JSON.parse(response.body).properties[0].price).not.toHaveProperty("discount");
+});
+
+test("POST /api/search still returns prices when the rack-rate lookup fails", async () => {
+  global.fetch = jest.fn(async (url: string | URL) => {
+    const pathname = new URL(url.toString()).pathname;
+    if (pathname === "/api/rates") {
+      return jsonResponse({ detail: "rate limited" }, { status: 429 });
+    }
+    return jsonResponse({
+      availableApartments: [301061],
+      prices: { "301061": { price: 892.5, currency: "USD" } },
+      errorMessages: {},
+    });
+  }) as typeof fetch;
+  const handler = createBookingApiHandler(config);
+
+  const response = await handler(
+    makeSearchEvent({
+      arrivalDate: "2099-06-10",
+      departureDate: "2099-06-17",
+      guests: 2,
+      language: "en",
+    })
+  );
+
+  expect(response.statusCode).toBe(200);
+  const price = JSON.parse(response.body).properties[0].price;
+  expect(price.totalAmountCents).toBe(89250);
+  expect(price).not.toHaveProperty("discount");
+});
+
+test("POST /api/search ignores a partial rate table rather than inventing a discount", async () => {
+  // One night missing from the rate table would understate the rack rate.
+  mockAvailabilityAndRates(
+    {
+      availableApartments: [301061],
+      prices: { "301061": { price: 892.5, currency: "USD" } },
+      errorMessages: {},
+    },
+    ratesFor(301061, SEVEN_NIGHTS.slice(0, 6), 150)
+  );
+  const handler = createBookingApiHandler(config);
+
+  const response = await handler(
+    makeSearchEvent({
+      arrivalDate: "2099-06-10",
+      departureDate: "2099-06-17",
+      guests: 2,
+      language: "en",
+    })
+  );
+
+  expect(JSON.parse(response.body).properties[0].price).not.toHaveProperty("discount");
 });

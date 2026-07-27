@@ -5,9 +5,7 @@ import OurHomes from "../../components/OurHomes/OurHomes.component";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
-import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
-import BookingSearchWidget from "../../components/BookingSearchWidget/BookingSearchWidget.component";
 import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
 
 import { houseDataEngList } from '../../utils/constants';
@@ -61,7 +59,6 @@ const Home = () => {
       <WelcomeSlider />
       <FixedNavigation isBlog={false} />
       <HelpMeChoose title="Find your" titleHighlight="Ideal Stay" options={helpMeChooseOptions} />
-      <BookingSearchWidget isSpanish={false} variant="hero" />
       <HomeReviews isSpanish={false} />
       <OurHomes houseDataList={houseDataEngList} />
       <OurOtherHomes />
@@ -71,8 +68,6 @@ const Home = () => {
       {/* <Testimonial /> */}
       <ContactUs />
 
-      {/* Message Tip Container */}
-      <MessageTipContainer />
     </div>
   )
 }

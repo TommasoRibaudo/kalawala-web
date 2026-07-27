@@ -165,6 +165,22 @@ locals {
     SMOOBU_SECRET           = var.smoobu_secret_name
     SMOOBU_CUSTOMER_ID      = tostring(var.smoobu_customer_id)
     PAYPAL_SECRET           = var.paypal_secret_name
+    PAYPAL_BASE_URL         = var.paypal_base_url
+    PAYPAL_HOLD_TTL_MINUTES = tostring(var.paypal_hold_ttl_minutes)
+    DEPOSIT_HOLD_TTL_HOURS  = tostring(var.deposit_hold_ttl_hours)
+
+    # Base URL for the staff confirm/reject links emailed on every manual
+    # deposit booking (depositHolds.ts buildStaffActionUrl). Left unset, this
+    # silently rendered schemeless links like "/api/staff/deposit-review/..."
+    # that clients mangled into "http://api/..." — found during the
+    # live-acceptance-test.md pass.
+    #
+    # Built from the REST API id rather than aws_api_gateway_stage.main.invoke_url:
+    # the stage depends on the deployment, which depends on the integrations,
+    # which depend on these Lambda functions — referencing the stage here
+    # creates a cycle. stage_name is always var.environment (see api_gateway.tf),
+    # so this reproduces the same invoke_url without the cycle.
+    DEPOSIT_STAFF_CONFIRM_BASE_URL = "https://${aws_api_gateway_rest_api.main.id}.execute-api.${data.aws_region.current.name}.amazonaws.com/${var.environment}"
 
     # In-Lambda TTL cache (src/memoryCache.ts). There is no Redis client in
     # booking-api's dependencies — src/cacheFactory.ts:71 RedisAdapter is a
@@ -199,6 +215,14 @@ locals {
     # from the combined Secrets Manager entry below as `captchaSecretKey`, so the
     # live secret never lands in Lambda env vars or Terraform state.
     CAPTCHA_PROVIDER = var.captcha_provider
+
+    # Server-side conversion reporting. Only the public IDs live here — the GA4
+    # API secret (`ga4ApiSecret`) and Meta CAPI token (`metaCapiAccessToken`) are
+    # read from the combined Secrets Manager entry below, so neither lands in
+    # Lambda env vars or Terraform state. With either half absent the reporter is
+    # inert, which is what lets the code deploy before the secrets exist.
+    GA4_MEASUREMENT_ID = var.ga4_measurement_id
+    META_PIXEL_ID      = var.meta_pixel_id
 
     # The booking API reads all provider secrets from a single combined
     # Secrets Manager entry via the Lambda Extensions HTTP cache layer.
@@ -514,4 +538,77 @@ resource "aws_lambda_permission" "payment_reconciliation_eventbridge" {
   function_name = aws_lambda_function.payment_reconciliation.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.payment_reconciliation_schedule.arn
+}
+
+##############################################################################
+# migration Lambda
+#
+# Applies pending SQL migrations from inside the VPC.
+#
+# RDS is private and its security group admits 5432 from the Lambda security
+# group only, so `npm run migrate` cannot reach it from a laptop or a GitHub
+# Actions runner. This function sits in that security group and is the
+# sanctioned way to migrate a deployed environment.
+#
+# Invoked manually (or by CI before a code deploy) — never on a schedule, and
+# deliberately given no trigger. Ordering matters: a migration must land BEFORE
+# the code that reads the new columns, or every query on the changed table fails.
+##############################################################################
+
+data "archive_file" "migration_placeholder" {
+  type        = "zip"
+  source_dir  = "${path.module}/lambda/migration"
+  output_path = "${path.module}/lambda/migration.zip"
+}
+
+resource "aws_cloudwatch_log_group" "migration" {
+  name              = "/aws/lambda/${var.project}-${var.environment}-migration"
+  retention_in_days = local.cloudwatch_log_retention_days
+
+  tags = {
+    Name = "${var.project}-${var.environment}-migration-logs"
+  }
+}
+
+resource "aws_lambda_function" "migration" {
+  function_name = "${var.project}-${var.environment}-migration"
+  description   = "Kalawala schema migration runner: applies pending booking-api migrations against RDS."
+
+  runtime       = "nodejs22.x"
+  handler       = "migrationHandler.handler"
+  architectures = ["arm64"]
+
+  role = aws_iam_role.lambda_exec.arn
+
+  filename         = data.archive_file.migration_placeholder.output_path
+  source_code_hash = data.archive_file.migration_placeholder.output_base64sha256
+
+  memory_size = 512
+  # Generous: the whole run is one transaction holding an exclusive lock, and a
+  # migration that rewrites a large table must not be cut off half way.
+  timeout = 300
+
+  # Reserved at 1 so two invocations can never run concurrently. The exclusive
+  # table lock already serialises them, but a second invocation would block on
+  # that lock and burn its whole timeout waiting.
+  reserved_concurrent_executions = 1
+
+  vpc_config {
+    subnet_ids         = aws_subnet.private[*].id
+    security_group_ids = [aws_security_group.lambda.id]
+  }
+
+  environment {
+    variables = local.lambda_common_env
+  }
+
+  depends_on = [
+    aws_cloudwatch_log_group.migration,
+    aws_iam_role_policy_attachment.lambda_basic_execution,
+    aws_iam_role_policy_attachment.lambda_vpc_access,
+  ]
+
+  tags = {
+    Name = "${var.project}-${var.environment}-migration"
+  }
 }

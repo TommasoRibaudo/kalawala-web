@@ -8,7 +8,6 @@ import PortfolioES from "../../components/Portfolio/Portfolio.componentES";
 import ContactUsES from "../../components/ContactUs/ContactUs.componentES";
 import OurOtherHomesES from "../../components/OurOtherHomes/OurOtherHomes.ComponentES";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
-import BookingSearchWidget from "../../components/BookingSearchWidget/BookingSearchWidget.component";
 import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
 
 const helpMeChooseOptionsES = [
@@ -58,7 +57,6 @@ const HomeES = () => {
       <WelcomeSliderES />
       <FixedNavigationES isBlog={false}/>
       <HelpMeChoose title="Elige tu" titleHighlight="Estadía Ideal" options={helpMeChooseOptionsES} />
-      <BookingSearchWidget isSpanish={true} variant="hero" />
       <HomeReviews isSpanish={true} />
       <OurHomesES houseDataList={houseDataList}/>
       <OurOtherHomesES/>

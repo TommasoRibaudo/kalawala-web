@@ -1,3 +1,4 @@
+import { createHash, createHmac } from "node:crypto";
 import { SmoobuClient, SmoobuProviderError, parseRateLimitHeaders } from "./smoobuClient";
 import { RouteObservability } from "./types";
 
@@ -66,9 +67,11 @@ test("SmoobuClient: sends API key server-side and parses rates with rate-limit h
   const now = () => 1_770_998_400_000;
   const client = new SmoobuClient({
     apiKey: "smoobu-secret",
+    apiSecret: "smoobu-hmac-secret",
     config: baseConfig,
     fetchFn,
     now,
+    nonceFn: () => "test-nonce-1",
   });
 
   const response = await client.getRates<{ data: Record<string, unknown> }>({
@@ -83,7 +86,25 @@ test("SmoobuClient: sends API key server-side and parses rates with rate-limit h
   expect(url.searchParams.getAll("apartments[]")).toEqual(["297", "301"]);
   expect(url.searchParams.get("start_date")).toBe("2026-06-01");
   expect(url.searchParams.get("end_date")).toBe("2026-06-30");
-  expect((fetchCalls[0].init?.headers as Record<string, string>)["Api-Key"]).toBe("smoobu-secret");
+
+  const headers = fetchCalls[0].init?.headers as Record<string, string>;
+  const expectedTimestamp = new Date(now()).toISOString().replace(/\.\d{3}Z$/, "Z");
+  const expectedBodyHash = createHash("sha256").update("", "utf8").digest("hex");
+  const expectedCanonical = [
+    "GET",
+    "/api/rates",
+    "apartments%5B%5D=297&apartments%5B%5D=301&end_date=2026-06-30&start_date=2026-06-01",
+    expectedTimestamp,
+    "test-nonce-1",
+    expectedBodyHash,
+    "smoobu-secret",
+  ].join("\n");
+  const expectedSignature = createHmac("sha256", "smoobu-hmac-secret").update(expectedCanonical, "utf8").digest("base64");
+
+  expect(headers["X-API-Key"]).toBe("smoobu-secret");
+  expect(headers["X-Timestamp"]).toBe(expectedTimestamp);
+  expect(headers["X-Nonce"]).toBe("test-nonce-1");
+  expect(headers["X-Signature"]).toBe(expectedSignature);
   expect(response.data.data).toHaveProperty("297");
   expect(response.rateLimit).toEqual({
     limit: 1000,
@@ -102,6 +123,7 @@ test("SmoobuClient: retries idempotent Smoobu calls with exponential backoff", a
   const { observability, providerCalls } = createObservabilitySink();
   const client = new SmoobuClient({
     apiKey: "smoobu-secret",
+    apiSecret: "smoobu-hmac-secret",
     config: baseConfig,
     fetchFn,
     sleep: async (ms) => {
@@ -152,6 +174,7 @@ test("SmoobuClient: honors Smoobu rate-limit retry-after timestamp before retryi
     .mockResolvedValueOnce(jsonResponse({ data: {} }));
   const client = new SmoobuClient({
     apiKey: "smoobu-secret",
+    apiSecret: "smoobu-hmac-secret",
     config: baseConfig,
     fetchFn,
     sleep: async (ms) => {
@@ -188,6 +211,7 @@ test("SmoobuClient: refuses to sleep past maxRateLimitDelayMs for known rate-lim
   );
   const client = new SmoobuClient({
     apiKey: "smoobu-secret",
+    apiSecret: "smoobu-hmac-secret",
     config: {
       ...baseConfig,
       maxRateLimitDelayMs: 1_000,
@@ -222,6 +246,7 @@ test("SmoobuClient: does not retry non-idempotent reservation creation by defaul
   const fetchFn = jest.fn().mockResolvedValue(jsonResponse({ detail: "temporary" }, { status: 503 }));
   const client = new SmoobuClient({
     apiKey: "smoobu-secret",
+    apiSecret: "smoobu-hmac-secret",
     config: baseConfig,
     fetchFn,
     sleep: async (ms) => {
@@ -251,6 +276,7 @@ test("SmoobuClient: maps fetch AbortError to provider_timeout", async () => {
   const fetchFn = jest.fn().mockRejectedValue(abortError);
   const client = new SmoobuClient({
     apiKey: "smoobu-secret",
+    apiSecret: "smoobu-hmac-secret",
     config: {
       ...baseConfig,
       maxRetries: 0,
@@ -269,6 +295,7 @@ test("SmoobuClient: maps Smoobu auth failures to provider_auth_failed", async ()
   const fetchFn = jest.fn().mockResolvedValue(jsonResponse({ detail: "Unauthorized" }, { status: 401 }));
   const client = new SmoobuClient({
     apiKey: "smoobu-secret",
+    apiSecret: "smoobu-hmac-secret",
     config: baseConfig,
     fetchFn,
   });
@@ -290,6 +317,7 @@ test("SmoobuClient: maps successful invalid JSON to a retryable provider error",
   );
   const client = new SmoobuClient({
     apiKey: "smoobu-secret",
+    apiSecret: "smoobu-hmac-secret",
     config: baseConfig,
     fetchFn,
   });

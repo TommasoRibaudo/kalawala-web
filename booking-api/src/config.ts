@@ -167,6 +167,15 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
       logLevel: parseLogLevel(env.BOOKING_API_LOG_LEVEL),
       metricsEnabled: parseBoolean(env.BOOKING_API_METRICS_ENABLED, true),
     },
+    // The API secret and CAPI token are resolved lazily from Secrets Manager at
+    // call time, so only the public IDs live here. With both halves absent the
+    // reporter is inert, which is what lets this ship before the secrets exist.
+    serverConversions: {
+      ...(env.GA4_MEASUREMENT_ID?.trim() ? { ga4MeasurementId: env.GA4_MEASUREMENT_ID.trim() } : {}),
+      ...(env.META_PIXEL_ID?.trim() ? { metaPixelId: env.META_PIXEL_ID.trim() } : {}),
+      ...(env.META_TEST_EVENT_CODE?.trim() ? { metaTestEventCode: env.META_TEST_EVENT_CODE.trim() } : {}),
+      debug: parseBoolean(env.SERVER_CONVERSIONS_DEBUG, false),
+    },
   };
 }
 

@@ -114,7 +114,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
     propertyId: "3548c2c7-f7b2-4d5f-8e6f-e01f717f4557",
     smoobuApartmentId: 1516846,
     slug: "Areka",
-    name: "Areka",
+    name: "Casa Areka",
     guestCapacity: 2,
     thumbnailUrl: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000",
     amenities: [
@@ -129,7 +129,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
     propertyId: "cba02c24-e7e4-4898-a7d8-c7ae2277a8b1",
     smoobuApartmentId: 1516849,
     slug: "Plumeria",
-    name: "Plumeria",
+    name: "Casa Plumeria",
     guestCapacity: 2,
     thumbnailUrl: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000",
     amenities: [
@@ -144,7 +144,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
     propertyId: "c4ff5d9f-ef6d-43f8-8edc-41b0037215de",
     smoobuApartmentId: 1597723,
     slug: "Giulia",
-    name: "Giulia",
+    name: "Casa Giulia",
     guestCapacity: 4,
     thumbnailUrl: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000",
     amenities: [
@@ -159,7 +159,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
     propertyId: "bc2470e7-3f18-43e3-91eb-ac3bf3c82ca4",
     smoobuApartmentId: 2946826,
     slug: "Delfin",
-    name: "Delfin",
+    name: "Casa Delfin",
     guestCapacity: 6,
     thumbnailUrl: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000",
     amenities: [
@@ -168,10 +168,18 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
       { code: "ac", label: "A/C" },
       { code: "wifi", label: "100Mbps WiFi" },
       { code: "parking", label: "Private fenced parking" },
-      { code: "pet", label: "Pet friendly" },
     ],
   },
 ];
+
+/**
+ * Whether the home accepts a pet. Derived from the `pet` amenity so the badge a
+ * guest sees on the card and the filter behind the "travelling with a pet"
+ * toggle can never disagree: Casa Geco, Rana, Tucano and Pappagallo.
+ */
+export function isPetFriendly(property: BookingProperty): boolean {
+  return property.amenities.some((amenity) => amenity.code === "pet");
+}
 
 export const BOOKING_PROPERTIES_BY_SMOOBU_ID = new Map(
   BOOKING_PROPERTIES.map((property) => [property.smoobuApartmentId, property])

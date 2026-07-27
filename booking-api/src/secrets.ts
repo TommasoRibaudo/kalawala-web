@@ -7,6 +7,7 @@ const DEFAULT_SECRET_CACHE_TTL_MS = 5 * 60 * 1000;
 const DEFAULT_FETCH_TIMEOUT_MS = 2_000;
 const REQUIRED_FIELDS: Array<keyof BookingProviderSecrets> = [
   "smoobuApiKey",
+  "smoobuApiSecret",
   "smoobuWebhookSecret",
   "paypalClientId",
   "paypalClientSecret",
@@ -191,11 +192,19 @@ export function validateBookingSecrets(value: unknown, sourceLabel = "secrets"):
   }
 
   // Optional fields: absence is valid, but a present-and-non-string value is not.
-  const captchaSecretKey = body.captchaSecretKey;
-  if (typeof captchaSecretKey === "string" && captchaSecretKey.trim()) {
-    result.captchaSecretKey = captchaSecretKey.trim();
-  } else if (captchaSecretKey !== undefined && captchaSecretKey !== null && typeof captchaSecretKey !== "string") {
-    errors.captchaSecretKey = ["string_required"];
+  const optionalFields: Array<keyof BookingProviderSecrets> = [
+    "captchaSecretKey",
+    "ga4ApiSecret",
+    "metaCapiAccessToken",
+  ];
+
+  for (const field of optionalFields) {
+    const raw = body[field];
+    if (typeof raw === "string" && raw.trim()) {
+      result[field] = raw.trim();
+    } else if (raw !== undefined && raw !== null && typeof raw !== "string") {
+      errors[field] = ["string_required"];
+    }
   }
 
   validateBase64Key(result.bookingEncryptionKeyBase64, "bookingEncryptionKeyBase64", errors);
@@ -211,6 +220,7 @@ export function validateBookingSecrets(value: unknown, sourceLabel = "secrets"):
 function readRawEnvSecrets(env: NodeJS.ProcessEnv): Partial<BookingProviderSecrets> | null {
   const raw: Partial<BookingProviderSecrets> = {
     smoobuApiKey: trimOptional(env.SMOOBU_API_KEY),
+    smoobuApiSecret: trimOptional(env.SMOOBU_API_SECRET),
     smoobuWebhookSecret: trimOptional(env.SMOOBU_WEBHOOK_SECRET),
     paypalClientId: trimOptional(env.PAYPAL_CLIENT_ID),
     paypalClientSecret: trimOptional(env.PAYPAL_CLIENT_SECRET),
@@ -220,14 +230,22 @@ function readRawEnvSecrets(env: NodeJS.ProcessEnv): Partial<BookingProviderSecre
     rdsConnectionString: trimOptional(env.BOOKING_API_RDS_CONNECTION_STRING),
   };
 
-  // CAPTCHA_SECRET_KEY is optional and must not, on its own, switch the API into
+  // These are optional and must not, on their own, switch the API into
   // env-secret mode — doing so would fail required-field validation and 503.
   if (!Object.values(raw).some(Boolean)) {
     return null;
   }
 
   const captchaSecretKey = trimOptional(env.CAPTCHA_SECRET_KEY);
-  return captchaSecretKey ? { ...raw, captchaSecretKey } : raw;
+  const ga4ApiSecret = trimOptional(env.GA4_API_SECRET);
+  const metaCapiAccessToken = trimOptional(env.META_CAPI_ACCESS_TOKEN);
+
+  return {
+    ...raw,
+    ...(captchaSecretKey ? { captchaSecretKey } : {}),
+    ...(ga4ApiSecret ? { ga4ApiSecret } : {}),
+    ...(metaCapiAccessToken ? { metaCapiAccessToken } : {}),
+  };
 }
 
 function requireSecretString(

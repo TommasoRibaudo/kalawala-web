@@ -3,6 +3,7 @@ import { BookingSessionRepository } from "./bookingSessions";
 import { createEmailClient } from "./email";
 import { HoldRepository } from "./holds";
 import { ApiError } from "./http/errors";
+import { reportServerConversion } from "./serverConversions";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
 import { PaymentRepository } from "./payments";
@@ -448,6 +449,35 @@ async function applyPayPalWebhookEvent(
   }
 }
 
+// PAYPAL webhook `resource` shapes differ by event type. ORDER-shaped
+// resources (e.g. CHECKOUT.ORDER.APPROVED) carry purchase_units, where
+// reference_id is the internal bookingSessionId and custom_id is nested one
+// level down. CAPTURE-shaped resources (e.g. PAYMENT.CAPTURE.COMPLETED) have
+// no purchase_units at all — custom_id sits directly on the resource, and it
+// carries the reservationPublicId (KWL-XXXXXXXX), not the bookingSessionId.
+// Real PayPal payloads confirmed this during the live-acceptance-test.md pass;
+// the existing mocks only exercised the ORDER shape, so this was invisible to
+// every unit test.
+async function resolveSessionFromWebhookResource(
+  event: PayPalWebhookEvent,
+  sessions: BookingSessionRepository
+): ReturnType<BookingSessionRepository["getById"]> {
+  const bookingSessionId = event.resource?.purchase_units?.[0]?.reference_id;
+  if (bookingSessionId) {
+    const session = await sessions.getById(bookingSessionId);
+    if (session) {
+      return session;
+    }
+  }
+
+  const reservationPublicId = event.resource?.purchase_units?.[0]?.custom_id ?? event.resource?.custom_id;
+  if (reservationPublicId) {
+    return sessions.getByReservationPublicId(reservationPublicId);
+  }
+
+  return undefined;
+}
+
 async function handleCaptureCompleted(
   event: PayPalWebhookEvent,
   config: BookingApiConfig,
@@ -455,11 +485,8 @@ async function handleCaptureCompleted(
 ): Promise<void> {
   const capture = event.resource?.purchase_units?.[0]?.payments?.captures?.[0];
   const captureId = capture?.id ?? event.resource?.id;
-  // reference_id on purchase_unit is the bookingSessionId
-  const bookingSessionId = event.resource?.purchase_units?.[0]?.reference_id
-    ?? event.resource?.custom_id;
 
-  if (!captureId || !bookingSessionId) {
+  if (!captureId) {
     request.observability.recordStateTransition({
       entityType: "webhook_event",
       toState: "ignored",
@@ -477,7 +504,7 @@ async function handleCaptureCompleted(
   }
   const payments = getPaymentRepository(config);
 
-  const session = await sessions.getById(bookingSessionId);
+  const session = await resolveSessionFromWebhookResource(event, sessions);
   if (!session) {
     request.observability.recordStateTransition({
       entityType: "webhook_event",
@@ -528,10 +555,17 @@ async function handleCaptureCompleted(
     capturedAt: confirmedAt,
   });
 
-  await sessions.markBookingConfirmed({
+  const confirmedSession = await sessions.markBookingConfirmed({
     bookingSessionId: session.id,
     confirmedAt,
   });
+
+  await reportServerConversion(
+    "purchase",
+    confirmedSession,
+    config.serverConversions,
+    request.observability.logger
+  );
 
   request.observability.recordStateTransition({
     entityType: "booking_session",
@@ -601,10 +635,14 @@ async function handleCaptureFailed(
   request: RouteRequest,
   eventType: string
 ): Promise<void> {
-  const bookingSessionId = event.resource?.purchase_units?.[0]?.reference_id
-    ?? event.resource?.custom_id;
+  const sessions = config.bookingSessions;
+  if (!sessions) {
+    throw new ApiError(503, "database_unavailable", "Booking storage is not configured.", { retryable: true });
+  }
+  const payments = getPaymentRepository(config);
 
-  if (!bookingSessionId) {
+  const session = await resolveSessionFromWebhookResource(event, sessions);
+  if (!session) {
     request.observability.recordStateTransition({
       entityType: "webhook_event",
       toState: "ignored",
@@ -613,17 +651,6 @@ async function handleCaptureFailed(
       provider: "paypal",
       errorCode: "missing_session_id",
     });
-    return;
-  }
-
-  const sessions = config.bookingSessions;
-  if (!sessions) {
-    throw new ApiError(503, "database_unavailable", "Booking storage is not configured.", { retryable: true });
-  }
-  const payments = getPaymentRepository(config);
-
-  const session = await sessions.getById(bookingSessionId);
-  if (!session) {
     return;
   }
 

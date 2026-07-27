@@ -227,3 +227,8 @@ output "deposit_receipts_bucket_name" {
   description = "Private S3 bucket holding guest deposit receipt uploads."
   value       = aws_s3_bucket.deposit_receipts.bucket
 }
+
+output "migration_lambda_name" {
+  description = "Name of the schema migration runner. Invoke before deploying code that reads new columns."
+  value       = aws_lambda_function.migration.function_name
+}

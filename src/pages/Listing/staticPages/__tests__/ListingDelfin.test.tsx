@@ -16,10 +16,19 @@ jest.mock('@react-hook/media-query', () => ({
   useMediaQuery: jest.fn(() => false), // Default to desktop view
 }));
 
-// Mock the Smoobu component
-jest.mock('../../../../components/Smoobu/Smoobu.component', () => {
-  return function MockSmoobu({ homeCode }: { homeCode: number }) {
-    return <div data-testid="smoobu-component" data-home-code={homeCode}>Smoobu Widget</div>;
+// Mock the booking search widget that replaced the Smoobu iframe
+jest.mock('../../../../components/BookingSearchWidget/BookingSearchWidget.component', () => {
+  return function MockBookingSearchWidget({ isSpanish, defaultGuests, variant }: { isSpanish: boolean; defaultGuests?: number; variant?: string }) {
+    return (
+      <div
+        data-testid="booking-search-widget"
+        data-is-spanish={String(isSpanish)}
+        data-default-guests={defaultGuests}
+        data-variant={variant}
+      >
+        Booking Search
+      </div>
+    );
   };
 });
 
@@ -100,7 +109,7 @@ describe('ListingDelfin Component', () => {
     expect(screen.getByTestId('fixed-navigation')).toBeInTheDocument();
     expect(screen.getByText('House Delfines')).toBeInTheDocument();
     expect(screen.getByTestId('images-container')).toBeInTheDocument();
-    expect(screen.getByTestId('smoobu-component')).toBeInTheDocument();
+    expect(screen.getByTestId('booking-search-widget')).toBeInTheDocument();
   });
 
   test('should lookup Delfin data correctly using houseLangCode', () => {
@@ -118,15 +127,17 @@ describe('ListingDelfin Component', () => {
     expect(delfinData?.houseCode).toBe(10);
   });
 
-  test('should display correct Smoobu component with houseCode 10', () => {
+  test('should seed the booking search widget with the property capacity', () => {
     render(
       <BrowserRouter>
         <ListingDelfin />
       </BrowserRouter>
     );
     
-    const smoobuComponent = screen.getByTestId('smoobu-component');
-    expect(smoobuComponent).toHaveAttribute('data-home-code', '10');
+    const bookingWidget = screen.getByTestId('booking-search-widget');
+    expect(bookingWidget).toHaveAttribute('data-default-guests', '6');
+    expect(bookingWidget).toHaveAttribute('data-variant', 'sidebar');
+    expect(bookingWidget).toHaveAttribute('data-is-spanish', 'false');
   });
 
   test('should display amenities excluding pet-friendly', () => {

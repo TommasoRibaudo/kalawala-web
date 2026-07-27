@@ -13,13 +13,11 @@ import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
-import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
-import CalendarWithPriceDots from "../../../components/CalendarWithPriceDots/CalendarWithPriceDots.component";
 
 
 const ListingRana = () => {
@@ -127,8 +125,7 @@ const ListingRana = () => {
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
                     <PriceConfirmationSection propertyKey="Rana" isSpanish={false} />
-                    <BookingSearchWidget isSpanish={false} defaultGuests={houseData!.guestNumber} variant="sidebar" />
-                    <CalendarWithPriceDots apartmentSlug="Rana" language="en" />
+                    <BookingSearchWidget isSpanish={false} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Rana" />
                 </Col>
             </Row>
 
@@ -137,8 +134,6 @@ const ListingRana = () => {
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
 
-            {/* Message Tip Container */}
-            <MessageTipContainer />
         </div>
     )
 

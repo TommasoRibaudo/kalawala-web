@@ -561,6 +561,13 @@ const PortalDetailPage = () => {
                         </dd>
                       </div>
 
+                      {reservation.hasPet && (
+                        <div className="portal-detail-summary__row">
+                          <dt>{strings.pet}</dt>
+                          <dd>{strings.petTravelling}</dd>
+                        </div>
+                      )}
+
                       {reservation.price && (
                         <div className="portal-detail-summary__row">
                           <dt>{strings.totalPrice}</dt>

@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import posthog from 'posthog-js';
 import { CookieConsentService } from '../../services/CookieConsent.service';
+import { resetCalendarMonthCache } from '../../services/calendarMonthCache';
 import CalendarWithPriceDots from './CalendarWithPriceDots.component';
 
 jest.mock('posthog-js', () => ({
@@ -107,14 +108,18 @@ const fallbackShapeResponse = {
 
 describe('CalendarWithPriceDots', () => {
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(new Date('2026-06-15T12:00:00Z'));
+    // Pinned to the 1st so the fixture's June 1–4 nights are all still bookable;
+    // the component now greys out anything before today in Costa Rica.
+    jest.useFakeTimers().setSystemTime(new Date('2026-06-01T12:00:00Z'));
     localStorage.clear();
+    resetCalendarMonthCache();
     (posthog.capture as jest.Mock).mockClear();
     (window as any).gtag = jest.fn();
   });
 
   afterEach(() => {
     jest.useRealTimers();
+    resetCalendarMonthCache();
     delete (window as any).gtag;
     jest.restoreAllMocks();
   });
@@ -234,6 +239,138 @@ describe('CalendarWithPriceDots', () => {
         apartment_slug: 'Geco',
       })
     );
+  });
+
+  test('disables nights before today and never reports them as bookable', async () => {
+    jest.setSystemTime(new Date('2026-06-03T12:00:00Z'));
+    mockFetchByMonth();
+
+    const onSelectDate = jest.fn();
+    render(<CalendarWithPriceDots apartmentSlug="Geco" language="en" onSelectDate={onSelectDate} />);
+
+    // June 3 is today, so it stays selectable and keeps its price. Awaiting a
+    // priced label also guarantees the month payload has landed.
+    const todayCell = await screen.findByRole('button', { name: /June 3, \$125\.00, high price/ });
+    expect(todayCell).toBeEnabled();
+
+    // June 1 and 2 are behind us even though the fixture marks them available.
+    const pastCell = screen.getByRole('button', { name: /June 1, No longer available/ });
+    expect(pastCell).toBeDisabled();
+    expect(screen.getByRole('button', { name: /June 2, No longer available/ })).toBeDisabled();
+
+    fireEvent.click(pastCell);
+    expect(onSelectDate).not.toHaveBeenCalled();
+
+    fireEvent.click(todayCell);
+    expect(onSelectDate).toHaveBeenCalledWith('2026-06-03', expect.objectContaining({ date: '2026-06-03' }), 'red');
+  });
+
+  test('marks the picked range and reports each click to the parent', async () => {
+    mockFetchByMonth();
+
+    const onSelectDate = jest.fn();
+    const { rerender } = render(
+      <CalendarWithPriceDots apartmentSlug="Geco" language="en" onSelectDate={onSelectDate} />
+    );
+
+    fireEvent.click(await screen.findByRole('button', { name: /June 1, \$90\.00/ }));
+    expect(onSelectDate).toHaveBeenCalledWith(
+      '2026-06-01',
+      expect.objectContaining({ date: '2026-06-01' }),
+      'green'
+    );
+
+    rerender(
+      <CalendarWithPriceDots
+        apartmentSlug="Geco"
+        language="en"
+        onSelectDate={onSelectDate}
+        selectionStart="2026-06-01"
+        selectionEnd="2026-06-03"
+      />
+    );
+
+    expect(screen.getByRole('button', { name: /June 1,/ })).toHaveClass('calendar-date-cell--range-start');
+    expect(screen.getByRole('button', { name: /June 2,/ })).toHaveClass('calendar-date-cell--in-range');
+    expect(screen.getByRole('button', { name: /June 3,/ })).toHaveClass('calendar-date-cell--range-end');
+  });
+
+  test('two calendars on the same property and month share a single request', async () => {
+    mockFetchByMonth();
+
+    render(
+      <>
+        <CalendarWithPriceDots apartmentSlug="Geco" language="en" />
+        <CalendarWithPriceDots apartmentSlug="Geco" language="en" />
+      </>
+    );
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('img', { name: /June 1,/ })).toHaveLength(2);
+    });
+
+    expect((global.fetch as jest.Mock).mock.calls).toHaveLength(1);
+  });
+
+  test('blocks booked nights from starting a stay', async () => {
+    mockFetchByMonth();
+
+    render(<CalendarWithPriceDots apartmentSlug="Geco" language="en" />);
+
+    await screen.findByRole('button', { name: /June 1, \$90\.00/ });
+
+    // June 4 is booked in the fixture, so it cannot be a check-in.
+    const booked = screen.getByRole('button', { name: /June 4, Unavailable/ });
+    expect(booked).toBeDisabled();
+    expect(booked).toHaveClass('calendar-date-cell--blocked');
+    expect(screen.getByRole('button', { name: /June 1, \$90\.00/ })).toBeEnabled();
+  });
+
+  test('limits check-out to the min-stay and the first booked night', async () => {
+    mockFetchByMonth();
+
+    // Check-in June 1 carries a 2-night minimum, and June 4 is booked. That
+    // leaves exactly June 3 and June 4 as legal departure dates: June 4 is
+    // still fine because that night is never slept.
+    render(
+      <CalendarWithPriceDots apartmentSlug="Geco" language="en" selectionStart="2026-06-01" />
+    );
+
+    await screen.findByRole('button', { name: /June 3, \$125\.00/ });
+
+    expect(screen.getByRole('button', { name: /June 2, .*Not available as a check-out date/ })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /June 3, \$125\.00/ })).toBeEnabled();
+    expect(screen.getByRole('button', { name: /June 4, Unavailable/ })).toBeEnabled();
+    expect(screen.getByRole('button', { name: /June 5, .*Not available as a check-out date/ })).toBeDisabled();
+
+    // The chosen check-in stays highlighted rather than being struck through.
+    const start = screen.getByRole('button', { name: /June 1,/ });
+    expect(start).toHaveClass('calendar-date-cell--range-start');
+    expect(start).not.toHaveClass('calendar-date-cell--blocked');
+
+    expect(screen.getByText('Now pick your check-out date.')).toBeInTheDocument();
+  });
+
+  test('renders the Spanish month label without title-casing the preposition', async () => {
+    mockFetchByMonth();
+
+    render(<CalendarWithPriceDots apartmentSlug="Geco" language="es" />);
+
+    expect(await screen.findByText('Junio de 2026')).toBeInTheDocument();
+  });
+
+  test('omits dots and skips the request when no property is given', async () => {
+    mockFetchByMonth();
+
+    render(<CalendarWithPriceDots language="en" />);
+
+    // The date alone — with no rates to consult, claiming "Unavailable" would be
+    // a statement the component cannot back up.
+    expect(await screen.findByRole('button', { name: 'June 1' })).toBeEnabled();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    // The colour legend is the only list here, and it explains dots we no longer draw.
+    expect(screen.queryByRole('list')).not.toBeInTheDocument();
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 });
 

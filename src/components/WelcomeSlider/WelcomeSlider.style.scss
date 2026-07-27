@@ -25,7 +25,7 @@
     transform: translateX(-50%);
     width: 100%;
     text-align: center;
-    z-index: 99; // above overlay
+    z-index: 2; // above overlay, but behind the search widget & its calendar dropdown
 
     p {
       color: $kalawala-light-cream !important;
@@ -41,10 +41,32 @@
     text-align: center;
     z-index: 99;
 
+    // The booking search widget lives in the hero now and ships its own
+    // typography. The `> p` scoping below keeps the hero's cream-on-dark
+    // paragraph rule from bleeding into the widget's labels and hints.
+    .hero-booking {
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 16px;
+      text-align: left;
+
+      // Sits on the dark hero overlay rather than the old cream panel.
+      .hero-trust {
+        color: $kalawala-light-cream !important;
+        width: auto;
+        text-align: center;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+      }
+    }
+
     .hero-trust {
       color: $kalawala-text-gray !important;
       margin-top: 15px;
       font-size: 16px;
+      width: 70%;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .video-button {
@@ -74,7 +96,8 @@
       }
     }
 
-    p {
+    // Direct children only — nested paragraphs belong to the booking widget.
+    > p {
       color: $kalawala-light-cream !important;
       font-size: 20px;
       width: 70%;

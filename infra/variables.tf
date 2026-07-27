@@ -301,10 +301,38 @@ variable "smoobu_secret_name" {
   default     = "kalawala/smoobu"
 }
 
+variable "paypal_base_url" {
+  description = "PayPal REST API base URL. Defaults to the live endpoint since prod is the only environment; override to https://api-m.sandbox.paypal.com for a sandboxed deployment."
+  type        = string
+  default     = "https://api-m.paypal.com"
+}
+
 variable "paypal_secret_name" {
   description = "AWS Secrets Manager secret name that holds the PayPal API credentials."
   type        = string
   default     = "kalawala/paypal"
+}
+
+variable "paypal_hold_ttl_minutes" {
+  description = "How long a PayPal-backed hold blocks a property before it expires and the hold-expiry worker releases it. Code default is 60 if unset."
+  type        = number
+  default     = 60
+
+  validation {
+    condition     = var.paypal_hold_ttl_minutes > 0
+    error_message = "paypal_hold_ttl_minutes must be a positive number of minutes."
+  }
+}
+
+variable "deposit_hold_ttl_hours" {
+  description = "How long a manual-deposit hold blocks a property before it expires, subject to the sliding min(this, half the time to check-in) cap in depositHolds.ts. Code default is 36 if unset."
+  type        = number
+  default     = 12
+
+  validation {
+    condition     = var.deposit_hold_ttl_hours > 0
+    error_message = "deposit_hold_ttl_hours must be a positive number of hours."
+  }
 }
 
 variable "db_secret_name" {
@@ -369,4 +397,16 @@ variable "captcha_provider" {
     condition     = contains(["recaptcha", "hcaptcha"], var.captcha_provider)
     error_message = "captcha_provider must be either \"recaptcha\" or \"hcaptcha\"."
   }
+}
+
+variable "ga4_measurement_id" {
+  description = "GA4 measurement ID (G-XXXXXXXXXX) the API reports funnel events to via the Measurement Protocol. Must match the tag in public/index.html. The matching API secret lives in the combined booking API secret as `ga4ApiSecret`; leave this blank to disable server-side GA4 reporting."
+  type        = string
+  default     = ""
+}
+
+variable "meta_pixel_id" {
+  description = "Meta dataset/pixel ID the API reports Conversions API events to. Must match REACT_APP_META_PIXEL_ID so browser and server events deduplicate on event_id. The access token lives in the combined booking API secret as `metaCapiAccessToken`; leave this blank to disable server-side Meta reporting."
+  type        = string
+  default     = ""
 }

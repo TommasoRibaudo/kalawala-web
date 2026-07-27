@@ -159,6 +159,22 @@ jobs:
             -backend-config="dynamodb_table=${{ vars.TF_STATE_DYNAMODB_TABLE }}" \
             -backend-config="encrypt=true"
 
+      # infra/environments/*.tfvars is gitignored: this repo is public, and those
+      # files describe the VPC layout, database name, Secrets Manager paths and
+      # WAF posture. CI rebuilds the file from a secret instead. Store the whole
+      # file contents as the TFVARS_PROD / TFVARS_STAGING repository secret.
+      - name: Materialise tfvars from secret
+        env:
+          TFVARS_CONTENT: ${{ needs.setup.outputs.environment == 'prod' && secrets.TFVARS_PROD || secrets.TFVARS_STAGING }}
+        run: |
+          if [ -z "$TFVARS_CONTENT" ]; then
+            echo "::error::Missing TFVARS_<ENV> secret — terraform cannot run without it."
+            exit 1
+          fi
+          printf '%s' "$TFVARS_CONTENT" > "${{ needs.setup.outputs.tfvars_file }}"
+          # Never print the contents; confirm only that it is non-empty.
+          echo "Wrote ${{ needs.setup.outputs.tfvars_file }} ($(wc -l < "${{ needs.setup.outputs.tfvars_file }}") lines)."
+
       - name: Terraform Validate
         run: terraform validate
 
@@ -263,6 +279,22 @@ jobs:
             -backend-config="dynamodb_table=${{ vars.TF_STATE_DYNAMODB_TABLE }}" \
             -backend-config="encrypt=true"
 
+      # infra/environments/*.tfvars is gitignored: this repo is public, and those
+      # files describe the VPC layout, database name, Secrets Manager paths and
+      # WAF posture. CI rebuilds the file from a secret instead. Store the whole
+      # file contents as the TFVARS_PROD / TFVARS_STAGING repository secret.
+      - name: Materialise tfvars from secret
+        env:
+          TFVARS_CONTENT: ${{ needs.setup.outputs.environment == 'prod' && secrets.TFVARS_PROD || secrets.TFVARS_STAGING }}
+        run: |
+          if [ -z "$TFVARS_CONTENT" ]; then
+            echo "::error::Missing TFVARS_<ENV> secret — terraform cannot run without it."
+            exit 1
+          fi
+          printf '%s' "$TFVARS_CONTENT" > "${{ needs.setup.outputs.tfvars_file }}"
+          # Never print the contents; confirm only that it is non-empty.
+          echo "Wrote ${{ needs.setup.outputs.tfvars_file }} ($(wc -l < "${{ needs.setup.outputs.tfvars_file }}") lines)."
+
       - name: Download plan artifact
         uses: actions/download-artifact@v4
         with:
@@ -277,10 +309,12 @@ jobs:
         run: |
           echo "booking_api_lambda_name=$(terraform output -raw booking_api_lambda_name)" >> $GITHUB_OUTPUT
           echo "webhooks_lambda_name=$(terraform output -raw webhooks_lambda_name)" >> $GITHUB_OUTPUT
+          echo "migration_lambda_name=$(terraform output -raw migration_lambda_name)" >> $GITHUB_OUTPUT
 
     outputs:
       booking_api_lambda_name: ${{ steps.tf_outputs.outputs.booking_api_lambda_name }}
       webhooks_lambda_name: ${{ steps.tf_outputs.outputs.webhooks_lambda_name }}
+      migration_lambda_name: ${{ steps.tf_outputs.outputs.migration_lambda_name }}
 
   # ---------------------------------------------------------------------------
   # Lambda packaging and deployment
@@ -332,12 +366,40 @@ jobs:
           cd lambda-webhooks-pkg && zip -r ../lambda-webhooks.zip . && cd ..
           echo "webhooks package: $(du -sh lambda-webhooks.zip | cut -f1)"
 
+      - name: Package migration Lambda zip
+        run: |
+          mkdir -p lambda-migration-pkg
+          cp -r booking-api/dist/* lambda-migration-pkg/
+          cp -r booking-api/node_modules lambda-migration-pkg/
+          cd lambda-migration-pkg && zip -r ../lambda-migration.zip . && cd ..
+          echo "migration package: $(du -sh lambda-migration.zip | cut -f1)"
+
       - name: Upload packages to S3
         run: |
           aws s3 cp lambda-booking-api.zip \
             s3://${{ vars.TF_STATE_BUCKET }}/lambda-packages/${{ needs.setup.outputs.environment }}/booking-api-${{ github.sha }}.zip
           aws s3 cp lambda-webhooks.zip \
             s3://${{ vars.TF_STATE_BUCKET }}/lambda-packages/${{ needs.setup.outputs.environment }}/webhooks-${{ github.sha }}.zip
+
+      # Migrations must land BEFORE the API code that reads the new columns.
+      # Deploying in the other order takes the booking engine down: every query
+      # against a changed table fails with "column does not exist".
+      - name: Update migration Lambda function code
+        run: |
+          aws lambda update-function-code             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}             --zip-file fileb://lambda-migration.zip             --publish
+          aws lambda wait function-updated             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}
+
+      - name: Run database migrations
+        run: |
+          aws lambda invoke             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}             --cli-binary-format raw-in-base64-out             --payload '{}'             migration-result.json > /dev/null
+          cat migration-result.json
+          # The handler reports failure in its body rather than throwing, so the
+          # invoke itself succeeds either way — gate the deploy on ok:true.
+          if [ "$(jq -r '.ok' migration-result.json)" != "true" ]; then
+            echo "::error::Migration failed — aborting before the API code is deployed."
+            exit 1
+          fi
+          echo "Applied: $(jq -c '.applied' migration-result.json)"
 
       - name: Update booking_api Lambda function code
         run: |

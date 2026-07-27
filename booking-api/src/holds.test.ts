@@ -36,6 +36,7 @@ function createTestConfig(): BookingApiConfig {
     maxBodyBytes: 64 * 1024,
     secrets: new StaticSecretProvider({
       smoobuApiKey: "smoobu-secret-value",
+      smoobuApiSecret: "smoobu-api-secret-value",
       smoobuWebhookSecret: "smoobu-webhook-secret-value",
       paypalClientId: "paypal-client-id-value",
       paypalClientSecret: "paypal-client-secret-value",
@@ -937,4 +938,117 @@ test("POST /api/holds rejects with 409 when a different user races for the same 
     ([url]) => new URL(url.toString()).pathname === "/api/reservations"
   );
   expect(reservationCalls).toHaveLength(1);
+});
+
+test("POST /api/holds records a pet on the booking and on the Smoobu notice", async () => {
+  const fetchFn = jest.fn(async (url: string | URL, _init?: RequestInit) => {
+    const pathname = new URL(url.toString()).pathname;
+    if (pathname === "/booking/checkApartmentAvailability") {
+      return jsonResponse({
+        availableApartments: [301061],
+        prices: { "301061": { price: 510, currency: "USD" } },
+        errorMessages: {},
+      });
+    }
+    return jsonResponse({ id: 987654 });
+  });
+  global.fetch = fetchFn as typeof fetch;
+  const handler = createBookingApiHandler(config);
+
+  const searchBody = JSON.parse((await handler(makeSearchEvent())).body);
+  const response = await handler(
+    makeHoldEvent({
+      quoteId: searchBody.quoteId,
+      bookingSessionId: searchBody.bookingSessionId,
+      // Casa Geco — one of the four pet-friendly homes.
+      propertyId: searchBody.properties[0].propertyId,
+      paymentMethod: "paypal",
+      guest: { firstName: "Ana", lastName: "Mora", email: "ana@example.com", message: "Arriving late" },
+      portalPassword: "correct horse battery staple",
+      termsAccepted: true,
+      withPet: true,
+    })
+  );
+
+  expect(response.statusCode).toBe(200);
+
+  const [, reservationInit] = fetchFn.mock.calls[2];
+  const notice = JSON.parse(reservationInit?.body as string).notice as string;
+  expect(notice).toContain("Guest is travelling with a pet.");
+  // Ahead of the guest's own note, which staff would otherwise have to read past.
+  expect(notice.indexOf("travelling with a pet")).toBeLessThan(notice.indexOf("Arriving late"));
+
+  const storedSession = await bookingSessions.getById(searchBody.bookingSessionId);
+  expect(storedSession).toMatchObject({ status: "hold_active", hasPet: true });
+});
+
+test("POST /api/holds rejects a pet on a home that does not accept pets", async () => {
+  const fetchFn = jest.fn(async (url: string | URL) => {
+    const pathname = new URL(url.toString()).pathname;
+    if (pathname === "/booking/checkApartmentAvailability") {
+      return jsonResponse({
+        // Casa Delfin — available, but not pet friendly.
+        availableApartments: [2946826],
+        prices: { "2946826": { price: 510, currency: "USD" } },
+        errorMessages: {},
+      });
+    }
+    return jsonResponse({ id: 987654 });
+  });
+  global.fetch = fetchFn as typeof fetch;
+  const handler = createBookingApiHandler(config);
+
+  const searchBody = JSON.parse((await handler(makeSearchEvent())).body);
+  const response = await handler(
+    makeHoldEvent({
+      quoteId: searchBody.quoteId,
+      bookingSessionId: searchBody.bookingSessionId,
+      propertyId: searchBody.properties[0].propertyId,
+      paymentMethod: "paypal",
+      guest: { firstName: "Ana", lastName: "Mora", email: "ana@example.com" },
+      portalPassword: "correct horse battery staple",
+      termsAccepted: true,
+      withPet: true,
+    })
+  );
+
+  expect(response.statusCode).toBe(409);
+  expect(JSON.parse(response.body).error.code).toBe("property_not_pet_friendly");
+
+  // Rejected before anything was reserved: only the search hit Smoobu.
+  expect(fetchFn).toHaveBeenCalledTimes(1);
+  const storedSession = await bookingSessions.getById(searchBody.bookingSessionId);
+  expect(storedSession?.status).toBe("quoted");
+});
+
+test("POST /api/holds keeps hasPet false when the guest declares no pet", async () => {
+  global.fetch = jest.fn(async (url: string | URL) => {
+    const pathname = new URL(url.toString()).pathname;
+    if (pathname === "/booking/checkApartmentAvailability") {
+      return jsonResponse({
+        availableApartments: [301061],
+        prices: { "301061": { price: 510, currency: "USD" } },
+        errorMessages: {},
+      });
+    }
+    return jsonResponse({ id: 987654 });
+  }) as typeof fetch;
+  const handler = createBookingApiHandler(config);
+
+  const searchBody = JSON.parse((await handler(makeSearchEvent())).body);
+  const response = await handler(
+    makeHoldEvent({
+      quoteId: searchBody.quoteId,
+      bookingSessionId: searchBody.bookingSessionId,
+      propertyId: searchBody.properties[0].propertyId,
+      paymentMethod: "paypal",
+      guest: { firstName: "Ana", lastName: "Mora", email: "ana@example.com" },
+      portalPassword: "correct horse battery staple",
+      termsAccepted: true,
+    })
+  );
+
+  expect(response.statusCode).toBe(200);
+  const storedSession = await bookingSessions.getById(searchBody.bookingSessionId);
+  expect(storedSession?.hasPet).toBe(false);
 });

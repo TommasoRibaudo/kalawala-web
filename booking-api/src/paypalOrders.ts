@@ -3,6 +3,7 @@ import { BookingSessionRecord, BookingSessionRepository } from "./bookingSession
 import { createEmailClient } from "./email";
 import { HoldRepository } from "./holds";
 import { ApiError } from "./http/errors";
+import { reportServerConversion } from "./serverConversions";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
 import { PaymentRecord, PaymentRepository } from "./payments";
@@ -128,10 +129,17 @@ export async function handleCreatePayPalOrder(
     totalAmountCents: session.totalAmountCents ?? 0,
   });
 
-  await sessions.markPaypalOrderCreated({
+  const orderCreatedSession = await sessions.markPaypalOrderCreated({
     bookingSessionId: session.id,
     paypalOrderId: paypalOrderResult.orderId,
   });
+
+  await reportServerConversion(
+    "add_payment_info",
+    orderCreatedSession,
+    config.serverConversions,
+    request.observability.logger
+  );
 
   request.observability.recordStateTransition({
     entityType: "payment",
@@ -254,6 +262,15 @@ export async function handleCapturePayPalOrder(
     bookingSessionId: session.id,
     confirmedAt: capturedAt,
   });
+
+  // Also reported from the webhook and the reconciliation sweep. Meta dedupes on
+  // event_id and GA4 on transaction_id, so the booking still counts exactly once.
+  await reportServerConversion(
+    "purchase",
+    confirmedSession,
+    config.serverConversions,
+    request.observability.logger
+  );
 
   request.observability.recordStateTransition({
     entityType: "payment",

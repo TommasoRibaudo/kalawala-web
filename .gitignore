@@ -32,8 +32,19 @@ booking-api/.env
 *.tfstate
 *.tfstate.*
 
-# Terraform environment configs (contain VPC CIDRs, domain names, resource sizing)
+# Terraform environment configs.
+#
+# They hold no credentials — every secret is referenced by its Secrets Manager
+# name, never by value — but THIS REPOSITORY IS PUBLIC, and they do describe the
+# VPC/subnet layout, database name, the exact Secrets Manager paths worth
+# attacking, and the WAF posture. That is reconnaissance material, so they stay
+# out of the repo.
+#
+# CI therefore cannot read them from the checkout. deploy-backend.yml
+# reconstructs the file from the TFVARS_<ENV> GitHub secret before running
+# terraform — see the "Materialise tfvars" step there.
 infra/environments/*.tfvars
+!infra/environments/example.tfvars
 infra/backend*.hcl
 
 # Sensitive operational docs — keep local only

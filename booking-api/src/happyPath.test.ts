@@ -82,6 +82,7 @@ function createTestConfig(): BookingApiConfig {
     maxBodyBytes: 64 * 1024,
     secrets: new StaticSecretProvider({
       smoobuApiKey: "smoobu-secret-value",
+      smoobuApiSecret: "smoobu-api-secret-value",
       smoobuWebhookSecret: "smoobu-webhook-secret-value",
       paypalClientId: "paypal-client-id-value",
       paypalClientSecret: "paypal-client-secret-value",
@@ -367,4 +368,76 @@ test("happy path: health → search → hold → paypal order → capture → po
   });
   expect(reservationBody.reservation.property).toBeDefined();
   expect(reservationBody.reservation.property.name).toBe("Casa Geco");
+});
+
+/**
+ * Attribution identifiers must survive from the search that created the session
+ * all the way to the confirmed booking, because that is the record
+ * serverConversions.ts reads when it reports the sale to GA4 and Meta. A guest
+ * who reaches the confirmation page with the identifiers lost is a sale that
+ * gets attributed to Direct/None.
+ */
+test("tracking identifiers captured at search survive through to the hold", async () => {
+  global.fetch = happyPathFetch() as typeof fetch;
+  const handler = createBookingApiHandler(config);
+
+  const search = await handler({
+    ...searchEvent(),
+    body: JSON.stringify({
+      arrivalDate: "2099-08-01",
+      departureDate: "2099-08-05",
+      guests: 2,
+      language: "en",
+      source: "booking_page",
+      marketingConsent: true,
+      tracking: {
+        gaClientId: "686566830.1785166389",
+        gaSessionId: "1785166389",
+        fbp: "fb.1.1785166661469.365729390",
+      },
+    }),
+  });
+  expect(search.statusCode).toBe(200);
+
+  const searchBody = JSON.parse(search.body as string);
+  const stored = await bookingSessions.getById(searchBody.bookingSessionId);
+
+  expect(stored?.marketingConsent).toBe(true);
+  expect(stored?.tracking).toEqual({
+    gaClientId: "686566830.1785166389",
+    gaSessionId: "1785166389",
+    fbp: "fb.1.1785166661469.365729390",
+  });
+
+  // The checkout re-sends identifiers because consent may have been granted
+  // after the search. A later request must merge on top, never blank what was
+  // already captured — `fbc` arrives now, `fbp` must survive from the search.
+  const hold = await handler(
+    holdEvent({
+      quoteId: searchBody.quoteId,
+      bookingSessionId: searchBody.bookingSessionId,
+      propertyId: searchBody.properties[0].propertyId,
+      paymentMethod: "paypal",
+      guest: {
+        firstName: "Ada",
+        lastName: "Lovelace",
+        email: "ada@example.com",
+        phone: "+50684632276",
+        country: "CR",
+      },
+      portalPassword: "correct horse battery",
+      termsAccepted: true,
+      marketingConsent: true,
+      tracking: { fbc: "fb.1.1700000000000.abc123" },
+    })
+  );
+  expect(hold.statusCode).toBe(200);
+
+  const afterHold = await bookingSessions.getById(searchBody.bookingSessionId);
+  expect(afterHold?.tracking).toEqual({
+    gaClientId: "686566830.1785166389",
+    gaSessionId: "1785166389",
+    fbp: "fb.1.1785166661469.365729390",
+    fbc: "fb.1.1700000000000.abc123",
+  });
 });

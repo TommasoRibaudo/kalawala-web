@@ -1,6 +1,21 @@
 import { ApiError, validationError } from "./http/errors";
 import { FieldErrors, JsonBody } from "./types";
 
+/**
+ * Marketing attribution identifiers forwarded from the browser.
+ *
+ * Never required, never validated strictly: a malformed cookie must degrade
+ * tracking, not fail a booking. Anything that is not a sane short string is
+ * silently dropped. See parseTrackingIdentifiers below.
+ */
+export interface TrackingIdentifiersInput {
+  gaClientId?: string;
+  gaSessionId?: string;
+  fbp?: string;
+  fbc?: string;
+  gclid?: string;
+}
+
 export interface SearchRequest {
   arrivalDate: string;
   departureDate: string;
@@ -8,6 +23,8 @@ export interface SearchRequest {
   language: "en" | "es";
   discountCode?: string;
   source?: string;
+  tracking?: TrackingIdentifiersInput;
+  marketingConsent?: boolean;
 }
 
 export interface GuestDetails {
@@ -29,6 +46,10 @@ export interface HoldRequest {
   termsAccepted: true;
   marketingConsent?: boolean;
   nonRefundable?: boolean;
+  /** Guest is bringing a pet. Only pet-friendly homes accept this. */
+  withPet?: boolean;
+  /** Re-sent at checkout in case consent was granted after the search. */
+  tracking?: TrackingIdentifiersInput;
 }
 
 export function assertJsonObject(value: unknown): JsonBody {
@@ -37,6 +58,37 @@ export function assertJsonObject(value: unknown): JsonBody {
   }
 
   return value as JsonBody;
+}
+
+/**
+ * Best-effort extraction of the tracking identifiers.
+ *
+ * Deliberately never raises. These values come from cookies a guest (or an
+ * extension) can freely mangle, and no attribution signal is worth rejecting a
+ * booking over — a dropped identifier costs an attributed conversion, a 400
+ * costs the sale itself. Values are length-capped so a hostile client cannot
+ * push arbitrary payloads into the database.
+ */
+export function parseTrackingIdentifiers(value: unknown): TrackingIdentifiersInput | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return undefined;
+  }
+
+  const body = value as Record<string, unknown>;
+  const keys: Array<keyof TrackingIdentifiersInput> = ["gaClientId", "gaSessionId", "fbp", "fbc", "gclid"];
+  const tracking: TrackingIdentifiersInput = {};
+
+  for (const key of keys) {
+    const raw = body[key];
+    if (typeof raw === "string") {
+      const trimmed = raw.trim();
+      if (trimmed && trimmed.length <= 256) {
+        tracking[key] = trimmed;
+      }
+    }
+  }
+
+  return Object.keys(tracking).length > 0 ? tracking : undefined;
 }
 
 export function validateSearchRequest(value: unknown): SearchRequest {
@@ -49,6 +101,7 @@ export function validateSearchRequest(value: unknown): SearchRequest {
   const language = requireLanguage(body, "language", errors);
   const discountCode = optionalTrimmedString(body, "discountCode", errors, 64);
   const source = optionalTrimmedString(body, "source", errors, 64);
+  const tracking = parseTrackingIdentifiers(body.tracking);
 
   if (arrivalDate && isBeforeTodayCostaRica(arrivalDate)) {
     addError(errors, "arrivalDate", "arrival_date_must_be_today_or_future");
@@ -60,7 +113,16 @@ export function validateSearchRequest(value: unknown): SearchRequest {
 
   assertNoErrors(errors);
 
-  return { arrivalDate, departureDate, guests, language, discountCode, source };
+  return {
+    arrivalDate,
+    departureDate,
+    guests,
+    language,
+    discountCode,
+    source,
+    ...(tracking ? { tracking } : {}),
+    marketingConsent: body.marketingConsent === true,
+  };
 }
 
 export function validateCalendarRequest(
@@ -120,13 +182,16 @@ export function validateHoldRequest(value: unknown): HoldRequest {
     termsAccepted: true,
     marketingConsent: body.marketingConsent === true,
     nonRefundable: body.nonRefundable === true,
+    withPet: body.withPet === true,
+    ...(parseTrackingIdentifiers(body.tracking) ? { tracking: parseTrackingIdentifiers(body.tracking) } : {}),
   };
 }
 
 /**
  * Deposit holds take the same shape as PayPal holds minus the payment method and
  * rate options: the deposit path is always the flexible rate, and the discount
- * code is tied to immediate card capture.
+ * code is tied to immediate card capture. A pet travels with the guest whichever
+ * way they pay, so `withPet` is accepted here too.
  */
 export function validateDepositHoldRequest(value: unknown): HoldRequest {
   const body = assertJsonObject(value);
@@ -158,6 +223,8 @@ export function validateDepositHoldRequest(value: unknown): HoldRequest {
     termsAccepted: true,
     marketingConsent: body.marketingConsent === true,
     nonRefundable: false,
+    withPet: body.withPet === true,
+    ...(parseTrackingIdentifiers(body.tracking) ? { tracking: parseTrackingIdentifiers(body.tracking) } : {}),
   };
 }
 

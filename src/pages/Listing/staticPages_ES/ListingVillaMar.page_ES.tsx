@@ -13,7 +13,6 @@ import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
-import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
 
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
@@ -21,7 +20,6 @@ import SocialStatement from "../../../components/SocialStatement/SocialStatement
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
-import CalendarWithPriceDots from "../../../components/CalendarWithPriceDots/CalendarWithPriceDots.component";
 
 
 const ListingVillaMarES = () => {
@@ -122,8 +120,7 @@ const ListingVillaMarES = () => {
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
                     <PriceConfirmationSection propertyKey="VillaMar" isSpanish={true} />
-                    <BookingSearchWidget isSpanish={true} defaultGuests={houseData!.guestNumber} variant="sidebar" />
-                    <CalendarWithPriceDots apartmentSlug="VillaMar" language="es" />
+                    <BookingSearchWidget isSpanish={true} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="VillaMar" />
                 </Col>
             </Row>
 
@@ -132,8 +129,6 @@ const ListingVillaMarES = () => {
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
 
-            {/* Message Tip Container */}
-            <MessageTipContainer />
         </div>
     )
 

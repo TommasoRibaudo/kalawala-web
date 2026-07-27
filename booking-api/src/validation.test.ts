@@ -3,6 +3,7 @@ import {
   validateSearchRequest,
   validateCalendarRequest,
   validateHoldRequest,
+  validateDepositHoldRequest,
   validateBookingSessionRequest,
   validatePayPalCaptureRequest,
   validateDepositHandoffQuery,
@@ -475,4 +476,83 @@ test("validateReservationPublicId: rejects empty", () => {
     "reservationPublicId",
     "reservation_public_id_invalid"
   );
+});
+
+// ─── tracking identifiers ────────────────────────────────────────────────────
+//
+// These come from cookies a guest or a browser extension can freely mangle, so
+// the contract is: never reject a booking over an attribution value. A dropped
+// identifier costs one attributed conversion; a 400 costs the sale.
+
+test("validateSearchRequest: captures tracking identifiers and marketing consent", () => {
+  const result = validateSearchRequest({
+    ...validSearch,
+    marketingConsent: true,
+    tracking: {
+      gaClientId: "686566830.1785166389",
+      gaSessionId: "1785166389",
+      fbp: "fb.1.1785166661469.365729390",
+      fbc: "fb.1.1700000000000.abc123",
+      gclid: "Cj0KCQ_test",
+    },
+  });
+
+  expect(result.marketingConsent).toBe(true);
+  expect(result.tracking).toEqual({
+    gaClientId: "686566830.1785166389",
+    gaSessionId: "1785166389",
+    fbp: "fb.1.1785166661469.365729390",
+    fbc: "fb.1.1700000000000.abc123",
+    gclid: "Cj0KCQ_test",
+  });
+});
+
+test("validateSearchRequest: defaults marketing consent to false when absent", () => {
+  const result = validateSearchRequest(validSearch);
+
+  // Fails closed — the API must not report a guest who never consented.
+  expect(result.marketingConsent).toBe(false);
+  expect(result.tracking).toBeUndefined();
+});
+
+test("validateSearchRequest: drops malformed tracking values without failing", () => {
+  const result = validateSearchRequest({
+    ...validSearch,
+    tracking: {
+      gaClientId: "keep-me",
+      gaSessionId: 12345,
+      fbp: { nested: "object" },
+      fbc: "   ",
+      gclid: "x".repeat(300),
+    },
+  });
+
+  expect(result.tracking).toEqual({ gaClientId: "keep-me" });
+});
+
+test("validateSearchRequest: ignores a non-object tracking field", () => {
+  expect(validateSearchRequest({ ...validSearch, tracking: "nope" }).tracking).toBeUndefined();
+  expect(validateSearchRequest({ ...validSearch, tracking: [1, 2] }).tracking).toBeUndefined();
+  expect(validateSearchRequest({ ...validSearch, tracking: null }).tracking).toBeUndefined();
+});
+
+test("validateHoldRequest: carries tracking through the checkout refresh", () => {
+  const result = validateHoldRequest({
+    ...validHold,
+    marketingConsent: true,
+    tracking: { gaClientId: "abc.def", fbp: "fb.1.2.3" },
+  });
+
+  expect(result.marketingConsent).toBe(true);
+  expect(result.tracking).toEqual({ gaClientId: "abc.def", fbp: "fb.1.2.3" });
+});
+
+test("validateDepositHoldRequest: carries tracking through the deposit checkout", () => {
+  const { paymentMethod: _paymentMethod, ...depositBody } = validHold;
+  const result = validateDepositHoldRequest({
+    ...depositBody,
+    tracking: { gaClientId: "abc.def" },
+  });
+
+  expect(result.tracking).toEqual({ gaClientId: "abc.def" });
 });

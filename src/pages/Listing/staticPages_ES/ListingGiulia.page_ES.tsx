@@ -11,7 +11,6 @@ import { AmenityType } from "../../../utils/types";
 import { NamDataListES } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
-import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
 
 import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
@@ -21,7 +20,6 @@ import SocialStatement from "../../../components/SocialStatement/SocialStatement
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
-import CalendarWithPriceDots from "../../../components/CalendarWithPriceDots/CalendarWithPriceDots.component";
 
 
 const ListingGiuliaES = () => {
@@ -110,8 +108,7 @@ const ListingGiuliaES = () => {
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
                     <PriceConfirmationSection propertyKey="Giulia" isSpanish={true} />
-                    <BookingSearchWidget isSpanish={true} defaultGuests={houseData!.guestNumber} variant="sidebar" />
-                    <CalendarWithPriceDots apartmentSlug="Giulia" language="es" />
+                    <BookingSearchWidget isSpanish={true} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Giulia" />
                 </Col>
             </Row>
 
@@ -120,8 +117,6 @@ const ListingGiuliaES = () => {
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName="Giulia" />}
 
-            {/* Message Tip Container */}
-            <MessageTipContainer />
         </div>
     )
 

@@ -5,7 +5,7 @@
   "description": "AWS Lambda booking API scaffold for Kalawala's Smoobu-backed booking engine.",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node scripts/copyMigrations.js",
     "migrate": "node scripts/migrate.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "jest",

@@ -52,6 +52,7 @@ export async function handler(): Promise<ReconciliationResult> {
     bookingSessions: config.bookingSessions,
     paypalClient,
     logger,
+    ...(config.serverConversions ? { serverConversions: config.serverConversions } : {}),
   });
 }
 

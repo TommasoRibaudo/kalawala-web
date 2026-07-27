@@ -118,7 +118,20 @@ data "aws_iam_policy_document" "lambda_ses_send" {
       "ses:SendRawEmail",
     ]
 
-    resources = [aws_ses_domain_identity.booking.arn]
+    # While the SES account is sandboxed, SES requires ses:SendEmail
+    # authorization against BOTH the sender's identity and every recipient's
+    # identity (each guest/staff address must itself be a verified identity).
+    # Scoping resources to only the sending domain identity works for the
+    # sender half but 403s on the recipient half for every sandboxed send.
+    # SendEmail calls also pass ConfigurationSetName, which SES authorizes as
+    # its own resource — hence the second ARN below. The ses:FromAddress
+    # condition is what actually constrains this policy to
+    # reservations@reservaskalawala.com, so widening the resource scope does
+    # not grant any broader sending capability.
+    resources = [
+      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/*",
+      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:configuration-set/${aws_ses_configuration_set.booking.name}",
+    ]
 
     condition {
       test     = "StringEquals"

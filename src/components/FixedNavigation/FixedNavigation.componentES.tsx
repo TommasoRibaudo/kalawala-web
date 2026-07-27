@@ -82,10 +82,11 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
             <Nav.Link href="HomeES#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`} onClick={closeMenu}>Inicio</Nav.Link>
-            <Nav.Link href="HomeES#body" className="navText" onClick={() => { handleLinkClick("HomeES#callToActionES") }}>Disponibilidad</Nav.Link>
+            <Nav.Link href="/bookES" className="navText" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("bookES") }}>Disponibilidad</Nav.Link>
             <Nav.Link href="HomeES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeES#portfolio") }}>Fotos</Nav.Link>
             <Nav.Link href="HomeES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeES#contact-us") }}>Contactanos</Nav.Link>
             <Nav.Link href="/twodaysinpuertoviejoES" className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="/portalES" className="navText" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("portalES") }}>Mi Reserva</Nav.Link>
           </Nav>
         <div className="navbar-flag">
             <LanguageSwitcher/>

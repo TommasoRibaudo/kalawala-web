@@ -11,10 +11,11 @@ import { createEmailClient } from "./email";
 import { ApiError } from "./http/errors";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
-import { BOOKING_PROPERTIES_BY_ID, BookingProperty, listingUrlForLanguage } from "./propertyCatalog";
+import { BOOKING_PROPERTIES_BY_ID, BookingProperty, isPetFriendly, listingUrlForLanguage } from "./propertyCatalog";
 import { createSmoobuClient, SmoobuProviderError } from "./smoobuClient";
 import { ApiResponse, BookingApiConfig, HeadersMap, RouteObservability, RouteRequest } from "./types";
 import { HoldRequest } from "./validation";
+import { reportServerConversion } from "./serverConversions";
 
 const HOLD_IDEMPOTENCY_SCOPE = "booking.hold.create";
 
@@ -844,6 +845,10 @@ export async function createSmoobuBackedHold(
   try {
     const session = await requireQuotedSession(bookingSessions, holdRequest);
     const property = requireProperty(holdRequest.propertyId);
+    // The frontend hides non-pet-friendly homes once the guest ticks the pet
+    // toggle, but the toggle lives in the browser: refuse the combination here so
+    // a stale or hand-made request cannot book a pet into a home that bans them.
+    const withPet = requirePetFriendlyIfPet(holdRequest, property);
     const quotedPrice = requireQuotedPrice(session, property.propertyId);
     const expiresAt = new Date(Date.now() + flavour.ttlMsFor(session)).toISOString();
     const portalPasswordHash = await hashPortalPassword(holdRequest.portalPassword);
@@ -883,6 +888,7 @@ export async function createSmoobuBackedHold(
       channelId: config.smoobu.holdChannelId,
       noticePrefix: flavour.noticePrefix,
       noticeCaveat: flavour.noticeCaveat,
+      withPet,
     });
     const payloadHash = hashJson(reservationPayload);
 
@@ -904,10 +910,15 @@ export async function createSmoobuBackedHold(
       // non-refundable booking from a flexible one long after the discount code
       // was sent to Smoobu.
       ratePlan: flavour.ratePlan,
+      hasPet: withPet,
       price: effectivePrice,
       guest: holdRequest.guest,
       portalPasswordHash,
       expiresAt,
+      // Refreshed here because the guest may have accepted the cookie banner
+      // between searching and checking out.
+      ...(holdRequest.tracking ? { tracking: holdRequest.tracking } : {}),
+      marketingConsent: holdRequest.marketingConsent === true,
     });
 
     request.observability.recordStateTransition({
@@ -931,6 +942,27 @@ export async function createSmoobuBackedHold(
       smoobuReservationId,
     });
     const activeSession = await bookingSessions.markHoldActive({ bookingSessionId: session.id, expiresAt });
+
+    // The hold is the checkout. Reported here rather than from the browser so
+    // GA4 counts it once — see the dedup note in serverConversions.ts.
+    await reportServerConversion(
+      "begin_checkout",
+      activeSession,
+      config.serverConversions,
+      request.observability.logger
+    );
+
+    // A deposit booking never creates a PayPal order, so this is the only point
+    // at which its payment method is committed. The PayPal flavour reports
+    // add_payment_info from paypalOrders.ts instead, on order creation.
+    if (flavour.paymentMethod === "manual_deposit") {
+      await reportServerConversion(
+        "add_payment_info",
+        activeSession,
+        config.serverConversions,
+        request.observability.logger
+      );
+    }
 
     request.observability.recordStateTransition({
       entityType: "hold",
@@ -1080,6 +1112,25 @@ function requireProperty(propertyId: string): BookingProperty {
   return property;
 }
 
+/**
+ * Returns whether the booking carries a pet, rejecting the request when the
+ * chosen home does not accept one. Casa Geco, Rana, Tucano and Pappagallo are
+ * the only pet-friendly homes.
+ */
+function requirePetFriendlyIfPet(holdRequest: HoldRequest, property: BookingProperty): boolean {
+  if (!holdRequest.withPet) {
+    return false;
+  }
+
+  if (!isPetFriendly(property)) {
+    throw new ApiError(409, "property_not_pet_friendly", "This home does not accept pets.", {
+      fieldErrors: { withPet: ["property_not_pet_friendly"] },
+    });
+  }
+
+  return true;
+}
+
 function requireQuotedPrice(session: BookingSessionRecord, propertyId: string): BookingSessionQuotedProperty {
   const quotedPrice = session.quotedProperties.find((price) => price.propertyId === propertyId);
   if (!quotedPrice) {
@@ -1161,6 +1212,7 @@ function buildSmoobuHoldPayload(input: {
   channelId: SmoobuHoldChannelId;
   noticePrefix: string;
   noticeCaveat: string;
+  withPet: boolean;
 }) {
   return {
     arrivalDate: input.session.arrivalDate,
@@ -1172,7 +1224,14 @@ function buildSmoobuHoldPayload(input: {
     email: input.guest.email,
     ...(input.guest.phone ? { phone: input.guest.phone } : {}),
     ...(input.guest.country ? { country: input.guest.country } : {}),
-    notice: buildSmoobuNotice(input.session, input.guest, input.expiresAt, input.noticePrefix, input.noticeCaveat),
+    notice: buildSmoobuNotice(
+      input.session,
+      input.guest,
+      input.expiresAt,
+      input.noticePrefix,
+      input.noticeCaveat,
+      input.withPet
+    ),
     adults: input.session.guests,
     children: 0,
     price: centsToAmount(input.price.totalAmountCents),
@@ -1190,9 +1249,16 @@ function buildSmoobuNotice(
   guest: HoldGuestDetails,
   expiresAt: string,
   noticePrefix: string,
-  noticeCaveat: string
+  noticeCaveat: string,
+  withPet: boolean
 ): string {
   const parts = [`${noticePrefix} Quote ${session.quoteId}. Hold expires ${expiresAt}. ${noticeCaveat}`];
+
+  // Ahead of the free-text guest note: housekeeping reads this line off the
+  // Smoobu reservation, so it must not be buried under a long message.
+  if (withPet) {
+    parts.push("Guest is travelling with a pet.");
+  }
 
   if (guest.message) {
     parts.push(`Guest note: ${guest.message}`);

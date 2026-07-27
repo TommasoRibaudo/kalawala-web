@@ -14,6 +14,7 @@ import { BookingProviderSecrets, LambdaHttpRequest } from "./types";
 
 const VALID_SECRETS: BookingProviderSecrets = {
   smoobuApiKey: "smoobu-api-key-123456",
+  smoobuApiSecret: "smoobu-api-secret-123456",
   smoobuWebhookSecret: "smoobu-webhook-secret-123456",
   paypalClientId: "paypal-client-id-123456",
   paypalClientSecret: "paypal-client-secret-123456",

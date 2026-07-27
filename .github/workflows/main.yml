@@ -141,6 +141,13 @@ jobs:
           REACT_APP_SMOOBU_URL: ${{ secrets.REACT_APP_SMOOBU_URL }}
           REACT_APP_HOUSE_CODES: ${{ secrets.REACT_APP_HOUSE_CODES }}
           REACT_APP_CAPTCHA_SITE_KEY: ${{ secrets.REACT_APP_CAPTCHA_SITE_KEY }}
+          # Booking API origin. NOT a secret — it is a public API Gateway URL, and
+          # it is baked into the bundle either way. It must be set here because
+          # .env and .env.local are both gitignored, so a CI build sees neither:
+          # without this the value resolves to '' and every booking request goes
+          # to /api/... on the marketing domain and 404s.
+          # Override with the repo variable to point a build at another stage.
+          REACT_APP_BOOKING_API_BASE_URL: ${{ vars.REACT_APP_BOOKING_API_BASE_URL || 'https://ell3fvgw54.execute-api.us-east-2.amazonaws.com/prod' }}
       - name: Generate PHP config from secrets
         run: |
           cat > build/smoobu-config.php << 'PHPEOF'

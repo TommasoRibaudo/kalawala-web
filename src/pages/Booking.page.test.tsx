@@ -621,15 +621,9 @@ test('captures PayPal payment on the return route using token and stored booking
       })
     )
   );
-  expect(window.gtag).toHaveBeenCalledWith(
-    'event',
-    'purchase',
-    expect.objectContaining({
-      transaction_id: 'res_PUBLIC123',
-      value: 510,
-      currency: 'USD',
-    })
-  );
+  // GA4 purchase is reported by the API (booking-api/src/serverConversions.ts),
+  // never from the browser — the Measurement Protocol cannot deduplicate.
+  expect(window.gtag).not.toHaveBeenCalledWith('event', 'purchase', expect.anything());
   expect(window.fbq).toHaveBeenCalledWith(
     'track',
     'Purchase',
@@ -637,7 +631,9 @@ test('captures PayPal payment on the return route using token and stored booking
       value: 510,
       currency: 'USD',
       content_ids: ['b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111'],
-    })
+      order_id: 'res_PUBLIC123',
+    }),
+    { eventID: 'res_PUBLIC123' }
   );
 });
 
@@ -820,7 +816,7 @@ test('shows provider-unavailable message for retryable API errors', async () => 
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-08-14' } });
   fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
 
-  await activeSlide().findByText('Availability is temporarily unavailable. Please try again in a moment.');
+  await activeSlide().findByText('We cannot check availability right now. Please try again in a moment.');
 });
 
 test('shows generic message for non-retryable API errors', async () => {
@@ -989,6 +985,9 @@ test('deposit receipt upload goes to S3 and then confirms with the API', async (
   fireEvent.click(screen.getByRole('button', { name: 'Reserve these dates' }));
   await screen.findByText('CR61010200009629385364');
 
+  // The guest is warned before picking a file that a non-receipt upload cancels the booking.
+  screen.getByText('Upload only the receipt for this deposit. Any other picture will cancel your reservation automatically.');
+
   const file = new File(['receipt'], 'receipt.jpg', { type: 'image/jpeg' });
   const input = document.querySelector('input[type="file"]') as HTMLInputElement;
   fireEvent.change(input, { target: { files: [file] } });
@@ -1005,4 +1004,224 @@ test('deposit receipt upload goes to S3 and then confirms with the API', async (
   // Both API calls carry the scoped deposit token.
   const uploadHeaders = (calls[2][1] as RequestInit).headers as Record<string, string>;
   expect(uploadHeaders.Authorization).toBe('Bearer deposit-access-token-value');
+});
+
+// ── Pet-friendly bookings ────────────────────────────────────────────────────
+
+const PET_SEARCH_FIXTURE = {
+  ...SEARCH_RESULT_FIXTURE,
+  resultsCount: 2,
+  properties: [
+    {
+      ...SEARCH_RESULT_FIXTURE.properties[0],
+      amenities: [
+        { code: 'wifi', label: '100Mbps WiFi' },
+        { code: 'pet', label: 'Pet friendly' },
+      ],
+    },
+    {
+      ...SEARCH_RESULT_FIXTURE.properties[0],
+      propertyId: 'bc2470e7-3f18-43e3-91eb-ac3bf3c82ca4',
+      slug: 'Delfin',
+      listingUrl: '/Delfin',
+      name: 'Casa Delfin',
+      amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
+      actions: { viewListingUrl: '/Delfin', canCreatePayPalHold: true, canUseManualDepositHandoff: true },
+    },
+  ],
+};
+
+async function searchWith(fixture: unknown, extraResponses: Array<{ body: unknown; status?: number }> = []) {
+  mockJsonResponses([{ body: fixture }, ...extraResponses]);
+  renderBookingPage();
+
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Casa Geco');
+}
+
+function togglePet() {
+  fireEvent.click(activeSlide().getByRole('checkbox', { name: /travelling with a pet/i }));
+}
+
+test('the pet toggle narrows the results to pet-friendly homes', async () => {
+  await searchWith(PET_SEARCH_FIXTURE);
+
+  expect(screen.getByText('Casa Delfin')).toBeInTheDocument();
+  expect(screen.getByText('2 homes are available')).toBeInTheDocument();
+
+  togglePet();
+
+  expect(screen.queryByText('Casa Delfin')).not.toBeInTheDocument();
+  expect(screen.getByText('Casa Geco')).toBeInTheDocument();
+  expect(screen.getByText('1 home is available')).toBeInTheDocument();
+  // The home that dropped out is accounted for, so the shorter list does not
+  // read as missing availability.
+  expect(
+    screen.getByText('1 other home is free for these dates but does not accept pets.')
+  ).toBeInTheDocument();
+
+  // Turning it back off restores the full list without a second search.
+  togglePet();
+  expect(screen.getByText('Casa Delfin')).toBeInTheDocument();
+  expect((global.fetch as jest.Mock).mock.calls).toHaveLength(1);
+});
+
+test('a pet search with no pet-friendly home free explains itself', async () => {
+  const onlyDelfin = { ...PET_SEARCH_FIXTURE, resultsCount: 1, properties: [PET_SEARCH_FIXTURE.properties[1]] };
+  mockJsonResponses([{ body: onlyDelfin }]);
+  renderBookingPage();
+
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Casa Delfin');
+
+  togglePet();
+
+  expect(screen.getByText('No pet-friendly homes available for these dates')).toBeInTheDocument();
+  // Not the generic "no houses available" dead end — those dates do have homes.
+  expect(screen.queryByText('No houses available for these dates')).not.toBeInTheDocument();
+});
+
+test('the declared pet rides along to the PayPal hold', async () => {
+  await searchWith(PET_SEARCH_FIXTURE, [
+    {
+      body: {
+        booking: {
+          ...DEPOSIT_HOLD_FIXTURE.booking,
+          payment: { method: 'paypal', status: 'pending' },
+        },
+        nextAction: 'create_paypal_order',
+      },
+    },
+  ]);
+
+  togglePet();
+  fireEvent.click(screen.getByRole('button', { name: /book with paypal/i }));
+  await screen.findByRole('heading', { name: 'Checkout' });
+
+  // The guest can see what they declared before they pay.
+  expect(screen.getByText('Travelling with a pet')).toBeInTheDocument();
+
+  fillGuestDetails();
+  fireEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
+  await screen.findByText('Your stay is on hold');
+
+  const holdCall = (global.fetch as jest.Mock).mock.calls[1];
+  expect(holdCall[0]).toBe('/api/holds');
+  expect(JSON.parse((holdCall[1] as RequestInit & { body: string }).body)).toMatchObject({
+    propertyId: 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111',
+    withPet: true,
+  });
+});
+
+test('no pet declared means no pet flag on the hold', async () => {
+  await searchWith(PET_SEARCH_FIXTURE, [{ body: DEPOSIT_HOLD_FIXTURE }]);
+
+  fireEvent.click(screen.getAllByRole('button', { name: 'Bank transfer / SINPE' })[0]);
+  await screen.findByRole('heading', { name: 'Checkout' });
+  fillGuestDetails();
+  fireEvent.click(screen.getByRole('button', { name: 'Reserve these dates' }));
+  await screen.findByText('CR61010200009629385364');
+
+  const holdCall = (global.fetch as jest.Mock).mock.calls[1];
+  expect(holdCall[0]).toBe('/api/deposit-holds');
+  expect(JSON.parse((holdCall[1] as RequestInit & { body: string }).body)).not.toHaveProperty('withPet');
+});
+
+// ── Long-stay discounts ──────────────────────────────────────────────────────
+
+const LONG_STAY_SEARCH_FIXTURE = {
+  ...SEARCH_RESULT_FIXTURE,
+  arrivalDate: '2099-06-10',
+  departureDate: '2099-06-17',
+  properties: [
+    {
+      ...SEARCH_RESULT_FIXTURE.properties[0],
+      price: {
+        currency: 'USD',
+        totalAmountCents: 89250,
+        nightlyAverageCents: 12750,
+        nights: 7,
+        includesTaxes: false,
+        rateSource: 'smoobu',
+        discount: {
+          source: 'long_stay',
+          baseTotalCents: 105000,
+          baseNightlyAverageCents: 15000,
+          amountCents: 15750,
+          percentage: 15,
+        },
+      },
+    },
+  ],
+};
+
+test('a long-stay discount is shown as a slashed rack rate on the result card', async () => {
+  mockJsonResponse(LONG_STAY_SEARCH_FIXTURE);
+  renderBookingPage();
+
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-17' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Casa Geco');
+
+  expect(screen.getByText('Long-stay −15%')).toBeInTheDocument();
+  // Rack rate struck through, discounted total in the prominent slot.
+  expect(screen.getByText('$1,050.00')).toBeInTheDocument();
+  expect(screen.getByText('$892.50')).toBeInTheDocument();
+  // Nightly average is slashed the same way.
+  expect(screen.getByText('$150.00', { exact: false })).toBeInTheDocument();
+});
+
+test('a long-stay discount stacks with the non-refundable rate', async () => {
+  mockJsonResponse(LONG_STAY_SEARCH_FIXTURE);
+  renderBookingPage();
+
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-17' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Casa Geco');
+
+  fireEvent.click(activeSlide().getByRole('checkbox', { name: /non-refundable|flexible/i }));
+
+  // Both reductions are named, and the total is 10% off Smoobu's already
+  // long-stay-discounted price — not off the rack rate.
+  expect(screen.getByText('Long-stay −15% · Save 10%')).toBeInTheDocument();
+  expect(screen.getByText('$803.25')).toBeInTheDocument();
+  expect(screen.getByText('$1,050.00')).toBeInTheDocument();
+});
+
+test('the discount follows the guest into the checkout summary', async () => {
+  mockJsonResponse(LONG_STAY_SEARCH_FIXTURE);
+  renderBookingPage();
+
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-17' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Casa Geco');
+
+  fireEvent.click(screen.getByRole('button', { name: /book with paypal/i }));
+  await screen.findByRole('heading', { name: 'Checkout' });
+
+  const summary = document.querySelector('.booking-checkout-panel__summary') as HTMLElement;
+  expect(within(summary).getByText('$892.50')).toBeInTheDocument();
+  expect(within(summary).getByText('$1,050.00')).toBeInTheDocument();
+  expect(within(summary).getByText(/Long-stay −15%/)).toBeInTheDocument();
+});
+
+test('a quote with no discount shows a single price and no slashed rate', async () => {
+  mockJsonResponse(SEARCH_RESULT_FIXTURE);
+  renderBookingPage();
+
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Casa Geco');
+
+  expect(screen.getByText('$510.00')).toBeInTheDocument();
+  expect(document.querySelector('.booking-result-card__price del')).toBeNull();
+  expect(screen.queryByText(/Long-stay/)).not.toBeInTheDocument();
 });

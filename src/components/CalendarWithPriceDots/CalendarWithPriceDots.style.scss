@@ -28,27 +28,33 @@
     }
   }
 
+  // Fixed-width arrows with a flexible label between them. The sidebar column
+  // is ~166px wide, so the arrows are sized to survive it rather than being
+  // squeezed until their glyphs clip.
   &__nav {
     align-items: center;
     display: grid;
-    grid-template-columns: 32px minmax(0, 1fr) 32px;
-    gap: 6px;
+    grid-template-columns: 26px minmax(0, 1fr) 26px;
+    gap: 4px;
+    width: 100%;
 
     button {
       align-items: center;
       background: #ffffff;
       border: 1px solid rgba(11, 48, 40, 0.3);
-      border-radius: 8px;
+      border-radius: 7px;
       color: $kalawala-darker-green;
       display: inline-flex;
-      font-size: 18px;
+      flex: 0 0 auto;
+      font-size: 16px;
       font-weight: 700;
-      height: 32px;
+      height: 26px;
       justify-content: center;
       line-height: 1;
+      overflow: hidden;
       padding: 0;
       transition: background-color 0.2s ease, color 0.2s ease;
-      width: 32px;
+      width: 26px;
 
       &:hover:not(:disabled),
       &:focus-visible:not(:disabled) {
@@ -64,10 +70,16 @@
 
     span {
       color: $kalawala-dark-green;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
+      min-width: 0;
+      overflow: hidden;
       text-align: center;
-      text-transform: capitalize;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      // No `text-transform: capitalize` — it would title-case the Spanish
+      // preposition ("Julio De 2026"). formatMonthLabel raises the first
+      // letter only.
     }
   }
 
@@ -137,8 +149,8 @@
   min-height: 34px;
   padding: 0;
 
-  &:hover,
-  &:focus-visible {
+  &:hover:not(:disabled),
+  &:focus-visible:not(:disabled) {
     background: rgba(138, 162, 136, 0.12);
     outline: 2px solid rgba(11, 48, 40, 0.32);
     outline-offset: -2px;
@@ -147,6 +159,45 @@
   &--empty {
     background: rgba(138, 162, 136, 0.08);
     cursor: default;
+  }
+
+  // Anything that cannot be picked right now: a night already gone, a booked
+  // night, or — once a check-in is chosen — a date that would span a booked
+  // night. Struck through and greyed, the convention guests know from Airbnb.
+  &--blocked {
+    background: rgba(138, 162, 136, 0.06);
+    cursor: default;
+
+    .calendar-date-cell__number {
+      color: #b0b0b0;
+      text-decoration: line-through;
+    }
+
+    .price-dot {
+      opacity: 0.45;
+    }
+  }
+
+  &--past {
+    opacity: 0.7;
+  }
+
+  &--in-range {
+    background: rgba(138, 162, 136, 0.22);
+  }
+
+  &--range-start,
+  &--range-end {
+    background: $kalawala-darker-green;
+
+    .calendar-date-cell__number {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .price-dot {
+      border-color: rgba(255, 255, 255, 0.6);
+    }
   }
 
   &__number {

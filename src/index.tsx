@@ -44,6 +44,14 @@ posthog.init(process.env.REACT_APP_PUBLIC_POSTHOG_KEY as string, {
   opt_out_capturing_by_default: true,
 });
 
+// Replay stored consent for returning visitors. Consent Mode defaults to denied
+// in index.html on every load, so without this a visitor who accepted last week
+// would still be tracked cookieless today.
+const storedConsent = CookieConsentService.getConsentState();
+if (storedConsent) {
+  CookieConsentService.syncGoogleConsent(storedConsent.preferences);
+}
+
 // Opt-in immediately if user has already accepted analytics cookies
 if (CookieConsentService.hasConsent('analytics')) {
   posthog.opt_in_capturing();

@@ -145,13 +145,41 @@ Rules:
 ```json
 {
   "currency": "USD",
-  "totalAmountCents": 51000,
+  "totalAmountCents": 89250,
   "nightlyAverageCents": 12750,
-  "nights": 4,
+  "nights": 7,
   "includesTaxes": false,
-  "rateSource": "smoobu"
+  "rateSource": "smoobu",
+  "discount": {
+    "source": "long_stay",
+    "baseTotalCents": 105000,
+    "baseNightlyAverageCents": 15000,
+    "amountCents": 15750,
+    "percentage": 15
+  }
 }
 ```
+
+`discount` is optional and describes a reduction Smoobu **already applied** to
+`totalAmountCents` — never one still to be applied.
+
+Smoobu reports no breakdown: `checkApartmentAvailability` returns a single total,
+already discounted. The backend reconstructs the baseline by summing `GET
+/api/rates` over the nights of the stay, which prices nights individually and so
+knows nothing about stay length. `baseTotalCents` is that rack rate.
+
+Rules:
+
+- Only present when the rack rate exceeds the quote by at least 1%. A quote
+  *above* the baseline is an extra-guest surcharge, not a negative discount, and
+  is left unannotated.
+- `source` is `long_stay` unless the search carried a `discountCode`, in which
+  case the gap includes that code's effect and is reported as `discount_code`.
+- Omitted when the rate lookup fails, when any night is missing from the rate
+  table, or when the stay is shorter than the account's shortest long-stay rule
+  (five nights) — the lookup is skipped entirely below that.
+- The rack rate is display-only. Every price that is charged, held, or reconciled
+  is the Smoobu total in `totalAmountCents`.
 
 ### GuestDetails
 
@@ -408,7 +436,8 @@ Request:
   },
   "portalPassword": "correct horse battery staple",
   "termsAccepted": true,
-  "marketingConsent": false
+  "marketingConsent": false,
+  "withPet": false
 }
 ```
 
@@ -420,6 +449,10 @@ Validation:
 - The quoted price and currency must match the just-in-time Smoobu recheck.
 - `portalPassword` must satisfy the guest-portal password policy and is stored only as a salted hash.
 - `termsAccepted` must be `true`.
+- `withPet` (optional, default `false`) is rejected with 409 `property_not_pet_friendly`
+  unless the property carries the `pet` amenity — Casa Geco, Rana, Tucano and
+  Pappagallo. It is persisted as `booking_sessions.has_pet` and written onto the
+  Smoobu reservation notice ("Guest is travelling with a pet.").
 
 Server-side Smoobu calls:
 
@@ -709,7 +742,8 @@ Idempotency-Key: <required>
 ```
 
 Request: same shape as `POST /api/holds` without `paymentMethod` or
-`nonRefundable` — deposit bookings are always on the flexible rate.
+`nonRefundable` — deposit bookings are always on the flexible rate. `withPet` is
+accepted and enforced exactly as it is on the PayPal path.
 
 Success response (200): the hold response, plus
 

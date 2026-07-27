@@ -1,3 +1,5 @@
+import { getTrackingIdentifiers, TrackingIdentifiers } from '../utils/trackingIdentifiers';
+
 export type BookingLanguage = 'en' | 'es';
 
 export interface BookingSearchRequest {
@@ -15,6 +17,19 @@ export interface BookingAmenity {
   label: string;
 }
 
+/**
+ * A reduction Smoobu already applied to `totalAmountCents`, reconstructed by the
+ * backend from the nightly rate table. Absent when the quote matches the rack
+ * rate — or when the rate lookup was unavailable.
+ */
+export interface BookingPriceDiscount {
+  source: 'long_stay' | 'discount_code';
+  baseTotalCents: number;
+  baseNightlyAverageCents: number;
+  amountCents: number;
+  percentage: number;
+}
+
 export interface BookingPrice {
   currency: string;
   totalAmountCents: number;
@@ -22,6 +37,7 @@ export interface BookingPrice {
   nights: number;
   includesTaxes: boolean;
   rateSource: string;
+  discount?: BookingPriceDiscount;
 }
 
 export interface BookingAvailableProperty {
@@ -82,10 +98,15 @@ export interface CreatePayPalHoldRequest {
   termsAccepted: boolean;
   marketingConsent?: boolean;
   nonRefundable?: boolean;
+  /** Guest is bringing a pet. The server rejects it for homes that ban pets. */
+  withPet?: boolean;
   captchaToken?: string;
 }
 
-/** Same shape as a PayPal hold minus the rate options — deposit is always flexible. */
+/**
+ * Same shape as a PayPal hold minus the rate options — deposit is always
+ * flexible. A pet travels with the guest either way, so `withPet` stays.
+ */
 export type CreateDepositHoldRequest = Omit<CreatePayPalHoldRequest, 'nonRefundable'>;
 
 export interface DepositBankInfo {
@@ -318,6 +339,8 @@ export interface PortalReservationResponse {
     confirmedAt?: string;
     /** Null on bookings made before the rate plan was persisted. */
     ratePlan?: PortalRatePlan | null;
+    /** Guest declared a pet at checkout. */
+    hasPet?: boolean;
     /**
      * Server-evaluated cancellation policy. The UI renders from this rather than
      * re-deriving the 24-hour rule, so the button always matches what the API
@@ -511,6 +534,19 @@ export class BookingApiError extends Error {
 
 const apiBaseUrl = (process.env.REACT_APP_BOOKING_API_BASE_URL || '').replace(/\/$/, '');
 
+/**
+ * Attribution identifiers for the API's server-side conversion reporting.
+ *
+ * Spreads to `{}` when the guest has not granted marketing consent, so the
+ * request body is unchanged and nothing is stored — see trackingIdentifiers.ts.
+ */
+function buildTrackingPayload(): { tracking?: TrackingIdentifiers; marketingConsent?: boolean } {
+  const tracking = getTrackingIdentifiers();
+  if (!tracking) return {};
+
+  return { tracking, marketingConsent: true };
+}
+
 export async function searchAvailability(request: BookingSearchRequest): Promise<BookingSearchResponse> {
   const headers: Record<string, string> = {
     Accept: 'application/json',
@@ -526,7 +562,12 @@ export async function searchAvailability(request: BookingSearchRequest): Promise
   const response = await fetch(`${apiBaseUrl}/api/search`, {
     method: 'POST',
     headers,
-    body: JSON.stringify(requestBody),
+    body: JSON.stringify({
+      ...requestBody,
+      // Captured at session creation so every later funnel event the API reports
+      // can be attributed to the campaign that produced this search.
+      ...buildTrackingPayload(),
+    }),
   });
 
   const body = await parseJson(response);
@@ -561,7 +602,10 @@ export async function createPayPalHold(request: CreatePayPalHoldRequest): Promis
       portalPassword: request.portalPassword,
       termsAccepted: request.termsAccepted,
       marketingConsent: request.marketingConsent === true,
+      // Re-sent because the guest may have accepted the cookie banner after searching.
+      ...buildTrackingPayload(),
       ...(request.nonRefundable ? { nonRefundable: true } : {}),
+      ...(request.withPet ? { withPet: true } : {}),
     }),
   });
 
@@ -598,6 +642,9 @@ export async function createDepositHold(request: CreateDepositHoldRequest): Prom
       portalPassword: request.portalPassword,
       termsAccepted: request.termsAccepted,
       marketingConsent: request.marketingConsent === true,
+      // Re-sent because the guest may have accepted the cookie banner after searching.
+      ...buildTrackingPayload(),
+      ...(request.withPet ? { withPet: true } : {}),
     }),
   });
 

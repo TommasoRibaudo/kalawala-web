@@ -7,7 +7,6 @@ import PortfolioNam from "../../components/Portfolio/Portfolio.componentNam";
 import OurOtherHomesNam from "../../components/OurOtherHomes/OurOtherHomes.componentNam";
 import { NamDataList } from '../../utils/constants';
 import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
-import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import BookingSearchWidget from "../../components/BookingSearchWidget/BookingSearchWidget.component";
 import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
@@ -69,8 +68,6 @@ const HomeNam = () => {
       {/* <Testimonial /> */}
       <ContactUs />
       
-      {/* Message Tip Container */}
-      <MessageTipContainer />
     </div>
   )
 }

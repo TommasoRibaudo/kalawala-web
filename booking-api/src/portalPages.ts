@@ -554,6 +554,7 @@ function buildReservationResponse(
       guests: session.guests,
       confirmedAt: session.confirmedAt,
       ratePlan: session.ratePlan ?? null,
+      hasPet: session.hasPet === true,
       // The frontend renders from these rather than re-deriving the policy, so
       // the button a guest sees always matches what the server will allow.
       cancellation: {
@@ -676,22 +677,22 @@ function portalSessionPersistenceRequired(config: BookingApiConfig): boolean {
 const portalStrings = {
   en: {
     helpRequestReceived:
-      "Your message has been received. Our team will get back to you as soon as possible.",
+      "We have your message. Our team will get back to you as soon as possible.",
     cancellationRequestReceived:
-      "Your cancellation request has been received. Our team will review it and contact you shortly.",
+      "We have your cancellation request. Our team will review it and contact you shortly.",
     bookingCancelled:
-      "Your booking has been cancelled and the dates released. Any refund due is processed manually by our team.",
+      "We cancelled your booking and released the dates. Our team issues any refund due by hand.",
     guestCountUpdated:
-      "Guest count has been updated successfully.",
+      "Guest count updated.",
   },
   es: {
     helpRequestReceived:
-      "Su mensaje ha sido recibido. Nuestro equipo se pondrá en contacto con usted a la brevedad posible.",
+      "Recibimos tu mensaje. Nuestro equipo se pondrá en contacto contigo lo antes posible.",
     cancellationRequestReceived:
-      "Su solicitud de cancelación ha sido recibida. Nuestro equipo la revisará y se pondrá en contacto con usted en breve.",
+      "Recibimos tu solicitud de cancelación. Nuestro equipo la revisará y se pondrá en contacto contigo en breve.",
     bookingCancelled:
-      "Su reserva ha sido cancelada y las fechas liberadas. Cualquier reembolso correspondiente lo procesa nuestro equipo de forma manual.",
+      "Cancelamos tu reserva y liberamos las fechas. Nuestro equipo procesa a mano cualquier reembolso que corresponda.",
     guestCountUpdated:
-      "El número de huéspedes ha sido actualizado exitosamente.",
+      "Número de huéspedes actualizado.",
   },
 } as const;

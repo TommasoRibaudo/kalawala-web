@@ -135,17 +135,18 @@ test("RdsBookingSessionRepository.markHoldCreating persists selected property, p
         property_id: values[1],
         payment_method: values[2],
         rate_plan: values[3],
-        currency: values[4],
-        total_amount_cents: values[5],
-        guest_first_name: values[6],
-        guest_last_name: values[7],
-        guest_email: values[8],
-        guest_phone: values[9],
-        guest_country: values[10],
-        guest_message: values[11],
-        portal_password_hash: values[12],
+        has_pet: values[4],
+        currency: values[5],
+        total_amount_cents: values[6],
+        guest_first_name: values[7],
+        guest_last_name: values[8],
+        guest_email: values[9],
+        guest_phone: values[10],
+        guest_country: values[11],
+        guest_message: values[12],
+        portal_password_hash: values[13],
         portal_password_set_at: "2026-04-18T12:01:00.000Z",
-        expires_at: values[13],
+        expires_at: values[14],
         updated_at: "2026-04-18T12:01:00.000Z",
       },
     ],
@@ -157,6 +158,7 @@ test("RdsBookingSessionRepository.markHoldCreating persists selected property, p
     propertyId: "b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111",
     paymentMethod: "paypal",
     ratePlan: "flexible",
+    hasPet: true,
     price: BASE_ROW.quoted_properties[0],
     guest: {
       firstName: "Jane",
@@ -172,6 +174,7 @@ test("RdsBookingSessionRepository.markHoldCreating persists selected property, p
   expect(record.propertyId).toBe("b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111");
   expect(record.paymentMethod).toBe("paypal");
   expect(record.ratePlan).toBe("flexible");
+  expect(record.hasPet).toBe(true);
   expect(record.currency).toBe("USD");
   expect(record.totalAmountCents).toBe(45000);
   expect(record.guest).toMatchObject({ firstName: "Jane", lastName: "Doe", email: "jane@example.com" });

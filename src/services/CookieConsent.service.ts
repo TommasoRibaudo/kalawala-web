@@ -55,6 +55,32 @@ export class CookieConsentService {
   }
 
   /**
+   * Push the current preferences into Google Consent Mode v2.
+   *
+   * index.html defaults every storage type to 'denied' before gtag.js loads, so
+   * without this update GA4 stays in cookieless-ping mode forever and Google Ads
+   * gets no ad_user_data / ad_personalization signal.
+   */
+  public static syncGoogleConsent(preferences: ConsentPreferences): void {
+    try {
+      const gtag = (window as any).gtag;
+      if (typeof gtag !== 'function') return;
+
+      const analytics = preferences.analytics ? 'granted' : 'denied';
+      const marketing = preferences.marketing ? 'granted' : 'denied';
+
+      gtag('consent', 'update', {
+        analytics_storage: analytics,
+        ad_storage: marketing,
+        ad_user_data: marketing,
+        ad_personalization: marketing
+      });
+    } catch (error) {
+      console.warn('Failed to sync Google consent state:', error);
+    }
+  }
+
+  /**
    * Save consent preferences
    */
   public static saveConsent(preferences: ConsentPreferences): void {
@@ -67,7 +93,9 @@ export class CookieConsentService {
 
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(state));
-      
+
+      this.syncGoogleConsent(preferences);
+
       // Dispatch custom event for other components to listen
       window.dispatchEvent(new CustomEvent('consentChanged', { 
         detail: state 
@@ -94,7 +122,9 @@ export class CookieConsentService {
 
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(state));
-      
+
+      this.syncGoogleConsent(state.preferences);
+
       // Clear any existing tracking cookies
       this.clearTrackingCookies();
       

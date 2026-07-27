@@ -50,7 +50,7 @@ const WelcomeSliderRib = () => {
           bottom: '45px',
           left: '50%',
           transform: 'translateX(-50%)',
-          zIndex: 9999,
+          zIndex: 2,
           textAlign: 'center',
           width: '100%',
           pointerEvents: 'none',

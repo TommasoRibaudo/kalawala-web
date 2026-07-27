@@ -23,6 +23,25 @@ export type BookingSessionStatus =
 
 const DEFAULT_QUOTE_TTL_MS = 10 * 60 * 1000;
 
+/**
+ * Marketing attribution identifiers lifted from the guest's browser.
+ *
+ * Captured at session creation so every server-reported funnel event can be
+ * attributed to the session that originated it. Without `gaClientId` the GA4
+ * Measurement Protocol rejects the event outright; without `gaSessionId` it is
+ * attributed to a fresh session and lands in Direct/None, crediting no campaign.
+ *
+ * Every field is optional: the frontend sends nothing at all when the guest has
+ * not granted marketing consent, and `serverConversions.ts` stays silent in turn.
+ */
+export interface BookingTrackingIdentifiers {
+  gaClientId?: string;
+  gaSessionId?: string;
+  fbp?: string;
+  fbc?: string;
+  gclid?: string;
+}
+
 export interface CreateQuotedBookingSessionInput {
   arrivalDate: string;
   departureDate: string;
@@ -31,6 +50,8 @@ export interface CreateQuotedBookingSessionInput {
   source?: string;
   quoteTtlMs?: number;
   quotedProperties?: BookingSessionQuotedProperty[];
+  tracking?: BookingTrackingIdentifiers;
+  marketingConsent?: boolean;
 }
 
 export interface BookingSessionQuotedProperty {
@@ -81,6 +102,12 @@ export interface BookingSessionRecord {
    * migration 0013, which the policy treats as not self-service cancellable.
    */
   ratePlan?: BookingRatePlan;
+  /**
+   * Whether the guest is bringing a pet. Only pet-friendly homes can be held
+   * with this set — see `isPetFriendly` in propertyCatalog.ts. False on rows
+   * created before migration 0015, where no pet could be declared at all.
+   */
+  hasPet?: boolean;
   currency?: string;
   totalAmountCents?: number;
   guest?: HoldGuestDetails;
@@ -94,6 +121,14 @@ export interface BookingSessionRecord {
   cancellationReason?: string;
   cancelledBy?: BookingCancellationActor;
   depositReceiptS3Key?: string;
+  /** Marketing attribution identifiers, absent unless the guest consented. */
+  tracking?: BookingTrackingIdentifiers;
+  /**
+   * Gates server-side conversion reporting. Optional like `hasPet` so existing
+   * fixtures and pre-0016 rows stay valid; every read site treats anything other
+   * than an explicit `true` as "no consent", so it fails closed.
+   */
+  marketingConsent?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -109,10 +144,19 @@ export interface BookingSessionRepository {
     propertyId: string;
     paymentMethod: BookingPaymentMethod;
     ratePlan: BookingRatePlan;
+    /** Defaults to false — a booking with no declared pet. */
+    hasPet?: boolean;
     price: BookingSessionQuotedProperty;
     guest: HoldGuestDetails;
     portalPasswordHash: string;
     expiresAt: string;
+    /**
+     * Re-sent at checkout because the guest may have accepted the cookie banner
+     * after searching. Only overwrites what it actually carries — a later request
+     * with consent withdrawn must not blank identifiers already captured.
+     */
+    tracking?: BookingTrackingIdentifiers;
+    marketingConsent?: boolean;
   }): Promise<BookingSessionRecord>;
   markHoldActive(input: { bookingSessionId: string; expiresAt: string }): Promise<BookingSessionRecord>;
   markPaypalOrderCreated(input: { bookingSessionId: string; paypalOrderId: string }): Promise<BookingSessionRecord>;
@@ -165,6 +209,7 @@ interface BookingSessionRow {
   property_id: string | null;
   payment_method: string | null;
   rate_plan: string | null;
+  has_pet: boolean | null;
   currency: string | null;
   total_amount_cents: number | null;
   guest_first_name: string | null;
@@ -183,6 +228,12 @@ interface BookingSessionRow {
   cancellation_reason: string | null;
   cancelled_by: string | null;
   deposit_receipt_s3_key: string | null;
+  ga_client_id: string | null;
+  ga_session_id: string | null;
+  fbp: string | null;
+  fbc: string | null;
+  gclid: string | null;
+  marketing_consent: boolean | null;
   created_at: string | Date;
   updated_at: string | Date;
 }
@@ -202,6 +253,7 @@ const BOOKING_SESSION_COLUMNS = `
   property_id,
   payment_method,
   rate_plan,
+  has_pet,
   currency,
   total_amount_cents,
   guest_first_name,
@@ -220,6 +272,12 @@ const BOOKING_SESSION_COLUMNS = `
   cancellation_reason,
   cancelled_by,
   deposit_receipt_s3_key,
+  ga_client_id,
+  ga_session_id,
+  fbp,
+  fbc,
+  gclid,
+  marketing_consent,
   created_at,
   updated_at
 `;
@@ -276,10 +334,16 @@ export class RdsBookingSessionRepository implements BookingSessionRepository {
           source,
           quote_expires_at,
           quoted_properties,
+          ga_client_id,
+          ga_session_id,
+          fbp,
+          fbc,
+          gclid,
+          marketing_consent,
           created_at,
           updated_at
         )
-        values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11::jsonb, $12, $13)
+        values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11::jsonb, $12, $13, $14, $15, $16, $17, $18, $19)
         returning ${BOOKING_SESSION_COLUMNS}
       `,
       [
@@ -294,6 +358,12 @@ export class RdsBookingSessionRepository implements BookingSessionRepository {
         record.source ?? null,
         record.quoteExpiresAt,
         JSON.stringify(record.quotedProperties),
+        record.tracking?.gaClientId ?? null,
+        record.tracking?.gaSessionId ?? null,
+        record.tracking?.fbp ?? null,
+        record.tracking?.fbc ?? null,
+        record.tracking?.gclid ?? null,
+        record.marketingConsent,
         record.createdAt,
         record.updatedAt,
       ]
@@ -328,10 +398,18 @@ export class RdsBookingSessionRepository implements BookingSessionRepository {
     propertyId: string;
     paymentMethod: BookingPaymentMethod;
     ratePlan: BookingRatePlan;
+    hasPet?: boolean;
     price: BookingSessionQuotedProperty;
     guest: HoldGuestDetails;
     portalPasswordHash: string;
     expiresAt: string;
+    /**
+     * Re-sent at checkout because the guest may have accepted the cookie banner
+     * after searching. Only overwrites what it actually carries — a later request
+     * with consent withdrawn must not blank identifiers already captured.
+     */
+    tracking?: BookingTrackingIdentifiers;
+    marketingConsent?: boolean;
   }): Promise<BookingSessionRecord> {
     const result = await this.pool.query<BookingSessionRow>(
       `
@@ -341,17 +419,24 @@ export class RdsBookingSessionRepository implements BookingSessionRepository {
           property_id = $2,
           payment_method = $3,
           rate_plan = $4,
-          currency = $5,
-          total_amount_cents = $6,
-          guest_first_name = $7,
-          guest_last_name = $8,
-          guest_email = $9,
-          guest_phone = $10,
-          guest_country = $11,
-          guest_message = $12,
-          portal_password_hash = $13,
+          has_pet = $5,
+          currency = $6,
+          total_amount_cents = $7,
+          guest_first_name = $8,
+          guest_last_name = $9,
+          guest_email = $10,
+          guest_phone = $11,
+          guest_country = $12,
+          guest_message = $13,
+          portal_password_hash = $14,
           portal_password_set_at = now(),
-          expires_at = $14,
+          expires_at = $15,
+          ga_client_id = coalesce($16, ga_client_id),
+          ga_session_id = coalesce($17, ga_session_id),
+          fbp = coalesce($18, fbp),
+          fbc = coalesce($19, fbc),
+          gclid = coalesce($20, gclid),
+          marketing_consent = coalesce($21, marketing_consent),
           updated_at = now()
         where id = $1 and status = 'quoted'
         returning ${BOOKING_SESSION_COLUMNS}
@@ -361,6 +446,8 @@ export class RdsBookingSessionRepository implements BookingSessionRepository {
         input.propertyId,
         input.paymentMethod,
         input.ratePlan,
+        // Coerced: the column is not-null, so an omitted flag must land as false.
+        input.hasPet === true,
         input.price.currency,
         input.price.totalAmountCents,
         input.guest.firstName,
@@ -371,6 +458,12 @@ export class RdsBookingSessionRepository implements BookingSessionRepository {
         input.guest.message ?? null,
         input.portalPasswordHash,
         input.expiresAt,
+        input.tracking?.gaClientId ?? null,
+        input.tracking?.gaSessionId ?? null,
+        input.tracking?.fbp ?? null,
+        input.tracking?.fbc ?? null,
+        input.tracking?.gclid ?? null,
+        input.marketingConsent === true ? true : null,
       ]
     );
 
@@ -685,10 +778,18 @@ export class InMemoryBookingSessionRepository implements BookingSessionRepositor
     propertyId: string;
     paymentMethod: BookingPaymentMethod;
     ratePlan: BookingRatePlan;
+    hasPet?: boolean;
     price: BookingSessionQuotedProperty;
     guest: HoldGuestDetails;
     portalPasswordHash: string;
     expiresAt: string;
+    /**
+     * Re-sent at checkout because the guest may have accepted the cookie banner
+     * after searching. Only overwrites what it actually carries — a later request
+     * with consent withdrawn must not blank identifiers already captured.
+     */
+    tracking?: BookingTrackingIdentifiers;
+    marketingConsent?: boolean;
   }): Promise<BookingSessionRecord> {
     const existing = this.sessionsById.get(input.bookingSessionId);
     if (!existing) {
@@ -701,12 +802,19 @@ export class InMemoryBookingSessionRepository implements BookingSessionRepositor
       propertyId: input.propertyId,
       paymentMethod: input.paymentMethod,
       ratePlan: input.ratePlan,
+      hasPet: input.hasPet === true,
       currency: input.price.currency,
       totalAmountCents: input.price.totalAmountCents,
       guest: input.guest,
       portalPasswordHash: input.portalPasswordHash,
       portalPasswordSetAt: new Date().toISOString(),
       expiresAt: input.expiresAt,
+      // Mirrors the coalesce() in the RDS repository: merge on top of what was
+      // captured at search rather than replacing it.
+      ...(input.tracking && Object.keys(input.tracking).length > 0
+        ? { tracking: { ...existing.tracking, ...input.tracking } }
+        : {}),
+      ...(input.marketingConsent === true ? { marketingConsent: true } : {}),
       updatedAt: new Date().toISOString(),
     });
   }
@@ -925,9 +1033,27 @@ function createBookingSessionRecord(
     ...(input.source ? { source: input.source } : {}),
     quoteExpiresAt: new Date(now.getTime() + (input.quoteTtlMs ?? DEFAULT_QUOTE_TTL_MS)).toISOString(),
     quotedProperties: input.quotedProperties ?? [],
+    ...(input.tracking && Object.keys(input.tracking).length > 0 ? { tracking: input.tracking } : {}),
+    marketingConsent: input.marketingConsent === true,
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),
   };
+}
+
+/**
+ * Collapses the five identifier columns into one object, returning undefined
+ * when the guest declined marketing cookies and none were ever stored.
+ */
+function mapTracking(row: BookingSessionRow): BookingTrackingIdentifiers | undefined {
+  const tracking: BookingTrackingIdentifiers = {
+    ...(row.ga_client_id ? { gaClientId: row.ga_client_id } : {}),
+    ...(row.ga_session_id ? { gaSessionId: row.ga_session_id } : {}),
+    ...(row.fbp ? { fbp: row.fbp } : {}),
+    ...(row.fbc ? { fbc: row.fbc } : {}),
+    ...(row.gclid ? { gclid: row.gclid } : {}),
+  };
+
+  return Object.keys(tracking).length > 0 ? tracking : undefined;
 }
 
 function createQuoteId(): string {
@@ -962,6 +1088,7 @@ function mapOptionalBookingSessionRow(row: BookingSessionRow | undefined): Booki
 
 function mapBookingSessionRow(row: BookingSessionRow): BookingSessionRecord {
   const guest = mapGuest(row);
+  const tracking = mapTracking(row);
 
   return {
     id: row.id,
@@ -978,6 +1105,7 @@ function mapBookingSessionRow(row: BookingSessionRow): BookingSessionRecord {
     ...(row.property_id ? { propertyId: row.property_id } : {}),
     ...(row.payment_method ? { paymentMethod: parsePaymentMethod(row.payment_method) } : {}),
     ...(row.rate_plan ? { ratePlan: parseRatePlan(row.rate_plan) } : {}),
+    hasPet: row.has_pet === true,
     ...(row.currency ? { currency: row.currency.trim().toUpperCase() } : {}),
     ...(row.total_amount_cents !== null ? { totalAmountCents: row.total_amount_cents } : {}),
     ...(guest ? { guest } : {}),
@@ -991,6 +1119,8 @@ function mapBookingSessionRow(row: BookingSessionRow): BookingSessionRecord {
     ...(row.cancellation_reason ? { cancellationReason: row.cancellation_reason } : {}),
     ...(row.cancelled_by ? { cancelledBy: parseCancellationActor(row.cancelled_by) } : {}),
     ...(row.deposit_receipt_s3_key ? { depositReceiptS3Key: row.deposit_receipt_s3_key } : {}),
+    ...(tracking ? { tracking } : {}),
+    marketingConsent: row.marketing_consent === true,
     createdAt: toIsoString(row.created_at),
     updatedAt: toIsoString(row.updated_at),
   };

@@ -4,6 +4,7 @@ import type { HoldRepository, SmoobuHoldChannelId } from "./holds";
 import type { PaymentRepository } from "./payments";
 import type { WebhookEventRepository } from "./paypalWebhooks";
 import type { PortalSessionRepository } from "./portalSessions";
+import type { ServerConversionConfig } from "./serverConversions";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS";
 
@@ -158,6 +159,12 @@ export interface BookingApiConfig {
   hold: HoldConfig;
   abuseProtection: AbuseProtectionConfig;
   observability: ObservabilityConfig;
+  /**
+   * Server-side conversion reporting. Optional like `s3Upload` and `deposit`:
+   * omitted entirely — or present without a measurement/pixel ID and the
+   * matching secret — leaves the reporter inert.
+   */
+  serverConversions?: ServerConversionConfig;
 }
 
 export interface SmoobuClientConfig {
@@ -203,6 +210,8 @@ export type FieldErrors = Record<string, string[]>;
 
 export interface BookingProviderSecrets {
   smoobuApiKey: string;
+  /** HMAC signing secret — see docs.smoobu.com/#hmac-authentication. Every request is signed with this. */
+  smoobuApiSecret: string;
   smoobuWebhookSecret: string;
   paypalClientId: string;
   paypalClientSecret: string;
@@ -215,6 +224,16 @@ export interface BookingProviderSecrets {
    * CAPTCHA challenges unbypassable rather than failing secret validation.
    */
   captchaSecretKey?: string;
+  /**
+   * Optional — GA4 Measurement Protocol API secret, created under the data
+   * stream. Absent simply disables server-side GA4 reporting.
+   */
+  ga4ApiSecret?: string;
+  /**
+   * Optional — Meta Conversions API access token. Absent simply disables
+   * server-side Meta reporting.
+   */
+  metaCapiAccessToken?: string;
 }
 
 export interface BookingSecretProvider {

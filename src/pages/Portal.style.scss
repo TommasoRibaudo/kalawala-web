@@ -104,3 +104,21 @@
     opacity: 0.72;
   }
 }
+
+// Same tie-break as .portal-login-submit.btn above: the global `.btn { color:
+// #fff }` rule matches Bootstrap's `.btn-link` on specificity and wins on
+// source order, rendering the "Change" link next to the guest count as
+// invisible white text on a white background.
+.portal-detail-summary__edit-btn.btn {
+  color: $kalawala-dark-green;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0 0 0 8px;
+  text-decoration: underline;
+  vertical-align: baseline;
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    color: $kalawala-darker-green;
+  }
+}

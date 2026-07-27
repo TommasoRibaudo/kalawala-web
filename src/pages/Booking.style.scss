@@ -310,9 +310,19 @@
     text-align: center;
   }
 
+  // Stacked layout: the hint stays in flow, otherwise the submit button below
+  // rides up over it and crops the text.
   + .form-text {
-    position: absolute;
+    display: block;
     margin-top: 4px;
+  }
+
+  // Side-by-side layout: the row is bottom-aligned, so an in-flow hint would
+  // grow the guests column and lift the stepper above the date inputs.
+  @media (min-width: 768px) {
+    + .form-text {
+      position: absolute;
+    }
   }
 }
 
@@ -531,6 +541,62 @@
   text-align: right;
 }
 
+// ---------------------------------------------------------------------------
+// Featured home — the listing the guest searched from, promoted above the rest
+// ---------------------------------------------------------------------------
+.booking-results-section-title {
+  color: $kalawala-darker-green;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.booking-results-section-count {
+  color: rgba(23, 23, 23, 0.66);
+  font-size: 14px;
+  margin: 2px 0 0;
+}
+
+.booking-results-featured {
+  margin-bottom: 30px;
+
+  .booking-results-section-title {
+    margin-bottom: 14px;
+  }
+}
+
+.booking-results-section {
+  border-top: 1px solid rgba(41, 79, 68, 0.16);
+  margin-bottom: 18px;
+  padding-top: 22px;
+}
+
+.booking-result-card--featured {
+  border: 2px solid $kalawala-dark-green;
+  box-shadow: 0 6px 22px rgba(11, 48, 40, 0.16);
+}
+
+.booking-results-featured-missing {
+  background: rgba(138, 162, 136, 0.14);
+  border-left: 4px solid $kalawala-light-green;
+  border-radius: 8px;
+  margin-bottom: 26px;
+  padding: 14px 18px;
+
+  &__title {
+    color: $kalawala-darker-green;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  &__body {
+    color: rgba(23, 23, 23, 0.74);
+    font-size: 14px;
+    margin: 4px 0 0;
+  }
+}
+
 .booking-warning-list {
   background: rgba(138, 162, 136, 0.14);
   border-left: 4px solid $kalawala-light-green;
@@ -542,6 +608,43 @@
 
   li + li {
     margin-top: 6px;
+  }
+}
+
+// Footnote under the available homes: same list, quieter voice, so it reads as
+// context rather than as a problem with the search.
+.booking-excluded-note {
+  border-top: 1px solid rgba(41, 79, 68, 0.16);
+  margin-top: 34px;
+  padding-top: 20px;
+
+  &__title {
+    color: rgba(23, 23, 23, 0.74);
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+
+  .booking-warning-list {
+    background: transparent;
+    border-left: none;
+    border-radius: 0;
+    color: rgba(23, 23, 23, 0.66);
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+
+    li {
+      padding-left: 16px;
+      position: relative;
+
+      &::before {
+        color: $kalawala-light-green;
+        content: '•';
+        left: 0;
+        position: absolute;
+      }
+    }
   }
 }
 
@@ -793,6 +896,12 @@
     color: rgba(23, 23, 23, 0.72);
   }
 
+  // Beats the muted `span` colour above, which would otherwise leave the badge
+  // dark grey on dark green.
+  span.booking-result-card__price-label {
+    color: #ffffff;
+  }
+
   strong {
     color: $kalawala-darker-green;
     font-size: 24px;
@@ -956,6 +1065,17 @@
 
   strong {
     color: $kalawala-darker-green;
+  }
+}
+
+// "$1,050.00 Long-stay −15%" under the payable total, so the saving survives
+// the step between choosing a home and paying for it.
+.booking-checkout-panel__price-saving {
+  font-size: 13px;
+
+  del {
+    color: rgba(23, 23, 23, 0.45);
+    text-decoration: line-through;
   }
 }
 
@@ -1478,11 +1598,31 @@
   line-height: 1.4;
 }
 
+// Pet toggle — same switch treatment as the rate toggle, with the paw sitting
+// ahead of the label so the row scans as "🐾 travelling with a pet".
+.booking-pet-toggle {
+  .form-check-label svg {
+    margin-right: 6px;
+  }
+}
+
+// Sits under the result count when the pet filter hid homes that are otherwise
+// free, so the shorter list never looks like missing availability.
+.booking-results-pet-note {
+  align-items: center;
+  color: rgba(23, 23, 23, 0.65);
+  display: flex;
+  font-size: 13px;
+  gap: 6px;
+  margin: 6px 0 0;
+}
+
 // Compact form rate toggle — own row below the search fields
 .booking-search-compact__rate-row {
   align-items: center;
   border-top: 1px solid rgba(41, 79, 68, 0.12);
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
   padding-top: 10px;
@@ -1677,6 +1817,12 @@
       padding: 12px;
       width: 100%;
     }
+  }
+
+  &__upload-warning {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
   }
 
   &__uploading {

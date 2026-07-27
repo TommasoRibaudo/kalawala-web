@@ -87,16 +87,26 @@ describe('consent gating', () => {
     trackBookingSearch({ arrival_date: '2026-06-01', departure_date: '2026-06-05', guests: 2, language: 'en' });
 
     expect(mockPosthog.capture).toHaveBeenCalledTimes(1);
-    expect(mockGtag).toHaveBeenCalledTimes(1);
     expect(mockFbq).toHaveBeenCalledTimes(1);
+    // search is reported to GA4 by the API, not the browser — see the GA4
+    // OWNERSHIP note in BookingAnalytics.service.ts.
+    expect(mockGtag).not.toHaveBeenCalled();
   });
 
-  it('checks only analytics consent (not marketing)', () => {
+  it('checks analytics consent for GA4/PostHog and marketing consent for Meta', () => {
     grantConsent();
     trackBookingSearch({ arrival_date: '2026-06-01', departure_date: '2026-06-05', guests: 2, language: 'en' });
 
     expect(mockHasConsent).toHaveBeenCalledWith('analytics');
-    expect(mockHasConsent).not.toHaveBeenCalledWith('marketing');
+    expect(mockHasConsent).toHaveBeenCalledWith('marketing');
+  });
+
+  it('suppresses Meta Pixel events when marketing consent is absent', () => {
+    mockHasConsent.mockImplementation((category: string) => category === 'analytics');
+    trackBookingSearch({ arrival_date: '2026-06-01', departure_date: '2026-06-05', guests: 2, language: 'en' });
+
+    expect(mockPosthog.capture).toHaveBeenCalledTimes(1);
+    expect(mockFbq).not.toHaveBeenCalled();
   });
 });
 
@@ -114,18 +124,25 @@ describe('trackBookingSearch', () => {
     expect(mockPosthog.capture).toHaveBeenCalledWith('booking_search', props);
   });
 
-  it('fires search event to GA4', () => {
+  it('does NOT fire search to GA4 — the API owns that event', () => {
     grantConsent();
     trackBookingSearch({ arrival_date: '2026-06-01', departure_date: '2026-06-05', guests: 2, language: 'en' });
 
-    expect(mockGtag).toHaveBeenCalledWith('event', 'search', expect.objectContaining({ event_category: 'booking' }));
+    // The Measurement Protocol cannot deduplicate, so a browser-side search
+    // alongside the server's would double-count every one.
+    expect(mockGtag).not.toHaveBeenCalledWith('event', 'search', expect.anything());
   });
 
   it('fires Search to Meta Pixel', () => {
     grantConsent();
     trackBookingSearch({ arrival_date: '2026-06-01', departure_date: '2026-06-05', guests: 2, language: 'en' });
 
-    expect(mockFbq).toHaveBeenCalledWith('track', 'Search', expect.any(Object));
+    expect(mockFbq).toHaveBeenCalledWith(
+      'track',
+      'Search',
+      expect.objectContaining({ checkin_date: '2026-06-01', checkout_date: '2026-06-05', num_adults: 2 }),
+      undefined,
+    );
   });
 });
 
@@ -181,18 +198,23 @@ describe('trackCheckoutStarted', () => {
     language: 'en' as const,
   };
 
-  it('fires begin_checkout to GA4 with decimal value', () => {
+  it('does NOT fire begin_checkout to GA4 — the API owns that event', () => {
     grantConsent();
     trackCheckoutStarted(props);
 
-    expect(mockGtag).toHaveBeenCalledWith('event', 'begin_checkout', expect.objectContaining({ value: 550, currency: 'USD' }));
+    expect(mockGtag).not.toHaveBeenCalledWith('event', 'begin_checkout', expect.anything());
   });
 
   it('fires InitiateCheckout to Meta Pixel with decimal value', () => {
     grantConsent();
     trackCheckoutStarted(props);
 
-    expect(mockFbq).toHaveBeenCalledWith('track', 'InitiateCheckout', expect.objectContaining({ value: 550, currency: 'USD' }));
+    expect(mockFbq).toHaveBeenCalledWith(
+      'track',
+      'InitiateCheckout',
+      expect.objectContaining({ value: 550, currency: 'USD' }),
+      { eventID: props.quote_id },
+    );
   });
 });
 
@@ -214,22 +236,26 @@ describe('trackBookingConfirmed', () => {
     language: 'en' as const,
   };
 
-  it('fires purchase to GA4 with transaction_id and decimal value', () => {
+  it('does NOT fire purchase to GA4 — the API owns the sale', () => {
     grantConsent();
     trackBookingConfirmed(props);
 
-    expect(mockGtag).toHaveBeenCalledWith('event', 'purchase', expect.objectContaining({
-      transaction_id: 'R123',
-      value: 550,
-      currency: 'USD',
-    }));
+    // Reporting the sale server-side is the only way a manual-deposit booking
+    // (confirmed by staff, guest long gone) is ever counted.
+    expect(mockGtag).not.toHaveBeenCalledWith('event', 'purchase', expect.anything());
   });
 
   it('fires Purchase to Meta Pixel', () => {
     grantConsent();
     trackBookingConfirmed(props);
 
-    expect(mockFbq).toHaveBeenCalledWith('track', 'Purchase', expect.objectContaining({ value: 550, currency: 'USD' }));
+    // eventID must equal the reservation ID so a server-side CAPI Purchase dedupes.
+    expect(mockFbq).toHaveBeenCalledWith(
+      'track',
+      'Purchase',
+      expect.objectContaining({ value: 550, currency: 'USD', order_id: props.reservation_id }),
+      { eventID: props.reservation_id },
+    );
   });
 });
 
@@ -268,7 +294,7 @@ describe('trackManualDepositHandoffClicked', () => {
     grantConsent();
     trackManualDepositHandoffClicked(props);
 
-    expect(mockFbq).toHaveBeenCalledWith('track', 'Lead', expect.any(Object));
+    expect(mockFbq).toHaveBeenCalledWith('track', 'Lead', expect.any(Object), undefined);
   });
 });
 

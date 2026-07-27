@@ -8,6 +8,7 @@ const config: BookingApiConfig = {
   maxBodyBytes: 64 * 1024,
   secrets: new StaticSecretProvider({
     smoobuApiKey: "smoobu-secret-value",
+    smoobuApiSecret: "smoobu-api-secret-value",
     smoobuWebhookSecret: "smoobu-webhook-secret-value",
     paypalClientId: "paypal-client-id-value",
     paypalClientSecret: "paypal-client-secret-value",
@@ -220,7 +221,79 @@ test("GET /api/calendar/:apartmentSlug returns full-month Smoobu rates with stat
   expect(parsedUrl.searchParams.getAll("apartments[]")).toEqual(["301061"]);
   expect(parsedUrl.searchParams.get("start_date")).toBe("2099-06-01");
   expect(parsedUrl.searchParams.get("end_date")).toBe("2099-06-30");
-  expect((init?.headers as Record<string, string>)["Api-Key"]).toBe("smoobu-secret-value");
+  expect((init?.headers as Record<string, string>)["X-API-Key"]).toBe("smoobu-secret-value");
+});
+
+test("GET /api/calendar/:apartmentSlug never offers nights that have already passed", async () => {
+  // Smoobu has no notion of "now" and keeps reporting available: 1 for nights
+  // that are already gone; serving those advertises a stay nobody can book.
+  global.fetch = jest.fn(async () =>
+    jsonResponse({
+      data: {
+        "301061": {
+          "2020-01-01": { price: 100, min_length_of_stay: 1, available: 1 },
+          "2020-01-02": { price: 120, min_length_of_stay: 1, available: 1 },
+          "2020-01-03": { price: 150, min_length_of_stay: 1, available: 1 },
+        },
+      },
+    })
+  ) as typeof fetch;
+  const handler = createBookingApiHandler(config);
+
+  const response = await handler(makeCalendarEvent("Geco", "2020-01"));
+
+  expect(response.statusCode).toBe(200);
+  const body = JSON.parse(response.body);
+  expect(body.days.every((day: { available: boolean }) => day.available === false)).toBe(true);
+  expect(body.days.every((day: { dot: string }) => day.dot === "grey")).toBe(true);
+  // Past nights must not drag the month average either — it drives dot colours.
+  expect(body.stats).toEqual({
+    availableNightCount: 0,
+    minPriceCents: null,
+    maxPriceCents: null,
+    averagePriceCents: null,
+  });
+  // The raw Smoobu price survives for display; only bookability is revoked.
+  expect(body.days[0]).toMatchObject({ date: "2020-01-01", priceCents: 10000, available: false });
+});
+
+test("GET /api/calendar/:apartmentSlug re-masks past nights when serving a cached month", async () => {
+  jest.useFakeTimers().setSystemTime(new Date("2099-06-15T12:00:00Z"));
+  try {
+    global.fetch = jest.fn(async () =>
+      jsonResponse({
+        data: {
+          "301061": {
+            "2099-06-14": { price: 100, min_length_of_stay: 1, available: 1 },
+            "2099-06-16": { price: 100, min_length_of_stay: 1, available: 1 },
+            "2099-06-17": { price: 100, min_length_of_stay: 1, available: 1 },
+          },
+        },
+      })
+    ) as typeof fetch;
+    const handler = createBookingApiHandler(config);
+
+    const first = await handler(makeCalendarEvent("Geco", "2099-06"));
+    expect(JSON.parse(first.body).stats.availableNightCount).toBe(2);
+
+    // A day later the cache entry is still warm, but the 16th is now history.
+    jest.setSystemTime(new Date("2099-06-17T12:00:00Z"));
+    const second = await handler(makeCalendarEvent("Geco", "2099-06"));
+
+    const body = JSON.parse(second.body);
+    expect(body.cache.status).toBe("hit");
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(body.stats.availableNightCount).toBe(1);
+    expect(body.days.find((day: { date: string }) => day.date === "2099-06-16")).toMatchObject({
+      available: false,
+      dot: "grey",
+    });
+    expect(body.days.find((day: { date: string }) => day.date === "2099-06-17")).toMatchObject({
+      available: true,
+    });
+  } finally {
+    jest.useRealTimers();
+  }
 });
 
 test("GET /api/calendar/:apartmentSlug caches responses per apartment and month", async () => {

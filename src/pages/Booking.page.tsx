@@ -12,6 +12,7 @@ import { persistPortalSession, savePortalCredentials, readPortalCredentials, rem
 import {
   BookingApiError,
   BookingAvailableProperty,
+  BookingPrice,
   DepositHandoffResponse,
   BookingLanguage,
   BookingSearchResponse,
@@ -35,8 +36,11 @@ import {
   trackBookingConfirmed,
   trackManualDepositHandoffClicked,
   trackPaymentMethodSelected,
+  trackPropertyViewed,
 } from '../services/BookingAnalytics.service';
 import { CookieConsentService } from '../services/CookieConsent.service';
+import { addDays, getCostaRicaToday } from '../utils/dates';
+import { PROPERTY_DISPLAY_NAMES } from '../utils/constants';
 import { bookingStrings, BookingStrings } from './Booking.i18n';
 import './Booking.style.scss';
 
@@ -52,6 +56,15 @@ type WarningStringKey =
 const amenityIcons: Record<string, typeof faWifi> = { ac: faSnowflake, kitchen: faKitchenSet, parking: faCar, wifi: faWifi, bath: faBath, pet: faPaw, pool: faSwimmingPool };
 
 const PUERTO_VIEJO_CENTER_SLUGS = new Set(['geco', 'rana', 'tucano', 'pappagallo', 'delfin']);
+
+/**
+ * Mirrors `isPetFriendly` in the backend catalog: the `pet` amenity is what
+ * makes a home pet friendly, so the badge on the card and the pet filter can
+ * never disagree. Today that is Casa Geco, Rana, Tucano and Pappagallo.
+ */
+function isPetFriendly(property: BookingAvailableProperty): boolean {
+  return property.amenities.some((amenity) => amenity.code === 'pet');
+}
 
 function getPropertyLocation(slug: string, strings: BookingStrings): string {
   return PUERTO_VIEJO_CENTER_SLUGS.has(slug.toLowerCase())
@@ -149,6 +162,9 @@ const BookingPage = () => {
   const [arrivalDate, setArrivalDate] = React.useState(() => getInitialArrivalDate(searchParams.get('arrivalDate'), today));
   const [departureDate, setDepartureDate] = React.useState(() => getInitialDepartureDate(searchParams.get('departureDate'), searchParams.get('arrivalDate'), today));
   const [guests, setGuests] = React.useState(() => getInitialGuestCount(searchParams.get('guests')));
+  // Set when the guest arrived from a listing page. It only promotes that home
+  // to the top of the results — the search itself stays portfolio-wide.
+  const [featuredSlug] = React.useState(() => sanitiseSlug(searchParams.get('property')));
   const [result, setResult] = React.useState<BookingSearchResponse | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [depositHandoff, setDepositHandoff] = React.useState<DepositHandoffResponse | null>(null);
@@ -177,6 +193,9 @@ const BookingPage = () => {
   const [holdCaptchaRequired, setHoldCaptchaRequired] = React.useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [nonRefundable, setNonRefundable] = React.useState(false);
+  // Filters the results down to the pet-friendly homes and rides along to the
+  // hold so the booking itself records the pet.
+  const [withPet, setWithPet] = React.useState(false);
   const minDepartureDate = addDays(arrivalDate || today, 1);
 
   // Derive wizard step
@@ -288,6 +307,7 @@ const BookingPage = () => {
     setDepositProperty(property); setDepositHoldResponse(null); setReceiptState({ status: 'idle' });
     setHoldForm(initialPayPalHoldForm); setHoldFieldErrors({});
     if (property.price) { trackPaymentMethodSelected({ quote_id: result.quoteId, property_id: property.propertyId, payment_type: 'manual_deposit', value_cents: property.price.totalAmountCents, currency: property.price.currency, language }); }
+    trackManualDepositHandoffClicked({ contact_method: 'deposit_checkout', quote_id: result.quoteId, property_id: property.propertyId, property_slug: property.slug, language });
   };
 
   const handleCreateDepositHold = async (event: React.FormEvent) => {
@@ -301,7 +321,7 @@ const BookingPage = () => {
     persistPortalAutoLogin(holdForm.portalPassword);
     setIsCreatingDepositHold(true);
     try {
-      const response = await createDepositHold({ quoteId: result.quoteId, bookingSessionId: result.bookingSessionId, propertyId: depositProperty.propertyId, language, guest: { firstName: holdForm.firstName, lastName: holdForm.lastName, email: holdForm.email, phone: holdForm.phone, country: holdForm.country, message: holdForm.message }, portalPassword: holdForm.portalPassword, termsAccepted: holdForm.termsAccepted });
+      const response = await createDepositHold({ quoteId: result.quoteId, bookingSessionId: result.bookingSessionId, propertyId: depositProperty.propertyId, language, guest: { firstName: holdForm.firstName, lastName: holdForm.lastName, email: holdForm.email, phone: holdForm.phone, country: holdForm.country, message: holdForm.message }, portalPassword: holdForm.portalPassword, termsAccepted: holdForm.termsAccepted, ...(withPet ? { withPet: true } : {}) });
       setDepositHoldResponse(response);
       // The booking is not confirmed yet, but the guest will need these to log in
       // once staff verify the transfer.
@@ -348,7 +368,7 @@ const BookingPage = () => {
     persistPortalAutoLogin(holdForm.portalPassword);
     setIsCreatingHold(true);
     try {
-      const response = await createPayPalHold({ quoteId: result.quoteId, bookingSessionId: result.bookingSessionId, propertyId: checkoutProperty.propertyId, language, guest: { firstName: holdForm.firstName, lastName: holdForm.lastName, email: holdForm.email, phone: holdForm.phone, country: holdForm.country, message: holdForm.message }, portalPassword: holdForm.portalPassword, termsAccepted: holdForm.termsAccepted, ...(nonRefundable ? { nonRefundable: true } : {}), ...(captchaTokenOverride ? { captchaToken: captchaTokenOverride } : {}) });
+      const response = await createPayPalHold({ quoteId: result.quoteId, bookingSessionId: result.bookingSessionId, propertyId: checkoutProperty.propertyId, language, guest: { firstName: holdForm.firstName, lastName: holdForm.lastName, email: holdForm.email, phone: holdForm.phone, country: holdForm.country, message: holdForm.message }, portalPassword: holdForm.portalPassword, termsAccepted: holdForm.termsAccepted, ...(nonRefundable ? { nonRefundable: true } : {}), ...(withPet ? { withPet: true } : {}), ...(captchaTokenOverride ? { captchaToken: captchaTokenOverride } : {}) });
       setHoldResponse(response); setPayPalOrderError(null);
       // Persist credentials to the durable cache now that we have the reservation ID.
       if (response.booking?.reservationPublicId) { savePortalCredentials(response.booking.reservationPublicId, holdForm.portalPassword); }
@@ -423,24 +443,24 @@ const BookingPage = () => {
                   <h1 id="booking-search-title">{strings.title}</h1>
                   <p>{strings.subtitle}</p>
                 </section>
-                <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={false} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} />
+                <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={false} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} withPet={withPet} onWithPetChange={setWithPet} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} />
                 {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
               </Col></Row>
             </div>
             {/* Step 2: Results */}
             <div className={`booking-wizard-slide${wizardStep === 'results' ? ' booking-wizard-slide--active' : stepIndex(wizardStep) > stepIndex('results') ? ' booking-wizard-slide--left' : ' booking-wizard-slide--right'}`} aria-hidden={wizardStep !== 'results'}>
               <Row className="justify-content-center"><Col lg={10} xl={9}>
-                <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={true} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} onBack={handleBackToSearch} />
+                <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={true} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} withPet={withPet} onWithPetChange={setWithPet} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} onBack={handleBackToSearch} />
                 {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
                 {depositError && <Alert className="booking-search-alert" variant="danger" role="alert">{depositError}</Alert>}
-                {result && <BookingSearchResults result={result} strings={strings} language={language} nonRefundable={nonRefundable} onManualDepositHandoff={handleStartDepositCheckout} onStartPayPalHold={handleStartPayPalHold} selectedPropertyId={checkoutProperty?.propertyId ?? null} />}
+                {result && <BookingSearchResults result={result} strings={strings} language={language} nonRefundable={nonRefundable} withPet={withPet} onManualDepositHandoff={handleStartDepositCheckout} onStartPayPalHold={handleStartPayPalHold} selectedPropertyId={checkoutProperty?.propertyId ?? null} featuredSlug={featuredSlug} />}
               </Col></Row>
             </div>
             {/* Step 3: Checkout / Deposit */}
             <div className={`booking-wizard-slide${wizardStep === 'checkout' || wizardStep === 'deposit' ? ' booking-wizard-slide--active' : stepIndex(wizardStep) > 2 ? ' booking-wizard-slide--left' : ' booking-wizard-slide--right'}`} aria-hidden={wizardStep !== 'checkout' && wizardStep !== 'deposit'}>
               <Row className="justify-content-center"><Col lg={8} xl={7}>
-                {result && depositProperty && <DepositCheckoutPanel result={result} property={depositProperty} strings={strings} language={language} form={holdForm} fieldErrors={holdFieldErrors} holdError={depositError} holdResponse={depositHoldResponse} isCreatingHold={isCreatingDepositHold} receiptState={receiptState} onChange={updateHoldForm} onSubmit={handleCreateDepositHold} onUploadReceipt={handleUploadReceipt} onBack={handleBackToResults} />}
-                {result && checkoutProperty && <PayPalCheckoutPanel result={result} property={checkoutProperty} strings={strings} language={language} form={holdForm} fieldErrors={holdFieldErrors} holdError={holdError} holdResponse={holdResponse} paypalOrderError={paypalOrderError} isCreatingHold={isCreatingHold} isCreatingPayPalOrder={isCreatingPayPalOrder} onChange={updateHoldForm} onSubmit={handleCreatePayPalHold} onCreatePayPalOrder={handleCreatePayPalOrder} holdCaptchaRequired={holdCaptchaRequired} onBack={handleBackToResults} />}
+                {result && depositProperty && <DepositCheckoutPanel result={result} property={depositProperty} strings={strings} language={language} withPet={withPet} form={holdForm} fieldErrors={holdFieldErrors} holdError={depositError} holdResponse={depositHoldResponse} isCreatingHold={isCreatingDepositHold} receiptState={receiptState} onChange={updateHoldForm} onSubmit={handleCreateDepositHold} onUploadReceipt={handleUploadReceipt} onBack={handleBackToResults} />}
+                {result && checkoutProperty && <PayPalCheckoutPanel result={result} property={checkoutProperty} strings={strings} language={language} withPet={withPet} nonRefundable={nonRefundable} form={holdForm} fieldErrors={holdFieldErrors} holdError={holdError} holdResponse={holdResponse} paypalOrderError={paypalOrderError} isCreatingHold={isCreatingHold} isCreatingPayPalOrder={isCreatingPayPalOrder} onChange={updateHoldForm} onSubmit={handleCreatePayPalHold} onCreatePayPalOrder={handleCreatePayPalOrder} holdCaptchaRequired={holdCaptchaRequired} onBack={handleBackToResults} />}
               </Col></Row>
             </div>
             {/* Step 4: Confirmation */}
@@ -462,12 +482,13 @@ interface SearchFormProps {
   fieldErrors: Record<string, string>; isSubmitting: boolean; searchCaptchaRequired: boolean;
   strings: BookingStrings; compact: boolean;
   nonRefundable: boolean; onNonRefundableChange: (value: boolean) => void;
+  withPet: boolean; onWithPetChange: (value: boolean) => void;
   onArrivalChange: (value: string) => void; onDepartureChange: (value: string) => void;
   onGuestInputChange: (value: number) => void; onGuestStepChange: (value: number) => void;
   onSubmit: (event: React.FormEvent) => void; onBack?: () => void;
 }
 
-const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDate, fieldErrors, isSubmitting, searchCaptchaRequired, strings, compact, nonRefundable, onNonRefundableChange, onArrivalChange, onDepartureChange, onGuestInputChange, onGuestStepChange, onSubmit, onBack }: SearchFormProps) => {
+const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDate, fieldErrors, isSubmitting, searchCaptchaRequired, strings, compact, nonRefundable, onNonRefundableChange, withPet, onWithPetChange, onArrivalChange, onDepartureChange, onGuestInputChange, onGuestStepChange, onSubmit, onBack }: SearchFormProps) => {
   if (compact) {
     return (
       <div className="booking-search-compact">
@@ -501,6 +522,8 @@ const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDat
         <div className="booking-search-compact__rate-row">
           <Form.Check type="switch" id="rateToggleCompact" className="booking-rate-toggle" label={nonRefundable ? strings.rateNonRefundable : strings.rateFlexible} checked={nonRefundable} onChange={(e) => onNonRefundableChange(e.target.checked)} />
           {nonRefundable && <span className="booking-rate-toggle__badge">{strings.nonRefundableSave}</span>}
+          <Form.Check type="switch" id="petToggleCompact" className="booking-rate-toggle booking-pet-toggle" label={<><FontAwesomeIcon icon={faPaw} /> {strings.petToggle}</>} checked={withPet} onChange={(e) => onWithPetChange(e.target.checked)} />
+          {withPet && <span className="booking-rate-toggle__badge">{strings.petToggleBadge}</span>}
         </div>
         {searchCaptchaRequired && <div className="booking-captcha-widget" aria-live="polite"><Spinner animation="border" size="sm" /> {strings.searching}</div>}
       </div>
@@ -536,6 +559,11 @@ const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDat
           {nonRefundable && <span className="booking-rate-toggle__badge">{strings.nonRefundableSave}</span>}
           <small className="booking-rate-toggle__note">{nonRefundable ? strings.nonRefundableNote : strings.flexibleNote}</small>
         </div>
+        <div className="booking-rate-toggle-row">
+          <Form.Check type="switch" id="petToggleFull" className="booking-rate-toggle booking-pet-toggle" label={<><FontAwesomeIcon icon={faPaw} /> {strings.petToggle}</>} checked={withPet} onChange={(e) => onWithPetChange(e.target.checked)} />
+          {withPet && <span className="booking-rate-toggle__badge">{strings.petToggleBadge}</span>}
+          {withPet && <small className="booking-rate-toggle__note">{strings.petToggleNote}</small>}
+        </div>
       </Form>
       {searchCaptchaRequired && <div className="booking-captcha-widget" aria-live="polite"><Spinner animation="border" size="sm" /> {strings.searching}</div>}
     </>
@@ -543,38 +571,144 @@ const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDat
 };
 
 // BookingSearchResults
-const BookingSearchResults = ({ result, strings, language, nonRefundable, onManualDepositHandoff, onStartPayPalHold, selectedPropertyId }: { result: BookingSearchResponse; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean; onManualDepositHandoff: (p: BookingAvailableProperty) => void; onStartPayPalHold: (p: BookingAvailableProperty) => void; selectedPropertyId: string | null }) => {
-  const hasResults = result.properties.length > 0;
+const BookingSearchResults = ({ result, strings, language, nonRefundable, withPet, onManualDepositHandoff, onStartPayPalHold, selectedPropertyId, featuredSlug }: { result: BookingSearchResponse; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean; withPet: boolean; onManualDepositHandoff: (p: BookingAvailableProperty) => void; onStartPayPalHold: (p: BookingAvailableProperty) => void; selectedPropertyId: string | null; featuredSlug: string | null }) => {
+  // Filtering here rather than in the search request keeps the toggle instant on
+  // this step: flipping it re-renders the same quote instead of spending another
+  // search. The hold route re-checks the home server-side before anything is
+  // reserved.
+  const properties = withPet ? result.properties.filter(isPetFriendly) : result.properties;
+  const hiddenByPetFilter = result.properties.length - properties.length;
+  const hasResults = properties.length > 0;
   const warnings = result.availabilityWarnings.map((w) => warningMessages[w.code]).filter((k): k is WarningStringKey => Boolean(k));
-  if (!hasResults) return (<section className="booking-results-empty" aria-live="polite"><h2>{strings.noResultsTitle}</h2><p>{strings.noResultsBody}</p><WarningList warnings={warnings} strings={strings} /></section>);
+
+  // A guest who searched from a listing page came here for that home. Lift it
+  // out of the grid and lead with it; the portfolio-wide alternatives still
+  // follow underneath so a taken home never dead-ends the search.
+  const featured = featuredSlug ? properties.find((p) => p.slug.toLowerCase() === featuredSlug.toLowerCase()) ?? null : null;
+  const others = featured ? properties.filter((p) => p.propertyId !== featured.propertyId) : properties;
+  const featuredMissing = Boolean(featuredSlug) && !featured;
+  const featuredName = featuredSlug ? displayNameForSlug(featuredSlug, result.properties) : '';
+  // The home is free — it just does not take pets. Saying "not available" there
+  // would send the guest hunting for other dates that would not help.
+  const featuredHiddenByPetFilter =
+    featuredMissing && withPet && result.properties.some((p) => p.slug.toLowerCase() === featuredSlug?.toLowerCase());
+
+  if (!hasResults) {
+    // A pet search that filtered everything out is a different dead end from no
+    // availability at all, and it has a different way out.
+    if (withPet && hiddenByPetFilter > 0) {
+      return (
+        <section className="booking-results-empty" aria-live="polite">
+          <h2>{strings.petFilterEmptyTitle}</h2>
+          <p>{strings.petFilterEmptyBody}</p>
+        </section>
+      );
+    }
+
+    return (<section className="booking-results-empty" aria-live="polite"><h2>{strings.noResultsTitle}</h2><p>{strings.noResultsBody}</p><WarningList warnings={warnings} strings={strings} /></section>);
+  }
   return (
     <section className="booking-results" aria-live="polite" aria-labelledby="booking-results-title">
-      <div className="booking-results-summary"><div><p className="booking-results-kicker">{strings.resultCount(result.resultsCount)}</p><h2 id="booking-results-title">{strings.resultsTitle}</h2></div><p className="booking-quote-expiry">{strings.quoteExpires}: {formatDateTime(result.quoteExpiresAt, language)}</p></div>
-      <WarningList warnings={warnings} strings={strings} />
-      <Row className="booking-results-grid g-4">
-        {result.properties.map((property) => (<Col className="booking-results-col" key={property.propertyId} md={6} xl={4}><BookingPropertyCard property={property} strings={strings} language={language} nonRefundable={nonRefundable} onManualDepositHandoff={onManualDepositHandoff} onStartPayPalHold={onStartPayPalHold} isSelectedForCheckout={selectedPropertyId === property.propertyId} /></Col>))}
-      </Row>
+      <div className="booking-results-summary"><div><p className="booking-results-kicker">{strings.resultCount(properties.length)}</p><h2 id="booking-results-title">{strings.resultsTitle}</h2>{withPet && hiddenByPetFilter > 0 && <p className="booking-results-pet-note"><FontAwesomeIcon icon={faPaw} /> {strings.petFilterHidden(hiddenByPetFilter)}</p>}</div><p className="booking-quote-expiry">{strings.quoteExpires}: {formatDateTime(result.quoteExpiresAt, language)}</p></div>
+
+      {featured && (
+        <div className="booking-results-featured">
+          <h3 className="booking-results-section-title">{strings.featuredTitle}</h3>
+          <Row className="booking-results-grid g-4">
+            <Col className="booking-results-col" md={8} xl={6}>
+              <BookingPropertyCard property={featured} strings={strings} language={language} nonRefundable={nonRefundable} onManualDepositHandoff={onManualDepositHandoff} onStartPayPalHold={onStartPayPalHold} isSelectedForCheckout={selectedPropertyId === featured.propertyId} isFeatured />
+            </Col>
+          </Row>
+        </div>
+      )}
+
+      {featuredMissing && (
+        <div className="booking-results-featured-missing" role="status">
+          <p className="booking-results-featured-missing__title">{featuredHiddenByPetFilter ? strings.featuredNotPetFriendly(featuredName) : strings.featuredUnavailable(featuredName)}</p>
+          <p className="booking-results-featured-missing__body">{featuredHiddenByPetFilter ? strings.featuredNotPetFriendlyBody : strings.featuredUnavailableBody}</p>
+        </div>
+      )}
+
+      {others.length > 0 && (
+        <>
+          {(featured || featuredMissing) && (
+            <div className="booking-results-section">
+              <h3 className="booking-results-section-title">{strings.otherHomesTitle}</h3>
+              <p className="booking-results-section-count">{strings.otherHomesCount(others.length)}</p>
+            </div>
+          )}
+          <Row className="booking-results-grid g-4">
+            {others.map((property) => (<Col className="booking-results-col" key={property.propertyId} md={6} xl={4}><BookingPropertyCard property={property} strings={strings} language={language} nonRefundable={nonRefundable} onManualDepositHandoff={onManualDepositHandoff} onStartPayPalHold={onStartPayPalHold} isSelectedForCheckout={selectedPropertyId === property.propertyId} /></Col>))}
+          </Row>
+        </>
+      )}
+
+      {/* Homes filtered out by Smoobu are explained after the available ones, so
+          a restriction on a home the guest cannot book never overshadows the
+          homes they can. */}
+      <WarningList warnings={warnings} strings={strings} title={strings.excludedHomesTitle} />
     </section>
   );
 };
 
-const WarningList = ({ warnings, strings }: { warnings: WarningStringKey[]; strings: BookingStrings }) => {
+/** Slugs come from the URL, so they are constrained to the shape our routes use. */
+function sanitiseSlug(value: string | null): string | null {
+  const trimmed = value?.trim() ?? '';
+  return /^[A-Za-z]{2,24}$/.test(trimmed) ? trimmed : null;
+}
+
+/**
+ * Prefers the name the server sent. A home that is taken never appears in the
+ * results, so its name comes from the local catalog mirror instead of leaking
+ * the bare route slug into a sentence shown to the guest.
+ */
+function displayNameForSlug(slug: string, properties: BookingAvailableProperty[]): string {
+  const fromResults = properties.find((p) => p.slug.toLowerCase() === slug.toLowerCase())?.name;
+  if (fromResults) return fromResults;
+
+  const key = Object.keys(PROPERTY_DISPLAY_NAMES).find((k) => k.toLowerCase() === slug.toLowerCase());
+  return key ? PROPERTY_DISPLAY_NAMES[key] : slug;
+}
+
+/** With a `title` the list reads as a footnote under the results; without one it
+ *  carries the empty-state explanation on its own. */
+const WarningList = ({ warnings, strings, title }: { warnings: WarningStringKey[]; strings: BookingStrings; title?: string }) => {
   if (warnings.length === 0) return null;
-  return (<ul className="booking-warning-list">{Array.from(new Set(warnings)).map((w) => <li key={w}>{strings[w]}</li>)}</ul>);
+  const items = <ul className="booking-warning-list">{Array.from(new Set(warnings)).map((w) => <li key={w}>{strings[w]}</li>)}</ul>;
+  if (!title) return items;
+  return (
+    <aside className="booking-excluded-note">
+      <h3 className="booking-excluded-note__title">{title}</h3>
+      {items}
+    </aside>
+  );
 };
 
 // BookingPropertyCard
-const BookingPropertyCard = ({ property, strings, language, nonRefundable, onManualDepositHandoff, onStartPayPalHold, isSelectedForCheckout }: { property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean; onManualDepositHandoff: (p: BookingAvailableProperty) => void; onStartPayPalHold: (p: BookingAvailableProperty) => void; isSelectedForCheckout: boolean }) => {
+const BookingPropertyCard = ({ property, strings, language, nonRefundable, onManualDepositHandoff, onStartPayPalHold, isSelectedForCheckout, isFeatured = false }: { property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean; onManualDepositHandoff: (p: BookingAvailableProperty) => void; onStartPayPalHold: (p: BookingAvailableProperty) => void; isSelectedForCheckout: boolean; isFeatured?: boolean }) => {
   const listingUrl = buildListingUrl(property.slug, language);
   const titleId = `booking-result-title-${property.propertyId}`;
   const canCreatePayPalHold = property.actions?.canCreatePayPalHold !== false;
   const canUseManualDeposit = property.actions?.canUseManualDepositHandoff !== false;
   const [amenitiesExpanded, setAmenitiesExpanded] = React.useState(false);
   const visibleAmenities = property.amenities.slice(0, 5);
+  // The listing opens in a new tab, so the listing page itself never gets a
+  // chance to report the view back to this session — fire view_item / ViewContent
+  // from the click instead.
+  const handleListingOpen = () => {
+    trackPropertyViewed({
+      property_id: property.propertyId,
+      property_slug: property.slug,
+      property_name: property.name,
+      price_cents: property.price?.totalAmountCents ?? null,
+      currency: property.price?.currency ?? null,
+      language,
+    });
+  };
   return (
-    <article className="booking-result-card" aria-labelledby={titleId}>
+    <article className={`booking-result-card${isFeatured ? ' booking-result-card--featured' : ''}`} aria-labelledby={titleId}>
       <div className="booking-result-card__media-frame">
-        <a className="booking-result-card__media" href={listingUrl} target="_blank" rel="noopener noreferrer" aria-label={`${strings.viewListing}: ${property.name}`}>
+        <a className="booking-result-card__media" href={listingUrl} target="_blank" rel="noopener noreferrer" onClick={handleListingOpen} aria-label={`${strings.viewListing}: ${property.name}`}>
           <img src={property.thumbnailUrl} alt={property.name} />
           <span className="booking-result-card__media-hover" aria-hidden="true">{strings.viewListing}</span>
         </a>
@@ -597,8 +731,8 @@ const BookingPropertyCard = ({ property, strings, language, nonRefundable, onMan
             </button>
           </li>
         </ul>
-        {property.price && (<div className="booking-result-card__price">{nonRefundable && (<><span className="booking-result-card__price-label">{strings.nonRefundableSave}</span><span className="booking-result-card__price-original"><del>{formatMoney(property.price.totalAmountCents, property.price.currency, language)}</del></span></>)}<span>{strings.priceForStay}</span><strong>{formatMoney(nonRefundable ? Math.round(property.price.totalAmountCents * 0.9) : property.price.totalAmountCents, property.price.currency, language)}</strong><small>{nonRefundable && <del>{formatMoney(property.price.nightlyAverageCents, property.price.currency, language)} </del>}{formatMoney(nonRefundable ? Math.round(property.price.nightlyAverageCents * 0.9) : property.price.nightlyAverageCents, property.price.currency, language)} {strings.averageNight}</small></div>)}
-        <a className="booking-result-card__link" href={listingUrl} target="_blank" rel="noopener noreferrer">{strings.viewListing}</a>
+        {property.price && <PropertyPrice price={property.price} strings={strings} language={language} nonRefundable={nonRefundable} />}
+        <a className="booking-result-card__link" href={listingUrl} target="_blank" rel="noopener noreferrer" onClick={handleListingOpen}>{strings.viewListing}</a>
         {canCreatePayPalHold && <Button className="booking-result-card__book-button" type="button" variant="primary" aria-pressed={isSelectedForCheckout} onClick={() => onStartPayPalHold(property)}>{strings.bookNow}</Button>}
         {canUseManualDeposit && <Button className="booking-result-card__deposit-button" type="button" variant="outline-secondary" onClick={() => onManualDepositHandoff(property)}>{strings.manualDepositButton}</Button>}
       </div>
@@ -627,7 +761,7 @@ const GuestDetailsFields = ({ idPrefix, form, fieldErrors, strings, onChange }: 
 );
 
 // PayPalCheckoutPanel
-const PayPalCheckoutPanel = ({ result, property, strings, language, form, fieldErrors, holdError, holdResponse, paypalOrderError, isCreatingHold, isCreatingPayPalOrder, onChange, onSubmit, onCreatePayPalOrder, holdCaptchaRequired, onBack }: { result: BookingSearchResponse; property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; form: PayPalHoldFormState; fieldErrors: Record<string, string>; holdError: string | null; holdResponse: PayPalHoldResponse | null; paypalOrderError: string | null; isCreatingHold: boolean; isCreatingPayPalOrder: boolean; onChange: (u: Partial<PayPalHoldFormState>) => void; onSubmit: (e: React.FormEvent) => void; onCreatePayPalOrder: () => void; holdCaptchaRequired: boolean; onBack: () => void }) => {
+const PayPalCheckoutPanel = ({ result, property, strings, language, withPet, nonRefundable, form, fieldErrors, holdError, holdResponse, paypalOrderError, isCreatingHold, isCreatingPayPalOrder, onChange, onSubmit, onCreatePayPalOrder, holdCaptchaRequired, onBack }: { result: BookingSearchResponse; property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; withPet: boolean; nonRefundable: boolean; form: PayPalHoldFormState; fieldErrors: Record<string, string>; holdError: string | null; holdResponse: PayPalHoldResponse | null; paypalOrderError: string | null; isCreatingHold: boolean; isCreatingPayPalOrder: boolean; onChange: (u: Partial<PayPalHoldFormState>) => void; onSubmit: (e: React.FormEvent) => void; onCreatePayPalOrder: () => void; holdCaptchaRequired: boolean; onBack: () => void }) => {
   const price = property.price ?? holdResponse?.booking.price;
   return (
     <section className="booking-checkout-panel" aria-labelledby="booking-checkout-title">
@@ -635,7 +769,8 @@ const PayPalCheckoutPanel = ({ result, property, strings, language, form, fieldE
       <div className="booking-checkout-panel__header"><p className="booking-results-kicker">{strings.paypalTitle}</p><h2 id="booking-checkout-title">{strings.checkoutTitle}</h2><p>{strings.paypalDescription}</p></div>
       <div className="booking-checkout-panel__summary" aria-label={strings.checkoutSummary}>
         <div><span>{strings.depositContextTitle}</span><strong>{property.name}</strong><small>{strings.depositDates(formatDate(result.arrivalDate, language), formatDate(result.departureDate, language))}</small></div>
-        {price && <div><span>{strings.priceForStay}</span><strong>{formatMoney(price.totalAmountCents, price.currency, language)}</strong></div>}
+        {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={nonRefundable && !holdResponse} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
+        {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
       {holdError && <Alert className="booking-search-alert" variant="danger" role="alert">{holdError}</Alert>}
       {holdResponse ? (
@@ -716,7 +851,7 @@ const BookingConfirmationPanel = ({ result, strings, language, onManageBooking }
  * This replaces the old contact-only handoff, which told guests to get in touch
  * and reserved nothing.
  */
-const DepositCheckoutPanel = ({ result, property, strings, language, form, fieldErrors, holdError, holdResponse, isCreatingHold, receiptState, onChange, onSubmit, onUploadReceipt, onBack }: { result: BookingSearchResponse; property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; form: PayPalHoldFormState; fieldErrors: Record<string, string>; holdError: string | null; holdResponse: DepositHoldResponse | null; isCreatingHold: boolean; receiptState: DepositReceiptState; onChange: (u: Partial<PayPalHoldFormState>) => void; onSubmit: (e: React.FormEvent) => void; onUploadReceipt: (file: File) => void; onBack: () => void }) => {
+const DepositCheckoutPanel = ({ result, property, strings, language, withPet, form, fieldErrors, holdError, holdResponse, isCreatingHold, receiptState, onChange, onSubmit, onUploadReceipt, onBack }: { result: BookingSearchResponse; property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; withPet: boolean; form: PayPalHoldFormState; fieldErrors: Record<string, string>; holdError: string | null; holdResponse: DepositHoldResponse | null; isCreatingHold: boolean; receiptState: DepositReceiptState; onChange: (u: Partial<PayPalHoldFormState>) => void; onSubmit: (e: React.FormEvent) => void; onUploadReceipt: (file: File) => void; onBack: () => void }) => {
   const price = property.price ?? holdResponse?.booking.price;
   const bankInfo = holdResponse?.bankInfo;
 
@@ -731,7 +866,8 @@ const DepositCheckoutPanel = ({ result, property, strings, language, form, field
 
       <div className="booking-checkout-panel__summary" aria-label={strings.checkoutSummary}>
         <div><span>{strings.depositContextTitle}</span><strong>{property.name}</strong><small>{strings.depositDates(formatDate(result.arrivalDate, language), formatDate(result.departureDate, language))}</small></div>
-        {price && <div><span>{strings.priceForStay}</span><strong>{formatMoney(price.totalAmountCents, price.currency, language)}</strong></div>}
+        {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={false} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
+        {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
 
       {holdError && <Alert className="booking-search-alert" variant="danger" role="alert">{holdError}</Alert>}
@@ -778,6 +914,7 @@ const DepositCheckoutPanel = ({ result, property, strings, language, form, field
               <Alert variant="success" role="status">{strings.depositUploadSuccess}</Alert>
             ) : (
               <>
+                <Alert variant="warning" className="booking-deposit-checkout__upload-warning" role="note">{strings.depositUploadWarning}</Alert>
                 <Form.Control
                   type="file"
                   accept="image/jpeg,image/png,application/pdf"
@@ -819,6 +956,96 @@ const DepositCheckoutPanel = ({ result, property, strings, language, form, field
 
 
 
+/**
+ * Resolves what a price should look like on screen: the rack rate to strike
+ * through, the amount actually payable, and the badges explaining the gap.
+ *
+ * Two discounts reach the guest by different routes and can stack. A long-stay
+ * discount is already inside the total Smoobu quoted — the backend only tells us
+ * what it would have cost without it. The non-refundable 10% is not applied
+ * until the hold is created, so up to that point it is a preview computed here;
+ * once the server has priced the booking, `finalOverrideCents` replaces the
+ * guess with what was actually reserved.
+ */
+interface DisplayPrice {
+  baseCents: number;
+  finalCents: number;
+  baseNightlyCents: number;
+  finalNightlyCents: number;
+  labels: string[];
+  hasSaving: boolean;
+}
+
+function resolveDisplayPrice(
+  price: BookingPrice,
+  strings: BookingStrings,
+  options: { nonRefundablePreview: boolean; finalOverrideCents?: number }
+): DisplayPrice {
+  const nights = price.nights > 0 ? price.nights : 1;
+  const baseCents = price.discount?.baseTotalCents ?? price.totalAmountCents;
+  const finalCents =
+    options.finalOverrideCents ??
+    (options.nonRefundablePreview ? Math.round(price.totalAmountCents * 0.9) : price.totalAmountCents);
+
+  const labels: string[] = [];
+  if (price.discount) {
+    labels.push(
+      price.discount.source === 'long_stay'
+        ? strings.longStaySave(price.discount.percentage)
+        : strings.codeSave(price.discount.percentage)
+    );
+  }
+  if (options.nonRefundablePreview) {
+    labels.push(strings.nonRefundableSave);
+  }
+
+  return {
+    baseCents,
+    finalCents,
+    baseNightlyCents: price.discount?.baseNightlyAverageCents ?? price.nightlyAverageCents,
+    finalNightlyCents: Math.round(finalCents / nights),
+    labels,
+    hasSaving: finalCents < baseCents,
+  };
+}
+
+/** The price block on a result card: badges, struck rack rate, payable total. */
+const PropertyPrice = ({ price, strings, language, nonRefundable }: { price: BookingPrice; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean }) => {
+  const display = resolveDisplayPrice(price, strings, { nonRefundablePreview: nonRefundable });
+  return (
+    <div className="booking-result-card__price">
+      {display.hasSaving && (
+        <>
+          <span className="booking-result-card__price-label" title={price.discount?.source === 'long_stay' ? strings.longStayNote : undefined}>{display.labels.join(' · ')}</span>
+          <span className="booking-result-card__price-original"><del>{formatMoney(display.baseCents, price.currency, language)}</del></span>
+        </>
+      )}
+      <span>{strings.priceForStay}</span>
+      <strong>{formatMoney(display.finalCents, price.currency, language)}</strong>
+      <small>
+        {display.hasSaving && <del>{formatMoney(display.baseNightlyCents, price.currency, language)} </del>}
+        {formatMoney(display.finalNightlyCents, price.currency, language)} {strings.averageNight}
+      </small>
+    </div>
+  );
+};
+
+/** The price row in a checkout summary — same numbers, one line. */
+const CheckoutPrice = ({ price, strings, language, nonRefundablePreview, finalOverrideCents }: { price: BookingPrice; strings: BookingStrings; language: BookingLanguage; nonRefundablePreview: boolean; finalOverrideCents?: number }) => {
+  const display = resolveDisplayPrice(price, strings, { nonRefundablePreview, finalOverrideCents });
+  return (
+    <div>
+      <span>{strings.priceForStay}</span>
+      <strong>{formatMoney(display.finalCents, price.currency, language)}</strong>
+      {display.hasSaving && (
+        <small className="booking-checkout-panel__price-saving">
+          <del>{formatMoney(display.baseCents, price.currency, language)}</del> {display.labels.join(' · ')}
+        </small>
+      )}
+    </div>
+  );
+};
+
 // Helper functions
 function validateSearch(arrivalDate: string, departureDate: string, guests: number, today: string, strings: BookingStrings): Record<string, string> {
   const errors: Record<string, string> = {};
@@ -844,7 +1071,7 @@ function getInitialGuestCount(value: string | null): number { const p = Number(v
 function isYmd(value: string): boolean { if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false; const d = new Date(`${value}T00:00:00Z`); return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value; }
 
 function getSearchErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError && (error.status === 503 || error.retryable)) return strings.providerUnavailable; return strings.genericError; }
-function getHoldErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError) { if (error.code === 'property_no_longer_available' || error.code === 'no_longer_available') return strings.propertyNoLongerAvailable; if (error.status === 503 || error.retryable) return strings.providerUnavailable; } return strings.checkoutUnavailable; }
+function getHoldErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError) { if (error.code === 'property_not_pet_friendly') return strings.petNotAllowedError; if (error.code === 'property_no_longer_available' || error.code === 'no_longer_available') return strings.propertyNoLongerAvailable; if (error.status === 503 || error.retryable) return strings.providerUnavailable; } return strings.checkoutUnavailable; }
 function getPayPalOrderErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError) { if (error.code === 'hold_expired') return strings.bookingExpired; if (error.status === 503 || error.retryable) return strings.providerUnavailable; } return strings.paymentNotReady; }
 function getReceiptErrorMessage(error: unknown, strings: BookingStrings): string {
   if (error instanceof BookingApiError) {
@@ -856,13 +1083,6 @@ function getReceiptErrorMessage(error: unknown, strings: BookingStrings): string
 
 function getPayPalCaptureErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError) { if (error.code === 'hold_expired') return strings.bookingExpired; if (error.code === 'paypal_order_not_approved') return strings.paymentNotReady; if (error.status === 503 || error.retryable) return strings.providerUnavailable; } return strings.paypalCaptureError; }
 
-function getCostaRicaToday(): string {
-  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Costa_Rica', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
-  const byType = parts.reduce<Record<string, string>>((acc, part) => { acc[part.type] = part.value; return acc; }, {});
-  return `${byType.year}-${byType.month}-${byType.day}`;
-}
-
-function addDays(dateString: string, days: number): string { const d = new Date(`${dateString}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + days); return d.toISOString().slice(0, 10); }
 function formatMoney(amountCents: number, currency: string, language: BookingLanguage): string { return new Intl.NumberFormat(language === 'es' ? 'es-CR' : 'en-US', { style: 'currency', currency }).format(amountCents / 100); }
 function formatDateTime(value: string, language: BookingLanguage): string { const d = new Date(value); if (Number.isNaN(d.getTime())) return value; return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', { dateStyle: 'medium', timeStyle: 'short' }).format(d); }
 function formatDate(value: string, language: BookingLanguage): string { const d = new Date(`${value}T00:00:00Z`); if (Number.isNaN(d.getTime())) return value; return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', { dateStyle: 'medium', timeZone: 'UTC' }).format(d); }

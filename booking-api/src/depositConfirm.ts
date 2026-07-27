@@ -17,6 +17,7 @@
 
 import { BookingSessionRecord } from "./bookingSessions";
 import { createEmailClient } from "./email";
+import { reportServerConversion } from "./serverConversions";
 import { ApiError } from "./http/errors";
 import { htmlResponse } from "./http/response";
 import { presignReceiptDownload } from "./depositReceipt";
@@ -239,6 +240,15 @@ export async function handleStaffDepositReviewSubmit(
     route: "/api/staff/deposit-review",
     bookingSessionId: session.id,
   });
+
+  // The only place a manual-deposit sale can ever be reported: the guest's
+  // browser is long gone by the time staff confirm the transfer.
+  await reportServerConversion(
+    "purchase",
+    confirmedSession,
+    config.serverConversions,
+    request.observability.logger
+  );
 
   try {
     const emailClient = createEmailClient(config.email, request.observability.logger);

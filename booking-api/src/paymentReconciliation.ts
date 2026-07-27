@@ -1,4 +1,5 @@
 import { BookingSessionRepository } from "./bookingSessions";
+import { reportServerConversion, ServerConversionConfig } from "./serverConversions";
 import { PaymentRecord, PaymentRepository } from "./payments";
 import { PayPalClient, PayPalProviderError } from "./paypalClient";
 import { ObservabilityLogger } from "./types";
@@ -32,6 +33,11 @@ export interface ReconciliationDependencies {
   now?: () => string;
   /** Max age in ms for a pending payment before it's considered stale. Default: 2h */
   staleThresholdMs?: number;
+  /**
+   * Optional — reports the recovered sale. This path only fires when a webhook
+   * was missed, so without it those bookings would never reach Google or Meta.
+   */
+  serverConversions?: ServerConversionConfig;
 }
 
 const DEFAULT_STALE_THRESHOLD_MS = 2 * 60 * 60 * 1000; // 2 hours
@@ -203,10 +209,12 @@ async function confirmFromReconciliation(
 
     const session = await bookingSessions.getById(payment.bookingSessionId);
     if (session && session.status === "paypal_order_created") {
-      await bookingSessions.markBookingConfirmed({
+      const confirmedSession = await bookingSessions.markBookingConfirmed({
         bookingSessionId: payment.bookingSessionId,
         confirmedAt,
       });
+
+      await reportServerConversion("purchase", confirmedSession, deps.serverConversions, logger);
     }
 
     result.confirmed += 1;

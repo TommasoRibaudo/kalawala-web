@@ -1,8 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDays, faUser, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import CalendarWithPriceDots from '../CalendarWithPriceDots';
+import { MAX_PORTFOLIO_GUESTS } from '../../utils/constants';
+import { getCostaRicaToday, nightsBetween } from '../../utils/dates';
 import './BookingSearchWidget.style.scss';
 
 interface BookingSearchWidgetProps {
@@ -12,56 +15,58 @@ interface BookingSearchWidgetProps {
   defaultGuests?: number;
   /** Variant: 'sidebar' for listing pages, 'hero' for homepages */
   variant?: 'sidebar' | 'hero';
+  /**
+   * Property whose nightly rates colour the calendar dots. Listing pages pass
+   * their own slug; the homepage hero leaves it unset because the search covers
+   * the whole portfolio and there is no single home to price.
+   */
+  apartmentSlug?: string;
 }
 
 const strings = {
   en: {
     title: 'Check Availability',
-    subtitle: 'Book directly — best price guaranteed',
-    checkIn: 'Check-in',
-    checkOut: 'Check-out',
+    subtitle: 'Book directly for the best price, guaranteed',
+    dates: 'Dates',
     guests: 'Guests',
     search: 'Search Availability',
     searching: 'Searching…',
     decreaseGuests: 'Decrease guests',
     increaseGuests: 'Increase guests',
+    maxGuests: 'Our largest home sleeps {max}. Message us for bigger groups.',
     arrivalRequired: 'Please select a check-in date.',
     departureRequired: 'Please select a check-out date.',
     departureTooEarly: 'Check-out must be after check-in.',
+    selectDates: 'Select your dates',
+    selectCheckOut: 'select check-out',
+    clearDates: 'Clear dates',
+    nights: (count: number) => `${count} ${count === 1 ? 'night' : 'nights'}`,
   },
   es: {
     title: 'Ver Disponibilidad',
-    subtitle: 'Reserva directo — mejor precio garantizado',
-    checkIn: 'Llegada',
-    checkOut: 'Salida',
+    subtitle: 'Reserva directo y te garantizamos el mejor precio',
+    dates: 'Fechas',
     guests: 'Huéspedes',
     search: 'Buscar Disponibilidad',
     searching: 'Buscando…',
     decreaseGuests: 'Menos huéspedes',
     increaseGuests: 'Más huéspedes',
+    maxGuests: 'Nuestra casa más grande aloja a {max}. Escríbenos para grupos mayores.',
     arrivalRequired: 'Selecciona una fecha de llegada.',
     departureRequired: 'Selecciona una fecha de salida.',
     departureTooEarly: 'La salida debe ser después de la llegada.',
+    selectDates: 'Elige tus fechas',
+    selectCheckOut: 'elige la salida',
+    clearDates: 'Borrar fechas',
+    nights: (count: number) => `${count} ${count === 1 ? 'noche' : 'noches'}`,
   },
 };
-
-function getCostaRicaToday(): string {
-  const now = new Date();
-  // Costa Rica is UTC-6, no DST
-  const crTime = new Date(now.getTime() - 6 * 60 * 60 * 1000);
-  return crTime.toISOString().slice(0, 10);
-}
-
-function addDays(dateStr: string, days: number): string {
-  const d = new Date(dateStr + 'T12:00:00');
-  d.setDate(d.getDate() + days);
-  return d.toISOString().slice(0, 10);
-}
 
 const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
   isSpanish,
   defaultGuests = 2,
   variant = 'sidebar',
+  apartmentSlug,
 }) => {
   const navigate = useNavigate();
   const lang = isSpanish ? 'es' : 'en';
@@ -70,25 +75,66 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
 
   const [arrivalDate, setArrivalDate] = useState('');
   const [departureDate, setDepartureDate] = useState('');
-  const [guests, setGuests] = useState(defaultGuests);
+  const [guests, setGuests] = useState(() =>
+    Math.min(Math.max(1, defaultGuests), MAX_PORTFOLIO_GUESTS)
+  );
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // The hero sits on a busy homepage, so its calendar hides behind a trigger.
+  // The listing sidebar has the room to keep it open permanently.
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const datesFieldRef = useRef<HTMLDivElement>(null);
 
-  const minDepartureDate = arrivalDate ? addDays(arrivalDate, 1) : addDays(today, 1);
+  useEffect(() => {
+    if (variant !== 'hero' || !isCalendarOpen) {
+      return;
+    }
 
-  const handleArrivalChange = (value: string) => {
-    setArrivalDate(value);
-    setFieldErrors((prev) => { const n = { ...prev }; delete n.arrivalDate; return n; });
-    // Auto-adjust departure if it's before or equal to new arrival
-    if (value && departureDate && departureDate <= value) {
-      const nd = addDays(value, 1);
-      setDepartureDate(nd);
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      if (!datesFieldRef.current?.contains(event.target as Node)) {
+        setIsCalendarOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsCalendarOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [variant, isCalendarOpen]);
+
+  /**
+   * One tap picks check-in, the next picks check-out. Tapping a night on or
+   * before the current check-in restarts the range rather than producing an
+   * inverted one, which is what guests expect from a two-tap picker.
+   */
+  const handleCalendarSelect = (date: string) => {
+    setFieldErrors({});
+
+    if (!arrivalDate || departureDate || date <= arrivalDate) {
+      setArrivalDate(date);
+      setDepartureDate('');
+      return;
+    }
+
+    setDepartureDate(date);
+    if (variant === 'hero') {
+      setIsCalendarOpen(false);
     }
   };
 
-  const handleDepartureChange = (value: string) => {
-    setDepartureDate(value);
-    setFieldErrors((prev) => { const n = { ...prev }; delete n.departureDate; return n; });
+  const clearDates = () => {
+    setArrivalDate('');
+    setDepartureDate('');
+    setFieldErrors({});
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -96,13 +142,14 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
     const errors: Record<string, string> = {};
 
     if (!arrivalDate) errors.arrivalDate = s.arrivalRequired;
-    if (!departureDate) errors.departureDate = s.departureRequired;
-    if (arrivalDate && departureDate && departureDate <= arrivalDate) {
-      errors.departureDate = s.departureTooEarly;
-    }
+    else if (!departureDate) errors.departureDate = s.departureRequired;
+    else if (departureDate <= arrivalDate) errors.departureDate = s.departureTooEarly;
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
+      if (variant === 'hero') {
+        setIsCalendarOpen(true);
+      }
       return;
     }
 
@@ -115,46 +162,108 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
       guests: String(guests),
       autoSearch: 'true',
     });
+    // Promotes this home to the top of the results. The search still returns the
+    // whole portfolio — see the results page for how the two are laid out.
+    if (apartmentSlug) {
+      params.set('property', apartmentSlug);
+    }
 
-    navigate(`${bookPath}?${params.toString()}`);
+    try {
+      navigate(`${bookPath}?${params.toString()}`);
+    } catch {
+      // Navigation blocked — release the button instead of spinning forever.
+      setIsSubmitting(false);
+    }
   };
+
+  const rangeSummary = (() => {
+    if (!arrivalDate) {
+      return s.selectDates;
+    }
+    if (!departureDate) {
+      return `${formatShortDate(arrivalDate, lang)} → ${s.selectCheckOut}`;
+    }
+    return `${formatShortDate(arrivalDate, lang)} → ${formatShortDate(departureDate, lang)} · ${s.nights(
+      nightsBetween(arrivalDate, departureDate)
+    )}`;
+  })();
+
+  const dateError = fieldErrors.arrivalDate || fieldErrors.departureDate;
+
+  const calendar = (
+    <CalendarWithPriceDots
+      apartmentSlug={apartmentSlug}
+      language={lang}
+      minDate={today}
+      selectionStart={arrivalDate || null}
+      selectionEnd={departureDate || null}
+      onSelectDate={handleCalendarSelect}
+      showHeading={false}
+    />
+  );
 
   return (
     <div className={`booking-search-widget booking-search-widget--${variant}`}>
-      <div className="booking-search-widget__header">
-        <FontAwesomeIcon icon={faCalendarDays} className="booking-search-widget__icon" />
-        <div>
-          <h3 className="booking-search-widget__title">{s.title}</h3>
-          <p className="booking-search-widget__subtitle">{s.subtitle}</p>
+      {/* The hero already carries the headline, so the widget stays a bare
+          search bar there. Listing sidebars still need the label. */}
+      {variant !== 'hero' && (
+        <div className="booking-search-widget__header">
+          <FontAwesomeIcon icon={faCalendarDays} className="booking-search-widget__icon" />
+          <div>
+            <h3 className="booking-search-widget__title">{s.title}</h3>
+            <p className="booking-search-widget__subtitle">{s.subtitle}</p>
+          </div>
         </div>
-      </div>
+      )}
 
-      <Form className="booking-search-widget__form" onSubmit={handleSubmit} noValidate>
-        <Form.Group controlId={`bsw-arrival-${variant}`} className="booking-search-widget__field">
-          <Form.Label>{s.checkIn}</Form.Label>
-          <Form.Control
-            type="date"
-            value={arrivalDate}
-            min={today}
-            isInvalid={Boolean(fieldErrors.arrivalDate)}
-            onChange={(e) => handleArrivalChange(e.target.value)}
-          />
-          <Form.Control.Feedback type="invalid">{fieldErrors.arrivalDate}</Form.Control.Feedback>
-        </Form.Group>
+      <Form className="booking-search-widget__form" onSubmit={handleSubmit} noValidate aria-label={s.title}>
+        <div className="booking-search-widget__field booking-search-widget__dates" ref={datesFieldRef}>
+          <span className="booking-search-widget__label">{s.dates}</span>
 
-        <Form.Group controlId={`bsw-departure-${variant}`} className="booking-search-widget__field">
-          <Form.Label>{s.checkOut}</Form.Label>
-          <Form.Control
-            type="date"
-            value={departureDate}
-            min={minDepartureDate}
-            isInvalid={Boolean(fieldErrors.departureDate)}
-            onChange={(e) => handleDepartureChange(e.target.value)}
-          />
-          <Form.Control.Feedback type="invalid">{fieldErrors.departureDate}</Form.Control.Feedback>
-        </Form.Group>
+          {variant === 'hero' ? (
+            <>
+              <button
+                type="button"
+                className={`booking-search-widget__dates-trigger${
+                  dateError ? ' booking-search-widget__dates-trigger--invalid' : ''
+                }`}
+                onClick={() => setIsCalendarOpen((open) => !open)}
+                aria-expanded={isCalendarOpen}
+                aria-haspopup="dialog"
+              >
+                <FontAwesomeIcon icon={faCalendarDays} />
+                <span>{rangeSummary}</span>
+              </button>
+              {isCalendarOpen && (
+                <div className="booking-search-widget__calendar-popover" role="dialog" aria-label={s.dates}>
+                  {calendar}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="booking-search-widget__calendar">{calendar}</div>
+          )}
 
-        <Form.Group controlId={`bsw-guests-${variant}`} className="booking-search-widget__field">
+          {/* The hero shows the range on its trigger, so it does not repeat it. */}
+          {variant !== 'hero' && (
+            <p className="booking-search-widget__range" aria-live="polite">
+              {rangeSummary}
+              {arrivalDate && (
+                <button type="button" className="booking-search-widget__clear" onClick={clearDates}>
+                  {s.clearDates}
+                </button>
+              )}
+            </p>
+          )}
+
+          {dateError && (
+            <p className="booking-search-widget__error" aria-live="polite">
+              {dateError}
+            </p>
+          )}
+        </div>
+
+        <Form.Group controlId={`bsw-guests-${variant}`} className="booking-search-widget__field booking-search-widget__field--guests">
           <Form.Label>{s.guests}</Form.Label>
           <div className="booking-search-widget__guest-control">
             <Button
@@ -175,7 +284,8 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
               variant="outline-secondary"
               size="sm"
               aria-label={s.increaseGuests}
-              onClick={() => setGuests((g) => g + 1)}
+              onClick={() => setGuests((g) => Math.min(MAX_PORTFOLIO_GUESTS, g + 1))}
+              disabled={guests >= MAX_PORTFOLIO_GUESTS}
             >
               +
             </Button>
@@ -193,9 +303,24 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
             <><FontAwesomeIcon icon={faMagnifyingGlass} /> {s.search}</>
           )}
         </Button>
+
+        {/* Full-width row so it never disturbs the alignment of the fields above. */}
+        {guests >= MAX_PORTFOLIO_GUESTS && (
+          <p className="booking-search-widget__hint" aria-live="polite">
+            {s.maxGuests.replace('{max}', String(MAX_PORTFOLIO_GUESTS))}
+          </p>
+        )}
       </Form>
     </div>
   );
 };
+
+function formatShortDate(date: string, language: 'en' | 'es'): string {
+  return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${date}T00:00:00Z`));
+}
 
 export default BookingSearchWidget;

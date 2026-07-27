@@ -1,16 +1,60 @@
 import { ApiError } from "./http/errors";
+import { reportServerConversion } from "./serverConversions";
 import { jsonResponse } from "./http/response";
 import { BOOKING_PROPERTIES, BOOKING_PROPERTIES_BY_SMOOBU_ID, BookingProperty, listingUrlForLanguage } from "./propertyCatalog";
 import { createSmoobuClient } from "./smoobuClient";
 import { ApiResponse, BookingApiConfig, HeadersMap, RouteObservability } from "./types";
 import { SearchRequest } from "./validation";
+import { CacheAdapter } from "./memoryCache";
+import { createCacheAdapter, getCacheBackend, TTL_SCOPES } from "./cacheFactory";
 
 const QUOTE_TTL_MS = 10 * 60 * 1000;
+
+/** Below this the "discount" is Smoobu rounding, not an offer worth showing. */
+const MIN_DISPLAYABLE_DISCOUNT_PERCENTAGE = 1;
+
+/**
+ * Shortest stay that can carry a length-of-stay discount. Kalawala's Smoobu
+ * account starts discounting at five nights (and again at thirty), so a shorter
+ * search cannot produce one and the rack-rate lookup would be a Smoobu call
+ * spent to prove a negative. Raise or lower this to match the account's
+ * shortest configured long-stay rule.
+ */
+const BASELINE_MIN_NIGHTS = 5;
+
+// Rate tables move rarely and the calendar already reads them on this TTL.
+const stayRatesCache: CacheAdapter = createCacheAdapter(getCacheBackend());
+const STAY_RATES_CACHE_PREFIX = "stay-rates:";
+
+/** Test seam: the cache outlives a single search, so suites must reset it. */
+export async function clearStayRatesCache(): Promise<void> {
+  await stayRatesCache.invalidateByPrefix(STAY_RATES_CACHE_PREFIX);
+}
 
 interface SmoobuAvailabilityResponse {
   availableApartments?: unknown;
   prices?: unknown;
   errorMessages?: unknown;
+}
+
+/**
+ * What Smoobu knocked off the rack rate, reconstructed rather than reported.
+ *
+ * Neither `checkApartmentAvailability` nor `/api/rates` returns a breakdown —
+ * the availability total simply arrives already discounted. So the baseline is
+ * the sum of the nightly rates for the same nights, which knows nothing about
+ * stay length and therefore still carries the undiscounted price.
+ */
+interface PriceDiscount {
+  /**
+   * Length-of-stay pricing unless the search carried a code, in which case the
+   * gap includes whatever that code did and must not be labelled a long stay.
+   */
+  source: "long_stay" | "discount_code";
+  baseTotalCents: number;
+  baseNightlyAverageCents: number;
+  amountCents: number;
+  percentage: number;
 }
 
 interface PriceQuote {
@@ -20,6 +64,7 @@ interface PriceQuote {
   nights: number;
   includesTaxes: false;
   rateSource: "smoobu";
+  discount?: PriceDiscount;
 }
 
 interface AvailabilityWarning {
@@ -55,11 +100,14 @@ export async function handleAvailabilitySearch(
     ...(request.discountCode ? { discountCode: request.discountCode } : {}),
   };
 
-  const availability = await smoobuClient.checkApartmentAvailability<SmoobuAvailabilityResponse>(
-    smoobuPayload,
-    observability
-  );
-  const normalized = normalizeAvailability(availability.data, request);
+  // Run together: the rack-rate lookup is only used to annotate the prices the
+  // availability call returns, so serialising them would add latency for
+  // nothing. A rates failure resolves to "no baselines" rather than rejecting.
+  const [availability, baselines] = await Promise.all([
+    smoobuClient.checkApartmentAvailability<SmoobuAvailabilityResponse>(smoobuPayload, observability),
+    fetchStayBaselines(smoobuClient, apartmentIds, request, observability),
+  ]);
+  const normalized = normalizeAvailability(availability.data, request, baselines);
 
   const bookingSessions = config.bookingSessions;
   if (!bookingSessions) {
@@ -75,6 +123,10 @@ export async function handleAvailabilitySearch(
     language: request.language,
     source: request.source,
     quoteTtlMs: QUOTE_TTL_MS,
+    // Captured at session creation so every later funnel event can be attributed
+    // back to the campaign that produced the search.
+    ...(request.tracking ? { tracking: request.tracking } : {}),
+    marketingConsent: request.marketingConsent === true,
     quotedProperties: normalized.properties.map((property) => ({
       propertyId: property.propertyId,
       currency: property.price.currency,
@@ -99,6 +151,10 @@ export async function handleAvailabilitySearch(
     provider: "smoobu",
   });
 
+  // GA4 receives funnel events only from here — the Measurement Protocol cannot
+  // deduplicate, so the browser no longer reports them. Best-effort by design.
+  await reportServerConversion("search", bookingSession, config.serverConversions, observability.logger);
+
   return jsonResponse(
     200,
     {
@@ -120,7 +176,11 @@ export async function handleAvailabilitySearch(
   );
 }
 
-function normalizeAvailability(data: SmoobuAvailabilityResponse, request: SearchRequest) {
+function normalizeAvailability(
+  data: SmoobuAvailabilityResponse,
+  request: SearchRequest,
+  baselines: Map<number, number> = new Map()
+) {
   const unavailableIds = parseUnavailableApartmentIds(data.errorMessages);
   const availableIds = parseAvailableApartmentIds(data.availableApartments).filter((id) => !unavailableIds.has(id));
   const properties = availableIds
@@ -135,7 +195,7 @@ function normalizeAvailability(data: SmoobuAvailabilityResponse, request: Search
         return undefined;
       }
 
-      return buildPublicProperty(property, price, request.language);
+      return buildPublicProperty(property, withDiscount(price, baselines.get(apartmentId), request), request.language);
     })
     .filter((property): property is ReturnType<typeof buildPublicProperty> => property !== undefined);
 
@@ -143,6 +203,158 @@ function normalizeAvailability(data: SmoobuAvailabilityResponse, request: Search
     properties,
     availabilityWarnings: mapAvailabilityWarnings(data.errorMessages),
   };
+}
+
+/**
+ * Annotates a quote with the gap between the rack rate and what Smoobu actually
+ * charges for these dates — a long-stay discount, in practice.
+ *
+ * Only ever *subtracts*. A property that prices extra guests above the nightly
+ * rate quotes more than the baseline, and that is a surcharge, not a negative
+ * discount, so it is left unannotated rather than shown as a fake saving.
+ */
+function withDiscount(price: PriceQuote, baseTotalCents: number | undefined, request: SearchRequest): PriceQuote {
+  if (baseTotalCents === undefined || baseTotalCents <= price.totalAmountCents) {
+    return price;
+  }
+
+  const amountCents = baseTotalCents - price.totalAmountCents;
+  const percentage = Math.round((amountCents / baseTotalCents) * 100);
+  if (percentage < MIN_DISPLAYABLE_DISCOUNT_PERCENTAGE) {
+    return price;
+  }
+
+  return {
+    ...price,
+    discount: {
+      source: request.discountCode ? "discount_code" : "long_stay",
+      baseTotalCents,
+      baseNightlyAverageCents: Math.round(baseTotalCents / price.nights),
+      amountCents,
+      percentage,
+    },
+  };
+}
+
+/**
+ * Sums each apartment's nightly rates across the stay, giving the price before
+ * any length-of-stay discount.
+ *
+ * One call covers the whole portfolio, and the result is cached on the rate TTL
+ * — searches for popular date ranges repeat constantly, and Smoobu's rate limit
+ * is a shared budget with availability and the calendar.
+ *
+ * Never throws: a missing baseline costs a "was €X" line, not the search.
+ */
+async function fetchStayBaselines(
+  smoobuClient: Awaited<ReturnType<typeof createSmoobuClient>>,
+  apartmentIds: number[],
+  request: SearchRequest,
+  observability: RouteObservability
+): Promise<Map<number, number>> {
+  // Rates are per night, so the departure date itself is not slept in.
+  const stayDates = enumerateStayNights(request.arrivalDate, request.departureDate);
+  if (stayDates.length < BASELINE_MIN_NIGHTS) {
+    return new Map();
+  }
+
+  const cacheKey = `${STAY_RATES_CACHE_PREFIX}${request.arrivalDate}:${request.departureDate}`;
+
+  try {
+    const cached = await stayRatesCache.get(cacheKey);
+    if (cached !== null) {
+      return parseBaselineCacheEntry(cached);
+    }
+
+    const rates = await smoobuClient.getRates<{ data?: unknown }>(
+      {
+        apartmentIds,
+        startDate: stayDates[0],
+        endDate: stayDates[stayDates.length - 1],
+      },
+      observability
+    );
+
+    const baselines = sumNightlyRates(rates.data, apartmentIds, stayDates);
+    await stayRatesCache.set(
+      cacheKey,
+      JSON.stringify(Array.from(baselines.entries())),
+      TTL_SCOPES["calendar-rates"]
+    );
+    return baselines;
+  } catch (error) {
+    observability.logger.warn("stay_baseline_lookup_failed", {
+      arrivalDate: request.arrivalDate,
+      departureDate: request.departureDate,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return new Map();
+  }
+}
+
+function parseBaselineCacheEntry(serialized: string): Map<number, number> {
+  try {
+    const parsed = JSON.parse(serialized) as [number, number][];
+    return Array.isArray(parsed) ? new Map(parsed) : new Map();
+  } catch {
+    return new Map();
+  }
+}
+
+/**
+ * A baseline is only usable when every night of the stay has a rate. A partial
+ * sum would understate the rack rate and turn a real discount into a smaller
+ * one — or invent one where none exists.
+ */
+function sumNightlyRates(data: unknown, apartmentIds: number[], stayDates: string[]): Map<number, number> {
+  const root = data && typeof data === "object" && "data" in data ? (data as { data: unknown }).data : data;
+  const baselines = new Map<number, number>();
+
+  if (!root || typeof root !== "object" || Array.isArray(root)) {
+    return baselines;
+  }
+
+  for (const apartmentId of apartmentIds) {
+    const apartmentRates = (root as Record<string, unknown>)[String(apartmentId)];
+    if (!apartmentRates || typeof apartmentRates !== "object" || Array.isArray(apartmentRates)) {
+      continue;
+    }
+
+    let totalCents = 0;
+    let complete = true;
+    for (const date of stayDates) {
+      const night = (apartmentRates as Record<string, unknown>)[date];
+      const price = night && typeof night === "object" ? (night as { price?: unknown }).price : undefined;
+      if (typeof price !== "number" || !Number.isFinite(price) || price <= 0) {
+        complete = false;
+        break;
+      }
+      totalCents += Math.round(price * 100);
+    }
+
+    if (complete && totalCents > 0) {
+      baselines.set(apartmentId, totalCents);
+    }
+  }
+
+  return baselines;
+}
+
+function enumerateStayNights(arrivalDate: string, departureDate: string): string[] {
+  const dates: string[] = [];
+  let currentMs = Date.parse(`${arrivalDate}T00:00:00Z`);
+  const lastNightMs = Date.parse(`${departureDate}T00:00:00Z`) - 86_400_000;
+
+  if (!Number.isFinite(currentMs) || !Number.isFinite(lastNightMs)) {
+    return dates;
+  }
+
+  while (currentMs <= lastNightMs) {
+    dates.push(new Date(currentMs).toISOString().slice(0, 10));
+    currentMs += 86_400_000;
+  }
+
+  return dates;
 }
 
 function buildPublicProperty(property: BookingProperty, price: PriceQuote, language: "en" | "es") {

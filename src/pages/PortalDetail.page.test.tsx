@@ -131,7 +131,7 @@ test('cancelling updates the displayed status from the response', async () => {
     {
       body: {
         status: 'cancelled',
-        message: 'Your booking has been cancelled and the dates released.',
+        message: 'We cancelled your booking and released the dates.',
         reservation: { ...reservationFixture().reservation, status: 'cancelled', availableActions: ['request_help'] },
         hold: { status: 'cancelled', expiresAt: '2099-06-01T12:00:00Z' },
         payment: { method: 'paypal', status: 'refund_flagged' },
@@ -147,12 +147,12 @@ test('cancelling updates the displayed status from the response', async () => {
   fireEvent.change(reason, { target: { value: 'plans changed' } });
   fireEvent.click(screen.getByRole('button', { name: 'Yes, cancel my booking' }));
 
-  await screen.findByText('Your booking has been cancelled and the dates released.');
+  await screen.findByText('We cancelled your booking and released the dates.');
 
   // The page cannot refetch (loadAttemptedRef guards the initial load), so it
   // must apply the response directly — otherwise the status stays "Confirmed".
   await waitFor(() => expect(screen.getByText('Cancelled')).toBeInTheDocument());
-  expect(screen.getByText(/returned to the PayPal account/i)).toBeInTheDocument();
+  expect(screen.getByText(/back to the PayPal account/i)).toBeInTheDocument();
 });
 
 test('a provider failure tells the guest nothing changed', async () => {
@@ -196,5 +196,5 @@ test('a deposit booking is told its refund comes by bank transfer', async () => 
   fireEvent.click(await screen.findByRole('button', { name: 'Cancel booking' }));
 
   // Promising a PayPal refund to someone who paid by bank transfer would be wrong.
-  expect(await screen.findByText(/returned by bank transfer/i)).toBeInTheDocument();
+  expect(await screen.findByText(/refunds by hand, by bank transfer/i)).toBeInTheDocument();
 });

@@ -2,21 +2,41 @@
 <html lang="en">
 
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1LMHMCNMW"></script>
+  <!-- Google tag (gtag.js) — measurement ID must match the GA4 data stream for
+       www.reservaskalawala.com. Do not add a second gtag('config') block: a
+       typo'd ID silently duplicates every hit into a property that does not exist. -->
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-Q1LMHMCNMW');
-  </script>
+    (function () {
+      var MEASUREMENT_ID = 'G-Q1LMHMNCMW';
 
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
+      // Only the live host may write into the production GA4 property. The ID is
+      // baked into this file, so without this gate every localhost run of the
+      // booking engine lands in real revenue reports (begin_checkout, purchase…).
+      if (!/(^|\.)reservaskalawala\.com$/.test(window.location.hostname)) return;
 
-    gtag('config', 'G-Q1LMHMNCMW');
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+
+      // Consent Mode v2 — everything denied until the cookie banner resolves.
+      // CookieConsent.service.ts issues the matching gtag('consent', 'update').
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        functionality_storage: 'granted',
+        security_storage: 'granted',
+        wait_for_update: 500
+      });
+
+      gtag('js', new Date());
+      gtag('config', MEASUREMENT_ID);
+
+      var tag = document.createElement('script');
+      tag.async = true;
+      tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + MEASUREMENT_ID;
+      document.head.appendChild(tag);
+    })();
   </script>
 
   <meta charset="utf-8" />

@@ -1,5 +1,6 @@
 import { Pool, PoolConfig } from "pg";
 import { ApiError } from "./http/errors";
+import { RDS_CA_BUNDLE } from "./rdsCaBundle";
 import { createSecretProvider } from "./secrets";
 import { BookingSecretProvider } from "./types";
 
@@ -23,12 +24,11 @@ export function createPoolConfig(connectionString: string, overrides: ForcedPool
   return {
     ...overrides,
     connectionString,
-    // Enforce TLS certificate verification against the AWS RDS CA bundle.
-    // The global-bundle.pem is included in the Lambda deployment package or
-    // available at a well-known path in the Lambda runtime environment.
-    // Falls back to rejectUnauthorized: true with the system CA store if the
-    // RDS bundle is not found (still validates against Node's built-in CAs).
-    ssl: isDatabaseTlsDisabled() ? false : { rejectUnauthorized: true },
+    // RDS server certificates chain to an Amazon RDS regional CA, which is not
+    // in Node's default trust store, so rejectUnauthorized alone fails every
+    // connection with SELF_SIGNED_CERT_IN_CHAIN. RDS_CA_BUNDLE supplies the
+    // full combined RDS CA bundle so verification succeeds for real.
+    ssl: isDatabaseTlsDisabled() ? false : { rejectUnauthorized: true, ca: RDS_CA_BUNDLE },
   };
 }
 

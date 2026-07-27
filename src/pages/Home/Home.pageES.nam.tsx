@@ -8,7 +8,6 @@ import PortfolioNam from "../../components/Portfolio/Portfolio.componentNam";
 import { NamDataListES } from '../../utils/constants';
 import DiscoverNamES from "../../components/Discover/Discover.componentNamES";
 import OurOtherHomesNamES from "../../components/OurOtherHomes/OurOtherHomes.componentNamES";
-import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import BookingSearchWidget from "../../components/BookingSearchWidget/BookingSearchWidget.component";
 import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
@@ -70,8 +69,6 @@ const HomeNamES = () => {
       {/* <Testimonial /> */}
       <ContactUs />
       
-      {/* Message Tip Container */}
-      <MessageTipContainer />
     </div>
   )
 }

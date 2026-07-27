@@ -1,7 +1,7 @@
 declare module "pg" {
   export interface PoolConfig {
     connectionString?: string;
-    ssl?: boolean | { rejectUnauthorized?: boolean };
+    ssl?: boolean | { rejectUnauthorized?: boolean; ca?: string };
     max?: number;
     idleTimeoutMillis?: number;
     connectionTimeoutMillis?: number;
@@ -16,9 +16,20 @@ declare module "pg" {
     rowCount?: number | null;
   }
 
+  /**
+   * A single checked-out connection. Required for transactions: Pool.query may
+   * use a different connection per call, so `begin`/`commit` issued against the
+   * pool are not guaranteed to land on the same session.
+   */
+  export interface PoolClient {
+    query<Row extends object = Record<string, unknown>>(text: string, values?: unknown[]): Promise<QueryResult<Row>>;
+    release(): void;
+  }
+
   export class Pool {
     constructor(config?: PoolConfig);
     query<Row extends object = Record<string, unknown>>(text: string, values?: unknown[]): Promise<QueryResult<Row>>;
+    connect(): Promise<PoolClient>;
     end(): Promise<void>;
   }
 }

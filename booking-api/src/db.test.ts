@@ -18,6 +18,7 @@ jest.mock("pg", () => ({
 
 import { Pool } from "pg";
 import { checkPoolHealth, closePool, createPoolConfig, getPool } from "./db";
+import { RDS_CA_BUNDLE } from "./rdsCaBundle";
 import { StaticSecretProvider } from "./secrets";
 import { BookingProviderSecrets } from "./types";
 
@@ -25,6 +26,7 @@ const CONNECTION_STRING = "postgres://booking_user:booking_password@db.example.c
 
 const VALID_SECRETS: BookingProviderSecrets = {
   smoobuApiKey: "smoobu-api-key-123456",
+  smoobuApiSecret: "smoobu-api-secret-123456",
   smoobuWebhookSecret: "smoobu-webhook-secret-123456",
   paypalClientId: "paypal-client-id-123456",
   paypalClientSecret: "paypal-client-secret-123456",
@@ -55,11 +57,11 @@ afterEach(async () => {
   await closePool();
 });
 
-test("createPoolConfig: forces RDS TLS verification", () => {
+test("createPoolConfig: forces RDS TLS verification against the bundled RDS CA", () => {
   expect(createPoolConfig(CONNECTION_STRING, { max: 2 })).toEqual({
     connectionString: CONNECTION_STRING,
     max: 2,
-    ssl: { rejectUnauthorized: true },
+    ssl: { rejectUnauthorized: true, ca: RDS_CA_BUNDLE },
   });
 });
 
@@ -73,7 +75,7 @@ test("getPool: creates a singleton pg Pool from the secret RDS connection string
   expect(PoolMock).toHaveBeenCalledTimes(1);
   expect(PoolMock).toHaveBeenCalledWith({
     connectionString: CONNECTION_STRING,
-    ssl: { rejectUnauthorized: true },
+    ssl: { rejectUnauthorized: true, ca: RDS_CA_BUNDLE },
   });
   expect(mockPools[0].query).toHaveBeenCalledWith("SELECT 1");
 

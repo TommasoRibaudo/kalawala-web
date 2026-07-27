@@ -1,3 +1,4 @@
+import { createHash, createHmac, randomUUID } from "node:crypto";
 import { ApiError } from "./http/errors";
 import { BookingApiConfig, HttpMethod, RouteObservability, SmoobuClientConfig } from "./types";
 
@@ -45,10 +46,13 @@ export interface SmoobuResponse<T> {
 
 export interface SmoobuClientOptions {
   apiKey: string;
+  apiSecret: string;
   config?: Partial<SmoobuClientConfig>;
   fetchFn?: FetchFn;
   sleep?: SleepFn;
   now?: () => number;
+  /** Overridable for tests. Defaults to crypto.randomUUID(). Must never repeat — see HMAC spec below. */
+  nonceFn?: () => string;
 }
 
 export class SmoobuProviderError extends ApiError {
@@ -73,10 +77,12 @@ export class SmoobuProviderError extends ApiError {
 
 export class SmoobuClient {
   private readonly apiKey: string;
+  private readonly apiSecret: string;
   private readonly config: SmoobuClientConfig;
   private readonly fetchFn: FetchFn;
   private readonly sleep: SleepFn;
   private readonly now: () => number;
+  private readonly nonceFn: () => string;
   private rateLimitBlockedUntilMs = 0;
 
   constructor(options: SmoobuClientOptions) {
@@ -84,8 +90,13 @@ export class SmoobuClient {
     if (!apiKey) {
       throw new SmoobuProviderError(503, "provider_auth_failed", "Smoobu API key is not configured.");
     }
+    const apiSecret = options.apiSecret.trim();
+    if (!apiSecret) {
+      throw new SmoobuProviderError(503, "provider_auth_failed", "Smoobu API secret is not configured.");
+    }
 
     this.apiKey = apiKey;
+    this.apiSecret = apiSecret;
     this.config = {
       ...DEFAULT_SMOOBU_CONFIG,
       ...options.config,
@@ -94,6 +105,7 @@ export class SmoobuClient {
     this.fetchFn = options.fetchFn ?? fetch;
     this.sleep = options.sleep ?? ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
     this.now = options.now ?? Date.now;
+    this.nonceFn = options.nonceFn ?? (() => randomUUID());
   }
 
   async request<T = unknown>(
@@ -297,12 +309,13 @@ export class SmoobuClient {
   private async fetchWithTimeout(url: URL, method: Exclude<HttpMethod, "OPTIONS">, body: unknown): Promise<Response> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.config.timeoutMs);
+    const rawBody = body === undefined ? "" : JSON.stringify(body);
 
     try {
       return await this.fetchFn(url.toString(), {
         method,
-        headers: this.buildHeaders(body !== undefined),
-        body: body === undefined ? undefined : JSON.stringify(body),
+        headers: this.buildHeaders(method, url, rawBody),
+        body: body === undefined ? undefined : rawBody,
         signal: controller.signal,
       });
     } finally {
@@ -310,12 +323,32 @@ export class SmoobuClient {
     }
   }
 
-  private buildHeaders(hasJsonBody: boolean): Record<string, string> {
+  // HMAC request signing — see docs.smoobu.com/#hmac-authentication. Legacy API
+  // Key auth sunsets 2026-09-25; signing every request (not just for new keys)
+  // keeps this working on both sides of that date.
+  private buildHeaders(method: string, url: URL, rawBody: string): Record<string, string> {
+    const timestamp = new Date(this.now()).toISOString().replace(/\.\d{3}Z$/, "Z");
+    const nonce = this.nonceFn();
+    const bodyHash = createHash("sha256").update(rawBody, "utf8").digest("hex");
+    const canonical = [
+      method,
+      url.pathname,
+      canonicalQueryString(url),
+      timestamp,
+      nonce,
+      bodyHash,
+      this.apiKey,
+    ].join("\n");
+    const signature = createHmac("sha256", this.apiSecret).update(canonical, "utf8").digest("base64");
+
     return {
       Accept: "application/json",
-      "Api-Key": this.apiKey,
+      "X-API-Key": this.apiKey,
+      "X-Timestamp": timestamp,
+      "X-Nonce": nonce,
+      "X-Signature": signature,
       "Cache-Control": "no-cache",
-      ...(hasJsonBody ? { "Content-Type": "application/json" } : {}),
+      ...(rawBody ? { "Content-Type": "application/json" } : {}),
     };
   }
 
@@ -363,11 +396,19 @@ export class SmoobuClient {
 }
 
 export async function createSmoobuClient(config: BookingApiConfig): Promise<SmoobuClient> {
-  const { smoobuApiKey } = await config.secrets.getSecrets();
+  const { smoobuApiKey, smoobuApiSecret } = await config.secrets.getSecrets();
   return new SmoobuClient({
     apiKey: smoobuApiKey,
+    apiSecret: smoobuApiSecret,
     config: config.smoobu,
   });
+}
+
+// Query params sorted alphabetically by key per the HMAC canonical-string spec.
+function canonicalQueryString(url: URL): string {
+  const params = Array.from(url.searchParams.entries());
+  params.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+  return params.map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join("&");
 }
 
 export function parseRateLimitHeaders(headers: Headers, now: () => number = Date.now): SmoobuRateLimit {

@@ -337,6 +337,7 @@ jobs:
           echo "migration_lambda_name=$(terraform output -raw migration_lambda_name)" >> $GITHUB_OUTPUT
           echo "hold_expiry_lambda_name=$(terraform output -raw hold_expiry_lambda_name)" >> $GITHUB_OUTPUT
           echo "payment_reconciliation_lambda_name=$(terraform output -raw payment_reconciliation_lambda_name)" >> $GITHUB_OUTPUT
+          echo "api_gateway_invoke_url=$(terraform output -raw api_gateway_invoke_url)" >> $GITHUB_OUTPUT
 
     outputs:
       booking_api_lambda_name: ${{ steps.tf_outputs.outputs.booking_api_lambda_name }}
@@ -344,6 +345,7 @@ jobs:
       migration_lambda_name: ${{ steps.tf_outputs.outputs.migration_lambda_name }}
       hold_expiry_lambda_name: ${{ steps.tf_outputs.outputs.hold_expiry_lambda_name }}
       payment_reconciliation_lambda_name: ${{ steps.tf_outputs.outputs.payment_reconciliation_lambda_name }}
+      api_gateway_invoke_url: ${{ steps.tf_outputs.outputs.api_gateway_invoke_url }}
 
   # ---------------------------------------------------------------------------
   # Lambda packaging and deployment
@@ -461,8 +463,14 @@ jobs:
 
       - name: Smoke test — post-deploy checks
         env:
-          BOOKING_API_BASE_URL: ${{ secrets.BOOKING_API_BASE_URL }}
-          SMOKE_ORIGIN: https://kalawala.com
+          # Taken from terraform, not from a secret. The BOOKING_API_BASE_URL
+          # secret still held a us-east-1 staging URL that no longer resolves, so
+          # every smoke check returned curl status 000000 (could not connect) and
+          # failed a deploy that had in fact succeeded.
+          BOOKING_API_BASE_URL: ${{ needs.terraform-apply.outputs.api_gateway_invoke_url }}
+          # Must be one of booking_api_allowed_origins in the tfvars, or the CORS
+          # preflight check fails against a perfectly healthy API.
+          SMOKE_ORIGIN: https://www.reservaskalawala.com
         run: |
           sleep 5
           bash scripts/smoke-test.sh

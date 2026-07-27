@@ -102,7 +102,17 @@ STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
   -H "Origin: $ORIGIN" \
   -H "Access-Control-Request-Method: POST" \
   "$BASE_URL/api/search" || echo "000")
-check "OPTIONS /api/search (CORS preflight)" "200" "$STATUS" ""
+# 200 and 204 are both valid preflight responses; API Gateway answers 204. Assert
+# on the CORS header instead, which is what actually has to be right.
+ACAO=$(curl -s -o /dev/null -w "%{http_code}"   --max-time "$TIMEOUT"   -X OPTIONS   -H "Origin: $ORIGIN"   -H "Access-Control-Request-Method: POST"   -D /tmp/smoke-preflight-headers.txt   "$BASE_URL/api/search" >/dev/null 2>&1; grep -ci "access-control-allow-origin" /tmp/smoke-preflight-headers.txt 2>/dev/null || echo 0)
+
+if [[ "$STATUS" == "200" || "$STATUS" == "204" ]] && [[ "$ACAO" -ge 1 ]]; then
+  green "OPTIONS /api/search (CORS preflight) (HTTP $STATUS, Access-Control-Allow-Origin present)"
+  PASS=$(( PASS + 1 ))
+else
+  red "OPTIONS /api/search (CORS preflight) — status $STATUS, Access-Control-Allow-Origin count $ACAO"
+  FAIL=$(( FAIL + 1 ))
+fi
 
 # ── summary ────────────────────────────────────────────────────────────────────
 

@@ -1,43 +1,46 @@
-//a component that receives the current url and on click redirects to the new url, if the url ends with ES it will redirect to the same url without ES, if it does not end with ES it will redirect to the same url with ES
+// Toggles between the current English and Spanish route while preserving query state.
 
 import { ES, US } from "country-flag-icons/react/3x2";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const LanguageSwitcher = () => {
     const navigate = useNavigate();
-    const currentUrl = useLocation().pathname;
-    const englishLangUsed = !currentUrl.endsWith("ES");
+    const location = useLocation();
+    const currentUrl = location.pathname;
+    const englishLangUsed = !isSpanishPath(currentUrl);
+    const nextLanguageLabel = englishLangUsed ? "Espa\u00f1ol" : "English";
 
     const handleLanguageChange = () => {
-        //if the url is HomeES, redirect to "/"
-        if (currentUrl === "/HomeES") {
-            navigate("/");
-            return;
-        } else if (currentUrl === "/") {
-            navigate("/HomeES");
-            return;
-        }
-        //slice everything after # if present
-        if (currentUrl.includes("#")) {
-            const hashIndex = currentUrl.indexOf("#");
-            if (!englishLangUsed) {
-                navigate(currentUrl.slice(0, hashIndex - 2) + currentUrl.slice(hashIndex));
-            } else {
-                navigate(`${currentUrl.slice(0, hashIndex)}ES${currentUrl.slice(hashIndex)}`);
-            }
-            return;
-        } else {
-            if (!englishLangUsed) {
-                navigate(currentUrl.slice(0, -2));
-            } else {
-                navigate(`${currentUrl}ES`);
-            }
-        }
+        navigate({
+            pathname: getAlternateLanguagePath(currentUrl),
+            search: location.search,
+            hash: location.hash,
+        });
     };
 
     return (
-        <button onClick={handleLanguageChange}>
-            {englishLangUsed? <ES title="Español" />:<US title="English" />}
+        <button type="button" aria-label={`Switch language to ${nextLanguageLabel}`} onClick={handleLanguageChange}>
+            {englishLangUsed ? <ES title={nextLanguageLabel} /> : <US title={nextLanguageLabel} />}
         </button>
     );
 };
+
+function isSpanishPath(pathname: string): boolean {
+    return pathname.endsWith("ES") || pathname.includes("ES/") || pathname === "/HomeES";
+}
+
+function getAlternateLanguagePath(pathname: string): string {
+    if (pathname === "/HomeES") {
+        return "/";
+    }
+
+    if (pathname === "/") {
+        return "/HomeES";
+    }
+
+    if (isSpanishPath(pathname)) {
+        return pathname.endsWith("ES") ? pathname.slice(0, -2) : pathname.replace("ES/", "/");
+    }
+
+    return `${pathname}ES`;
+}

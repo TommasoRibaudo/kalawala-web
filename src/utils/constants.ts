@@ -2009,6 +2009,26 @@ export const NamDataListES: HouseDataType[] = [
 
 ]
 
+/**
+ * Guest-facing names by route slug, mirroring the backend property catalog.
+ *
+ * The search response only carries names for homes that are actually free, so
+ * the results page needs its own lookup to name a home that came back taken.
+ * Keep in sync with `booking-api/src/propertyCatalog.ts`.
+ */
+export const PROPERTY_DISPLAY_NAMES: Record<string, string> = {
+    Geco: 'Casa Geco',
+    Rana: 'Casa Rana',
+    Tucano: 'Casa Tucano',
+    Pappagallo: 'Casa Pappagallo',
+    VillaMar: 'Villa Mar',
+    VillaCoral: 'Villa Coral',
+    Areka: 'Casa Areka',
+    Plumeria: 'Casa Plumeria',
+    Giulia: 'Casa Giulia',
+    Delfin: 'Casa Delfin',
+};
+
 export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent> = {
     'Rana': {
         propertyKey: 'Rana',
@@ -2386,3 +2406,13 @@ export const PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES: PropertyRecommendation[] = [
     houseCode: 6
   }
 ];
+/**
+ * Largest party any single property can host. Derived from the house data so a
+ * capacity change in one place is enough — the booking search widget uses this
+ * to cap its guest stepper instead of letting guests pick a number that can
+ * never return a result.
+ */
+export const MAX_PORTFOLIO_GUESTS: number = houseDataEngList.reduce(
+  (max, house) => Math.max(max, house.guestNumber),
+  1
+);

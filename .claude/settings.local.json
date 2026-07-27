@@ -4,7 +4,18 @@
       "Bash(npx tsc:*)",
       "Bash(./node_modules/.bin/tsc --noEmit)",
       "Bash(node node_modules/typescript/bin/tsc --noEmit)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(npm test:*)",
+      "Bash(npx jest:*)",
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(xargs grep *)",
+      "Bash(grep -n \"hashPortalPassword\\\\|SCRYPT_VERSION_TAG\\\\|scrypt\\\\$\\\\|scryptN\" \"C:/Users/User/Documents/ReactNativeApps/Medical/kalawala-web/booking-api/src/holds.ts\")",
+      "Bash(grep -v \"^$\")",
+      "Bash(aws lambda update-function-configuration *)",
+      "Bash(aws lambda get-function-configuration *)",
+      "Bash(cd C:\\\\Users\\\\User\\\\Documents\\\\ReactNativeApps\\\\Medical\\\\kalawala-web *)",
+      "WebFetch(domain:aws.amazon.com)"
     ]
   }
 }

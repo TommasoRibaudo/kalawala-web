@@ -1,5 +1,8 @@
 import React from 'react';
 import { PROPERTY_MARKETING_CONFIG } from '../../utils/constants';
+import { useCalendarMonth } from '../../hooks/useCalendarMonth';
+import { getCostaRicaToday } from '../../utils/dates';
+import { formatBookingMoney } from '../../utils/money';
 import InstantConfirmationBadge from '../InstantConfirmationBadge/InstantConfirmationBadge.component';
 import './PriceConfirmationSection.style.scss';
 
@@ -13,27 +16,34 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
   isSpanish
 }) => {
   const config = PROPERTY_MARKETING_CONFIG[propertyKey];
+  const language = isSpanish ? 'es' : 'en';
+  const currentMonth = React.useMemo(() => getCostaRicaToday().slice(0, 7), []);
+  // Shares the cache with the search widget's calendar, so this costs no extra
+  // request — and the headline price can never contradict the dots below it.
+  const { data } = useCalendarMonth(config ? config.propertyKey : undefined, currentMonth, language);
 
   if (!config) {
     return null;
   }
 
-  const formatPrice = (price: number, currency: 'CRC' | 'USD') => {
-    if (currency === 'CRC') {
-      return `${price.toLocaleString()} CRC`;
-    }
-    return `$${price}`;
-  };
+  // Prices are quoted and charged in USD across the whole booking engine, so
+  // the Spanish page shows USD too rather than a colón figure that would
+  // disagree with the calendar and the checkout total.
+  const liveLowestCents = data?.stats.minPriceCents ?? null;
+  const currency = data?.currency ?? 'USD';
+  const priceLabel =
+    liveLowestCents !== null
+      ? formatBookingMoney(liveLowestCents, currency, language, { hideZeroCents: true })
+      : `$${config.price.usd}`;
 
-  const averageText = isSpanish ? 'promedio' : 'Average';
   const tooltipText = isSpanish
-    ? 'Los precios pueden variar según la temporada y pueden ser más altos que el precio promedio'
-    : 'Prices may vary according to season and might be higher than the average price';
+    ? 'Precio más bajo disponible este mes. Las tarifas varían según la temporada y las fechas elegidas.'
+    : 'Lowest available rate this month. Rates vary by season and by the dates you choose.';
 
   const priceText = isSpanish
     ? (
       <>
-        Precio {averageText}: {formatPrice(config.price.crc, 'CRC')} la noche{' '}
+        Desde {priceLabel} por noche{' '}
         <span className="average-indicator">
           <span className="info-icon">ⓘ</span>
           <span className="tooltip">{tooltipText}</span>
@@ -42,7 +52,7 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
     )
     : (
       <>
-        {averageText} price: {formatPrice(config.price.usd, 'USD')} per night{' '}
+        From {priceLabel} per night{' '}
         <span className="average-indicator">
           <span className="info-icon">ⓘ</span>
           <span className="tooltip">{tooltipText}</span>
@@ -58,7 +68,7 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
       <div className="confirmation-badge">
         <InstantConfirmationBadge isSpanish={isSpanish} />
       </div>
-      <p className='price-display' style={{ marginTop: '15px' }}>
+      <p className='price-display' style={{ marginTop: '15px', marginBottom: 0 }}>
         {isSpanish ? (
           <><>
             Código de descuento: <strong>#norefundallowed</strong>

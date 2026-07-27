@@ -51,6 +51,10 @@ import BestTimeToVisitPuerto from '../pages/Blog/staticPages/BestTimeToVisitPuer
 import BestTimeToVisitPuertoES from '../pages/Blog/staticPages_ES/BestTimeToVisitPuertoES';
 import PuertoHiddenGems from '../pages/Blog/staticPages/PuertoHiddenGems';
 import PuertoHiddenGemsES from '../pages/Blog/staticPages_ES/PuertoHiddenGemsES';
+import BookingPage from '../pages/Booking.page';
+import PortalLoginPage from '../pages/Portal.page';
+import PortalDetailPage from '../pages/PortalDetail.page';
+import PortalGuard from '../components/PortalGuard/PortalGuard.component';
 // import About from './About';
 // import Contact from './Contact';
 
@@ -166,6 +170,16 @@ const AppRouter = () => {
       <RandomPopupHandler />
       <Routes>
       <Route path="/" element={<Home />} />
+      <Route path='/book' element={<BookingPage />} />
+      <Route path='/book/return' element={<BookingPage />} />
+      <Route path='/book/confirmed' element={<BookingPage />} />
+      <Route path='/bookES' element={<BookingPage />} />
+      <Route path='/bookES/return' element={<BookingPage />} />
+      <Route path='/bookES/confirmed' element={<BookingPage />} />
+      <Route path='/portal' element={<PortalLoginPage />} />
+      <Route path='/portalES' element={<PortalLoginPage />} />
+      <Route path='/portal/:reservationPublicId' element={<PortalGuard><PortalDetailPage /></PortalGuard>} />
+      <Route path='/portalES/:reservationPublicId' element={<PortalGuard><PortalDetailPage /></PortalGuard>} />
       {/*   <Route path='listing'>
         <Route path=':listing' element={<Listing />} />
       </Route> */}

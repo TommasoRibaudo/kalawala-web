@@ -1,0 +1,64 @@
+{
+  "quoteId": "mock-quote-001",
+  "bookingSessionId": "mock-session-001",
+  "quoteExpiresAt": "2099-12-31T23:59:59Z",
+  "arrivalDate": "2026-03-15",
+  "departureDate": "2026-03-20",
+  "guests": 2,
+  "language": "en",
+  "resultsCount": 2,
+  "availabilityWarnings": [],
+  "properties": [
+    {
+      "propertyId": "prop-geco",
+      "slug": "geco",
+      "listingUrl": "/Geco",
+      "name": "Casa Geco",
+      "guestCapacity": 4,
+      "thumbnailUrl": "/images/geco-1.jpg",
+      "amenities": [
+        { "code": "wifi", "label": "WiFi" },
+        { "code": "ac", "label": "A/C" },
+        { "code": "kitchen", "label": "Kitchen" },
+        { "code": "parking", "label": "Parking" }
+      ],
+      "price": {
+        "totalAmountCents": 45000,
+        "currency": "USD",
+        "nightlyRateCents": 9000,
+        "nightlyAverageCents": 9000,
+        "nights": 5
+      },
+      "actions": {
+        "canCreatePayPalHold": true,
+        "canUseManualDepositHandoff": true
+      }
+    },
+    {
+      "propertyId": "prop-rana",
+      "slug": "rana",
+      "listingUrl": "/Rana",
+      "name": "Casa Rana",
+      "guestCapacity": 6,
+      "thumbnailUrl": "/images/rana-1.jpg",
+      "amenities": [
+        { "code": "wifi", "label": "WiFi" },
+        { "code": "ac", "label": "A/C" },
+        { "code": "kitchen", "label": "Kitchen" },
+        { "code": "parking", "label": "Parking" },
+        { "code": "pool", "label": "Pool" }
+      ],
+      "price": {
+        "totalAmountCents": 62500,
+        "currency": "USD",
+        "nightlyRateCents": 12500,
+        "nightlyAverageCents": 12500,
+        "nights": 5
+      },
+      "actions": {
+        "canCreatePayPalHold": true,
+        "canUseManualDepositHandoff": true
+      }
+    }
+  ]
+}

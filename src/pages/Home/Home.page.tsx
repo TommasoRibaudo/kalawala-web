@@ -5,9 +5,7 @@ import OurHomes from "../../components/OurHomes/OurHomes.component";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
 import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
-import MessageTipContainer from "../../components/MessageTip/MessageTipContainer.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
-import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
 import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
 
 import { houseDataEngList } from '../../utils/constants';
@@ -45,8 +43,6 @@ const helpMeChooseOptions = [
 ];
 
 const Home = () => {
-  // Show discount tip when Smoobu component changes size
-  useSmoobuSizeChange({ isSpanishPage: false });
 
 
   return (
@@ -72,8 +68,6 @@ const Home = () => {
       {/* <Testimonial /> */}
       <ContactUs />
 
-      {/* Message Tip Container */}
-      <MessageTipContainer />
     </div>
   )
 }

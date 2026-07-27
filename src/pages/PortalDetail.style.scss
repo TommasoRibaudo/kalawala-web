@@ -1,0 +1,602 @@
+@import '../styles/variables';
+
+.portal-detail-container {
+  padding: 120px 0 70px;
+}
+
+.portal-detail-loading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 0;
+  color: $kalawala-text-gray;
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.portal-detail-card {
+  background: $kalawala-opaque-beige;
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 12px;
+  padding: 40px 36px;
+  margin-bottom: 24px;
+
+  @media (max-width: 576px) {
+    padding: 28px 20px;
+  }
+
+  h1 {
+    color: $kalawala-darker-green;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 28px;
+  }
+}
+
+.portal-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.portal-detail-logout {
+  color: $kalawala-dark-green;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 4px 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &,
+  &:visited,
+  &:link,
+  &:focus,
+  &:active {
+    color: $kalawala-dark-green;
+  }
+
+  &:hover {
+    text-decoration: underline;
+    color: $kalawala-darker-green;
+  }
+}
+
+.portal-detail-eyebrow {
+  color: $kalawala-dark-green;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.portal-detail-summary {
+  margin: 0 0 32px;
+  padding: 0;
+
+  &__row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 8px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(41, 79, 68, 0.1);
+
+    &:first-child {
+      border-top: 1px solid rgba(41, 79, 68, 0.1);
+    }
+
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+
+  dt {
+    color: $kalawala-dark-green;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  dd {
+    color: $kalawala-text-gray;
+    font-size: 15px;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__reservation-id {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    font-size: 16px;
+    color: $kalawala-darker-green;
+    letter-spacing: 0.04em;
+  }
+
+  &__property-link {
+    color: $kalawala-darker-green;
+    font-weight: 600;
+    text-decoration: none;
+
+    &,
+    &:visited,
+    &:link {
+      color: $kalawala-darker-green;
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__guests-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__edit-btn {
+    color: $kalawala-dark-green;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0;
+    border: none;
+    background: none;
+
+    &,
+    &:visited,
+    &:link,
+    &:focus,
+    &:active {
+      color: $kalawala-dark-green;
+    }
+
+    &:hover {
+      text-decoration: underline;
+      color: $kalawala-darker-green;
+    }
+  }
+}
+
+.portal-detail-status {
+  display: inline-block;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 10px;
+
+  &--paid,
+  &--captured,
+  &--confirmed,
+  &--booking_confirmed {
+    background: rgba(11, 48, 40, 0.1);
+    color: $kalawala-darker-green;
+  }
+
+  &--pending {
+    background: rgba(255, 193, 7, 0.15);
+    color: #7a5a00;
+  }
+
+  &--failed,
+  &--cancelled {
+    background: rgba(220, 53, 69, 0.1);
+    color: #c82333;
+  }
+
+  &--expired,
+  &--unknown {
+    background: rgba(23, 23, 23, 0.08);
+    color: rgba(23, 23, 23, 0.6);
+  }
+}
+
+.portal-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  &__help.btn {
+    background-color: $kalawala-darker-green;
+    border-color: $kalawala-darker-green;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 700;
+    min-height: 48px;
+    padding: 0 24px;
+
+    &,
+    &:visited,
+    &:link,
+    &:focus,
+    &:active {
+      color: #fff;
+    }
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      background-color: $kalawala-dark-green;
+      border-color: $kalawala-dark-green;
+      color: #fff;
+    }
+  }
+
+  &__cancel.btn {
+    border-color: rgba(41, 79, 68, 0.4);
+    border-radius: 8px;
+    color: $kalawala-darker-green;
+    font-weight: 700;
+    min-height: 48px;
+    padding: 0 24px;
+
+    &,
+    &:visited,
+    &:link,
+    &:focus,
+    &:active {
+      color: $kalawala-darker-green;
+    }
+
+    &:hover:not(:disabled) {
+      border-color: $kalawala-darker-green;
+      background: rgba(11, 48, 40, 0.05);
+      color: $kalawala-darker-green;
+    }
+  }
+}
+
+// Shown when a booking cannot be cancelled online — the guest is pointed at a
+// human instead of being left with a missing button and no explanation.
+.portal-detail-cancel-blocked {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  background: rgba(138, 162, 136, 0.12);
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 12px;
+  color: $kalawala-text-gray;
+  font-size: 14px;
+  margin-bottom: 24px;
+
+  a {
+    color: $kalawala-dark-green;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+}
+
+.portal-detail-cancelled-banner {
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 12px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.portal-request-panel {
+  background: $kalawala-opaque-beige;
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 12px;
+  padding: 32px 36px;
+  margin-bottom: 24px;
+
+  // Cancellation is irreversible, so its panel reads as a warning rather than
+  // sharing the neutral styling of the help request form.
+  &--danger {
+    border-color: rgba(176, 58, 46, 0.35);
+  }
+
+  &__deadline {
+    color: $kalawala-dark-green;
+    font-weight: 700;
+  }
+
+  &__warning {
+    font-size: 14px;
+  }
+
+  &__refund-note {
+    color: $kalawala-text-gray;
+    font-size: 14px;
+  }
+
+  @media (max-width: 576px) {
+    padding: 24px 20px;
+  }
+
+  h2 {
+    color: $kalawala-darker-green;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  p {
+    color: $kalawala-text-gray;
+    font-size: 15px;
+    margin: 0 0 20px;
+  }
+
+  .form-label {
+    color: $kalawala-darker-green;
+    font-weight: 700;
+  }
+
+  .form-control,
+  .form-select {
+    border: 1px solid rgba(41, 79, 68, 0.28);
+    border-radius: 8px;
+    color: $kalawala-text-gray;
+    min-height: 44px;
+
+    &:focus {
+      border-color: $kalawala-dark-green;
+      box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
+    }
+  }
+
+  &__alert {
+    margin-bottom: 16px;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  &__submit.btn {
+    background-color: $kalawala-darker-green;
+    border-color: $kalawala-darker-green;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 700;
+    min-height: 48px;
+    padding: 0 24px;
+
+    &,
+    &:visited,
+    &:link,
+    &:focus,
+    &:active {
+      color: #fff;
+    }
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      background-color: $kalawala-dark-green;
+      border-color: $kalawala-dark-green;
+      color: #fff;
+    }
+
+    &:disabled {
+      opacity: 0.72;
+      color: #fff;
+    }
+
+    &--danger {
+      background-color: #c82333;
+      border-color: #c82333;
+
+      &,
+      &:visited,
+      &:link,
+      &:focus,
+      &:active {
+        color: #fff;
+      }
+
+      &:hover:not(:disabled),
+      &:focus-visible {
+        background-color: #a71d2a;
+        border-color: #a71d2a;
+        color: #fff;
+      }
+    }
+  }
+
+  &__back {
+    color: $kalawala-dark-green;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 0;
+
+    &,
+    &:visited,
+    &:link,
+    &:focus,
+    &:active {
+      color: $kalawala-dark-green;
+    }
+
+    &:hover {
+      text-decoration: underline;
+      color: $kalawala-darker-green;
+    }
+  }
+}
+
+.portal-weather-widget {
+  background: $kalawala-opaque-beige;
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 12px;
+  padding: 32px 36px;
+  margin-bottom: 24px;
+
+  @media (max-width: 576px) {
+    padding: 24px 20px;
+  }
+
+  h2 {
+    color: $kalawala-darker-green;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+
+  p {
+    color: $kalawala-text-gray;
+    font-size: 14px;
+    margin: 0 0 16px;
+  }
+
+  &__map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    color: $kalawala-darker-green;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+
+    &,
+    &:visited,
+    &:link {
+      color: $kalawala-darker-green;
+      text-decoration: none;
+    }
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+      color: $kalawala-dark-green;
+    }
+  }
+}
+
+/* ---------- Microsoft Weather link card ---------- */
+.portal-weather-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: $kalawala-darker-green;
+  border-radius: 10px;
+  color: #fff;
+  padding: 18px 22px;
+  text-decoration: none;
+  transition: background 0.15s ease;
+
+  &,
+  &:visited,
+  &:link {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: $kalawala-dark-green;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  &__icon {
+    font-size: 32px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+
+    strong {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    small {
+      font-size: 12px;
+      opacity: 0.7;
+      color: #fff;
+    }
+  }
+
+  &__arrow {
+    font-size: 20px;
+    font-weight: 700;
+    flex-shrink: 0;
+    opacity: 0.7;
+    color: #fff;
+  }
+}
+
+.portal-detail-contacts {
+  background: $kalawala-opaque-beige;
+  border: 1px solid rgba(41, 79, 68, 0.18);
+  border-radius: 12px;
+  padding: 32px 36px;
+  margin-bottom: 24px;
+
+  @media (max-width: 576px) {
+    padding: 24px 20px;
+  }
+
+  h2 {
+    color: $kalawala-darker-green;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 16px;
+  }
+
+  &__grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__link {
+    border: 1px solid rgba(41, 79, 68, 0.24);
+    border-radius: 8px;
+    color: $kalawala-darker-green;
+    display: grid;
+    gap: 4px;
+    min-height: 76px;
+    padding: 14px;
+    text-decoration: none;
+
+    &,
+    &:visited,
+    &:link {
+      color: $kalawala-darker-green;
+    }
+
+    span {
+      color: rgba(23, 23, 23, 0.72);
+      font-size: 14px;
+    }
+
+    strong {
+      overflow-wrap: anywhere;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(138, 162, 136, 0.14);
+      border-color: $kalawala-dark-green;
+      color: $kalawala-darker-green;
+      text-decoration: none;
+    }
+  }
+}

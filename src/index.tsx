@@ -38,28 +38,38 @@ import '../src/styles/scss/templates/_team.scss'
 import '../src/styles/scss/templates/_testimonials.scss'
 import '../src/styles/scss/templates/_typography.scss'
 
-import './styles/maps/style.css.map'
-
 posthog.init(process.env.REACT_APP_PUBLIC_POSTHOG_KEY as string, {
   api_host: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,
   person_profiles: 'identified_only',
   opt_out_capturing_by_default: true,
 });
 
+// Replay stored consent for returning visitors. Consent Mode defaults to denied
+// in index.html on every load, so without this a visitor who accepted last week
+// would still be tracked cookieless today.
+const storedConsent = CookieConsentService.getConsentState();
+if (storedConsent) {
+  CookieConsentService.syncGoogleConsent(storedConsent.preferences);
+}
+
 // Opt-in immediately if user has already accepted analytics cookies
 if (CookieConsentService.hasConsent('analytics')) {
   posthog.opt_in_capturing();
 }
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const rootElement = document.getElementById('root') as HTMLElement;
 
-root.render(
-  // <React.StrictMode>
-    <App />
-  // </React.StrictMode>
-);
+if (rootElement.hasChildNodes()) {
+  // Pre-rendered by react-snap — hydrate instead of full render
+  ReactDOM.hydrateRoot(rootElement, <App />);
+} else {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    // <React.StrictMode>
+      <App />
+    // </React.StrictMode>
+  );
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

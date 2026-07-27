@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Col, Row, Button } from "react-bootstrap";
 import '../Listing.style.scss'
 import OtherListings from "../components/OtherListings/OtherListings.component";
-import Smoobu from "../../../components/Smoobu/Smoobu.component";
+import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
 import { HouseDataType } from "../../../utils/types";
@@ -13,13 +13,10 @@ import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 import { useMediaQuery } from '@react-hook/media-query';
-import MessageTipContainer from "../../../components/MessageTip/MessageTipContainer.component";
-import { useSmoobuBookingTip } from "../../../hooks/useSmoobuBookingTip";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
-import { useSmoobuMobileScrollTip } from "../../../hooks/useSmoobuMobileScrollTip";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
 
 
@@ -30,12 +27,6 @@ const ListingDelfin = () => {
 
     const [show, setShow] = useState(false);
 
-    // Show booking encouragement tip when user interacts with Smoobu widget
-    useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'House Delfin' });
-    useSmoobuMobileScrollTip({
-        isSpanishPage: false,
-        isScreenSmall: isScreenSmall
-    });
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -126,9 +117,8 @@ const ListingDelfin = () => {
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    {/* Add price and confirmation above Smoobu */}
                     <PriceConfirmationSection propertyKey="Delfin" isSpanish={false} />
-                    <Smoobu homeCode={houseData!.houseCode} />
+                    <BookingSearchWidget isSpanish={false} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Delfin" />
                 </Col>
             </Row>
 
@@ -137,8 +127,6 @@ const ListingDelfin = () => {
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
 
-            {/* Message Tip Container */}
-            <MessageTipContainer />
         </div>
     )
 

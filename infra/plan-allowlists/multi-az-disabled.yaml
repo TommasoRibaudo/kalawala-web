@@ -1,0 +1,4 @@
+variable_change: "db_multi_az: true -> false"
+allowed_actions:
+  update:
+    - "aws_db_instance.main"

@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/booking-api/node_modules
 /.pnp
 .pnp.js
 
@@ -10,6 +11,7 @@
 
 # production
 /build
+/booking-api/dist
 
 # misc
 .DS_Store
@@ -21,6 +23,61 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Environment files (may contain secrets or internal config)
 .env
+booking-api/.env
+
+# Terraform state — belt-and-suspenders (also in infra/.gitignore)
+*.tfstate
+*.tfstate.*
+
+# Terraform environment configs.
+#
+# They hold no credentials — every secret is referenced by its Secrets Manager
+# name, never by value — but THIS REPOSITORY IS PUBLIC, and they do describe the
+# VPC/subnet layout, database name, the exact Secrets Manager paths worth
+# attacking, and the WAF posture. That is reconnaissance material, so they stay
+# out of the repo.
+#
+# CI therefore cannot read them from the checkout. deploy-backend.yml
+# reconstructs the file from the TFVARS_<ENV> GitHub secret before running
+# terraform — see the "Materialise tfvars" step there.
+infra/environments/*.tfvars
+!infra/environments/example.tfvars
+infra/backend*.hcl
+
+# Sensitive operational docs — keep local only
+docs/own_booking_engine/threat_model.md
+docs/own_booking_engine/runbooks.md
+docs/own_booking_engine/prompts.md
+docs/own_booking_engine/tasks_remaining.md
+
+# Third-party API docs (redistribution concern)
+docs/own_booking_engine/Introduction*Smoobu*.pdf
+
+# AI agent instructions (contain full internal architecture details)
+AGENTS.md
+CLAUDE.md
+
+# IDE / editor
 .vscode/settings.json
+
+# Legacy
 /public/smoobu-config.php
+scripts/seed-booking-api-secret.ps1
+scripts/update-lambda-env.ps1
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+/.claude
+
+# Build artifacts — Lambda bundles are rebuilt by CI, not versioned
+/booking-api-bundle.zip
+/booking-api/lambda-package.zip
+*.zip
+
+# Stray Lambda invoke output
+/infra/response.json

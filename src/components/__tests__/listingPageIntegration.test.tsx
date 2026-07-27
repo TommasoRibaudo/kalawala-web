@@ -11,6 +11,7 @@ import SocialStatement from '../SocialStatement/SocialStatement.component';
 import FeatureHighlights from '../FeatureHighlights/FeatureHighlights.component';
 import InstantConfirmationBadge from '../InstantConfirmationBadge/InstantConfirmationBadge.component';
 import PriceConfirmationSection from '../PriceConfirmationSection/PriceConfirmationSection.component';
+import { resetCalendarMonthCache } from '../../services/calendarMonthCache';
 
 // Mock window.matchMedia for responsive tests
 const mockMatchMedia = (matches: boolean) => {
@@ -30,9 +31,21 @@ const mockMatchMedia = (matches: boolean) => {
 };
 
 describe('Listing Page Integration Tests', () => {
+  const originalFetch = global.fetch;
+
   beforeEach(() => {
     // Reset matchMedia mock before each test
     mockMatchMedia(false);
+    // PriceConfirmationSection reads live rates; these tests cover the offline
+    // fallback, so the calendar request is stubbed out and the shared cache is
+    // cleared to keep the suites independent of one another.
+    resetCalendarMonthCache();
+    global.fetch = jest.fn(() => Promise.reject(new Error('offline'))) as unknown as typeof fetch;
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    resetCalendarMonthCache();
   });
 
   describe('Component Rendering Integration', () => {
@@ -43,15 +56,15 @@ describe('Listing Page Integration Tests', () => {
       expect(screen.getByText('Family home, pet friendly with air conditioning')).toBeInTheDocument();
       
       // Should NOT contain price or confirmation (moved to PriceConfirmationSection)
-      expect(screen.queryByText(/Average price/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/per night/)).not.toBeInTheDocument();
       expect(screen.queryByText('Instant confirmation')).not.toBeInTheDocument();
     });
 
     test('PriceConfirmationSection renders price and confirmation badge', () => {
       render(<PriceConfirmationSection propertyKey="Rana" isSpanish={false} />);
       
-      // Should contain price display (note: USD prices include $ symbol)
-      expect(screen.getByText(/Average price: \$160 per night/)).toBeInTheDocument();
+      // Falls back to the configured price when live rates are unavailable.
+      expect(screen.getByText(/From \$160 per night/)).toBeInTheDocument();
       
       // Should contain instant confirmation badge (text is split across elements)
       expect(screen.getByText('✔')).toBeInTheDocument();
@@ -65,15 +78,16 @@ describe('Listing Page Integration Tests', () => {
       expect(screen.getByText('Casa familiar, pet friendly con aire acondicionado')).toBeInTheDocument();
       
       // Should NOT contain price or confirmation (moved to PriceConfirmationSection)
-      expect(screen.queryByText(/Precio promedio/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/por noche/)).not.toBeInTheDocument();
       expect(screen.queryByText('Confirmación inmediata')).not.toBeInTheDocument();
     });
 
     test('PriceConfirmationSection renders Spanish price and confirmation badge', () => {
       render(<PriceConfirmationSection propertyKey="Rana" isSpanish={true} />);
       
-      // Should contain Spanish price display with CRC (note: space formatting)
-      expect(screen.getByText(/Precio promedio: 80\s*000 CRC la noche/)).toBeInTheDocument();
+      // Spanish quotes USD too — the booking engine charges in USD, so a colón
+      // figure here would contradict the calendar and the checkout total.
+      expect(screen.getByText(/Desde \$160 por noche/)).toBeInTheDocument();
       
       // Should contain Spanish instant confirmation badge (text is split across elements)
       expect(screen.getByText('✔')).toBeInTheDocument();
@@ -118,7 +132,7 @@ describe('Listing Page Integration Tests', () => {
       
       // Price and confirmation should be tested separately in PriceConfirmationSection
       render(<PriceConfirmationSection propertyKey="Delfin" isSpanish={false} />);
-      expect(screen.getByText(/Average price: \$199 per night/)).toBeInTheDocument();
+      expect(screen.getByText(/From \$199 per night/)).toBeInTheDocument();
       expect(screen.getByText('✔')).toBeInTheDocument();
       expect(screen.getByText('Instant confirmation')).toBeInTheDocument();
     });
@@ -146,7 +160,7 @@ describe('Listing Page Integration Tests', () => {
       
       // Verify all components are present
       expect(screen.getByText('Cozy retreat perfect for couples exploring Punta Uva')).toBeInTheDocument();
-      expect(screen.getByText(/Average price: \$99 per night/)).toBeInTheDocument();
+      expect(screen.getByText(/From \$99 per night/)).toBeInTheDocument();
       expect(screen.getByText('Chosen for its peaceful location')).toBeInTheDocument();
       expect(screen.getByText('Why guests choose Casa Areka')).toBeInTheDocument();
       
@@ -155,7 +169,7 @@ describe('Listing Page Integration Tests', () => {
       
       // Components should still be present and functional on mobile
       expect(screen.getByText('Cozy retreat perfect for couples exploring Punta Uva')).toBeInTheDocument();
-      expect(screen.getByText(/Average price: \$99 per night/)).toBeInTheDocument();
+      expect(screen.getByText(/From \$99 per night/)).toBeInTheDocument();
       expect(screen.getByText('Chosen for its peaceful location')).toBeInTheDocument();
       expect(screen.getByText('Why guests choose Casa Areka')).toBeInTheDocument();
     });
@@ -167,7 +181,7 @@ describe('Listing Page Integration Tests', () => {
       render(<ListingMarketingSection propertyKey="NonExistentProperty" isSpanish={false} />);
       
       // Component should not crash and should render nothing
-      expect(screen.queryByText(/Average price/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/per night/)).not.toBeInTheDocument();
     });
 
     test('PriceConfirmationSection handles missing configuration gracefully', () => {
@@ -175,7 +189,7 @@ describe('Listing Page Integration Tests', () => {
       render(<PriceConfirmationSection propertyKey="NonExistentProperty" isSpanish={false} />);
       
       // Component should not crash and should render nothing
-      expect(screen.queryByText(/Average price/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/per night/)).not.toBeInTheDocument();
     });
 
     test('Components handle invalid property keys gracefully', () => {
@@ -207,7 +221,7 @@ describe('Listing Page Integration Tests', () => {
       
       // All text should be in Spanish
       expect(screen.getByText('Refugio acogedor perfecto para parejas explorando Punta Uva')).toBeInTheDocument();
-      expect(screen.getByText(/Precio promedio: 49\s*000 CRC la noche/)).toBeInTheDocument();
+      expect(screen.getByText(/Desde \$99 por noche/)).toBeInTheDocument();
       expect(screen.getByText('Elegida por su ubicación tranquila')).toBeInTheDocument();
       expect(screen.getByText('¿Por qué los huéspedes eligen Casa Plumeria?')).toBeInTheDocument();
       expect(screen.getAllByText('✔')[0]).toBeInTheDocument();
@@ -227,7 +241,7 @@ describe('Listing Page Integration Tests', () => {
       
       // All text should be in English
       expect(screen.getByText('Family-friendly house near Punta Uva')).toBeInTheDocument();
-      expect(screen.getByText(/Average price: \$169 per night/)).toBeInTheDocument();
+      expect(screen.getByText(/From \$169 per night/)).toBeInTheDocument();
       expect(screen.getByText('Chosen for its family-friendly amenities and beach proximity')).toBeInTheDocument();
       expect(screen.getByText('Why guests choose Casa Giulia')).toBeInTheDocument();
       expect(screen.getAllByText('✔')[0]).toBeInTheDocument();

@@ -1,0 +1,5 @@
+variable_change: "waf_enabled: true -> false"
+allowed_actions:
+  destroy:
+    - "aws_wafv2_web_acl.booking_api[0]"
+    - "aws_wafv2_web_acl_association.booking_api[0]"

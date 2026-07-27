@@ -1,0 +1,67 @@
+# Reservas Kalawala — Vacation Rentals in Puerto Viejo, Costa Rica
+
+> Kalawala is a family-run vacation rental company offering fully equipped houses and villas in Puerto Viejo de Talamanca, Limón, Costa Rica. We manage 10 properties sleeping 2–8 guests, all with private kitchens, bathrooms, A/C, and free WiFi. Book directly on our website for the best rates — cheaper than Airbnb or Booking.com. Bilingual site (English and Spanish).
+
+## Properties — Puerto Viejo Town (Kalawala Houses)
+
+- [Casa Geco](https://www.reservaskalawala.com/Geco): 2-bedroom house, sleeps 5, private fenced parking, pet friendly, in the heart of town. Fully equipped kitchen, 2 A/C units, 100Mbps WiFi.
+- [Casa Rana](https://www.reservaskalawala.com/Rana): 2-bedroom house, sleeps 5, private fenced parking, pet friendly, fenced garden — ideal for traveling with pets. Fully equipped kitchen, 2 A/C units, 100Mbps WiFi.
+- [Casa Tucano](https://www.reservaskalawala.com/Tucano): 2-bedroom wooden apartment above Italian bakery, sleeps 5, terrace, pet friendly. Fully equipped kitchen, 2 A/C units, 100Mbps WiFi.
+- [Casa Pappagallo](https://www.reservaskalawala.com/Pappagallo): 2-bedroom wooden apartment above Italian bakery, sleeps 5, terrace, pet friendly. Remodeled by Spanish interior designer in 2021. Fully equipped kitchen, 2 A/C units, 100Mbps WiFi.
+- [Casa Delfin](https://www.reservaskalawala.com/Delfin): 3-bedroom house, sleeps 6, 2 bathrooms, private parking, flexible check-out with lockbox. Fully equipped kitchen, 2 A/C units, 100Mbps WiFi.
+
+## Properties — Playa Negra (Nam Houses)
+
+- [Casa Areka](https://www.reservaskalawala.com/Areka): Located in Playa Negra area, near black sand beach.
+- [Casa Giulia](https://www.reservaskalawala.com/Giulia): Located in Playa Negra area, near black sand beach.
+- [Casa Plumeria](https://www.reservaskalawala.com/Plumeria): Located in Playa Negra area, near black sand beach.
+
+## Properties — Villas with Private Pool
+
+- [Villa Mar](https://www.reservaskalawala.com/VillaMar): Villa with private pool, king-size bed, dedicated workspace with ethernet, fully equipped kitchen.
+- [Villa Coral](https://www.reservaskalawala.com/VillaCoral): Villa with private pool, king-size bed, dedicated workspace with ethernet, fully equipped kitchen.
+
+## Location & Area
+
+Puerto Viejo de Talamanca is on Costa Rica's Caribbean coast in Limón province. The town is surrounded by tropical rainforest and borders two National Parks: Manzanillo Wildlife Refuge and Cahuita National Park. Known for stunning beaches (Playa Cocles, Playa Chiquita, Punta Uva), surfing, wildlife, and vibrant nightlife.
+
+Getting around: bike or scooter rental recommended. Public bus service connects to Cahuita, Manzanillo, and Sixaola. Properties with parking noted above.
+
+## All Amenities (standard across properties)
+
+- Fully equipped private kitchen (microwave, coffeemaker, blender)
+- Private bathroom with towels and toiletries
+- Air conditioning (2 units per property)
+- 100Mbps free WiFi
+- Bed linens included
+- Roku TV with entertainment system and HDMI port
+- Cleaning service for stays of 5+ nights
+- Pack-and-play crib available on request
+- 15% discount at on-site Italian bakery
+
+## Booking
+
+Book directly at [reservaskalawala.com](https://www.reservaskalawala.com) for the best price. Last-minute discounts available — prices updated daily. Use discount code #5off for an additional discount.
+
+## Blog — Puerto Viejo Travel Guides
+
+- [Two Days in Puerto Viejo](https://www.reservaskalawala.com/twodaysinpuertoviejo): Itinerary for a 2-day visit
+- [Getting to Gandoca](https://www.reservaskalawala.com/gettingtogandoca): How to reach Gandoca-Manzanillo
+- [Puerto Viejo by Plane](https://www.reservaskalawala.com/puertoviejobyplane): Flight options and airport transfers
+- [Travelling to Puerto Viejo](https://www.reservaskalawala.com/travellingtopuertoviejo): Complete transport guide
+- [10 Hours in Puerto Viejo](https://www.reservaskalawala.com/TenHoursInPuerto): Quick visit itinerary
+- [Bus Hours](https://www.reservaskalawala.com/bushours): Public bus schedules and routes
+- [Cahuita National Park Guide](https://www.reservaskalawala.com/cahuitaparkwhattodo): What to do in Cahuita
+- [Indigenous Travel in Puerto Viejo](https://www.reservaskalawala.com/indigenousTravelPV): Cultural tourism guide
+- [Best Time to Visit Puerto Viejo](https://www.reservaskalawala.com/bestTimeToVisitPuerto): Seasonal weather and travel tips
+- [Puerto Viejo Hidden Gems](https://www.reservaskalawala.com/puertoHiddenGems): Off-the-beaten-path spots
+
+## Contact
+
+Website: https://www.reservaskalawala.com
+
+## Optional — Expanded Content
+
+For the full content of all pages in a single document, see [llms-full.txt](https://www.reservaskalawala.com/llms-full.txt).
+
+Individual property pages are also available as markdown: append `.md` to any URL (e.g., [/Geco.md](https://www.reservaskalawala.com/Geco.md)).

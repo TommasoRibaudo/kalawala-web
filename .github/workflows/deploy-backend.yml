@@ -1,0 +1,457 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches: [main, staging]
+    paths:
+      - 'infra/**'
+      - 'booking-api/**'
+      - 'backend/**'
+  pull_request:
+    branches: [main, staging]
+    paths:
+      - 'infra/**'
+      - 'booking-api/**'
+      - 'backend/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options: [dev, staging, prod]
+
+permissions:
+  id-token: write   # Required for OIDC federation
+  contents: read
+  pull-requests: write  # Required to post Terraform plan as PR comment
+
+env:
+  TF_VERSION: '1.9.0'
+  # Must track the Lambda runtime in infra/lambda.tf (nodejs22.x). Building and
+  # testing the deployed artifact on a different major than it runs on is how
+  # runtime-specific bugs reach production unseen — and Node 18 is EOL.
+  NODE_VERSION: '22.x'
+  AWS_REGION: 'us-east-1'
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Determine environment from branch or manual input
+  # ---------------------------------------------------------------------------
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+      tfvars_file: ${{ steps.env.outputs.tfvars_file }}
+      tf_state_key: ${{ steps.env.outputs.tf_state_key }}
+    steps:
+      - name: Determine environment
+        id: env
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            ENV="${{ github.event.inputs.environment }}"
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # A pull request's ref is refs/pull/N/merge, which matched none of the
+            # branch checks below and fell through to "dev" — an environment that
+            # has no tfvars and no state, so the plan could never run. Derive it
+            # from the branch being merged INTO instead: the point of plan-on-PR
+            # is showing a reviewer what merging will actually change.
+            case "${{ github.base_ref }}" in
+              main)    ENV="prod" ;;
+              staging) ENV="staging" ;;
+              *)       ENV="dev" ;;
+            esac
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            ENV="staging"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            ENV="prod"
+          else
+            ENV="dev"
+          fi
+          echo "environment=$ENV" >> $GITHUB_OUTPUT
+          echo "tfvars_file=environments/${ENV}.tfvars" >> $GITHUB_OUTPUT
+          echo "tf_state_key=kalawala/${ENV}/terraform.tfstate" >> $GITHUB_OUTPUT
+
+  # ---------------------------------------------------------------------------
+  # Build, audit, and test the booking-api TypeScript code
+  # ---------------------------------------------------------------------------
+  build-api:
+    name: Build & Test API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: booking-api/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: booking-api
+
+      - name: Audit dependencies
+        run: |
+          set +e
+          AUDIT_OUTPUT=$(npm audit --json 2>&1)
+          AUDIT_EXIT=$?
+          set -e
+          CRITICAL=$(echo "$AUDIT_OUTPUT" | node -e "
+            const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+            const v = data.metadata?.vulnerabilities || {};
+            console.log(v.critical || 0);
+          " 2>/dev/null || echo "0")
+          HIGH=$(echo "$AUDIT_OUTPUT" | node -e "
+            const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+            const v = data.metadata?.vulnerabilities || {};
+            console.log(v.high || 0);
+          " 2>/dev/null || echo "0")
+          echo "Critical: $CRITICAL  High: $HIGH"
+          npm audit --audit-level=high 2>&1 || true
+          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+            echo "::error::Critical or high vulnerabilities found in booking-api dependencies"
+            exit 1
+          fi
+          echo "No critical/high vulnerabilities."
+        working-directory: booking-api
+
+      - name: Type check
+        run: npm run typecheck
+        working-directory: booking-api
+
+      - name: Run tests
+        run: npm test -- --passWithNoTests
+        working-directory: booking-api
+
+      - name: Build
+        run: npm run build
+        working-directory: booking-api
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: booking-api-dist
+          path: booking-api/dist/
+          retention-days: 1
+
+  # ---------------------------------------------------------------------------
+  # Terraform plan — runs on every push/PR, posts/updates plan as PR comment
+  # ---------------------------------------------------------------------------
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    needs: [setup, build-api]
+    environment: ${{ needs.setup.outputs.environment }}
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        run: |
+          terraform init -reconfigure \
+            -backend-config="bucket=${{ vars.TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ needs.setup.outputs.tf_state_key }}" \
+            -backend-config="region=${{ env.AWS_REGION }}" \
+            -backend-config="dynamodb_table=${{ vars.TF_STATE_DYNAMODB_TABLE }}" \
+            -backend-config="encrypt=true"
+
+      # infra/environments/*.tfvars is gitignored: this repo is public, and those
+      # files describe the VPC layout, database name, Secrets Manager paths and
+      # WAF posture. CI rebuilds the file from a secret instead. Store the whole
+      # file contents as the TFVARS_PROD / TFVARS_STAGING repository secret.
+      - name: Materialise tfvars from secret
+        env:
+          TFVARS_CONTENT: ${{ needs.setup.outputs.environment == 'prod' && secrets.TFVARS_PROD || secrets.TFVARS_STAGING }}
+        run: |
+          if [ -z "$TFVARS_CONTENT" ]; then
+            echo "::error::Missing TFVARS_<ENV> secret — terraform cannot run without it."
+            exit 1
+          fi
+          printf '%s' "$TFVARS_CONTENT" > "${{ needs.setup.outputs.tfvars_file }}"
+          # Never print the contents; confirm only that it is non-empty.
+          echo "Wrote ${{ needs.setup.outputs.tfvars_file }} ($(wc -l < "${{ needs.setup.outputs.tfvars_file }}") lines)."
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          set +e
+          terraform plan \
+            -var-file="${{ needs.setup.outputs.tfvars_file }}" \
+            -lock-timeout=5m \
+            -out=tfplan \
+            -no-color 2>&1 | tee plan_output.txt
+          PLAN_EXIT=${PIPESTATUS[0]}
+          set -e
+          echo "exitcode=$PLAN_EXIT" >> $GITHUB_OUTPUT
+          exit $PLAN_EXIT
+
+      - name: Find existing plan PR comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        id: find-comment
+        with:
+          script: |
+            const marker = '<!-- tf-plan-comment -->';
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            const existing = comments.data.find(c => c.body.includes(marker));
+            return existing ? existing.id : null;
+
+      - name: Post or update plan PR comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- tf-plan-comment -->';
+            const plan = fs.readFileSync('infra/plan_output.txt', 'utf8');
+            const truncated = plan.length > 60000
+              ? plan.slice(0, 60000) + '\n\n[...truncated — see full output in Actions log]'
+              : plan;
+            const body = `${marker}\n## Terraform Plan — \`${{ needs.setup.outputs.environment }}\`\n\n<details><summary>Show Plan</summary>\n\n\`\`\`hcl\n${truncated}\n\`\`\`\n</details>`;
+            const existingId = ${{ steps.find-comment.outputs.result }};
+            if (existingId) {
+              await github.rest.issues.updateComment({
+                comment_id: existingId,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
+            }
+
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ needs.setup.outputs.environment }}
+          path: infra/tfplan
+          retention-days: 1
+
+  # ---------------------------------------------------------------------------
+  # Terraform apply — push to main/staging or manual workflow_dispatch only
+  # ---------------------------------------------------------------------------
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    needs: [setup, terraform-plan]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    environment: ${{ needs.setup.outputs.environment }}
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        run: |
+          terraform init -reconfigure \
+            -backend-config="bucket=${{ vars.TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ needs.setup.outputs.tf_state_key }}" \
+            -backend-config="region=${{ env.AWS_REGION }}" \
+            -backend-config="dynamodb_table=${{ vars.TF_STATE_DYNAMODB_TABLE }}" \
+            -backend-config="encrypt=true"
+
+      # infra/environments/*.tfvars is gitignored: this repo is public, and those
+      # files describe the VPC layout, database name, Secrets Manager paths and
+      # WAF posture. CI rebuilds the file from a secret instead. Store the whole
+      # file contents as the TFVARS_PROD / TFVARS_STAGING repository secret.
+      - name: Materialise tfvars from secret
+        env:
+          TFVARS_CONTENT: ${{ needs.setup.outputs.environment == 'prod' && secrets.TFVARS_PROD || secrets.TFVARS_STAGING }}
+        run: |
+          if [ -z "$TFVARS_CONTENT" ]; then
+            echo "::error::Missing TFVARS_<ENV> secret — terraform cannot run without it."
+            exit 1
+          fi
+          printf '%s' "$TFVARS_CONTENT" > "${{ needs.setup.outputs.tfvars_file }}"
+          # Never print the contents; confirm only that it is non-empty.
+          echo "Wrote ${{ needs.setup.outputs.tfvars_file }} ($(wc -l < "${{ needs.setup.outputs.tfvars_file }}") lines)."
+
+      - name: Download plan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-${{ needs.setup.outputs.environment }}
+          path: infra/
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+
+      - name: Export Terraform outputs
+        id: tf_outputs
+        run: |
+          echo "booking_api_lambda_name=$(terraform output -raw booking_api_lambda_name)" >> $GITHUB_OUTPUT
+          echo "webhooks_lambda_name=$(terraform output -raw webhooks_lambda_name)" >> $GITHUB_OUTPUT
+          echo "migration_lambda_name=$(terraform output -raw migration_lambda_name)" >> $GITHUB_OUTPUT
+          echo "hold_expiry_lambda_name=$(terraform output -raw hold_expiry_lambda_name)" >> $GITHUB_OUTPUT
+          echo "payment_reconciliation_lambda_name=$(terraform output -raw payment_reconciliation_lambda_name)" >> $GITHUB_OUTPUT
+
+    outputs:
+      booking_api_lambda_name: ${{ steps.tf_outputs.outputs.booking_api_lambda_name }}
+      webhooks_lambda_name: ${{ steps.tf_outputs.outputs.webhooks_lambda_name }}
+      migration_lambda_name: ${{ steps.tf_outputs.outputs.migration_lambda_name }}
+      hold_expiry_lambda_name: ${{ steps.tf_outputs.outputs.hold_expiry_lambda_name }}
+      payment_reconciliation_lambda_name: ${{ steps.tf_outputs.outputs.payment_reconciliation_lambda_name }}
+
+  # ---------------------------------------------------------------------------
+  # Lambda packaging and deployment
+  # ---------------------------------------------------------------------------
+  deploy-lambda:
+    name: Deploy Lambda
+    runs-on: ubuntu-latest
+    needs: [setup, build-api, terraform-apply]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    environment: ${{ needs.setup.outputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: booking-api-dist
+          path: booking-api/dist/
+
+      - name: Setup Node.js (for production deps)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install production dependencies
+        run: npm ci --omit=dev
+        working-directory: booking-api
+
+      - name: Package booking_api Lambda zip
+        run: |
+          mkdir -p lambda-booking-api-pkg
+          cp -r booking-api/dist/* lambda-booking-api-pkg/
+          cp -r booking-api/node_modules lambda-booking-api-pkg/
+          cd lambda-booking-api-pkg && zip -r ../lambda-booking-api.zip . && cd ..
+          echo "booking_api package: $(du -sh lambda-booking-api.zip | cut -f1)"
+
+      - name: Package webhooks Lambda zip
+        run: |
+          mkdir -p lambda-webhooks-pkg
+          cp -r booking-api/dist/* lambda-webhooks-pkg/
+          cp -r booking-api/node_modules lambda-webhooks-pkg/
+          cd lambda-webhooks-pkg && zip -r ../lambda-webhooks.zip . && cd ..
+          echo "webhooks package: $(du -sh lambda-webhooks.zip | cut -f1)"
+
+      - name: Package migration Lambda zip
+        run: |
+          mkdir -p lambda-migration-pkg
+          cp -r booking-api/dist/* lambda-migration-pkg/
+          cp -r booking-api/node_modules lambda-migration-pkg/
+          cd lambda-migration-pkg && zip -r ../lambda-migration.zip . && cd ..
+          echo "migration package: $(du -sh lambda-migration.zip | cut -f1)"
+
+      - name: Upload packages to S3
+        run: |
+          aws s3 cp lambda-booking-api.zip \
+            s3://${{ vars.TF_STATE_BUCKET }}/lambda-packages/${{ needs.setup.outputs.environment }}/booking-api-${{ github.sha }}.zip
+          aws s3 cp lambda-webhooks.zip \
+            s3://${{ vars.TF_STATE_BUCKET }}/lambda-packages/${{ needs.setup.outputs.environment }}/webhooks-${{ github.sha }}.zip
+
+      # Migrations must land BEFORE the API code that reads the new columns.
+      # Deploying in the other order takes the booking engine down: every query
+      # against a changed table fails with "column does not exist".
+      - name: Update migration Lambda function code
+        run: |
+          aws lambda update-function-code             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}             --zip-file fileb://lambda-migration.zip             --publish
+          aws lambda wait function-updated             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}
+
+      - name: Run database migrations
+        run: |
+          aws lambda invoke             --function-name ${{ needs.terraform-apply.outputs.migration_lambda_name }}             --cli-binary-format raw-in-base64-out             --payload '{}'             migration-result.json > /dev/null
+          cat migration-result.json
+          # The handler reports failure in its body rather than throwing, so the
+          # invoke itself succeeds either way — gate the deploy on ok:true.
+          if [ "$(jq -r '.ok' migration-result.json)" != "true" ]; then
+            echo "::error::Migration failed — aborting before the API code is deployed."
+            exit 1
+          fi
+          echo "Applied: $(jq -c '.applied' migration-result.json)"
+
+      - name: Update booking_api Lambda function code
+        run: |
+          aws lambda update-function-code \
+            --function-name ${{ needs.terraform-apply.outputs.booking_api_lambda_name }} \
+            --zip-file fileb://lambda-booking-api.zip \
+            --publish
+          aws lambda wait function-updated \
+            --function-name ${{ needs.terraform-apply.outputs.booking_api_lambda_name }}
+
+      - name: Update webhooks Lambda function code
+        run: |
+          aws lambda update-function-code \
+            --function-name ${{ needs.terraform-apply.outputs.webhooks_lambda_name }} \
+            --zip-file fileb://lambda-webhooks.zip \
+            --publish
+          aws lambda wait function-updated \
+            --function-name ${{ needs.terraform-apply.outputs.webhooks_lambda_name }}
+
+      # These two run on EventBridge schedules and were never redeployed by CI, so
+      # they drifted behind the API. hold_expiry is the one that matters: if it is
+      # not current, expired holds stop releasing and rooms stay blocked in Smoobu.
+      - name: Update worker Lambda function code
+        run: |
+          for FN in "${{ needs.terraform-apply.outputs.hold_expiry_lambda_name }}"                     "${{ needs.terraform-apply.outputs.payment_reconciliation_lambda_name }}"; do
+            aws lambda update-function-code               --function-name "$FN"               --zip-file fileb://lambda-booking-api.zip               --publish
+            aws lambda wait function-updated --function-name "$FN"
+            echo "Updated $FN"
+          done
+
+      - name: Smoke test — post-deploy checks
+        env:
+          BOOKING_API_BASE_URL: ${{ secrets.BOOKING_API_BASE_URL }}
+          SMOKE_ORIGIN: https://kalawala.com
+        run: |
+          sleep 5
+          bash scripts/smoke-test.sh

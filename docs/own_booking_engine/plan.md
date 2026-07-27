@@ -14,7 +14,7 @@ The key architectural pattern to meet your security goals is:
 - **Smoobu remains the inventory source of truth**, kept in sync via Smoobu webhooks, which Smoobu positions as necessary for real-time correctness (cron alone can’t guarantee correctness). citeturn20search1
 - For PayPal, you should rely on **Orders v2**, use **idempotency headers** (`PayPal-Request-Id`), and verify webhooks cryptographically via PayPal’s `verify-webhook-signature` endpoint before acting. citeturn16search4turn2search0
 
-A notable improvement over your “fake 1h timer” deposit flow is to make expiration **real** (auto-cancel the hold and release inventory) while still allowing staff override/extension when guests contact you. This reduces double-booking risk and prevents “stuck” inventory holds, improving both security and revenue integrity.
+MVP update: there is **no custom admin panel** and no custom deposit approval workflow. PayPal is the automatic confirmation path. Manual deposit is an offline handoff through existing business channels, with staff managing any accepted deposit booking directly in Smoobu or existing operations.
 
 Entities referenced once for quick access: entity["company","PayPal","online payments company"], entity["company","PostHog","product analytics vendor"], entity["company","Meta Platforms","social media company"], entity["company","Google","search and analytics company"], entity["company","GitHub","code hosting platform"], entity["organization","OWASP","web security nonprofit"], entity["organization","NIST","us standards institute"].
 
@@ -69,7 +69,56 @@ Why this works for your guarantees:
 
 Smoobu rate-limits requests (documented as 1000 requests/minute), so caching and throttling are required for production robustness. citeturn0search1
 
-image_group{"layout":"carousel","aspect_ratio":"16:9","query":["booking engine architecture diagram webhooks payments","paypal webhook verification flow diagram","property booking availability state machine diagram"],"num_per_query":1}
+### AWS infrastructure (Terraform-managed)
+
+The backend runs on AWS, with all infrastructure defined as Terraform IaC. This provides repeatable, version-controlled infrastructure with environment separation.
+
+#### Target AWS services
+
+| Component | AWS Service | Purpose |
+|---|---|---|
+| Booking API | API Gateway + Lambda (Node.js) or ECS Fargate | Backend proxy + state machine logic |
+| Database | RDS PostgreSQL (or Aurora Serverless v2) | Booking sessions, holds, payments, webhook events, audit log |
+| File storage | S3 (private bucket) | Out of MVP; required only if custom receipt uploads are added later |
+| Secrets | AWS Secrets Manager | Smoobu API key, PayPal credentials, webhook secrets, DB credentials |
+| Cache | ElastiCache Redis (or DynamoDB TTL) | Availability/rates cache (5–10 min TTL per apartment+month) |
+| Webhooks ingress | API Gateway endpoints | PayPal and Smoobu webhook receivers |
+| Email/SMS | SES (email) + SNS (SMS) | Transactional booking communications |
+| Monitoring | CloudWatch Logs + Alarms | Structured logs, error alerts, booking funnel dashboards |
+| CDN/WAF | CloudFront + WAF | Rate limiting, bot protection, DDoS mitigation for public endpoints |
+
+#### Terraform structure
+
+```
+infra/
+├── main.tf              # Provider config, backend state (S3 + DynamoDB lock)
+├── variables.tf         # Input variables (region, environment, domain, etc.)
+├── outputs.tf           # API Gateway URL, S3 bucket name, RDS endpoint, etc.
+├── vpc.tf               # VPC, subnets, security groups
+├── database.tf          # RDS PostgreSQL instance + security group rules
+├── lambda.tf            # Lambda functions (or ecs.tf for Fargate)
+├── api_gateway.tf       # API Gateway routes, integrations, authorizers
+├── frontend.tf          # Optional private S3 + CloudFront frontend hosting
+├── s3.tf                # Future private S3 bucket if custom receipt uploads are added later
+├── secrets.tf           # Secrets Manager entries
+├── cache.tf             # ElastiCache Redis cluster
+├── ses.tf               # SES domain verification + templates
+├── cloudwatch.tf        # Log groups, metric filters, alarms
+├── waf.tf               # WAF rules (rate limiting, bot control)
+└── environments/
+    ├── dev.tfvars
+    ├── staging.tfvars
+    └── prod.tfvars
+```
+
+#### Key decisions
+
+- **State backend**: S3 bucket + DynamoDB table for state locking.
+- **Environment separation**: Separate `.tfvars` files for dev/staging/prod.
+- **Lambda vs Fargate**: Lambda is simpler and cheaper for low-to-moderate traffic. Switch to Fargate if cold starts become a UX issue.
+- **Database**: RDS PostgreSQL with automated backups, encryption at rest, private subnet placement.
+- **S3 uploads**: Out of MVP. If custom uploads are added later, bucket policy denies public access and upload/download URLs are time-limited.
+- **Secrets rotation**: Secrets Manager with automatic rotation for DB credentials.
 
 ### Core state machine and database primatives
 
@@ -81,18 +130,14 @@ Suggested high-level states:
 stateDiagram-v2
   [*] --> Searching
   Searching --> Quoted: availability/price quote
-  Quoted --> HoldCreating: user commits to pay or deposit
+  Quoted --> HoldCreating: user commits to PayPal checkout
   HoldCreating --> HoldActive: Smoobu blocked booking or reservation created
   HoldCreating --> Failed: Smoobu create failed
   HoldActive --> PaypalPending: payment method = PayPal
-  HoldActive --> DepositPending: payment method = deposit
   PaypalPending --> Paid: PayPal webhook verified + capture completed
   PaypalPending --> Expired: hold timeout
-  DepositPending --> ProofUploaded: deposit proof uploaded
-  ProofUploaded --> Paid: admin approves deposit
   Paid --> Confirmed: update Smoobu booking statuses + send confirmations
-  HoldActive --> Cancelled: user cancels / admin cancels
-  DepositPending --> Cancelled
+  HoldActive --> Cancelled: user cancels / system cancels
   PaypalPending --> Cancelled
   Expired --> [*]
   Cancelled --> [*]
@@ -102,11 +147,11 @@ stateDiagram-v2
 
 Recommended database tables (minimal but sufficient):
 
-- `apartments`: your internal listing ID ↔ Smoobu `apartmentId`
-- `booking_intents`: immutable record of what the guest attempted (dates, guests, offer/discount, device/session)
+- `apartments`: your internal listing ID ↔ Smoobu `apartmentId`, plus `slug` (the `houseLangCode` value, e.g., `"Geco"`, `"Rana"`) used to build language-aware listing page URLs
+- `booking_intents`: immutable record of what the guest attempted (dates, guests, offer/discount, device/session, `language` — `'en'` or `'es'`)
 - `holds`: one per intent, includes `smoobu_reservation_id` (nullable until created), expiration, and status
-- `payments`: PayPal order IDs / capture IDs, or deposit proof workflow metadata
-- `documents`: deposit proof metadata (storage key, MIME, checksum, scan status)
+- `payments`: PayPal order IDs / capture IDs
+- `documents`: out of MVP; add only if custom receipt uploads are introduced later
 - `webhook_events`: dedupe store for webhook event IDs (PayPal event `id`, Smoobu booking `data.id` + action + timestamp)
 - `audit_log`: append-only record of security-relevant actions
 
@@ -132,6 +177,289 @@ Security controls for “calendar not targeteable”:
 - **Do not expose apartment calendars** (daily availability grids) publicly; expose only “answer a query for a date range.”
 - Apply bot controls and rate limits because availability search is a “sensitive business flow” (a known API risk category). citeturn12search4turn12search0
 - Implement caching with a short TTL (e.g., 30–120 seconds) keyed by `(arrivalDate, departureDate, guests)` but **always re-check** right before creating a hold/booking.
+
+### Listing redirect behavior (available results → listing page in new tab)
+
+When the booking engine shows available properties in search results, each result card must link to the corresponding listing page on the existing website, opening in a **new browser tab** (`target="_blank"` with `rel="noopener noreferrer"`). This lets the guest browse the full listing (photos, amenities, neighborhood info, reviews) without losing their search context in the booking engine.
+
+#### Language-aware redirect URLs
+
+The existing website uses a **URL-suffix convention** for language:
+
+- English listing pages: `/{PropertyName}` (e.g., `/Geco`, `/Rana`, `/Tucano`, `/Pappagallo`, `/Delfin`, `/Areka`, `/Giulia`, `/Plumeria`, `/VillaMar`, `/VillaCoral`)
+- Spanish listing pages: `/{PropertyName}ES` (e.g., `/GecoES`, `/RanaES`, `/TucanoES`, `/PappagalloES`, `/DelfinES`, `/ArekaES`, `/GiuliaES`, `/PlumeriaES`, `/VillaMarES`, `/VillaCoralES`)
+
+The booking engine must detect the guest's current language context and construct the redirect URL accordingly:
+
+- If the guest is using the booking engine in Spanish → link to `/{houseLangCode}ES`
+- If the guest is using the booking engine in English → link to `/{houseLangCode}`
+
+The `houseLangCode` field in the property data (`houseDataList` in `src/utils/constants.ts`) maps each property to its URL slug. The backend availability response should include this slug (or the frontend should maintain a `smoobuApartmentId → houseLangCode` mapping) so the correct link can be built.
+
+#### Language detection pattern (existing codebase convention)
+
+The site determines language via URL suffix using `useLanguageDetection()` hook (`src/hooks/useLanguageDetection.ts`):
+
+```ts
+const isSpanishPage = location.pathname.endsWith('ES') || 
+                     location.pathname.includes('ES/') ||
+                     location.pathname === '/HomeES';
+```
+
+The booking engine should follow this same convention. If the booking engine lives at a route like `/book` (English) and `/bookES` (Spanish), language detection is automatic. Alternatively, the booking engine can accept a `lang` query parameter or use a React context to propagate language state.
+
+#### UI behavior for result cards
+
+Each available property card in the search results should:
+
+1. Display the property name, thumbnail image, guest capacity, key amenities, and price for the selected dates.
+2. Include a clearly visible "View listing" / "Ver alojamiento" link/button (language-dependent).
+3. Open the listing page in a new tab on click (`window.open` or `<a target="_blank">`).
+4. Also include a "Book now" / "Reservar ahora" action that proceeds to the checkout/hold flow within the booking engine.
+
+This mirrors the existing `HomeCard` component pattern (`src/components/OurHomes/Components/HomeCard.component.tsx`) which navigates to `/${houseLangCode}`, but adapted for new-tab behavior and language awareness.
+
+#### Property slug mapping (backend → frontend)
+
+The backend availability response should include enough data for the frontend to build the redirect URL. Recommended approach:
+
+```ts
+// Backend availability response shape
+interface AvailableProperty {
+  apartmentId: number;        // Smoobu apartment ID
+  slug: string;               // e.g., "Geco", "Rana" — maps to houseLangCode
+  name: string;               // Display name
+  price: number;
+  currency: string;
+  guestCapacity: number;
+  thumbnailUrl: string;
+  amenities: string[];
+}
+
+// Frontend builds the redirect URL
+const listingUrl = isSpanish ? `/${property.slug}ES` : `/${property.slug}`;
+```
+
+The `apartments` table in the backend DB (see data models section) should store the `slug` alongside the `smoobu_apartment_id` to enable this mapping.
+
+### Language handling across the booking engine
+
+The booking engine must be fully bilingual (English/Spanish), consistent with the rest of the website. This applies to:
+
+- **Search UI**: date picker labels, guest count label, search button text, "no houses available" message
+- **Result cards**: property descriptions, amenity names, "View listing" / "Book now" button labels
+- **Checkout flow**: form labels, payment method descriptions, deposit instructions, timer messaging
+- **Confirmation/portal pages**: booking summary, status labels, action buttons
+- **Email/SMS templates**: all communication templates (hold created, deposit received, booking confirmed, etc.) must be sent in the guest's detected language
+- **Error messages**: validation errors, "no longer available" messages, payment/contact handoff errors
+
+The language should be determined at the start of the booking session and persisted in the `booking_session` record (as a `language` field: `'en'` or `'es'`) so that server-side communications (emails, SMS) use the correct language even after the browser session ends.
+
+#### Implementation approach
+
+Follow the existing codebase pattern but use a lightweight i18n approach with a language context and string maps (preferred over duplicating entire components for each language, which is the current pattern for static listing pages):
+
+```ts
+// Booking engine string map
+const bookingStrings = {
+  en: {
+    searchButton: "Search availability",
+    noResults: "No houses available for these dates",
+    viewListing: "View listing",
+    bookNow: "Book now",
+    depositInstructions: "Complete your deposit",
+    holdExpiring: "Your reservation expires in",
+  },
+  es: {
+    searchButton: "Buscar disponibilidad",
+    noResults: "No hay casas disponibles para estas fechas",
+    viewListing: "Ver alojamiento",
+    bookNow: "Reservar ahora",
+    depositInstructions: "Complete su depósito",
+    holdExpiring: "Su reserva expira en",
+  }
+};
+```
+
+The `LanguageSwitcher` component (`src/components/FlagComponent/Flag.component.tsx`) should also work within the booking engine routes, toggling between `/book` ↔ `/bookES` (or equivalent) and preserving any search state (dates, guests) via query parameters or React state.
+
+### Styling standards for the booking engine UI
+
+The booking engine frontend must follow the existing website's styling conventions to maintain visual consistency:
+
+#### Design tokens (from `src/styles/_variables.scss`)
+
+- Primary colors: `$kalawala-darker-green: #0B3028`, `$kalawala-dark-green: #294F44`, `$kalawala-light-green: #8AA288`
+- Text color: `$kalawala-text-gray: #171717`
+- Background: `$kalawala-light-cream: #FFFFFFFF`, `$kalawala-opaque-beige: #FFFFFF`
+- Fonts: `$primary-font: 'Urbanist', sans-serif` (used for both primary and secondary)
+
+#### Component styling patterns
+
+- Each component has a co-located `.style.scss` file (e.g., `BookingSearch.style.scss`)
+- Import global variables via `@import '../../styles/styles.scss'` and mixins via `@use '../../styles/mixins'`
+- Use React Bootstrap for grid layout (`Container`, `Row`, `Col`) and responsive behavior
+- Responsive breakpoints: `@media (max-width: 992px)` for mobile, `@media (max-width: 1199px)` for tablet
+- Class naming follows a BEM-like pattern scoped to the component (e.g., `.booking-search-container`, `.booking-result-card`, `.booking-result-card-overlay`)
+
+#### Result card styling reference
+
+The booking engine result cards should follow the visual pattern of existing `HomeCard` and `OtherListings` components:
+
+- Card with background image, overlay gradient, and property name
+- Guest capacity badge with icon
+- Amenity icons row (A/C, kitchen, WiFi, parking)
+- Hover effect for interactivity
+- Accessible: `role="button"`, `tabIndex={0}`, `aria-label`, keyboard navigation support (`onKeyDown` for Enter)
+
+### Listing-page calendar with per-night price dots
+
+When a guest is browsing a specific listing page (e.g., `/Areka` or `/ArekaES`), the booking calendar embedded on that page should display colored dots on each date indicating the nightly price tier relative to the visible month's average. Unavailable dates show a grey dot. This gives guests an at-a-glance sense of pricing without requiring them to select dates first.
+
+#### Data source: Smoobu `GET /api/rates`
+
+The Smoobu Rates API returns per-day pricing and availability for one or more apartments over a date range:
+
+```
+GET https://login.smoobu.com/api/rates?apartments[]=<apartmentId>&start_date=YYYY-MM-DD&end_date=YYYY-MM-DD
+```
+
+Response shape per apartment per date:
+
+```json
+{
+  "<apartmentId>": {
+    "2026-06-15": {
+      "price": 120.00,
+      "min_length_of_stay": 2,
+      "available": 1
+    },
+    "2026-06-16": {
+      "price": null,
+      "min_length_of_stay": null,
+      "available": 0
+    }
+  }
+}
+```
+
+- `price`: nightly rate (null if no price set)
+- `available`: `1` = available, `0` = unavailable
+- `min_length_of_stay`: minimum nights (useful for future validation)
+
+This endpoint is called **server-side only** (Smoobu API keys must never reach the browser). The backend proxies the data to the frontend.
+
+#### Backend endpoint: `GET /api/calendar/:apartmentSlug`
+
+```
+GET /api/calendar/Areka?month=2026-06
+```
+
+Response:
+
+```json
+{
+  "apartment": "Areka",
+  "month": "2026-06",
+  "dates": {
+    "2026-06-01": { "price": 95.00, "available": true, "minStay": 2 },
+    "2026-06-02": { "price": 110.00, "available": true, "minStay": 2 },
+    "2026-06-03": { "price": null, "available": false, "minStay": null },
+    ...
+  },
+  "stats": {
+    "avg": 105.50,
+    "min": 85.00,
+    "max": 150.00
+  }
+}
+```
+
+The backend computes `stats` from the available dates in the response (excluding unavailable dates from the average). The frontend uses these stats to classify each date.
+
+#### Dot color classification
+
+For each date in the visible month, compute the dot color based on the month's average price of available dates:
+
+| Condition | Dot color | Meaning |
+|---|---|---|
+| `available === false` | Grey | Night unavailable |
+| `price <= avg * 0.85` | Green | Low price (≤15% below average) |
+| `price > avg * 0.85 && price <= avg * 1.15` | Yellow | Around average (within ±15%) |
+| `price > avg * 1.15` | Red | High price (>15% above average) |
+
+The thresholds (0.85 / 1.15) are configurable. The frontend renders a small colored circle on each calendar date cell.
+
+#### Lazy loading and efficient polling strategy
+
+The calendar must minimize API calls while keeping the UX responsive:
+
+1. **Initial load (current month)**: When the listing page loads, the frontend requests the current visible month's data from the backend. The backend calls Smoobu `GET /api/rates` for that month's date range for the specific apartment and caches the result (TTL: 5–10 minutes, keyed by `apartmentId + month`).
+
+2. **User navigates to a different month**: When the guest clicks "next month" or selects a future date in a different month:
+   - **Priority fetch**: The backend immediately returns data for the **selected date** (or the full target month if already cached).
+   - **Background fill**: If the month wasn't cached, the backend fetches the full month from Smoobu and returns it. The frontend renders dots progressively — the selected date's dot appears first, then the rest of the month fills in as data arrives.
+   - In practice, since Smoobu returns the full date range in one call, the "priority fetch" and "background fill" happen in the same request. The perceived optimization is on the frontend: show the calendar immediately with a loading state, then paint dots once data arrives.
+
+3. **Caching rules**:
+   - Backend caches `GET /api/rates` responses per `(apartmentId, month)` with a 5–10 minute TTL.
+   - Past months are never fetched (calendar only shows current + future months).
+   - Smoobu `updateRates` webhooks should invalidate the cache for affected apartments/dates.
+   - Respect Smoobu's 1000 req/min rate limit; the per-month granularity and caching ensure this is never approached under normal usage.
+
+4. **Recalculated average per month**: Each month has its own average. When the user navigates to July, the dots reflect July's average — not June's. This means a $120/night that was "red" in a cheap June could be "green" in an expensive July.
+
+#### Frontend component behavior
+
+```
+CalendarWithPriceDots
+├── props: apartmentSlug, language
+├── state: visibleMonth, monthData (map of month → dates+stats), loading
+├── on mount: fetch current month
+├── on month change: fetch new month if not cached locally
+├── render: calendar grid with colored dot per date cell
+```
+
+Each date cell renders:
+
+```tsx
+<div className="calendar-date-cell">
+  <span className="date-number">{day}</span>
+  <span
+    className={`price-dot price-dot--${getDotColor(date, monthData)}`}
+    aria-label={getAriaLabel(date, monthData, language)}
+  />
+</div>
+```
+
+Where `getDotColor` returns `'grey'` | `'green'` | `'yellow'` | `'red'` and `getAriaLabel` returns a screen-reader-friendly description like "June 15, $120, above average price" / "15 de junio, $120, precio por encima del promedio" (language-aware).
+
+#### Styling for price dots
+
+```scss
+.price-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-top: 2px;
+
+  &--green  { background-color: #4CAF50; }
+  &--yellow { background-color: #FFC107; }
+  &--red    { background-color: #F44336; }
+  &--grey   { background-color: #BDBDBD; }
+}
+```
+
+These colors should be defined as SCSS variables in the booking engine's stylesheet, complementing the existing Kalawala palette. The dot size and spacing should be tested at mobile breakpoints to ensure they remain visible without cluttering the calendar.
+
+#### Analytics events for calendar interaction
+
+| Moment | Event name | Key properties |
+|---|---|---|
+| Month data loaded | `calendar_month_loaded` | `apartment_slug`, `month`, `available_count`, `avg_price`, `source` (cache/api) |
+| User navigates month | `calendar_month_changed` | `apartment_slug`, `from_month`, `to_month` |
+| User clicks a date | `calendar_date_selected` | `apartment_slug`, `date`, `price`, `dot_color`, `available` |
 
 ### Provisional holds: local hold vs provisional Smoobu reservation
 
@@ -248,42 +576,60 @@ async function handlePayPalWebhook(req, res) {
 - **Webhook processing**: store PayPal `event.id` in `webhook_events` with a UNIQUE constraint to prevent double-processing from retries.
 - **Booking confirmation**: your internal `booking_id` should be the idempotency anchor; confirmation must be safe to retry.
 
-### Manual deposit flow
+### Manual deposit booking
 
-You described:
+> **Superseded.** This section previously scoped manual deposit out of the MVP as
+> an offline handoff, on the grounds that confirming one needed an admin review
+> interface. That constraint was resolved by a signed one-click staff link
+> instead of a back-office UI, and the flow shipped. See the change-control entry
+> in `prd.md`.
 
-- ask for guest info
-- block the house
-- show deposit instructions page with 1-hour timer (fake)
-- guest uploads deposit picture
-- guest can contact you to explain problems (skips timer, which does nothing)
+Guests paying by bank transfer or SINPE Móvil now get a real booking rather than
+a contact card:
 
-This is implementable, but the “fake timer” undermines your inventory and correctness guarantees. A secure production-grade variant keeps your UX but makes the timer meaningful.
+1. The guest fills in the same details as the PayPal checkout — name, email,
+   phone, and a portal password.
+2. `POST /api/deposit-holds` creates a Smoobu blocked-channel reservation, so the
+   dates come off sale immediately while the transfer clears.
+3. The guest sees the SINPE and bank details, a countdown to the hold expiry, and
+   an upload for their receipt. The file goes straight to S3 from the browser via
+   a presigned URL — it never passes through the API.
+4. Staff receive an email carrying signed confirm and reject links.
+5. Confirming moves the booking to `booking_confirmed` and emails the guest their
+   portal access. Rejecting cancels the Smoobu reservation and frees the dates.
+6. If nobody acts, the existing hold-expiry worker releases the hold — the
+   deposit path deliberately reuses the PayPal lifecycle states so that worker
+   needed no changes.
 
-#### Recommended deposit flow (secure version)
+#### Why there is still no admin panel
 
-1. **Quote**: backend checks availability via Smoobu availability endpoint. citeturn19view2turn21search0  
-2. **Hold**: create provisional reservation/blocked booking in Smoobu (`POST /api/reservations`) and store returned ID. citeturn19view0turn21search0  
-3. **Deposit instructions page**:
-   - show real countdown, e.g., 60 minutes
-   - show bank transfer instructions
-   - show booking summary (dates, property, amount, booking reference)
-4. **Proof upload**: guest uploads transfer receipt image (secure upload path).
-5. **Admin review**: staff marks “deposit confirmed” or “rejected/needs clarification.”
-6. **Finalize**:
-   - if confirmed: update booking state and optionally update Smoobu booking payment fields (`depositStatus=1`, etc.). citeturn21search0
-   - if rejected: request re-upload or cancel hold
-7. **Expiry**:
-   - if timer expires and no proof uploaded and no “contacted” flag: cancel Smoobu reservation (`DELETE /api/reservations/<id>`) and mark locally as expired. citeturn19view1turn21search0  
-   - if guest clicked “I have a problem / contact us”: allow extending hold (admin action) while still tracking expiry deadlines.
+The staff link is an HMAC-signed token scoped to one booking and one action, with
+its own `typ` header so it can never be confused with a guest portal session. The
+GET renders a review page; a separate POST performs the action. That split
+matters: email scanners and link-preview bots fetch URLs in messages unattended,
+so a mutation on the GET would let a scanner confirm bookings.
 
-If you truly want the timer to be “fake,” you can still **display** it as urgency while not expiring the hold, but doing so will increase the risk of inventory being blocked unnecessarily (revenue + fairness issue). The secure compromise is: the timer triggers an automatic action, but you build a **one-click extension** admin workflow.
+#### Inventory risk
 
-## File uploads, guest portal access, and communications
+A deposit hold blocks the property on every channel for up to
+`DEPOSIT_HOLD_TTL_HOURS` (default 36) on nothing more than a form submission. Two
+mitigations are in place: a sliding TTL that never holds past half the time
+remaining until check-in, and the existing per-IP `holdCreate` abuse policy.
+Watch the rate of expired deposit holds; a per-email concurrent cap is the next
+lever if it is abused.
+
+## Guest portal access and communications
 
 ### Deposit proof upload security
 
-The OWASP File Upload Cheat Sheet strongly recommends an allowlist approach, not trusting the browser-provided `Content-Type`, renaming files, setting size limits, storing files outside the webroot, and performing antivirus/sandbox scanning when possible. citeturn0search0turn0search4
+Receipt upload has shipped (`booking-api/src/depositReceipt.ts`, bucket in
+`infra/s3_deposit_receipts.tf`). Implemented from the list below: signed upload
+URLs, a private bucket read only through presigned GETs, a size cap enforced
+server-side against the stored object, and an extension/MIME allowlist. The
+endpoints additionally require a `deposit_access` token scoped to the booking.
+
+**Still outstanding**: magic-byte sniffing and virus scanning. Both are listed
+below and neither is implemented — worth adding before the flow sees real volume.
 
 A secure approach:
 
@@ -316,7 +662,6 @@ Minimum viable secure design:
 Portal capabilities (safe subset):
 
 - View booking summary + payment status
-- Upload deposit proof / see upload status
 - Request changes (sends message to staff)
 - Cancel request (depending on policy)
 
@@ -324,23 +669,15 @@ Portal capabilities (safe subset):
 
 Use transactional email/SMS at each state transition; keep messages short, include the next action, and include the booking reference.
 
-**Template: Hold created (deposit flow)**  
-Subject: “Your dates are reserved — complete your deposit”  
-Body (email):  
-“Hi {{first_name}},  
-We’ve reserved {{property_name}} from {{check_in}} to {{check_out}} for you.  
-To confirm the booking, please complete the bank deposit within {{deadline_minutes}} minutes and upload your receipt here: {{deposit_upload_url}}.  
-Booking reference: {{reservation_public_id}}  
-Need help? Click here: {{help_url}}”
-
-**Template: Deposit proof received**  
-Subject: “We received your deposit receipt”  
+**Template: Manual deposit handoff**  
+Subject: “Manual deposit instructions — {{property_name}}”  
 Body:  
-“Thanks! We received your receipt and are verifying it.  
-Booking reference: {{reservation_public_id}}  
-We’ll confirm as soon as it’s approved.”
+“Hi {{first_name}},  
+Manual deposit is handled directly by Kalawala staff.  
+Please contact us here: {{contact_url}}.  
+Your booking is not confirmed until staff confirms it through our existing process.”
 
-**Template: Booking confirmed (PayPal or deposit)**  
+**Template: Booking confirmed (PayPal)**  
 Subject: “Booking confirmed — {{property_name}}”  
 Body:  
 “Confirmed! Your stay is booked from {{check_in}} to {{check_out}}.  
@@ -350,8 +687,7 @@ Manage your booking: {{portal_url}}”
 **Template: Hold expiring soon** (optional)  
 Subject: “Reminder: your reservation expires soon”  
 Body:  
-“Your temporary reservation will expire at {{expires_at}} unless payment/proof is completed.  
-Upload receipt: {{deposit_upload_url}}”
+“Your temporary reservation will expire at {{expires_at}} unless PayPal payment is completed.”
 
 These templates should be triggered server-side on state transitions to avoid client-side spoofing and to guarantee delivery even if the browser closes mid-flow.
 
@@ -377,10 +713,10 @@ Below is a pragmatic event plan tailored to **booking**, not generic ecommerce.
 | User searches dates | `booking_search` | `view_item_list` (or custom `booking_search`) | `Search` | After availability quote returned | `arrival_date`, `departure_date`, `guests`, `results_count`, `source` | `posthog.capture('booking_search', {...})` |
 | Quote shown | `booking_quote_viewed` | `select_item` / custom | `ViewContent` | When results render | `apartment_id`, `total_price`, `currency`, `nights` | `gtag('event','select_item', {...})` |
 | User begins checkout / commits | `begin_checkout` | `begin_checkout` citeturn2search2 | `InitiateCheckout` | When hold is successfully created | `booking_id`, `payment_method`, `value`, `currency` | `fbq('track','InitiateCheckout',{value, currency})` |
-| Payment method chosen | `add_payment_info` | `add_payment_info` citeturn2search2 | `AddPaymentInfo` | When user selects PayPal vs Deposit | `payment_type` (`paypal`/`deposit`) | `gtag('event','add_payment_info',{payment_type:'deposit'})` |
-| Deposit proof uploaded | `deposit_proof_uploaded` | custom `deposit_proof_uploaded` | (custom) | When backend marks upload complete | `document_type`, `scan_status`, `booking_id` | server-side PostHog capture |
+| Payment method chosen | `add_payment_info` | `add_payment_info` citeturn2search2 | `AddPaymentInfo` | When user selects PayPal or manual deposit handoff | `payment_type` (`paypal`/`manual_deposit_handoff`) | `gtag('event','add_payment_info',{payment_type:'paypal'})` |
+| Manual deposit handoff clicked | `manual_deposit_handoff_clicked` | custom | (custom) | When guest clicks offline contact/deposit handoff | `contact_method`, `booking_context` | server-side or client-side PostHog capture |
 | PayPal approved | `paypal_order_approved` | custom | (optional) | On return from PayPal approval | `paypal_order_id` | — |
-| Payment confirmed | `purchase` | `purchase` citeturn2search2 | `Purchase` | **Server-side** on PayPal `PAYMENT.CAPTURE.COMPLETED` citeturn16search0 or admin deposit approval | `transaction_id`, `value`, `currency`, `booking_id`, `apartment_id` | `fbq('track','Purchase',{value,currency})` |
+| Payment confirmed | `purchase` | `purchase` citeturn2search2 | `Purchase` | **Server-side** on PayPal `PAYMENT.CAPTURE.COMPLETED` citeturn16search0 | `transaction_id`, `value`, `currency`, `booking_id`, `apartment_id` | `fbq('track','Purchase',{value,currency})` |
 | Booking cancelled/expired | `booking_cancelled` | custom | (optional) | When hold canceled/expired | `reason` | — |
 
 #### Sample payloads
@@ -425,7 +761,7 @@ fbq('track', 'Purchase', {
 
 If you later add Meta Conversions API (server-side), ensure deduplication via event IDs as described in Segment’s guidance. citeturn9search6
 
-## Security, monitoring, admin workflows, edge cases, and PRD
+## Security, monitoring, operational handoff, edge cases, and PRD
 
 ### Security checklist
 
@@ -438,7 +774,7 @@ Use this as a production gate; it aligns with common OWASP API risks and secure 
 | Webhooks (PayPal) | Verify signature before processing | Prevent spoofed payment events | citeturn2search0turn20search0 |
 | Webhooks (Smoobu) | Use secret path/token + rate limit + dedupe | Smoobu webhooks don’t document signatures; prevent replay/abuse | citeturn20search1 |
 | Idempotency | `PayPal-Request-Id` + webhook event dedupe table | Prevent double charges / double confirms | citeturn16search4turn0search2 |
-| File uploads | Allowlist types, rename, store outside webroot, scan | Prevent malicious file execution/data leakage | citeturn0search0turn0search4 |
+| File uploads | Out of MVP; if added later, allowlist types, rename, store outside webroot, scan | Prevent malicious file execution/data leakage | citeturn0search0turn0search4 |
 | Auth to guest portal | Salted password hashes + rate limit | Prevent credential stuffing/enumeration | citeturn12search1 |
 | Abuse prevention | Rate limit availability searches + CAPTCHA when needed | Protect sensitive business flow | citeturn12search4turn12search0 |
 
@@ -450,7 +786,7 @@ Minimum observability signals:
   - holds created per day
   - holds expired
   - PayPal approved vs captured
-  - deposit proof uploaded vs approved
+  - manual deposit handoff clicked
 - **Mismatch detection**:
   - “Confirmed in DB but missing in Smoobu” (reconciliation job)
   - Smoobu webhook spikes / failures
@@ -461,16 +797,22 @@ Minimum observability signals:
 
 Because Smoobu recommends webhooks for real-time correctness and warns cron jobs can’t guarantee correctness, you should still run a **periodic reconciliation** as a defense-in-depth backup (e.g., every 15–60 minutes fetch upcoming reservations and compare with DB). citeturn20search1turn21search0
 
-### Admin workflows
+### Still no custom admin panel
 
-Admin panel minimum actions:
+There is no admin dashboard, deposit review queue, or hold-extension button, and
+no staff login anywhere in the system. Two things that previously required one
+now work without it:
 
-- Search booking by reservation ID, guest email, Smoobu reservation ID
-- Approve/reject deposit proof and leave internal notes
-- Extend hold expiration (“guest contacted us”)
-- Cancel booking/hold (and cancel in Smoobu)
-- Resend confirmation email / deposit instructions
-- Upload supplemental documents (optional)
+- **Deposit confirmation** — a signed, single-purpose link emailed to staff
+  (`/api/staff/deposit-review/:token`), rendering one review screen with one
+  button. No session, no account, no dashboard.
+- **Booking cancellation** — guests cancel their own bookings from the portal
+  within the policy; staff no longer need a UI for the common case.
+
+Everything else — date changes, exceptions, refunds — is still handled directly
+in Smoobu or PayPal. Refunds in particular are deliberately manual: a guest
+cancellation flags the payment and emails staff the capture ID, but the API never
+calls PayPal's refund endpoint.
 
 ### Edge cases and recovery table
 
@@ -479,19 +821,21 @@ Admin panel minimum actions:
 | Availability shown but booking fails on confirm | Guest hits “pay” and gets failure | Race condition with other booking | Auto-release flow, re-run availability check, offer alternatives/next dates |
 | PayPal capture succeeds but webhook delayed | Payment done, booking still pending | webhook delivery delay / downtime | Poll PayPal order status; finalize when capture confirmed; keep idempotent |
 | PayPal webhook spoof attempt | Unexpected “paid” webhook | attacker posts fake webhook | Reject unless signature verifies citeturn2search0turn20search0 |
-| Deposit proof upload malware | suspicious file | malicious upload | quarantine + scan; never serve raw file publicly citeturn0search0 |
+| Deposit proof upload malware | N/A in MVP | custom receipt uploads are out of scope | If added later: quarantine + scan; never serve raw file publicly citeturn0search0 |
 | Smoobu webhook missed | DB stale | network/host issue | reconciliation job to pull Smoobu reservations and reconcile citeturn20search1 |
 
 ### PRD
 
+Task 1.2 froze the MVP PRD in `docs/own_booking_engine/prd.md`. The frozen PRD is the implementation source of truth for PayPal, offline deposit handoff, portal, non-functional requirements, operational handoff, success metrics, and change-control decisions.
+
 **Problem statement**  
-Implement a secure booking engine integrated with Smoobu that provides real-time availability, prevents double bookings, supports PayPal payments and a manual deposit flow with proof upload, and provides guests a secure portal to manage their reservation.
+Implement a secure booking engine integrated with Smoobu that provides real-time availability, prevents double bookings, supports PayPal payments, offers an offline manual-deposit handoff, and provides PayPal-confirmed guests a secure portal to manage their reservation.
 
 **Goals**
 - Availability shown is accurate (validated server-side using Smoobu API). citeturn21search0
 - Booking creation/holds are reliable and race-safe (Smoobu-based holds recommended).
-- Payments are confirmed before final confirmation (PayPal webhooks verified; deposit requires admin approval). citeturn2search0turn16search0
-- Guest and operator data is protected (no secret leakage; secure file uploads; minimal PII retention). citeturn18search1turn0search0turn18search0
+- Payments are confirmed before final confirmation (PayPal webhooks verified). citeturn2search0turn16search0
+- Guest and operator data is protected (no secret leakage; minimal PII retention). citeturn18search1turn18search0
 
 **Non-goals**
 - Replacing Smoobu as the system of record for property management.
@@ -504,32 +848,30 @@ Implement a secure booking engine integrated with Smoobu that provides real-time
 | Availability search | Selecting any future dates is allowed; results can be empty; backend uses Smoobu availability endpoint; response includes `results_count` and property summaries. citeturn21search0 |
 | Hold creation | When user starts checkout, backend creates a hold in Smoobu and persists Smoobu reservation ID. citeturn21search0turn19view0 |
 | PayPal payment | System uses Orders v2; capture is idempotent using `PayPal-Request-Id`; booking is confirmed only after verified webhook/capture completion. citeturn16search4turn2search0turn16search0 |
-| Deposit workflow | Hold is created; deposit instructions page displayed; upload proof; admin approval required; auto-expire releases hold unless extended. citeturn19view1turn0search0 |
-| Secure uploads | Only allowlist MIME/types; files renamed; stored outside webroot; scan status tracked. citeturn0search0turn0search4 |
+| Manual deposit handoff | Deposit option shows offline contact/payment instructions and clearly states the custom engine does not confirm deposit bookings automatically. |
+| Secure uploads | Out of MVP; no custom receipt upload is implemented. |
 | Guest portal | Guest can access with reservation ID + password; password stored as salted hash; rate-limited logins. citeturn12search1 |
 | Webhooks | PayPal signature verified; Smoobu actions ingested idempotently; webhook events stored for replay protection. citeturn2search0turn20search1 |
-| Observability | Dashboards/alerts for payment-webhook failures, booking confirmation failures, hold expiries, upload scan failures. |
+| Observability | Dashboards/alerts for payment-webhook failures, booking confirmation failures, and hold expiries. |
 
 **Backend API endpoints (suggested)**  
 (Names are illustrative; the backend remains the only layer that calls Smoobu/PayPal.)
 
 - `POST /api/availability/quote`
+- `GET /api/calendar/:apartmentSlug?month=YYYY-MM` — returns per-day price, availability, min stay, and month stats (avg/min/max) for the listing-page calendar price dots
 - `POST /api/bookings/hold`
 - `POST /api/bookings/:booking_id/paypal/create-order`
 - `POST /api/bookings/:booking_id/paypal/capture`
-- `POST /api/bookings/:booking_id/deposit/instructions`
-- `POST /api/bookings/:booking_id/deposit/upload-url`
+- `GET /api/deposit-handoff` or static localized deposit/contact instructions
 - `POST /api/webhooks/smoobu`
 - `POST /api/webhooks/paypal`
 - `POST /api/portal/login`
 - `GET /api/portal/bookings/:reservation_public_id`
-- `POST /api/portal/bookings/:reservation_public_id/upload-deposit-proof`
 
 **Data models (core fields)**
 
-- `bookings`: `id`, `reservation_public_id`, `smoobu_reservation_id`, `apartment_id`, `arrival`, `departure`, `status`, `price`, `currency`, `payment_method`
+- `bookings`: `id`, `reservation_public_id`, `smoobu_reservation_id`, `apartment_id`, `arrival`, `departure`, `status`, `price`, `currency`, `payment_method`, `language` (`'en'` | `'es'` — persisted at session start for server-side communications)
 - `payments`: `booking_id`, `provider`, `paypal_order_id`, `paypal_capture_id`, `status`, `amount`
-- `documents`: `booking_id`, `type`, `storage_key`, `mime_detected`, `scan_status`, `sha256`
 - `webhook_events`: `provider`, `event_id`, `received_at`, `processed_at`, `status`
 
 **Test cases**
@@ -560,9 +902,8 @@ gantt
   PayPal Orders v2 create/capture + idempotency  :c1, after b1, 10d
   PayPal webhook verify + booking finalize       :c2, after c1, 10d
 
-  section Deposit workflow
-  Deposit instructions + real expiry             :d1, after b2, 7d
-  Secure upload pipeline + admin review          :d2, after d1, 10d
+  section Deposit handoff
+  Offline deposit/contact instructions           :d1, after b2, 4d
 
   section UX and analytics
   Guest portal access + success page             :e1, after c2, 10d
@@ -578,15 +919,36 @@ gantt
 - How exactly do you want to represent “blocked” holds in Smoobu: “Blocked channel (ID 11)” vs “Direct booking” with a custom flag? citeturn19view3turn21search0  
 - Should PayPal collect the full amount or only a deposit amount?
 - Do you need partial refunds, date changes, or cancellation fees in the portal?
-- What bank(s)/countries are deposits coming from, and what receipt file types are common?
+- Which offline contact/payment instructions should be shown for manual deposit?
 - Which email/SMS provider will you use for transactional communications?
-- Data retention policy for deposit receipts and guest PII (duration, deletion process). citeturn18search0turn0search0
+- Data retention policy for guest PII (duration, deletion process). citeturn18search0
 
 ### Prioritized recommendations and next steps
 
 1. Implement the **backend proxy + DB state machine** first (this is the security foundation). citeturn0search1turn12search4  
 2. Choose **Option A (provisional Smoobu hold)** to guarantee availability and prevent double-booking. citeturn19view3turn19view1turn21search0  
 3. Implement PayPal with **webhook verification + idempotency** as non-negotiable controls. citeturn2search0turn16search4turn16search0  
-4. Make the deposit timer a **real expiry** with admin override (solves stuck inventory and strengthens correctness). citeturn19view1turn20search1  
-5. Build secure deposit-proof uploads using OWASP-recommended controls (allowlist, rename, scan, private storage). citeturn0search0turn0search4  
-6. Add server-side analytics for “purchase/confirmed” outcomes (GA4 Measurement Protocol + PostHog backend capture) to reduce adblock-induced blind spots. citeturn17search0turn7view0
+4. Keep manual deposit as an offline handoff unless a future PRD explicitly adds a privileged approval workflow.  
+5. Add server-side analytics for “purchase/confirmed” outcomes (GA4 Measurement Protocol + PostHog backend capture) to reduce adblock-induced blind spots. citeturn17search0turn7view0
+
+### CI/CD: frontend vs backend deployment separation
+
+The existing GitHub Actions workflow (`.github/workflows/main.yml`) deploys **only the React frontend** to cPanel via FTPS. It runs `npm run build` and uploads the `build/` folder. Backend code in `infra/` or `backend/` directories does not end up in `build/`, so it won't accidentally reach the frontend server — but there is currently **no pipeline to deploy the backend or Terraform infrastructure**.
+
+#### Current workflow (frontend only — unchanged)
+
+```
+main.yml: push to main → secret-scan → audit → typecheck → npm run build → FTP upload build/ to cPanel
+```
+
+#### Required: separate backend workflow
+
+A new `.github/workflows/deploy-backend.yml` is needed with:
+
+1. **Path filtering** — only triggers on changes to `infra/` or `backend/`, so frontend-only pushes don't re-deploy infrastructure.
+2. **Terraform plan/apply** — provisions AWS resources (VPC, RDS, Lambda, API Gateway, S3, ElastiCache, WAF, SES, CloudWatch).
+3. **Lambda code deploy** — packages backend code, uploads to S3, updates Lambda function (either via Terraform `aws_lambda_function` resource or `aws lambda update-function-code` CLI).
+4. **AWS auth** — OIDC federation (preferred) or GitHub Secrets for `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`.
+5. **Environment protection** — GitHub Environments with required reviewers for prod Terraform applies.
+
+This ensures the two deployment pipelines are fully isolated: frontend changes go to cPanel, backend/infra changes go to AWS.

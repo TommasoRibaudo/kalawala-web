@@ -88,10 +88,11 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
             <Nav.Link href="/#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`} onClick={closeMenu}>Home</Nav.Link>
-            <Nav.Link href="/#body" className="navText" onClick={() => { handleLinkClick("#callToAction") }}>Availability</Nav.Link>
+            <Nav.Link href="/book" className="navText" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("book") }}>Availability</Nav.Link>
             <Nav.Link href="/#portfolio" className="navText" onClick={() => { handleLinkClick("#portfolio") }}>Photos</Nav.Link>
             <Nav.Link href="/#contact-us" className="navText" onClick={() => { handleLinkClick("#contact-us") }}>Contact</Nav.Link>
             <Nav.Link href="/twodaysinpuertoviejo" className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="/portal" className="navText" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("portal") }}>My Booking</Nav.Link>
           </Nav>
         <div className="navbar-flag">
             <LanguageSwitcher />

@@ -8,7 +8,6 @@ import PortfolioES from "../../components/Portfolio/Portfolio.componentES";
 import ContactUsES from "../../components/ContactUs/ContactUs.componentES";
 import OurOtherHomesES from "../../components/OurOtherHomes/OurOtherHomes.ComponentES";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
-import { useSmoobuSizeChange } from "../../hooks/useSmoobuSizeChange";
 import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
 
 const helpMeChooseOptionsES = [
@@ -43,8 +42,6 @@ const helpMeChooseOptionsES = [
 ];
 
 const HomeES = () => {
-  // Show discount tip when Smoobu component changes size
-  useSmoobuSizeChange({ isSpanishPage: true });
  
   return (
     <div id="body">

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './WelcomeSlider.style.scss';
-import Button from 'react-bootstrap/Button';
-import Smoobu2 from '../Smoobu2/Smoobu2.component';
+import BookingSearchWidget from '../BookingSearchWidget/BookingSearchWidget.component';
 
 const WelcomeSliderES = () => {
   const banner = 'https://drive.google.com/thumbnail?id=1c25flui45r6oVIvPMqKLemVsWgjbhsAH&sz=w1000';
@@ -40,17 +39,8 @@ const WelcomeSliderES = () => {
         </p>
         <br />
 
-        <div
-          className="Smoobo"
-          style={{
-            backgroundColor: 'rgba(245, 242, 233, 0.86)',
-            borderRadius: '15px',
-            padding: '5px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            overflow: 'visible',
-          }}
-        >
-          <Smoobu2 targetId="welcomeSliderSmoobu" />
+        <div className="hero-booking">
+          <BookingSearchWidget isSpanish={true} variant="hero" />
           <p className="hero-trust">✓ Confirmación instantánea · ✓ Reserva segura · ✓ Sin comisiones</p>
         </div>
       </div>
@@ -62,7 +52,7 @@ const WelcomeSliderES = () => {
           bottom: '45px',
           left: '50%',
           transform: 'translateX(-50%)',
-          zIndex: 9999,
+          zIndex: 2,
           textAlign: 'center',
           width: '100%',
           pointerEvents: 'none',

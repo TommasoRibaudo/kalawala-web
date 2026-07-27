@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './WelcomeSlider.style.scss';
-import Smoobu2 from '../Smoobu2/Smoobu2.component';
+import BookingSearchWidget from '../BookingSearchWidget/BookingSearchWidget.component';
 
 const WelcomeSlider = () => {
   const banner =
@@ -41,29 +41,20 @@ const WelcomeSlider = () => {
         </p>
         <br />
 
-        <div
-          className="Smoobo"
-          style={{
-            backgroundColor: 'rgba(245, 242, 233, 0.86)',
-            borderRadius: '15px',
-            padding: '5px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            overflow: 'visible',
-          }}
-        >
-          <Smoobu2 targetId="welcomeSliderSmoobu" />
+        <div className="hero-booking">
+          <BookingSearchWidget isSpanish={false} variant="hero" />
           <p className="hero-trust">✓ Instant confirmation · ✓ Secure booking · ✓ No platform fees</p>
         </div>
       </div>
 
-      {/* ⭐ NOW pinned to the bottom of the SECTION */}
+      {/* ⭐ pinned to the bottom of the SECTION, behind the search widget/calendar */}
       <div className="hero-rating"
         style={{
           position: 'absolute',
           bottom: '45px',
           left: '50%',
           transform: 'translateX(-50%)',
-          zIndex: 9999,
+          zIndex: 2,
           textAlign: 'center',
           width: '100%',
           pointerEvents: 'none',

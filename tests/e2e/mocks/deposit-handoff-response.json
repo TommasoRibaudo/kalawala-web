@@ -1,0 +1,12 @@
+{
+  "reservationPublicId": "RES-MOCK-12345",
+  "depositAmountCents": 22500,
+  "currency": "USD",
+  "bankDetails": {
+    "bankName": "Banco Nacional",
+    "accountHolder": "Kalawala Properties S.A.",
+    "iban": "CR00000000000000000000",
+    "reference": "RES-MOCK-12345"
+  },
+  "expiresAt": "2025-03-11T12:00:00Z"
+}

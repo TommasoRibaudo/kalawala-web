@@ -28,7 +28,10 @@ permissions:
 
 env:
   TF_VERSION: '1.9.0'
-  NODE_VERSION: '18.x'
+  # Must track the Lambda runtime in infra/lambda.tf (nodejs22.x). Building and
+  # testing the deployed artifact on a different major than it runs on is how
+  # runtime-specific bugs reach production unseen — and Node 18 is EOL.
+  NODE_VERSION: '22.x'
   AWS_REGION: 'us-east-1'
 
 jobs:

@@ -324,11 +324,15 @@ jobs:
           echo "booking_api_lambda_name=$(terraform output -raw booking_api_lambda_name)" >> $GITHUB_OUTPUT
           echo "webhooks_lambda_name=$(terraform output -raw webhooks_lambda_name)" >> $GITHUB_OUTPUT
           echo "migration_lambda_name=$(terraform output -raw migration_lambda_name)" >> $GITHUB_OUTPUT
+          echo "hold_expiry_lambda_name=$(terraform output -raw hold_expiry_lambda_name)" >> $GITHUB_OUTPUT
+          echo "payment_reconciliation_lambda_name=$(terraform output -raw payment_reconciliation_lambda_name)" >> $GITHUB_OUTPUT
 
     outputs:
       booking_api_lambda_name: ${{ steps.tf_outputs.outputs.booking_api_lambda_name }}
       webhooks_lambda_name: ${{ steps.tf_outputs.outputs.webhooks_lambda_name }}
       migration_lambda_name: ${{ steps.tf_outputs.outputs.migration_lambda_name }}
+      hold_expiry_lambda_name: ${{ steps.tf_outputs.outputs.hold_expiry_lambda_name }}
+      payment_reconciliation_lambda_name: ${{ steps.tf_outputs.outputs.payment_reconciliation_lambda_name }}
 
   # ---------------------------------------------------------------------------
   # Lambda packaging and deployment
@@ -432,6 +436,17 @@ jobs:
             --publish
           aws lambda wait function-updated \
             --function-name ${{ needs.terraform-apply.outputs.webhooks_lambda_name }}
+
+      # These two run on EventBridge schedules and were never redeployed by CI, so
+      # they drifted behind the API. hold_expiry is the one that matters: if it is
+      # not current, expired holds stop releasing and rooms stay blocked in Smoobu.
+      - name: Update worker Lambda function code
+        run: |
+          for FN in "${{ needs.terraform-apply.outputs.hold_expiry_lambda_name }}"                     "${{ needs.terraform-apply.outputs.payment_reconciliation_lambda_name }}"; do
+            aws lambda update-function-code               --function-name "$FN"               --zip-file fileb://lambda-booking-api.zip               --publish
+            aws lambda wait function-updated --function-name "$FN"
+            echo "Updated $FN"
+          done
 
       - name: Smoke test — post-deploy checks
         env:

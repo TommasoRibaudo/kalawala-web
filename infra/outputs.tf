@@ -232,3 +232,13 @@ output "migration_lambda_name" {
   description = "Name of the schema migration runner. Invoke before deploying code that reads new columns."
   value       = aws_lambda_function.migration.function_name
 }
+
+output "hold_expiry_lambda_name" {
+  description = "Scheduled worker that expires stale holds. CI must redeploy it or expired holds stop releasing inventory."
+  value       = aws_lambda_function.hold_expiry.function_name
+}
+
+output "payment_reconciliation_lambda_name" {
+  description = "Scheduled worker that resolves PayPal payments whose webhook was missed."
+  value       = aws_lambda_function.payment_reconciliation.function_name
+}

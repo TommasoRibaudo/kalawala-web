@@ -252,6 +252,14 @@ resource "aws_lambda_function" "booking_api" {
   filename         = data.archive_file.booking_api_placeholder.output_path
   source_code_hash = data.archive_file.booking_api_placeholder.output_base64sha256
 
+  # Terraform owns this function's CONFIGURATION; CI owns its CODE, uploaded with
+  # `aws lambda update-function-code`. Without this, every apply would reset the
+  # live function to the placeholder zip below — and CI only re-uploads some of
+  # the functions, so the rest would be left running a stub indefinitely.
+  lifecycle {
+    ignore_changes = [filename, source_code_hash]
+  }
+
   memory_size = var.booking_api_lambda_memory_mb
   timeout     = var.booking_api_lambda_timeout_seconds
 
@@ -303,6 +311,14 @@ resource "aws_lambda_function" "webhooks" {
 
   filename         = data.archive_file.webhooks_placeholder.output_path
   source_code_hash = data.archive_file.webhooks_placeholder.output_base64sha256
+
+  # Terraform owns this function's CONFIGURATION; CI owns its CODE, uploaded with
+  # `aws lambda update-function-code`. Without this, every apply would reset the
+  # live function to the placeholder zip below — and CI only re-uploads some of
+  # the functions, so the rest would be left running a stub indefinitely.
+  lifecycle {
+    ignore_changes = [filename, source_code_hash]
+  }
 
   # Webhook handlers must respond within the provider's retry timeout.
   # Both Smoobu and PayPal retry on non-2xx; a fast, simple response avoids
@@ -395,6 +411,14 @@ resource "aws_lambda_function" "hold_expiry" {
 
   filename         = data.archive_file.hold_expiry_placeholder.output_path
   source_code_hash = data.archive_file.hold_expiry_placeholder.output_base64sha256
+
+  # Terraform owns this function's CONFIGURATION; CI owns its CODE, uploaded with
+  # `aws lambda update-function-code`. Without this, every apply would reset the
+  # live function to the placeholder zip below — and CI only re-uploads some of
+  # the functions, so the rest would be left running a stub indefinitely.
+  lifecycle {
+    ignore_changes = [filename, source_code_hash]
+  }
 
   memory_size = 256
   timeout     = 60
@@ -490,6 +514,14 @@ resource "aws_lambda_function" "payment_reconciliation" {
   filename         = data.archive_file.payment_reconciliation_placeholder.output_path
   source_code_hash = data.archive_file.payment_reconciliation_placeholder.output_base64sha256
 
+  # Terraform owns this function's CONFIGURATION; CI owns its CODE, uploaded with
+  # `aws lambda update-function-code`. Without this, every apply would reset the
+  # live function to the placeholder zip below — and CI only re-uploads some of
+  # the functions, so the rest would be left running a stub indefinitely.
+  lifecycle {
+    ignore_changes = [filename, source_code_hash]
+  }
+
   memory_size = 256
   timeout     = 120
 
@@ -582,6 +614,14 @@ resource "aws_lambda_function" "migration" {
 
   filename         = data.archive_file.migration_placeholder.output_path
   source_code_hash = data.archive_file.migration_placeholder.output_base64sha256
+
+  # Terraform owns this function's CONFIGURATION; CI owns its CODE, uploaded with
+  # `aws lambda update-function-code`. Without this, every apply would reset the
+  # live function to the placeholder zip below — and CI only re-uploads some of
+  # the functions, so the rest would be left running a stub indefinitely.
+  lifecycle {
+    ignore_changes = [filename, source_code_hash]
+  }
 
   memory_size = 512
   # Generous: the whole run is one transaction holding an exclusive lock, and a

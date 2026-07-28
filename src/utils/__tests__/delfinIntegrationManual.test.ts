@@ -14,7 +14,7 @@ describe('Delfin Manual Integration Verification', () => {
     const delfinEnglish = houseDataList.find(house => house.houseLangCode === 'Delfin');
     const delfinSpanish = houseDataList.find(house => house.houseLangCode === 'DelfinES');
     const delfinInSnippet = homesSnippet.find(home => home.name === 'Delfin');
-    const delfinInEngList = houseDataEngList.find(house => house.name === 'Delfin');
+    const delfinInEngList = houseDataEngList.find(house => house.name === 'Casa Delfines');
     
     // All data structures should contain Delfin
     expect(delfinEnglish).toBeDefined();

@@ -26,14 +26,14 @@ describe('Delfin Integration Tests', () => {
     
     // English version
     expect(delfinEnglish).toBeDefined();
-    expect(delfinEnglish?.name).toBe('Delfin');
+    expect(delfinEnglish?.name).toBe('Casa Delfines');
     expect(delfinEnglish?.guestNumber).toBe(6);
     expect(delfinEnglish?.houseCode).toBe(10);
     expect(delfinEnglish?.parking).toBe(true);
-    
+
     // Spanish version
     expect(delfinSpanish).toBeDefined();
-    expect(delfinSpanish?.name).toBe('Delfín');
+    expect(delfinSpanish?.name).toBe('Casa Delfines');
     expect(delfinSpanish?.guestNumber).toBe(6);
     expect(delfinSpanish?.houseCode).toBe(10);
     expect(delfinSpanish?.parking).toBe(true);
@@ -110,9 +110,12 @@ describe('Delfin Integration Tests', () => {
     
     expect(delfinHouses.length).toBe(2); // English and Spanish versions
     
-    // Verify it can be filtered out when viewing Delfin page itself
-    const otherHousesWhenViewingDelfin = allHouses.filter(house => house.name !== 'Delfin');
-    expect(otherHousesWhenViewingDelfin.length).toBe(allHouses.length - 1);
+    // Verify it can be filtered out when viewing Delfin page itself. Both the
+    // English and Spanish entries now share the display name "Casa Delfines"
+    // (previously "Delfin" / "Delfín" — inconsistent even within this file),
+    // so a name-based filter drops both language variants at once.
+    const otherHousesWhenViewingDelfin = allHouses.filter(house => house.name !== 'Casa Delfines');
+    expect(otherHousesWhenViewingDelfin.length).toBe(allHouses.length - 2);
   });
 
   test('should have proper description content', () => {
@@ -135,7 +138,7 @@ describe('Delfin Integration Tests', () => {
 
   test('should be included in houseDataEngList for home page display', () => {
     // Requirement 3.1, 3.2, 3.3: Home page integration
-    const delfinInEngList = houseDataEngList.find(house => house.name === 'Delfin');
+    const delfinInEngList = houseDataEngList.find(house => house.name === 'Casa Delfines');
     
     expect(delfinInEngList).toBeDefined();
     expect(delfinInEngList?.guestNumber).toBe(6);

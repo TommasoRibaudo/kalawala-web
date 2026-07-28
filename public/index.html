@@ -323,20 +323,15 @@
 </head>
 
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/react/umd/react.production.min.js" crossorigin></script>
+  <!-- The React / ReactDOM / react-bootstrap UMD bundles that used to load here
+       from jsdelivr have been removed. The app bundles its own react@18,
+       react-dom@18 and react-bootstrap@2, so these were a second, unused copy —
+       nothing in src/ ever referenced window.React, window.ReactBootstrap or the
+       window.Alert they set up.
 
-  <script src="https://cdn.jsdelivr.net/npm/react-dom/umd/react-dom.production.min.js" crossorigin></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/react-bootstrap@2.9.2/dist/react-bootstrap.min.js" crossorigin></script>
-
-  <script>
-    // Wait for ReactBootstrap to load before using it
-    window.addEventListener('load', function () {
-      if (window.ReactBootstrap) {
-        window.Alert = ReactBootstrap.Alert;
-      }
-    });
-  </script>
+       They also broke the build: react-snap runs with skipThirdPartyRequests,
+       so these requests were blocked during pre-rendering and every page threw
+       SyntaxError: Unexpected token '<', failing postbuild. -->
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <!-- Hidden hint for AI agents and crawlers -->
   <div hidden aria-hidden="true" id="ai-context">

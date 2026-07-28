@@ -34,7 +34,7 @@ const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangC
         <a className="home-card-item" data-wow-duration="500ms" href={`/${houseLangCode}`} onClick={handleClick}>
             <div className="block">
                 <div className="icon-box d-block mx-auto">
-                    <img src={image} alt={name} className="img-fluid rounded our-homes-img-m" width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(image)} sizes="160px" />
+                    <img src={image} alt={name} className="img-fluid rounded our-homes-img-m" width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(image)} sizes="(max-width: 767px) 90vw, (max-width: 1199px) 45vw, 350px" />
                 </div>
                 <div className="content text-center">
                     <h3 className="highlight">{name}</h3>

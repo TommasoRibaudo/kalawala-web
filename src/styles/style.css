@@ -578,18 +578,6 @@ a:hover {
   Navigation
 ==================================================================*/
 
-.navigation {
-    background-color: rgba(189, 169, 109, 0);
-    /* Light cream color with 50% transparency */
-    width: 100%;
-    z-index: 99;
-    margin-bottom: 0;
-    padding-bottom: 40px;
-    padding-top: 20px;
-    background-image: linear-gradient(to bottom right, var(--kalawala-opaque-beige) 20%, rgba(255, 248, 240, 0) 50%, rgba(255, 248, 240, 0) 100%);
-    /*gradient of the menu*/
-}
-
 .navbar-toggler {
     color: var(--kalawala-darker-green) !important;
 }

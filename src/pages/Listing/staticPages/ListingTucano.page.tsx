@@ -52,6 +52,9 @@ const ListingTucano = () => {
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Tucano" />
             </Helmet>
             <FixedNavigation isBlog={false}/>
+            {isScreenSmall && (
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
@@ -63,8 +66,6 @@ const ListingTucano = () => {
                         </p>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="Tucano" isSpanish={false} />
-                        {isScreenSmall && (
-                            <div className="button-hold sticky-cta-mobile"><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}

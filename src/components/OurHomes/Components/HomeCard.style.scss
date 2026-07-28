@@ -137,91 +137,51 @@
       margin-bottom:20px;
       position: relative;
       z-index: 1;
-      
+
       // Mobile-specific styling to make cards bigger
       @media (max-width: 768px) {
         padding: 20px 15px; // Reduce padding on mobile to make more room for image
       }
-      
+
       &:hover {
         border-bottom:2px solid $primary-color;
       }
       &:hover .icon-box {
         transform: translateY(-10px);
       }
+      // !important throughout: this same `.about .block .icon-box` selector is
+      // also defined, at equal specificity, in styles/style.css and the legacy
+      // templates/about_us.scss (fixed 160x92 icon frame + diamond corners for
+      // what was originally a small template icon, not a full photo) — without
+      // !important, whichever of those loads last in the CSS-splitting order
+      // wins per-property instead of this one.
       .icon-box {
         position: relative;
-        width: 160px; 
-        height: 92.38px;
+        width: 100% !important;
+        aspect-ratio: 3 / 2;
+        height: auto !important;
         background-color: transparent;
-        margin: 46.19px auto 60px;
-        padding: 20px 0;
-        border-left: 2px solid $border-color;
-        border-right: 2px solid $border-color;
-        font-size: 50px;
+        margin: 0 auto 24px !important;
+        padding: 0 !important;
+        border: none !important;
         transform: translateZ(0px);
         transition-duration: 0.3s;
         transition-property: transform;
-        
-        // Make icon-box bigger on mobile
-        @media (max-width: 768px) {
-          width: 250px; // Increase width significantly for bigger image
-          height: 140px; // Increase height for bigger image
-          margin: 30px auto 50px; // Reduce top/bottom margins to save space
+
+        &::before, &::after {
+          content: none !important; // kill the legacy diamond icon frame
         }
-        
-        &:after, &:before {
-          content: "";
-          position: absolute;
-          z-index: 1;
-          width: 113.14px;
-          height: 113.14px;
-          background-color: inherit;
-          left: 20.4315px;
-          transform: scaleY(0.5774) rotate(-45deg);
-          
-          // Adjust positioning for mobile
-          @media (max-width: 768px) {
-            width: 177px; // Proportionally increase for larger icon-box
-            height: 177px;
-            left: 32px; // Adjust positioning for larger width
-          }
-        }
-        &:before {
-          top: -56.5685px;
-          border-top: 2px solid rgba(236, 239, 241, 0.07);
-          border-right: 2px solid rgba(236, 239, 241, 0.07);
-          
-          @media (max-width: 768px) {
-            top: -88px; // Adjust for larger size
-          }
-        }
-        &:after {
-          bottom: -56.5685px;
-          border-bottom: 2px solid rgba(236, 239, 241, 0.07);
-          border-left: 2px solid rgba(236, 239, 241, 0.07);
-          
-          @media (max-width: 768px) {
-            bottom: -88px; // Adjust for larger size
-          }
-        }
-        h3 {
-          color: $kalawala-text-gray; // was #afbac4 — a dark-theme leftover
-        }
-        
-        // Make images bigger on mobile
+
+        // Photo fills the box edge-to-edge — no more diamond icon frame
         .our-homes-img-m {
-          @media (max-width: 768px) {
-            width: 100%;
-            height: auto;
-            min-height: 160px; // Increase minimum height significantly
-            max-height: 180px; // Set max height to prevent overflow
-            object-fit: cover;
-            border-radius: 8px; // Add some rounding like HelpMeChoose
-          }
+          width: 100% !important;
+          height: 100% !important;
+          margin: 0 !important;
+          object-fit: cover;
+          border-radius: 12px;
         }
       }
-      
+
       // Make content text bigger on mobile
       .content {
         h3 {

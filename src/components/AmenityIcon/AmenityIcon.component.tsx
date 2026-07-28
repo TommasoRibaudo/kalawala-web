@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBath, faKitchenSet, faSnowflake, faSquareParking, faWifi, faPaw, faSwimmingPool, IconDefinition} from '@fortawesome/free-solid-svg-icons';
+import { faBath, faBed, faKitchenSet, faSnowflake, faSquareParking, faUserGroup, faWifi, faPaw, faSwimmingPool, IconDefinition} from '@fortawesome/free-solid-svg-icons';
 import './AmenityIcon.style.scss'
 import { AmenityType } from "../../utils/types";
 
@@ -16,7 +16,9 @@ const AmenityIcon: FC<AmenityType> = ({icon, name}) => {
         parking: faSquareParking,
         wifi: faWifi,
         pet: faPaw,
-        pool: faSwimmingPool
+        pool: faSwimmingPool,
+        bed: faBed,
+        guests: faUserGroup
     }
 
     return(

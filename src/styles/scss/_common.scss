@@ -17,24 +17,11 @@ body {
   background-color: #fff;
 }
 
-/* Safer font loading with fallback metrics */
-@font-face {
-  font-family: 'Montserrat';
-  src: url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-  font-display: swap;
-  font-weight: 400 700;
-  font-style: normal;
-  font-size-adjust: 0.5;
-}
-
-@font-face {
-  font-family: 'Open Sans';
-  src: url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap');
-  font-display: swap;
-  font-weight: 300 400 600;
-  font-style: normal;
-  font-size-adjust: 0.5;
-}
+/* Two @font-face blocks for Montserrat and Open Sans used to sit here. They
+   were inert: `src` pointed at a Google Fonts *stylesheet* URL rather than a
+   font file, so the browser fetched each one, failed to parse it as a font,
+   and discarded it — two render-path requests that could never yield a glyph.
+   All type is self-hosted Urbanist now; see src/styles/fonts.css. */
 
 /* Animate with transforms, not layout */
 * { 

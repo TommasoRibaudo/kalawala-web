@@ -3,7 +3,10 @@
   align-items: center;
   gap: 6px;
   background-color: var(--kalawala-light-green);
-  color: white;
+  // White on #8AA288 is 2.76:1 and fails AA. The brand darker-green reads at
+  // 5.18:1 on the same background, so the badge keeps its light-green pill
+  // look instead of being darkened.
+  color: var(--kalawala-darker-green);
   padding: 4px 8px; // Smaller padding for badge appearance
   border-radius: 12px; // More rounded for badge look
   font-weight: 500; // Less bold

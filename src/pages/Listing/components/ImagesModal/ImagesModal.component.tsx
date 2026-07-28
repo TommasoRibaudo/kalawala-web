@@ -1,103 +1,154 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import './ImagesModal.style.scss';
-import PortfolioImage from "../../../../components/PortfolioImage/PortfolioImage.component";
+import { getHouseImages } from "../../../../utils/houseImages";
+import ZoomableImage from "./ZoomableImage.component";
 
 
 interface IIMagesModal {
   closeModal: () => void;
   houseName: string;
 }
+
+const isSpanish = (houseName: string) => houseName.endsWith('ES');
+
 const ImagesModal = ({ closeModal, houseName }: IIMagesModal) => {
-  const modalRef = useRef<HTMLDivElement>(null);
+  const images = getHouseImages(houseName);
+  const spanish = isSpanish(houseName);
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
+  const isViewerOpen = viewerIndex !== null;
+
+  const closeViewer = useCallback(() => setViewerIndex(null), []);
+
+  const step = useCallback(
+    (direction: 1 | -1) => {
+      setViewerIndex((current) => {
+        if (current === null) return current;
+        return (current + direction + images.length) % images.length;
+      });
+    },
+    [images.length]
+  );
 
   useEffect(() => {
-    // Scroll to top when modal opens
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    // Prevent body scroll when modal is open
+    // Prevent the page behind the overlay from scrolling.
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    
-    // Add ESC key handler
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        closeModal();
+        if (isViewerOpen) closeViewer();
+        else closeModal();
+        return;
       }
+      if (!isViewerOpen) return;
+      if (e.key === 'ArrowRight') step(1);
+      if (e.key === 'ArrowLeft') step(-1);
     };
-    
-    // Add native wheel event listener to handle scroll boundaries
-    const handleWheel = (e: WheelEvent) => {
-      if (modalRef.current) {
-        const { scrollTop, scrollHeight, clientHeight } = modalRef.current;
-        
-        // Prevent scroll overflow - if at top or bottom, prevent further scrolling
-        if (scrollTop <= 0 && e.deltaY < 0) {
-          e.preventDefault();
-        } else if (scrollTop + clientHeight >= scrollHeight && e.deltaY > 0) {
-          e.preventDefault();
-        }
-      }
-    };
-    
-    // Capture the current ref value for cleanup
-    const currentModalRef = modalRef.current;
-    
-    // Add event listeners
+
     document.addEventListener('keydown', handleKeyDown);
-    currentModalRef?.addEventListener('wheel', handleWheel, { passive: false });
-    
-    // Cleanup function to restore body scroll when modal closes
-    return () => {
-      document.body.style.overflow = 'unset';
-      document.removeEventListener('keydown', handleKeyDown);
-      currentModalRef?.removeEventListener('wheel', handleWheel);
-    };
-  }, [closeModal]);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [closeModal, closeViewer, isViewerOpen, step]);
 
-  const handleModalClick = (e: React.MouseEvent) => {
-    // Only close if clicking directly on the modal backdrop
-    if (e.target === e.currentTarget) {
-      closeModal();
-    }
-  };
+  const strings = spanish
+    ? { close: 'Cerrar', photos: 'fotos', previous: 'Anterior', next: 'Siguiente', empty: 'No hay fotos disponibles' }
+    : { close: 'Close', photos: 'photos', previous: 'Previous', next: 'Next', empty: 'No images available' };
+
   return (
-    <div 
-      ref={modalRef}
-      className="imagesModal" 
-      onClick={handleModalClick}
-    >
-      <div className="d-flex flex-wrap align-items-center h-100">
-          <PortfolioImage folderName={houseName} />
+    <div className="imagesModal" role="dialog" aria-modal="true">
+      <div className="imagesModal__bar">
+        <span className="imagesModal__count">
+          {images.length} {strings.photos}
+        </span>
+        <button
+          type="button"
+          className="imagesModal__close"
+          aria-label={strings.close}
+          onClick={closeModal}
+        >
+          &times;
+        </button>
       </div>
-       {/* Close button as fallback */}
-       <button 
-         className="btn btn-danger"
-         onClick={() => {
-           closeModal();
-         }}
-         style={{ 
-           position: 'fixed',
-           top: '20px',
-           right: '20px',
-           zIndex: 1001, 
-           fontSize: '35px', 
-           width: '50px', 
-           height: '50px',
-           borderRadius: '50%',
-           cursor: 'pointer',
-           boxShadow: '0 6px 20px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.1)',
-           fontWeight: 'bold',
-           textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-           display: 'flex',
-           alignItems: 'center',
-           justifyContent: 'center',
-           padding: 0,
-           lineHeight: 1
-         }}
-       >
-         ×
-       </button>
-    </div>
-  )
-}
 
-export default ImagesModal
+      <div className="imagesModal__scroll">
+        {images.length === 0 ? (
+          <p className="imagesModal__empty">{strings.empty}</p>
+        ) : (
+          <div className="imagesModal__grid">
+            {images.map((image, index) => (
+              <button
+                key={image.imageLink || index}
+                type="button"
+                className="imagesModal__thumb"
+                onClick={() => setViewerIndex(index)}
+              >
+                <img
+                  src={image.imageLink || ''}
+                  alt={image.roomType || `${houseName} ${index + 1}`}
+                  loading="lazy"
+                />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {isViewerOpen && (
+        <div className="imagesModal__viewer">
+          <div className="imagesModal__bar imagesModal__bar--viewer">
+            <span className="imagesModal__count">
+              {viewerIndex! + 1} / {images.length}
+            </span>
+            <button
+              type="button"
+              className="imagesModal__close"
+              aria-label={strings.close}
+              onClick={closeViewer}
+            >
+              &times;
+            </button>
+          </div>
+
+          <ZoomableImage
+            key={viewerIndex!}
+            src={images[viewerIndex!].imageLink || ''}
+            alt={images[viewerIndex!].roomType || `${houseName} ${viewerIndex! + 1}`}
+            onSwipe={step}
+            onTap={closeViewer}
+          />
+
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                className="imagesModal__nav imagesModal__nav--prev"
+                aria-label={strings.previous}
+                onClick={() => step(-1)}
+              >
+                &#8249;
+              </button>
+              <button
+                type="button"
+                className="imagesModal__nav imagesModal__nav--next"
+                aria-label={strings.next}
+                onClick={() => step(1)}
+              >
+                &#8250;
+              </button>
+            </>
+          )}
+
+          {images[viewerIndex!].roomType && (
+            <p className="imagesModal__caption">{images[viewerIndex!].roomType}</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ImagesModal;

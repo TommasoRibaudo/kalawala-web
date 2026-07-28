@@ -28,7 +28,7 @@
  * the server never observes them and the browser is the only possible source.
  */
 
-import posthog from 'posthog-js';
+import * as PostHog from './PostHog.service';
 import { CookieConsentService } from './CookieConsent.service';
 
 // ---------------------------------------------------------------------------
@@ -212,7 +212,7 @@ function centsToDecimal(cents: number): number {
 export function trackBookingSearch(props: BookingSearchProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('booking_search', props);
+  PostHog.capture('booking_search', props);
 
   fbq('Search', {
     content_category: 'booking',
@@ -231,7 +231,7 @@ export function trackBookingSearch(props: BookingSearchProps): void {
 export function trackAvailabilityResults(props: AvailabilityResultsProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('availability_results', props);
+  PostHog.capture('availability_results', props);
 
   gtag('availability_results', {
     event_category: 'booking',
@@ -252,7 +252,7 @@ export function trackAvailabilityResults(props: AvailabilityResultsProps): void 
 export function trackPropertyViewed(props: PropertyViewedProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('property_viewed', props);
+  PostHog.capture('property_viewed', props);
 
   gtag('view_item', {
     event_category: 'booking',
@@ -284,7 +284,7 @@ export function trackPropertyViewed(props: PropertyViewedProps): void {
 export function trackCheckoutStarted(props: CheckoutStartedProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('checkout_started', props);
+  PostHog.capture('checkout_started', props);
 
   fbq('InitiateCheckout', {
     value: centsToDecimal(props.value_cents),
@@ -306,7 +306,7 @@ export function trackCheckoutStarted(props: CheckoutStartedProps): void {
 export function trackPaymentMethodSelected(props: PaymentMethodSelectedProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('payment_method_selected', props);
+  PostHog.capture('payment_method_selected', props);
 
   fbq('AddPaymentInfo', {
     value: centsToDecimal(props.value_cents),
@@ -323,7 +323,7 @@ export function trackPaymentMethodSelected(props: PaymentMethodSelectedProps): v
 export function trackPaypalApproved(props: PaypalApprovedProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('paypal_approved', props);
+  PostHog.capture('paypal_approved', props);
 
   gtag('paypal_approved', {
     event_category: 'booking',
@@ -343,7 +343,7 @@ export function trackPaypalApproved(props: PaypalApprovedProps): void {
 export function trackBookingConfirmed(props: BookingConfirmedProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('booking_confirmed', {
+  PostHog.capture('booking_confirmed', {
     reservation_id: props.reservation_id,
     property_id: props.property_id,
     property_slug: props.property_slug,
@@ -387,7 +387,7 @@ export function trackManualDepositHandoffClicked(props: ManualDepositHandoffClic
         }
       : props;
 
-  posthog.capture('manual_deposit_handoff_clicked', eventProps);
+  PostHog.capture('manual_deposit_handoff_clicked', eventProps);
 
   const gtagProps: Record<string, unknown> = {
     event_category: 'booking',
@@ -417,7 +417,7 @@ export function trackManualDepositHandoffClicked(props: ManualDepositHandoffClic
 export function trackBookingCancelled(props: BookingCancelledProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('booking_cancelled', props);
+  PostHog.capture('booking_cancelled', props);
 
   gtag('booking_cancelled', {
     event_category: 'booking',

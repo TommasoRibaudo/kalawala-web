@@ -18,7 +18,11 @@ html,
     width: 100%;
     height: 100%;
 
-
+    // Vertical space the fixed mobile CTA bar takes up. The columns that end
+    // above it reserve this much so their last rows are not buried behind it.
+    // The media queries on .sticky-cta-mobile below shrink the bar and this
+    // reserve together, so the two never drift apart.
+    --sticky-cta-reserve: 110px;
 
     .row {
         margin: 0;
@@ -140,7 +144,7 @@ html,
         margin-top: 30px;
 
         @media (max-width: 992px) {
-            padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+            padding-bottom: calc(var(--sticky-cta-reserve) + env(safe-area-inset-bottom, 0px));
         }
     }
 
@@ -149,7 +153,7 @@ html,
         padding: 20px;
         margin-top: 30px;
         // Add bottom padding to prevent overlap with fixed CTA button
-        padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: calc(var(--sticky-cta-reserve) + env(safe-area-inset-bottom, 0px));
     }
 
     // Sticky CTA button for mobile
@@ -167,6 +171,7 @@ html,
             font-weight: 700; // Bolder text
             text-transform: uppercase;
             letter-spacing: 1px;
+            line-height: 1.2;
             border-radius: 12px; // More rounded corners
             border: none;
             transition: all 0.3s ease;
@@ -183,9 +188,58 @@ html,
                 transform: translateY(-1px);
             }
         }
-        
+
         // Add safe area padding for devices with notches
         padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+
+        // "VER DISPONIBILIDAD" is 18 uppercase characters. At 18px with 1px of
+        // letter-spacing it stops fitting between the bar's and the button's
+        // horizontal padding below ~400px, so it wrapped onto a second line and
+        // the bar grew past 130px — enough to cover most of a small phone.
+        // Scaling the type and padding down keeps the label on one line.
+        @media (max-width: 479.98px) {
+            padding: 12px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+
+            .sticky-cta-button {
+                padding: 14px 16px;
+                font-size: 16px;
+                letter-spacing: 0.5px;
+            }
+        }
+
+        @media (max-width: 359.98px) {
+            .sticky-cta-button {
+                padding: 12px 10px;
+                font-size: 14px;
+                letter-spacing: 0.25px;
+            }
+        }
+
+        // A landscape phone or a short browser window has width to spare but
+        // little height, where even the one-line bar dominates the viewport.
+        // Trim the vertical padding only, holding a 44px tap target.
+        @media (max-height: 560px) {
+            padding: 8px 12px;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+
+            .sticky-cta-button {
+                padding: 10px 16px;
+                font-size: 15px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+
+    @media (max-width: 479.98px) {
+        --sticky-cta-reserve: 80px;
+    }
+
+    @media (max-height: 560px) {
+        --sticky-cta-reserve: 68px;
     }
 
 }

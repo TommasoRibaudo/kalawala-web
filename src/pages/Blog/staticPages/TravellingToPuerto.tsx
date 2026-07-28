@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
@@ -12,6 +13,9 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS } from "../../../utils/constants";
 
+
+const HERO_IMAGE =
+  'https://lh3.googleusercontent.com/d/1JxE6lYoK9C2maxtGP9rlUp2a47Ce5C9W=w1000';
 
 const TravellingToPuerto = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -52,7 +56,12 @@ const TravellingToPuerto = () => {
                             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
                         }}>
                             <img
-                                src="https://drive.google.com/thumbnail?id=1JxE6lYoK9C2maxtGP9rlUp2a47Ce5C9W&sz=w1000"
+                                loading="eager"
+                                fetchPriority="high"
+                                srcSet={cdnSrcSet(HERO_IMAGE)}
+                                sizes="(max-width: 768px) 100vw, 720px"
+                                decoding="async"
+                                src={cdnImage(HERO_IMAGE, 960)}
                                 className="responsive-image"
                                 style={{
                                     maxWidth: '100%',
@@ -62,7 +71,6 @@ const TravellingToPuerto = () => {
                                 alt="Surqui"
                                 width="1000"
                                 height="600"
-                                loading="lazy"
                             />
                         </div>
                     </div>
@@ -132,7 +140,7 @@ const TravellingToPuerto = () => {
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <h2 className="smoobu-title">Book Your Stay</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="travellingSmoobuBooking" />
                         </div>

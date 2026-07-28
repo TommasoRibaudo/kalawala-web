@@ -51,6 +51,9 @@ const BusHours = () => {
                             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
                         }}>
                             <img
+                                loading="eager"
+                                fetchPriority="high"
+                                decoding="async"
                                 src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg"
                                 className="responsive-image"
                                 style={{
@@ -61,7 +64,6 @@ const BusHours = () => {
                                 alt="MEPE Bus in Puerto Viejo"
                                 width="1000"
                                 height="600"
-                                loading="lazy"
                             />
                             Photo by <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a>
                         </div>
@@ -382,7 +384,7 @@ const BusHours = () => {
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <h2 className="smoobu-title">Book Your Stay</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="busHoursSmoobuBooking" />
                         </div>

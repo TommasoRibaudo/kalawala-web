@@ -1,4 +1,5 @@
 import React from 'react';
+import { cdnSrcSet } from '../../utils/imageCdn';
 import { useNavigate } from 'react-router-dom';
 import './HelpMeChoose.style.scss';
 
@@ -40,7 +41,7 @@ const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options 
                             onClick={() => handleClick(option.houseLangCode)}
                         >
                             <div className="card-image-wrapper">
-                                <img src={option.image} alt={option.houseName} />
+                                <img src={option.image} alt={option.houseName} width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(option.image)} sizes="(max-width: 768px) 100vw, 400px" />
                             </div>
                             <div className="card-content">
                                 <span className="card-emoji">{option.emoji}</span>

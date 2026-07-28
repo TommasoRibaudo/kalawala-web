@@ -60,11 +60,11 @@ const ListingGeco = () => {
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
                         <h1 className="title">House Geco</h1>
-                        <h3 className="location">
+                        <p className="location">
                             <a href="https://maps.app.goo.gl/ixZHjG7yYsMF9U2e9" target="_blank" rel="noopener noreferrer">
                                 Puerto Viejo de Talamanca, Limón, Costa Rica
                             </a>
-                        </h3>
+                        </p>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="Geco" isSpanish={false} />
 
@@ -73,7 +73,7 @@ const ListingGeco = () => {
                     {/* Add social statement after images */}
                     <SocialStatement propertyKey="Geco" isSpanish={false} />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Geco" isSpanish={false} />
                     </div>
 
                     {/* Add feature highlights before description */}

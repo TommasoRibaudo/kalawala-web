@@ -59,11 +59,11 @@ const ListingVillaMarES = () => {
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
                         <h1 className="title">Villa Mar</h1>
-                        <h3 className="location">
+                        <p className="location">
                             <a href="https://maps.app.goo.gl/cJa27cXoXunmuNkf7" target="_blank" rel="noopener noreferrer">
                                 Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica
                             </a>
-                        </h3>
+                        </p>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="VillaMar" isSpanish={true} />
                     </div>
@@ -71,7 +71,7 @@ const ListingVillaMarES = () => {
                     {/* Add social statement after images */}
                     <SocialStatement propertyKey="VillaMar" isSpanish={true} />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="VillaMar" isSpanish={true} />
                     </div>
 
                     {/* Add feature highlights before description */}

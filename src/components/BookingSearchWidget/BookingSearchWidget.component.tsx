@@ -39,7 +39,6 @@ const strings = {
     departureTooEarly: 'Check-out must be after check-in.',
     selectDates: 'Select your dates',
     selectCheckOut: 'select check-out',
-    clearDates: 'Clear dates',
     nights: (count: number) => `${count} ${count === 1 ? 'night' : 'nights'}`,
   },
   es: {
@@ -57,7 +56,6 @@ const strings = {
     departureTooEarly: 'La salida debe ser después de la llegada.',
     selectDates: 'Elige tus fechas',
     selectCheckOut: 'elige la salida',
-    clearDates: 'Borrar fechas',
     nights: (count: number) => `${count} ${count === 1 ? 'noche' : 'noches'}`,
   },
 };
@@ -198,6 +196,7 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
       selectionStart={arrivalDate || null}
       selectionEnd={departureDate || null}
       onSelectDate={handleCalendarSelect}
+      onClearSelection={clearDates}
       showHeading={false}
     />
   );
@@ -210,7 +209,7 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
         <div className="booking-search-widget__header">
           <FontAwesomeIcon icon={faCalendarDays} className="booking-search-widget__icon" />
           <div>
-            <h3 className="booking-search-widget__title">{s.title}</h3>
+            <h2 className="booking-search-widget__title">{s.title}</h2>
             <p className="booking-search-widget__subtitle">{s.subtitle}</p>
           </div>
         </div>
@@ -244,15 +243,11 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
             <div className="booking-search-widget__calendar">{calendar}</div>
           )}
 
-          {/* The hero shows the range on its trigger, so it does not repeat it. */}
+          {/* The hero shows the range on its trigger, so it does not repeat it.
+              Clearing lives in the calendar itself, where both variants get it. */}
           {variant !== 'hero' && (
             <p className="booking-search-widget__range" aria-live="polite">
               {rangeSummary}
-              {arrivalDate && (
-                <button type="button" className="booking-search-widget__clear" onClick={clearDates}>
-                  {s.clearDates}
-                </button>
-              )}
             </p>
           )}
 

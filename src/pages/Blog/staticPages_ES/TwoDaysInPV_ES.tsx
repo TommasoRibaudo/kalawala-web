@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
@@ -16,6 +17,9 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
 
+
+const HERO_IMAGE =
+  'https://lh3.googleusercontent.com/d/13j6FfwVMxVg9lU4SuGST8ljrVkyW7rla=w1000';
 
 const TwoDaysInPV = () => {
     // const { blogId } = useParams();
@@ -59,7 +63,12 @@ const TwoDaysInPV = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://drive.google.com/thumbnail?id=13j6FfwVMxVg9lU4SuGST8ljrVkyW7rla&sz=w1000" className="responsive-image" alt="Kayaking in Punta Uva" />
+                            <img
+                                loading="eager"
+                                fetchPriority="high"
+                                srcSet={cdnSrcSet(HERO_IMAGE)}
+                                sizes="(max-width: 768px) 100vw, 720px"
+                                decoding="async" src={cdnImage(HERO_IMAGE, 960)} className="responsive-image" alt="Kayaking in Punta Uva" />
                         </div>
                         <br />
                         <p>¿Solo tienes un par de días para visitar Puerto Viejo? ¡Nosotros también! Solo tuvimos una noche viniendo desde Tortuguero y queríamos aprovechar al máximo el tiempo que teníamos en este encantador pueblo de playa
@@ -104,7 +113,7 @@ const TwoDaysInPV = () => {
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h3 className="smoobu-title">Reserva tu Estadía</h3>
+                        <h2 className="smoobu-title">Reserva tu Estadía</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="twoDaysESSmoobuBooking" />
                         </div>

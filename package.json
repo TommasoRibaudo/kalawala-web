@@ -34,13 +34,16 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
-    "postbuild": "react-snap && node scripts/generate-md-pages.js && node scripts/generate-llms-full.js",
-    "build-local": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "build": "cross-env DISABLE_ESLINT_PLUGIN=true GENERATE_SOURCEMAP=false react-scripts build",
+    "postbuild": "react-snap && node scripts/inject-route-preloads.js && node scripts/generate-sitemap.js && node scripts/generate-md-pages.js && node scripts/generate-llms-full.js",
+    "build-local": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "booking-api:build": "npm --prefix booking-api run build",
     "booking-api:migrate": "npm --prefix booking-api run migrate",
     "booking-api:typecheck": "npm --prefix booking-api run typecheck",
     "booking-api:test": "npm --prefix booking-api run test",
+    "lh": "node scripts/lighthouse-run.mjs",
+    "lh:desktop": "node scripts/lighthouse-run.mjs --desktop",
+    "analyze": "source-map-explorer \"build/static/js/*.js\" --no-border-checks",
     "test": "react-scripts test",
     "test:e2e": "playwright test --project=chromium",
     "test:e2e:ui": "playwright test --ui",
@@ -79,8 +82,12 @@
     "@types/react-helmet": "^6.1.11",
     "@types/react-slick": "^0.23.13",
     "@types/serve-static": "^2.2.0",
+    "cross-env": "^10.1.0",
+    "lighthouse": "^12.8.2",
     "react-snap": "^1.23.0",
-    "require-context.macro": "^1.2.2"
+    "require-context.macro": "^1.2.2",
+    "serve": "^14.2.6",
+    "source-map-explorer": "^2.5.3"
   },
   "overrides": {
     "serialize-javascript": "6.0.2",

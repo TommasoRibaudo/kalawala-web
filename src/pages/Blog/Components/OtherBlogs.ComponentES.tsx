@@ -4,6 +4,7 @@ import { BlogType } from "../../../utils/types";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import { SampleNextArrow, SamplePrevArrow } from "../../../components/CustomSlick/SlickDarkArrow.Component";
+import { cdnImage } from "../../../utils/imageCdn";
 
 interface IOtherBlogs {
   currentBlog: string
@@ -65,7 +66,7 @@ const OtherBlogsES: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
 
   return (
     <div className="other-blogs-container">
-      <h3 className="other-blogs-header">¡Mira nuestros otros blogs!</h3>
+      <h2 className="other-blogs-header">¡Mira nuestros otros blogs!</h2>
       <div className="other-blogs-slider">
         <Slider {...sliderSettings}>
           {filteredBlogs.map(({ title, thumbnail, id }) => (
@@ -80,10 +81,10 @@ const OtherBlogsES: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
               >
                 <div
                   className="blog-card-image"
-                  style={{ backgroundImage: `url(${thumbnail})` }}
+                  style={{ backgroundImage: `url(${cdnImage(thumbnail, 400)})` }}
                 />
                 <div className="blog-card-content">
-                  <h4 className="blog-card-title">{title}</h4>
+                  <h3 className="blog-card-title">{title}</h3>
                 </div>
               </div>
             </div>

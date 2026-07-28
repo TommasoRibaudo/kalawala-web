@@ -27,7 +27,7 @@ const StayRecommendation: React.FC<StayRecommendationProps> = ({ title, properti
   return (
     <div className="stay-recommendation">
       <div className="stay-recommendation__container">
-        <h3 className="stay-recommendation__title">{title}</h3>
+        <h2 className="stay-recommendation__title">{title}</h2>
         <div className="stay-recommendation__properties">
           {properties.map((property, index) => (
             <div key={index} className="stay-recommendation__property">
@@ -38,7 +38,7 @@ const StayRecommendation: React.FC<StayRecommendationProps> = ({ title, properti
                 rel="noopener noreferrer"
               >
                 <div className="stay-recommendation__property-content">
-                  <h4 className="stay-recommendation__property-name">{property.name}</h4>
+                  <h3 className="stay-recommendation__property-name">{property.name}</h3>
                   <p className="stay-recommendation__property-reason">{property.reason}</p>
                 </div>
               </a>

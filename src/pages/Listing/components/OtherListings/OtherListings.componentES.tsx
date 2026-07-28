@@ -54,7 +54,7 @@ const OtherListingsES: FC<IOtherListings> = ({ currentListing, listings }) => {
 
     return (
         <div className="other-listings-container">
-            <h3 className="other-listings-header">¡Revisa nuestras otras opciones!</h3>
+            <h2 className="other-listings-header">¡Revisa nuestras otras opciones!</h2>
             <div className={`other-listings-grid ${getLayoutClass}`}>
                 {otherListings.map(({ name, mainImage }) => (
                     <div 
@@ -68,7 +68,7 @@ const OtherListingsES: FC<IOtherListings> = ({ currentListing, listings }) => {
                         aria-label={`View listing: ${name.replace('ES', '')}`}
                     >
                         <div className="listing-card-overlay">
-                            <h4 className="listing-card-title">{name.replace('ES', '')}</h4>
+                            <h3 className="listing-card-title">{name.replace('ES', '')}</h3>
                         </div>
                     </div>
                 ))}

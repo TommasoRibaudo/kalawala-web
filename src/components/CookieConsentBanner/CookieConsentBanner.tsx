@@ -21,30 +21,28 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onCons
     functional: true
   });
 
-  // Detect language from URL or browser
+  // Language comes from the URL, matching the site-wide convention that a
+  // Spanish route ends in "ES" (see hooks/useLanguageDetection.ts).
+  //
+  // navigator.language used to be part of this test, and it caused two
+  // problems. Every page is pre-rendered at build time, when no visitor's
+  // browser language exists — so a visitor with a Spanish-locale browser on an
+  // English page got English markup from the server and Spanish markup from
+  // React, which is a hydration mismatch (React error #418) severe enough that
+  // React can throw away the pre-rendered DOM and re-render the whole root
+  // (#423). It was also just wrong: it produced a Spanish cookie banner
+  // underneath an otherwise entirely English page.
+  //
+  // Anything derived from the browser rather than the URL has to stay out of
+  // the first render for the same reason. If per-browser language is wanted
+  // later, apply it in a useEffect after mount, not during render.
   const currentPath = window.location.pathname;
   const currentSearch = window.location.search;
-  const currentHash = window.location.hash;
-  
-  const isSpanish = currentPath.toUpperCase().endsWith('ES') || 
-                   currentPath.toUpperCase().endsWith('/ES') ||
-                   currentPath.includes('/es') || 
-                   currentPath.includes('/spanish') ||
-                   currentSearch.includes('lang=es') ||
-                   currentHash.includes('es') ||
-                   navigator.language.startsWith('es');
 
-  // Debug logging in development
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Cookie Banner Language Detection:', {
-      pathname: currentPath,
-      search: currentSearch,
-      hash: currentHash,
-      browserLang: navigator.language,
-      isSpanish,
-      endsWithES: currentPath.toUpperCase().endsWith('ES')
-    });
-  }
+  const isSpanish = currentPath.toUpperCase().endsWith('ES') ||
+                   currentPath.includes('/es') ||
+                   currentPath.includes('/spanish') ||
+                   currentSearch.includes('lang=es');
 
   // Text content based on language
   const text = {

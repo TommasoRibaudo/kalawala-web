@@ -1,48 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import posthog from 'posthog-js';
 import { CookieConsentService } from './services/CookieConsent.service';
+import { initPostHogIfConsented } from './services/PostHog.service';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/styles/style.css'
-import '../src/styles/bootstrap.min.css'
-import '../src/styles/_mixins.scss'
+// styles/scss/style.scss is an aggregate: it already @imports variables,
+// mixins, common and every remaining template partial. Those partials used to
+// be listed again here, so the whole Themefisher template was compiled into
+// the bundle twice. Only the sheets that style.scss does NOT cover are listed.
 import '../src/styles/_typography.scss'
-import '../src/styles/_variables.scss'
-import '../src/styles/scss/_color.scss'
-import '../src/styles/scss/_common.scss'
-import '../src/styles/scss/_mixins.scss'
-import '../src/styles/scss/_variables.scss'
 import '../src/styles/scss/style.scss'
-
-import '../src/styles/scss/templates/_about_us.scss'
-import '../src/styles/scss/templates/_backgrounds.scss'
-import '../src/styles/scss/templates/_blog.scss'
-import '../src/styles/scss/templates/_call-to-action.scss'
-import '../src/styles/scss/templates/_contact.scss'
-
-import '../src/styles/scss/templates/_counter.scss'
-import '../src/styles/scss/templates/_footer.scss'
-import '../src/styles/scss/templates/_header.scss'
-import '../src/styles/scss/templates/_hero-area.scss'
-import '../src/styles/scss/templates/_navigation.scss'
-import '../src/styles/scss/templates/_portfolio.scss'
-import '../src/styles/scss/templates/_pricing.scss'
-
-import '../src/styles/scss/templates/_services.scss'
-import '../src/styles/scss/templates/_single-post.scss'
-import '../src/styles/scss/templates/_skills.scss'
-import '../src/styles/scss/templates/_team.scss'
-import '../src/styles/scss/templates/_testimonials.scss'
-import '../src/styles/scss/templates/_typography.scss'
-
-posthog.init(process.env.REACT_APP_PUBLIC_POSTHOG_KEY as string, {
-  api_host: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,
-  person_profiles: 'identified_only',
-  opt_out_capturing_by_default: true,
-});
 
 // Replay stored consent for returning visitors. Consent Mode defaults to denied
 // in index.html on every load, so without this a visitor who accepted last week
@@ -52,10 +22,11 @@ if (storedConsent) {
   CookieConsentService.syncGoogleConsent(storedConsent.preferences);
 }
 
-// Opt-in immediately if user has already accepted analytics cookies
-if (CookieConsentService.hasConsent('analytics')) {
-  posthog.opt_in_capturing();
-}
+// posthog.init() used to run right here, at module scope, on every page load.
+// It now happens inside the analytics chunk, fetched on idle and only for
+// visitors who have already accepted analytics cookies — everyone else never
+// downloads the library. See services/PostHog.service.ts.
+initPostHogIfConsented();
 
 const rootElement = document.getElementById('root') as HTMLElement;
 

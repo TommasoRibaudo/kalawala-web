@@ -74,6 +74,9 @@ playwright-report/
 blob-report/
 /.claude
 
+# Lighthouse harness output (scripts/lighthouse-run.mjs)
+/lighthouse-reports
+
 # Build artifacts — Lambda bundles are rebuilt by CI, not versioned
 /booking-api-bundle.zip
 /booking-api/lambda-package.zip

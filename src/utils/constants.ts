@@ -1,4 +1,4 @@
-import { HouseDataType, ListingType, PropertyMarketingContent } from "./types";
+import { HouseDataType, ListingType, PropertyCapacity, PropertyMarketingContent } from "./types";
 
 // Random popup configuration
 export const RANDOM_POPUP_CONFIG = {
@@ -27,346 +27,346 @@ export interface IImageDescription {
 export const homesSnippet: ListingType[] = [
     {
         name: 'Tucano',
-        mainImage: "https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q=w1000"
     },
     {
         name: 'Geco',
-        mainImage: "https://drive.google.com/thumbnail?id=1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2=w1000"
     },
     {
         name: 'Pappagallo',
-        mainImage: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY=w1000"
     },
     {
         name: 'Rana',
-        mainImage: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X=w1000"
     },
     {
         name: 'Delfin',
-        mainImage: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW=w1000"
     },
 ]
 export const NamSnippet: ListingType[] = [
     {
         name: 'Areka',
-        mainImage: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey=w1000"
     },
     {
         name: 'Giulia',
-        mainImage: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8=w1000"
     },
     {
         name: 'Plumeria',
-        mainImage: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000"
     },
 ]
 export const NamSnippetES: ListingType[] = [
     {
         name: 'ArekaES',
-        mainImage: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey=w1000"
     },
     {
         name: 'GiuliaES',
-        mainImage: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8=w1000"
     },
     {
         name: 'PlumeriaES',
-        mainImage: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000"
     },
 ]
 export const VillaSnippet: ListingType[] = [
     {
         name: 'Villa Mar',
-        mainImage: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn=w1000"
     },
     {
         name: 'Villa Coral',
-        mainImage: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A=w1000"
     }
 ]
 
 export const VillaMarSnippet: ListingType[] = [
     {
         name: 'Villa Coral',
-        mainImage: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A=w1000"
     }
 ]
 
 export const VillaCoralSnippet: ListingType[] = [
     {
         name: 'Villa Mar',
-        mainImage: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn=w1000"
     }
 ]
 
 export const allHomesSnippet: ListingType[] = [
     {
         name: 'Pappagallo',
-        mainImage: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY=w1000"
     },
     {
         name: 'Geco',
-        mainImage: "https://drive.google.com/thumbnail?id=1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2=w1000"
     },
     {
         name: 'Plumeria',
-        mainImage: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000"
     },
     {
         name: 'Giulia',
-        mainImage: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8=w1000"
     },
     {
         name: 'Villa Coral',
-        mainImage: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A=w1000"
     }
 ]
 
 export const allHomesSnippetES: ListingType[] = [
     {
         name: 'PappagalloES',
-        mainImage: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY=w1000"
     },
     {
         name: 'GecoES',
-        mainImage: "https://drive.google.com/thumbnail?id=1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2=w1000"
     },
     {
         name: 'PlumeriaES',
-        mainImage: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000"
     },
     {
         name: 'GiuliaES',
-        mainImage: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8=w1000"
     },
     {
         name: 'VillaCoralES',
-        mainImage: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+        mainImage: "https://lh3.googleusercontent.com/d/1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A=w1000"
     }
 ]
 export const gecoImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Baño",
         roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
-        imageLink: "https://drive.google.com/thumbnail?id=1ocQCVEUW8VFMUjgb6bByd56EF8cqIZzS&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1ocQCVEUW8VFMUjgb6bByd56EF8cqIZzS=w1000"
     },
     {
         roomType: "Segundo Dormitorio",
         roomDescription: "Ropa de cama siempre incluida.",
-        imageLink: "https://drive.google.com/thumbnail?id=1pKfUX6k4hl-Idbio56J-QUge0KRrCJ91&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1pKfUX6k4hl-Idbio56J-QUge0KRrCJ91=w1000"
     },
     {
         roomType: "Cocina",
         roomDescription: "Microondas, cafetera y licuadora incluidos.",
-        imageLink: "https://drive.google.com/thumbnail?id=1QBjP84LxcmegtOn_GtIJKFxi8R2ie_Yk&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1QBjP84LxcmegtOn_GtIJKFxi8R2ie_Yk=w1000"
     },
     {
         roomType: "Sala de Estar",
         roomDescription: "No olvides nuestro 15% de descuento en cada compra en la panadería, hay menús en la casa.",
-        imageLink: "https://drive.google.com/thumbnail?id=1O5hZ0VJhFspi3SvXWUuOJZl82ozQ18rp&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1O5hZ0VJhFspi3SvXWUuOJZl82ozQ18rp=w1000"
     },
     {
         roomType: "Sala de Estar",
         roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
-        imageLink: "https://drive.google.com/thumbnail?id=1YnACZpnj9I9GgDqZxx0brHIKjdqwu0VT&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1YnACZpnj9I9GgDqZxx0brHIKjdqwu0VT=w1000"
     },
     {
         roomType: "Cuarto Principal",
         roomDescription: "Esta habitación tiene un televisor con un sistema de entretenimiento Roku y puerto HDMI.",
-        imageLink: "https://drive.google.com/thumbnail?id=1fbmZQn38bbH_t5Hu0x_vYfQWIuiIIN9W&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1fbmZQn38bbH_t5Hu0x_vYfQWIuiIIN9W=w1000"
     },
     {
         roomType: "Jardín",
         roomDescription: "Hay estacionamiento privado gratuito en este lugar.",
-        imageLink: "https://drive.google.com/thumbnail?id=10brlXHpVyjQmum0BZcobJ6s4huT8My7t&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/10brlXHpVyjQmum0BZcobJ6s4huT8My7t=w1000"
     },
     {
         roomType: "Porche",
         roomDescription: "Todos los espacios mostrados son completamente privados, solo para ti.",
-        imageLink: "https://drive.google.com/thumbnail?id=1ExyU9JUIgahhBykI4ugoJYkS9ybF2F8-&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1ExyU9JUIgahhBykI4ugoJYkS9ybF2F8-=w1000"
     }
 ]
 export const pappagalloImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Baño",
         roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
-        imageLink: "https://drive.google.com/thumbnail?id=1qocAtWUCMRttBmWa8fP_KtJDW-5QD6jh&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1qocAtWUCMRttBmWa8fP_KtJDW-5QD6jh=w1000"
     },
     {
         roomType: "Cuarto Principal",
         roomDescription: "Esta habitación tiene un televisor con un sistema de entretenimiento Roku y puerto HDMI.",
-        imageLink: "https://drive.google.com/thumbnail?id=1s3MfwR3l7yme47d7IrqSEDYPNMWRzpPh&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1s3MfwR3l7yme47d7IrqSEDYPNMWRzpPh=w1000"
     },
     {
         roomType: "Segundo Dormitorio",
         roomDescription: "Ropa de cama siempre incluida.",
-        imageLink: "https://drive.google.com/thumbnail?id=1WGdWpqS0BpOGo6AMhHGocp1jN1OSIPDQ&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1WGdWpqS0BpOGo6AMhHGocp1jN1OSIPDQ=w1000"
     },
     {
         roomType: "Cocina",
         roomDescription: "Microondas, cafetera y licuadora incluidos.",
-        imageLink: "https://drive.google.com/thumbnail?id=1bpwpewoUw6CuYg66IcwpbcCm2Ne1Ryth&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1bpwpewoUw6CuYg66IcwpbcCm2Ne1Ryth=w1000"
     },
     {
         roomType: "Sala de Estar",
         roomDescription: "No olvides nuestro 15% de descuento en cada compra en la panadería, hay menús en la casa.",
-        imageLink: "https://drive.google.com/thumbnail?id=1dz1y_lAZTfzvj2862Gahw5QY-w4_FjOX&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1dz1y_lAZTfzvj2862Gahw5QY-w4_FjOX=w1000"
     },
     {
         roomType: "Sala de Estar",
         roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
-        imageLink: "https://drive.google.com/thumbnail?id=1IGjxWxvODVY5BgAIS21MNxZaCev4qKx5&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1IGjxWxvODVY5BgAIS21MNxZaCev4qKx5=w1000"
     },
     {
         roomType: "Balcón",
         roomDescription: "Casa Pappagallo y Casa Tucano fueron remodeladas en el 2021.",
-        imageLink: "https://drive.google.com/thumbnail?id=16GIFWl5alQgk32AkQdJNsyLGMwDtfdsO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/16GIFWl5alQgk32AkQdJNsyLGMwDtfdsO=w1000"
     },
     {
         roomType: "Sala de Estar",
         roomDescription: "Shh... ¡No te lo pierdas! ¡Ingresa el codigo #5off para un descuento extra a la hora de reservar con nosotros!",
-        imageLink: "https://drive.google.com/thumbnail?id=1yrtj6UM8z-lCu_8inK_nn37p3kzaFIwY&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1yrtj6UM8z-lCu_8inK_nn37p3kzaFIwY=w1000"
     }
 ]
 export const ranaImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Baño",
         roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
-        imageLink: "https://drive.google.com/thumbnail?id=1N_nhyc-LysiQ5lJo7p6vPRDKviJE2QCO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1N_nhyc-LysiQ5lJo7p6vPRDKviJE2QCO=w1000"
     },
     {
         roomType: "Baño",
         roomDescription: "Siempre estamos disponibles para ayudarte con cualquier pregunta o inquietud que puedas tener.",
-        imageLink: "https://drive.google.com/thumbnail?id=1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27=w1000"
     },
     {
         roomType: "Cuarto Principal",
         roomDescription: "Esta habitación tiene un televisor con un sistema de entretenimiento Roku y puerto HDMI.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV=w1000"
     },
     {
         roomType: "Cuarto Principal",
         roomDescription: "Colchones de 10pulgadas/25cm.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Dbna1MUEB126_-QfkRLVVgha6553hQc_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Dbna1MUEB126_-QfkRLVVgha6553hQc_=w1000"
     },
     {
         roomType: "Segundo Dormitorio",
         roomDescription: "Ropa de cama siempre incluida.",
-        imageLink: "https://drive.google.com/thumbnail?id=1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL=w1000"
     },
     {
         roomType: "Cocina",
         roomDescription: "Microondas, cafetera y licuadora incluidos.",
-        imageLink: "https://drive.google.com/thumbnail?id=1HLpqPwUgdTuhP8TfNuFOk2slUPtYNBPP&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1HLpqPwUgdTuhP8TfNuFOk2slUPtYNBPP=w1000"
     },
     {
         roomType: "Cocina",
         roomDescription: "Ofrecemos descuentos last-minute para reservas de último minuto.",
-        imageLink: "https://drive.google.com/thumbnail?id=10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G=w1000"
     },
     {
         roomType: "Sala de Estar",
         roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
-        imageLink: "https://drive.google.com/thumbnail?id=1UFvJsslx0lQbvGVuEy07mClIw1VS75j0&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1UFvJsslx0lQbvGVuEy07mClIw1VS75j0=w1000"
     },
     {
         roomType: "Jardín",
         roomDescription: "Parqueo privado gratuito disponible en este lugar.",
-        imageLink: "https://drive.google.com/thumbnail?id=1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO=w1000"
     }
 ]
 export const delfinImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Terraza",
         roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
-        imageLink: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW=w1000"
     },
     {
         roomType: "Baño",
         roomDescription: "Siempre estamos disponibles para ayudarte con cualquier pregunta o inquietud que puedas tener.",
-        imageLink: "https://drive.google.com/thumbnail?id=1QxWsMW8dh5m19DGv1ZBKCcifzHMxs9R9&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1QxWsMW8dh5m19DGv1ZBKCcifzHMxs9R9=w1000"
     },
     {
         roomType: "Cuarto Principal",
         roomDescription: "Esta habitación tiene un televisor con un sistema de entretenimiento Roku y puerto HDMI.",
-        imageLink: "https://drive.google.com/thumbnail?id=166BAE3B571U-S2gRWTNideuHdpXE95c7&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/166BAE3B571U-S2gRWTNideuHdpXE95c7=w1000"
     },
     {
         roomType: "Cuarto Principal",
         roomDescription: "Colchones de 10pulgadas/25cm.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Vp74GumnGJuxjlJEziS7ktA-Du9UHlov&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Vp74GumnGJuxjlJEziS7ktA-Du9UHlov=w1000"
     },
     {
         roomType: "Segundo Dormitorio",
         roomDescription: "Ropa de cama siempre incluida.",
-        imageLink: "https://drive.google.com/thumbnail?id=14tRFJRifJruesH1iCUCJAeKrQ9wS0cqP&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/14tRFJRifJruesH1iCUCJAeKrQ9wS0cqP=w1000"
     },
     {
         roomType: "Cocina",
         roomDescription: "Microondas, cafetera y licuadora incluidos.",
-        imageLink: "https://drive.google.com/thumbnail?id=1dLwcs8QzF6YiGWBGhnDpO6hMj1VtMbIh&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1dLwcs8QzF6YiGWBGhnDpO6hMj1VtMbIh=w1000"
     },
     {
         roomType: "Cocina",
         roomDescription: "Ofrecemos descuentos last-minute para reservas de último minuto.",
-        imageLink: "https://drive.google.com/thumbnail?id=1fTFQ9jumREu-O6Vs2M_7Q6AlWkCJKjYn&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1fTFQ9jumREu-O6Vs2M_7Q6AlWkCJKjYn=w1000"
     },
     {
         roomType: "Sala de Estar",
         roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
-        imageLink: "https://drive.google.com/thumbnail?id=1iRP_x0A6BprRBnQ0yWE6a2sa3tPiKIOQ&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1iRP_x0A6BprRBnQ0yWE6a2sa3tPiKIOQ=w1000"
     },
     {
         roomType: "Jardín",
         roomDescription: "Parqueo privado gratuito disponible en este lugar.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Zm3lah2psnATqL6UcWB2Jwu0IncFjDnX&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Zm3lah2psnATqL6UcWB2Jwu0IncFjDnX=w1000"
     }
 ]
 export const tucanoImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Baño",
         roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
-        imageLink: "https://drive.google.com/thumbnail?id=1SC7QClrubrzsRyiz9igW5oIDiIgdDmeg&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1SC7QClrubrzsRyiz9igW5oIDiIgdDmeg=w1000"
     },
     {
         roomType: "Baño",
         roomDescription: "Ofrecemos limpieza gratuita para reservas más largas.",
-        imageLink: "https://drive.google.com/thumbnail?id=1aiADCh7t1taZ9yFcNfGg3Gpl-IPVabxA&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1aiADCh7t1taZ9yFcNfGg3Gpl-IPVabxA=w1000"
     },
     {
         roomType: "Cuarto Principal",
         roomDescription: "Esta habitación tiene un televisor con un sistema de entretenimiento Roku y puerto HDMI.",
-        imageLink: "https://drive.google.com/thumbnail?id=12d5__pqzKjeffa0joFLeZn4kTPvJVXE_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/12d5__pqzKjeffa0joFLeZn4kTPvJVXE_=w1000"
     },
     {
         roomType: "Cuarto Principal",
         roomDescription: "Colchones de 10pulgadas/25cm.",
-        imageLink: "https://drive.google.com/thumbnail?id=16Gd2y03TpdFCVY2ugTbV3d0R-YrOj2bf&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/16Gd2y03TpdFCVY2ugTbV3d0R-YrOj2bf=w1000"
     },
     {
         roomType: "Segundo Dormitorio",
         roomDescription: "Ropa de cama siempre incluida.",
-        imageLink: "https://drive.google.com/thumbnail?id=1CkNL9edZ-a2LVEZZ4dawAhCAB89d29st&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1CkNL9edZ-a2LVEZZ4dawAhCAB89d29st=w1000"
     },
     {
         roomType: "Cocina",
         roomDescription: "Microondas, cafetera y licuadora incluidos.",
-        imageLink: "https://drive.google.com/thumbnail?id=17CUhGccaCV33gbEv4Yt3-Co3vCuOiiyx&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/17CUhGccaCV33gbEv4Yt3-Co3vCuOiiyx=w1000"
     },
     {
         roomType: "Sala de Estar",
         roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
-        imageLink: "https://drive.google.com/thumbnail?id=16ZLKp3PnfxXbQv_4BD9VbYbr_7_gfyJJ&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/16ZLKp3PnfxXbQv_4BD9VbYbr_7_gfyJJ=w1000"
     },
     {
         roomType: "Sala de Estar",
         roomDescription: "No olvides nuestro 15% de descuento en cada compra en la panadería, hay menús en la casa.",
-        imageLink: "https://drive.google.com/thumbnail?id=1cp4slCoNdbsJhbReAPlKkOOqpvqTDTVy&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1cp4slCoNdbsJhbReAPlKkOOqpvqTDTVy=w1000"
     },
     {
         roomType: "Balcón",
         roomDescription: "Todos los espacios mostrados son completamente privados, solo para ti.",
-        imageLink: "https://drive.google.com/thumbnail?id=1ltpPKGHG46Rl_pTpnTtewt2U3YsKwr8W&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1ltpPKGHG46Rl_pTpnTtewt2U3YsKwr8W=w1000"
     }
 ]
 
@@ -375,336 +375,336 @@ export const gecoImageDescriptions: IImageDescription[] = [
     {
         roomType: "Bathroom",
         roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1ocQCVEUW8VFMUjgb6bByd56EF8cqIZzS&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1ocQCVEUW8VFMUjgb6bByd56EF8cqIZzS=w1000"
     },
     {
         roomType: "Second Bedroom",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1pKfUX6k4hl-Idbio56J-QUge0KRrCJ91&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1pKfUX6k4hl-Idbio56J-QUge0KRrCJ91=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1QBjP84LxcmegtOn_GtIJKFxi8R2ie_Yk&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1QBjP84LxcmegtOn_GtIJKFxi8R2ie_Yk=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "Don't forget about our 15% discount for every purchase at the bakery, there are menus in the house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1O5hZ0VJhFspi3SvXWUuOJZl82ozQ18rp&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1O5hZ0VJhFspi3SvXWUuOJZl82ozQ18rp=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1YnACZpnj9I9GgDqZxx0brHIKjdqwu0VT&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1YnACZpnj9I9GgDqZxx0brHIKjdqwu0VT=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
-        imageLink: "https://drive.google.com/thumbnail?id=1fbmZQn38bbH_t5Hu0x_vYfQWIuiIIN9W&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1fbmZQn38bbH_t5Hu0x_vYfQWIuiIIN9W=w1000"
     },
     {
         roomType: "Garden",
         roomDescription: "Free private parking is available at this location.",
-        imageLink: "https://drive.google.com/thumbnail?id=10brlXHpVyjQmum0BZcobJ6s4huT8My7t&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/10brlXHpVyjQmum0BZcobJ6s4huT8My7t=w1000"
     },
     {
         roomType: "Front Porch",
         roomDescription: "All the spaces shown are completely private, for you only.",
-        imageLink: "https://drive.google.com/thumbnail?id=1ExyU9JUIgahhBykI4ugoJYkS9ybF2F8-&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1ExyU9JUIgahhBykI4ugoJYkS9ybF2F8-=w1000"
     }
 ]
 export const pappagalloImageDescriptions: IImageDescription[] = [
     {
         roomType: "Bathroom",
         roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1qocAtWUCMRttBmWa8fP_KtJDW-5QD6jh&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1qocAtWUCMRttBmWa8fP_KtJDW-5QD6jh=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "This room has a TV with a Roku Entertainment System of channels and HDMI port.",
-        imageLink: "https://drive.google.com/thumbnail?id=1s3MfwR3l7yme47d7IrqSEDYPNMWRzpPh&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1s3MfwR3l7yme47d7IrqSEDYPNMWRzpPh=w1000"
     },
     {
         roomType: "Second Bedroom",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1WGdWpqS0BpOGo6AMhHGocp1jN1OSIPDQ&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1WGdWpqS0BpOGo6AMhHGocp1jN1OSIPDQ=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1bpwpewoUw6CuYg66IcwpbcCm2Ne1Ryth&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1bpwpewoUw6CuYg66IcwpbcCm2Ne1Ryth=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1dz1y_lAZTfzvj2862Gahw5QY-w4_FjOX&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1dz1y_lAZTfzvj2862Gahw5QY-w4_FjOX=w1000"
     },
     {
         roomType: "Living Room",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1IGjxWxvODVY5BgAIS21MNxZaCev4qKx5&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1IGjxWxvODVY5BgAIS21MNxZaCev4qKx5=w1000"
     },
     {
         roomType: "Balcony",
         roomDescription: "Casa Tucano and Casa Pappagallo were remodeled by an interior designer from spain, in June 2021.",
-        imageLink: "https://drive.google.com/thumbnail?id=16GIFWl5alQgk32AkQdJNsyLGMwDtfdsO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/16GIFWl5alQgk32AkQdJNsyLGMwDtfdsO=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "Shh... Secret discount! Use discount code #5off to get an additional discount!",
-        imageLink: "https://drive.google.com/thumbnail?id=1yrtj6UM8z-lCu_8inK_nn37p3kzaFIwY&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1yrtj6UM8z-lCu_8inK_nn37p3kzaFIwY=w1000"
     }
 ]
 export const ranaImageDescriptions: IImageDescription[] = [
     {
         roomType: "Bathroom",
         roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "We're available 24/7 in case you need any help.",
-        imageLink: "https://drive.google.com/thumbnail?id=1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "10inches/25cm tall matresses in every house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Dbna1MUEB126_-QfkRLVVgha6553hQc_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Dbna1MUEB126_-QfkRLVVgha6553hQc_=w1000"
     },
     {
         roomType: "Second Bedroom",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1HLpqPwUgdTuhP8TfNuFOk2slUPtYNBPP&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1HLpqPwUgdTuhP8TfNuFOk2slUPtYNBPP=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://drive.google.com/thumbnail?id=10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1UFvJsslx0lQbvGVuEy07mClIw1VS75j0&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1UFvJsslx0lQbvGVuEy07mClIw1VS75j0=w1000"
     },
     {
         roomType: "Garden",
         roomDescription: "Free private parking is available at this location.",
-        imageLink: "https://drive.google.com/thumbnail?id=1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO=w1000"
     }
 ]
 export const delfinImageDescriptions: IImageDescription[] = [
     {
         roomType: "Bathroom",
         roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "We're available 24/7 in case you need any help.",
-        imageLink: "https://drive.google.com/thumbnail?id=1QxWsMW8dh5m19DGv1ZBKCcifzHMxs9R9&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1QxWsMW8dh5m19DGv1ZBKCcifzHMxs9R9=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
-        imageLink: "https://drive.google.com/thumbnail?id=166BAE3B571U-S2gRWTNideuHdpXE95c7&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/166BAE3B571U-S2gRWTNideuHdpXE95c7=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "10inches/25cm tall matresses in every house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Vp74GumnGJuxjlJEziS7ktA-Du9UHlov&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Vp74GumnGJuxjlJEziS7ktA-Du9UHlov=w1000"
     },
     {
         roomType: "Second Bedroom",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=14tRFJRifJruesH1iCUCJAeKrQ9wS0cqP&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/14tRFJRifJruesH1iCUCJAeKrQ9wS0cqP=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1dLwcs8QzF6YiGWBGhnDpO6hMj1VtMbIh&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1dLwcs8QzF6YiGWBGhnDpO6hMj1VtMbIh=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://drive.google.com/thumbnail?id=1fTFQ9jumREu-O6Vs2M_7Q6AlWkCJKjYn&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1fTFQ9jumREu-O6Vs2M_7Q6AlWkCJKjYn=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1iRP_x0A6BprRBnQ0yWE6a2sa3tPiKIOQ&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1iRP_x0A6BprRBnQ0yWE6a2sa3tPiKIOQ=w1000"
     },
     {
         roomType: "Garden",
         roomDescription: "Free private parking is available at this location.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Zm3lah2psnATqL6UcWB2Jwu0IncFjDnX&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Zm3lah2psnATqL6UcWB2Jwu0IncFjDnX=w1000"
     }
 ]
 export const tucanoImageDescriptions: IImageDescription[] = [
     {
         roomType: "Bathroom",
         roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1SC7QClrubrzsRyiz9igW5oIDiIgdDmeg&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1SC7QClrubrzsRyiz9igW5oIDiIgdDmeg=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "We offer free cleaning services for longer reservations.",
-        imageLink: "https://drive.google.com/thumbnail?id=1aiADCh7t1taZ9yFcNfGg3Gpl-IPVabxA&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1aiADCh7t1taZ9yFcNfGg3Gpl-IPVabxA=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "This room has a TV with hundreds of channels and HDMI port.",
-        imageLink: "https://drive.google.com/thumbnail?id=12d5__pqzKjeffa0joFLeZn4kTPvJVXE_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/12d5__pqzKjeffa0joFLeZn4kTPvJVXE_=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "10inches/25cm tall matresses in every house.",
-        imageLink: "https://drive.google.com/thumbnail?id=16Gd2y03TpdFCVY2ugTbV3d0R-YrOj2bf&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/16Gd2y03TpdFCVY2ugTbV3d0R-YrOj2bf=w1000"
     },
     {
         roomType: "Second Bedroom",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1CkNL9edZ-a2LVEZZ4dawAhCAB89d29st&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1CkNL9edZ-a2LVEZZ4dawAhCAB89d29st=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=17CUhGccaCV33gbEv4Yt3-Co3vCuOiiyx&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/17CUhGccaCV33gbEv4Yt3-Co3vCuOiiyx=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=16ZLKp3PnfxXbQv_4BD9VbYbr_7_gfyJJ&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/16ZLKp3PnfxXbQv_4BD9VbYbr_7_gfyJJ=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "Don't forget about our 15% discount for every purchase at the bakery, there are menus in the house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1cp4slCoNdbsJhbReAPlKkOOqpvqTDTVy&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1cp4slCoNdbsJhbReAPlKkOOqpvqTDTVy=w1000"
     },
     {
         roomType: "Balcony",
         roomDescription: "All the spaces shown are completely private, for you only.",
-        imageLink: "https://drive.google.com/thumbnail?id=1ltpPKGHG46Rl_pTpnTtewt2U3YsKwr8W&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1ltpPKGHG46Rl_pTpnTtewt2U3YsKwr8W=w1000"
     }
 ]
 export const VillaCoralImageDescriptions: IImageDescription[] = [
     {
         roomType: "Private Pool",
         roomDescription: "Exclusive for your use only.",
-        imageLink: "https://drive.google.com/thumbnail?id=1rTXsdqpCJQd-rNDma56gWuPgUiVkG4q7&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1rTXsdqpCJQd-rNDma56gWuPgUiVkG4q7=w1000"
     },
     {
         roomType: "Living Room and Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=13FO4GX8mxrPWVvYxgxZwLSoX562YeZ6o&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/13FO4GX8mxrPWVvYxgxZwLSoX562YeZ6o=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "King size bed, 10inches thick mattress.",
-        imageLink: "https://drive.google.com/thumbnail?id=1fbYlrrmzPPi4qUCZcCWRBZI_T-NoT_0f&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1fbYlrrmzPPi4qUCZcCWRBZI_T-NoT_0f=w1000"
     },
     {
         roomType: "Living Room",
         roomDescription: "Dedicated workspace with ethernet connection.",
-        imageLink: "https://drive.google.com/thumbnail?id=1jnHMs9RZ2W8v7QbwAUpqTahjSEiGogej&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1jnHMs9RZ2W8v7QbwAUpqTahjSEiGogej=w1000"
     },
     {
         roomType: "Porch",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1iampS1euhTWcvffX6G_4aUCT0tEYBiBZ&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1iampS1euhTWcvffX6G_4aUCT0tEYBiBZ=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1SvQcVu19OTlW4ShyWYosrgo4d9XLjpUO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1SvQcVu19OTlW4ShyWYosrgo4d9XLjpUO=w1000"
     },
     {
         roomType: "Terrace And Pool",
         roomDescription: "All the spaces shown are completely private, for you only.",
-        imageLink: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A=w1000"
     }
 ]
 export const VillaMarImageDescriptions: IImageDescription[] = [
     {
         roomType: "Private Pool",
         roomDescription: "Exclusive for your use only.",
-        imageLink: "https://drive.google.com/thumbnail?id=1hDvSUejFzrKK7Kwx_GxG_Wo4FmUMJya7&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1hDvSUejFzrKK7Kwx_GxG_Wo4FmUMJya7=w1000"
     },
     {
         roomType: "Living Room and Kitchen",
         roomDescription: "We offer cleaning services for longer reservations.",
-        imageLink: "https://drive.google.com/thumbnail?id=1uCajab8qKPf7u-uCluPMo_mWCB5Ibizd&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1uCajab8qKPf7u-uCluPMo_mWCB5Ibizd=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "King size bed, 10inches thick mattress.",
-        imageLink: "https://drive.google.com/thumbnail?id=1r0sHB3CvdgpgYxDJ5ZT3GPhsROTTH2cN&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1r0sHB3CvdgpgYxDJ5ZT3GPhsROTTH2cN=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1yO4pIi_zhNEMUdC21MbfRPM-MYblazLt&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1yO4pIi_zhNEMUdC21MbfRPM-MYblazLt=w1000"
     },
     {
         roomType: "Porch",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1tDBJjDp1rwG_A7ZmjHFSIQKT6FvRJyx_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1tDBJjDp1rwG_A7ZmjHFSIQKT6FvRJyx_=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1SvQcVu19OTlW4ShyWYosrgo4d9XLjpUO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1SvQcVu19OTlW4ShyWYosrgo4d9XLjpUO=w1000"
     },
     {
         roomType: "Terrace And Pool",
         roomDescription: "All the spaces shown are completely private, for you only.",
-        imageLink: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn=w1000"
     }
 ]
 export const VillaCoralImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Piscina Privada",
         roomDescription: "Exclusiva para su uso solamente.",
-        imageLink: "https://drive.google.com/thumbnail?id=1rTXsdqpCJQd-rNDma56gWuPgUiVkG4q7&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1rTXsdqpCJQd-rNDma56gWuPgUiVkG4q7=w1000"
     },
     {
         roomType: "Sala de Estar y Cocina",
         roomDescription: "Microondas, cafetera y licuadora también incluidos.",
-        imageLink: "https://drive.google.com/thumbnail?id=13FO4GX8mxrPWVvYxgxZwLSoX562YeZ6o&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/13FO4GX8mxrPWVvYxgxZwLSoX562YeZ6o=w1000"
     },
     {
         roomType: "Habitación Principal",
         roomDescription: "Cama king size, colchón de 10 pulgadas de grosor.",
-        imageLink: "https://drive.google.com/thumbnail?id=1fbYlrrmzPPi4qUCZcCWRBZI_T-NoT_0f&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1fbYlrrmzPPi4qUCZcCWRBZI_T-NoT_0f=w1000"
     },
     {
         roomType: "Sala de Estar",
         roomDescription: "Espacio de trabajo dedicado con conexión Ethernet.",
-        imageLink: "https://drive.google.com/thumbnail?id=1jnHMs9RZ2W8v7QbwAUpqTahjSEiGogej&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1jnHMs9RZ2W8v7QbwAUpqTahjSEiGogej=w1000"
     },
     {
         roomType: "Porche",
         roomDescription: "Ropa de cama siempre incluida.",
-        imageLink: "https://drive.google.com/thumbnail?id=1iampS1euhTWcvffX6G_4aUCT0tEYBiBZ&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1iampS1euhTWcvffX6G_4aUCT0tEYBiBZ=w1000"
     },
     {
         roomType: "Baño",
         roomDescription: "Wifi gratuito de 100 Mbps en toda la casa.",
-        imageLink: "https://drive.google.com/thumbnail?id=1SvQcVu19OTlW4ShyWYosrgo4d9XLjpUO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1SvQcVu19OTlW4ShyWYosrgo4d9XLjpUO=w1000"
     },
     {
         roomType: "Terraza y Piscina",
         roomDescription: "Todos los espacios mostrados son completamente privados, solo para usted.",
-        imageLink: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A=w1000"
     }
 ]
 
@@ -712,84 +712,84 @@ export const VillaMarImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Piscina Privada",
         roomDescription: "Exclusiva para su uso solamente.",
-        imageLink: "https://drive.google.com/thumbnail?id=1hDvSUejFzrKK7Kwx_GxG_Wo4FmUMJya7&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1hDvSUejFzrKK7Kwx_GxG_Wo4FmUMJya7=w1000"
     },
     {
         roomType: "Sala de Estar y Cocina",
         roomDescription: "Ofrecemos servicios de limpieza para reservas largas.",
-        imageLink: "https://drive.google.com/thumbnail?id=1uCajab8qKPf7u-uCluPMo_mWCB5Ibizd&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1uCajab8qKPf7u-uCluPMo_mWCB5Ibizd=w1000"
     },
     {
         roomType: "Habitación Principal",
         roomDescription: "Cama king size, colchón de 10 pulgadas de grosor.",
-        imageLink: "https://drive.google.com/thumbnail?id=1r0sHB3CvdgpgYxDJ5ZT3GPhsROTTH2cN&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1r0sHB3CvdgpgYxDJ5ZT3GPhsROTTH2cN=w1000"
     },
     {
         roomType: "Cocina",
         roomDescription: "Microondas, cafetera y licuadora también incluidos.",
-        imageLink: "https://drive.google.com/thumbnail?id=1yO4pIi_zhNEMUdC21MbfRPM-MYblazLt&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1yO4pIi_zhNEMUdC21MbfRPM-MYblazLt=w1000"
     },
     {
         roomType: "Porche",
         roomDescription: "Ropa de cama siempre incluida.",
-        imageLink: "https://drive.google.com/thumbnail?id=1tDBJjDp1rwG_A7ZmjHFSIQKT6FvRJyx_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1tDBJjDp1rwG_A7ZmjHFSIQKT6FvRJyx_=w1000"
     },
     {
         roomType: "Baño",
         roomDescription: "Wifi gratuito de 100 Mbps en toda la casa.",
-        imageLink: "https://drive.google.com/thumbnail?id=1SvQcVu19OTlW4ShyWYosrgo4d9XLjpUO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1SvQcVu19OTlW4ShyWYosrgo4d9XLjpUO=w1000"
     },
     {
         roomType: "Terraza y Piscina",
         roomDescription: "Todos los espacios mostrados son completamente privados, solo para usted.",
-        imageLink: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn=w1000"
     }
 ]
 export const ArekaImageDescriptions: IImageDescription[] = [
     {
         roomType: "Bedroom",
         roomDescription: "",
-        imageLink: "https://drive.google.com/thumbnail?id=1LJSpQlE5C5C42FEz7M91Pjv4q7QRi-z6&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1LJSpQlE5C5C42FEz7M91Pjv4q7QRi-z6=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "We always provide towels and toiletries. ",
-        imageLink: "https://drive.google.com/thumbnail?id=1K4SdPnue6pq2HloAAqiS1WZXmc2TlTGb&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1K4SdPnue6pq2HloAAqiS1WZXmc2TlTGb=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1JLwZIir6MROytS_WMo1anNRyXcbEikJf&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1JLwZIir6MROytS_WMo1anNRyXcbEikJf=w1000"
     },
     {
         roomType: "Garden",
         roomDescription: "Free private parking",
-        imageLink: "https://drive.google.com/thumbnail?id=1WhqgYtaq3igaScss30mUr9Vm9xF67Sxn&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1WhqgYtaq3igaScss30mUr9Vm9xF67Sxn=w1000"
     },
     {
         roomType: "Terrace",
         roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://drive.google.com/thumbnail?id=10OwN88Pw4C-8CvALS8tz7Tor_Vt1RO6J&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/10OwN88Pw4C-8CvALS8tz7Tor_Vt1RO6J=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1qJrVlpa3UVaLStmjI53Znn11wnD4k90G&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1qJrVlpa3UVaLStmjI53Znn11wnD4k90G=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "",
-        imageLink: "https://drive.google.com/thumbnail?id=1rERWm7sKifYsdz365dQE1ZFOO2un22tc&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1rERWm7sKifYsdz365dQE1ZFOO2un22tc=w1000"
     },
     {
         roomType: "Bethroom",
         roomDescription: "10inches/25cm tall matresses in every house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1MATVhjV7Y1GUS9mAB0RPZDr7kQEVTM3V&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1MATVhjV7Y1GUS9mAB0RPZDr7kQEVTM3V=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "We're available 24/7 in case you need any help.",
-        imageLink: "https://drive.google.com/thumbnail?id=1sDCA9Limfi4RLW2alJF7Avk37ZLinAue&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1sDCA9Limfi4RLW2alJF7Avk37ZLinAue=w1000"
     },
 
 ]
@@ -797,173 +797,173 @@ export const ArekaImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Baño",
         roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "We're available 24/7 in case you need any help.",
-        imageLink: "https://drive.google.com/thumbnail?id=1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "10inches/25cm tall matresses in every house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Dbna1MUEB126_-QfkRLVVgha6553hQc_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Dbna1MUEB126_-QfkRLVVgha6553hQc_=w1000"
     },
     {
         roomType: "Second Bedroom",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1NJPqfxBRHstI8oaEzSNUX4Lr0KwR5F_a&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1NJPqfxBRHstI8oaEzSNUX4Lr0KwR5F_a=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://drive.google.com/thumbnail?id=10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1D7I61hOZ0Tk-5G-8D4WZ088eoEesWKJ_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1D7I61hOZ0Tk-5G-8D4WZ088eoEesWKJ_=w1000"
     },
     {
         roomType: "Garden",
         roomDescription: "Free private parking is available at this location.",
-        imageLink: "https://drive.google.com/thumbnail?id=1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO=w1000"
     }
 ]
 export const PlumeriaImageDescriptions: IImageDescription[] = [
     {
         roomType: "Bedroom",
         roomDescription: "We're available 24/7 in case you need any help. ",
-        imageLink: "https://drive.google.com/thumbnail?id=1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1_tsBq9D5vzz0ozq6DgfAMA3BaLC3is-O&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1_tsBq9D5vzz0ozq6DgfAMA3BaLC3is-O=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://drive.google.com/thumbnail?id=1Yt3dRvt3I0gE7OX8DMZ1x1ax-B8ly78T&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Yt3dRvt3I0gE7OX8DMZ1x1ax-B8ly78T=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=13tzWvEYl-b6x32kJxPV4W-1--01A9z9K&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/13tzWvEYl-b6x32kJxPV4W-1--01A9z9K=w1000"
     },
     {
         roomType: "Terrace",
         roomDescription: "Free private parking",
-        imageLink: "https://drive.google.com/thumbnail?id=1oR1cdPpg6HHGJOqKGVakPiNNYkK8gBtU&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1oR1cdPpg6HHGJOqKGVakPiNNYkK8gBtU=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1SsDAb6YcODSPd3ByNtoKIOu4R8j28jFK&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1SsDAb6YcODSPd3ByNtoKIOu4R8j28jFK=w1000"
     }
 ]
 export const PlumeriaImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Bathroom",
         roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "We're available 24/7 in case you need any help.",
-        imageLink: "https://drive.google.com/thumbnail?id=1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "10inches/25cm tall matresses in every house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Dbna1MUEB126_-QfkRLVVgha6553hQc_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Dbna1MUEB126_-QfkRLVVgha6553hQc_=w1000"
     },
     {
         roomType: "Second Bedroom",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1NJPqfxBRHstI8oaEzSNUX4Lr0KwR5F_a&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1NJPqfxBRHstI8oaEzSNUX4Lr0KwR5F_a=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://drive.google.com/thumbnail?id=10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1D7I61hOZ0Tk-5G-8D4WZ088eoEesWKJ_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1D7I61hOZ0Tk-5G-8D4WZ088eoEesWKJ_=w1000"
     },
     {
         roomType: "Garden",
         roomDescription: "Free private parking is available at this location.",
-        imageLink: "https://drive.google.com/thumbnail?id=1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO=w1000"
     }
 ]
 export const GiuliaImageDescriptions: IImageDescription[] = [
     {
         roomType: "Livingroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1yKDSO3SRCADMUeXB3mu4nTmajFdRhRqI&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1yKDSO3SRCADMUeXB3mu4nTmajFdRhRqI=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "10inches/25cm tall matresses in every house.",
-        imageLink: "https://drive.google.com/thumbnail?id=15YzK9sR2-30k979pFEvSQaSWUaL70I4S&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/15YzK9sR2-30k979pFEvSQaSWUaL70I4S=w1000"
     },
     {
         roomType: "Second Bedroom",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Lp1mJ-Tgwc8WMnMOvKN2oT9wobpNOLqX&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Lp1mJ-Tgwc8WMnMOvKN2oT9wobpNOLqX=w1000"
     },
     {
         roomType: "Bathroom 2",
         roomDescription: "We're available 24/7 in case you need any help.",
-        imageLink: "https://drive.google.com/thumbnail?id=1LX-7Iic67neRM_w79FdmyrWDxdJiJfBr&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1LX-7Iic67neRM_w79FdmyrWDxdJiJfBr=w1000"
     },
     {
         roomType: "Terrace",
         roomDescription: "Free private parking.",
-        imageLink: "https://drive.google.com/thumbnail?id=1bbRn5NLsJ8cKqm0I697TMNT5z9iDASxF&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1bbRn5NLsJ8cKqm0I697TMNT5z9iDASxF=w1000"
     },
     {
         roomType: "Bathroom 1",
         roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1yI3aOb2sL_IiO-6lOUbxi1TBAL650Mvd&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1yI3aOb2sL_IiO-6lOUbxi1TBAL650Mvd=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1xiRDZCWwEnvjnGLEGE1WkrUyo6iwnOHi&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1xiRDZCWwEnvjnGLEGE1WkrUyo6iwnOHi=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
-        imageLink: "https://drive.google.com/thumbnail?id=1HcR7jVW9GqLhV-X5_Luh0OWpZSIMDjHd&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1HcR7jVW9GqLhV-X5_Luh0OWpZSIMDjHd=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://drive.google.com/thumbnail?id=1PPdoFxDWLSizWhHUIQ7i5W7K1WU09sTm&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1PPdoFxDWLSizWhHUIQ7i5W7K1WU09sTm=w1000"
     }
 
 ]
@@ -971,47 +971,47 @@ export const GiuliaImageDescriptionsES: IImageDescription[] = [
     {
         roomType: "Bathroom",
         roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://drive.google.com/thumbnail?id=1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT=w1000"
     },
     {
         roomType: "Bathroom",
         roomDescription: "We're available 24/7 in case you need any help.",
-        imageLink: "https://drive.google.com/thumbnail?id=1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV=w1000"
     },
     {
         roomType: "Master Bedroom",
         roomDescription: "10inches/25cm tall matresses in every house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1Dbna1MUEB126_-QfkRLVVgha6553hQc_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1Dbna1MUEB126_-QfkRLVVgha6553hQc_=w1000"
     },
     {
         roomType: "Second Bedroom",
         roomDescription: "Bed Linens always included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://drive.google.com/thumbnail?id=1NJPqfxBRHstI8oaEzSNUX4Lr0KwR5F_a&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1NJPqfxBRHstI8oaEzSNUX4Lr0KwR5F_a=w1000"
     },
     {
         roomType: "Kitchen",
         roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://drive.google.com/thumbnail?id=10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G=w1000"
     },
     {
         roomType: "Livingroom",
         roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://drive.google.com/thumbnail?id=1D7I61hOZ0Tk-5G-8D4WZ088eoEesWKJ_&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1D7I61hOZ0Tk-5G-8D4WZ088eoEesWKJ_=w1000"
     },
     {
         roomType: "Garden",
         roomDescription: "Free private parking is available at this location.",
-        imageLink: "https://drive.google.com/thumbnail?id=1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO&sz=w1000"
+        imageLink: "https://lh3.googleusercontent.com/d/1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO=w1000"
     }
 ]
 
@@ -1025,7 +1025,7 @@ export const ribHouseDataEngList: HouseDataType[] = [
         houseCode: 5,
         houseLangCode: "VillaMar",
         parking: false,
-        image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn=w1000",
         amenities: [
             {
                 name: "Private Pool, Exclusive for guests of this villa",
@@ -1061,7 +1061,7 @@ export const ribHouseDataEngList: HouseDataType[] = [
         neighborhood: "",
         houseCode: 6,
         houseLangCode: "VillaCoral",
-        image: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A=w1000",
         parking: false,
         amenities: [
             {
@@ -1101,7 +1101,7 @@ export const houseDataEngList: HouseDataType[] = [
         houseLangCode: "Geco",
         parking: true,
 
-        image: "https://drive.google.com/thumbnail?id=1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2=w1000",
         amenities: [
             {
                 name: "Private Equipped Bathroom",
@@ -1138,7 +1138,7 @@ export const houseDataEngList: HouseDataType[] = [
         neighborhood: "Puerto Viejo is a well known destination for tourists from around the globe. The town features beautiful beaches bordered by lush tropical rainforest and is home to two National Parks, Manzanillo and Cahuita. At night, Puerto Viejo transforms with a vibrant nightlife scene. Staying here allows you to fully experience everything that makes Puerto Viejo special.<br/>     The house is conveniently situated near a beach path that eventually leads to Cocles. Along the path, you'll have the chance to observe diverse wildlife and enjoy natural coral pools. There's even a hidden sightseeing spot to discover!<br/>     Getting around Puerto Viejo and its vicinity is best done by renting a bike or a scooter. Additionally, the public bus service is available, connecting you to Cahuita, Manzanillo, and Sixaola. If you prefer driving, we can accommodate cars and provide private parking. Please inform us if you have a larger pickup truck that requires extra space.",
         houseCode: 2,
         houseLangCode: "Rana",
-        image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X=w1000",
         parking: true,
         amenities: [
             {
@@ -1175,7 +1175,7 @@ export const houseDataEngList: HouseDataType[] = [
         neighborhood: "Puerto Viejo attracts visitors from all over the globe with its breathtaking landscapes. The town is renowned for its expansive beaches bordered by tropical rainforests and features two National Parks, Manzanillo and Cahuita. The nightlife here is vibrant and lively, offering a unique experience after dark. Staying in Puerto Viejo allows you to fully immerse yourself in its unique charm.<br/>    Our house is conveniently located near a beach path that leads eventually to Cocles. On your way, you can observe a variety of wildlife and enjoy the natural coral pools. A hidden sightseeing spot is also waiting to be explored!.<br/>    Exploring Puerto Viejo and its surroundings is most convenient by renting a bike or a scooter. Additionally, there is a good public bus service available that connects you to Cahuita, Manzanillo, and Sixaola. If you prefer driving, we provide private parking. Please inform us if you have a larger pickup truck that needs extra space.",
         houseCode: 3,
         houseLangCode: "Tucano",
-        image: "https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q=w1000",
         parking: false,
         amenities: [
             {
@@ -1214,7 +1214,7 @@ export const houseDataEngList: HouseDataType[] = [
         neighborhood: "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.<br/>    The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!<br/>    Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space. Additionally, we have a charging station by the bakery.",
         houseCode: 4,
         houseLangCode: "Pappagallo",
-        image: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY=w1000",
         parking: false,
         amenities: [
             {
@@ -1251,7 +1251,7 @@ export const houseDataEngList: HouseDataType[] = [
         neighborhood: "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.<br/>    The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!<br/>    Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private fenced parking.",
         houseCode: 10,
         houseLangCode: "Delfin",
-        image: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW=w1000",
         parking: true,
         amenities: [
             {
@@ -1288,7 +1288,7 @@ export const houseDataList: HouseDataType[] = [
         houseLangCode: "Geco",
 
         parking: true,
-        image: "https://drive.google.com/thumbnail?id=1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2=w1000",
         amenities: [
             {
                 name: "Private Equipped Bathroom",
@@ -1326,7 +1326,7 @@ export const houseDataList: HouseDataType[] = [
         houseCode: 2,
         houseLangCode: "Rana",
 
-        image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X=w1000",
         parking: true,
         amenities: [
             {
@@ -1363,7 +1363,7 @@ export const houseDataList: HouseDataType[] = [
         neighborhood: "Puerto Viejo attracts visitors from all over the globe with its breathtaking landscapes. The town is renowned for its expansive beaches bordered by tropical rainforests and features two National Parks, Manzanillo and Cahuita. The nightlife here is vibrant and lively, offering a unique experience after dark. Staying in Puerto Viejo allows you to fully immerse yourself in its unique charm.<br/>    Our house is conveniently located near a beach path that leads eventually to Cocles. On your way, you can observe a variety of wildlife and enjoy the natural coral pools. A hidden sightseeing spot is also waiting to be explored!.<br/>    Exploring Puerto Viejo and its surroundings is most convenient by renting a bike or a scooter. Additionally, there is a good public bus service available that connects you to Cahuita, Manzanillo, and Sixaola. If you prefer driving, we provide private parking. Please inform us if you have a larger pickup truck that needs extra space.",
         houseCode: 3,
         houseLangCode: "Tucano",
-        image: "https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q=w1000",
         parking: false,
         amenities: [
             {
@@ -1402,7 +1402,7 @@ export const houseDataList: HouseDataType[] = [
         neighborhood: "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.<br/>    The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!<br/>    Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space. Additionally, we have a charging station by the bakery.",
         houseCode: 4,
         houseLangCode: "Pappagallo",
-        image: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY=w1000",
         parking: false,
         amenities: [
             {
@@ -1440,7 +1440,7 @@ export const houseDataList: HouseDataType[] = [
         houseCode: 1,
         parking: true,
         houseLangCode: "GecoES",
-        image: "https://drive.google.com/thumbnail?id=1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1tYQxiwEXhxhv2r0_mJQhXVAHOMrE0y_2=w1000",
         amenities: [
             {
                 name: "Baño Privado Equipado",
@@ -1477,7 +1477,7 @@ export const houseDataList: HouseDataType[] = [
         neighborhood: "Puerto Viejo is a well known destination for tourists from around the globe. The town features beautiful beaches bordered by lush tropical rainforest and is home to two National Parks, Manzanillo and Cahuita. At night, Puerto Viejo transforms with a vibrant nightlife scene. Staying here allows you to fully experience everything that makes Puerto Viejo special.<br/>     The house is conveniently situated near a beach path that eventually leads to Cocles. Along the path, you'll have the chance to observe diverse wildlife and enjoy natural coral pools. There's even a hidden sightseeing spot to discover!<br/>     Getting around Puerto Viejo and its vicinity is best done by renting a bike or a scooter. Additionally, the public bus service is available, connecting you to Cahuita, Manzanillo, and Sixaola. If you prefer driving, we can accommodate cars and provide private parking. Please inform us if you have a larger pickup truck that requires extra space.",
         houseCode: 2,
         houseLangCode: "RanaES",
-        image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X=w1000",
         parking: true,
         amenities: [
             {
@@ -1514,7 +1514,7 @@ export const houseDataList: HouseDataType[] = [
         neighborhood: "Puerto Viejo attracts visitors from all over the globe with its breathtaking landscapes. The town is renowned for its expansive beaches bordered by tropical rainforests and features two National Parks, Manzanillo and Cahuita. The nightlife here is vibrant and lively, offering a unique experience after dark. Staying in Puerto Viejo allows you to fully immerse yourself in its unique charm.<br/>    Our house is conveniently located near a beach path that leads eventually to Cocles. On your way, you can observe a variety of wildlife and enjoy the natural coral pools. A hidden sightseeing spot is also waiting to be explored!.<br/>    Exploring Puerto Viejo and its surroundings is most convenient by renting a bike or a scooter. Additionally, there is a good public bus service available that connects you to Cahuita, Manzanillo, and Sixaola. If you prefer driving, we provide private parking. Please inform us if you have a larger pickup truck that needs extra space.",
         houseCode: 3,
         houseLangCode: "TucanoES",
-        image: "https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q=w1000",
         parking: false,
         amenities: [
             {
@@ -1553,7 +1553,7 @@ export const houseDataList: HouseDataType[] = [
         neighborhood: "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.<br/>    The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!<br/>    Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space. Additionally, we have a charging station by the bakery.",
         houseCode: 4,
         houseLangCode: "PappagalloES",
-        image: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY=w1000",
         parking: false,
         amenities: [
             {
@@ -1590,7 +1590,7 @@ export const houseDataList: HouseDataType[] = [
         neighborhood: "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.<br/>    The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!<br/>    Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.",
         houseCode: 10,
         houseLangCode: "Delfin",
-        image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X=w1000",
         parking: true,
         amenities: [
             {
@@ -1623,7 +1623,7 @@ export const houseDataList: HouseDataType[] = [
         neighborhood: "Puerto Viejo es un destino popular para turistas de todo el mundo, gracias a sus impresionantes alrededores. El pueblo cuenta con playas inmensas rodeadas de selva tropical, así como dos Parques Nacionales (Manzanillo y Cahuita). Por la noche, el pueblo cobra vida con una escena nocturna animada y activa. Cuando te hospedes aquí, podrás sumergirte completamente en todo lo que hace único a Puerto Viejo.<br/>    La casa está ubicada cerca del acceso a la playa que eventualmente lleva a Cocles. En el camino, tendrás la oportunidad de observar una variedad de animales y admirar piscinas naturales en el coral. ¡Incluso hay un lugar de observación oculto esperando ser descubierto!<br/>    Moverse por Puerto Viejo y sus alrededores es más fácil alquilando una bicicleta o un scooter. Sin embargo, también hay un servicio de autobús público confiable disponible que puede llevarte a Cahuita, Manzanillo y Sixaola. Si prefieres conducir, también podemos acomodar autos. Ofrecemos estacionamiento privado, pero por favor avísanos si tienes una camioneta más grande que requiere espacio adicional.",
         houseCode: 10,
         houseLangCode: "DelfinES",
-        image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X=w1000",
         parking: true,
         amenities: [
             {
@@ -1660,7 +1660,7 @@ export const VillasDataList: HouseDataType[] = [
         houseCode: 5,
         houseLangCode: "VillaMar",
         parking: false,
-        image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn=w1000",
         amenities: [
             {
                 name: "Private Pool",
@@ -1696,7 +1696,7 @@ export const VillasDataList: HouseDataType[] = [
         neighborhood: "",
         houseCode: 6,
         houseLangCode: "VillaCoral",
-        image: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A=w1000",
         parking: false,
         amenities: [
             {
@@ -1735,7 +1735,7 @@ export const VillasDataListES: HouseDataType[] = [
         neighborhood: "",
         houseCode: 5,
         houseLangCode: "VillaMarES",
-        image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn=w1000",
         parking: false,
         amenities: [
             {
@@ -1773,7 +1773,7 @@ export const VillasDataListES: HouseDataType[] = [
         houseCode: 6,
         houseLangCode: "VillaCoralES",
         parking: false,
-        image: "https://drive.google.com/thumbnail?id=1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A=w1000",
         amenities: [
             {
                 name: "Piscina Privada",
@@ -1813,7 +1813,7 @@ export const NamDataList: HouseDataType[] = [
         houseCode: 7,
         houseLangCode: "Areka",
         parking: true,
-        image: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey=w1000",
         amenities: [
             {
                 name: "Private Equipped Bathroom",
@@ -1845,7 +1845,7 @@ export const NamDataList: HouseDataType[] = [
         neighborhood: "",
         houseCode: 8,
         houseLangCode: "Plumeria",
-        image: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000",
         parking: false,
         amenities: [
             {
@@ -1879,7 +1879,7 @@ export const NamDataList: HouseDataType[] = [
         houseCode: 9,
         houseLangCode: "Giulia",
         parking: false,
-        image: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8=w1000",
         amenities: [
             {
                 name: "Private Equipped Bathroom",
@@ -1916,7 +1916,7 @@ export const NamDataListES: HouseDataType[] = [
         houseCode: 7,
         houseLangCode: "ArekaES",
         parking: true,
-        image: "https://drive.google.com/thumbnail?id=1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey=w1000",
         amenities: [
             {
                 name: "Baño Privado Equipado",
@@ -1948,7 +1948,7 @@ export const NamDataListES: HouseDataType[] = [
         neighborhood: "",
         houseCode: 8,
         houseLangCode: "PlumeriaES",
-        image: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000",
         parking: false,
         amenities: [
             {
@@ -1982,7 +1982,7 @@ export const NamDataListES: HouseDataType[] = [
         houseCode: 9,
         houseLangCode: "GiuliaES",
         parking: false,
-        image: "https://drive.google.com/thumbnail?id=1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8&sz=w1000",
+        image: "https://lh3.googleusercontent.com/d/1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8=w1000",
         amenities: [
             {
                 name: "Baño Privado Equipado",
@@ -2027,6 +2027,32 @@ export const PROPERTY_DISPLAY_NAMES: Record<string, string> = {
     Plumeria: 'Casa Plumeria',
     Giulia: 'Casa Giulia',
     Delfin: 'Casa Delfin',
+};
+
+// Bedroom / bathroom counts and sleeping capacity, shown as a fact row at the
+// top of every listing page. Keyed like PROPERTY_MARKETING_CONFIG, so both EN
+// and ES pages read the same numbers.
+//
+// maxGuests mirrors `guestNumber` on the matching houseDataList / VillasDataList /
+// NamDataList entry (asserted in utils/__tests__/propertyCapacity.test.ts).
+// Room counts come from the property descriptions on the listing pages and the
+// gallery room types above:
+//   Geco / Rana / Tucano / Pappagallo — 2 bedrooms, 1 bathroom (see the Tucano
+//     and Pappagallo descriptions, which spell both out)
+//   Delfin — 2 bedrooms, 2 bathrooms ("2 bathrooms" in the description)
+//   Giulia — 2 bedrooms, 2 bathrooms ("2 private bathrooms" in the description)
+//   Areka / Plumeria / Villa Mar / Villa Coral — 1 bedroom, 1 bathroom
+export const PROPERTY_CAPACITY: Record<string, PropertyCapacity> = {
+    Geco: { bedrooms: 2, bathrooms: 1, maxGuests: 5 },
+    Rana: { bedrooms: 2, bathrooms: 1, maxGuests: 5 },
+    Tucano: { bedrooms: 2, bathrooms: 1, maxGuests: 5 },
+    Pappagallo: { bedrooms: 2, bathrooms: 1, maxGuests: 5 },
+    Delfin: { bedrooms: 2, bathrooms: 2, maxGuests: 6 },
+    Giulia: { bedrooms: 2, bathrooms: 2, maxGuests: 4 },
+    Areka: { bedrooms: 1, bathrooms: 1, maxGuests: 2 },
+    Plumeria: { bedrooms: 1, bathrooms: 1, maxGuests: 2 },
+    VillaMar: { bedrooms: 1, bathrooms: 1, maxGuests: 2 },
+    VillaCoral: { bedrooms: 1, bathrooms: 1, maxGuests: 2 },
 };
 
 export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent> = {

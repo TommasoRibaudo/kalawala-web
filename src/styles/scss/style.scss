@@ -7,9 +7,13 @@ Version: 1.0
 Tags: one-page, single-page, portfolio, custom-colors, post-formats, responsive, html5, css3
 */
 
+// typography / counter / services / skills / team / footer were removed: none
+// of their selectors appear in any of the 46 pre-rendered pages or in any
+// className string in src/. templates/typography.scss in particular carried
+// the old dark-theme html/body/h1-h6 colours, which only ever reached the page
+// to be overridden by the !important rules in src/styles/_typography.scss.
 @import 'variables.scss';
 @import 'mixins.scss';
-@import 'templates/typography.scss';
 @import 'common.scss';
 @import 'templates/header.scss';
 @import 'templates/navigation.scss';
@@ -18,16 +22,11 @@ Tags: one-page, single-page, portfolio, custom-colors, post-formats, responsive,
 @import 'templates/about_us.scss';
 @import 'templates/call-to-action.scss';
 @import 'templates/contact.scss';
-@import 'templates/counter.scss';
 @import 'templates/pricing.scss';
 @import 'templates/portfolio.scss';
-@import 'templates/services.scss';
-@import 'templates/skills.scss';
-@import 'templates/team.scss';
 @import 'templates/testimonials.scss';
 @import 'templates/blog.scss';
 @import 'templates/single-post.scss';
-@import 'templates/footer.scss';
 @import "~slick-carousel/slick/slick.css";
 @import "~slick-carousel/slick/slick-theme.css";
 

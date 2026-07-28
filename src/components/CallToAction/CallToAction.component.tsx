@@ -21,7 +21,7 @@ const CallToAction = () => {
       id="callToAction" 
       className="call-to-action overly bg-1" 
       style={{ 
-        backgroundImage: `url(https://drive.google.com/thumbnail?id=1NoeXMkl7483dB0hVfCYuGPbqKTkRpQXq&sz=w1000)`,
+        backgroundImage: `url(https://lh3.googleusercontent.com/d/1NoeXMkl7483dB0hVfCYuGPbqKTkRpQXq=w1000)`,
         paddingTop: isMobile ? '80px' : undefined,
         minHeight: isMobile ? 'auto' : undefined
       }}
@@ -44,7 +44,7 @@ const CallToAction = () => {
               <Smoobu2 targetId="callToActionSmoobu" /> 
               <p style={{ color: 'black', fontWeight: 550, fontSize: 12 }}>*Showing availability for all available properties in the puerto viejo area, including properties advertised on other pages, make sure you check the name of the house and its photo before booking!</p>
             </div>
-            <p style={{marginTop: 10}}>Prefer to pay via bank transfer or SINPE? Book securely with us and send your deposit confirmation to <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> or via WhatsApp at <a href="https://wa.me/50684632276" target="_blank" rel="noreferrer">+506 8463 2276</a> within 6 hours of making your reservation.</p>
+            <p style={{marginTop: 10}}>Prefer to pay via bank transfer or SINPE? Book securely with us and send your deposit confirmation to <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> or via WhatsApp at <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">+506 8463 2276</a> within 6 hours of making your reservation.</p>
           </div>
           </div>
         </div>

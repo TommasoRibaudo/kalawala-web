@@ -21,7 +21,14 @@
   
       .home-image {
         width: 100%;
+        // Locked rather than `height: auto`. The width/height attributes make
+        // the browser reserve a 3:2 box up front, but with height:auto it
+        // re-lays-out to the photo's real ratio once loaded — which shifts the
+        // page for any image that is not exactly 3:2. Pinning the ratio and
+        // cropping with object-fit keeps the box stable either way.
+        aspect-ratio: 3 / 2;
         height: auto;
+        object-fit: cover;
         border-radius: 8px;
       }
     }

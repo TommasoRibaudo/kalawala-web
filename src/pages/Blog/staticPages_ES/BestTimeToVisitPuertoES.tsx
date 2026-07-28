@@ -85,6 +85,9 @@ const BestTimeToVisitPuertoES = () => {
                     <div className="description" style={{ maxWidth: 1000 }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <img
+                                loading="eager"
+                                fetchPriority="high"
+                                decoding="async"
                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619"
                                 className="responsive-image"
                                 alt="Playa en Puerto Viejo de Limón, Costa Rica"
@@ -236,7 +239,7 @@ const BestTimeToVisitPuertoES = () => {
                             marginBottom: '2rem',
                         }}
                     >
-                        <h3 className="smoobu-title">Reserva Tu Estadía</h3>
+                        <h2 className="smoobu-title">Reserva Tu Estadía</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="mejorEpocaPuertoViejoSmoobuBooking" />
                         </div>

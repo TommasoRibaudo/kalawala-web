@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
@@ -15,6 +16,9 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
 
+
+const HERO_IMAGE =
+  'https://lh3.googleusercontent.com/d/1kE3Zq-IbD47bdiLkW25IKuBncif7J7YR=w1000';
 
 const PuertoViejoByPlaneES = () => {
     // const { blogId } = useParams();
@@ -59,9 +63,14 @@ const PuertoViejoByPlaneES = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://drive.google.com/thumbnail?id=1kE3Zq-IbD47bdiLkW25IKuBncif7J7YR&sz=w1000" className="responsive-image" alt="Kayaking in Punta Uva" />
+                            <img
+                                loading="eager"
+                                fetchPriority="high"
+                                srcSet={cdnSrcSet(HERO_IMAGE)}
+                                sizes="(max-width: 768px) 100vw, 720px"
+                                decoding="async" src={cdnImage(HERO_IMAGE, 960)} className="responsive-image" alt="Kayaking in Punta Uva" />
                         </div>
-                        <p style={{ display: 'flex', justifyContent: 'right' }}>Image by <a href="http://www.freepik.com/" target="_blank" rel="noreferrer"> Freepik</a></p>
+                        <p style={{ display: 'flex', justifyContent: 'right' }}>Image by <a href="https://www.freepik.com/" target="_blank" rel="noopener noreferrer"> Freepik</a></p>
                         <br />
                         <p>Llegar a Puerto Viejo en avión es más fácil de lo que piensas. En este artículo, te mostraremos cómo viajar desde cualquier destino a Puerto Viejo tomando un vuelo doméstico desde San José a Limón.</p>
                        
@@ -106,7 +115,7 @@ const PuertoViejoByPlaneES = () => {
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h3 className="smoobu-title">Reserva tu Estadía</h3>
+                        <h2 className="smoobu-title">Reserva tu Estadía</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="planeESSmoobuBooking" />
                         </div>

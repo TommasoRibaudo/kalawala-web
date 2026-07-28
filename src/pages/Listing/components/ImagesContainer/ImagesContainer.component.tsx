@@ -111,15 +111,21 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
       <div className="imagesContainer" onClick={showAllImages}>
         <Row>
           <Col className="col" lg={6} sm={12} md={12} xs={12}>
+            {/* This is the LCP element on every listing page. It was
+                lazy-loaded, which cost ~1.6s of pure load delay before the
+                request was even issued. Eager + high priority instead. */}
             <ImageWithSkeleton
               className="mainImage"
               fluid
+              loading="eager"
+              fetchPriority="high"
+              sizes="(max-width: 992px) 100vw, 50vw"
               src={images[imageSnippet[0]].imageLink || ''}
               alt={images[imageSnippet[0]].roomType || "Main property image"}
               skeletonProps={{
                 variant: 'rectangular',
                 animation: 'shimmer',
-                aspectRatio: '4/3',
+                aspectRatio: '3/2',
                 width: '100%'
               }}
             />
@@ -134,7 +140,7 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
                 skeletonProps={{
                   variant: 'rectangular',
                   animation: 'shimmer',
-                  aspectRatio: '1/1',
+                  aspectRatio: '3/2',
                   width: '100%'
                 }}
               />
@@ -146,7 +152,7 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
                 skeletonProps={{
                   variant: 'rectangular',
                   animation: 'shimmer',
-                  aspectRatio: '1/1',
+                  aspectRatio: '3/2',
                   width: '100%'
                 }}
               />
@@ -160,7 +166,7 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
                 skeletonProps={{
                   variant: 'rectangular',
                   animation: 'shimmer',
-                  aspectRatio: '1/1',
+                  aspectRatio: '3/2',
                   width: '100%'
                 }}
               />
@@ -172,7 +178,7 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
                 skeletonProps={{
                   variant: 'rectangular',
                   animation: 'shimmer',
-                  aspectRatio: '1/1',
+                  aspectRatio: '3/2',
                   width: '100%'
                 }}
               />

@@ -43,9 +43,10 @@ const FixedNavigationNam = ({ isBlog }: IFixedNavigation) => {
       <Container>
         <Navbar.Brand href="HomeNam#body" className="d-flex align-items-center">
           <img 
-            src="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" 
-            alt="logo" 
+            src="https://lh3.googleusercontent.com/d/1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn=w1000" 
+            alt="Reservas Kalawala" 
             className="logo"
+            width="150"
             height="52"
             loading="eager"
           />

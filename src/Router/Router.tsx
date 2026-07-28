@@ -1,60 +1,76 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
-import posthog from 'posthog-js';
 import { CookieConsentService } from '../services/CookieConsent.service';
-import { Home } from '../pages';
+import * as PostHog from '../services/PostHog.service';
 import MessageTipContainer from '../components/MessageTip/MessageTipContainer.component';
-import ListingGeco from '../pages/Listing/staticPages/ListingGeco.page';
-import ListingRana from '../pages/Listing/staticPages/ListingRana.page';
-import ListingTucano from '../pages/Listing/staticPages/ListingTucano.page';
-import ListingPappagallo from '../pages/Listing/staticPages/ListingPappagallo.page';
-import TwoDaysInPV from '../pages/Blog/staticPages/TwoDaysInPV';
-import GettingToGandoca from '../pages/Blog/staticPages/GettingToGandoca';
-import TravellingToPuerto from '../pages/Blog/staticPages/TravellingToPuerto';
-import PuertoViejoByPlane from '../pages/Blog/staticPages/PuertoViejoByPlane';
-import TenHoursInPuerto from '../pages/Blog/staticPages/TenHoursInPuerto';
-import BusHours from '../pages/Blog/staticPages/BusHours';
-import BusHoursES from '../pages/Blog/staticPages_ES/BusHoursES';
-import ListingGecoES from '../pages/Listing/staticPages_ES/ListingGeco.page_ES';
-import ListingRanaES from '../pages/Listing/staticPages_ES/ListingRana.page_ES';
-import ListingTucanoES from '../pages/Listing/staticPages_ES/ListingTucano.page_ES';
-import ListingPappagalloES from '../pages/Listing/staticPages_ES/ListingPappagallo.page_ES';
-import TwoDaysInPVES from '../pages/Blog/staticPages_ES/TwoDaysInPV_ES';
-import GettingToGandocaES from '../pages/Blog/staticPages_ES/GettingToGandoca_ES';
-import TravellingToPuertoES from '../pages/Blog/staticPages_ES/TravellingToPuerto_ES';
-import PuertoViejoByPlaneES from '../pages/Blog/staticPages_ES/PuertoViejoByPlane_ES';
-import TenHoursInPuertoES from '../pages/Blog/staticPages_ES/TenHoursInPuerto_ES';
-import HomeES from '../pages/Home/Home.pageES';
-import Success from '../pages/Home/Success.page';
-import HomeNam from '../pages/Home/Home.page.nam';
-import HomeNamES from '../pages/Home/Home.pageES.nam';
-import HomeRib from '../pages/Home/Home.page.rib';
-import HomeRibES from '../pages/Home/Home.pageES.rib';
-import ListingAreka from '../pages/Listing/staticPages/ListingAreka.page';
-import ListingGiulia from '../pages/Listing/staticPages/ListingGiulia.page';
-import ListingPlumeria from '../pages/Listing/staticPages/ListingPlumeria.page';
-import ListingVillaMar from '../pages/Listing/staticPages/ListingVillaMar.page';
-import ListingVillaCoral from '../pages/Listing/staticPages/ListingVillaCoral.page';
-import ListingArekaES from '../pages/Listing/staticPages_ES/ListingAreka.page_ES';
-import ListingGiuliaES from '../pages/Listing/staticPages_ES/ListingGiulia.page_ES';
-import ListingPlumeriaES from '../pages/Listing/staticPages_ES/ListingPlumeria.page_ES';
-import ListingVillaMarES from '../pages/Listing/staticPages_ES/ListingVillaMar.page_ES';
-import ListingVillaCoralES from '../pages/Listing/staticPages_ES/ListingVillaCoral.page_ES';
-import ListingDelfin from '../pages/Listing/staticPages/ListingDelfin.page';
-import ListingDelfinES from '../pages/Listing/staticPages_ES/ListingDelfin.page_ES';
 import { useRandomPopup } from '../hooks/useRandomPopup';
-import CahuitaPark from '../pages/Blog/staticPages/CahuitaPark';
-import CahuitaParkES from '../pages/Blog/staticPages_ES/BusHoursES';
-import IndigenousTravel from '../pages/Blog/staticPages/IndigenousTravel';
-import IndigenousTravelES from '../pages/Blog/staticPages_ES/IndigenousTravelES';
-import BestTimeToVisitPuerto from '../pages/Blog/staticPages/BestTimeToVisitPuerto';
-import BestTimeToVisitPuertoES from '../pages/Blog/staticPages_ES/BestTimeToVisitPuertoES';
-import PuertoHiddenGems from '../pages/Blog/staticPages/PuertoHiddenGems';
-import PuertoHiddenGemsES from '../pages/Blog/staticPages_ES/PuertoHiddenGemsES';
-import BookingPage from '../pages/Booking.page';
-import PortalLoginPage from '../pages/Portal.page';
-import PortalDetailPage from '../pages/PortalDetail.page';
 import PortalGuard from '../components/PortalGuard/PortalGuard.component';
+import NotFound from '../pages/NotFound.page';
+
+/*
+ * Every routed page is code-split.
+ *
+ * All 50 page components used to be static imports, so visiting any single
+ * page downloaded and parsed all of them — the whole site in one 1.3 MB
+ * bundle.
+ *
+ * The webpackChunkName comments are load-bearing, not cosmetic:
+ * scripts/inject-route-preloads.js runs after react-snap and injects a
+ * <link rel="preload" as="script"> for the matching chunk into each
+ * pre-rendered page, so the chunk is already in flight before hydration
+ * starts. That injector recomputes these names with the same rule and fails
+ * the build if one is missing from asset-manifest.json.
+ */
+const Home = lazy(() => import(/* webpackChunkName: "route-home" */ '../pages/Home/Home.page'));
+const BookingPage = lazy(() => import(/* webpackChunkName: "route-book" */ '../pages/Booking.page'));
+const PortalLoginPage = lazy(() => import(/* webpackChunkName: "route-portal" */ '../pages/Portal.page'));
+const PortalDetailPage = lazy(() => import(/* webpackChunkName: "route-portal-detail" */ '../pages/PortalDetail.page'));
+const ListingGeco = lazy(() => import(/* webpackChunkName: "route-geco" */ '../pages/Listing/staticPages/ListingGeco.page'));
+const ListingRana = lazy(() => import(/* webpackChunkName: "route-rana" */ '../pages/Listing/staticPages/ListingRana.page'));
+const ListingTucano = lazy(() => import(/* webpackChunkName: "route-tucano" */ '../pages/Listing/staticPages/ListingTucano.page'));
+const ListingPappagallo = lazy(() => import(/* webpackChunkName: "route-pappagallo" */ '../pages/Listing/staticPages/ListingPappagallo.page'));
+const ListingDelfin = lazy(() => import(/* webpackChunkName: "route-delfin" */ '../pages/Listing/staticPages/ListingDelfin.page'));
+const ListingAreka = lazy(() => import(/* webpackChunkName: "route-areka" */ '../pages/Listing/staticPages/ListingAreka.page'));
+const ListingGiulia = lazy(() => import(/* webpackChunkName: "route-giulia" */ '../pages/Listing/staticPages/ListingGiulia.page'));
+const ListingPlumeria = lazy(() => import(/* webpackChunkName: "route-plumeria" */ '../pages/Listing/staticPages/ListingPlumeria.page'));
+const ListingVillaMar = lazy(() => import(/* webpackChunkName: "route-villamar" */ '../pages/Listing/staticPages/ListingVillaMar.page'));
+const ListingVillaCoral = lazy(() => import(/* webpackChunkName: "route-villacoral" */ '../pages/Listing/staticPages/ListingVillaCoral.page'));
+const ListingGecoES = lazy(() => import(/* webpackChunkName: "route-gecoes" */ '../pages/Listing/staticPages_ES/ListingGeco.page_ES'));
+const ListingRanaES = lazy(() => import(/* webpackChunkName: "route-ranaes" */ '../pages/Listing/staticPages_ES/ListingRana.page_ES'));
+const ListingTucanoES = lazy(() => import(/* webpackChunkName: "route-tucanoes" */ '../pages/Listing/staticPages_ES/ListingTucano.page_ES'));
+const ListingPappagalloES = lazy(() => import(/* webpackChunkName: "route-pappagalloes" */ '../pages/Listing/staticPages_ES/ListingPappagallo.page_ES'));
+const ListingDelfinES = lazy(() => import(/* webpackChunkName: "route-delfines" */ '../pages/Listing/staticPages_ES/ListingDelfin.page_ES'));
+const ListingArekaES = lazy(() => import(/* webpackChunkName: "route-arekaes" */ '../pages/Listing/staticPages_ES/ListingAreka.page_ES'));
+const ListingGiuliaES = lazy(() => import(/* webpackChunkName: "route-giuliaes" */ '../pages/Listing/staticPages_ES/ListingGiulia.page_ES'));
+const ListingPlumeriaES = lazy(() => import(/* webpackChunkName: "route-plumeriaes" */ '../pages/Listing/staticPages_ES/ListingPlumeria.page_ES'));
+const ListingVillaMarES = lazy(() => import(/* webpackChunkName: "route-villamares" */ '../pages/Listing/staticPages_ES/ListingVillaMar.page_ES'));
+const ListingVillaCoralES = lazy(() => import(/* webpackChunkName: "route-villacorales" */ '../pages/Listing/staticPages_ES/ListingVillaCoral.page_ES'));
+const TwoDaysInPV = lazy(() => import(/* webpackChunkName: "route-twodaysinpuertoviejo" */ '../pages/Blog/staticPages/TwoDaysInPV'));
+const GettingToGandoca = lazy(() => import(/* webpackChunkName: "route-gettingtogandoca" */ '../pages/Blog/staticPages/GettingToGandoca'));
+const TravellingToPuerto = lazy(() => import(/* webpackChunkName: "route-travellingtopuertoviejo" */ '../pages/Blog/staticPages/TravellingToPuerto'));
+const PuertoViejoByPlane = lazy(() => import(/* webpackChunkName: "route-puertoviejobyplane" */ '../pages/Blog/staticPages/PuertoViejoByPlane'));
+const TenHoursInPuerto = lazy(() => import(/* webpackChunkName: "route-tenhoursinpuerto" */ '../pages/Blog/staticPages/TenHoursInPuerto'));
+const BusHours = lazy(() => import(/* webpackChunkName: "route-bushours" */ '../pages/Blog/staticPages/BusHours'));
+const CahuitaPark = lazy(() => import(/* webpackChunkName: "route-cahuitaparkwhattodo" */ '../pages/Blog/staticPages/CahuitaPark'));
+const IndigenousTravel = lazy(() => import(/* webpackChunkName: "route-indigenoustravelpv" */ '../pages/Blog/staticPages/IndigenousTravel'));
+const BestTimeToVisitPuerto = lazy(() => import(/* webpackChunkName: "route-besttimetovisitpuerto" */ '../pages/Blog/staticPages/BestTimeToVisitPuerto'));
+const PuertoHiddenGems = lazy(() => import(/* webpackChunkName: "route-puertohiddengems" */ '../pages/Blog/staticPages/PuertoHiddenGems'));
+const TwoDaysInPVES = lazy(() => import(/* webpackChunkName: "route-twodaysinpuertoviejoes" */ '../pages/Blog/staticPages_ES/TwoDaysInPV_ES'));
+const GettingToGandocaES = lazy(() => import(/* webpackChunkName: "route-gettingtogandocaes" */ '../pages/Blog/staticPages_ES/GettingToGandoca_ES'));
+const TravellingToPuertoES = lazy(() => import(/* webpackChunkName: "route-travellingtopuertoviejoes" */ '../pages/Blog/staticPages_ES/TravellingToPuerto_ES'));
+const PuertoViejoByPlaneES = lazy(() => import(/* webpackChunkName: "route-puertoviejobyplanees" */ '../pages/Blog/staticPages_ES/PuertoViejoByPlane_ES'));
+const TenHoursInPuertoES = lazy(() => import(/* webpackChunkName: "route-tenhoursinpuertoes" */ '../pages/Blog/staticPages_ES/TenHoursInPuerto_ES'));
+const BusHoursES = lazy(() => import(/* webpackChunkName: "route-bushourses" */ '../pages/Blog/staticPages_ES/BusHoursES'));
+const CahuitaParkES = lazy(() => import(/* webpackChunkName: "route-cahuitaparkwhattodoes" */ '../pages/Blog/staticPages_ES/CahuitaParkES'));
+const IndigenousTravelES = lazy(() => import(/* webpackChunkName: "route-indigenoustravelpves" */ '../pages/Blog/staticPages_ES/IndigenousTravelES'));
+const BestTimeToVisitPuertoES = lazy(() => import(/* webpackChunkName: "route-besttimetovisitpuertoes" */ '../pages/Blog/staticPages_ES/BestTimeToVisitPuertoES'));
+const PuertoHiddenGemsES = lazy(() => import(/* webpackChunkName: "route-puertohiddengemses" */ '../pages/Blog/staticPages_ES/PuertoHiddenGemsES'));
+const HomeES = lazy(() => import(/* webpackChunkName: "route-homees" */ '../pages/Home/Home.pageES'));
+const Success = lazy(() => import(/* webpackChunkName: "route-success" */ '../pages/Home/Success.page'));
+const HomeNam = lazy(() => import(/* webpackChunkName: "route-homenam" */ '../pages/Home/Home.page.nam'));
+const HomeNamES = lazy(() => import(/* webpackChunkName: "route-homenames" */ '../pages/Home/Home.pageES.nam'));
+const HomeRib = lazy(() => import(/* webpackChunkName: "route-homevillas" */ '../pages/Home/Home.page.rib'));
+const HomeRibES = lazy(() => import(/* webpackChunkName: "route-homevillases" */ '../pages/Home/Home.pageES.rib'));
 // import About from './About';
 // import Contact from './Contact';
 
@@ -66,9 +82,9 @@ const PostHogPageView = () => {
   React.useEffect(() => {
     const cleanup = CookieConsentService.onConsentChange((state) => {
       if (state.preferences.analytics) {
-        posthog.opt_in_capturing();
+        PostHog.optIn();
       } else {
-        posthog.opt_out_capturing();
+        PostHog.optOut();
       }
     });
     return cleanup;
@@ -77,7 +93,7 @@ const PostHogPageView = () => {
   // Capture pageview only if analytics consent is given
   React.useEffect(() => {
     if (CookieConsentService.hasConsent('analytics')) {
-      posthog.capture('$pageview');
+      PostHog.capture('$pageview');
     }
   }, [location]);
 
@@ -168,7 +184,8 @@ const AppRouter = () => {
     <BrowserRouter>
       <PostHogPageView />
       <RandomPopupHandler />
-      <Routes>
+      <Suspense fallback={null}>
+        <Routes>
       <Route path="/" element={<Home />} />
       <Route path='/book' element={<BookingPage />} />
       <Route path='/book/return' element={<BookingPage />} />
@@ -240,7 +257,9 @@ const AppRouter = () => {
       </Route> */} 
       {/* <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} /> */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
+      </Suspense>
       <MessageTipContainer />
     </BrowserRouter>
   );

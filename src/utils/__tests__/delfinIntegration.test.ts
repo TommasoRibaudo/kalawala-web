@@ -16,7 +16,7 @@ describe('Delfin Integration Tests', () => {
     expect(delfinInSnippet).toBeDefined();
     expect(delfinInSnippet?.name).toBe('Delfin');
     expect(delfinInSnippet?.mainImage).toBeDefined();
-    expect(delfinInSnippet?.mainImage).toContain('drive.google.com');
+    expect(delfinInSnippet?.mainImage).toContain('lh3.googleusercontent.com');
   });
 
   test('should include Delfin in houseDataList with correct configuration', () => {
@@ -90,14 +90,14 @@ describe('Delfin Integration Tests', () => {
       expect(desc).toHaveProperty('roomType');
       expect(desc).toHaveProperty('roomDescription');
       expect(desc).toHaveProperty('imageLink');
-      expect(desc.imageLink).toContain('drive.google.com');
+      expect(desc.imageLink).toContain('lh3.googleusercontent.com');
     });
     
     delfinImageDescriptionsES.forEach(desc => {
       expect(desc).toHaveProperty('roomType');
       expect(desc).toHaveProperty('roomDescription');
       expect(desc).toHaveProperty('imageLink');
-      expect(desc.imageLink).toContain('drive.google.com');
+      expect(desc.imageLink).toContain('lh3.googleusercontent.com');
     });
   });
 

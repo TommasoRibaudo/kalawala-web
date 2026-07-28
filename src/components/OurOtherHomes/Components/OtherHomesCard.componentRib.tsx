@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { cdnSrcSet } from '../../../utils/imageCdn';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSnowflake, faUtensils, faWifi, faUser, faSwimmingPool, faParking } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +28,7 @@ const OtherHomesCardRib: FC<IOtherHomesCard> = ({ guestNumber, name, image, redi
     return (
         <div className="other-homes-card" onClick={handleClick} style={{ cursor: redirectPath ? 'pointer' : 'default' }}>
             <div className="image-container">
-                <img src={image} alt={name} className="home-image" />
+                <img src={image} alt={name} className="home-image" width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(image)} sizes="(max-width: 768px) 100vw, 400px" />
             </div>
             <div className="content">
                 <h3 className="home-name">{name}</h3>

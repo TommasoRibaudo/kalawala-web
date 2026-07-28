@@ -1,140 +1,150 @@
 @use '../../../../styles/mixins';
 @import '../../../../styles//styles.scss';
 
+// Gap between gallery tiles. Used as the grid gap on desktop and as the
+// margin between stacked tiles on narrow screens.
+$gallery-gap: 10px;
+
+// The gallery is a fixed-shape mosaic: one hero on the left, a 2x2 block on
+// the right, both exactly the same height.
+//
+// It used to take its height from the photos themselves — floated Bootstrap
+// columns with `height: 100%` against a parent that had no height, so every
+// tile rendered at whatever the source image's aspect ratio happened to be.
+// That works only as long as every photo is landscape. A property shot in
+// portrait (House Delfin) made the right-hand stack roughly 1.5x taller than
+// the hero, which left a large white gap under the hero and pushed the whole
+// page down.
+//
+// Now the tiles define the shape and the photos are cropped into them with
+// `object-fit: cover`, so orientation of the source file no longer matters.
 .imagesContainer {
-  img {
-    padding: 5px;
-  }
-  
   :hover {
     cursor: pointer;
   }
 
-  .mainImage {
-    // Ensure consistent height for main image
-    height: 100%;
-    z-index: 1; // Ensure main image is on top
-    min-height: 300px; // Prevent layout shift during loading
-    
-    .image-with-skeleton {
-      min-height: 300px; // Match container height
+  .image-with-skeleton {
+    position: relative;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+
+    .image-skeleton {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      z-index: 1;
+    }
+
+    // Fills the tile and crops rather than dictating the tile's height.
+    .skeleton-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      object-fit: cover;
+      padding: 0;
+      z-index: 2;
     }
   }
 
-  .secondaryImages {
-    // Ensure consistent height for secondary images
-    height: 100%;
-    z-index: 0; // Keep secondary images below main image
-    min-height: 150px; // Prevent layout shift during loading
-    
-    .image-with-skeleton {
-      min-height: 150px; // Match container height
-    }
-  }
-
+  // --- Stacked layout (< 992px) -------------------------------------------
+  // Bootstrap drops the hero to full width and keeps the four secondary
+  // tiles two-up. Each tile gets its own aspect ratio since there is no
+  // side-by-side alignment to maintain.
   .row {
-    // Ensure proper row height
-    height: 100%;
+    height: auto;
   }
 
   .col {
     float: left;
-    // Remove any height constraints that cause layout shifts
   }
 
-  // Fix skeleton container layout
-  .image-with-skeleton {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: block;
-    overflow: hidden; // Prevent skeleton overflow
-    
-    // Apply padding consistently to both skeleton and loaded images
-    padding: 5px;
-    
-    // Ensure proper aspect ratio maintenance
-    .image-skeleton {
-      width: calc(100% - 10px); // Account for padding
-      height: calc(100% - 10px); // Account for padding
-      position: absolute;
-      top: 5px;
-      left: 5px;
-      right: 5px;
-      bottom: 5px;
-      z-index: 1; // Skeleton above container but below image
+  .mainImage {
+    aspect-ratio: 3 / 2;
+    margin-bottom: $gallery-gap;
+  }
+
+  .secondaryImages {
+    aspect-ratio: 3 / 2;
+    margin-bottom: $gallery-gap;
+  }
+
+  // --- Mosaic layout (>= 992px) -------------------------------------------
+  // CSS grid instead of floats + Bootstrap gutters. The hero's aspect ratio
+  // sets the row height; the right-hand column stretches to match it and
+  // splits that height evenly between its two rows, so the two halves of the
+  // mosaic always end on the same line regardless of the photos.
+  @media (min-width: 992px) {
+    > .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: $gallery-gap;
+      margin: 0;
+
+      > .col {
+        float: none;
+        width: auto;
+        max-width: none;
+        padding: 0;
+        min-width: 0;
+        min-height: 0;
+        // The listing page sets `height: fit-content` on every `.col`, which
+        // stops a grid item from stretching to its row. Both halves have to
+        // fill the row for the mosaic to line up.
+        height: auto;
+
+        // Right half: two columns of two tiles each.
+        &:last-child {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: $gallery-gap;
+
+          > .col {
+            display: grid;
+            // minmax(0, ...) so a tall photo can't push the row open — the
+            // whole point of the fixed mosaic.
+            grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+            gap: $gallery-gap;
+            float: none;
+            width: auto;
+            max-width: none;
+            padding: 0;
+            min-width: 0;
+            min-height: 0;
+            height: auto;
+          }
+        }
+      }
     }
-    
-    .skeleton-image {
-      width: 100%;
+
+    .mainImage {
+      margin-bottom: 0;
+    }
+
+    // Height comes from the grid row, not from the tile.
+    .secondaryImages {
+      aspect-ratio: auto;
       height: 100%;
-      object-fit: cover;
-      padding: 0; // Remove padding from actual image to prevent double padding
-      z-index: 2; // Image above skeleton
+      min-height: 0;
+      margin-bottom: 0;
     }
   }
-  
-  // Mobile-specific fixes
+
+  // --- Phones --------------------------------------------------------------
   @include mixins.mobile {
-    .mainImage {
-      min-height: 200px; // Reduced height for mobile
-      height: 200px; // Fixed height for mobile
-      position: relative; // Ensure proper positioning
-      
-      .image-with-skeleton {
-        min-height: 200px; // Match container height
-        height: 200px; // Fixed height for mobile
-        position: relative; // Ensure proper positioning
-      }
-    }
-    
+    .mainImage,
     .secondaryImages {
-      min-height: 200px; // Match main image height for consistency
-      height: 200px; // Fixed height for mobile - same as main
-      position: relative; // Ensure proper positioning
-      
-      .image-with-skeleton {
-        min-height: 200px; // Match container height
-        height: 200px; // Fixed height for mobile
-        position: relative; // Ensure proper positioning
-      }
+      aspect-ratio: 4 / 3;
     }
-    
+
+    // ImageWithSkeleton floors every image at 200px on phones, which fights
+    // the aspect ratio on the small secondary tiles.
     .image-with-skeleton {
-      // Ensure proper spacing on mobile
-      margin-bottom: 10px;
-      position: relative; // Ensure proper positioning
-      
-      &:last-child {
-        margin-bottom: 0;
-      }
-      
-      .image-skeleton {
-        // Ensure skeleton fills container on mobile
-        width: calc(100% - 10px);
-        height: calc(100% - 10px);
-        top: 5px;
-        left: 5px;
-        position: absolute; // Ensure absolute positioning
-      }
-      
-      .skeleton-image {
-        position: relative; // Ensure proper image positioning
-        width: 100%;
-        height: 100%;
-        object-fit: cover; // Ensure proper image fitting
-      }
-    }
-    
-    // Additional mobile layout stability
-    .row {
-      height: auto; // Allow natural height on mobile
-      min-height: 200px; // Match image height
-    }
-    
-    .col {
-      position: relative; // Ensure proper column positioning
+      min-height: 0;
     }
   }
 }
-

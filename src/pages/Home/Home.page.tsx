@@ -7,6 +7,8 @@ import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.componen
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
+import Footer from "../../components/Footer/Footer.component";
+import BookingCtaBanner from "../../components/BookingCtaBanner/BookingCtaBanner.component";
 
 import { houseDataEngList } from '../../utils/constants';
 import OurOtherHomes from "../../components/OurOtherHomes/OurOtherHomes.component";
@@ -22,21 +24,21 @@ const helpMeChooseOptions = [
     {
         emoji: "👨‍👩‍👧",
         label: "Perfect for families",
-        houseName: "Delfines",
+        houseName: "Casa Delfines",
         houseLangCode: "Delfin",
         image: "https://lh3.googleusercontent.com/d/1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW=w1000"
     },
     {
         emoji: "🐾",
         label: "Pet-friendly",
-        houseName: "Rana",
+        houseName: "Casa Rana",
         houseLangCode: "Rana",
         image: "https://lh3.googleusercontent.com/d/1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X=w1000"
     },
     {
         emoji: "⭐",
         label: "Best value",
-        houseName: "House Plumeria",
+        houseName: "Casa Plumeria",
         houseLangCode: "Plumeria",
         image: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000"
     }
@@ -62,11 +64,13 @@ const Home = () => {
       <HomeReviews isSpanish={false} />
       <OurHomes houseDataList={houseDataEngList} />
       <OurOtherHomes />
+      <BookingCtaBanner isSpanish={false} />
       <Discover />
       {/* <CallToAction /> */}
       <Portfolio />
       {/* <Testimonial /> */}
       <ContactUs />
+      <Footer isSpanish={false} />
 
     </div>
   )

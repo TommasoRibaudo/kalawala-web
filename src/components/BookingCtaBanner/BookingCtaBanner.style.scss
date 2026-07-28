@@ -1,0 +1,40 @@
+@import '../../styles/_variables.scss';
+
+.booking-cta-banner {
+  background: $kalawala-darker-green;
+  padding: 28px 0;
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+
+  &__text {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  &__btn {
+    display: inline-block;
+    background: $kalawala-light-green;
+    color: $kalawala-darker-green;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus-visible {
+      background: #fff;
+      color: $kalawala-darker-green;
+      text-decoration: none;
+    }
+  }
+}

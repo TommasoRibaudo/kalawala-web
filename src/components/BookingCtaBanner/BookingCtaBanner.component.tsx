@@ -1,0 +1,45 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import './BookingCtaBanner.style.scss';
+
+interface IBookingCtaBanner {
+  isSpanish: boolean;
+}
+
+/**
+ * A repeated mid-page conversion point. The audit found exactly one CTA
+ * across the entire homepage (the hero search) — every visitor who scrolled
+ * past it had to scroll all the way back up to act. This banner is meant to
+ * be dropped in after a section a visitor has just finished reading (Our
+ * Homes, the reviews) so the ask is never more than one section away.
+ */
+const BookingCtaBanner: React.FC<IBookingCtaBanner> = ({ isSpanish }) => {
+  const navigate = useNavigate();
+  const bookPath = isSpanish ? '/bookES' : '/book';
+
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+    event.preventDefault();
+    navigate(bookPath);
+    window.scrollTo(0, 0);
+  };
+
+  return (
+    <section className="booking-cta-banner">
+      <div className="container">
+        <p className="booking-cta-banner__text">
+          {isSpanish
+            ? '4.9/5 · reserva directo, sin comisiones de plataforma'
+            : '4.9/5 · book direct, no platform fees'}
+        </p>
+        <a href={bookPath} className="booking-cta-banner__btn" onClick={handleClick}>
+          {isSpanish ? 'Ver disponibilidad' : 'Check availability'}
+        </a>
+      </div>
+    </section>
+  );
+};
+
+export default BookingCtaBanner;

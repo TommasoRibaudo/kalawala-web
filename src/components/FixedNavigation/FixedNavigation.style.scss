@@ -76,6 +76,30 @@
   gap: 10px;
 }
 
+// Always visible, at every breakpoint — .mobile-controls itself isn't
+// hidden on desktop, only its language-flag and hamburger children are.
+// This is what "travels with the sticky nav" per the audit: the header
+// is the one element that follows the visitor down the whole page, and
+// before this it never asked for anything.
+.nav-cta-btn {
+  display: inline-block;
+  white-space: nowrap;
+  background: $kalawala-light-green;
+  color: $kalawala-darker-green;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    background: #fff;
+    color: $kalawala-darker-green;
+    text-decoration: none;
+  }
+}
+
 .mobile-flag {
   display: none;
 
@@ -148,8 +172,13 @@
     left: 10px !important;
     right: 10px !important;
     z-index: 1001 !important;
-    max-height: 400px !important;
-    /* Increased height for better usability */
+    /* 400px clipped the sixth link ("My Booking") on common phone
+       viewports — six nav items plus the language switcher need more room
+       than that. min() keeps a generous cap on tall screens while still
+       never exceeding the viewport (with a 100px margin for the sticky
+       header) on short ones; overflow-y stays as a safety net, not the
+       primary way anyone is expected to reach the last item. */
+    max-height: min(560px, calc(100vh - 100px)) !important;
     overflow-y: auto !important;
     /* Enable scrolling when content exceeds height */
   }

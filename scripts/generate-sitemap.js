@@ -23,7 +23,7 @@ const BUILD = path.join(ROOT, 'build');
 const ORIGIN = 'https://www.reservaskalawala.com';
 
 /** Routes that exist for internal flows and should not be indexed. */
-const EXCLUDE = new Set(['/Success']);
+const EXCLUDE = new Set(['/Success', '/404']);
 
 function esCounterpart(route, all) {
   if (route.endsWith('ES')) return null; // handled from the EN side

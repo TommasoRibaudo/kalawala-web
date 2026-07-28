@@ -5,7 +5,6 @@ import * as PostHog from '../services/PostHog.service';
 import MessageTipContainer from '../components/MessageTip/MessageTipContainer.component';
 import { useRandomPopup } from '../hooks/useRandomPopup';
 import PortalGuard from '../components/PortalGuard/PortalGuard.component';
-import NotFound from '../pages/NotFound.page';
 
 /*
  * Every routed page is code-split.
@@ -71,6 +70,9 @@ const HomeNam = lazy(() => import(/* webpackChunkName: "route-homenam" */ '../pa
 const HomeNamES = lazy(() => import(/* webpackChunkName: "route-homenames" */ '../pages/Home/Home.pageES.nam'));
 const HomeRib = lazy(() => import(/* webpackChunkName: "route-homevillas" */ '../pages/Home/Home.page.rib'));
 const HomeRibES = lazy(() => import(/* webpackChunkName: "route-homevillases" */ '../pages/Home/Home.pageES.rib'));
+const NotFound = lazy(() => import(/* webpackChunkName: "route-404" */ '../pages/NotFound.page'));
+const BlogIndex = lazy(() => import(/* webpackChunkName: "route-blog" */ '../pages/Blog/BlogIndex.page'));
+const BlogIndexES = lazy(() => import(/* webpackChunkName: "route-bloges" */ '../pages/Blog/BlogIndex.page_ES'));
 // import About from './About';
 // import Contact from './Contact';
 
@@ -205,6 +207,8 @@ const AppRouter = () => {
       <Route path='/Tucano'  element={<ListingTucano />}/>
       <Route path='/Pappagallo'  element={<ListingPappagallo />}/>
       <Route path='/Delfin'  element={<ListingDelfin />}/>
+      <Route path='/blog' element={<BlogIndex />} />
+      <Route path='/blogES' element={<BlogIndexES />} />
       <Route path='/twodaysinpuertoviejo' element={<TwoDaysInPV />} />
       <Route path='/gettingtogandoca' element={<GettingToGandoca />} />
       <Route path='/travellingtopuertoviejo' element={<TravellingToPuerto />} />
@@ -257,6 +261,16 @@ const AppRouter = () => {
       </Route> */} 
       {/* <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} /> */}
+        {/*
+          A dedicated route, separate from the "*" catch-all below, so
+          react-snap (which navigates to explicit paths, not wildcards — see
+          package.json's reactSnap.include) can prerender a static 404.html.
+          scripts/generate-404.js copies the resulting build/404/index.html
+          to build/404.html, and .htaccess serves it with a real HTTP 404
+          status via ErrorDocument, instead of the soft-404 (200 + blank/
+          generic page) unknown URLs used to get.
+        */}
+        <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       </Suspense>

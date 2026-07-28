@@ -1,4 +1,14 @@
 # ============================================================================
+# 404 handling
+#
+# 404.html is copied from the pre-rendered build/404/index.html by
+# scripts/generate-404.js (runs in the postbuild chain, after react-snap).
+# ErrorDocument doesn't need mod_rewrite — it's what makes the mod_rewrite
+# catch-all's [R=404] below serve this page instead of the host's default.
+# ============================================================================
+ErrorDocument 404 /404.html
+
+# ============================================================================
 # Compression
 #
 # There were no compression directives here at all. Whether anything was
@@ -105,12 +115,29 @@
     RewriteRule ^llms\.txt$ - [L]
     RewriteRule ^llms-full\.txt$ - [L]
 
-    # Standard SPA fallback
     RewriteRule ^index\.html$ - [L]
+
+    # Client-side-only routes with no pre-rendered file: the booking engine,
+    # the guest portal, and the PayPal return page. Their content depends on
+    # server-side session state or query params, so react-snap never
+    # pre-renders them (see package.json's reactSnap.include) — they exist
+    # only once the SPA's own JS takes over. Send them to the SPA shell
+    # before the catch-all below turns them into false 404s.
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-l
-    RewriteRule . /index.html [L]
+    RewriteRule ^(book|bookES|portal|portalES|Success)(/.*)?$ /index.html [L]
+
+    # Everything else that isn't a real file, directory, or one of the routes
+    # above is genuinely unknown. This used to fall through to index.html
+    # with an HTTP 200 — a soft 404 that told search engines and any
+    # status-aware crawler an unrecognised URL was a real, indexable page.
+    # ErrorDocument (above) serves the branded 404 page; this just makes the
+    # status code honest.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-l
+    RewriteRule . - [R=404,L]
 </IfModule>
 
 # Log AI crawler access for analytics (if mod_log_config available)

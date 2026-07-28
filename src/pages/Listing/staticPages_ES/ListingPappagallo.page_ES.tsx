@@ -42,7 +42,7 @@ const ListingPappagalloES = () => {
     //const description = houseData?.description.split('<br/>');
     //const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
-        <div className={`listingContainer ${show && 'modal-open'}`}>
+        <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
                 <title>Casa Pappagallo - Casa Totalmente Equipada en Puerto Viejo</title>

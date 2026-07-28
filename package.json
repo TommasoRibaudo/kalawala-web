@@ -97,7 +97,7 @@
   "reactSnap": {
     "source": "build",
     "minifyHtml": {
-      "collapseWhitespace": true,
+      "collapseWhitespace": false,
       "removeComments": true
     },
     "puppeteerArgs": [

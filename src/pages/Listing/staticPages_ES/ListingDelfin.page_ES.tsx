@@ -41,7 +41,7 @@ const ListingDelfin = () => {
     //const description = houseData?.description.split('<br/>');
     //const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
-        <div className={`listingContainer ${show && 'modal-open'}`}>
+        <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
                 <title>Casa Delfín - Alquiler de Casa de Vacaciones en Puerto Viejo</title>

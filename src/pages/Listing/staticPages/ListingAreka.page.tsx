@@ -41,7 +41,7 @@ const ListingAreka = () => {
     //const description = houseData?.description.split('<br/>');
     //const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
-        <div className={`listingContainer ${show && 'modal-open'}`}>
+        <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
                 <title>House Areka - Couples Retreat with A/C</title>

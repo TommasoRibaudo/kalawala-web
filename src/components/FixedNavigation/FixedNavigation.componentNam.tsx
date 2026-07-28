@@ -61,11 +61,11 @@ const FixedNavigationNam = ({ isBlog }: IFixedNavigation) => {
         </div>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
-            <Nav.Link href="HomeNam#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`} onClick={closeMenu}>Home</Nav.Link>
+            <Nav.Link href="HomeNam#body" className={`navText${(isActive && !isBlog) ? ' active' : ''}`} onClick={closeMenu}>Home</Nav.Link>
             <Nav.Link href="HomeNam#body" className="navText" onClick={() => { handleLinkClick("HomeNam#body") }}>Availability</Nav.Link>
             <Nav.Link href="HomeNam#portfolio" className="navText" onClick={() => { handleLinkClick("HomeNam#portfolio") }}>Photos</Nav.Link>
             <Nav.Link href="HomeNam#contact-us" className="navText" onClick={() => { handleLinkClick("HomeNam#contact-us") }}>Contact</Nav.Link>
-            <Nav.Link href="twodaysinpuertoviejo" className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="twodaysinpuertoviejo" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
           </Nav>
         <div className="navbar-flag">
             <LanguageSwitcher />

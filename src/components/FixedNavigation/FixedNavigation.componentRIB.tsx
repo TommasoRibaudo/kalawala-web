@@ -61,11 +61,11 @@ const FixedNavigationRib = ({ isBlog }: IFixedNavigation) => {
         </div>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
-            <Nav.Link href="HomeVillas#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`} onClick={closeMenu}>Home</Nav.Link>
+            <Nav.Link href="HomeVillas#body" className={`navText${(isActive && !isBlog) ? ' active' : ''}`} onClick={closeMenu}>Home</Nav.Link>
             <Nav.Link href="HomeVillas#body" className="navText" onClick={() => { handleLinkClick("HomeVillas#callToAction") }}>Availability</Nav.Link>
             <Nav.Link href="HomeVillas#portfolio" className="navText" onClick={() => { handleLinkClick("HomeVillas#portfolio") }}>Photos</Nav.Link>
             <Nav.Link href="HomeVillas#contact-us" className="navText" onClick={() => { handleLinkClick("HomeVillas#contact-us") }}>Contact</Nav.Link>
-            <Nav.Link href="/twodaysinpuertoviejo" className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="/twodaysinpuertoviejo" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
           </Nav>
         <div className="navbar-flag">
             <LanguageSwitcher />

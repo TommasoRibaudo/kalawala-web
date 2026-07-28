@@ -35,7 +35,7 @@ const OtherHomesCard: FC<IOtherHomesCard> = ({ guestNumber, name, image, redirec
                 <div className="icons">
                     <div className="icon-group">
                         <FontAwesomeIcon icon={faUser} />
-                        <span>X{guestNumber}</span>
+                        <span>{`X${guestNumber}`}</span>
                     </div>
                     <FontAwesomeIcon icon={faSnowflake} />
                     <FontAwesomeIcon icon={faUtensils} />

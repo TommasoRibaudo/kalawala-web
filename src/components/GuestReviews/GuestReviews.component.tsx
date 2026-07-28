@@ -79,8 +79,13 @@ const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, isSpanish }) =
                   height so the cards stay aligned with one another. */}
               <p className="guest-reviews__location">{review.location}</p>
               <div className="guest-reviews__stars">{STARS}</div>
+              {/* One interpolation, deliberately. Adjacent JSX text children
+                  become separate text nodes, and react-snap saves the live DOM
+                  rather than renderToString output — so the snapshot has no
+                  `<!-- -->` separators to split them back apart and hydration
+                  finds one text node where React renders three (error #418). */}
               <p className="guest-reviews__meta">
-                {review.date}&nbsp;&middot;&nbsp;{stayLabel}
+                {`${review.date} · ${stayLabel}`}
               </p>
             </div>
           );

@@ -62,7 +62,7 @@ const MessageTip: React.FC<MessageTipProps> = ({
 
   return (
     <div 
-      className={`message-tip ${isVisible ? 'message-tip--visible' : ''}`}
+      className={`message-tip${isVisible ? ' message-tip--visible' : ''}`}
       onClick={handleClick}
       role="button"
       tabIndex={0}

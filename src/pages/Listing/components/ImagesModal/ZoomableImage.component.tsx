@@ -256,7 +256,7 @@ const ZoomableImage = ({ src, alt, onSwipe, onTap }: IZoomableImage) => {
   return (
     <div
       ref={stageRef}
-      className={`zoomableImage ${isZoomed ? 'zoomableImage--zoomed' : ''}`}
+      className={`zoomableImage${isZoomed ? ' zoomableImage--zoomed' : ''}`}
       onDoubleClick={handleDoubleClick}
       onClick={(e) => {
         if (e.detail > 1 || isGhostMouseEvent()) return; // double click, or a tap already handled

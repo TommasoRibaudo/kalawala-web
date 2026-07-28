@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Image } from 'react-bootstrap';
 import ImageSkeleton, { ImageSkeletonProps } from '../ImageSkeleton/ImageSkeleton.component';
 import { cdnSrcSet } from '../../utils/imageCdn';
+import { isPrerender } from '../../utils/isPrerender';
 import './ImageWithSkeleton.style.scss';
 
 export interface ImageWithSkeletonProps {
@@ -62,6 +63,7 @@ const ImageWithSkeleton: React.FC<ImageWithSkeletonProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleImageLoad = () => {
+    if (isPrerender()) return;
     setImageLoaded(true);
     setIsLoading(false);
     setHasError(false);
@@ -69,6 +71,7 @@ const ImageWithSkeleton: React.FC<ImageWithSkeletonProps> = ({
   };
 
   const handleImageError = () => {
+    if (isPrerender()) return;
     setIsLoading(false);
     setHasError(true);
     onError?.();

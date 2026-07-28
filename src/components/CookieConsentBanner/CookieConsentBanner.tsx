@@ -6,6 +6,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CookieConsentService, ConsentPreferences } from '../../services/CookieConsent.service';
+import { isPrerender } from '../../utils/isPrerender';
 import './CookieConsentBanner.scss';
 
 interface CookieConsentBannerProps {
@@ -71,6 +72,15 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onCons
   };
 
   useEffect(() => {
+    // react-snap saves the DOM after effects have run, so revealing the banner
+    // here baked it into all 46 pre-rendered pages. The client's first render
+    // has isVisible=false, so hydration found a banner where React rendered
+    // nothing — a mismatch on every single page load (React #418, then #423).
+    // Staying invisible during the crawl keeps the snapshot equal to the first
+    // client render, and it is better behaviour anyway: a visitor who already
+    // answered no longer gets a banner flashing in before JavaScript removes it.
+    if (isPrerender()) return;
+
     try {
       // Check if banner should be shown
       const shouldShow = CookieConsentService.shouldShowBanner();

@@ -5,6 +5,7 @@ import OtherListings from "../components/OtherListings/OtherListings.component";
 import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
+import Footer from "../../../components/Footer/Footer.component";
 import { NamSnippet } from "../../../utils/constants";
 import { HouseDataType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
@@ -29,7 +30,7 @@ const ListingAreka = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = NamDataList.find((house) => house.name === listing);
+    const houseData: HouseDataType | undefined = NamDataList.find((house) => house.houseLangCode === listing);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -44,7 +45,7 @@ const ListingAreka = () => {
         <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>House Areka - Couples Retreat with A/C</title>
+                <title>Casa Areka - Couples Retreat with A/C</title>
                 <meta name="description" content="New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Areka" />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Areka" />
@@ -59,7 +60,7 @@ const ListingAreka = () => {
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
-                        <h1 className="title">House Areka</h1>
+                        <h1 className="title">Casa Areka</h1>
                         <p className="location">
                             <a href="https://maps.app.goo.gl/cT74qg6iqX35aa5t9" target="_blank" rel="noopener noreferrer">
                                 Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica
@@ -123,6 +124,7 @@ const ListingAreka = () => {
                 <OtherListings listings={NamSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+            <Footer isSpanish={false} />
 
         </div>
     )

@@ -26,8 +26,8 @@ const OurOtherHomesES = () => {
         <div className="section">
           <h2>Casitas Privadas A Solo Unos Pasos Playa Chiquita, Puerto Viejo</h2>
           <div className="cards-container">
-          <OtherHomesCard guestNumber={2} name="Plumeria" image="https://lh3.googleusercontent.com/d/1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-=w1000" redirectPath="/PlumeriaES" />
-          <OtherHomesCard guestNumber={4} name="Giulia" image="https://lh3.googleusercontent.com/d/1v3hAHbAjvFf9CYaJx7IV8JqTbDKK__8S=w1000" redirectPath="/GiuliaES" />
+          <OtherHomesCard guestNumber={2} name="Casa Plumeria" image="https://lh3.googleusercontent.com/d/1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-=w1000" redirectPath="/PlumeriaES" />
+          <OtherHomesCard guestNumber={4} name="Casa Giulia" image="https://lh3.googleusercontent.com/d/1v3hAHbAjvFf9CYaJx7IV8JqTbDKK__8S=w1000" redirectPath="/GiuliaES" />
           </div>
        </div>
       </div>

@@ -5,6 +5,7 @@ import OtherListings from "../components/OtherListings/OtherListings.component";
 import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
+import Footer from "../../../components/Footer/Footer.component";
 import { VillaSnippet } from "../../../utils/constants";
 import { HouseDataType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
@@ -28,7 +29,11 @@ const ListingVillaMar = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = VillasDataList.find((house) => house.name === listing);
+    // `listing` ('Villa Mar', with a space) is the display/snippet-lookup
+    // value used below for ImagesContainer/OtherListings/ImagesModal — it is
+    // NOT the houseLangCode, which has no space (matches the /VillaMar route,
+    // same as the propertyKey="VillaMar" literals elsewhere in this file).
+    const houseData: HouseDataType | undefined = VillasDataList.find((house) => house.houseLangCode === 'VillaMar');
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -125,6 +130,7 @@ const ListingVillaMar = () => {
                 <OtherListings listings={VillaSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+            <Footer isSpanish={false} />
 
         </div>
     )

@@ -4,6 +4,7 @@ import './Discover.style.scss';
 import { Image } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faConciergeBell, faCalendarCheck, faCancel, faDollarSign } from '@fortawesome/free-solid-svg-icons';
+import { PORTFOLIO_PROPERTY_COUNT, PORTFOLIO_BEDROOM_RANGE, PORTFOLIO_GUEST_RANGE } from '../../utils/constants';
 
 const DISCOVER_IMAGE =
   'https://lh3.googleusercontent.com/d/1RIAdGXizO6a6cCoL8ErA881olP-9YGNW=w1000';
@@ -22,7 +23,7 @@ const Discover = () => {
           <div className="col-md-6">
             <div className="content-block">
               <h2>Discover Puerto Viejo from the comfort of our homes.</h2>
-              <p>Reservas Kalawala offers 4 remodeled homes, <b>with fully equipped, private kitchen and bathroom</b>. Each house has 2 bedrooms and <b>2 Air Conditioning units</b>.</p>
+              <p>Reservas Kalawala offers {PORTFOLIO_PROPERTY_COUNT} remodeled homes and villas, <b>each with a fully equipped private kitchen and bathroom</b>. Houses sleep {PORTFOLIO_GUEST_RANGE.min} to {PORTFOLIO_GUEST_RANGE.max} guests, with {PORTFOLIO_BEDROOM_RANGE.min} to {PORTFOLIO_BEDROOM_RANGE.max} bedrooms and <b>air conditioning throughout</b>.</p>
               <p>Located in the center of Puerto Viejo, all the bars and restaurants are within <b>walking distance</b>. Cocles beach can be reached by car in 2 minutes, and there are closeby bike and motorbike rentals so that also Punta Uva, Cahuita and Manzanillo are within reach, even without a car!</p>
               <p><b>Working from home?</b> We offer <b>free WIFI</b>, with a maximum speed of <b>100Mbps</b>. We stipulated two different contracts with our internet provider, so your internet connection will be shared between fewer devices, achieving less latency during meetings.</p>
               <p><b>Pet Friendly!</b> In all our spaces. Casa Rana and Casa Gecko are the perfect options for your pet, as they come with a garden. But a small house pet could comfortably stay in the other houses too!</p>

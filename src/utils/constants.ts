@@ -1092,7 +1092,7 @@ export const ribHouseDataEngList: HouseDataType[] = [
     }]
 export const houseDataEngList: HouseDataType[] = [
     {
-        name: "Geco",
+        name: "Casa Geco",
         guestNumber: 5,
         location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.<br/>   Most shops and restaurants are just a short walk away, and there is a nearby jungle path that runs along the ocean and leads to natural pools in the coral and to Cocles.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.<br/>   Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.<br/>    If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
@@ -1131,7 +1131,7 @@ export const houseDataEngList: HouseDataType[] = [
         ],
     },
     {
-        name: "Rana",
+        name: "Casa Rana",
         guestNumber: 5,
         location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space. Our prime location ensures easy access to both the town center and the beaches of Puerto Viejo.<br/>     The house offers complete privacy, with all described spaces, including the kitchen and bathroom, exclusively for your use. You'll have all the amenities needed to feel at home.<br/>     You'll find most shops and restaurants within a short walking distance. Additionally, a nearby jungle path along the ocean leads to natural coral pools and Cocles.<br/>     Have a special request? We are happy to accommodate if possible. Please don't hesitate to let us know.<br/>     We strongly recommend this option if you are planning to travel with your pet, as it offers a small, fenced garden.",
@@ -1168,7 +1168,7 @@ export const houseDataEngList: HouseDataType[] = [
         ],
     },
     {
-        name: "Tucano",
+        name: "Casa Tucano",
         guestNumber: 5,
         location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "This house offers a delightful experience in the heart of Puerto Viejo with a charming wooden apartment located above an Italian bakery. The apartment features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and two A/C units, ensuring a cozy stay.<br/>    These apartments provide private spaces, including the kitchen and bathroom, offering everything you need to feel at home. For stays of 5 nights or more, we provide complimentary cleaning services, and our team will coordinate a suitable time with you during your visit.<br/>    If you have any special requests, we're happy to accommodate them whenever possible, so don't hesitate to let us know. Should you need a pack-and-play crib for your stay, please inform us in advance, and we'll ensure it's set up in your room during the cleaning process.",
@@ -1207,7 +1207,7 @@ export const houseDataEngList: HouseDataType[] = [
     },
 
     {
-        name: "Pappagallo",
+        name: "Casa Pappagallo",
         guestNumber: 5,
         location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Welcome to Kalawala, a charming complex of two apartments located in the heart of Puerto Viejo. Each apartment is built entirely of wood and is situated above a delightful Italian bakery. The apartments are equipped with everything you need for a comfortable stay, including a fully equipped kitchen, two cozy bedrooms, a lovely terrace, two A/C units, and one well equipped bathroom.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.<br/>    Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.<br/>    If you require a pack - and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
@@ -1244,7 +1244,7 @@ export const houseDataEngList: HouseDataType[] = [
         ],
     },
     {
-        name: "Delfin",
+        name: "Casa Delfines",
         guestNumber: 6,
         location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, bathroom, 2 A/C units (not in kitchen or living room), and private parking. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer Automated check-in and check-out with lockbox key drop-off for your convenience.<br/>    Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.",
@@ -1279,7 +1279,7 @@ export const houseDataEngList: HouseDataType[] = [
 
 export const houseDataList: HouseDataType[] = [
     {
-        name: "Geco",
+        name: "Casa Geco",
         guestNumber: 5,
         location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.<br/>   Most shops and restaurants are just a short walk away, and there is a nearby jungle path that runs along the ocean and leads to natural pools in the coral and to Cocles.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.<br/>   Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.<br/>    If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
@@ -1318,7 +1318,7 @@ export const houseDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Rana",
+        name: "Casa Rana",
         guestNumber: 5,
         location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space. Our prime location ensures easy access to both the town center and the beaches of Puerto Viejo.<br/>     The house offers complete privacy, with all described spaces, including the kitchen and bathroom, exclusively for your use. You'll have all the amenities needed to feel at home.<br/>     You'll find most shops and restaurants within a short walking distance. Additionally, a nearby jungle path along the ocean leads to natural coral pools and Cocles.<br/>     Have a special request? We are happy to accommodate if possible. Please don't hesitate to let us know.<br/>     We strongly recommend this option if you are planning to travel with your pet, as it offers a small, fenced garden.",
@@ -1356,7 +1356,7 @@ export const houseDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Tucano",
+        name: "Casa Tucano",
         guestNumber: 5,
         location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "This house offers a delightful experience in the heart of Puerto Viejo with a charming wooden apartment located above an Italian bakery. The apartment features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and two A/C units, ensuring a cozy stay.<br/>    These apartments provide private spaces, including the kitchen and bathroom, offering everything you need to feel at home. For stays of 5 nights or more, we provide complimentary cleaning services, and our team will coordinate a suitable time with you during your visit.<br/>    If you have any special requests, we're happy to accommodate them whenever possible, so don't hesitate to let us know. Should you need a pack-and-play crib for your stay, please inform us in advance, and we'll ensure it's set up in your room during the cleaning process.",
@@ -1395,7 +1395,7 @@ export const houseDataList: HouseDataType[] = [
     },
 
     {
-        name: "Pappagallo",
+        name: "Casa Pappagallo",
         guestNumber: 5,
         location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Welcome to Kalawala, a charming complex of two apartments located in the heart of Puerto Viejo. Each apartment is built entirely of wood and is situated above a delightful Italian bakery. The apartments are equipped with everything you need for a comfortable stay, including a fully equipped kitchen, two cozy bedrooms, a lovely terrace, two A/C units, and one well equipped bathroom.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.<br/>    Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.<br/>    If you require a pack - and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
@@ -1432,7 +1432,7 @@ export const houseDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Geco",
+        name: "Casa Geco",
         guestNumber: 5,
         location: "AAA Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.<br/>   Most shops and restaurants are just a short walk away, and there is a nearby jungle path that runs along the ocean and leads to natural pools in the coral and to Cocles.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.<br/>   Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.<br/>    If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
@@ -1470,7 +1470,7 @@ export const houseDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Rana",
+        name: "Casa Rana",
         guestNumber: 5,
         location: "AAA Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space. Our prime location ensures easy access to both the town center and the beaches of Puerto Viejo.<br/>     The house offers complete privacy, with all described spaces, including the kitchen and bathroom, exclusively for your use. You'll have all the amenities needed to feel at home.<br/>     You'll find most shops and restaurants within a short walking distance. Additionally, a nearby jungle path along the ocean leads to natural coral pools and Cocles.<br/>     Have a special request? We are happy to accommodate if possible. Please don't hesitate to let us know.<br/>     We strongly recommend this option if you are planning to travel with your pet, as it offers a small, fenced garden.",
@@ -1507,7 +1507,7 @@ export const houseDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Tucano",
+        name: "Casa Tucano",
         guestNumber: 5,
         location: "AAA Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "This house offers a delightful experience in the heart of Puerto Viejo with a charming wooden apartment located above an Italian bakery. The apartment features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and two A/C units, ensuring a cozy stay.<br/>    These apartments provide private spaces, including the kitchen and bathroom, offering everything you need to feel at home. For stays of 5 nights or more, we provide complimentary cleaning services, and our team will coordinate a suitable time with you during your visit.<br/>    If you have any special requests, we're happy to accommodate them whenever possible, so don't hesitate to let us know. Should you need a pack-and-play crib for your stay, please inform us in advance, and we'll ensure it's set up in your room during the cleaning process.",
@@ -1546,7 +1546,7 @@ export const houseDataList: HouseDataType[] = [
     },
 
     {
-        name: "Pappagallo",
+        name: "Casa Pappagallo",
         guestNumber: 5,
         location: "AAA Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Welcome to Kalawala, a charming complex of two apartments located in the heart of Puerto Viejo. Each apartment is built entirely of wood and is situated above a delightful Italian bakery. The apartments are equipped with everything you need for a comfortable stay, including a fully equipped kitchen, two cozy bedrooms, a lovely terrace, two A/C units, and one well equipped bathroom.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.<br/>    Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.<br/>    If you require a pack - and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
@@ -1583,7 +1583,7 @@ export const houseDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Delfin",
+        name: "Casa Delfines",
         guestNumber: 6,
         location: "Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, bathroom, 2 A/C units (not in kitchen or living room), and private parking. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.<br/>    All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.<br/>    We offer flexible check-out with lockbox key drop-off for your convenience.<br/>    Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.",
@@ -1616,7 +1616,7 @@ export const houseDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Delfín",
+        name: "Casa Delfines",
         guestNumber: 6,
         location: "AAA Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "Bienvenido a Reservas Kalawala. Ubicada en el corazón del pueblo, esta casa acomoda hasta 6 huéspedes con cocina totalmente equipada, baño, 2 unidades de aire acondicionado (no en cocina o sala de estar), y estacionamiento privado. Nuestra ubicación privilegiada ofrece fácil acceso tanto al centro del pueblo como a las playas más hermosas que Puerto Viejo tiene para ofrecer.<br/>    Todos los espacios descritos aquí son privados, incluyendo la cocina totalmente equipada y el baño. Tendrás todo lo que necesitas para sentirte como en casa.<br/>    Ofrecemos check-out flexible con entrega de llaves en caja de seguridad para tu conveniencia.<br/>    ¿Tienes alguna solicitud especial? Estaremos más que felices de complacerte si podemos. Por favor no dudes en hacérnoslo saber.",
@@ -1805,7 +1805,7 @@ export const VillasDataListES: HouseDataType[] = [
 
 export const NamDataList: HouseDataType[] = [
     {
-        name: "Areka",
+        name: "Casa Areka",
         guestNumber: 2,
         location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "",
@@ -1838,7 +1838,7 @@ export const NamDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Plumeria",
+        name: "Casa Plumeria",
         guestNumber: 2,
         location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "",
@@ -1871,7 +1871,7 @@ export const NamDataList: HouseDataType[] = [
         ],
     },
     {
-        name: "Giulia",
+        name: "Casa Giulia",
         guestNumber: 4,
         location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "",
@@ -1908,7 +1908,7 @@ export const NamDataList: HouseDataType[] = [
 
 export const NamDataListES: HouseDataType[] = [
     {
-        name: "Areka",
+        name: "Casa Areka",
         guestNumber: 2,
         location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "",
@@ -1941,7 +1941,7 @@ export const NamDataListES: HouseDataType[] = [
         ],
     },
     {
-        name: "Plumeria",
+        name: "Casa Plumeria",
         guestNumber: 2,
         location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "",
@@ -1974,7 +1974,7 @@ export const NamDataListES: HouseDataType[] = [
         ],
     },
     {
-        name: "Giulia",
+        name: "Casa Giulia",
         guestNumber: 4,
         location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
         description: "",
@@ -2026,7 +2026,7 @@ export const PROPERTY_DISPLAY_NAMES: Record<string, string> = {
     Areka: 'Casa Areka',
     Plumeria: 'Casa Plumeria',
     Giulia: 'Casa Giulia',
-    Delfin: 'Casa Delfin',
+    Delfin: 'Casa Delfines',
 };
 
 // Bedroom / bathroom counts and sleeping capacity, shown as a fact row at the
@@ -2354,7 +2354,7 @@ export const PUERTO_VIEJO_BLOG_RECOMMENDATIONS: PropertyRecommendation[] = [
     houseCode: 1
   },
   {
-    name: 'Plumeria',
+    name: 'Casa Plumeria',
     reason: 'Perfecta para descansar cerca de la playa',
     link: '/Plumeria',
     houseCode: 8
@@ -2376,7 +2376,7 @@ export const GENERAL_PUERTO_VIEJO_RECOMMENDATIONS: PropertyRecommendation[] = [
     houseCode: 1
   },
   {
-    name: 'Plumeria',
+    name: 'Casa Plumeria',
     reason: 'Ideal for beach relaxation',
     link: '/Plumeria',
     houseCode: 8
@@ -2392,7 +2392,7 @@ export const GENERAL_PUERTO_VIEJO_RECOMMENDATIONS: PropertyRecommendation[] = [
 // Cahuita-focused recommendations
 export const CAHUITA_AREA_RECOMMENDATIONS: PropertyRecommendation[] = [
   {
-    name: 'Plumeria',
+    name: 'Casa Plumeria',
     reason: 'Perfect Retreat for Couples',
     link: '/Plumeria',
     houseCode: 8
@@ -2420,7 +2420,7 @@ export const PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES: PropertyRecommendation[] = [
     houseCode: 1
   },
   {
-    name: 'Plumeria',
+    name: 'Casa Plumeria',
     reason: 'Perfecta para descansar cerca de la playa',
     link: '/PlumeriaES',
     houseCode: 8
@@ -2442,3 +2442,47 @@ export const MAX_PORTFOLIO_GUESTS: number = houseDataEngList.reduce(
   (max, house) => Math.max(max, house.guestNumber),
   1
 );
+
+/**
+ * Portfolio-wide bedroom/bathroom/guest ranges, derived from PROPERTY_CAPACITY
+ * so homepage copy can't drift from the per-listing facts the way the old
+ * hardcoded "4 remodeled homes... each house has 2 bedrooms" line did — that
+ * claim contradicted both the 9-10 differently-sized cards shown on the same
+ * page and PROPERTY_CAPACITY itself (bedrooms range from 1 to 2).
+ */
+const CAPACITY_VALUES = Object.values(PROPERTY_CAPACITY);
+export const PORTFOLIO_PROPERTY_COUNT: number = CAPACITY_VALUES.length;
+export const PORTFOLIO_BEDROOM_RANGE: { min: number; max: number } = CAPACITY_VALUES.reduce(
+  (range, { bedrooms }) => ({ min: Math.min(range.min, bedrooms), max: Math.max(range.max, bedrooms) }),
+  { min: Infinity, max: 0 }
+);
+export const PORTFOLIO_GUEST_RANGE: { min: number; max: number } = CAPACITY_VALUES.reduce(
+  (range, { maxGuests }) => ({ min: Math.min(range.min, maxGuests), max: Math.max(range.max, maxGuests) }),
+  { min: Infinity, max: 0 }
+);
+
+export interface BlogArticle {
+  key: string;
+  titleEn: string;
+  titleEs: string;
+  pathEn: string;
+  pathEs: string;
+}
+
+/**
+ * The ten travel guides, in one place, so the footer and the blog index don't
+ * drift apart. Titles here are short link labels, not the full SEO <title> —
+ * see src/pages/Blog/staticPages(_ES) for the per-article long-form title.
+ */
+export const BLOG_ARTICLES: BlogArticle[] = [
+  { key: 'twodays', titleEn: '2 Days in Puerto Viejo', titleEs: '2 días en Puerto Viejo', pathEn: '/twodaysinpuertoviejo', pathEs: '/twodaysinpuertoviejoES' },
+  { key: 'gandoca', titleEn: 'Getting to Gandoca-Manzanillo', titleEs: 'Cómo llegar a Gandoca-Manzanillo', pathEn: '/gettingtogandoca', pathEs: '/gettingtogandocaES' },
+  { key: 'sanjose', titleEn: 'From San José to Puerto Viejo', titleEs: 'De San José a Puerto Viejo', pathEn: '/travellingtopuertoviejo', pathEs: '/travellingtopuertoviejoES' },
+  { key: 'byplane', titleEn: 'Getting to Puerto Viejo by Plane', titleEs: 'Llegar a Puerto Viejo en avión', pathEn: '/puertoviejobyplane', pathEs: '/puertoviejobyplaneES' },
+  { key: 'tenhours', titleEn: 'Ten Hours to Explore Cahuita', titleEs: 'Diez horas para explorar Cahuita', pathEn: '/TenHoursInPuerto', pathEs: '/TenHoursInPuertoES' },
+  { key: 'bushours', titleEn: 'Bus Schedule & Routes', titleEs: 'Horarios de autobuses', pathEn: '/bushours', pathEs: '/bushoursES' },
+  { key: 'cahuitapark', titleEn: 'Visiting Cahuita National Park', titleEs: 'Visitar el Parque Nacional Cahuita', pathEn: '/cahuitaparkwhattodo', pathEs: '/cahuitaparkwhattodoES' },
+  { key: 'indigenous', titleEn: 'Indigenous Culture Nearby', titleEs: 'Cultura indígena cercana', pathEn: '/indigenousTravelPV', pathEs: '/indigenousTravelPVES' },
+  { key: 'besttime', titleEn: 'Best Time to Visit', titleEs: 'Mejor época para visitar', pathEn: '/bestTimeToVisitPuerto', pathEs: '/bestTimeToVisitPuertoES' },
+  { key: 'hiddengems', titleEn: 'Hidden Gems in Puerto Viejo', titleEs: 'Joyas escondidas', pathEn: '/puertoHiddenGems', pathEs: '/puertoHiddenGemsES' },
+];

@@ -245,6 +245,111 @@ describe('MetaPixel Service', () => {
     });
   });
 
+  describe('Script Load Failures', () => {
+    /**
+     * CRA's Jest preset sets `resetMocks`, so the document mocks installed in
+     * beforeAll lose their implementations before each test. Any test that
+     * needs a script element installs its own.
+     *
+     * `onAppend` stands in for the browser: call `onerror` to model a refused
+     * request (a content blocker, a DNS filter, a proxy), or leave it out to
+     * model a request that goes out and never comes back.
+     */
+    const stubScriptElement = (onAppend?: (script: any) => void) => {
+      const script: any = { async: false, src: '', remove: jest.fn(), onload: null, onerror: null };
+
+      (document.createElement as jest.Mock).mockImplementation((tagName: string) =>
+        tagName === 'script' ? script : { appendChild: jest.fn(), style: {}, src: '' }
+      );
+      (document.querySelector as jest.Mock).mockImplementation(() => null);
+      (document.head.appendChild as jest.Mock).mockImplementation((element: any) => {
+        if (element === script) {
+          onAppend?.(script);
+        }
+        return element;
+      });
+
+      // The noscript fallback is appended to head too, so count only the script.
+      const insertions = () =>
+        (document.head.appendChild as jest.Mock).mock.calls.filter(call => call[0] === script).length;
+
+      return { script, insertions };
+    };
+
+    test('does not retry a script the browser refused', async () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const { insertions } = stubScriptElement(script => script.onerror());
+
+      const blockedService = new MetaPixelService(validConfig);
+      await blockedService.initialize();
+
+      // One attempt. The browser refused the request before any bytes moved and
+      // will refuse it again; the old code spent 4s proving that three times.
+      expect(insertions()).toBe(1);
+      expect(blockedService.getErrorHistory().filter(e => e.message.startsWith('Attempt'))).toHaveLength(1);
+      expect(blockedService.getErrorHistory().every(e => e.type === 'SCRIPT_LOAD_ERROR')).toBe(true);
+      expect(blockedService.getState().hasError).toBe(true);
+      expect(blockedService.isInitialized()).toBe(false);
+
+      // A blocked pixel is expected, handled, and outside the site's control:
+      // a warning, not the console.error visitors were reporting as a fault.
+      expect(errorSpy).not.toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('the site is unaffected'));
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('content blocker'));
+
+      warnSpy.mockRestore();
+      errorSpy.mockRestore();
+    });
+
+    test('still retries a script that times out', async () => {
+      const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const { insertions } = stubScriptElement();
+
+      const timingOutService = new MetaPixelService(validConfig);
+      // Real timers, compressed: a request that went out and never came back is
+      // the one failure another attempt can actually fix.
+      (timingOutService as any).TIMEOUT_MS = 10;
+      (timingOutService as any).retryTimeouts = [1, 1];
+
+      await timingOutService.initialize();
+
+      expect(insertions()).toBe(3); // initial attempt + MAX_RETRIES
+      expect(timingOutService.getErrorHistory().every(e => e.type === 'TIMEOUT_ERROR')).toBe(true);
+      expect(timingOutService.getState().errorMessage).toContain('after 2 retries');
+      expect(errorSpy).toHaveBeenCalled();
+
+      errorSpy.mockRestore();
+    });
+
+    test('builds no noscript beacon, which was double-counting every PageView', async () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      stubScriptElement(script => script.onerror());
+
+      const beaconService = new MetaPixelService(validConfig);
+      await beaconService.initialize();
+
+      // Setting `src` on an <img> sends the request there and then, so building
+      // the "fallback" fired a PageView beacon on top of fbq('track','PageView').
+      const created = (document.createElement as jest.Mock).mock.calls.map(call => call[0]);
+      expect(created).not.toContain('img');
+      expect(created).not.toContain('noscript');
+
+      warnSpy.mockRestore();
+    });
+
+    test('classifies a refused script as SCRIPT_LOAD_ERROR, not NETWORK_ERROR', () => {
+      const classify = (message: string) => (service as any).getErrorType(new Error(message));
+
+      // 'Script loading failed' contains 'loading', so while the network branch
+      // was tested first every blocked script was reported as NETWORK_ERROR.
+      expect(classify('Script loading failed')).toBe('SCRIPT_LOAD_ERROR');
+      expect(classify('Script loading timeout')).toBe('TIMEOUT_ERROR');
+      expect(classify('Network unavailable')).toBe('NETWORK_ERROR');
+      expect(classify('something unexpected')).toBe('INITIALIZATION_ERROR');
+    });
+  });
+
   describe('Environment Configuration Validation', () => {
     test('should validate required pixel ID from environment', () => {
       expect(process.env.REACT_APP_META_PIXEL_ID).toBe('1167925005402403');

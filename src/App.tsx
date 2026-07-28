@@ -386,6 +386,10 @@ function App() {
         }
       }
     };
+    // Intentionally keyed on consent alone. The omitted values are set BY this
+    // effect (pixel/GA4 state) or recreated each render (initializeGA4SmoobuTracking),
+    // so including them would re-enter initialisation on its own output.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canTrack]); // Re-run when consent status changes
 
   return (

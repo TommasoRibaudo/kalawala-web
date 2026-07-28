@@ -23,7 +23,7 @@ const PROPERTY_LABELS: Record<string, { en: string; es: string }> = {
   PLUMERIA: { en: 'House Plumeria', es: 'Casa Plumeria' },
   GIULIA: { en: 'Casa Giulia', es: 'Casa Giulia' },
   'VILLA MAR': { en: 'Villa Mar', es: 'Villa Mar' },
-  DELFINES: { en: 'House Delfines', es: 'Casa Delfines' },
+  DELFINES: { en: 'Casa Delfines', es: 'Casa Delfines' },
 };
 
 // Round-robin interleave so consecutive cards are always from different properties
@@ -101,6 +101,26 @@ const HomeReviews: React.FC<HomeReviewsProps> = ({ isSpanish }) => {
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [activeReview]);
 
+  // Let a vertical wheel gesture scroll the page instead of this track.
+  // Chromium redirects vertical wheel input into horizontal scroll on any
+  // element that can only scroll on the X axis — no custom handling needed
+  // to cause it, which is why a visitor scrolling straight down the page
+  // gets stuck the moment the cursor crosses this track. React attaches
+  // wheel listeners as passive by default, so calling preventDefault() from
+  // an onWheel prop is silently ignored; this has to be a real DOM listener
+  // registered with { passive: false }.
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        window.scrollBy(0, e.deltaY);
+      }
+    };
+    track.addEventListener('wheel', onWheel, { passive: false });
+    return () => track.removeEventListener('wheel', onWheel);
+  }, []);
 
   // Panel: lock body scroll + ESC to close
   useEffect(() => {

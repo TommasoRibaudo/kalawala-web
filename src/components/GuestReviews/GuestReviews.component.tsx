@@ -12,9 +12,30 @@ const STARS = '★★★★★';
 const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, isSpanish }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
 
   const openPanel = () => setIsPanelOpen(true);
   const closePanel = () => setIsPanelOpen(false);
+
+  // Only horizontally-scrollable below 768px (see GuestReviews.style.scss).
+  // Chromium redirects a vertical wheel gesture into horizontal scroll on any
+  // element that can only scroll on the X axis, so without this a visitor
+  // scrolling down the page gets stuck the moment the cursor crosses this
+  // row. React attaches wheel listeners as passive by default, so
+  // preventDefault() from an onWheel prop is silently ignored — this has to
+  // be a real DOM listener registered with { passive: false }.
+  useEffect(() => {
+    const cards = cardsRef.current;
+    if (!cards) return;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        window.scrollBy(0, e.deltaY);
+      }
+    };
+    cards.addEventListener('wheel', onWheel, { passive: false });
+    return () => cards.removeEventListener('wheel', onWheel);
+  }, []);
 
   useEffect(() => {
     if (!isPanelOpen) return;
@@ -60,7 +81,7 @@ const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, isSpanish }) =
     <div className="guest-reviews">
       <h2 className="guest-reviews__title">{heading}</h2>
 
-      <div className="guest-reviews__cards">
+      <div className="guest-reviews__cards" ref={cardsRef}>
         {reviews.map((review, index) => {
           const { text, stayLabel } = renderReviewMeta(review);
           return (

@@ -17,14 +17,21 @@ interface IHomeCard {
 const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangCode }) => {
 
     const navigate = useNavigate();
-    const handleClick = () => {
+    const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+        // A real href already handles ctrl/cmd-click, middle-click and "open in
+        // new tab" correctly — only take over plain left-clicks so those keep
+        // working, and use the SPA transition (no full reload) for everything else.
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+            return;
+        }
+        event.preventDefault();
         navigate(`/${houseLangCode}`);
         setTimeout(() => {
             window.scrollTo(0, 0);
         }, 0);
     };
     return (
-        <div className="home-card-item" data-wow-duration="500ms" onClick={handleClick}>
+        <a className="home-card-item" data-wow-duration="500ms" href={`/${houseLangCode}`} onClick={handleClick}>
             <div className="block">
                 <div className="icon-box d-block mx-auto">
                     <img src={image} alt={name} className="img-fluid rounded our-homes-img-m" width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(image)} sizes="160px" />
@@ -44,7 +51,7 @@ const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangC
                 </div>
             </div>
 
-        </div>
+        </a>
     )
 }
 export default HomeCard;

@@ -75,8 +75,6 @@
   <link rel="icon" type="image/png" sizes="64x64" href="%PUBLIC_URL%/logo64.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#000000" />
-  <meta name="description"
-    content="Discover our homes, cheaper than any other platform! Welcome to Kalawala, we offer fully equipped vacation homes nestled in the heart of Puerto Viejo de Talamanca, Costa Rica. Our houses offer space for up to 5 people, 2 A/C units, fully equipped private bathroom and kitchen and free Wi-Fi internet connection." />
   <link rel="apple-touch-icon" sizes="192x192" href="%PUBLIC_URL%/logo192.png" />
   <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -128,14 +126,21 @@
   <!-- LLM-friendly content link -->
   <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLM-friendly site summary" />
 
-  <!-- No <link rel="canonical"> here.
-       Every routed page sets its own canonical via react-helmet, and
-       react-snap bakes that into the pre-rendered HTML. This file's copy was
-       appended too, so all 45 non-root pages shipped TWO conflicting
-       canonicals — the first of them pointing at the homepage. That is what
-       failed Lighthouse's `canonical` audit on every page except `/`.
-       Anything that varies per route (canonical, og:url, og:title,
-       og:description, og:locale) belongs in the page's <Helmet>, not here. -->
+  <!-- No <link rel="canonical"> and no <meta name="description"> here.
+       Every routed page sets both via react-helmet, and react-snap bakes
+       that into the pre-rendered HTML. This file's copies were appended
+       alongside them rather than replaced — react-helmet only manages tags
+       it added itself, so a tag already sitting in the static HTML before
+       React mounts is invisible to it and never gets removed. All 45+
+       non-root pages ended up shipping TWO of each: a page-specific one from
+       Helmet, and this file's generic one right before it in <head> order —
+       which most crawlers treat as authoritative, since it appears first.
+       That's what failed Lighthouse's `canonical` audit on every page except
+       `/`, and why every page's meta description looked identical regardless
+       of what its own <Helmet> declared.
+       Anything that varies per route (canonical, description, og:url,
+       og:title, og:description, og:locale) belongs in the page's <Helmet>,
+       not here. -->
 
   <!-- Open Graph defaults. Only genuinely site-wide values live here; the
        per-page overrides come from each page's <Helmet>. -->
@@ -149,131 +154,292 @@
 
   <!-- Schema.org JSON-LD structured data for AI and search engines -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "VacationRental",
-    "name": "Reservas Kalawala",
-    "description": "Family-run vacation rental company offering fully equipped houses and villas in Puerto Viejo de Talamanca, Costa Rica. 10 properties sleeping 2-8 guests with private kitchens, bathrooms, A/C, and free WiFi. Book direct for the best rates.",
-    "url": "https://www.reservaskalawala.com",
-    "image": "https://www.reservaskalawala.com/logo.png",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Puerto Viejo de Talamanca",
-      "addressRegion": "Limón",
-      "addressCountry": "CR"
+{
+  "@context": "https://schema.org",
+  "@type": "VacationRental",
+  "name": "Reservas Kalawala",
+  "description": "Family-run vacation rental company offering fully equipped houses and villas in Puerto Viejo de Talamanca, Costa Rica. 10 properties sleeping 2-8 guests with private kitchens, bathrooms, A/C, and free WiFi. Book direct for the best rates.",
+  "url": "https://www.reservaskalawala.com",
+  "image": "https://www.reservaskalawala.com/logo.png",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Puerto Viejo de Talamanca",
+    "addressRegion": "Limón",
+    "addressCountry": "CR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 9.6561,
+    "longitude": -82.7539
+  },
+  "amenityFeature": [
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Free WiFi",
+      "value": true
     },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 9.6561,
-      "longitude": -82.7539
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Air Conditioning",
+      "value": true
     },
-    "amenityFeature": [
-      { "@type": "LocationFeatureSpecification", "name": "Free WiFi", "value": true },
-      { "@type": "LocationFeatureSpecification", "name": "Air Conditioning", "value": true },
-      { "@type": "LocationFeatureSpecification", "name": "Fully Equipped Kitchen", "value": true },
-      { "@type": "LocationFeatureSpecification", "name": "Private Bathroom", "value": true },
-      { "@type": "LocationFeatureSpecification", "name": "Pet Friendly", "value": true },
-      { "@type": "LocationFeatureSpecification", "name": "Free Parking", "value": true },
-      { "@type": "LocationFeatureSpecification", "name": "Towels and Toiletries", "value": true },
-      { "@type": "LocationFeatureSpecification", "name": "Bed Linens", "value": true }
-    ],
-    "numberOfRooms": 10,
-    "petsAllowed": true,
-    "checkinTime": "15:00",
-    "checkoutTime": "11:00",
-    "availableLanguage": ["English", "Spanish"],
-    "containsPlace": [
-      {
-        "@type": "Accommodation",
-        "name": "Casa Geco",
-        "url": "https://www.reservaskalawala.com/Geco",
-        "description": "2-bedroom house in the heart of Puerto Viejo, sleeps 5, private fenced parking, pet friendly, fully equipped kitchen, 2 A/C units, 100Mbps WiFi.",
-        "occupancy": { "@type": "QuantitativeValue", "maxValue": 5 },
-        "numberOfBedrooms": 2,
-        "numberOfBathroomsTotal": 1,
-        "petsAllowed": true
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Fully Equipped Kitchen",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Private Bathroom",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Pet Friendly",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Free Parking",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Towels and Toiletries",
+      "value": true
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      "name": "Bed Linens",
+      "value": true
+    }
+  ],
+  "numberOfRooms": 10,
+  "petsAllowed": true,
+  "checkinTime": "15:00",
+  "checkoutTime": "11:00",
+  "availableLanguage": [
+    "English",
+    "Spanish"
+  ],
+  "containsPlace": [
+    {
+      "@type": "Accommodation",
+      "name": "Casa Geco",
+      "url": "https://www.reservaskalawala.com/Geco",
+      "description": "2-bedroom house in the heart of Puerto Viejo, sleeps 5, private fenced parking, pet friendly, fully equipped kitchen, 2 A/C units, 100Mbps WiFi.",
+      "occupancy": {
+        "@type": "QuantitativeValue",
+        "maxValue": 5
       },
-      {
-        "@type": "Accommodation",
-        "name": "Casa Rana",
-        "url": "https://www.reservaskalawala.com/Rana",
-        "description": "2-bedroom house in the heart of Puerto Viejo, sleeps 5, private fenced parking, pet friendly with fenced garden, fully equipped kitchen, 2 A/C units.",
-        "occupancy": { "@type": "QuantitativeValue", "maxValue": 5 },
-        "numberOfBedrooms": 2,
-        "numberOfBathroomsTotal": 1,
-        "petsAllowed": true
-      },
-      {
-        "@type": "Accommodation",
-        "name": "Casa Tucano",
-        "url": "https://www.reservaskalawala.com/Tucano",
-        "description": "2-bedroom wooden apartment above Italian bakery, sleeps 5, terrace, pet friendly, fully equipped kitchen, 2 A/C units.",
-        "occupancy": { "@type": "QuantitativeValue", "maxValue": 5 },
-        "numberOfBedrooms": 2,
-        "numberOfBathroomsTotal": 1,
-        "petsAllowed": true
-      },
-      {
-        "@type": "Accommodation",
-        "name": "Casa Pappagallo",
-        "url": "https://www.reservaskalawala.com/Pappagallo",
-        "description": "2-bedroom wooden apartment above Italian bakery, sleeps 5, terrace, pet friendly, remodeled 2021, fully equipped kitchen, 2 A/C units.",
-        "occupancy": { "@type": "QuantitativeValue", "maxValue": 5 },
-        "numberOfBedrooms": 2,
-        "numberOfBathroomsTotal": 1,
-        "petsAllowed": true
-      },
-      {
-        "@type": "Accommodation",
-        "name": "Casa Delfin",
-        "url": "https://www.reservaskalawala.com/Delfin",
-        "description": "3-bedroom house, sleeps 6, 2 bathrooms, private parking, flexible check-out with lockbox, fully equipped kitchen, 2 A/C units.",
-        "occupancy": { "@type": "QuantitativeValue", "maxValue": 6 },
-        "numberOfBedrooms": 3,
-        "numberOfBathroomsTotal": 2,
-        "petsAllowed": false
-      },
-      {
-        "@type": "Accommodation",
-        "name": "Casa Areka",
-        "url": "https://www.reservaskalawala.com/Areka",
-        "description": "Vacation rental in Playa Negra area, near black sand beach, Puerto Viejo."
-      },
-      {
-        "@type": "Accommodation",
-        "name": "Casa Giulia",
-        "url": "https://www.reservaskalawala.com/Giulia",
-        "description": "Vacation rental in Playa Negra area, near black sand beach, Puerto Viejo."
-      },
-      {
-        "@type": "Accommodation",
-        "name": "Casa Plumeria",
-        "url": "https://www.reservaskalawala.com/Plumeria",
-        "description": "Vacation rental in Playa Negra area, near black sand beach, Puerto Viejo."
-      },
-      {
-        "@type": "Accommodation",
-        "name": "Villa Mar",
-        "url": "https://www.reservaskalawala.com/VillaMar",
-        "description": "Villa with private pool, king-size bed, dedicated workspace with ethernet, fully equipped kitchen.",
-        "amenityFeature": [
-          { "@type": "LocationFeatureSpecification", "name": "Private Pool", "value": true },
-          { "@type": "LocationFeatureSpecification", "name": "Dedicated Workspace", "value": true }
-        ]
-      },
-      {
-        "@type": "Accommodation",
-        "name": "Villa Coral",
-        "url": "https://www.reservaskalawala.com/VillaCoral",
-        "description": "Villa with private pool, king-size bed, dedicated workspace with ethernet, fully equipped kitchen.",
-        "amenityFeature": [
-          { "@type": "LocationFeatureSpecification", "name": "Private Pool", "value": true },
-          { "@type": "LocationFeatureSpecification", "name": "Dedicated Workspace", "value": true }
-        ]
+      "numberOfBedrooms": 2,
+      "numberOfBathroomsTotal": 1,
+      "petsAllowed": true,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": 160,
+        "availability": "https://schema.org/InStock"
       }
-    ],
-    "tourBookingPage": "https://www.reservaskalawala.com"
+    },
+    {
+      "@type": "Accommodation",
+      "name": "Casa Rana",
+      "url": "https://www.reservaskalawala.com/Rana",
+      "description": "2-bedroom house in the heart of Puerto Viejo, sleeps 5, private fenced parking, pet friendly with fenced garden, fully equipped kitchen, 2 A/C units.",
+      "occupancy": {
+        "@type": "QuantitativeValue",
+        "maxValue": 5
+      },
+      "numberOfBedrooms": 2,
+      "numberOfBathroomsTotal": 1,
+      "petsAllowed": true,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": 160,
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Accommodation",
+      "name": "Casa Tucano",
+      "url": "https://www.reservaskalawala.com/Tucano",
+      "description": "2-bedroom wooden apartment above Italian bakery, sleeps 5, terrace, pet friendly, fully equipped kitchen, 2 A/C units.",
+      "occupancy": {
+        "@type": "QuantitativeValue",
+        "maxValue": 5
+      },
+      "numberOfBedrooms": 2,
+      "numberOfBathroomsTotal": 1,
+      "petsAllowed": true,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": 169,
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Accommodation",
+      "name": "Casa Pappagallo",
+      "url": "https://www.reservaskalawala.com/Pappagallo",
+      "description": "2-bedroom wooden apartment above Italian bakery, sleeps 5, terrace, pet friendly, remodeled 2021, fully equipped kitchen, 2 A/C units.",
+      "occupancy": {
+        "@type": "QuantitativeValue",
+        "maxValue": 5
+      },
+      "numberOfBedrooms": 2,
+      "numberOfBathroomsTotal": 1,
+      "petsAllowed": true,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": 169,
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Accommodation",
+      "name": "Casa Delfines",
+      "url": "https://www.reservaskalawala.com/Delfin",
+      "description": "2-bedroom house, sleeps 6, 2 bathrooms, private parking, flexible check-out with lockbox, fully equipped kitchen, 2 A/C units.",
+      "occupancy": {
+        "@type": "QuantitativeValue",
+        "maxValue": 6
+      },
+      "numberOfBedrooms": 2,
+      "numberOfBathroomsTotal": 2,
+      "petsAllowed": false,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": 199,
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Accommodation",
+      "name": "Casa Areka",
+      "url": "https://www.reservaskalawala.com/Areka",
+      "description": "Fully equipped bungalow with A/C, 200m from Playa Chiquita beach, a few minutes from Puerto Viejo and Manzanillo.",
+      "occupancy": {
+        "@type": "QuantitativeValue",
+        "maxValue": 2
+      },
+      "numberOfBedrooms": 1,
+      "numberOfBathroomsTotal": 1,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": 99,
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Accommodation",
+      "name": "Casa Giulia",
+      "url": "https://www.reservaskalawala.com/Giulia",
+      "description": "Fully equipped bungalow with A/C, 200m from Playa Chiquita beach. Perfect for families up to 4 people.",
+      "occupancy": {
+        "@type": "QuantitativeValue",
+        "maxValue": 4
+      },
+      "numberOfBedrooms": 2,
+      "numberOfBathroomsTotal": 2,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": 169,
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Accommodation",
+      "name": "Casa Plumeria",
+      "url": "https://www.reservaskalawala.com/Plumeria",
+      "description": "Fully equipped bungalow with A/C, 200m from Playa Chiquita beach, a few minutes from Puerto Viejo and Manzanillo.",
+      "occupancy": {
+        "@type": "QuantitativeValue",
+        "maxValue": 2
+      },
+      "numberOfBedrooms": 1,
+      "numberOfBathroomsTotal": 1,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": 99,
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Accommodation",
+      "name": "Villa Mar",
+      "url": "https://www.reservaskalawala.com/VillaMar",
+      "description": "Villa with private pool, king-size bed, dedicated workspace with ethernet, fully equipped kitchen.",
+      "occupancy": {
+        "@type": "QuantitativeValue",
+        "maxValue": 2
+      },
+      "numberOfBedrooms": 1,
+      "numberOfBathroomsTotal": 1,
+      "amenityFeature": [
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Private Pool",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Dedicated Workspace",
+          "value": true
+        }
+      ],
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": 199,
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Accommodation",
+      "name": "Villa Coral",
+      "url": "https://www.reservaskalawala.com/VillaCoral",
+      "description": "Villa with private pool, king-size bed, dedicated workspace with ethernet, fully equipped kitchen.",
+      "occupancy": {
+        "@type": "QuantitativeValue",
+        "maxValue": 2
+      },
+      "numberOfBedrooms": 1,
+      "numberOfBathroomsTotal": 1,
+      "amenityFeature": [
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Private Pool",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Dedicated Workspace",
+          "value": true
+        }
+      ],
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": 199,
+        "availability": "https://schema.org/InStock"
+      }
+    }
+  ],
+  "tourBookingPage": "https://www.reservaskalawala.com",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "5.0",
+    "reviewCount": 31
   }
+}
   </script>
 
   <!-- Organization structured data -->

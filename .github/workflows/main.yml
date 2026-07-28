@@ -140,8 +140,16 @@ jobs:
         run: npm ci
       - name: Install Puppeteer dependencies for react-snap
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libgbm-dev libnss3 libatk-bridge2.0-0 libxkbcommon0 libgtk-3-0 libasound2
+          # Let Playwright resolve Chromium's system libraries instead of naming
+          # them by hand. The hardcoded list broke when ubuntu-latest moved to
+          # 24.04: the time_t transition renamed libasound2 -> libasound2t64
+          # (and libgtk-3-0, libatk-bridge2.0-0 likewise), so apt failed with
+          # "Package 'libasound2' has no installation candidate" and took the
+          # deploy with it. install-deps tracks the runner image for us.
+          #
+          # react-snap drives puppeteer's bundled Chromium, which needs the same
+          # shared libraries Playwright's chromium does.
+          npx playwright install-deps chromium
       - name: Build React App
         run: npm run build
         env:

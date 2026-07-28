@@ -159,6 +159,10 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
       departureDate,
       guests: String(guests),
       autoSearch: 'true',
+      // The search itself runs on /book, so without this every search looks
+      // like it started there and the funnel cannot tell which entry point —
+      // homepage hero or listing sidebar — actually drives bookings.
+      src: variant === 'hero' ? 'widget_hero' : 'widget_sidebar',
     });
     // Promotes this home to the top of the results. The search still returns the
     // whole portfolio — see the results page for how the two are laid out.

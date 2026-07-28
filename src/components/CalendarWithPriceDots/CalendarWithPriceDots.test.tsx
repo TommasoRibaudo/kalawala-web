@@ -1,13 +1,22 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import posthog from 'posthog-js';
+import * as PostHogService from '../../services/PostHog.service';
 import { CookieConsentService } from '../../services/CookieConsent.service';
 import { resetCalendarMonthCache } from '../../services/calendarMonthCache';
 import CalendarWithPriceDots from './CalendarWithPriceDots.component';
 
-jest.mock('posthog-js', () => ({
+// posthog-js is loaded lazily behind PostHog.service, so the component's
+// captures reach the wrapper, never the library. Mock the wrapper.
+jest.mock('../../services/PostHog.service', () => ({
+  __esModule: true,
   capture: jest.fn(),
+  loadPostHog: jest.fn(() => Promise.resolve(null)),
+  initPostHogIfConsented: jest.fn(),
+  optIn: jest.fn(),
+  optOut: jest.fn(),
 }));
+
+const posthog = { capture: PostHogService.capture as jest.Mock };
 
 const juneResponse = {
   property: {

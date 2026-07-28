@@ -1,4 +1,4 @@
-import { BookingApiConfig, CaptchaProvider, CaptchaVerifierConfig, LogLevel, S3UploadConfig } from "./types";
+import { BookingApiConfig, CaptchaProvider, CaptchaVerifierConfig, ExchangeRateConfig, LogLevel, S3UploadConfig } from "./types";
 import { SmoobuHoldChannelId } from "./holds";
 import { createSecretProvider } from "./secrets";
 
@@ -153,6 +153,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
       contactEmail: env.CONTACT_EMAIL?.trim() || undefined,
     },
     s3Upload: parseS3UploadConfig(env),
+    exchangeRate: parseExchangeRateConfig(env),
     deposit: {
       holdTtlHours: parsePositiveInteger(env.DEPOSIT_HOLD_TTL_HOURS, DEFAULT_DEPOSIT_HOLD_TTL_HOURS),
       confirmTokenTtlHours: parsePositiveInteger(
@@ -273,6 +274,42 @@ function parseCaptchaVerifierConfig(env: NodeJS.ProcessEnv): CaptchaVerifierConf
     provider,
     ...(secretKey ? { secretKey } : {}),
     ...(verifyUrl ? { verifyUrl } : {}),
+  };
+}
+
+/**
+ * Every field is an override; returning `undefined` leaves `exchangeRate.ts` on
+ * its built-in providers and TTLs. Provider URLs must be HTTPS — the rate is
+ * rendered as a payable amount, so a plaintext source is a tampering vector even
+ * though nothing is charged in colones.
+ */
+function parseExchangeRateConfig(env: NodeJS.ProcessEnv): ExchangeRateConfig | undefined {
+  const providerUrls = splitCsv(env.EXCHANGE_RATE_PROVIDER_URLS).filter((url) => {
+    try {
+      return new URL(url).protocol === "https:";
+    } catch {
+      // eslint-disable-next-line no-console
+      console.warn(`[booking-api] Ignoring invalid EXCHANGE_RATE_PROVIDER_URLS entry: "${url}"`);
+      return false;
+    }
+  });
+
+  const ttlSeconds = parseOptionalPositiveInteger(env.EXCHANGE_RATE_TTL_SECONDS, "EXCHANGE_RATE_TTL_SECONDS");
+  const timeoutMs = parseOptionalPositiveInteger(env.EXCHANGE_RATE_TIMEOUT_MS, "EXCHANGE_RATE_TIMEOUT_MS");
+  const staleMaxAgeSeconds = parseOptionalPositiveInteger(
+    env.EXCHANGE_RATE_STALE_MAX_AGE_SECONDS,
+    "EXCHANGE_RATE_STALE_MAX_AGE_SECONDS"
+  );
+
+  if (providerUrls.length === 0 && ttlSeconds === undefined && timeoutMs === undefined && staleMaxAgeSeconds === undefined) {
+    return undefined;
+  }
+
+  return {
+    ...(providerUrls.length > 0 ? { providerUrls } : {}),
+    ...(ttlSeconds !== undefined ? { ttlSeconds } : {}),
+    ...(timeoutMs !== undefined ? { timeoutMs } : {}),
+    ...(staleMaxAgeSeconds !== undefined ? { staleMaxAgeSeconds } : {}),
   };
 }
 

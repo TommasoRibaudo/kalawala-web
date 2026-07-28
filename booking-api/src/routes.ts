@@ -3,6 +3,7 @@ import { jsonResponse } from "./http/response";
 import { ApiError } from "./http/errors";
 import { Router } from "./http/router";
 import { handleCalendarRequest } from "./calendar";
+import { handleExchangeRateRequest } from "./exchangeRate";
 import { handlePortalLogin } from "./portalAuth";
 import { handlePortalReservation, handlePortalHelpRequest, handlePortalCancellationRequest, handlePortalCancelBooking, handlePortalGuestUpdate } from "./portalPages";
 import { handleManualDepositHandoff, handleManualDepositHandoffEvent } from "./depositHandoff";
@@ -51,6 +52,12 @@ export function createRouter(config: BookingApiConfig): Router {
     },
     { requireJsonBody: true, abuseProtection: "availabilitySearch" }
   );
+
+  // Display-only USD → CRC rate for the Spanish booking flow. No parameters:
+  // one currency pair, one cached answer for every caller.
+  router.get("/api/exchange-rate", async (request) => {
+    return handleExchangeRateRequest(config, request.responseHeaders, request.observability);
+  }, { abuseProtection: "publicRead" });
 
   router.get("/api/calendar/:apartmentSlug", async (request) => {
     const calendarRequest = validateCalendarRequest(request.pathParams, request.query);

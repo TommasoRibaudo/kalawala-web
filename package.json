@@ -36,7 +36,7 @@
     "start": "react-scripts start",
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "postbuild": "react-snap && node scripts/generate-md-pages.js && node scripts/generate-llms-full.js",
-    "build-local": "react-scripts build",
+    "build-local": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "booking-api:build": "npm --prefix booking-api run build",
     "booking-api:migrate": "npm --prefix booking-api run migrate",
     "booking-api:typecheck": "npm --prefix booking-api run typecheck",
@@ -84,7 +84,9 @@
   },
   "overrides": {
     "serialize-javascript": "6.0.2",
-    "underscore": "1.13.8"
+    "underscore": "1.13.8",
+    "minimist": "^1.2.8",
+    "mkdirp": "^1.0.4"
   },
   "reactSnap": {
     "source": "build",

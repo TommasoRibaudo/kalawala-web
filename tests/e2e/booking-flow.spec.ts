@@ -123,7 +123,7 @@ test.describe('Booking Flow', () => {
     await checkoutSlide.getByLabel('Phone').fill('+1234567890');
     await checkoutSlide.getByLabel('Country').fill('US');
     await checkoutSlide
-      .getByLabel('Reservation portal password')
+      .getByLabel('Create a password to manage your booking')
       .fill('securepassword123');
     await checkoutSlide
       .getByLabel(/I accept the booking terms/i)

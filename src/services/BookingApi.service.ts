@@ -1003,6 +1003,37 @@ export async function updatePortalGuests(
   return body as PortalGuestUpdateResponse;
 }
 
+/**
+ * Display-only currency conversion. Everything is quoted and charged in USD —
+ * this exists so a guest paying by SINPE or bank transfer can see roughly what
+ * the stay comes to in colones.
+ */
+export interface ExchangeRateResponse {
+  base: string;
+  quote: string;
+  /** Colones per one dollar. */
+  rate: number;
+  source: string;
+  fetchedAt: string;
+  /** The rate source was unreachable; this is the last one the API had. */
+  stale: boolean;
+}
+
+export async function getExchangeRate(): Promise<ExchangeRateResponse> {
+  const response = await fetch(`${apiBaseUrl}/api/exchange-rate`, {
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  });
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as ExchangeRateResponse;
+}
+
 export async function getCalendarMonth(
   apartmentSlug: string,
   month: string,

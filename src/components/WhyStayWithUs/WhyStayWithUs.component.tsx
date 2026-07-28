@@ -46,7 +46,7 @@ const WhyStayWithUs: React.FC<WhyStayWithUsProps> = ({
   return (
     <div className="why-stay-with-us">
       <div className="why-stay-with-us__container">
-        <h3 className="why-stay-with-us__title">{displayTitle}</h3>
+        <h2 className="why-stay-with-us__title">{displayTitle}</h2>
         <div className="why-stay-with-us__benefits">
           {displayBenefits.map((benefit, index) => (
             <div key={index} className="why-stay-with-us__benefit">

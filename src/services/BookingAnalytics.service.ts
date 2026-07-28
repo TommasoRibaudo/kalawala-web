@@ -8,12 +8,29 @@
  *   booking_search            → GA4: search / Meta: Search
  *   availability_results      → GA4: custom
  *   property_viewed           → GA4: view_item / Meta: ViewContent
+ *   booking_form_viewed       → PostHog only
+ *   booking_form_started      → PostHog only
  *   checkout_started          → GA4: begin_checkout / Meta: InitiateCheckout
  *   payment_method_selected   → GA4: add_payment_info / Meta: AddPaymentInfo
+ *   payment_started           → PostHog only
  *   paypal_approved           → GA4: custom
+ *   payment_completed         → PostHog only
  *   booking_confirmed         → GA4: purchase / Meta: Purchase  (server-side preferred)
  *   manual_deposit_handoff_clicked → GA4: custom / Meta: Lead (optional)
  *   booking_cancelled         → GA4: custom
+ *
+ * FUNNEL — the six steps behind the PostHog "Booking funnel" insight are
+ * $pageview → booking_search → availability_results → booking_form_viewed →
+ * checkout_started → payment_completed. Note that checkout_started fires AFTER
+ * the server confirms the hold, so it is the "dates are actually reserved"
+ * step despite the name; it keeps that name because Meta dedupes
+ * InitiateCheckout against the server on the quote ID and existing PostHog
+ * history is keyed to it.
+ *
+ * The PostHog-only events above deliberately skip gtag() and fbq(): they exist
+ * to close gaps between the GA4/Meta commerce steps, and sending them onward
+ * would add unmapped custom events to two products that already have their own
+ * funnel semantics.
  *
  * GA4 OWNERSHIP — read before adding a gtag() call here.
  *
@@ -28,7 +45,7 @@
  * the server never observes them and the browser is the only possible source.
  */
 
-import posthog from 'posthog-js';
+import * as PostHog from './PostHog.service';
 import { CookieConsentService } from './CookieConsent.service';
 
 // ---------------------------------------------------------------------------
@@ -96,9 +113,59 @@ export interface PaymentMethodSelectedProps {
   language: BookingAnalyticsLanguage;
 }
 
+export interface BookingFormViewedProps {
+  quote_id: string;
+  property_id: string;
+  property_slug: string;
+  property_name: string;
+  payment_type: PaymentType;
+  /** Total price in cents, or null when the quote carried no price */
+  value_cents: number | null;
+  currency: string | null;
+  language: BookingAnalyticsLanguage;
+}
+
+export interface BookingFormStartedProps {
+  quote_id: string;
+  property_id: string;
+  property_slug: string;
+  payment_type: PaymentType;
+  /** Which field the guest touched first — shows where the form invites entry. */
+  first_field: string;
+  language: BookingAnalyticsLanguage;
+}
+
 export interface PaypalApprovedProps {
   paypal_order_id: string;
   property_id: string;
+  language: BookingAnalyticsLanguage;
+}
+
+export interface PaymentStartedProps {
+  payment_type: PaymentType;
+  reservation_id: string;
+  booking_session_id: string;
+  property_id: string;
+  /** Total price in cents, or null when the quote carried no price */
+  value_cents: number | null;
+  currency: string | null;
+  language: BookingAnalyticsLanguage;
+}
+
+export interface PaymentCompletedProps {
+  payment_type: PaymentType;
+  reservation_id: string;
+  property_id: string;
+  /** Total price in cents, or null when the quote carried no price */
+  value_cents: number | null;
+  currency: string | null;
+  /**
+   * 'confirmed' — money captured, booking is live (PayPal).
+   * 'awaiting_verification' — guest uploaded a transfer receipt and staff have
+   * yet to verify it (manual deposit). Both end the guest-facing funnel, but
+   * only the first is revenue.
+   */
+  outcome: 'confirmed' | 'awaiting_verification';
   language: BookingAnalyticsLanguage;
 }
 
@@ -212,7 +279,7 @@ function centsToDecimal(cents: number): number {
 export function trackBookingSearch(props: BookingSearchProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('booking_search', props);
+  PostHog.capture('booking_search', props);
 
   fbq('Search', {
     content_category: 'booking',
@@ -231,7 +298,7 @@ export function trackBookingSearch(props: BookingSearchProps): void {
 export function trackAvailabilityResults(props: AvailabilityResultsProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('availability_results', props);
+  PostHog.capture('availability_results', props);
 
   gtag('availability_results', {
     event_category: 'booking',
@@ -252,7 +319,7 @@ export function trackAvailabilityResults(props: AvailabilityResultsProps): void 
 export function trackPropertyViewed(props: PropertyViewedProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('property_viewed', props);
+  PostHog.capture('property_viewed', props);
 
   gtag('view_item', {
     event_category: 'booking',
@@ -278,13 +345,36 @@ export function trackPropertyViewed(props: PropertyViewedProps): void {
 }
 
 /**
+ * Guest opens the guest-details form for a property (either payment path).
+ * Funnel step 4 — the gap between "saw results" and "reserved dates".
+ * PostHog only.
+ */
+export function trackBookingFormViewed(props: BookingFormViewedProps): void {
+  if (!canTrack()) return;
+
+  PostHog.capture('booking_form_viewed', props);
+}
+
+/**
+ * Guest edits the first field of the guest-details form.
+ * Separates "opened the form and left" from "started typing and gave up",
+ * which are very different problems.
+ * PostHog only.
+ */
+export function trackBookingFormStarted(props: BookingFormStartedProps): void {
+  if (!canTrack()) return;
+
+  PostHog.capture('booking_form_started', props);
+}
+
+/**
  * Guest clicks "Book now" / a hold is successfully created.
  * PostHog: checkout_started | GA4: begin_checkout | Meta: InitiateCheckout
  */
 export function trackCheckoutStarted(props: CheckoutStartedProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('checkout_started', props);
+  PostHog.capture('checkout_started', props);
 
   fbq('InitiateCheckout', {
     value: centsToDecimal(props.value_cents),
@@ -306,7 +396,7 @@ export function trackCheckoutStarted(props: CheckoutStartedProps): void {
 export function trackPaymentMethodSelected(props: PaymentMethodSelectedProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('payment_method_selected', props);
+  PostHog.capture('payment_method_selected', props);
 
   fbq('AddPaymentInfo', {
     value: centsToDecimal(props.value_cents),
@@ -317,13 +407,28 @@ export function trackPaymentMethodSelected(props: PaymentMethodSelectedProps): v
 }
 
 /**
+ * Guest is handed off to actually pay: redirected to PayPal approval, or shown
+ * the bank-transfer instructions for a manual deposit.
+ *
+ * This is the last thing the site controls before the guest leaves for a bank
+ * or for PayPal, so a drop between here and payment_completed is an off-site
+ * abandonment rather than a UX problem on our pages.
+ * PostHog only.
+ */
+export function trackPaymentStarted(props: PaymentStartedProps): void {
+  if (!canTrack()) return;
+
+  PostHog.capture('payment_started', props);
+}
+
+/**
  * Guest returns from PayPal approval.
  * PostHog: paypal_approved | GA4: custom
  */
 export function trackPaypalApproved(props: PaypalApprovedProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('paypal_approved', props);
+  PostHog.capture('paypal_approved', props);
 
   gtag('paypal_approved', {
     event_category: 'booking',
@@ -331,6 +436,21 @@ export function trackPaypalApproved(props: PaypalApprovedProps): void {
     property_id: props.property_id,
     language: props.language,
   });
+}
+
+/**
+ * Terminal funnel step for BOTH payment paths.
+ *
+ * booking_confirmed only ever fires for PayPal, because a manual deposit is not
+ * confirmed until staff verify the transfer days later — off-session, so the
+ * browser never sees it. Without this event the deposit path simply vanishes
+ * from the funnel and PayPal looks like the only way anyone books.
+ * PostHog only.
+ */
+export function trackPaymentCompleted(props: PaymentCompletedProps): void {
+  if (!canTrack()) return;
+
+  PostHog.capture('payment_completed', props);
 }
 
 /**
@@ -343,7 +463,7 @@ export function trackPaypalApproved(props: PaypalApprovedProps): void {
 export function trackBookingConfirmed(props: BookingConfirmedProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('booking_confirmed', {
+  PostHog.capture('booking_confirmed', {
     reservation_id: props.reservation_id,
     property_id: props.property_id,
     property_slug: props.property_slug,
@@ -387,7 +507,7 @@ export function trackManualDepositHandoffClicked(props: ManualDepositHandoffClic
         }
       : props;
 
-  posthog.capture('manual_deposit_handoff_clicked', eventProps);
+  PostHog.capture('manual_deposit_handoff_clicked', eventProps);
 
   const gtagProps: Record<string, unknown> = {
     event_category: 'booking',
@@ -417,7 +537,7 @@ export function trackManualDepositHandoffClicked(props: ManualDepositHandoffClic
 export function trackBookingCancelled(props: BookingCancelledProps): void {
   if (!canTrack()) return;
 
-  posthog.capture('booking_cancelled', props);
+  PostHog.capture('booking_cancelled', props);
 
   gtag('booking_cancelled', {
     event_category: 'booking',

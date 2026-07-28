@@ -5,5 +5,8 @@
 --kalawala-vivid-beige: #B5965F;
 --kalawala-opaque-beige: #FFFFFF;
 --kalawala-light-cream: #FFFFFF;
---kalawala-text-grey: #171717;
+/* Spelled "gray" to match the SCSS token $kalawala-text-gray and all three
+   call sites. It was defined as "grey" while every consumer read "gray", so
+   the declarations were invalid at computed-value time and silently inherited. */
+--kalawala-text-gray: #171717;
 }

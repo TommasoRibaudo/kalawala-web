@@ -58,7 +58,7 @@ const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, isSpanish }) =
 
   return (
     <div className="guest-reviews">
-      <h3 className="guest-reviews__title">{heading}</h3>
+      <h2 className="guest-reviews__title">{heading}</h2>
 
       <div className="guest-reviews__cards">
         {reviews.map((review, index) => {
@@ -75,12 +75,17 @@ const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, isSpanish }) =
               <div className="guest-reviews__quote-mark">&ldquo;</div>
               <p className="guest-reviews__preview-text">{text}</p>
               <p className="guest-reviews__reviewer-name">{review.reviewer}</p>
-              {review.location && (
-                <p className="guest-reviews__location">{review.location}</p>
-              )}
+              {/* Always rendered — reviews without a location keep the line's
+                  height so the cards stay aligned with one another. */}
+              <p className="guest-reviews__location">{review.location}</p>
               <div className="guest-reviews__stars">{STARS}</div>
+              {/* One interpolation, deliberately. Adjacent JSX text children
+                  become separate text nodes, and react-snap saves the live DOM
+                  rather than renderToString output — so the snapshot has no
+                  `<!-- -->` separators to split them back apart and hydration
+                  finds one text node where React renders three (error #418). */}
               <p className="guest-reviews__meta">
-                {review.date}&nbsp;&middot;&nbsp;{stayLabel}
+                {`${review.date} · ${stayLabel}`}
               </p>
             </div>
           );

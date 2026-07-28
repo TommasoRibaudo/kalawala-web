@@ -60,7 +60,10 @@ const TwoDaysInPV = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://cdn.pixabay.com/photo/2020/01/07/05/11/beach-4746787_960_720.jpg" className="responsive-image" style={{ maxWidth: 1000, }} alt="Playa del Refugio Nacional Gandoca-Manzanillo" />
+                            <img
+                                loading="eager"
+                                fetchPriority="high"
+                                decoding="async" src="https://cdn.pixabay.com/photo/2020/01/07/05/11/beach-4746787_960_720.jpg" className="responsive-image" style={{ maxWidth: 1000, }} alt="Playa del Refugio Nacional Gandoca-Manzanillo" />
                         </div>
                         <br />
                         <p>El <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Refugio Nacional Gandoca-Manzanillo</a>, ubicado en la provincia de Limón, es uno de los secretos mejor guardados del Caribe Sur de Costa Rica. Este impresionante refugio de vida silvestre ofrece una rica variedad de ecosistemas, desde manglares y arrecifes de coral hasta playas vírgenes. Si estás en Puerto Viejo de Talamanca y buscas una escapada a la naturaleza, esta es una excelente opción. En esta guía, te mostramos cómo llegar fácilmente desde Puerto Viejo para que puedas explorar al máximo este paraíso natural.</p>
@@ -147,7 +150,7 @@ const TwoDaysInPV = () => {
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h3 className="smoobu-title">Reserva tu Estadía</h3>
+                        <h2 className="smoobu-title">Reserva tu Estadía</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="gandocaESSmoobuBooking" />
                         </div>

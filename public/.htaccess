@@ -1,4 +1,83 @@
+# ============================================================================
+# Compression
+#
+# There were no compression directives here at all. Whether anything was
+# gzipped depended entirely on the cPanel host's global config, which is not
+# under version control and not guaranteed. Every rule is wrapped in IfModule,
+# so a host without the module simply ignores this block.
+# ============================================================================
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/markdown
+    AddOutputFilterByType DEFLATE application/javascript application/x-javascript text/javascript
+    AddOutputFilterByType DEFLATE application/json application/xml application/rss+xml
+    AddOutputFilterByType DEFLATE image/svg+xml application/manifest+json
+
+    # WOFF2 is already compressed; recompressing wastes CPU for ~0 bytes.
+    SetEnvIfNoCase Request_URI \.(?:woff2?|jpe?g|png|gif|webp|avif|ico|zip|gz)$ no-gzip dont-vary
+</IfModule>
+
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/markdown
+    AddOutputFilterByType BROTLI_COMPRESS application/javascript application/x-javascript text/javascript
+    AddOutputFilterByType BROTLI_COMPRESS application/json application/xml application/rss+xml
+    AddOutputFilterByType BROTLI_COMPRESS image/svg+xml application/manifest+json
+</IfModule>
+
+# ============================================================================
+# Cache policy
+#
+# Everything under /static/ is content-hashed by the CRA build, so the filename
+# changes whenever the bytes do — those are safe to cache forever. HTML must
+# NOT be cached: the pre-rendered pages reference hashed asset names, so a
+# stale HTML would point at bundles that no longer exist after a deploy.
+# ============================================================================
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 hour"
+
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/avif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+
+    ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
 <IfModule mod_headers.c>
+    # `immutable` is only correct for filenames that change when the bytes do,
+    # so it is scoped by path rather than by extension. /static/ is CRA's
+    # content-hashed output; /fonts/ holds the pinned Urbanist subsets, which
+    # are replaced by adding a file, not by editing one.
+    SetEnvIf Request_URI "^/static/"  IMMUTABLE_ASSET
+    SetEnvIf Request_URI "^/fonts/"   IMMUTABLE_ASSET
+    Header set Cache-Control "public, max-age=31536000, immutable" env=IMMUTABLE_ASSET
+
+    # Unhashed root-level assets (logo.png, logo64.png, favicon…) can be
+    # overwritten in place, so they get a finite TTL instead.
+    <FilesMatch "^(logo|logo64|logo192|logob64)\.png$">
+        Header set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+
+    # HTML always revalidates, so a deploy is picked up immediately. Without
+    # this, a cached page would keep pointing at hashed bundles that the next
+    # deploy has already removed.
+    <FilesMatch "\.html$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+
+    # The service the site is deployed to terminates TLS; make sure downgrade
+    # attempts are refused for a year.
+    Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
     # HTTP Link header pointing AI agents to the markdown summary
     Header set Link "</llms.txt>; rel=\"alternate\"; type=\"text/markdown\"; title=\"LLM-friendly site summary\""
 

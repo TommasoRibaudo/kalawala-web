@@ -159,6 +159,8 @@ export interface BookingApiConfig {
   hold: HoldConfig;
   abuseProtection: AbuseProtectionConfig;
   observability: ObservabilityConfig;
+  /** USD → CRC display rate. Omitted entirely falls back to the built-in providers. */
+  exchangeRate?: ExchangeRateConfig;
   /**
    * Server-side conversion reporting. Optional like `s3Upload` and `deposit`:
    * omitted entirely — or present without a measurement/pixel ID and the
@@ -176,6 +178,20 @@ export interface SmoobuClientConfig {
   maxBackoffMs: number;
   maxRateLimitDelayMs: number;
   holdChannelId: SmoobuHoldChannelId;
+}
+
+/**
+ * Display-only currency conversion — see `exchangeRate.ts`. Every value is
+ * optional so the endpoint works out of the box and can still be repointed at a
+ * different rate source per environment.
+ */
+export interface ExchangeRateConfig {
+  /** Tried in order until one answers with a plausible rate. */
+  providerUrls?: string[];
+  ttlSeconds?: number;
+  timeoutMs?: number;
+  /** Oldest a cached rate may be before the endpoint stops serving it. */
+  staleMaxAgeSeconds?: number;
 }
 
 export interface HoldConfig {

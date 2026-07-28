@@ -5,6 +5,30 @@
   background: $kalawala-light-cream;
   color: $kalawala-text-gray;
   font-family: $primary-font;
+
+  // Neutralise the global dark-theme input styling from _common.scss
+  // (`.form-control { background-color: #2f383d; color: #ddd }`), which would
+  // otherwise render every portal field as a near-black box — and, combined
+  // with the dark text colour the portal sets, make typed input unreadable.
+  // Same treatment `.booking-page` already applies.
+  .form-control,
+  .form-select {
+    background-color: #ffffff;
+    color: $kalawala-text-gray;
+
+    &:focus {
+      background-color: #ffffff;
+      color: $kalawala-text-gray;
+    }
+
+    &::placeholder {
+      color: rgba(23, 23, 23, 0.45);
+    }
+
+    &::-webkit-input-placeholder {
+      color: rgba(23, 23, 23, 0.45);
+    }
+  }
 }
 
 .portal-login-container {

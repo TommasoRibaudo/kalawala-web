@@ -16,8 +16,8 @@ const OurOtherHomesRIB = () => {
         <div className="section">
           <h2>Like Nothing Else in Puerto Viejo Centre!</h2>
           <div className="cards-container">
-            <OtherHomesCard guestNumber={5} name="Casa Tucano" image="https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000" redirectPath="/Tucano" />
-            <OtherHomesCard guestNumber={5} name="Casa Geco" image="https://drive.google.com/thumbnail?id=1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF&sz=w1000" redirectPath="/Geco" />
+            <OtherHomesCard guestNumber={5} name="Casa Tucano" image="https://lh3.googleusercontent.com/d/10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q=w1000" redirectPath="/Tucano" />
+            <OtherHomesCard guestNumber={5} name="Casa Geco" image="https://lh3.googleusercontent.com/d/1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF=w1000" redirectPath="/Geco" />
           </div>
         </div>
 
@@ -25,8 +25,8 @@ const OurOtherHomesRIB = () => {
         <div className="section">
           <h2>Private Retreat in Playa Chiquita, Puerto Viejo</h2>
           <div className="cards-container">
-            <OtherHomesCard guestNumber={2} name="Plumeria" image="https://drive.google.com/thumbnail?id=1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-&sz=w1000" redirectPath="/Plumeria" />
-            <OtherHomesCard guestNumber={4} name="Giulia" image="https://drive.google.com/thumbnail?id=1v3hAHbAjvFf9CYaJx7IV8JqTbDKK__8S&sz=w1000" redirectPath="/Giulia" />
+            <OtherHomesCard guestNumber={2} name="Plumeria" image="https://lh3.googleusercontent.com/d/1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-=w1000" redirectPath="/Plumeria" />
+            <OtherHomesCard guestNumber={4} name="Giulia" image="https://lh3.googleusercontent.com/d/1v3hAHbAjvFf9CYaJx7IV8JqTbDKK__8S=w1000" redirectPath="/Giulia" />
           </div>
         </div>
       </div>

@@ -20,6 +20,28 @@ export interface PixelError {
   timestamp: number;
 }
 
+/**
+ * An error that carries its own classification.
+ *
+ * The alternative — recovering the type from the message text after the fact —
+ * is what made every blocked-script report read `NETWORK_ERROR`: the message
+ * `Script loading failed` contains "loading", so it matched the network branch
+ * before the script branch was ever reached, and sent anyone reading the
+ * console looking for a connectivity problem that did not exist.
+ */
+class TypedPixelError extends Error {
+  public readonly pixelErrorType: PixelError['type'];
+
+  constructor(message: string, pixelErrorType: PixelError['type']) {
+    super(message);
+    this.name = 'TypedPixelError';
+    this.pixelErrorType = pixelErrorType;
+
+    // Required for `instanceof` to survive TypeScript's ES5 class downlevelling.
+    Object.setPrototypeOf(this, TypedPixelError.prototype);
+  }
+}
+
 // Declare global fbq function for TypeScript
 declare global {
   interface Window {
@@ -170,58 +192,33 @@ export class MetaPixelService {
       window.fbq.queue = [];
     }
 
-    // Ensure noscript fallback is present
-    this.ensureNoscriptFallback();
+    // There is deliberately no noscript fallback built here. index.html already
+    // ships one, and a <noscript> fallback exists for browsers that never run
+    // this method. Building one from script also fired a real PageView beacon:
+    // setting `src` on a detached <img> sends the request immediately, so every
+    // visitor reported PageView twice — once from the beacon, once from
+    // fbq('track', 'PageView'). The guard that was supposed to prevent a
+    // duplicate could never match either, because with scripting enabled a
+    // <noscript> element's content is parsed as text, so the `noscript img`
+    // selector has nothing to find.
   }
 
   /**
-   * Ensure noscript fallback is present in the DOM
-   */
-  private ensureNoscriptFallback(): void {
-    try {
-      // Check if noscript fallback already exists
-      const existingNoscript = document.querySelector('noscript img[src*="facebook.com/tr"]');
-      if (existingNoscript) {
-        this.logDebug('Noscript fallback already exists', 'info');
-        return;
-      }
-
-      // Find or create noscript element
-      let noscriptElement = document.querySelector('noscript');
-      if (!noscriptElement) {
-        noscriptElement = document.createElement('noscript');
-        document.head.appendChild(noscriptElement);
-      }
-
-      // Create fallback image
-      const fallbackImg = document.createElement('img');
-      fallbackImg.height = 1;
-      fallbackImg.width = 1;
-      fallbackImg.style.display = 'none';
-      fallbackImg.src = `https://www.facebook.com/tr?id=${this.config.pixelId}&ev=PageView&noscript=1`;
-
-      // Add to noscript element
-      noscriptElement.appendChild(fallbackImg);
-
-      this.logDebug('Noscript fallback added dynamically', 'info', {
-        pixelId: this.config.pixelId,
-        src: fallbackImg.src
-      });
-
-    } catch (error) {
-      this.logDebug('Failed to add noscript fallback', 'warn', {
-        error: (error as Error).message
-      });
-    }
-  }
-
-  /**
-   * Load Meta Pixel script with enhanced recovery mechanisms
+   * Load the Meta Pixel script, retrying only the failures a retry can fix.
+   *
+   * A timeout is worth another attempt: the request was in flight and simply
+   * ran out of time. Nothing else is. When a <script> fires `error` the browser
+   * has already reached a verdict — the request was refused before a single
+   * byte moved (content blocker, DNS filter, proxy, CSP) — and it reaches the
+   * same verdict a second later. `connect.facebook.net` sits on every
+   * content-blocker list in circulation, so this is the ordinary outcome for a
+   * large share of real visitors; retrying it spent four seconds and inserted
+   * three <script> tags that could never have loaded.
    */
   private async loadPixelScriptWithRecovery(): Promise<void> {
     let retryCount = 0;
     let lastError: Error | null = null;
-    
+
     while (retryCount <= this.MAX_RETRIES) {
       try {
         // Check network before each attempt, but don't fail immediately
@@ -232,41 +229,53 @@ export class MetaPixelService {
 
         await this.loadScriptWithTimeout();
         this.state.isLoaded = true;
-        
+
         this.logDebug(`Meta Pixel script loaded successfully${retryCount > 0 ? ` after ${retryCount} retries` : ''}`, 'info');
         return;
-        
+
       } catch (error) {
         lastError = error as Error;
-        retryCount++;
-        
-        const pixelError: PixelError = {
-          type: this.getErrorType(lastError),
-          message: `Attempt ${retryCount}: ${lastError.message}`,
+        const errorType = this.getErrorType(lastError);
+
+        this.errorHistory.push({
+          type: errorType,
+          message: `Attempt ${retryCount + 1}: ${lastError.message}`,
           timestamp: Date.now()
-        };
-        
-        this.errorHistory.push(pixelError);
-        
-        if (retryCount > this.MAX_RETRIES) {
-          const finalError = new Error(
-            `Failed to load Meta Pixel script after ${this.MAX_RETRIES} retries. ` +
-            `Last error: ${lastError.message}. ` +
-            `Error history: ${this.errorHistory.map(e => e.type).join(', ')}`
-          );
-          throw finalError;
-        }
-        
-        const retryDelay = this.retryTimeouts[retryCount - 1] || 3000;
-        this.logDebug(`Meta Pixel script load attempt ${retryCount} failed, retrying in ${retryDelay}ms`, 'warn', {
-          error: lastError.message,
-          errorType: pixelError.type
         });
-        
+
+        if (errorType !== 'TIMEOUT_ERROR') {
+          throw new TypedPixelError(
+            errorType === 'SCRIPT_LOAD_ERROR'
+              ? `Meta Pixel script was refused before it loaded (${lastError.message}) — ` +
+                `usually a content blocker, DNS filter or network policy on the client.`
+              : `Meta Pixel script could not be loaded: ${lastError.message}`,
+            errorType
+          );
+        }
+
+        retryCount++;
+
+        if (retryCount > this.MAX_RETRIES) {
+          break;
+        }
+
+        const retryDelay = this.retryTimeouts[retryCount - 1] || 3000;
+        this.logDebug(`Meta Pixel script load attempt ${retryCount} timed out, retrying in ${retryDelay}ms`, 'warn', {
+          error: lastError.message,
+          errorType
+        });
+
         // Progressive delay before retry
         await this.delay(retryDelay);
       }
     }
+
+    throw new TypedPixelError(
+      `Failed to load Meta Pixel script after ${this.MAX_RETRIES} retries. ` +
+      `Last error: ${lastError?.message ?? 'unknown'}. ` +
+      `Error history: ${this.errorHistory.map(e => e.type).join(', ')}`,
+      'TIMEOUT_ERROR'
+    );
   }
 
   /**
@@ -288,7 +297,7 @@ export class MetaPixelService {
       // Set up timeout
       const timeout = setTimeout(() => {
         script.remove();
-        reject(new Error('Script loading timeout'));
+        reject(new TypedPixelError('Script loading timeout', 'TIMEOUT_ERROR'));
       }, this.TIMEOUT_MS);
 
       script.onload = () => {
@@ -299,7 +308,7 @@ export class MetaPixelService {
       script.onerror = () => {
         clearTimeout(timeout);
         script.remove();
-        reject(new Error('Script loading failed'));
+        reject(new TypedPixelError('the browser fired an error on the script element', 'SCRIPT_LOAD_ERROR'));
       };
 
       // Add script to document head
@@ -338,8 +347,13 @@ export class MetaPixelService {
       this.logDebug('Pixel initialization completed', 'info');
 
     } catch (error) {
-      const initError = new Error(`Pixel initialization failed: ${(error as Error).message}`);
-      throw initError;
+      // Classified here rather than left to message matching: several of the
+      // messages above mention "script", which would otherwise be reported as
+      // a script-load failure when the script had in fact loaded fine.
+      throw new TypedPixelError(
+        `Pixel initialization failed: ${(error as Error).message}`,
+        'INITIALIZATION_ERROR'
+      );
     }
   }
 
@@ -519,17 +533,27 @@ export class MetaPixelService {
   }
 
   /**
-   * Determine error type based on error message
+   * Determine the error type. Errors we raise ourselves already carry their
+   * classification; only errors thrown from elsewhere fall through to matching
+   * on the message text.
    */
   private getErrorType(error: Error): PixelError['type'] {
+    if (error instanceof TypedPixelError) {
+      return error.pixelErrorType;
+    }
+
     const message = error.message.toLowerCase();
-    
+
     if (message.includes('timeout')) {
       return 'TIMEOUT_ERROR';
+    } else if (message.includes('script')) {
+      // Ahead of the network branch, not behind it. "Script loading failed"
+      // matches "loading" too, and when the network branch was tested first
+      // SCRIPT_LOAD_ERROR was unreachable for the one message that most needed
+      // it.
+      return 'SCRIPT_LOAD_ERROR';
     } else if (message.includes('network') || message.includes('loading') || message.includes('unavailable')) {
       return 'NETWORK_ERROR';
-    } else if (message.includes('script')) {
-      return 'SCRIPT_LOAD_ERROR';
     } else {
       return 'INITIALIZATION_ERROR';
     }
@@ -593,12 +617,26 @@ export class MetaPixelService {
       state: this.state
     };
 
-    if (this.config.debug) {
+    if (this.config.debug || this.config.developmentMode) {
       console.error(`[Meta Pixel Error] ${message}`, errorData);
-    } else {
-      // Always log errors in production, but with less detail
-      console.error(`[Meta Pixel Error] ${message}: ${error.message}`);
+      return;
     }
+
+    // A blocked script is the single most common outcome in production, it is
+    // fully handled — tracking stops, the page does not — and there is nothing
+    // the site can do about it. Reporting it as console.error had visitors
+    // sending it in as a site fault. It stays visible as a warning, because a
+    // site-wide breakage (a CSP, a bad deploy) surfaces through the same path
+    // and silence would hide it.
+    if (pixelError?.type === 'SCRIPT_LOAD_ERROR') {
+      // The message thrown for this case already names the cause, so `message`
+      // ("Meta Pixel initialization failed") would only repeat it.
+      console.warn(`[Meta Pixel] ${error.message} Tracking is off for this session; the site is unaffected.`);
+      return;
+    }
+
+    // Anything else is genuinely unexpected.
+    console.error(`[Meta Pixel Error] ${message}: ${error.message}`);
   }
 
   /**

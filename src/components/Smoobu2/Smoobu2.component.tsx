@@ -74,6 +74,28 @@ function Smoobu2({ targetId = 'apartmentIframeAll' }: Smoobu2Props) {
               apartmentFrame.classList.add('apartment-frame-loaded');
             }
 
+            // Smoobu's loader builds the <iframe> itself and gives it no
+            // title, which fails the `frame-title` a11y audit (weight 7) on
+            // every blog page. It is created synchronously by initialize(),
+            // but a MutationObserver covers the case where it is not, and
+            // disconnects as soon as the frame appears.
+            const titleFrame = () => {
+              const iframe = apartmentFrame?.querySelector('iframe');
+              if (!iframe) return false;
+              if (!iframe.getAttribute('title')) {
+                iframe.setAttribute('title', 'Booking availability and rates');
+              }
+              return true;
+            };
+            if (!titleFrame() && apartmentFrame) {
+              const observer = new MutationObserver(() => {
+                if (titleFrame()) observer.disconnect();
+              });
+              observer.observe(apartmentFrame, { childList: true, subtree: true });
+              // Never observe forever if the widget fails to render.
+              window.setTimeout(() => observer.disconnect(), 15000);
+            }
+
             // Set up iframe load detection
             const checkIframeLoaded = () => {
               const iframe = document.querySelector(`#${targetId} iframe`) as HTMLIFrameElement;

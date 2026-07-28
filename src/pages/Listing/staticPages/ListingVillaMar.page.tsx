@@ -39,7 +39,7 @@ const ListingVillaMar = () => {
     //const description = houseData?.description.split('<br/>');
     //const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
-        <div className={`listingContainer ${show && 'modal-open'}`}>
+        <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
                 <title>Villa Mar - Home with private pool in Playa Chiquita</title>
@@ -57,11 +57,11 @@ const ListingVillaMar = () => {
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
                         <h1 className="title">Villa Mar</h1>
-                        <h3 className="location">
+                        <p className="location">
                             <a href="https://maps.app.goo.gl/cJa27cXoXunmuNkf7" target="_blank" rel="noopener noreferrer">
                                 Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica
                             </a>
-                        </h3>
+                        </p>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="VillaMar" isSpanish={false} />
                     </div>
@@ -69,7 +69,7 @@ const ListingVillaMar = () => {
                     {/* Add social statement after images */}
                     <SocialStatement propertyKey="VillaMar" isSpanish={false} />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="VillaMar" isSpanish={false} />
                     </div>
 
                     {/* Add feature highlights before description */}

@@ -39,7 +39,7 @@ const OtherListings: FC<IOtherListing> = ({ currentListing, listings }) => {
 
     return (
         <div className="other-listings-container">
-            <h3 className="other-listings-header">Check out our other options!</h3>
+            <h2 className="other-listings-header">Check out our other options!</h2>
             <div className={`other-listings-grid ${getLayoutClass()}`}>
                 {otherListings.map(({ name, mainImage }) => (
                     <div
@@ -53,7 +53,7 @@ const OtherListings: FC<IOtherListing> = ({ currentListing, listings }) => {
                         aria-label={`View listing: ${name}`}
                     >
                         <div className="listing-card-overlay">
-                            <h4 className="listing-card-title">{name}</h4>
+                            <h3 className="listing-card-title">{name}</h3>
                         </div>
                     </div>
                 ))}

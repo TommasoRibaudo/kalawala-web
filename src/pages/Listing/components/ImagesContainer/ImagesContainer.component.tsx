@@ -111,15 +111,21 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
       <div className="imagesContainer" onClick={showAllImages}>
         <Row>
           <Col className="col" lg={6} sm={12} md={12} xs={12}>
+            {/* This is the LCP element on every listing page. It was
+                lazy-loaded, which cost ~1.6s of pure load delay before the
+                request was even issued. Eager + high priority instead. */}
             <ImageWithSkeleton
               className="mainImage"
               fluid
+              loading="eager"
+              fetchPriority="high"
+              sizes="(max-width: 991px) 95vw, 560px"
               src={images[imageSnippet[0]].imageLink || ''}
               alt={images[imageSnippet[0]].roomType || "Main property image"}
               skeletonProps={{
                 variant: 'rectangular',
                 animation: 'shimmer',
-                aspectRatio: '4/3',
+                aspectRatio: '3/2',
                 width: '100%'
               }}
             />
@@ -129,24 +135,26 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
               <ImageWithSkeleton
                 className="secondaryImages"
                 fluid
+                sizes="(max-width: 575px) 46vw, (max-width: 991px) 48vw, 280px"
                 src={images[imageSnippet[1]].imageLink || ''}
                 alt={images[imageSnippet[1]].roomType || "Property image"}
                 skeletonProps={{
                   variant: 'rectangular',
                   animation: 'shimmer',
-                  aspectRatio: '1/1',
+                  aspectRatio: '3/2',
                   width: '100%'
                 }}
               />
               <ImageWithSkeleton
                 className="secondaryImages bottom"
                 fluid
+                sizes="(max-width: 575px) 46vw, (max-width: 991px) 48vw, 280px"
                 src={images[imageSnippet[2]].imageLink || ''}
                 alt={images[imageSnippet[2]].roomType || "Property image"}
                 skeletonProps={{
                   variant: 'rectangular',
                   animation: 'shimmer',
-                  aspectRatio: '1/1',
+                  aspectRatio: '3/2',
                   width: '100%'
                 }}
               />
@@ -155,24 +163,26 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
               <ImageWithSkeleton
                 className="secondaryImages"
                 fluid
+                sizes="(max-width: 575px) 46vw, (max-width: 991px) 48vw, 280px"
                 src={images[imageSnippet[3]].imageLink || ''}
                 alt={images[imageSnippet[3]].roomType || "Property image"}
                 skeletonProps={{
                   variant: 'rectangular',
                   animation: 'shimmer',
-                  aspectRatio: '1/1',
+                  aspectRatio: '3/2',
                   width: '100%'
                 }}
               />
               <ImageWithSkeleton
                 className="secondaryImages bottom"
                 fluid
+                sizes="(max-width: 575px) 46vw, (max-width: 991px) 48vw, 280px"
                 src={images[imageSnippet[4]].imageLink || ''}
                 alt={images[imageSnippet[4]].roomType || "Property image"}
                 skeletonProps={{
                   variant: 'rectangular',
                   animation: 'shimmer',
-                  aspectRatio: '1/1',
+                  aspectRatio: '3/2',
                   width: '100%'
                 }}
               />

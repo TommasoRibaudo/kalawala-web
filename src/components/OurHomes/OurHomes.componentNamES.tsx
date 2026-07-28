@@ -16,19 +16,19 @@ const OurHomes = ({style, houseDataList}:IOurHomes) => {
             name: 'Areka',
             gusestNumber: 2,
             parking: true,
-            image: "https://drive.google.com/thumbnail?id=10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q&sz=w1000"
+            image: "https://lh3.googleusercontent.com/d/10qvLOMLs4_JsBIF99igVeh4baDR7EB-Q=w1000"
         },
         {
             name: 'Plumeria',
             gusestNumber: 2,
             parking: true,
-            image: "https://drive.google.com/thumbnail?id=1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF&sz=w1000"
+            image: "https://lh3.googleusercontent.com/d/1jT7zlcGcyVcxulbxFo-DQ7x9zc5FE9HF=w1000"
         },
         {
             name: 'Giulia',
             gusestNumber: 4,
             parking: true,
-            image: "https://drive.google.com/thumbnail?id=1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY&sz=w1000"
+            image: "https://lh3.googleusercontent.com/d/1owhxss4VVXLLJAQP1ByDyBMH_NwQsIuY=w1000"
         },
     ]
     return (

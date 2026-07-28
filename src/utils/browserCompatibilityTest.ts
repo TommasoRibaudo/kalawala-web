@@ -1,9 +1,11 @@
 /**
  * Browser Compatibility Test for Meta Pixel
- * 
+ *
  * Tests Meta Pixel functionality across different browsers and devices
  * Requirements: 3.3, 4.1
  */
+
+import { hasNoscriptFallback } from './metaPixelVerification';
 
 export interface BrowserCompatibilityReport {
   browser: {
@@ -205,9 +207,8 @@ export const testMetaPixelCompatibility = async (): Promise<{
       }
     }
     
-    // Test noscript fallback
-    const noscriptImg = document.querySelector('noscript img[src*="facebook.com/tr"]');
-    results.noscriptFallback = !!noscriptImg;
+    // Test noscript fallback (read as text — see hasNoscriptFallback)
+    results.noscriptFallback = hasNoscriptFallback();
     
   } catch (error) {
     console.error('Meta Pixel compatibility test failed:', error);

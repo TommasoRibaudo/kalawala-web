@@ -43,9 +43,10 @@ const FixedNavigationRibES = ({ isBlog }: IFixedNavigationES) => {
       <Container>
         <Navbar.Brand href="/HomeVillasES" className="d-flex align-items-center">
           <img 
-            src="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" 
-            alt="logo" 
+            src="https://lh3.googleusercontent.com/d/1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn=w1000" 
+            alt="Reservas Kalawala" 
             className="logo"
+            width="150"
             height="52"
             loading="eager"
           />
@@ -60,11 +61,11 @@ const FixedNavigationRibES = ({ isBlog }: IFixedNavigationES) => {
         </div>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
-            <Nav.Link href="HomeVillasES#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`} onClick={closeMenu}>Inicio</Nav.Link>
+            <Nav.Link href="HomeVillasES#body" className={`navText${(isActive && !isBlog) ? ' active' : ''}`} onClick={closeMenu}>Inicio</Nav.Link>
             <Nav.Link href="HomeVillasES#body" className="navText" onClick={() => { handleLinkClick("HomeVillasES#callToActionES") }}>Disponibilidad</Nav.Link>
             <Nav.Link href="HomeVillasES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeVillasES#portfolioES") }}>Fotos</Nav.Link>
             <Nav.Link href="HomeVillasES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeVillasES#contact-usES") }}>Contactanos</Nav.Link>
-            <Nav.Link href="/twodaysinpuertoviejoES" className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="/twodaysinpuertoviejoES" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
           </Nav>
         <div className="navbar-flag">
             <LanguageSwitcher/>

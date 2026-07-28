@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 // import Amenities from "./components/Amenities/Amenities.component";
@@ -14,6 +15,9 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
 
+
+const HERO_IMAGE =
+  'https://lh3.googleusercontent.com/d/1JxE6lYoK9C2maxtGP9rlUp2a47Ce5C9W=w1000';
 
 const TravellingToPuertoES = () => {
     // const { blogId } = useParams();
@@ -55,7 +59,12 @@ const TravellingToPuertoES = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://drive.google.com/thumbnail?id=1JxE6lYoK9C2maxtGP9rlUp2a47Ce5C9W&sz=w1000" className="responsive-image" alt="Surqui" />
+                            <img
+                                loading="eager"
+                                fetchPriority="high"
+                                srcSet={cdnSrcSet(HERO_IMAGE)}
+                                sizes="(max-width: 767px) 92vw, (max-width: 1199px) 78vw, 880px"
+                                decoding="async" src={cdnImage(HERO_IMAGE, 960)} className="responsive-image" alt="Surqui" />
                         </div>
                         <br />
                         <p>Si estás planeando un viaje a Puerto Viejo, Costa Rica, es posible que te preguntes cómo llegar allí usando transporte público. Afortunadamente, hay varias opciones disponibles que pueden llevarte a este hermoso pueblo caribeño en Talamanca.</p>
@@ -107,7 +116,7 @@ const TravellingToPuertoES = () => {
                         <p>Además, ofrece la flexibilidad de establecer tu propio horario y hacer paradas en el camino para disfrutar de algunas de las hermosas vistas a lo largo de la ruta.</p>
                         {/* Smoobu Booking Component */}
                         <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                            <h3 className="smoobu-title">Reserva tu Estadía</h3>
+                            <h2 className="smoobu-title">Reserva tu Estadía</h2>
                             <div className="smoobu-wrapper">
                                 <Smoobu2 targetId="travellingESSmoobuBooking" />
                             </div>

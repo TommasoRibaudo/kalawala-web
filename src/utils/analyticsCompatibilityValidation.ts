@@ -1,9 +1,11 @@
 /**
  * Analytics Compatibility Validation
- * 
+ *
  * This module validates compatibility between Meta Pixel and existing analytics
  * Requirements: 3.3, 4.1
  */
+
+import { hasNoscriptFallback } from './metaPixelVerification';
 
 // Declare global functions for TypeScript
 declare global {
@@ -101,9 +103,8 @@ export const validateMetaPixelPresence = (): { present: boolean; working: boolea
     const pixelScript = document.querySelector('script[src*="connect.facebook.net"]');
     const pixelScriptPresent = !!pixelScript;
     
-    // Check for noscript fallback
-    const noscriptFallback = document.querySelector('noscript img[src*="facebook.com/tr"]');
-    const noscriptPresent = !!noscriptFallback;
+    // Check for noscript fallback (read as text — see hasNoscriptFallback)
+    const noscriptPresent = hasNoscriptFallback();
     
     // Test fbq functionality
     let fbqWorking = false;

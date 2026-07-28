@@ -152,11 +152,18 @@ describe('Delfin Routing Integration Tests', () => {
       const path = require('path');
       const routerPath = path.join(__dirname, '../Router.tsx');
       const routerContent = fs.readFileSync(routerPath, 'utf8');
-      
-      // Verify imports are present
-      expect(routerContent).toContain("import ListingDelfin from '../pages/Listing/staticPages/ListingDelfin.page'");
-      expect(routerContent).toContain("import ListingDelfinES from '../pages/Listing/staticPages_ES/ListingDelfin.page_ES'");
-      
+
+      // Both pages are code-split behind React.lazy, so assert the binding and
+      // the module path rather than an eager `import X from '...'` line — that
+      // form has not existed since routes were split into their own chunks, and
+      // matching on it failed while the routes themselves were perfectly fine.
+      expect(routerContent).toMatch(
+        /const ListingDelfin = lazy\(\(\) => import\([^)]*'\.\.\/pages\/Listing\/staticPages\/ListingDelfin\.page'\)\)/
+      );
+      expect(routerContent).toMatch(
+        /const ListingDelfinES = lazy\(\(\) => import\([^)]*'\.\.\/pages\/Listing\/staticPages_ES\/ListingDelfin\.page_ES'\)\)/
+      );
+
       // Verify routes are configured
       expect(routerContent).toContain("path='/Delfin'");
       expect(routerContent).toContain("path='/DelfinES'");

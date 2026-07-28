@@ -90,6 +90,7 @@ const PortfolioImage = ({ folderName }: IPortfolioImage) => {
             <AspectBox ratio="4/3" minHeight={250}>
               <ImageWithSkeleton
                 loading='lazy'
+                sizes="(max-width: 575px) 46vw, (max-width: 991px) 48vw, 280px"
                 src={image.imageLink || ''} 
                 alt={image.roomType || `Image ${index + 1}`}
                 fluid 

@@ -104,14 +104,14 @@
 .about .col-lg-3,
 .about .col-md-6,
 .about .col-sm-6,
-.about .col-xs-12 {
+.about .col-12 {
   display: flex;
   justify-content: center;
 }
 
 .about {
     .block {
-      background:#242930;
+      background: $kalawala-light-cream; // was #242930 — a dark-theme leftover
       padding:30px;
       border-bottom:2px solid transparent;
       transition: .5s all;
@@ -187,7 +187,7 @@
           }
         }
         h3 {
-          color:#afbac4;
+          color: $kalawala-text-gray; // was #afbac4 — a dark-theme leftover
         }
         
         // Make images bigger on mobile
@@ -253,7 +253,7 @@
           font-size:30px;
           color:$primary-color;
         }
-        h4 {
+        h3 {
           font-size:16px;
           font-weight: 600; 
         } 

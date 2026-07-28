@@ -1,5 +1,5 @@
 import React from 'react';
-import posthog from 'posthog-js';
+import * as PostHog from '../../services/PostHog.service';
 import {
   BookingLanguage,
   CalendarDay,
@@ -26,6 +26,8 @@ interface CalendarWithPriceDotsProps {
   selectionStart?: string | null;
   selectionEnd?: string | null;
   onSelectDate?: (date: string, day: CalendarDay | undefined, dot: CalendarDot) => void;
+  /** Wires up the "Clear dates" control. Omitted, the control is not rendered. */
+  onClearSelection?: () => void;
   /** The search widget supplies its own heading, so it opts out of this one. */
   showHeading?: boolean;
 }
@@ -60,7 +62,8 @@ const calendarStrings = {
     legendHigh: 'High',
     legendUnavailable: 'Unavailable',
     unableToLoad: 'Calendar prices are temporarily unavailable.',
-    pickCheckOut: 'Now pick your check-out date.',
+    pickCheckOut: 'Now pick your check-out date, or tap an earlier date to start over.',
+    clearDates: 'Clear dates',
   },
   es: {
     title: 'Precios por noche',
@@ -81,7 +84,8 @@ const calendarStrings = {
     legendHigh: 'Alto',
     legendUnavailable: 'No disponible',
     unableToLoad: 'Los precios del calendario no están disponibles temporalmente.',
-    pickCheckOut: 'Ahora elige tu fecha de salida.',
+    pickCheckOut: 'Ahora elige tu fecha de salida, o toca una fecha anterior para empezar de nuevo.',
+    clearDates: 'Borrar fechas',
   },
 };
 
@@ -92,6 +96,7 @@ const CalendarWithPriceDots: React.FC<CalendarWithPriceDotsProps> = ({
   selectionStart = null,
   selectionEnd = null,
   onSelectDate,
+  onClearSelection,
   showHeading = true,
 }) => {
   const strings = calendarStrings[language];
@@ -184,8 +189,11 @@ const CalendarWithPriceDots: React.FC<CalendarWithPriceDotsProps> = ({
       return false;
     }
 
-    if (isPickingCheckOut && selectionStart) {
-      if (date <= selectionStart) return false;
+    // Only the nights *after* the check-in are judged against the stay rules.
+    // A tap on or before the check-in is not a broken check-out — it is a guest
+    // fixing a misclicked arrival, so it falls through to the check-in rules
+    // below and the parent restarts the range from there.
+    if (isPickingCheckOut && selectionStart && date > selectionStart) {
       if (earliestCheckOut && date < earliestCheckOut) return false;
       if (checkOutLimit && date > checkOutLimit) return false;
       return true;
@@ -251,6 +259,14 @@ const CalendarWithPriceDots: React.FC<CalendarWithPriceDotsProps> = ({
           const dotColor = getDotColor(dayData, data);
           const isPast = calendarDay.date < earliestDate;
           const selectable = isSelectable(calendarDay.date);
+          // Earlier dates are now restart taps, so they keep their ordinary
+          // price label instead of being announced as bad check-outs.
+          const blockedAsCheckOut =
+            isPickingCheckOut &&
+            !selectable &&
+            !isPast &&
+            Boolean(selectionStart) &&
+            calendarDay.date > (selectionStart as string);
           const dateLabel = getDateAriaLabel({
             date: calendarDay.date,
             day: dayData,
@@ -259,7 +275,7 @@ const CalendarWithPriceDots: React.FC<CalendarWithPriceDotsProps> = ({
             language,
             isPast,
             hasRates: Boolean(apartmentSlug),
-            blockedAsCheckOut: isPickingCheckOut && !selectable && !isPast,
+            blockedAsCheckOut,
           });
           const isStart = Boolean(selectionStart) && calendarDay.date === selectionStart;
           const isEnd = Boolean(selectionEnd) && calendarDay.date === selectionEnd;
@@ -315,6 +331,16 @@ const CalendarWithPriceDots: React.FC<CalendarWithPriceDotsProps> = ({
         </p>
       )}
 
+      {/* Lives inside the calendar rather than beside it: the hero popover has
+          no other way out of a half-finished range. */}
+      {onClearSelection && selectionStart && (
+        <div className="calendar-with-price-dots__actions">
+          <button type="button" className="calendar-with-price-dots__clear" onClick={onClearSelection}>
+            {strings.clearDates}
+          </button>
+        </div>
+      )}
+
       {apartmentSlug && (
         <ul className="calendar-with-price-dots__legend" aria-label={strings.title}>
           <li>
@@ -365,7 +391,7 @@ function captureCalendarEvent(eventName: CalendarAnalyticsEvent, properties: Rec
     return;
   }
 
-  posthog.capture(eventName, properties);
+  PostHog.capture(eventName, properties);
 
   if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
     window.gtag('event', eventName, {

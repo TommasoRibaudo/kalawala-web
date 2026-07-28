@@ -77,6 +77,9 @@ const BestTimeToVisitPuerto = () => {
                     <div className="description" style={{ maxWidth: 1000 }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <img
+                                loading="eager"
+                                fetchPriority="high"
+                                decoding="async"
                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619"
                                 className="responsive-image"
                                 alt="Beach in Puerto Viejo de Limón, Costa Rica"
@@ -87,7 +90,6 @@ const BestTimeToVisitPuerto = () => {
                                 }}
                                 width="1000"
                                 height="600"
-                                loading="lazy"
                             />
                         </div>
                         Photo by <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a>
@@ -232,7 +234,7 @@ const BestTimeToVisitPuerto = () => {
                             marginBottom: '2rem',
                         }}
                     >
-                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <h2 className="smoobu-title">Book Your Stay</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="bestTimePuertoViejoSmoobuBooking" />
                         </div>

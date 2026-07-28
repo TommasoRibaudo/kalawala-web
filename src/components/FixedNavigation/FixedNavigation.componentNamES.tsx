@@ -43,9 +43,10 @@ const FixedNavigationNamES = ({ isBlog }: IFixedNavigation) => {
       <Container>
         <Navbar.Brand href="/HomeNamES#body" className="d-flex align-items-center">
           <img 
-            src="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" 
-            alt="logo" 
+            src="https://lh3.googleusercontent.com/d/1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn=w1000" 
+            alt="Reservas Kalawala" 
             className="logo"
+            width="150"
             height="52"
             loading="eager"
           />
@@ -66,11 +67,11 @@ const FixedNavigationNamES = ({ isBlog }: IFixedNavigation) => {
         </div>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
-          <Nav.Link href="HomeNamES#body" className={`navText ${(isActive && !isBlog) ? 'active' : ''}`} onClick={closeMenu}>Inicio</Nav.Link>
+          <Nav.Link href="HomeNamES#body" className={`navText${(isActive && !isBlog) ? ' active' : ''}`} onClick={closeMenu}>Inicio</Nav.Link>
             <Nav.Link href="HomeNamES#body" className="navText" onClick={() => { handleLinkClick("HomeNamES#body") }}>Disponibilidad</Nav.Link>
             <Nav.Link href="HomeNamES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeNamES#portfolioES") }}>Fotos</Nav.Link>
             <Nav.Link href="HomeNamES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeNamES#contact-usES") }}>Contactanos</Nav.Link>
-            <Nav.Link href="/twodaysinpuertoviejoES" className={`navText ${(isActive && isBlog) ? 'active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="/twodaysinpuertoviejoES" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
           </Nav>
         <div className="navbar-flag">
             <LanguageSwitcher />

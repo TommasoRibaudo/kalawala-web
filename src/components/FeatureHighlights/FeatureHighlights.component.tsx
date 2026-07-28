@@ -30,9 +30,9 @@ const FeatureHighlights: React.FC<FeatureHighlightsProps> = ({
 
   return (
     <div className="feature-highlights">
-      <h3 className="feature-highlights__title">
+      <h2 className="feature-highlights__title">
         {sectionTitle}
-      </h3>
+      </h2>
       <ul className="feature-highlights__list">
         {features.map((feature, index) => (
           <li key={index} className="feature-highlights__item">

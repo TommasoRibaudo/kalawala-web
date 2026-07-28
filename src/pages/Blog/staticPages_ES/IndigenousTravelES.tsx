@@ -86,7 +86,10 @@ const IndigenousTravelES = () => {
                     <div className="description" style={{ maxWidth: 1000 }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Palenque_bribri._Costa_Rica.jpg?20170604221517"
+                                loading="eager"
+                                fetchPriority="high"
+                                decoding="async"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Palenque_bribri._Costa_Rica.jpg/960px-Palenque_bribri._Costa_Rica.jpg"
                                 className="responsive-image"
                                 alt="Cultura indígena Bribri cerca de Puerto Viejo"
                             />
@@ -281,7 +284,7 @@ const IndigenousTravelES = () => {
                             marginBottom: '2rem',
                         }}
                     >
-                        <h3 className="smoobu-title">Reserva tu Estadía</h3>
+                        <h2 className="smoobu-title">Reserva tu Estadía</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="indigenousCultureESSmoobuBooking" />
                         </div>

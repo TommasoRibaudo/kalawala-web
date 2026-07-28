@@ -157,9 +157,14 @@ const HomeReviews: React.FC<HomeReviewsProps> = ({ isSpanish }) => {
               <div className="home-reviews__quote-mark">&ldquo;</div>
               <p className="home-reviews__preview-text">{text}</p>
               <p className="home-reviews__reviewer-name">{review.reviewer}</p>
-              {review.location && <p className="home-reviews__location">{review.location}</p>}
+              {/* Always rendered — reviews without a location keep the line's
+                  height so the cards stay aligned with one another. */}
+              <p className="home-reviews__location">{review.location}</p>
               <div className="home-reviews__stars">{STARS}</div>
-              <p className="home-reviews__meta">{review.date}&nbsp;&middot;&nbsp;{stayLabel}</p>
+              {/* One interpolation, deliberately — see GuestReviews for why:
+                  adjacent JSX text children hydrate as separate text nodes but
+                  react-snap saves them merged, which is React error #418. */}
+              <p className="home-reviews__meta">{`${review.date} · ${stayLabel}`}</p>
               <p className="home-reviews__property">{propertyLabel}</p>
             </div>
           );

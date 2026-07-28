@@ -1,13 +1,22 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import posthog from 'posthog-js';
+import * as PostHogService from '../../services/PostHog.service';
 import { CookieConsentService } from '../../services/CookieConsent.service';
 import { resetCalendarMonthCache } from '../../services/calendarMonthCache';
 import CalendarWithPriceDots from './CalendarWithPriceDots.component';
 
-jest.mock('posthog-js', () => ({
+// posthog-js is loaded lazily behind PostHog.service, so the component's
+// captures reach the wrapper, never the library. Mock the wrapper.
+jest.mock('../../services/PostHog.service', () => ({
+  __esModule: true,
   capture: jest.fn(),
+  loadPostHog: jest.fn(() => Promise.resolve(null)),
+  initPostHogIfConsented: jest.fn(),
+  optIn: jest.fn(),
+  optOut: jest.fn(),
 }));
+
+const posthog = { capture: PostHogService.capture as jest.Mock };
 
 const juneResponse = {
   property: {
@@ -348,7 +357,65 @@ describe('CalendarWithPriceDots', () => {
     expect(start).toHaveClass('calendar-date-cell--range-start');
     expect(start).not.toHaveClass('calendar-date-cell--blocked');
 
-    expect(screen.getByText('Now pick your check-out date.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Now pick your check-out date, or tap an earlier date to start over.')
+    ).toBeInTheDocument();
+  });
+
+  test('lets a tap before the check-in restart the range instead of swallowing it', async () => {
+    mockFetchByMonth();
+
+    // A guest who meant June 1 but misclicked June 2 has to be able to correct
+    // it by tapping June 1 — the two-tap picker used to disable everything
+    // before the check-in, leaving the click nowhere to go.
+    const onSelectDate = jest.fn();
+    render(
+      <CalendarWithPriceDots
+        apartmentSlug="Geco"
+        language="en"
+        onSelectDate={onSelectDate}
+        selectionStart="2026-06-02"
+      />
+    );
+
+    const earlier = await screen.findByRole('button', { name: /June 1, \$90\.00, low price/ });
+    expect(earlier).toBeEnabled();
+    expect(earlier).not.toHaveClass('calendar-date-cell--blocked');
+
+    fireEvent.click(earlier);
+    expect(onSelectDate).toHaveBeenCalledWith(
+      '2026-06-01',
+      expect.objectContaining({ date: '2026-06-01' }),
+      'green'
+    );
+
+    // Nights after the check-in still obey the stay rules: June 2 carries a
+    // 2-night minimum and June 4 is booked, so June 3 remains closed.
+    expect(screen.getByRole('button', { name: /June 3, .*Not available as a check-out date/ })).toBeDisabled();
+  });
+
+  test('offers the clear control only once a date is picked', async () => {
+    mockFetchByMonth();
+
+    const onClearSelection = jest.fn();
+    const { rerender } = render(
+      <CalendarWithPriceDots apartmentSlug="Geco" language="en" onClearSelection={onClearSelection} />
+    );
+
+    await screen.findByRole('button', { name: /June 1, \$90\.00/ });
+    expect(screen.queryByRole('button', { name: 'Clear dates' })).not.toBeInTheDocument();
+
+    rerender(
+      <CalendarWithPriceDots
+        apartmentSlug="Geco"
+        language="en"
+        onClearSelection={onClearSelection}
+        selectionStart="2026-06-02"
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear dates' }));
+    expect(onClearSelection).toHaveBeenCalledTimes(1);
   });
 
   test('renders the Spanish month label without title-casing the preposition', async () => {

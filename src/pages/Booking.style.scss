@@ -855,7 +855,10 @@
   }
 }
 
-.booking-result-card__amenities-toggle {
+// Qualified with `li` so it beats `.booking-result-card__amenities li` above,
+// which would otherwise stack its own padding on top of the button's and leave
+// the toggle taller than every other chip.
+li.booking-result-card__amenities-toggle {
   background: transparent;
   padding: 0;
 
@@ -1504,6 +1507,30 @@
   word-break: break-all;
 }
 
+.booking-deposit-handoff__colones-amount {
+  border-top: 1px dashed rgba(41, 79, 68, 0.24);
+  color: $kalawala-darker-green;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 12px 0 0;
+  padding-top: 12px;
+}
+
+// The estimate sits under the dollar total it converts, deliberately quieter
+// than the figure the guest is actually charged.
+.booking-colones-estimate {
+  color: rgba(23, 23, 23, 0.6) !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.booking-colones-note {
+  color: rgba(23, 23, 23, 0.6);
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 12px 0 0;
+}
+
 .booking-deposit-handoff__contacts {
   display: grid;
   gap: 12px;
@@ -1751,8 +1778,35 @@
     font-size: 21px;
   }
 
-  .booking-result-card__amenities li {
-    flex: 1 1 100%;
+  // Compact grid of equal cells instead of one full-width chip per row. Collapsed
+  // cells only hold an icon, so they can be small; expanded cells hold the label
+  // too and need a wider track.
+  .booking-result-card__amenities {
+    display: grid;
+    gap: 6px;
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+
+    li:not(.booking-result-card__amenities-toggle) {
+      font-size: 13px;
+      // Matches the toggle button so chips stay the same height even when the
+      // grid wraps and a row has no toggle in it to stretch against.
+      min-height: 34px;
+      padding: 7px 4px;
+    }
+
+    &--expanded {
+      grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    }
+
+    &--expanded li:not(.booking-result-card__amenities-toggle) {
+      padding: 7px 9px;
+    }
+  }
+
+  li.booking-result-card__amenities-toggle button {
+    min-height: 34px;
+    padding: 7px 4px;
+    width: 100%;
   }
 
   .booking-search-compact {

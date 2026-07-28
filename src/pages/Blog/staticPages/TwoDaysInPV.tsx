@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
@@ -12,6 +13,9 @@ import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 
+
+const HERO_IMAGE =
+  'https://lh3.googleusercontent.com/d/13j6FfwVMxVg9lU4SuGST8ljrVkyW7rla=w1000';
 
 const TwoDaysInPV = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -53,7 +57,12 @@ const TwoDaysInPV = () => {
                             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
                         }}>
                             <img
-                                src="https://drive.google.com/thumbnail?id=13j6FfwVMxVg9lU4SuGST8ljrVkyW7rla&sz=w1000"
+                                loading="eager"
+                                fetchPriority="high"
+                                srcSet={cdnSrcSet(HERO_IMAGE)}
+                                sizes="(max-width: 767px) 92vw, (max-width: 1199px) 78vw, 880px"
+                                decoding="async"
+                                src={cdnImage(HERO_IMAGE, 960)}
                                 className="responsive-image"
                                 style={{
                                     maxWidth: '100%',
@@ -63,7 +72,6 @@ const TwoDaysInPV = () => {
                                 alt="Kayaking in Punta Uva"
                                 width="1000"
                                 height="600"
-                                loading="lazy"
                             />
                         </div>
                     </div>
@@ -120,7 +128,7 @@ const TwoDaysInPV = () => {
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <h2 className="smoobu-title">Book Your Stay</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="blogSmoobuBooking" />
                         </div>

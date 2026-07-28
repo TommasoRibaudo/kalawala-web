@@ -158,6 +158,13 @@ export const bookingStrings = {
     longStayNote: 'Longer stays are discounted automatically.',
     codeSave: (percentage: number) => `Discount −${percentage}%`,
     priceBefore: 'Regular price',
+    // Currency conversion is display-only: quotes, holds and payments are all
+    // in USD. These read out to screen readers in place of the "≈" glyph, which
+    // most announce as nothing at all.
+    colonesEstimateAria: (amount: string) => `Approximately ${amount} — estimate`,
+    colonesEstimateNote: (rate: string, date: string) =>
+      `Colón amounts are an estimate at the ${date} exchange rate (${rate} per US$1). Payment is charged in US dollars.`,
+    colonesTransferAmount: (amount: string) => `Estimated amount to transfer: ${amount}`,
   },
   es: {
     siteTitle: 'Reservas Kalawala',
@@ -314,6 +321,10 @@ export const bookingStrings = {
     longStayNote: 'Las estadías largas tienen descuento automático.',
     codeSave: (percentage: number) => `Descuento −${percentage}%`,
     priceBefore: 'Precio regular',
+    colonesEstimateAria: (amount: string) => `Aproximadamente ${amount} — estimado`,
+    colonesEstimateNote: (rate: string, date: string) =>
+      `Los montos en colones son una estimación al tipo de cambio del ${date} (${rate} por US$1). El cobro se realiza en dólares estadounidenses.`,
+    colonesTransferAmount: (amount: string) => `Monto estimado a transferir: ${amount}`,
     rateToggleLabel: 'Pol\u00edtica de cancelaci\u00f3n',
     nonRefundableSave: 'Ahorra 10%',
     nonRefundableNote: 'Tarifa no reembolsable, 10% de descuento. No puedes cancelarla ni cambiarla.',

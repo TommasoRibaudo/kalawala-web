@@ -1,15 +1,26 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import posthog from 'posthog-js';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
+import * as PostHogService from '../services/PostHog.service';
 import { CookieConsentService } from '../services/CookieConsent.service';
+import { resetExchangeRateStore } from '../services/exchangeRateStore';
 import BookingPage from './Booking.page';
 
-jest.mock('posthog-js', () => ({
+/**
+ * posthog-js is loaded lazily behind PostHog.service, so mocking the library
+ * itself catches nothing — the wrapper is what the page's analytics calls
+ * reach. Keeping loadPostHog/initPostHogIfConsented as no-op mocks stops the
+ * real module from being dynamically imported mid-test.
+ */
+jest.mock('../services/PostHog.service', () => ({
   __esModule: true,
-  default: {
-    capture: jest.fn(),
-  },
+  capture: jest.fn(),
+  loadPostHog: jest.fn(() => Promise.resolve(null)),
+  initPostHogIfConsented: jest.fn(),
+  optIn: jest.fn(),
+  optOut: jest.fn(),
 }));
+
+const posthog = { capture: PostHogService.capture as jest.Mock };
 
 const originalFetch = global.fetch;
 const originalLocation = window.location;
@@ -23,6 +34,9 @@ afterEach(() => {
   window.sessionStorage.clear();
   window.localStorage.clear();
   CookieConsentService.clearConsent();
+  // Module-level and loaded at most once per session — without this a Spanish
+  // test that failed to fetch a rate would leave every later one unable to.
+  resetExchangeRateStore();
   delete (window as any).gtag;
   delete (window as any).fbq;
   jest.clearAllMocks();
@@ -209,6 +223,106 @@ test('renders Spanish no-availability state for bookES route', async () => {
   const [, request] = (global.fetch as jest.Mock).mock.calls[0];
   expect(request.headers['Accept-Language']).toBe('es');
   expect(JSON.parse(request.body)).toMatchObject({ language: 'es' });
+});
+
+const spanishSearchResult = {
+  bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+  quoteId: 'qt_TEST',
+  quoteExpiresAt: '2099-06-01T12:00:00Z',
+  arrivalDate: '2099-07-10',
+  departureDate: '2099-07-14',
+  guests: 2,
+  language: 'es',
+  resultsCount: 1,
+  properties: [
+    {
+      propertyId: 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111',
+      slug: 'Geco',
+      listingUrl: '/Geco',
+      name: 'Casa Geco',
+      guestCapacity: 5,
+      thumbnailUrl: 'https://example.com/geco.jpg',
+      amenities: [{ code: 'wifi', label: '100Mbps WiFi' }],
+      price: {
+        currency: 'USD',
+        totalAmountCents: 51000,
+        nightlyAverageCents: 12750,
+        nights: 4,
+        includesTaxes: false,
+        rateSource: 'smoobu',
+      },
+      actions: { viewListingUrl: '/Geco', canCreatePayPalHold: true, canUseManualDepositHandoff: true },
+    },
+  ],
+  availabilityWarnings: [],
+};
+
+/** Routes by URL so the exchange-rate call can be answered — or refused — independently. */
+function mockSpanishSearchWithExchangeRate(exchangeRate: { body: unknown; status?: number } | null) {
+  global.fetch = jest.fn(async (url: string) => {
+    if (String(url).includes('/api/exchange-rate')) {
+      if (!exchangeRate) {
+        throw new TypeError('Network request failed');
+      }
+      return new Response(JSON.stringify(exchangeRate.body), {
+        status: exchangeRate.status ?? 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    return new Response(JSON.stringify(spanishSearchResult), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }) as unknown as typeof fetch;
+}
+
+async function runSpanishSearch() {
+  renderBookingPage('/bookES');
+  fireEvent.change(activeSlide().getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Salida'), { target: { value: '2099-07-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /buscar disponibilidad/i }));
+  await screen.findByText('Casa Geco');
+}
+
+test('shows a colón estimate beside the dollar total on the Spanish results, flagged as an estimate', async () => {
+  mockSpanishSearchWithExchangeRate({
+    body: { base: 'USD', quote: 'CRC', rate: 512.35, source: 'open.er-api.com', fetchedAt: '2099-07-01T06:00:00Z', stale: false },
+  });
+
+  await runSpanishSearch();
+
+  // $510.00 × 512.35 = ₡261,298.50, rounded to the nearest hundred colones.
+  // es-CR groups thousands with a non-breaking space, which the default text
+  // normalizer folds into the plain one written here.
+  expect(await screen.findByText('≈ ₡261 300')).toBeInTheDocument();
+  expect(screen.getByText('USD 510,00')).toBeInTheDocument();
+  expect(screen.getByText(/Los montos en colones son una estimación/)).toBeInTheDocument();
+  expect(screen.getByText(/₡512,35 por US\$1/)).toBeInTheDocument();
+});
+
+test('leaves the dollar prices alone when the exchange rate cannot be fetched', async () => {
+  mockSpanishSearchWithExchangeRate(null);
+
+  await runSpanishSearch();
+
+  expect(screen.getByText('USD 510,00')).toBeInTheDocument();
+  await waitFor(() => expect(screen.queryByText(/≈ ₡/)).not.toBeInTheDocument());
+  expect(screen.queryByText(/Los montos en colones/)).not.toBeInTheDocument();
+});
+
+test('does not request an exchange rate on the English booking flow', async () => {
+  mockJsonResponse({ ...spanishSearchResult, language: 'en' });
+
+  renderBookingPage('/book');
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-07-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-07-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Casa Geco');
+
+  const requestedUrls = (global.fetch as jest.Mock).mock.calls.map(([url]) => String(url));
+  expect(requestedUrls.some((url) => url.includes('/api/exchange-rate'))).toBe(false);
+  expect(screen.queryByText(/≈ ₡/)).not.toBeInTheDocument();
 });
 
 test('language switcher toggles booking routes and preserves search query state', () => {

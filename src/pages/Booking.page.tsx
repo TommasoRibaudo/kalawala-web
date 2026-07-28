@@ -37,8 +37,15 @@ import {
   trackManualDepositHandoffClicked,
   trackPaymentMethodSelected,
   trackPropertyViewed,
+  trackBookingFormViewed,
+  trackBookingFormStarted,
+  trackPaymentStarted,
+  trackPaymentCompleted,
+  trackPaypalApproved,
 } from '../services/BookingAnalytics.service';
 import { CookieConsentService } from '../services/CookieConsent.service';
+import { useExchangeRate } from '../hooks/useExchangeRate';
+import { formatColones, formatExchangeRate } from '../utils/money';
 import { addDays, getCostaRicaToday } from '../utils/dates';
 import { PROPERTY_DISPLAY_NAMES } from '../utils/constants';
 import { bookingStrings, BookingStrings } from './Booking.i18n';
@@ -105,6 +112,11 @@ interface StoredPayPalCheckout {
   bookingSessionId: string;
   paypalOrderId: string;
   reservationPublicId?: string;
+  /**
+   * Carried across the PayPal round trip purely so the paypal_approved event
+   * on return can be broken down by home — the return URL has no property in it.
+   */
+  propertyId?: string;
   language: BookingLanguage;
 }
 
@@ -158,6 +170,11 @@ const BookingPage = () => {
   const isConfirmationRoute = isBookingConfirmedPath(location.pathname);
   const paypalReturnAttemptedRef = React.useRef(false);
   const confirmationTrackedRef = React.useRef<string | null>(null);
+  // booking_form_started is a once-per-form-opening event; reset whenever a
+  // checkout form opens so a guest who backs out and picks another home counts
+  // as starting that second form too.
+  const formStartTrackedRef = React.useRef(false);
+  const paymentStartTrackedRef = React.useRef<string | null>(null);
   const today = React.useMemo(() => getCostaRicaToday(), []);
   const [arrivalDate, setArrivalDate] = React.useState(() => getInitialArrivalDate(searchParams.get('arrivalDate'), today));
   const [departureDate, setDepartureDate] = React.useState(() => getInitialDepartureDate(searchParams.get('departureDate'), searchParams.get('arrivalDate'), today));
@@ -226,6 +243,10 @@ const BookingPage = () => {
     const bookingSessionId = searchParams.get('bookingSessionId')?.trim() || storedCheckout?.bookingSessionId || '';
     const captureLanguage = storedCheckout?.language ?? language;
     if (!paypalOrderId || !payerId || !bookingSessionId) { setIsCapturingPayPal(false); setPayPalCaptureError(strings.paypalReturnMissing); return; }
+    // The guest approved at PayPal and came back. Capture can still fail after
+    // this, so it is a distinct step from payment_completed — the gap between
+    // the two is exactly the set of bookings lost to capture errors.
+    trackPaypalApproved({ paypal_order_id: paypalOrderId, property_id: storedCheckout?.propertyId ?? '', language: captureLanguage });
     setIsCapturingPayPal(true); setPayPalCaptureError(null);
     capturePayPalOrder({ bookingSessionId, paypalOrderId, payerId, language: captureLanguage })
       .then((response) => { setPayPalCaptureResult(response); setBookingConfirmation(response); persistBookingConfirmationState(response); clearPayPalCheckoutState(bookingSessionId); navigate(confirmedBookingPath(language), { replace: true }); })
@@ -243,6 +264,18 @@ const BookingPage = () => {
     if (confirmationTrackedRef.current === reservationId || wasBookingConfirmationTracked(reservationId)) return;
     if (!CookieConsentService.hasConsent('analytics')) return;
     maybeTrackBookingConfirmation(confirmation);
+    // Separate from maybeTrackBookingConfirmation, which bails out when the
+    // capture response is missing property or price metadata. The funnel's last
+    // step must not disappear just because the revenue fields did.
+    trackPaymentCompleted({
+      payment_type: 'paypal',
+      reservation_id: reservationId,
+      property_id: confirmation.booking.property?.propertyId ?? '',
+      value_cents: confirmation.booking.price?.totalAmountCents ?? null,
+      currency: confirmation.booking.price?.currency ?? null,
+      outcome: 'confirmed',
+      language: confirmation.booking.language,
+    });
     markBookingConfirmationTracked(reservationId);
     confirmationTrackedRef.current = reservationId;
   }, [isConfirmationRoute]);
@@ -256,11 +289,12 @@ const BookingPage = () => {
   const handleGuestInputChange = (value: number) => { const n = Number.isFinite(value) ? value : 0; setGuests(n); setSearchCaptchaRequired(false); updateBookingQuery({ guests: n }); };
   const handleGuestStepChange = (value: number) => { const n = Math.max(1, value); setGuests(n); setSearchCaptchaRequired(false); updateBookingQuery({ guests: n }); };
 
-  const doSearch = React.useCallback(async (captchaToken?: string) => {
+  const doSearch = React.useCallback(async (captchaToken?: string, sourceOverride?: string) => {
     setError(null); setDepositError(null); setCheckoutProperty(null); setHoldError(null); setHoldResponse(null); setHoldFieldErrors({}); setPayPalOrderError(null); setSearchCaptchaRequired(false); setIsSubmitting(true);
+    const source = sourceOverride ?? 'booking_page';
     try {
-      trackBookingSearch({ arrival_date: arrivalDate, departure_date: departureDate, guests, language, source: 'booking_page' });
-      const response = await searchAvailability({ arrivalDate, departureDate, guests, language, source: 'booking_page', ...(captchaToken ? { captchaToken } : {}) });
+      trackBookingSearch({ arrival_date: arrivalDate, departure_date: departureDate, guests, language, source });
+      const response = await searchAvailability({ arrivalDate, departureDate, guests, language, source, ...(captchaToken ? { captchaToken } : {}) });
       setResult(response);
       const minPriceCents = response.properties.length > 0 ? Math.min(...response.properties.map((p) => p.price?.totalAmountCents).filter((v): v is number => v != null)) : null;
       const firstCurrency = response.properties.find((p) => p.price?.currency)?.price?.currency ?? null;
@@ -268,7 +302,7 @@ const BookingPage = () => {
     } catch (searchError) {
       if (searchError instanceof BookingApiError && searchError.status === 403 && searchError.code === 'captcha_required' && !captchaToken && executeRecaptcha) {
         setSearchCaptchaRequired(true);
-        executeRecaptcha('search').then((token) => { setSearchCaptchaRequired(false); void doSearch(token); }).catch(() => setError(strings.captchaError));
+        executeRecaptcha('search').then((token) => { setSearchCaptchaRequired(false); void doSearch(token, source); }).catch(() => setError(strings.captchaError));
       } else { setResult(null); setError(getSearchErrorMessage(searchError, strings)); }
     } finally { setIsSubmitting(false); }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -282,11 +316,15 @@ const BookingPage = () => {
     if (!arrivalDate || !departureDate) return;
     if (isPayPalReturnRoute || isConfirmationRoute) return;
     autoSearchFiredRef.current = true;
-    // Remove autoSearch param so refreshing doesn't re-trigger
+    // Remove autoSearch param so refreshing doesn't re-trigger. `src` goes too:
+    // it describes how this one search was launched, and leaving it in the URL
+    // would misattribute every later search on this page to the widget.
+    const widgetSource = sanitiseSearchSource(searchParams.get('src'));
     const nextParams = new URLSearchParams(searchParams.toString());
     nextParams.delete('autoSearch');
+    nextParams.delete('src');
     setSearchParams(nextParams, { replace: true });
-    doSearch();
+    doSearch(undefined, widgetSource);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -308,6 +346,8 @@ const BookingPage = () => {
     setHoldForm(initialPayPalHoldForm); setHoldFieldErrors({});
     if (property.price) { trackPaymentMethodSelected({ quote_id: result.quoteId, property_id: property.propertyId, payment_type: 'manual_deposit', value_cents: property.price.totalAmountCents, currency: property.price.currency, language }); }
     trackManualDepositHandoffClicked({ contact_method: 'deposit_checkout', quote_id: result.quoteId, property_id: property.propertyId, property_slug: property.slug, language });
+    formStartTrackedRef.current = false;
+    trackBookingFormViewed({ quote_id: result.quoteId, property_id: property.propertyId, property_slug: property.slug, property_name: property.name, payment_type: 'manual_deposit', value_cents: property.price?.totalAmountCents ?? null, currency: property.price?.currency ?? null, language });
   };
 
   const handleCreateDepositHold = async (event: React.FormEvent) => {
@@ -327,6 +367,9 @@ const BookingPage = () => {
       // once staff verify the transfer.
       if (response.booking?.reservationPublicId) { savePortalCredentials(response.booking.reservationPublicId, holdForm.portalPassword); }
       if (depositProperty.price) { trackCheckoutStarted({ quote_id: result.quoteId, property_id: depositProperty.propertyId, property_slug: depositProperty.slug, property_name: depositProperty.name, value_cents: depositProperty.price.totalAmountCents, currency: depositProperty.price.currency, arrival_date: result.arrivalDate, departure_date: result.departureDate, guests: result.guests, language }); }
+      // The hold response renders the bank details, so the guest is now off to
+      // their bank — the deposit path's equivalent of the PayPal redirect.
+      trackPaymentStarted({ payment_type: 'manual_deposit', reservation_id: response.booking.reservationPublicId, booking_session_id: response.booking.bookingSessionId, property_id: depositProperty.propertyId, value_cents: depositProperty.price?.totalAmountCents ?? null, currency: depositProperty.price?.currency ?? null, language });
     } catch (error) {
       setDepositError(getHoldErrorMessage(error, strings));
     } finally {
@@ -340,6 +383,10 @@ const BookingPage = () => {
     try {
       await uploadDepositReceipt({ bookingSessionId: depositHoldResponse.booking.bookingSessionId, depositAccessToken: depositHoldResponse.depositAccessToken, file, language });
       setReceiptState({ status: 'uploaded' });
+      // As far as the guest is concerned they have paid. Staff verification
+      // happens days later and off-session, hence 'awaiting_verification'
+      // rather than 'confirmed' — this is funnel completion, not revenue.
+      trackPaymentCompleted({ payment_type: 'manual_deposit', reservation_id: depositHoldResponse.booking.reservationPublicId, property_id: depositProperty?.propertyId ?? '', value_cents: depositProperty?.price?.totalAmountCents ?? null, currency: depositProperty?.price?.currency ?? null, outcome: 'awaiting_verification', language });
     } catch (error) {
       setReceiptState({ status: 'error', message: getReceiptErrorMessage(error, strings) });
     }
@@ -349,9 +396,19 @@ const BookingPage = () => {
     if (!result?.quoteId || !result.bookingSessionId) { setHoldError(strings.checkoutUnavailable); return; }
     setDepositError(null); setCheckoutProperty(property); setHoldForm(initialPayPalHoldForm); setHoldFieldErrors({}); setHoldError(null); setHoldResponse(null); setPayPalOrderError(null);
     if (property.price) { trackPaymentMethodSelected({ quote_id: result.quoteId, property_id: property.propertyId, payment_type: 'paypal', value_cents: property.price.totalAmountCents, currency: property.price.currency, language }); }
+    formStartTrackedRef.current = false;
+    trackBookingFormViewed({ quote_id: result.quoteId, property_id: property.propertyId, property_slug: property.slug, property_name: property.name, payment_type: 'paypal', value_cents: property.price?.totalAmountCents ?? null, currency: property.price?.currency ?? null, language });
   };
 
   const updateHoldForm = (updates: Partial<PayPalHoldFormState>) => {
+    // First keystroke in the form, whichever field it lands in. Both payment
+    // paths render the same form, so the property comes from whichever of the
+    // two is open.
+    const formProperty = checkoutProperty ?? depositProperty;
+    if (!formStartTrackedRef.current && result?.quoteId && formProperty) {
+      formStartTrackedRef.current = true;
+      trackBookingFormStarted({ quote_id: result.quoteId, property_id: formProperty.propertyId, property_slug: formProperty.slug, payment_type: checkoutProperty ? 'paypal' : 'manual_deposit', first_field: Object.keys(updates)[0] ?? 'unknown', language });
+    }
     setHoldForm((c) => ({ ...c, ...updates }));
     setHoldFieldErrors((c) => { const n = { ...c }; Object.keys(updates).forEach((k) => { delete n[k]; }); return n; });
   };
@@ -388,7 +445,14 @@ const BookingPage = () => {
       const response = await createPayPalOrder({ bookingSessionId: holdResponse.booking.bookingSessionId, language, ...(captchaTokenOverride ? { captchaToken: captchaTokenOverride } : {}) });
       const paypalOrder = response.paypal;
       if (!paypalOrder?.approvalUrl) { setPayPalOrderError(strings.paymentNotReady); return; }
-      persistPayPalCheckoutState({ bookingSessionId: holdResponse.booking.bookingSessionId, paypalOrderId: paypalOrder.orderId, reservationPublicId: holdResponse.booking.reservationPublicId, language });
+      persistPayPalCheckoutState({ bookingSessionId: holdResponse.booking.bookingSessionId, paypalOrderId: paypalOrder.orderId, reservationPublicId: holdResponse.booking.reservationPublicId, propertyId: checkoutProperty?.propertyId, language });
+      // Fire before the redirect, not after — window.location.assign() tears
+      // down the page and anything queued behind it is lost. PostHog sends
+      // captures with fetch keepalive, so this survives the navigation.
+      if (paymentStartTrackedRef.current !== paypalOrder.orderId) {
+        paymentStartTrackedRef.current = paypalOrder.orderId;
+        trackPaymentStarted({ payment_type: 'paypal', reservation_id: holdResponse.booking.reservationPublicId, booking_session_id: holdResponse.booking.bookingSessionId, property_id: checkoutProperty?.propertyId ?? '', value_cents: checkoutProperty?.price?.totalAmountCents ?? null, currency: checkoutProperty?.price?.currency ?? null, language });
+      }
       redirectToUrl(paypalOrder.approvalUrl);
     } catch (orderError) {
       // The backend's paymentCreate policy escalates to a CAPTCHA challenge; mint a
@@ -643,6 +707,8 @@ const BookingSearchResults = ({ result, strings, language, nonRefundable, withPe
         </>
       )}
 
+      <ColonesEstimateNote strings={strings} language={language} />
+
       {/* Homes filtered out by Smoobu are explained after the available ones, so
           a restriction on a home the guest cannot book never overshadows the
           homes they can. */}
@@ -650,6 +716,18 @@ const BookingSearchResults = ({ result, strings, language, nonRefundable, withPe
     </section>
   );
 };
+
+/**
+ * The `src` param is attacker-controllable and lands in an analytics property,
+ * so it is an allowlist rather than a format check — anything else would let a
+ * crafted link mint unlimited distinct values and wreck the funnel breakdown.
+ */
+const WIDGET_SEARCH_SOURCES = ['widget_hero', 'widget_sidebar'] as const;
+
+function sanitiseSearchSource(value: string | null): string | undefined {
+  const trimmed = value?.trim() ?? '';
+  return (WIDGET_SEARCH_SOURCES as readonly string[]).includes(trimmed) ? trimmed : undefined;
+}
 
 /** Slugs come from the URL, so they are constrained to the shape our routes use. */
 function sanitiseSlug(value: string | null): string | null {
@@ -772,6 +850,7 @@ const PayPalCheckoutPanel = ({ result, property, strings, language, withPet, non
         {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={nonRefundable && !holdResponse} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
         {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
+      <ColonesEstimateNote strings={strings} language={language} />
       {holdError && <Alert className="booking-search-alert" variant="danger" role="alert">{holdError}</Alert>}
       {holdResponse ? (
         <div className="booking-checkout-panel__hold" aria-live="polite">
@@ -870,6 +949,8 @@ const DepositCheckoutPanel = ({ result, property, strings, language, withPet, fo
         {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
 
+      <ColonesEstimateNote strings={strings} language={language} />
+
       {holdError && <Alert className="booking-search-alert" variant="danger" role="alert">{holdError}</Alert>}
 
       {holdResponse ? (
@@ -903,6 +984,10 @@ const DepositCheckoutPanel = ({ result, property, strings, language, withPet, fo
                   <dt>{strings.depositBankColones}</dt><dd className="booking-deposit-handoff__iban">{bankInfo.bankAccount.colonesIban}</dd>
                   <dt>{strings.depositBankDolares}</dt><dd className="booking-deposit-handoff__iban">{bankInfo.bankAccount.dolaresIban}</dd>
                 </dl>
+                {/* The guest is one tap from their banking app here, so the
+                    colón figure belongs next to the colón account rather than
+                    only in the summary at the top of the page. */}
+                <ColonesTransferAmount amountCents={holdResponse.booking.price.totalAmountCents} currency={holdResponse.booking.price.currency} strings={strings} language={language} />
               </div>
             </div>
           )}
@@ -1009,6 +1094,52 @@ function resolveDisplayPrice(
   };
 }
 
+/**
+ * "≈ ₡378.900" beside a dollar total, Spanish pages only.
+ *
+ * Renders nothing when the rate has not arrived or its source was unreachable —
+ * a missing estimate is invisible, a wrong one is a support ticket. Every price
+ * on the page calls this; `useExchangeRate` collapses them into one request.
+ */
+const ColonesEstimate = ({ amountCents, currency, strings, language }: { amountCents: number; currency: string; strings: BookingStrings; language: BookingLanguage }) => {
+  const { status, data } = useExchangeRate(language === 'es');
+
+  // `currency !== base` guards the day a home is quoted in something other than
+  // dollars: converting it with a USD rate would be silently wrong.
+  if (status !== 'ready' || !data || currency !== data.base) return null;
+
+  const formatted = formatColones(amountCents, data.rate, language);
+  return (
+    <small className="booking-colones-estimate" aria-label={strings.colonesEstimateAria(formatted)}>
+      ≈ {formatted}
+    </small>
+  );
+};
+
+/** The colón figure spelled out beside the colón IBAN on the deposit page. */
+const ColonesTransferAmount = ({ amountCents, currency, strings, language }: { amountCents: number; currency: string; strings: BookingStrings; language: BookingLanguage }) => {
+  const { status, data } = useExchangeRate(language === 'es');
+  if (status !== 'ready' || !data || currency !== data.base) return null;
+
+  return (
+    <p className="booking-deposit-handoff__colones-amount">
+      {strings.colonesTransferAmount(formatColones(amountCents, data.rate, language))}
+    </p>
+  );
+};
+
+/** The one line that makes every "≈" above it an estimate rather than a quote. */
+const ColonesEstimateNote = ({ strings, language }: { strings: BookingStrings; language: BookingLanguage }) => {
+  const { status, data } = useExchangeRate(language === 'es');
+  if (status !== 'ready' || !data) return null;
+
+  return (
+    <p className="booking-colones-note">
+      {strings.colonesEstimateNote(formatExchangeRate(data.rate, language), formatDate(data.fetchedAt.slice(0, 10), language))}
+    </p>
+  );
+};
+
 /** The price block on a result card: badges, struck rack rate, payable total. */
 const PropertyPrice = ({ price, strings, language, nonRefundable }: { price: BookingPrice; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean }) => {
   const display = resolveDisplayPrice(price, strings, { nonRefundablePreview: nonRefundable });
@@ -1022,6 +1153,7 @@ const PropertyPrice = ({ price, strings, language, nonRefundable }: { price: Boo
       )}
       <span>{strings.priceForStay}</span>
       <strong>{formatMoney(display.finalCents, price.currency, language)}</strong>
+      <ColonesEstimate amountCents={display.finalCents} currency={price.currency} strings={strings} language={language} />
       <small>
         {display.hasSaving && <del>{formatMoney(display.baseNightlyCents, price.currency, language)} </del>}
         {formatMoney(display.finalNightlyCents, price.currency, language)} {strings.averageNight}
@@ -1037,6 +1169,7 @@ const CheckoutPrice = ({ price, strings, language, nonRefundablePreview, finalOv
     <div>
       <span>{strings.priceForStay}</span>
       <strong>{formatMoney(display.finalCents, price.currency, language)}</strong>
+      <ColonesEstimate amountCents={display.finalCents} currency={price.currency} strings={strings} language={language} />
       {display.hasSaving && (
         <small className="booking-checkout-panel__price-saving">
           <del>{formatMoney(display.baseCents, price.currency, language)}</del> {display.labels.join(' · ')}

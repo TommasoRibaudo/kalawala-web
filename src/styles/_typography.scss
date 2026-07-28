@@ -1,9 +1,12 @@
-@import url('https://fonts.googleapis.com/css?family=Anaheim|Quattrocento+Sans:400,700');
-@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+// Urbanist is self-hosted — see src/styles/fonts.css, imported once from
+// src/index.tsx. No @import url() here: this partial is pulled in by
+// styles.scss, which ~19 component stylesheets import, and a remote @import
+// inside the CSS bundle is render-blocking behind the bundle itself.
+// Anaheim and Quattrocento Sans were requested but referenced by no live rule.
 @import './variables';
 html {
     background-color: #F5F2E9;
-    color: #737f8a;
+    color: $kalawala-text-gray;
 }
 
 body {

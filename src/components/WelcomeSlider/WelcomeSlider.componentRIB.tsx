@@ -1,40 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { cdnImage, cdnSrcSet } from '../../utils/imageCdn';
 import './WelcomeSlider.style.scss';
 import Button from 'react-bootstrap/Button';
 
+const HERO_BANNER =
+  'https://lh3.googleusercontent.com/d/1IzO1ErB7f2RbnW35G78njQkT8ulSgMOJ=w1000';
+
 const WelcomeSliderRib = () => {
-  const banner = 'https://drive.google.com/thumbnail?id=1IzO1ErB7f2RbnW35G78njQkT8ulSgMOJ&sz=w1000';
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
 
   return (
-    <section
-      className="hero-area overlay"
-      style={{
-        backgroundImage: `url(${banner})`,
-        position: 'relative',
-        padding: isMobile ? '20px 0px 133px 0px' : '0px',
-        paddingTop: isMobile ? '5px' : '133px',
-        paddingBottom: isMobile ? '133px' : '133px',
-        minHeight: isMobile ? 'auto' : '100vh',
-        display: isMobile ? 'block' : 'flex',
-        alignItems: isMobile ? 'flex-start' : 'center',
-        justifyContent: isMobile ? 'flex-start' : 'center'
-      }}
-    >
+    <section className="hero-area overlay">
+      <img
+        className="hero-area__bg"
+        src={cdnImage(HERO_BANNER, 1280)}
+        srcSet={cdnSrcSet(HERO_BANNER)}
+        sizes="100vw"
+        alt=""
+        aria-hidden="true"
+        fetchPriority="high"
+        decoding="async"
+      />
+
       <div className="block">
-        <h1 style={{ fontSize: isMobile ? '32px' : '90px' }}>VILLAS MAR DE CORAL</h1>
-        <p id="short-description" style={{ fontSize: isMobile ? '16px' : '20px', width: isMobile ? '90%' : '70%' }}>
+        <h1>VILLAS MAR DE CORAL</h1>
+        <p id="short-description">
           Private Pool, Fully Equipped Villas near Playa Chiquita, Puerto Viejo.
         </p>
         <p style={{ marginTop: '20px', color: 'white' }}>
@@ -44,18 +33,7 @@ const WelcomeSliderRib = () => {
       </div>
 
       {/* ⭐ NOW pinned to the bottom of the SECTION */}
-      <div className="hero-rating"
-        style={{
-          position: 'absolute',
-          bottom: '45px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 2,
-          textAlign: 'center',
-          width: '100%',
-          pointerEvents: 'none',
-        }}
-      >
+      <div className="hero-rating">
         <p >⭐⭐⭐⭐⭐ 4.9/5 from thousands of stays since 2015</p>
       </div>
     </section>

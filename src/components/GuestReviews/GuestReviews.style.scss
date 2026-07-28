@@ -39,7 +39,7 @@
 
   &__quote-mark {
     font-size: 3rem;
-    color: #57cbcc;
+    color: var(--kalawala-dark-green);
     line-height: 1;
     margin-bottom: 8px;
     font-family: Georgia, serif;
@@ -54,14 +54,19 @@
     color: #171717;
     font-size: 1.25rem;
     line-height: 1.6;
-    flex: 1;
+    /* Fixed two-line box. With `flex: 1` the card's stretch grew this box past
+       the clamp, so a third line rendered below the ellipsis. */
+    height: 2 * 1.6em;
     font-style: italic;
   }
 
   &__reviewer-name {
     font-weight: 700;
     color: #0b3028;
-    margin-top: 16px;
+    /* auto keeps the footer block bottom-aligned across cards of unequal
+       height; the padding preserves the old 16px gap when there is no slack. */
+    margin-top: auto;
+    padding-top: 16px;
     font-size: 0.95rem;
   }
 
@@ -69,6 +74,10 @@
     font-size: 0.8rem;
     color: #666;
     margin-top: 2px;
+    /* Explicit line-height + matching min-height so the line occupies the same
+       space whether or not the review has a location, keeping cards aligned. */
+    line-height: 1.4;
+    min-height: 1.4em;
   }
 
   &__stars {
@@ -80,7 +89,7 @@
 
   &__meta {
     font-size: 0.8rem;
-    color: #888;
+    color: #595959;
     margin-top: 2px;
   }
 
@@ -153,7 +162,7 @@
 
   &__full-quote-mark {
     font-size: 2.5rem;
-    color: #57cbcc;
+    color: var(--kalawala-dark-green);
     line-height: 1;
     font-family: Georgia, serif;
     user-select: none;
@@ -189,7 +198,7 @@
 
   &__full-meta {
     font-size: 0.82rem;
-    color: #888;
+    color: #595959;
     margin-top: 2px;
   }
 }

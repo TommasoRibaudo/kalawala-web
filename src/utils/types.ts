@@ -31,6 +31,12 @@ export type BlogType = {
     thumbnail: string
 }
 
+export interface PropertyCapacity {
+    bedrooms: number;
+    bathrooms: number;
+    maxGuests: number;
+}
+
 export interface PropertyMarketingContent {
     propertyKey: string;           // e.g., 'Rana', 'RanaES'
     descriptiveTitle: {

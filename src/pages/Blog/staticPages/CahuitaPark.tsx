@@ -56,6 +56,9 @@ const CahuitaPark = () => {
                             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
                         }}>
                             <img
+                                loading="eager"
+                                fetchPriority="high"
+                                decoding="async"
                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Cahuita_national_park%2C_Costa_Rica.jpg/1280px-Cahuita_national_park%2C_Costa_Rica.jpg?20090819063715"
                                 className="responsive-image"
                                 style={{
@@ -66,7 +69,6 @@ const CahuitaPark = () => {
                                 alt="Cahuita National Park Beach"
                                 width="1000"
                                 height="600"
-                                loading="lazy"
                             />
                         </div>
                     </div>
@@ -148,7 +150,7 @@ const CahuitaPark = () => {
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <h2 className="smoobu-title">Book Your Stay</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="cahuitaParkSmoobuBooking" />
                         </div>

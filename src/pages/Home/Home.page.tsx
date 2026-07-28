@@ -17,28 +17,28 @@ const helpMeChooseOptions = [
         label: "Ideal for couples",
         houseName: "Villa Mar",
         houseLangCode: "VillaMar",
-        image: "https://drive.google.com/thumbnail?id=1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn&sz=w1000"
+        image: "https://lh3.googleusercontent.com/d/1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn=w1000"
     },
     {
         emoji: "👨‍👩‍👧",
         label: "Perfect for families",
         houseName: "Delfines",
         houseLangCode: "Delfin",
-        image: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000"
+        image: "https://lh3.googleusercontent.com/d/1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW=w1000"
     },
     {
         emoji: "🐾",
         label: "Pet-friendly",
         houseName: "Rana",
         houseLangCode: "Rana",
-        image: "https://drive.google.com/thumbnail?id=1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X&sz=w1000"
+        image: "https://lh3.googleusercontent.com/d/1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X=w1000"
     },
     {
         emoji: "⭐",
         label: "Best value",
         houseName: "House Plumeria",
         houseLangCode: "Plumeria",
-        image: "https://drive.google.com/thumbnail?id=1b2x2aVIjqlSws4KePOS_NVb4NItGsra1&sz=w1000"
+        image: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000"
     }
 ];
 

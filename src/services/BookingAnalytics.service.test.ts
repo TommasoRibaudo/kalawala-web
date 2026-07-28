@@ -9,15 +9,19 @@
  *   - manual_deposit_handoff_clicked does NOT fire a purchase/booking_confirmed event
  */
 
-import posthog from 'posthog-js';
+import * as PostHog from './PostHog.service';
 import { CookieConsentService } from './CookieConsent.service';
 import {
   trackBookingSearch,
   trackAvailabilityResults,
   trackPropertyViewed,
+  trackBookingFormViewed,
+  trackBookingFormStarted,
   trackCheckoutStarted,
   trackPaymentMethodSelected,
+  trackPaymentStarted,
   trackPaypalApproved,
+  trackPaymentCompleted,
   trackBookingConfirmed,
   trackManualDepositHandoffClicked,
   trackBookingCancelled,
@@ -27,7 +31,12 @@ import {
 // Mocks
 // ---------------------------------------------------------------------------
 
-jest.mock('posthog-js', () => ({
+/**
+ * Mock the PostHog wrapper, not posthog-js. The library is loaded lazily behind
+ * PostHog.service now, so a posthog-js mock sees nothing: this file asserted
+ * against a module BookingAnalytics no longer imports.
+ */
+jest.mock('./PostHog.service', () => ({
   capture: jest.fn(),
 }));
 
@@ -37,7 +46,7 @@ jest.mock('./CookieConsent.service', () => ({
   },
 }));
 
-const mockPosthog = posthog as jest.Mocked<typeof posthog>;
+const mockPosthog = { capture: PostHog.capture as jest.Mock };
 const mockHasConsent = CookieConsentService.hasConsent as jest.Mock;
 
 let mockGtag: jest.Mock;
@@ -330,5 +339,82 @@ describe('trackPaypalApproved', () => {
     expect(mockPosthog.capture).toHaveBeenCalledWith('paypal_approved', expect.objectContaining({ paypal_order_id: 'PP-123' }));
     expect(mockGtag).toHaveBeenCalledWith('event', 'paypal_approved', expect.any(Object));
     expect(mockFbq).not.toHaveBeenCalled();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Funnel-only events
+//
+// These exist to close the gaps between the GA4/Meta commerce steps, so the
+// defining assertion for each is that it reaches PostHog and stops there —
+// forwarding them would add unmapped custom events to two products that
+// already have their own funnel semantics.
+// ---------------------------------------------------------------------------
+
+describe('funnel-only events', () => {
+  const formProps = {
+    quote_id: 'q1',
+    property_id: 'p1',
+    property_slug: 'Geco',
+    property_name: 'Casa Geco',
+    payment_type: 'paypal' as const,
+    value_cents: 52000,
+    currency: 'USD',
+    language: 'en' as const,
+  };
+
+  it('fires booking_form_viewed to PostHog only', () => {
+    grantConsent();
+    trackBookingFormViewed(formProps);
+
+    expect(mockPosthog.capture).toHaveBeenCalledWith('booking_form_viewed', formProps);
+    expect(mockGtag).not.toHaveBeenCalled();
+    expect(mockFbq).not.toHaveBeenCalled();
+  });
+
+  it('fires booking_form_started to PostHog only, recording the first field touched', () => {
+    grantConsent();
+    trackBookingFormStarted({ quote_id: 'q1', property_id: 'p1', property_slug: 'Geco', payment_type: 'manual_deposit', first_field: 'email', language: 'es' });
+
+    expect(mockPosthog.capture).toHaveBeenCalledWith('booking_form_started', expect.objectContaining({ first_field: 'email' }));
+    expect(mockGtag).not.toHaveBeenCalled();
+    expect(mockFbq).not.toHaveBeenCalled();
+  });
+
+  it('fires payment_started to PostHog only', () => {
+    grantConsent();
+    trackPaymentStarted({ payment_type: 'paypal', reservation_id: 'res_1', booking_session_id: 'bs_1', property_id: 'p1', value_cents: 52000, currency: 'USD', language: 'en' });
+
+    expect(mockPosthog.capture).toHaveBeenCalledWith('payment_started', expect.objectContaining({ reservation_id: 'res_1', payment_type: 'paypal' }));
+    expect(mockGtag).not.toHaveBeenCalled();
+    expect(mockFbq).not.toHaveBeenCalled();
+  });
+
+  it('distinguishes a captured PayPal payment from an unverified deposit receipt', () => {
+    grantConsent();
+    trackPaymentCompleted({ payment_type: 'paypal', reservation_id: 'res_1', property_id: 'p1', value_cents: 52000, currency: 'USD', outcome: 'confirmed', language: 'en' });
+    trackPaymentCompleted({ payment_type: 'manual_deposit', reservation_id: 'res_2', property_id: 'p2', value_cents: 40000, currency: 'USD', outcome: 'awaiting_verification', language: 'es' });
+
+    expect(mockPosthog.capture).toHaveBeenNthCalledWith(1, 'payment_completed', expect.objectContaining({ outcome: 'confirmed' }));
+    expect(mockPosthog.capture).toHaveBeenNthCalledWith(2, 'payment_completed', expect.objectContaining({ outcome: 'awaiting_verification' }));
+  });
+
+  it('never reports a deposit receipt upload as revenue', () => {
+    grantConsent();
+    trackPaymentCompleted({ payment_type: 'manual_deposit', reservation_id: 'res_2', property_id: 'p2', value_cents: 40000, currency: 'USD', outcome: 'awaiting_verification', language: 'en' });
+
+    const gtagEvents = mockGtag.mock.calls.map(([, event]) => event);
+    expect(gtagEvents).not.toContain('purchase');
+    expect(mockFbq).not.toHaveBeenCalled();
+  });
+
+  it('suppresses every funnel-only event without analytics consent', () => {
+    denyConsent();
+    trackBookingFormViewed(formProps);
+    trackBookingFormStarted({ quote_id: 'q1', property_id: 'p1', property_slug: 'Geco', payment_type: 'paypal', first_field: 'firstName', language: 'en' });
+    trackPaymentStarted({ payment_type: 'paypal', reservation_id: 'res_1', booking_session_id: 'bs_1', property_id: 'p1', value_cents: 52000, currency: 'USD', language: 'en' });
+    trackPaymentCompleted({ payment_type: 'paypal', reservation_id: 'res_1', property_id: 'p1', value_cents: 52000, currency: 'USD', outcome: 'confirmed', language: 'en' });
+
+    expect(mockPosthog.capture).not.toHaveBeenCalled();
   });
 });

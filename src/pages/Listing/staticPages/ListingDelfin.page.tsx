@@ -41,7 +41,7 @@ const ListingDelfin = () => {
     //const description = houseData?.description.split('<br/>');
     //const neighborhood = houseData?.neighborhood.split('<br/>');
     return (
-        <div className={`listingContainer ${show && 'modal-open'}`}>
+        <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
                 <title>House Delfin - Puerto Viejo Vacation Home Rental</title>
@@ -59,11 +59,11 @@ const ListingDelfin = () => {
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
                         <h1 className="title">House Delfines</h1>
-                        <h3 className="location">
+                        <p className="location">
                             <a href="https://maps.app.goo.gl/ixZHjG7yYsMF9U2e9" target="_blank" rel="noopener noreferrer">
                                 Puerto Viejo de Talamanca, Limón, Costa Rica
                             </a>
-                        </h3>
+                        </p>
                         {/* Add marketing section after title */}
                         <ListingMarketingSection propertyKey="Delfin" isSpanish={false} />
 
@@ -72,7 +72,7 @@ const ListingDelfin = () => {
                     {/* Add social statement after images */}
                     <SocialStatement propertyKey="Delfin" isSpanish={false} />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Delfin" isSpanish={false} />
                     </div>
 
                     {/* Add feature highlights before description */}

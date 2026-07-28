@@ -26,10 +26,22 @@
     position: relative;
     z-index: 2; // Image always on top
     
+    // Deliberately NOT `opacity: 0`.
+    //
+    // The pre-rendered HTML ships this class, so hiding the image here meant it
+    // stayed invisible until React had hydrated and its onLoad handler had run
+    // — 3.4s of pure "render delay" on the listing pages, where this is the LCP
+    // element. The image was downloaded and decoded long before it was allowed
+    // to appear.
+    //
+    // Nothing is needed instead: an <img> with no bytes yet paints nothing, and
+    // the shimmer sits behind it at z-index 1, so the skeleton shows through
+    // until the real pixels arrive and then the browser paints them itself,
+    // without waiting for JavaScript.
     &--loading {
-      opacity: 0;
+      opacity: 1;
     }
-    
+
     &--loaded {
       opacity: 1;
     }

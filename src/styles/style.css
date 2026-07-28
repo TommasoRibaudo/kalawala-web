@@ -10,20 +10,22 @@ Tags: one-page, single-page, portfolio, custom-colors, post-formats, responsive,
 
 /*=== MEDIA QUERY ===*/
 
-@import url("https://fonts.googleapis.com/css?family=Anaheim|Quattrocento+Sans:400,700");
-@import url("https://fonts.googleapis.com/css?family=Montserrat:400,700|Open+Sans:300,400,600");
+/* Fonts are self-hosted — see src/styles/fonts.css. The Anaheim /
+   Quattrocento Sans / Montserrat / Open Sans requests that used to sit here
+   were render-blocking behind this stylesheet, and none of those four families
+   was referenced by a live rule once the cascade was resolved. */
 @import "_variables.css";
 
 
 html {
     background-color: #353b43;
-    color: #737f8a;
+    color: #5A6570;
 }
 
 body {
     background-color: #353b43;
-    font-family: "Anaheim", sans-serif;
-    color: #737f8a;
+    font-family: 'Urbanist', sans-serif;
+    color: #5A6570;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -34,12 +36,12 @@ h4,
 h5,
 h6 {
     font-weight: 400;
-    font-family: "Quattrocento Sans", sans-serif;
+    font-family: 'Urbanist', sans-serif;
     color: #afbac4;
 }
 
 p {
-    font-family: "Quattrocento Sans", sans-serif;
+    font-family: 'Urbanist', sans-serif;
 }
 
 
@@ -473,7 +475,7 @@ a:hover {
 .header-bradcrumb .active {
     color: #cfcfcf;
     font-weight: 200;
-    font-family: "Quattrocento Sans", sans-serif;
+    font-family: 'Urbanist', sans-serif;
 }
 
 .header-bradcrumb a:hover {
@@ -607,7 +609,7 @@ a:hover {
 
 .navigation .navigation-menu li a {
     font-size: 16px;
-    color: #737f8a;
+    color: #5A6570;
 }
 
 .navigation .navigation-menu li a:hover,
@@ -1063,7 +1065,7 @@ a:hover {
     font-size: 16px;
     padding: 6px 20px;
     font-weight: 700;
-    color: #737f8a;
+    color: #5A6570;
     transition: .3s all;
 }
 

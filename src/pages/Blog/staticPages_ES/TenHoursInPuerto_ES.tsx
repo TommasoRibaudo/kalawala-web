@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 import { allHomesSnippetES } from "../../../utils/constants";
@@ -15,6 +16,9 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
 
+
+const HERO_IMAGE =
+  'https://lh3.googleusercontent.com/d/1H81sxVh2z1VmcbZvVTlhdEINmQ0tQ5Es=w1000';
 
 const TenHoursInPuertoES = () => {
     // const { blogId } = useParams();
@@ -56,7 +60,12 @@ const TenHoursInPuertoES = () => {
                     <br />
                     <div className="description" style={{ maxWidth: 1000, }}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src="https://drive.google.com/thumbnail?id=1H81sxVh2z1VmcbZvVTlhdEINmQ0tQ5Es&sz=w1000" className="responsive-image" alt="Traveling to Puerto Viejo by bus" />
+                            <img
+                                loading="eager"
+                                fetchPriority="high"
+                                srcSet={cdnSrcSet(HERO_IMAGE)}
+                                sizes="(max-width: 767px) 92vw, (max-width: 1199px) 78vw, 880px"
+                                decoding="async" src={cdnImage(HERO_IMAGE, 960)} className="responsive-image" alt="Traveling to Puerto Viejo by bus" />
                         </div>
                         <br />
                         <p>Si tienes solo diez horas para explorar Cahuita, ¡aprovechemos al máximo el tiempo! Empezamos nuestra aventura temprano, despertándonos a las 7 am. Lo primero es tomar un café y disfrutar de un delicioso croissant de jamón y queso recién salido del horno en Degustibus Bakery.</p>
@@ -97,7 +106,7 @@ const TenHoursInPuertoES = () => {
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h3 className="smoobu-title">Reserva tu Estadía</h3>
+                        <h2 className="smoobu-title">Reserva tu Estadía</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="tenHoursESSmoobuBooking" />
                         </div>

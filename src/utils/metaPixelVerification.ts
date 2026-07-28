@@ -6,12 +6,26 @@
  */
 
 export interface PixelVerificationResult {
+  /** The pixel bootstrap ran on this page: `fbq` exists and accepts calls. */
   isInstalled: boolean;
+  /** Facebook's library took over from the stub, so events actually leave the browser. */
   isWorking: boolean;
   pixelId: string | null;
   issues: string[];
   recommendations: string[];
 }
+
+/**
+ * The index.html fallback is only readable as text.
+ *
+ * When scripting is enabled a <noscript> element's content is never parsed into
+ * the DOM, so `document.querySelector('noscript img')` matches nothing however
+ * many fallbacks the page ships — which is why this used to be reported as a
+ * missing fallback on every single run.
+ */
+export const hasNoscriptFallback = (): boolean =>
+  Array.from(document.querySelectorAll('noscript'))
+    .some(noscript => /facebook\.com\/tr/.test(noscript.textContent || ''));
 
 /**
  * Verify Meta Pixel installation and functionality
@@ -26,10 +40,11 @@ export const verifyMetaPixel = (): PixelVerificationResult => {
   };
 
   try {
-    // Check if fbq function exists
+    // Check if fbq function exists. Note this only proves the bootstrap ran:
+    // the stub is installed by our own code before the script is requested.
     if (!window.fbq || typeof window.fbq !== 'function') {
-      result.issues.push('Meta Pixel script not loaded - fbq function not available');
-      result.recommendations.push('Ensure Meta Pixel script is properly loaded from Facebook CDN');
+      result.issues.push('Meta Pixel bootstrap has not run - fbq function not available');
+      result.recommendations.push('Check that tracking consent was granted and REACT_APP_META_PIXEL_ENABLED is not "false"');
       return result;
     }
 
@@ -44,28 +59,31 @@ export const verifyMetaPixel = (): PixelVerificationResult => {
       result.pixelId = configuredPixelId;
     }
 
-    // Check if pixel script is in DOM
-    const pixelScript = document.querySelector('script[src*="connect.facebook.net"]');
-    if (!pixelScript) {
+    // Two independent signals that fbevents.js actually arrived. Neither can be
+    // faked by the stub, which is the point: the previous check called
+    // fbq('track', 'PageView') and treated "it didn't throw" as working. The
+    // stub never throws — it queues — so that reported a healthy pixel even
+    // when the script had been blocked, while listing the block as an issue in
+    // the same breath. It also billed Facebook for a PageView per check.
+    const scriptInDom = !!document.querySelector('script[src*="connect.facebook.net"]');
+    const libraryTookOver = typeof window.fbq.callMethod === 'function';
+
+    if (!scriptInDom) {
       result.issues.push('Meta Pixel script element not found in DOM');
-      result.recommendations.push('Ensure Meta Pixel script is properly injected into the page');
+      result.recommendations.push('The request was refused before it loaded - check for a content blocker, DNS filter or CSP rule');
     }
 
-    // Check noscript fallback
-    const noscriptFallback = document.querySelector('noscript img[src*="facebook.com/tr"]');
-    if (!noscriptFallback) {
-      result.issues.push('Noscript fallback image not found');
+    if (!libraryTookOver) {
+      result.issues.push('fbevents.js has not replaced the fbq stub - events are being queued, not sent');
+      result.recommendations.push('Confirm https://connect.facebook.net/en_US/fbevents.js is reachable from this browser');
+    }
+
+    result.isWorking = scriptInDom && libraryTookOver;
+
+    // Check noscript fallback (for browsers that never run any of this)
+    if (!hasNoscriptFallback()) {
+      result.issues.push('Noscript fallback image not found in index.html');
       result.recommendations.push('Add noscript fallback for users with JavaScript disabled');
-    }
-
-    // Test basic functionality
-    try {
-      // This should not throw an error if pixel is working
-      window.fbq('track', 'PageView');
-      result.isWorking = true;
-    } catch (error) {
-      result.issues.push(`Pixel tracking test failed: ${(error as Error).message}`);
-      result.recommendations.push('Check browser console for JavaScript errors');
     }
 
     // Check for traffic permissions error in console
@@ -86,10 +104,12 @@ export const verifyMetaPixel = (): PixelVerificationResult => {
       result.recommendations.push('Check internet connection');
     }
 
-    // Check for ad blockers (common cause of pixel issues)
-    if (window.fbq && window.fbq.queue && window.fbq.queue.length > 10) {
-      result.issues.push('Large fbq queue detected - possible ad blocker interference');
-      result.recommendations.push('Test with ad blockers disabled');
+    // Anything still in the queue once the library is live has been handed over;
+    // anything queued while it is not is going nowhere.
+    const queued = window.fbq?.queue?.length ?? 0;
+    if (!libraryTookOver && queued > 0) {
+      result.issues.push(`${queued} event(s) queued on the stub and undeliverable`);
+      result.recommendations.push('Test with content blockers disabled to confirm');
     }
 
   } catch (error) {
@@ -106,11 +126,15 @@ export const verifyMetaPixel = (): PixelVerificationResult => {
 export const displayVerificationResults = (result: PixelVerificationResult): void => {
   console.group('🔍 Meta Pixel Verification Results');
   
-  // Overall status
-  if (result.isInstalled && result.isWorking) {
+  // Overall status. The pass requires a clean run, not just a live library —
+  // this used to print the green line above a list of issues explaining that
+  // the script had never loaded.
+  if (result.isWorking && result.issues.length === 0) {
     console.log('%c✅ Meta Pixel is installed and working correctly!', 'color: #28a745; font-weight: bold;');
+  } else if (result.isWorking) {
+    console.log('%c⚠️ Meta Pixel is sending events, but the check found issues', 'color: #ffc107; font-weight: bold;');
   } else if (result.isInstalled) {
-    console.log('%c⚠️ Meta Pixel is installed but may have issues', 'color: #ffc107; font-weight: bold;');
+    console.log('%c⚠️ Meta Pixel bootstrapped but is not sending events', 'color: #ffc107; font-weight: bold;');
   } else {
     console.log('%c❌ Meta Pixel is not properly installed', 'color: #dc3545; font-weight: bold;');
   }
@@ -209,7 +233,8 @@ TECHNICAL DETAILS:
 - fbq Version: ${window.fbq?.version || 'unknown'}
 - fbq Queue Length: ${window.fbq?.queue?.length || 0}
 - Script in DOM: ${!!document.querySelector('script[src*="connect.facebook.net"]')}
-- Noscript Fallback: ${!!document.querySelector('noscript img[src*="facebook.com/tr"]')}
+- Library Took Over: ${typeof window.fbq?.callMethod === 'function'}
+- Noscript Fallback: ${hasNoscriptFallback()}
 `;
 
   return report;

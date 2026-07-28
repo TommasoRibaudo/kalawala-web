@@ -3,28 +3,49 @@
 // @import '../../styles/variables';
 
 // http://wahabali.com/work/vation/images/slider/img-01.jpg
+// Layout that used to be inline styles driven by an `isMobile` useState. It is
+// media queries now so that the pre-rendered HTML, the first client paint and
+// the post-hydration render are identical — see the note in the component.
+// These rules are mirrored in the inline critical CSS in public/index.html;
+// if you change a box-model value here, change it there too or the hero will
+// shift when the stylesheet lands.
 .hero-area {
-  background-size: cover;
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  padding: 133px 0;
+  // Matches the inline critical CSS: keeps the white headline legible before
+  // the photo loads, so LCP is not gated on the image arriving.
+  background-color: $kalawala-darker-green;
 
-  @media (max-width: 768px) {
-    background-position: center;
-    background-size: cover; // or 'contain' if you want the whole image to fit within the screen
-    height: 100vh; // Adjust the height as needed
+  // The LCP image. Sits below .overlay::before (z-index 1) and .block (99).
+  &__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+  }
+
+  @media (max-width: 767px) {
+    min-height: auto;
+    display: block;
+    padding: 5px 0 133px;
   }
 
   .hero-rating {
     position: absolute;
-    bottom: 5px;
+    bottom: 45px;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
     text-align: center;
+    pointer-events: none;
     z-index: 2; // above overlay, but behind the search widget & its calendar dropdown
 
     p {
@@ -91,8 +112,10 @@
       font-weight: 700;
       margin-bottom: 20px;
 
-      @include mixins.mobile {
-        font-size: 60px;
+      // 32px, not the 60px this used to declare via mixins.mobile: the inline
+      // style overrode that rule at <768px, so 32px is what actually shipped.
+      @media (max-width: 767px) {
+        font-size: 32px;
       }
     }
 
@@ -102,6 +125,11 @@
       font-size: 20px;
       width: 70%;
       margin: 0 auto;
+
+      @media (max-width: 767px) {
+        font-size: 16px;
+        width: 90%;
+      }
     }
 
     .btn-transparent {

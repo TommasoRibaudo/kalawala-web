@@ -2,9 +2,25 @@
 <html lang="en">
 
 <head>
+  <meta charset="utf-8" />
+
   <!-- Google tag (gtag.js) — measurement ID must match the GA4 data stream for
        www.reservaskalawala.com. Do not add a second gtag('config') block: a
-       typo'd ID silently duplicates every hit into a property that does not exist. -->
+       typo'd ID silently duplicates every hit into a property that does not exist.
+
+       Two deliberate properties of this block:
+
+       * It sits AFTER <meta charset>. It used to be the very first thing in
+         <head>, so the parser ran it before the document encoding was even
+         declared.
+
+       * The dataLayer shim and the Consent Mode defaults stay synchronous —
+         they only push onto an array, cost nothing, and Consent Mode has to be
+         established before any hit can be queued. What is deferred is the
+         gtag/js network request, which is ~90 KB of script execution on the
+         critical path. dataLayer queues natively, so every gtag() call made
+         before the library arrives replays in order once it does; nothing is
+         lost but a little timing. -->
   <script>
     (function () {
       var MEASUREMENT_ID = 'G-Q1LMHMNCMW';
@@ -32,47 +48,65 @@
       gtag('js', new Date());
       gtag('config', MEASUREMENT_ID);
 
-      var tag = document.createElement('script');
-      tag.async = true;
-      tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + MEASUREMENT_ID;
-      document.head.appendChild(tag);
+      var loaded = false;
+      function loadGtag() {
+        if (loaded) return;
+        loaded = true;
+        var tag = document.createElement('script');
+        tag.async = true;
+        tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + MEASUREMENT_ID;
+        document.head.appendChild(tag);
+      }
+
+      // Whichever comes first: the browser going idle, the first real user
+      // interaction, or a 5s backstop for a tab that is opened and left alone.
+      ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (evt) {
+        window.addEventListener(evt, loadGtag, { once: true, passive: true });
+      });
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(loadGtag, { timeout: 5000 });
+      } else {
+        window.setTimeout(loadGtag, 2500);
+      }
     })();
   </script>
-
-  <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/logo.png" />
+  <!-- logo.png is 1446x1446 / 91 KB — far too heavy for a favicon. logo64.png
+       is the same mark at 64x64 / 3.5 KB. -->
+  <link rel="icon" type="image/png" sizes="64x64" href="%PUBLIC_URL%/logo64.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#000000" />
   <meta name="description"
     content="Discover our homes, cheaper than any other platform! Welcome to Kalawala, we offer fully equipped vacation homes nestled in the heart of Puerto Viejo de Talamanca, Costa Rica. Our houses offer space for up to 5 people, 2 A/C units, fully equipped private bathroom and kitchen and free Wi-Fi internet connection." />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="%PUBLIC_URL%/logo192.png" />
   <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
-  <!-- Preload critical resources for faster FCP -->
-  <link rel="preload" href="https://drive.google.com/thumbnail?id=1c25flui45r6oVIvPMqKLemVsWgjbhsAH&sz=w1000" as="image"
-    type="image/jpeg">
-  <link rel="preload" href="https://drive.google.com/thumbnail?id=1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn&sz=w1000" as="image"
-    type="image/jpeg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- The hero and nav-logo <link rel="preload" as="image"> hints that used to
+       sit here have been removed. Both images now ship a srcset, and every
+       route is pre-rendered, so the <img> tags are present in the initial HTML
+       for the preload scanner to find with fetchpriority="high" already on
+       them. A fixed-href preload cannot know which srcset candidate the
+       browser will choose, so it risks downloading the image twice. -->
+  <!-- Urbanist is self-hosted (see src/styles/fonts.css). Only the `latin`
+       roman subset is preloaded: unicode-range keeps latin-ext and the italics
+       out of the critical path, and Spanish accents live in `latin`, so the ES
+       routes need nothing extra. -->
+  <link rel="preload" href="%PUBLIC_URL%/fonts/urbanist-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://connect.facebook.net">
   <link rel="preconnect" href="https://www.facebook.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap"
-    rel="stylesheet">
-  <link rel="dns-prefetch" href="//fonts.googleapis.com">
-  <link rel="dns-prefetch" href="//drive.google.com">
-  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+  <!-- Every content image, including the hero LCP element, is served from lh3
+       (see src/utils/imageCdn.ts). preconnect rather than dns-prefetch because
+       the connection is on the critical path and this saves the TCP+TLS
+       handshake, not just the lookup. If REACT_APP_IMAGE_CDN_BASE is ever set
+       to the same-zone /cdn-cgi/image base, images become first-party and this
+       hint should be dropped. -->
+  <link rel="preconnect" href="https://lh3.googleusercontent.com">
   <link rel="dns-prefetch" href="//connect.facebook.net">
   <link rel="dns-prefetch" href="//www.facebook.com">
   <noscript>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap">
-    <link rel="stylesheet" href="styles.css">
     <!-- Meta Pixel noscript fallback -->
     <img height="1" width="1" style="display:none"
       src="https://www.facebook.com/tr?id=1167925005402403&ev=PageView&noscript=1" />
@@ -94,17 +128,24 @@
   <!-- LLM-friendly content link -->
   <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLM-friendly site summary" />
 
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://www.reservaskalawala.com/" />
+  <!-- No <link rel="canonical"> here.
+       Every routed page sets its own canonical via react-helmet, and
+       react-snap bakes that into the pre-rendered HTML. This file's copy was
+       appended too, so all 45 non-root pages shipped TWO conflicting
+       canonicals — the first of them pointing at the homepage. That is what
+       failed Lighthouse's `canonical` audit on every page except `/`.
+       Anything that varies per route (canonical, og:url, og:title,
+       og:description, og:locale) belongs in the page's <Helmet>, not here. -->
 
-  <!-- Open Graph meta tags for AI and social sharing -->
-  <meta property="og:title" content="Reservas Kalawala — Vacation Rentals in Puerto Viejo, Costa Rica" />
-  <meta property="og:description" content="Family-run vacation rental company with 10 fully equipped houses and villas in Puerto Viejo de Talamanca, Costa Rica. Book direct for the best rates. Pet friendly, A/C, WiFi, private kitchens." />
+  <!-- Open Graph defaults. Only genuinely site-wide values live here; the
+       per-page overrides come from each page's <Helmet>. -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.reservaskalawala.com/" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:locale:alternate" content="es_CR" />
   <meta property="og:site_name" content="Reservas Kalawala" />
+  <meta property="og:image" content="https://www.reservaskalawala.com/logo.png" />
+  <meta property="og:image:width" content="1446" />
+  <meta property="og:image:height" content="1446" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://www.reservaskalawala.com/logo.png" />
 
   <!-- Schema.org JSON-LD structured data for AI and search engines -->
   <script type="application/ld+json">
@@ -254,12 +295,68 @@
 
   <!-- Critical CSS for faster FCP -->
   <style>
+    /*
+     * Self-hosted Urbanist (variable, wght 100-900, roman + italic).
+     *
+     * These replace four separate Google Fonts requests, three of which were
+     * `@import url(...)` statements INSIDE the stylesheet bundle. That shape is
+     * pathological for FCP: the browser had to download main.css, parse it,
+     * only then discover the @imports, fetch those CSS files, and only then
+     * fetch the WOFF2s — a render-blocking chain three round-trips deep.
+     *
+     * Declared inline here rather than in a bundled stylesheet for two
+     * reasons: the browser sees them in the first HTML chunk instead of
+     * waiting on main.css, and css-loader tries to resolve root-relative
+     * url(/fonts/...) at build time, which fails for files served from
+     * public/.
+     *
+     * unicode-range is the stock Google split, so only what the page renders
+     * is fetched — in practice just urbanist-latin.woff2 (27 KB), plus the
+     * italic when a review quote is on screen. Spanish accents are inside
+     * `latin`, so the ES routes download nothing extra.
+     */
+    @font-face {
+      font-family: 'Urbanist';
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+      src: url('/fonts/urbanist-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    @font-face {
+      font-family: 'Urbanist';
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+      src: url('/fonts/urbanist-latin-ext.woff2') format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+
+    @font-face {
+      font-family: 'Urbanist';
+      font-style: italic;
+      font-weight: 100 900;
+      font-display: swap;
+      src: url('/fonts/urbanist-italic-latin.woff2') format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    @font-face {
+      font-family: 'Urbanist';
+      font-style: italic;
+      font-weight: 100 900;
+      font-display: swap;
+      src: url('/fonts/urbanist-italic-latin-ext.woff2') format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+
     * {
       box-sizing: border-box;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
       margin: 0;
       padding: 0;
       background-color: #fff;
@@ -271,15 +368,36 @@
       display: block;
     }
 
+    /* Must stay in lockstep with .hero-area in
+       src/components/WelcomeSlider/WelcomeSlider.style.scss. This block paints
+       before the CSS bundle arrives, so any disagreement between the two shows
+       up as layout shift on the LCP element. It previously said
+       `height: 100vh` while the component inline-styled `min-height`, which is
+       exactly that bug. */
     .hero-area {
-      background-size: cover;
-      background-position: center;
-      height: 100vh;
+      min-height: 100vh;
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
+      padding: 133px 0;
+      /* The hero headline is white. Without a dark backdrop it is white-on-white
+         until the photo arrives, so the browser does not count it as painted —
+         which showed up as 3.2s of LCP "render delay" on a text element that
+         was in the DOM the whole time. This colour is roughly the photo's dark
+         overlay, so the headline is legible from the first paint. */
+      background-color: #0B3028;
+    }
+
+    .hero-area__bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 0;
     }
 
     .navigation {
@@ -310,13 +428,15 @@
       margin: 0 auto;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 767px) {
       .block h1 {
-        font-size: 60px;
+        font-size: 32px;
       }
 
       .hero-area {
-        height: 100vh;
+        min-height: auto;
+        display: block;
+        padding: 5px 0 133px;
       }
     }
   </style>

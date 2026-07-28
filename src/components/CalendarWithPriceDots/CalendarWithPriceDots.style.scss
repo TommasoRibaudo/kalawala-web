@@ -114,6 +114,28 @@
     }
   }
 
+  &__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  &__clear {
+    background: none;
+    border: 0;
+    color: $kalawala-dark-green;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px;
+    text-decoration: underline;
+
+    &:hover,
+    &:focus-visible {
+      color: $kalawala-darker-green;
+    }
+  }
+
   &__legend {
     display: grid;
     gap: 6px 8px;

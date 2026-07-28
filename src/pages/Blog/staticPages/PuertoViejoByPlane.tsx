@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
@@ -12,6 +13,9 @@ import StayRecommendation from "../../../components/StayRecommendation/StayRecom
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
 
+
+const HERO_IMAGE =
+  'https://lh3.googleusercontent.com/d/1example-plane-image=w1000';
 
 const PuertoViejoByPlane = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -53,7 +57,12 @@ const PuertoViejoByPlane = () => {
                             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
                         }}>
                             <img
-                                src="https://drive.google.com/thumbnail?id=1example-plane-image&sz=w1000"
+                                loading="eager"
+                                fetchPriority="high"
+                                srcSet={cdnSrcSet(HERO_IMAGE)}
+                                sizes="(max-width: 767px) 92vw, (max-width: 1199px) 78vw, 880px"
+                                decoding="async"
+                                src={cdnImage(HERO_IMAGE, 960)}
                                 className="responsive-image"
                                 style={{
                                     maxWidth: '100%',
@@ -63,7 +72,6 @@ const PuertoViejoByPlane = () => {
                                 alt="Flying to Puerto Viejo Costa Rica"
                                 width="1000"
                                 height="600"
-                                loading="lazy"
                             />
                         </div>
                     </div>
@@ -110,7 +118,7 @@ const PuertoViejoByPlane = () => {
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h3 className="smoobu-title">Book Your Stay</h3>
+                        <h2 className="smoobu-title">Book Your Stay</h2>
                         <div className="smoobu-wrapper">
                             <Smoobu2 targetId="planeSmoobuBooking" />
                         </div>

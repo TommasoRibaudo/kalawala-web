@@ -1,30 +1,224 @@
 @use '../../../../styles/mixins';
-@import '../../../../styles/styles.scss';
 
-.imagesModal{
+$bar-height: 56px;
+
+.imagesModal {
   position: fixed;
+  inset: 0;
   z-index: 9999;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  overflow-y: auto;
-  background-color: rgba(0, 0, 0, 0.808);
-  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  // Opaque so the listing behind doesn't ghost through the photos.
+  background-color: #0a0a0a;
+  // Fill the visual viewport on mobile so the bottom row is never cut off by
+  // the browser chrome. `dvh` is ignored by browsers that don't support it.
+  height: 100vh;
+  height: 100dvh;
+  overscroll-behavior: contain;
 
-  .modalImage{
-    padding: 10px;
-    // max-height: 400px;
+  &__bar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: $bar-height;
+    padding: 0 16px;
+    padding-top: env(safe-area-inset-top);
+    box-sizing: content-box;
+
+    // Sits in the flex column above the grid, so the overlay backdrop shows
+    // through it. The viewer's copy floats over the photo and needs a scrim.
+    &--viewer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 2;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    }
   }
-  .row{
-    height: fit-content;
+
+  &__count {
+    color: #fff;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.04em;
   }
-  
-  // Ensure content doesn't take full space
-  .d-flex {
-    max-width: 90%;
-    max-height: 90%;
-    margin: auto;
-    cursor: default;
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background-color: rgba(255, 255, 255, 0.26);
+    }
+  }
+
+  &__scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  &__grid {
+    display: grid;
+    // Two-up on phones, more columns as the screen grows. `1fr` columns keep the
+    // grid exactly as wide as the viewport minus its own padding, so it is
+    // always centred and never overflows sideways.
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      padding: 24px;
+    }
+  }
+
+  &__thumb {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.08);
+    cursor: zoom-in;
+    aspect-ratio: 4 / 3;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+  }
+
+  &__empty {
+    padding: 40px 16px;
+    color: #fff;
+    text-align: center;
+  }
+
+  &__viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000;
+  }
+
+  &__nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    transform: translateY(-50%);
+    border: none;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+
+    &--prev {
+      left: 10px;
+    }
+
+    &--next {
+      right: 10px;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background-color: rgba(255, 255, 255, 0.26);
+    }
+
+    // Thumb-reachable on phones, where swiping is the primary gesture anyway.
+    @include mixins.tablet {
+      width: 38px;
+      height: 38px;
+      font-size: 26px;
+      opacity: 0.75;
+    }
+  }
+
+  &__caption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    margin: 0;
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    color: #fff;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 14px;
+    text-align: center;
+    pointer-events: none;
+  }
+}
+
+.zoomableImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  // Hand every gesture to the component so pinch and pan don't scroll the page.
+  touch-action: none;
+  cursor: zoom-in;
+
+  &--zoomed {
+    cursor: grab;
+  }
+
+  &__img {
+    // `auto` sizing keeps the element box identical to the rendered photo, which
+    // is what the pan clamping maths relies on.
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transform-origin: center center;
+    will-change: transform;
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
   }
 }

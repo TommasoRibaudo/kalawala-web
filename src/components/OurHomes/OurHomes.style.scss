@@ -1,64 +1,12 @@
 @use '../../styles/mixins';
 @import  '../../styles//styles.scss';
 
-.about {
-    .block {
-      background: $kalawala-light-cream; // was #242930 — a dark-theme leftover
-      padding:30px;
-      border-bottom:2px solid transparent;
-      transition: .5s all;
-      margin-bottom:0px;
-      &:hover {
-        border-bottom:2px solid $primary-color;
-      }
-      &:hover .icon-box {
-        transform: translateY(-10px);
-      }
-      .icon-box {
-        position: relative;
-        width: 160px; 
-        height: 92.38px;
-        background-color: transparent;
-        margin: 46.19px auto 60px;
-        padding: 20px 0;
-        border-left: 2px solid $border-color;
-        border-right: 2px solid $border-color;
-        font-size: 50px;
-        transform: translateZ(0px);
-        transition-duration: 0.3s;
-        transition-property: transform;
-        &:after, &:before {
-          content: "";
-          position: absolute;
-          z-index: 1;
-          width: 113.14px;
-          height: 113.14px;
-          background-color: inherit;
-          left: 20.4315px;
-          transform: scaleY(0.5774) rotate(-45deg);
-        }
-        &:before {
-          top: -56.5685px;
-          border-top: 2px solid rgba(236, 239, 241, 0.07);
-          border-right: 2px solid rgba(236, 239, 241, 0.07);
-        }
-        &:after {
-          bottom: -56.5685px;
-          border-bottom: 2px solid rgba(236, 239, 241, 0.07);
-          border-left: 2px solid rgba(236, 239, 241, 0.07);
-        }
-        h3 {
-          color: $kalawala-text-gray; // was #afbac4 — a dark-theme leftover
-        }
-  
-      }
-      
-    }
-    
-  }
-  
-  
-  
+// .about .block styling (including .icon-box, the home photo frame) lives in
+// HomeCard.style.scss now — it's coupled to the card component that renders
+// the markup, and a second copy here was fighting it depending on CSS order.
+
+
+
   
   /*=================================================================
     About us 2 section

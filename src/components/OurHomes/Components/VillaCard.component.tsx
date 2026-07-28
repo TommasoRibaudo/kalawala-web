@@ -27,11 +27,12 @@ const VillaCard: FC<IHomeCard> = ({ guestNumber, name, image, houseLangCode }) =
         <div className="col-lg-3 col-md-6 col-sm-6 col-12" data-wow-duration="500ms" onClick={handleClick}>
             <div className="block">
                 <div className="icon-box d-block mx-auto">
-                    {/* Laid out at 156px at every breakpoint (measured with
-                        scripts/image-audit.mjs), so `sizes` says so rather than
-                        letting the browser assume full width and fetch w960. */}
+                    {/* Card now shows a full-width photo (see HomeCard.style.scss
+                        .icon-box), so `sizes` tracks the card width per breakpoint
+                        instead of the old fixed 156px icon frame — re-measure with
+                        scripts/image-audit.mjs if the grid layout changes. */}
                     <img
-                        src={cdnImage(image, 320)}
+                        src={cdnImage(image, 640)}
                         alt={name}
                         className="img-fluid rounded our-homes-img-m"
                         width="300"
@@ -39,7 +40,7 @@ const VillaCard: FC<IHomeCard> = ({ guestNumber, name, image, houseLangCode }) =
                         loading="lazy"
                         decoding="async"
                         srcSet={cdnSrcSet(image)}
-                        sizes="160px"
+                        sizes="(max-width: 767px) 90vw, (max-width: 1199px) 45vw, 350px"
                     />
                 </div>
                 <div className="content text-center">

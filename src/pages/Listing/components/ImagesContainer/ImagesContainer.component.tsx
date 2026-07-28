@@ -119,7 +119,7 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
               fluid
               loading="eager"
               fetchPriority="high"
-              sizes="(max-width: 992px) 100vw, 50vw"
+              sizes="(max-width: 991px) 95vw, 560px"
               src={images[imageSnippet[0]].imageLink || ''}
               alt={images[imageSnippet[0]].roomType || "Main property image"}
               skeletonProps={{
@@ -135,6 +135,7 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
               <ImageWithSkeleton
                 className="secondaryImages"
                 fluid
+                sizes="(max-width: 575px) 46vw, (max-width: 991px) 48vw, 280px"
                 src={images[imageSnippet[1]].imageLink || ''}
                 alt={images[imageSnippet[1]].roomType || "Property image"}
                 skeletonProps={{
@@ -147,6 +148,7 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
               <ImageWithSkeleton
                 className="secondaryImages bottom"
                 fluid
+                sizes="(max-width: 575px) 46vw, (max-width: 991px) 48vw, 280px"
                 src={images[imageSnippet[2]].imageLink || ''}
                 alt={images[imageSnippet[2]].roomType || "Property image"}
                 skeletonProps={{
@@ -161,6 +163,7 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
               <ImageWithSkeleton
                 className="secondaryImages"
                 fluid
+                sizes="(max-width: 575px) 46vw, (max-width: 991px) 48vw, 280px"
                 src={images[imageSnippet[3]].imageLink || ''}
                 alt={images[imageSnippet[3]].roomType || "Property image"}
                 skeletonProps={{
@@ -173,6 +176,7 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
               <ImageWithSkeleton
                 className="secondaryImages bottom"
                 fluid
+                sizes="(max-width: 575px) 46vw, (max-width: 991px) 48vw, 280px"
                 src={images[imageSnippet[4]].imageLink || ''}
                 alt={images[imageSnippet[4]].roomType || "Property image"}
                 skeletonProps={{

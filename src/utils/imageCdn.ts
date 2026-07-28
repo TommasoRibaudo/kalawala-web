@@ -38,8 +38,18 @@ const CDN_BASE = (process.env.REACT_APP_IMAGE_CDN_BASE || '').replace(/\/+$/, ''
 /** Cloudflare's transform syntax differs from Cloudinary's and ImageKit's. */
 const IS_CLOUDFLARE = CDN_BASE.includes('/cdn-cgi/image');
 
-/** Widths generated for responsive srcsets. Covers 1x-3x for phones through desktop. */
-export const DEFAULT_WIDTHS = [400, 640, 960, 1280, 1600];
+/**
+ * Widths offered in responsive srcsets.
+ *
+ * Chosen to sit just above the widths this site actually lays images out at,
+ * measured with `node scripts/image-audit.mjs`. A browser picks the narrowest
+ * candidate that still covers `layout width x DPR`, so a sparse ladder rounds
+ * a long way up: at Lighthouse's mobile viewport a full-width image needs 721px
+ * and, with 640 and 960 as the only neighbours, fetched 960 — about 40% more
+ * bytes than necessary. Hence 320 for the small card thumbnails and 768 for the
+ * full-width case.
+ */
+export const DEFAULT_WIDTHS = [320, 400, 640, 768, 960, 1280, 1600];
 
 /**
  * Width requested from lh3 when a CDN is doing the resizing. The edge fetches

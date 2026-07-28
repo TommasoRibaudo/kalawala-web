@@ -28,7 +28,7 @@ const OtherHomesCardRib: FC<IOtherHomesCard> = ({ guestNumber, name, image, redi
     return (
         <div className="other-homes-card" onClick={handleClick} style={{ cursor: redirectPath ? 'pointer' : 'default' }}>
             <div className="image-container">
-                <img src={image} alt={name} className="home-image" width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(image)} sizes="(max-width: 768px) 100vw, 400px" />
+                <img src={image} alt={name} className="home-image" width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(image)} sizes="(max-width: 575px) 46vw, 220px" />
             </div>
             <div className="content">
                 <h3 className="home-name">{name}</h3>

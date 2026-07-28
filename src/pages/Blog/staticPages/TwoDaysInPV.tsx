@@ -60,7 +60,7 @@ const TwoDaysInPV = () => {
                                 loading="eager"
                                 fetchPriority="high"
                                 srcSet={cdnSrcSet(HERO_IMAGE)}
-                                sizes="(max-width: 768px) 100vw, 720px"
+                                sizes="(max-width: 767px) 92vw, (max-width: 1199px) 78vw, 880px"
                                 decoding="async"
                                 src={cdnImage(HERO_IMAGE, 960)}
                                 className="responsive-image"

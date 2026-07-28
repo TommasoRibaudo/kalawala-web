@@ -67,7 +67,7 @@ const CahuitaParkES = () => {
                                 loading="eager"
                                 fetchPriority="high"
                                 decoding="async"
-                                src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg"
                                 className="responsive-image"
                                 style={{
                                     maxWidth: '100%',

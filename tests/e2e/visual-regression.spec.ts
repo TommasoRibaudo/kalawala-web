@@ -22,6 +22,14 @@ test.describe('Visual Regression', () => {
       testInfo.project.name !== 'chromium',
       'Visual baselines are maintained for the chromium project only.',
     );
+    // The listing page's calendar renders whichever month "today" falls in, so a
+    // baseline recorded in one month fails in the next no matter what the code
+    // does — that is why listing-geco-desktop.png started failing with an
+    // "April 2026" reference against a July 2026 run. Stubbing /api/calendar
+    // did not help, because the month heading comes from the client clock, not
+    // from the response. Pin the clock, and pin it to the same month the stub
+    // returns so heading and data agree.
+    await appPage.clock.setFixedTime(new Date('2025-07-15T12:00:00Z'));
     await setupVisualMocks(appPage);
   });
 
@@ -79,6 +87,8 @@ test.describe('Visual Regression', () => {
         testInfo.project.name !== 'chromium',
         'Visual baselines are maintained for the chromium project only.',
       );
+      // Same fixed clock as the desktop block — see the comment there.
+      await mobilePage.clock.setFixedTime(new Date('2025-07-15T12:00:00Z'));
       await setupVisualMocks(mobilePage);
     });
 

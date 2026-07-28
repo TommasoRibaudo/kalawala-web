@@ -85,7 +85,7 @@ const IndigenousTravel = () => {
                                 loading="eager"
                                 fetchPriority="high"
                                 decoding="async"
-                                src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Palenque_bribri._Costa_Rica.jpg?20170604221517"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Palenque_bribri._Costa_Rica.jpg/960px-Palenque_bribri._Costa_Rica.jpg"
                                 className="responsive-image"
                                 alt="Bribri Indigenous culture near Puerto Viejo"
                             />

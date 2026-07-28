@@ -58,6 +58,7 @@ const PortfolioImageES = ({ folderName }: IPortfolioImage) => {
           <div key={`${folderName}-${index}`} className="portfolio-block col-lg-4 col-md-6">
             <ImageWithSkeleton
               loading='lazy'
+              sizes="(max-width: 575px) 46vw, (max-width: 991px) 48vw, 280px"
               src={image.imageLink || ''} 
               alt={image.roomType || `Image ${index + 1}`} 
               fluid 

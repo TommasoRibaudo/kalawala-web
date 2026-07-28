@@ -1507,6 +1507,30 @@ li.booking-result-card__amenities-toggle {
   word-break: break-all;
 }
 
+.booking-deposit-handoff__colones-amount {
+  border-top: 1px dashed rgba(41, 79, 68, 0.24);
+  color: $kalawala-darker-green;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 12px 0 0;
+  padding-top: 12px;
+}
+
+// The estimate sits under the dollar total it converts, deliberately quieter
+// than the figure the guest is actually charged.
+.booking-colones-estimate {
+  color: rgba(23, 23, 23, 0.6) !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.booking-colones-note {
+  color: rgba(23, 23, 23, 0.6);
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 12px 0 0;
+}
+
 .booking-deposit-handoff__contacts {
   display: grid;
   gap: 12px;

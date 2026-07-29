@@ -65,13 +65,14 @@ const FixedNavigationRibES = ({ isBlog }: IFixedNavigationES) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
             <Nav.Link href="HomeVillasES#body" className={`navText${(isActive && !isBlog) ? ' active' : ''}`} onClick={closeMenu}>Inicio</Nav.Link>
-            <Nav.Link href="HomeVillasES#body" className="navText" onClick={() => { handleLinkClick("HomeVillasES#callToActionES") }}>Disponibilidad</Nav.Link>
-            <Nav.Link href="HomeVillasES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeVillasES#portfolioES") }}>Fotos</Nav.Link>
-            <Nav.Link href="HomeVillasES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeVillasES#contact-usES") }}>Contactanos</Nav.Link>
             <Nav.Link href="/blogES" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="/portalES" className="navText" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("portalES") }}>Mi Reserva</Nav.Link>
             <Nav.Link href="https://wa.me/50684632276" className="navText" target="_blank" rel="noopener noreferrer">WhatsApp</Nav.Link>
           </Nav>
         <div className="navbar-flag">
+            <a href="HomeVillasES#callToActionES" className="nav-cta-btn" onClick={() => { handleLinkClick("HomeVillasES#callToActionES") }}>
+              Reservar
+            </a>
             <LanguageSwitcher/>
         </div>
         </Navbar.Collapse>

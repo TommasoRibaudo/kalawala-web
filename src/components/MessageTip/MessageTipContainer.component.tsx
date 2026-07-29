@@ -18,7 +18,18 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
   const [messageTips, setMessageTips] = useState<MessageTipData[]>([]);
   const [isCookieBannerVisible, setIsCookieBannerVisible] = useState(false);
   const [stickyCTAHeight, setStickyCTAHeight] = useState(0);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  // Seeded from window.innerWidth, this read react-snap's puppeteer viewport
+  // at prerender time and a real visitor's actual viewport at hydration time
+  // — two different numbers baked into the same first render, so the mobile
+  // bottom-offset style below came out different on the client than what was
+  // pre-rendered. React error #418 (hydration mismatch), the same failure
+  // mode WelcomeSlider.component.tsx already documents and fixes for the
+  // hero. null here means "not yet measured": isMobile stays false (matching
+  // whatever react-snap's own settled-DOM snapshot shows for a typical
+  // desktop-width prerender) until the resize-listener effect below runs and
+  // sets the visitor's real width post-hydration, when React is free to
+  // update without a mismatch.
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
   const location = useLocation();
 
   // Clear all message tips when route changes (language switching)
@@ -60,6 +71,8 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
 
     // Initial check
     checkElements();
+    // Real width, read only after mount — see the windowWidth state comment.
+    setWindowWidth(window.innerWidth);
 
     // Set up observer to watch for changes
     const observer = new MutationObserver(checkElements);
@@ -100,7 +113,7 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
 
   // Calculate dynamic bottom position
   const containerStyle: React.CSSProperties = {};
-  const isMobile = windowWidth <= 768;
+  const isMobile = windowWidth !== null && windowWidth <= 768;
   
   if (isMobile) {
     let bottomOffset = 20; // Base margin

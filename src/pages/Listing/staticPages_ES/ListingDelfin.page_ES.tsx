@@ -92,10 +92,6 @@ const ListingDelfin = () => {
                             <br />
                         </p>
                         <p>
-                            Ofrecemos check-out flexible con entrega de llaves en caja de seguridad para tu conveniencia.
-                            <br />
-                        </p>
-                        <p>
                             ¿Tienes alguna solicitud especial? Estaremos más que felices de complacerte si podemos. Por favor no dudes en hacérnoslo saber.
                             <br />
                         </p>

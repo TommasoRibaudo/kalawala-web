@@ -16,8 +16,8 @@ const ContactUs: React.FC = () => {
 
           {/* Contact Details */}
           <div className="text-center contact-info col-md-12 wow fadeInUp" data-wow-duration="500ms">
-            <h3>Interested?</h3>
-            <p>Contact us!</p>
+            <h3>Ask us anything</h3>
+            <p>We usually reply within an hour on WhatsApp.</p>
             <div className="contact-details">
               <div className="con-info clearfix">
                 <i className="tf-map-pin"></i>
@@ -26,12 +26,12 @@ const ContactUs: React.FC = () => {
 
               <div className="con-info clearfix">
                 <i className="tf-ion-ios-telephone-outline"></i>
-                <span>Phone, Whatsapp: +506 8463-2276</span>
+                <span>Phone, Whatsapp: <a href="tel:+50684632276">+506 8463-2276</a> · <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">chat on WhatsApp</a></span>
               </div>
 
               <div className="con-info clearfix">
                 <i className="tf-ion-ios-email-outline"></i>
-                <span>Email: reservas.kalawala@gmail.com</span>
+                <span>Email: <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a></span>
               </div>
             </div>
           </div>

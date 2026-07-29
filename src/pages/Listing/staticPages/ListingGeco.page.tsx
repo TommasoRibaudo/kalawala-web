@@ -5,6 +5,7 @@ import OtherListings from "../components/OtherListings/OtherListings.component";
 import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
+import Footer from "../../../components/Footer/Footer.component";
 import { homesSnippet } from "../../../utils/constants";
 import { HouseDataType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
@@ -31,7 +32,7 @@ const ListingGeco = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.name === listing);
+    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.houseLangCode === listing);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -45,7 +46,7 @@ const ListingGeco = () => {
         <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>House Geco - Pet Friendly Home in Puerto Viejo</title>
+                <title>Casa Geco - Pet Friendly Home in Puerto Viejo</title>
                 <meta name="description" content="Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Geco" />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Geco" />
@@ -59,7 +60,7 @@ const ListingGeco = () => {
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
-                        <h1 className="title">House Geco</h1>
+                        <h1 className="title">Casa Geco</h1>
                         <p className="location">
                             <a href="https://maps.app.goo.gl/ixZHjG7yYsMF9U2e9" target="_blank" rel="noopener noreferrer">
                                 Puerto Viejo de Talamanca, Limón, Costa Rica
@@ -135,6 +136,7 @@ const ListingGeco = () => {
                 <OtherListings listings={homesSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+            <Footer isSpanish={false} />
 
         </div>
     )

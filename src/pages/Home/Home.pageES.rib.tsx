@@ -9,6 +9,7 @@ import WelcomeSliderRibES from "../../components/WelcomeSlider/WelcomeSlider.com
 import PortfolioRIBES from "../../components/Portfolio/Portfolio.componentRIBES";
 import OurOtherHomesRIBES from "../../components/OurOtherHomes/OurOtherHomes.ComponentRIBES";
 import BookingSearchWidget from "../../components/BookingSearchWidget/BookingSearchWidget.component";
+import Footer from "../../components/Footer/Footer.component";
 
 const HomeRibES = () => {
   return (
@@ -31,6 +32,7 @@ const HomeRibES = () => {
       <CallToActionES />
       <PortfolioRIBES />
       <ContactUs />
+      <Footer isSpanish={true} />
     </div>
   )
 }

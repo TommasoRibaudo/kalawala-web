@@ -4,6 +4,7 @@ import '../Listing.style.scss'
 import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
+import Footer from "../../../components/Footer/Footer.component";
 import { NamSnippetES } from "../../../utils/constants";
 import { HouseDataType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
@@ -120,6 +121,7 @@ const ListingPlumeriaES = () => {
                 <OtherListingsES listings={NamSnippetES} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName="Plumeria" />}
+            <Footer isSpanish={true} />
 
         </div>
     )

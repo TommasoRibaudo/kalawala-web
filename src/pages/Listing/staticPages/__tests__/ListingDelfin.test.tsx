@@ -107,7 +107,7 @@ describe('ListingDelfin Component', () => {
     );
     
     expect(screen.getByTestId('fixed-navigation')).toBeInTheDocument();
-    expect(screen.getByText('House Delfines')).toBeInTheDocument();
+    expect(screen.getByText('Casa Delfines')).toBeInTheDocument();
     expect(screen.getByTestId('images-container')).toBeInTheDocument();
     expect(screen.getByTestId('booking-search-widget')).toBeInTheDocument();
   });
@@ -120,7 +120,7 @@ describe('ListingDelfin Component', () => {
     );
     
     // Verify that the component finds the correct house data
-    const delfinData = houseDataList.find((house) => house.name === 'Delfin');
+    const delfinData = houseDataList.find((house) => house.name === 'Casa Delfines');
     expect(delfinData).toBeDefined();
     expect(delfinData?.houseLangCode).toBe('Delfin');
     expect(delfinData?.guestNumber).toBe(6);
@@ -147,7 +147,7 @@ describe('ListingDelfin Component', () => {
       </BrowserRouter>
     );
     
-    const delfinData = houseDataList.find((house) => house.name === 'Delfin');
+    const delfinData = houseDataList.find((house) => house.name === 'Casa Delfines');
     const amenityNames = delfinData?.amenities.map(a => a.name) || [];
     
     // Check that expected amenities are present

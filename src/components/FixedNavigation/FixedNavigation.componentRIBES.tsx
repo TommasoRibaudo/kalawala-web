@@ -52,6 +52,9 @@ const FixedNavigationRibES = ({ isBlog }: IFixedNavigationES) => {
           />
         </Navbar.Brand>
         <div className="mobile-controls">
+          <a href="HomeVillasES#callToActionES" className="nav-cta-btn" onClick={() => { handleLinkClick("HomeVillasES#callToActionES") }}>
+            Reservar
+          </a>
           <div className="mobile-flag">
             <LanguageSwitcher />
           </div>
@@ -65,7 +68,8 @@ const FixedNavigationRibES = ({ isBlog }: IFixedNavigationES) => {
             <Nav.Link href="HomeVillasES#body" className="navText" onClick={() => { handleLinkClick("HomeVillasES#callToActionES") }}>Disponibilidad</Nav.Link>
             <Nav.Link href="HomeVillasES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeVillasES#portfolioES") }}>Fotos</Nav.Link>
             <Nav.Link href="HomeVillasES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeVillasES#contact-usES") }}>Contactanos</Nav.Link>
-            <Nav.Link href="/twodaysinpuertoviejoES" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="/blogES" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="https://wa.me/50684632276" className="navText" target="_blank" rel="noopener noreferrer">WhatsApp</Nav.Link>
           </Nav>
         <div className="navbar-flag">
             <LanguageSwitcher/>

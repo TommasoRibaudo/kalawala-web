@@ -10,6 +10,7 @@ import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.co
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import BookingSearchWidget from "../../components/BookingSearchWidget/BookingSearchWidget.component";
 import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
+import Footer from "../../components/Footer/Footer.component";
 
 const helpMeChooseOptions = [
     {
@@ -22,21 +23,21 @@ const helpMeChooseOptions = [
     {
         emoji: "👨‍👩‍👧",
         label: "Perfect for families",
-        houseName: "Delfines",
+        houseName: "Casa Delfines",
         houseLangCode: "Delfin",
         image: "https://lh3.googleusercontent.com/d/1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW=w1000"
     },
     {
         emoji: "🐾",
         label: "Pet-friendly",
-        houseName: "Rana",
+        houseName: "Casa Rana",
         houseLangCode: "Rana",
         image: "https://lh3.googleusercontent.com/d/1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X=w1000"
     },
     {
         emoji: "⭐",
         label: "Best value",
-        houseName: "House Plumeria",
+        houseName: "Casa Plumeria",
         houseLangCode: "Plumeria",
         image: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000"
     }
@@ -67,7 +68,8 @@ const HomeNam = () => {
       <PortfolioNam />
       {/* <Testimonial /> */}
       <ContactUs />
-      
+      <Footer isSpanish={false} />
+
     </div>
   )
 }

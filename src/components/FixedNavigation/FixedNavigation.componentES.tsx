@@ -73,6 +73,9 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
           />
         </Navbar.Brand>
         <div className="mobile-controls">
+          <a href="/bookES" className="nav-cta-btn" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("bookES") }}>
+            Reservar
+          </a>
           <div className="mobile-flag">
             <LanguageSwitcher />
           </div>
@@ -86,8 +89,9 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
             <Nav.Link href="/bookES" className="navText" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("bookES") }}>Disponibilidad</Nav.Link>
             <Nav.Link href="HomeES#portfolioES" className="navText" onClick={() => { handleLinkClick("HomeES#portfolio") }}>Fotos</Nav.Link>
             <Nav.Link href="HomeES#contact-usES" className="navText" onClick={() => { handleLinkClick("HomeES#contact-us") }}>Contactanos</Nav.Link>
-            <Nav.Link href="/twodaysinpuertoviejoES" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="/blogES" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
             <Nav.Link href="/portalES" className="navText" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("portalES") }}>Mi Reserva</Nav.Link>
+            <Nav.Link href="https://wa.me/50684632276" className="navText" target="_blank" rel="noopener noreferrer">WhatsApp</Nav.Link>
           </Nav>
         <div className="navbar-flag">
             <LanguageSwitcher/>

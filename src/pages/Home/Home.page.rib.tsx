@@ -10,6 +10,7 @@ import DiscoverRIB from "../../components/Discover/Discover.componentRIB";
 import PortfolioRIB from "../../components/Portfolio/Portfolio.componentRIB";
 import OurOtherHomesRIB from "../../components/OurOtherHomes/OurOtherHomes.componentRIB";
 import BookingSearchWidget from "../../components/BookingSearchWidget/BookingSearchWidget.component";
+import Footer from "../../components/Footer/Footer.component";
 
 const HomeRib = () => {
  
@@ -35,6 +36,7 @@ const HomeRib = () => {
       <PortfolioRIB />
       {/* <Testimonial /> */}
       <ContactUs />
+      <Footer isSpanish={false} />
     </div>
   )
 }

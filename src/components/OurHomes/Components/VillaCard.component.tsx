@@ -17,14 +17,21 @@ interface IHomeCard {
 const VillaCard: FC<IHomeCard> = ({ guestNumber, name, image, houseLangCode }) => {
 
     const navigate = useNavigate();
-    const handleClick = () => {
+    const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+        // A real href already handles ctrl/cmd-click, middle-click and "open in
+        // new tab" correctly — only take over plain left-clicks so those keep
+        // working, and use the SPA transition (no full reload) for everything else.
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+            return;
+        }
+        event.preventDefault();
         navigate(`/${houseLangCode}`);
         setTimeout(() => {
             window.scrollTo(0, 0);
         }, 0);
     };
     return (
-        <div className="col-lg-3 col-md-6 col-sm-6 col-12" data-wow-duration="500ms" onClick={handleClick}>
+        <a className="col-lg-3 col-md-6 col-sm-6 col-12 grid-card-link" data-wow-duration="500ms" href={`/${houseLangCode}`} onClick={handleClick}>
             <div className="block">
                 <div className="icon-box d-block mx-auto">
                     {/* Card now shows a full-width photo (see HomeCard.style.scss
@@ -59,7 +66,7 @@ const VillaCard: FC<IHomeCard> = ({ guestNumber, name, image, houseLangCode }) =
                 </div>
             </div>
 
-        </div>
+        </a>
     )
 }
 export default VillaCard;

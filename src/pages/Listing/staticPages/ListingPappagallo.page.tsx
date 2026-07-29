@@ -5,6 +5,7 @@ import OtherListings from "../components/OtherListings/OtherListings.component";
 import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
+import Footer from "../../../components/Footer/Footer.component";
 import { HouseDataType } from "../../../utils/types";
 import { homesSnippet } from "../../../utils/constants";
 import Amenities from "../components/Amenities/Amenities.component";
@@ -29,7 +30,7 @@ const ListingPappagallo = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.name === listing);
+    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.houseLangCode === listing);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -43,7 +44,7 @@ const ListingPappagallo = () => {
         <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>House Pappagallo - Fully equipped Home in Puerto Viejo</title>
+                <title>Casa Pappagallo - Fully equipped Home in Puerto Viejo</title>
                 <meta name="description" content="Welcome to Kalawala, a charming complex of two apartments located in the heart of Puerto Viejo. Each apartment is built entirely of wood and is situated above a delightful Italian bakery and are equipped with everything you need for a comfortable stay." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Pappagallo" />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Pappagallo" />
@@ -57,7 +58,7 @@ const ListingPappagallo = () => {
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
-                        <h1 className="title">House Pappagallo</h1>
+                        <h1 className="title">Casa Pappagallo</h1>
                         <p className="location">
                             <a href="https://maps.app.goo.gl/ixZHjG7yYsMF9U2e9" target="_blank" rel="noopener noreferrer">
                                 Puerto Viejo de Talamanca, Limón, Costa Rica
@@ -127,6 +128,7 @@ const ListingPappagallo = () => {
                 <OtherListings listings={homesSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+            <Footer isSpanish={false} />
 
         </div>
     )

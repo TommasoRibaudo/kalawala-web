@@ -4,6 +4,7 @@ import '../Listing.style.scss'
 import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
+import Footer from "../../../components/Footer/Footer.component";
 import { HouseDataType } from "../../../utils/types";
 import { homesSnippet } from "../../../utils/constants";
 import Amenities from "../components/Amenities/Amenities.component";
@@ -121,6 +122,7 @@ const ListingTucanoES = () => {
                 <OtherListingsES listings={homesSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+            <Footer isSpanish={true} />
 
         </div>
     )

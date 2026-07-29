@@ -122,7 +122,7 @@ describe('ListingDelfinES Component', () => {
     // Verify that the component finds the correct Spanish house data
     const delfinESData = houseDataList.find((house) => house.houseLangCode === 'DelfinES');
     expect(delfinESData).toBeDefined();
-    expect(delfinESData?.name).toBe('Delfín');
+    expect(delfinESData?.name).toBe('Casa Delfines');
     expect(delfinESData?.guestNumber).toBe(6);
     expect(delfinESData?.houseCode).toBe(10);
   });
@@ -302,7 +302,7 @@ describe('ListingDelfinES Component', () => {
     const delfinESData = houseDataList.find((house) => house.houseLangCode === 'DelfinES');
     
     expect(delfinESData).toBeDefined();
-    expect(delfinESData?.name).toBe('Delfín');
+    expect(delfinESData?.name).toBe('Casa Delfines');
     expect(delfinESData?.houseLangCode).toBe('DelfinES');
     expect(delfinESData?.guestNumber).toBe(6);
     expect(delfinESData?.houseCode).toBe(10);

@@ -5,6 +5,7 @@ import OtherListings from "../components/OtherListings/OtherListings.component";
 import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
+import Footer from "../../../components/Footer/Footer.component";
 import { HouseDataType } from "../../../utils/types";
 import { homesSnippet } from "../../../utils/constants";
 import Amenities from "../components/Amenities/Amenities.component";
@@ -30,7 +31,7 @@ const ListingRana = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.name === listing);
+    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.houseLangCode === listing);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
 
@@ -44,7 +45,7 @@ const ListingRana = () => {
         <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>House Rana - Puerto Viejo Vacation Home Rental</title>
+                <title>Casa Rana - Puerto Viejo Vacation Home Rental</title>
                 <meta name="description" content="Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space." />
                 <link rel="canonical" href="https://www.reservaskalawala.com/Rana" />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Rana" />
@@ -58,7 +59,7 @@ const ListingRana = () => {
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
-                        <h1 className="title">House Rana</h1>
+                        <h1 className="title">Casa Rana</h1>
                         <p className="location">
                             <a href="https://maps.app.goo.gl/ixZHjG7yYsMF9U2e9" target="_blank" rel="noopener noreferrer">
                                 Puerto Viejo de Talamanca, Limón, Costa Rica
@@ -133,6 +134,7 @@ const ListingRana = () => {
                 <OtherListings listings={homesSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+            <Footer isSpanish={false} />
 
         </div>
     )

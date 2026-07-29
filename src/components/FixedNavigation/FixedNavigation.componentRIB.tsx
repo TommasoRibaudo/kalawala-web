@@ -52,6 +52,9 @@ const FixedNavigationRib = ({ isBlog }: IFixedNavigation) => {
           />
         </Navbar.Brand>
         <div className="mobile-controls">
+          <a href="HomeVillas#callToAction" className="nav-cta-btn" onClick={() => { handleLinkClick("HomeVillas#callToAction") }}>
+            Book now
+          </a>
           <div className="mobile-flag">
             <LanguageSwitcher />
           </div>
@@ -65,7 +68,8 @@ const FixedNavigationRib = ({ isBlog }: IFixedNavigation) => {
             <Nav.Link href="HomeVillas#body" className="navText" onClick={() => { handleLinkClick("HomeVillas#callToAction") }}>Availability</Nav.Link>
             <Nav.Link href="HomeVillas#portfolio" className="navText" onClick={() => { handleLinkClick("HomeVillas#portfolio") }}>Photos</Nav.Link>
             <Nav.Link href="HomeVillas#contact-us" className="navText" onClick={() => { handleLinkClick("HomeVillas#contact-us") }}>Contact</Nav.Link>
-            <Nav.Link href="/twodaysinpuertoviejo" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="/blog" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
+            <Nav.Link href="https://wa.me/50684632276" className="navText" target="_blank" rel="noopener noreferrer">WhatsApp</Nav.Link>
           </Nav>
         <div className="navbar-flag">
             <LanguageSwitcher />

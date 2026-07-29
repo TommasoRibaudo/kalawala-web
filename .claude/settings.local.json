@@ -15,7 +15,8 @@
       "Bash(aws lambda update-function-configuration *)",
       "Bash(aws lambda get-function-configuration *)",
       "Bash(cd C:\\\\Users\\\\User\\\\Documents\\\\ReactNativeApps\\\\Medical\\\\kalawala-web *)",
-      "WebFetch(domain:aws.amazon.com)"
+      "WebFetch(domain:aws.amazon.com)",
+      "Bash(netstat -ano)"
     ]
   }
 }

@@ -8,9 +8,11 @@
   margin-bottom: 0;
   padding: 10px;
   min-height: 80px;
-  /* Fixed height to prevent CLS */
-  height: 80px;
-  /* Lock height for consistency */
+  /* Floor height to prevent CLS on the common single-line layout — no fixed
+     height, so if the brand row and mobile-controls row (CTA, flag,
+     hamburger) ever wrap to two lines on a narrow viewport, the sticky
+     header grows to contain both instead of the second line overlapping
+     the page content underneath it. */
   position: sticky;
   top: 0;
   background-color: rgba(0, 0, 0, 0.2);
@@ -58,6 +60,10 @@
   transform: translateY(-50%);
   display: flex;
   align-items: center;
+  gap: 12px;
+  /* Spaces the desktop "Book now" pill from the language switcher — they
+     share this box so the CTA sits right next to the flag, same as it
+     does in .mobile-controls on mobile. */
 
   button {
     background: none;
@@ -82,11 +88,12 @@
   gap: 10px;
 }
 
-// Always visible, at every breakpoint — .mobile-controls itself isn't
-// hidden on desktop, only its language-flag and hamburger children are.
-// This is what "travels with the sticky nav" per the audit: the header
-// is the one element that follows the visitor down the whole page, and
-// before this it never asked for anything.
+// There are two "Book now" pills in the markup, never both visible at once:
+// one in .mobile-controls (next to .mobile-flag) for mobile, one in
+// .navbar-flag (next to the desktop LanguageSwitcher) for desktop. The
+// media query below hides the mobile-controls copy once .navbar-flag's
+// own copy takes over; .navbar-flag is already display:none on mobile so
+// its copy needs no matching rule the other way.
 .nav-cta-btn {
   display: inline-block;
   white-space: nowrap;
@@ -124,6 +131,14 @@
   }
 }
 
+@media (min-width: 992px) {
+  // Desktop shows the .navbar-flag copy of the CTA instead — see the
+  // .nav-cta-btn comment above.
+  .mobile-controls .nav-cta-btn {
+    display: none;
+  }
+}
+
 @media (max-width: 991.98px) {
   .navbar-flag {
     display: none;
@@ -133,6 +148,23 @@
   .mobile-flag {
     display: flex;
     /* Show mobile flag */
+  }
+
+  /* The CTA pill added a fourth element (logo, CTA, flag, hamburger) to a
+     row that used to fit two — tighten it back down so it stays on one
+     line on common phone widths instead of wrapping under the logo. */
+  .mobile-controls {
+    gap: 6px;
+  }
+
+  .nav-cta-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .navbar-brand img.logo {
+    width: 120px;
+    height: auto;
   }
 
   /* Fix navbar positioning - use sticky but ensure proper z-index */
@@ -188,9 +220,16 @@
     /* Enable scrolling when content exceeds height */
   }
 
-  .navMenu {
+  // Needs the .navigation prefix to match the desktop rule's specificity
+  // (.navigation .navMenu .navText, 3 classes) — a bare .navMenu .navText
+  // here is weaker and silently loses the cascade to the desktop color
+  // (--kalawala-light-cream, i.e. white) regardless of this media query,
+  // which is what made the dropdown unreadable: white text on the white
+  // frosted-glass panel below.
+  .navigation .navMenu {
     .navText {
       color: var(--kalawala-text-gray);
+      text-shadow: none;
       font-weight: 500;
       padding: 8px 0;
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);

@@ -11,11 +11,6 @@ import { BrowserRouter } from 'react-router-dom';
 import ListingDelfin from '../ListingDelfin.page';
 import { houseDataList } from '../../../../utils/constants';
 
-// Mock the media query hook
-jest.mock('@react-hook/media-query', () => ({
-  useMediaQuery: jest.fn(() => false), // Default to desktop view
-}));
-
 // Mock the booking search widget that replaced the Smoobu iframe
 jest.mock('../../../../components/BookingSearchWidget/BookingSearchWidget.component', () => {
   return function MockBookingSearchWidget({ isSpanish, defaultGuests, variant }: { isSpanish: boolean; defaultGuests?: number; variant?: string }) {

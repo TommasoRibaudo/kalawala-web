@@ -16,11 +16,6 @@ jest.mock('../../utils/runPixelValidation', () => ({
   }),
 }));
 
-// Mock useMediaQuery hook
-jest.mock('@react-hook/media-query', () => ({
-  useMediaQuery: jest.fn(() => false),
-}));
-
 // Mock Meta Pixel to prevent actual tracking during tests
 beforeEach(() => {
   const mockFbq = jest.fn();

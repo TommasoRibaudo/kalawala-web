@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
@@ -21,12 +21,9 @@ const IndigenousTravelES = () => {
     // const { blogId } = useParams();
     const blogId = 'indigenousTravelPVES'
     const blogData = blogsES.find((blog) => blog.id === blogId);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
     }, [])
     return (
         <div className={`listingContainer`}>

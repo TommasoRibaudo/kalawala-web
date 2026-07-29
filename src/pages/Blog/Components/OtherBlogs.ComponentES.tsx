@@ -12,7 +12,15 @@ interface IOtherBlogs {
 }
 
 const OtherBlogsES: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  // Seeded null, not window.innerWidth — react-snap's puppeteer viewport at
+  // prerender time and a real visitor's viewport at hydration time are
+  // different numbers, and windowWidth below drives slidesToShow (which
+  // changes how many slide clones react-slick renders for its infinite
+  // loop). Same fix as MessageTipContainer.component.tsx: null falls back
+  // to the same value the "desktop" branch would produce, matching
+  // react-snap's desktop-sized prerender, until the resize effect sets the
+  // real width post-mount.
+  const [windowWidth, setWindowWidth] = useState<number | null>(null)
   const navigate = useNavigate()
 
   const handleResize = useCallback(() => {
@@ -20,6 +28,7 @@ const OtherBlogsES: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
   }, [])
 
   useEffect(() => {
+    handleResize() // real width, read only after mount
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [handleResize])
@@ -33,7 +42,7 @@ const OtherBlogsES: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
     dots: true,
     infinite: filteredBlogs.length > 4,
     speed: 500,
-    slidesToShow: windowWidth < 768 ? 1 : windowWidth < 1024 ? 2 : Math.min(4, filteredBlogs.length),
+    slidesToShow: windowWidth === null ? Math.min(4, filteredBlogs.length) : windowWidth < 768 ? 1 : windowWidth < 1024 ? 2 : Math.min(4, filteredBlogs.length),
     slidesToScroll: 1,
     adaptiveHeight: true,
     nextArrow: <SampleNextArrow />,

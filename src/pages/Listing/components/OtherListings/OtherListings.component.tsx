@@ -9,13 +9,21 @@ interface IOtherListing {
 }
 
 const OtherListings: FC<IOtherListing> = ({ currentListing, listings }) => {
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+    // Seeded null, not window.innerWidth — react-snap's puppeteer viewport at
+    // prerender time and a real visitor's viewport at hydration time are
+    // different numbers, and isMobile below drives the layout class, so
+    // reading it synchronously here bakes a mismatch into every hydration.
+    // Same fix as MessageTipContainer.component.tsx: null means "not yet
+    // measured" (isMobile stays false, matching react-snap's desktop-sized
+    // prerender) until the resize effect sets the real width post-mount.
+    const [windowWidth, setWindowWidth] = useState<number | null>(null)
     const navigate = useNavigate()
     const gridRef = useRef<HTMLDivElement>(null)
     const otherListings = listings.filter(listing => listing.name !== currentListing)
 
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth)
+        handleResize() // real width, read only after mount
         window.addEventListener("resize", handleResize)
         return () => window.removeEventListener("resize", handleResize)
     }, [])
@@ -40,7 +48,7 @@ const OtherListings: FC<IOtherListing> = ({ currentListing, listings }) => {
         return () => grid.removeEventListener('wheel', onWheel)
     }, [])
 
-    const isMobile = windowWidth <= 1199
+    const isMobile = windowWidth !== null && windowWidth <= 1199
 
     const getLayoutClass = () => {
         if (otherListings.length === 0) return 'no-listings'

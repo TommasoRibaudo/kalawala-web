@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
@@ -18,11 +18,9 @@ const HERO_IMAGE =
   'https://lh3.googleusercontent.com/d/1JxE6lYoK9C2maxtGP9rlUp2a47Ce5C9W=w1000';
 
 const TravellingToPuerto = () => {
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
     }, [])
     return (
 

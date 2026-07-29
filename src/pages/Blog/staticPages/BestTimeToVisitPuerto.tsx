@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
@@ -16,12 +16,9 @@ const BestTimeToVisitPuerto = () => {
 
     const blogId = 'bestTimeToVisitPuerto'
     const blogData = blogs.find((blog) => blog.id === blogId);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
     }, [])
     return (
 

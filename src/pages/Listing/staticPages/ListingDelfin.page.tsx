@@ -93,10 +93,6 @@ const ListingDelfin = () => {
                             <br />
                         </p>
                         <p>
-                            We offer flexible check-out with lockbox key drop-off for your convenience.
-                            <br />
-                        </p>
-                        <p>
                             Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
                             <br />
                         </p>

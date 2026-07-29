@@ -78,8 +78,8 @@ const properties = [
     location: 'Puerto Viejo de Talamanca, Limón, Costa Rica',
     parking: 'Private parking',
     petFriendly: false,
-    description: 'Located in the heart of town, this house accommodates up to 6 guests with a fully equipped kitchen, bathroom, 2 A/C units (not in kitchen or living room), and private parking. Flexible check-out with lockbox key drop-off for your convenience.',
-    amenities: ['2 Private Equipped Bathrooms', 'Private Equipped Kitchen', 'A/C (2 units)', 'Private Parking', '100Mbps WiFi', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', 'Flexible check-out with lockbox'],
+    description: 'Located in the heart of town, this house accommodates up to 6 guests with a fully equipped kitchen, bathroom, 2 A/C units (not in kitchen or living room), and private parking.',
+    amenities: ['2 Private Equipped Bathrooms', 'Private Equipped Kitchen', 'A/C (2 units)', 'Private Parking', '100Mbps WiFi', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens'],
     neighborhood: 'Close to beach access leading to Cocles. Two National Parks nearby: Manzanillo and Cahuita. Vibrant nightlife.'
   },
   {

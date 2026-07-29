@@ -13,7 +13,6 @@ import { AmenityType } from "../../../utils/types";
 import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
-import { useMediaQuery } from '@react-hook/media-query';
 
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
@@ -24,7 +23,15 @@ import GuestReviews from "../../../components/GuestReviews/GuestReviews.componen
 
 const ListingGeco = () => {
     const listing = 'Geco'
-    const isScreenSmall = useMediaQuery('(max-width: 992px)');
+    // Seeded null, not read from useMediaQuery/matchMedia synchronously —
+    // react-snap's puppeteer viewport at prerender time and a real visitor's
+    // viewport at hydration time are different numbers, and isScreenSmall
+    // drives whether the sticky mobile CTA div renders at all (a structural
+    // difference, not just style). Same fix as
+    // MessageTipContainer.component.tsx: null means "not yet measured" (no
+    // CTA div, matching react-snap's desktop-sized prerender) until the
+    // effect below sets the real match post-mount.
+    const [isScreenSmall, setIsScreenSmall] = useState<boolean | null>(null);
     const [show, setShow] = useState(false);
 
 
@@ -33,12 +40,17 @@ const ListingGeco = () => {
     const handleShow = () => setShow(true);
 
     const houseData: HouseDataType | undefined = houseDataList.find((house) => house.houseLangCode === listing);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
+    }, [])
+
+    useEffect(() => {
+        const mq = window.matchMedia('(max-width: 992px)');
+        setIsScreenSmall(mq.matches); // real match, read only after mount
+        const handleChange = () => setIsScreenSmall(mq.matches);
+        mq.addEventListener('change', handleChange);
+        return () => mq.removeEventListener('change', handleChange);
     }, [])
     //const description = houseData?.description.split('<br/>');
     //const neighborhood = houseData?.neighborhood.split('<br/>');

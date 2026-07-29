@@ -11,11 +11,6 @@ import { BrowserRouter } from 'react-router-dom';
 import ListingDelfin from '../ListingDelfin.page_ES';
 import { houseDataList } from '../../../../utils/constants';
 
-// Mock the media query hook
-jest.mock('@react-hook/media-query', () => ({
-  useMediaQuery: jest.fn(() => false), // Default to desktop view
-}));
-
 // Mock the booking search widget that replaced the Smoobu iframe
 jest.mock('../../../../components/BookingSearchWidget/BookingSearchWidget.component', () => {
   return function MockBookingSearchWidget({ isSpanish, defaultGuests, variant }: { isSpanish: boolean; defaultGuests?: number; variant?: string }) {
@@ -203,17 +198,29 @@ describe('ListingDelfinES Component', () => {
   });
 
   test('should display Spanish booking button text', () => {
-    // Mock useMediaQuery to return true for small screen
-    const mockUseMediaQuery = require('@react-hook/media-query').useMediaQuery;
-    mockUseMediaQuery.mockReturnValue(true);
-    
+    // The component now checks window.matchMedia directly (post-mount, see
+    // ListingDelfin.page_ES.tsx) instead of the useMediaQuery hook, so force
+    // the small-screen query to match here to simulate a mobile visitor.
+    const matchMediaSpy = jest.spyOn(window, 'matchMedia').mockReturnValue({
+      matches: true,
+      media: '(max-width: 992px)',
+      onchange: null,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    } as unknown as MediaQueryList);
+
     render(
       <BrowserRouter>
         <ListingDelfin />
       </BrowserRouter>
     );
-    
+
     expect(screen.getByText('VER DISPONIBILIDAD')).toBeInTheDocument();
+
+    matchMediaSpy.mockRestore();
   });
 
   test('should handle image modal functionality with Spanish content', () => {

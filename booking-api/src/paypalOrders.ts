@@ -305,9 +305,8 @@ export async function handleCapturePayPalOrder(
       {
         session,
         hold,
-        captureId: captureResult.captureId,
+        notice: buildPaypalConfirmedNotice(session, captureResult.captureId, capturedAt),
         amountCents: captureResult.amountCents,
-        confirmedAt: capturedAt,
       },
       holds,
       config,
@@ -329,6 +328,15 @@ export async function handleCapturePayPalOrder(
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+export function buildPaypalConfirmedNotice(session: BookingSessionRecord, captureId: string, confirmedAt: string): string {
+  return [
+    `Confirmed — PayPal payment received.`,
+    `Reservation ID: ${session.reservationPublicId}`,
+    `PayPal capture: ${captureId}`,
+    `Confirmed at: ${confirmedAt}`,
+  ].join("\n");
+}
 
 function getRequiredBookingSessionRepository(config: BookingApiConfig): BookingSessionRepository {
   if (!config.bookingSessions) {

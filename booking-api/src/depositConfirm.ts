@@ -23,6 +23,7 @@ import { htmlResponse } from "./http/response";
 import { presignReceiptDownload } from "./depositReceipt";
 import { BOOKING_PROPERTIES_BY_ID } from "./propertyCatalog";
 import { createSmoobuClient, SmoobuProviderError } from "./smoobuClient";
+import { promoteSmoobuReservation } from "./smoobuPromotion";
 import { verifySignedToken, type SignedTokenPayload } from "./signedTokens";
 import { ApiResponse, BookingApiConfig, RouteRequest } from "./types";
 
@@ -191,43 +192,28 @@ export async function handleStaffDepositReviewSubmit(
     tokenJti: payload.jti,
   });
 
-  // The hold must leave the expiry worker's reach. listExpiredHolds sweeps
-  // creating|active holds past expires_at, so a confirmed booking left `active`
-  // would have its Smoobu reservation cancelled when the TTL elapsed.
+  // Promote the Smoobu reservation from Blocked channel to Homepage (website) —
+  // the same mechanism PayPal captures use, see smoobuPromotion.ts. This also
+  // moves the hold to `converted`, taking it out of the expiry worker's reach:
+  // listExpiredHolds sweeps creating|active holds past expires_at, so a confirmed
+  // booking left `active` would have its Smoobu reservation cancelled at the TTL.
   if (hold) {
-    try {
-      await holds.convertHold({
-        holdId: hold.id,
-        newSmoobuReservationId: hold.smoobuReservationId ?? 0,
-        newSmoobuChannelId: hold.smoobuChannelId,
-      });
-    } catch (error) {
-      request.observability.logger.error("deposit_confirm_hold_convert_failed", {
+    await promoteSmoobuReservation(
+      {
+        session: confirmedSession,
+        hold,
+        notice: `Kalawala manual deposit CONFIRMED by staff on ${confirmedAt}. Reservation ${session.reservationPublicId}.`,
+        amountCents: confirmedSession.totalAmountCents ?? 0,
+      },
+      holds,
+      config,
+      request.observability
+    ).catch((err) => {
+      request.observability.logger.warn("deposit_confirm_smoobu_promotion_unexpected_error", {
         bookingSessionId: session.id,
-        error: error instanceof Error ? error.message : String(error),
+        error: err instanceof Error ? err.message : String(err),
       });
-    }
-  }
-
-  // Mark the Smoobu reservation as paid so the dashboard reflects reality.
-  if (hold?.smoobuReservationId) {
-    try {
-      const smoobuClient = await createSmoobuClient(config);
-      await smoobuClient.updateReservation(
-        hold.smoobuReservationId,
-        {
-          notice: `Kalawala manual deposit CONFIRMED by staff on ${confirmedAt}. Reservation ${session.reservationPublicId}.`,
-          priceStatus: 1,
-          prepaymentStatus: 1,
-        },
-        request.observability
-      );
-    } catch (error) {
-      request.observability.logger.warn("deposit_confirm_smoobu_update_failed", {
-        bookingSessionId: session.id,
-        error: error instanceof Error ? error.message : String(error),
-      });
-    }
+    });
   }
 
   request.observability.recordStateTransition({

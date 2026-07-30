@@ -1,7 +1,9 @@
 /**
  * Smoobu reservation promotion — converts a "Blocked channel" (channelId 11)
- * hold into a "Homepage" / website reservation (channelId 70) after PayPal
- * payment is captured.
+ * hold into a "Homepage" / website reservation (channelId 70) once a booking
+ * is confirmed, whether by PayPal capture (paypalOrders.ts) or by staff
+ * confirming a manual deposit (depositConfirm.ts). Both callers build their
+ * own `notice` text, since the wording differs by payment method.
  *
  * The Smoobu PUT /api/reservations endpoint does NOT support changing channelId,
  * so promotion requires deleting the old blocked reservation and creating a new
@@ -28,9 +30,9 @@ interface SmoobuCreateReservationResponse {
 export interface PromoteSmoobuReservationInput {
   session: BookingSessionRecord;
   hold: HoldRecord;
-  captureId: string;
+  /** Caller-built, since the wording differs by payment method (PayPal capture vs. staff-confirmed deposit). */
+  notice: string;
   amountCents: number;
-  confirmedAt: string;
 }
 
 export interface PromoteSmoobuReservationResult {
@@ -57,7 +59,7 @@ export async function promoteSmoobuReservation(
   config: BookingApiConfig,
   observability: RouteObservability
 ): Promise<PromoteSmoobuReservationResult> {
-  const { session, hold, captureId, amountCents, confirmedAt } = input;
+  const { session, hold, notice, amountCents } = input;
   const logger = observability.logger;
 
   if (!hold.smoobuReservationId) {
@@ -90,9 +92,7 @@ export async function promoteSmoobuReservation(
 
   // If the hold is already on the website channel, just update payment fields.
   if (hold.smoobuChannelId === WEBSITE_CHANNEL_ID) {
-    return updateExistingWebsiteBooking(
-      smoobuClient, hold, session, captureId, amountCents, confirmedAt, observability, logger
-    );
+    return updateExistingWebsiteBooking(smoobuClient, hold, session, notice, amountCents, observability, logger);
   }
 
   // Step 1: Delete the old blocked reservation
@@ -109,15 +109,13 @@ export async function promoteSmoobuReservation(
       error: err instanceof Error ? err.message : String(err),
     });
     // Fall back to just updating the existing reservation's payment fields
-    return fallbackUpdateReservation(
-      smoobuClient, hold, session, captureId, amountCents, confirmedAt, observability, logger
-    );
+    return fallbackUpdateReservation(smoobuClient, hold, session, notice, amountCents, observability, logger);
   }
 
   // Step 2: Create a new reservation on the Homepage (website) channel
   let newReservationId: number;
   try {
-    const payload = buildConfirmedReservationPayload(session, property, captureId, amountCents, confirmedAt);
+    const payload = buildConfirmedReservationPayload(session, property, notice, amountCents);
     const response = await smoobuClient.createReservation<SmoobuCreateReservationResponse>(payload, observability);
     newReservationId = parseSmoobuReservationId(response.data);
 
@@ -186,9 +184,8 @@ async function updateExistingWebsiteBooking(
   smoobuClient: SmoobuClient,
   hold: HoldRecord,
   session: BookingSessionRecord,
-  captureId: string,
+  notice: string,
   amountCents: number,
-  confirmedAt: string,
   observability: RouteObservability,
   logger: ObservabilityLogger
 ): Promise<PromoteSmoobuReservationResult> {
@@ -196,7 +193,7 @@ async function updateExistingWebsiteBooking(
     await smoobuClient.updateReservation(
       hold.smoobuReservationId!,
       {
-        notice: buildConfirmedNotice(session, captureId, confirmedAt),
+        notice,
         prepayment: amountCents / 100,
         prepaymentStatus: 1,
         priceStatus: 1,
@@ -226,9 +223,8 @@ async function fallbackUpdateReservation(
   smoobuClient: SmoobuClient,
   hold: HoldRecord,
   session: BookingSessionRecord,
-  captureId: string,
+  notice: string,
   amountCents: number,
-  confirmedAt: string,
   observability: RouteObservability,
   logger: ObservabilityLogger
 ): Promise<PromoteSmoobuReservationResult> {
@@ -236,7 +232,7 @@ async function fallbackUpdateReservation(
     await smoobuClient.updateReservation(
       hold.smoobuReservationId!,
       {
-        notice: buildConfirmedNotice(session, captureId, confirmedAt),
+        notice,
         prepayment: amountCents / 100,
         prepaymentStatus: 1,
         priceStatus: 1,
@@ -262,9 +258,8 @@ async function fallbackUpdateReservation(
 function buildConfirmedReservationPayload(
   session: BookingSessionRecord,
   property: BookingProperty,
-  captureId: string,
-  amountCents: number,
-  confirmedAt: string
+  notice: string,
+  amountCents: number
 ) {
   const guest = session.guest;
   return {
@@ -277,7 +272,7 @@ function buildConfirmedReservationPayload(
     email: guest?.email ?? "",
     ...(guest?.phone ? { phone: guest.phone } : {}),
     ...(guest?.country ? { country: guest.country } : {}),
-    notice: buildConfirmedNotice(session, captureId, confirmedAt),
+    notice,
     adults: session.guests,
     children: 0,
     price: amountCents / 100,
@@ -288,19 +283,6 @@ function buildConfirmedReservationPayload(
     depositStatus: 0,
     language: session.language,
   };
-}
-
-function buildConfirmedNotice(
-  session: BookingSessionRecord,
-  captureId: string,
-  confirmedAt: string
-): string {
-  return [
-    `Confirmed — PayPal payment received.`,
-    `Reservation ID: ${session.reservationPublicId}`,
-    `PayPal capture: ${captureId}`,
-    `Confirmed at: ${confirmedAt}`,
-  ].join("\n");
 }
 
 function parseSmoobuReservationId(data: SmoobuCreateReservationResponse): number {

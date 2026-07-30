@@ -67,13 +67,18 @@ export async function handleStaffDepositReviewPage(
 
   const isReject = payload.act === "deposit_reject";
 
+  // The form action is relative ("../deposit-review"), not root-relative. This page is served
+  // at .../api/staff/deposit-review/{token} behind an API Gateway stage prefix (e.g. /prod)
+  // that this Lambda never sees but the browser does. A root-relative "/api/staff/deposit-review"
+  // drops that prefix and 403s at the gateway ("Missing Authentication Token"); the relative form
+  // resolves against the page's own URL and lands on the sibling POST route either way.
   return htmlResponse(
     200,
     renderPage({
       heading: isReject ? "Reject deposit booking" : "Confirm deposit booking",
       body: `
 ${renderSummary(session, property?.name, receiptUrl)}
-<form method="POST" action="/api/staff/deposit-review">
+<form method="POST" action="../deposit-review">
   <input type="hidden" name="token" value="${escapeHtml(token)}" />
   <button type="submit" class="${isReject ? "danger" : "primary"}">
     ${isReject ? "Reject and release the dates" : "Confirm — the money has arrived"}

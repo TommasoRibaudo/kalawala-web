@@ -9,6 +9,7 @@ import { jsonResponse } from "./http/response";
 import { PaymentRepository } from "./payments";
 import { BOOKING_PROPERTIES_BY_ID } from "./propertyCatalog";
 import { createPayPalClient, PayPalVerifySignatureInput } from "./paypalClient";
+import { buildPaypalConfirmedNotice } from "./paypalOrders";
 import { promoteSmoobuReservation } from "./smoobuPromotion";
 import { ApiResponse, BookingApiConfig, RouteRequest } from "./types";
 
@@ -595,9 +596,8 @@ async function handleCaptureCompleted(
           {
             session,
             hold,
-            captureId,
+            notice: buildPaypalConfirmedNotice(session, captureId, confirmedAt),
             amountCents: captureAmount,
-            confirmedAt,
           },
           holds,
           config,

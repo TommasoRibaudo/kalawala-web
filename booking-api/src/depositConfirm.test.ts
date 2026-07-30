@@ -54,9 +54,58 @@ function createTestConfig(): BookingApiConfig {
     bookingSessions,
     holds: new InMemoryHoldRepository(),
     hold: { defaultTtlMinutes: 60, idempotencyTtlMinutes: 1440, staleIdempotencyLockSeconds: 120 },
+    deposit: { holdTtlHours: 48, confirmTokenTtlHours: 168, staffConfirmBaseUrl: "https://kalawala.test-api/prod" },
     abuseProtection: { enabled: false, captchaChallengesEnabled: false, maxTrackedBuckets: 100 },
     email: { fromAddress: "test@kalawala.com", region: "us-east-1", disabled: true },
     observability: { serviceName: "booking-api", environment: "test", logLevel: "silent", metricsEnabled: false },
+  };
+}
+
+const originalFetch = global.fetch;
+
+afterEach(() => {
+  global.fetch = originalFetch;
+});
+
+function jsonResp(body: unknown, init: ResponseInit = {}): Response {
+  return new Response(JSON.stringify(body), {
+    status: 200,
+    ...init,
+    headers: { "content-type": "application/json", ...(init.headers as Record<string, string> | undefined) },
+  });
+}
+
+function makeSearchEvent(): LambdaHttpRequest {
+  return {
+    version: "2.0",
+    rawPath: "/api/search",
+    headers: { "content-type": "application/json", origin: "https://kalawala.test" },
+    body: JSON.stringify({ arrivalDate: "2099-06-10", departureDate: "2099-06-14", guests: 2, language: "en" }),
+    requestContext: { http: { method: "POST", path: "/api/search", sourceIp: "203.0.113.40" } },
+  };
+}
+
+function makeDepositHoldEvent(body: unknown): LambdaHttpRequest {
+  return {
+    version: "2.0",
+    rawPath: "/api/deposit-holds",
+    headers: {
+      "content-type": "application/json",
+      "idempotency-key": "idem-deposit-hold-promotion-001",
+      origin: "https://kalawala.test",
+    },
+    body: JSON.stringify(body),
+    requestContext: { http: { method: "POST", path: "/api/deposit-holds", sourceIp: "203.0.113.40" } },
+  };
+}
+
+function postDepositReviewSubmit(token: string): LambdaHttpRequest {
+  return {
+    version: "2.0",
+    rawPath: "/api/staff/deposit-review",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: `token=${encodeURIComponent(token)}`,
+    requestContext: { http: { method: "POST", path: "/api/staff/deposit-review", sourceIp: "203.0.113.40" } },
   };
 }
 
@@ -126,4 +175,80 @@ it("also resolves correctly with no stage/base-path prefix (e.g. a future custom
   const addressBarUrl = `https://api.kalawala.com/api/staff/deposit-review/${token}`;
   const resolved = new URL(action, addressBarUrl);
   expect(resolved.pathname).toBe("/api/staff/deposit-review");
+});
+
+// ─── Smoobu promotion on confirm ────────────────────────────────────────────
+//
+// A manual-deposit hold is created on Smoobu's "Blocked channel" (channelId 11)
+// so the dates come off sale on every OTA while the bank transfer clears. Once
+// staff confirm, it must be promoted to the "Homepage" channel (70) — the same
+// mechanism PayPal captures already use (smoobuPromotion.ts) — or the guest's
+// real reservation sits in Smoobu forever labeled as an anonymous block.
+
+it("promotes the Smoobu reservation to the Homepage channel on confirm, instead of leaving it Blocked", async () => {
+  let reservationCreateCount = 0;
+  const fetchFn = jest.fn(async (url: string | URL, init?: RequestInit) => {
+    const { hostname, pathname } = new URL(url.toString());
+    const method = init?.method ?? "GET";
+
+    if (hostname === "login.smoobu.com") {
+      if (pathname === "/booking/checkApartmentAvailability") {
+        return jsonResp({
+          availableApartments: [301061],
+          prices: { "301061": { price: 510, currency: "USD" } },
+          errorMessages: {},
+        });
+      }
+      if (pathname === "/api/reservations" && method === "POST") {
+        reservationCreateCount += 1;
+        // First call is the initial Blocked-channel hold; second is the promotion.
+        return jsonResp({ id: reservationCreateCount === 1 ? 555111 : 777222 });
+      }
+      if (pathname === "/api/reservations/555111" && method === "DELETE") {
+        return jsonResp({ success: true });
+      }
+    }
+
+    return jsonResp({ detail: "unexpected" }, { status: 500 });
+  });
+  global.fetch = fetchFn as typeof fetch;
+
+  const searchResp = await handler(makeSearchEvent());
+  expect(searchResp.statusCode).toBe(200);
+  const searchBody = JSON.parse(searchResp.body);
+
+  const holdResp = await handler(
+    makeDepositHoldEvent({
+      quoteId: searchBody.quoteId,
+      bookingSessionId: searchBody.bookingSessionId,
+      propertyId: searchBody.properties[0].propertyId,
+      guest: { firstName: "Ana", lastName: "Mora", email: "ana@example.com" },
+      portalPassword: "correct horse battery staple",
+      termsAccepted: true,
+    })
+  );
+  expect(holdResp.statusCode).toBe(200);
+  const { bookingSessionId, reservationPublicId } = JSON.parse(holdResp.body).booking;
+
+  const token = confirmToken(bookingSessionId, reservationPublicId);
+  const confirmResp = await handler(postDepositReviewSubmit(token));
+  expect(confirmResp.statusCode).toBe(200);
+  expect(confirmResp.body).toContain("is confirmed");
+
+  const deletedOldBlock = fetchFn.mock.calls.some(
+    ([u, i]) => new URL(u.toString()).pathname === "/api/reservations/555111" && (i as RequestInit | undefined)?.method === "DELETE"
+  );
+  expect(deletedOldBlock).toBe(true);
+
+  const promotedToHomepage = fetchFn.mock.calls.some(([u, i]) => {
+    if (new URL(u.toString()).pathname !== "/api/reservations" || (i as RequestInit | undefined)?.method !== "POST") {
+      return false;
+    }
+    const body = JSON.parse((i as RequestInit).body as string);
+    return body.channelId === 70;
+  });
+  expect(promotedToHomepage).toBe(true);
+
+  const hold = await bookingSessions.getById(bookingSessionId);
+  expect(hold?.status).toBe("booking_confirmed");
 });

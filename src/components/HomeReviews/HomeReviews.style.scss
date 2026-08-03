@@ -31,11 +31,18 @@
   &__track {
     display: flex;
     gap: 16px;
-    overflow-x: auto;
+    // Desktop: `hidden`, not `auto`. An auto/scroll horizontal container becomes
+    // a wheel scroll target, and a vertical trackpad gesture over it gets
+    // captured (Chromium even redirects it into horizontal scroll) instead of
+    // scrolling the page. `hidden` still lets the marquee animate via
+    // scrollLeft in JS, but the element is no longer a user-scroll target, so
+    // vertical wheel passes through to the page with native momentum. Mobile
+    // switches back to `auto` below for native touch swipe.
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     padding: 8px 40px 24px;
     scrollbar-width: none;
-    cursor: grab;
+    cursor: default;
 
     &:active {
       cursor: grabbing;
@@ -257,6 +264,10 @@
     &__track {
       padding: 8px 20px 20px;
       /* No scroll-snap — it conflicts with JS-driven auto-scroll */
+      /* Touch devices emit no wheel events, so there's nothing to hijack here:
+         restore native horizontal swipe (with momentum) for the marquee. */
+      overflow-x: auto;
+      cursor: grab;
     }
 
     &__card {

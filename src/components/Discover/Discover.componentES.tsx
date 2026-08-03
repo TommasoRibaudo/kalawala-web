@@ -24,9 +24,10 @@ const DiscoverES = () => {
             <div className="content-block">
               <h2>Descubre Puerto Viejo desde el confort de nuestras casas.</h2>
               <p>Reservas Kalawala ofrece {PORTFOLIO_PROPERTY_COUNT} casas y villas remodeladas, <b>cada una con cocina y baño privados totalmente equipados</b>. Las casas alojan de {PORTFOLIO_GUEST_RANGE.min} a {PORTFOLIO_GUEST_RANGE.max} huéspedes, con {PORTFOLIO_BEDROOM_RANGE.min} a {PORTFOLIO_BEDROOM_RANGE.max} habitaciones y <b>aire acondicionado en todas</b>.</p>
-              <p>Ubicado en el centro de Puerto Viejo, todos los bares y restaurantes están a <b>distancia cómodamente caminable</b>. Se puede llegar a Playa Cocles en auto en 2 minutos. También hay lugares de renta de bicicletas y motocicletas para que también Punta Uva, Cahuita y Manzanillo estén a tu alcance, ¡incluso sin un auto!</p>
+              <p>Nuestras casas en el centro de Puerto Viejo te ubican en el corazón del pueblo, con <b>bares, restaurantes y tiendas a poca distancia caminando</b>. Playa Cocles está a 2 minutos en auto, y hay lugares de renta de bicicletas y motocicletas cerca para que Punta Uva, Cahuita y Manzanillo estén a tu alcance, ¡incluso sin un auto!</p>
+              <p>Nuestras casas en <b>Playa Chiquita</b> están a pocos minutos al sureste del pueblo, en un entorno más tranquilo y verde, rodeadas de selva y a solo minutos de algunas de las playas más hermosas de la costa, como Punta Uva. Es el lugar ideal si buscas naturaleza y calma, con el ambiente de Puerto Viejo cerca cuando lo quieras.</p>
               <p><b>¿Trabajas desde casa?</b> Ofrecemos <b>WIFI gratis</b>, con una velocidad de hasta <b>100Mbps</b>. Estipulamos dos contratos diferentes con nuestro proveedor de internet, por lo que tu conexión a internet será compartida entre menos dispositivos, logrando una menor latencia durante tus reuniones.</p>
-              <p><b>Pet Friendly!</b> En todos nuestros espacios. Casa Rana y Casa Gecko son las opciones perfectas para tu mascota, ya que cuentan con jardín. ¡Pero una pequeña mascota doméstica también podría alojarse cómodamente en las otras casas</p>
+              <p><b>Pet Friendly:</b> Casa Rana, Casa Geco, Casa Tucano y Casa Pappagallo reciben mascotas. Rana y Geco son las mejores opciones, ya que cuentan con jardín propio.</p>
               <div className="row">
                 <div className="col-md-6">
                   <div className="media d-flex align-items-start">
@@ -59,7 +60,7 @@ const DiscoverES = () => {
                     </div>
                     <div className="media-body flex-grow-1" style={{ verticalAlign: "middle" }}>
                       <h3 className="media-heading mt-0 mb-1">Descuento No Reembolsable</h3>
-                      <p>Incluya el código de descuento #norefundallowed al finalizar la compra para obtener un 10% de descuento adicional, pero no será elegible para un reembolso por cancelación.</p>
+                      <p>Elija la tarifa no reembolsable al reservar para obtener un 10% de descuento adicional, pero no será elegible para un reembolso por cancelación.</p>
                     </div>
                   </div>
                 </div>
@@ -71,7 +72,7 @@ const DiscoverES = () => {
                     </div>
                     <div className="media-body flex-grow-1">
                       <h3 className="media-heading mt-0 mb-1">Política de Cancelación Flexible</h3>
-                      <p>Reembolso completo hasta un día antes del check-in, para cualquier reserva que no incluya el descuento #norefundallowed.</p>
+                      <p>Reembolso completo hasta un día antes del check-in en cualquier reserva con tarifa estándar.</p>
                     </div>
                   </div>
                 </div>

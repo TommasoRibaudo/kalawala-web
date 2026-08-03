@@ -31,7 +31,7 @@ const CallToAction = () => {
           <div className="row">
             <div className="col-md-12 text-center" >
               <p style={{ fontWeight: 400, fontSize: 28 }}>Explore Availability and Prices Across All Our Properties in Puerto Viejo and Playa Chiquita.</p>
-              <p>Use the code <b>#norefundallowed</b> to enjoy a 10% discount on non-refundable reservations.</p>
+              <p>Select the <b>non-refundable rate</b> in the booking tool to enjoy a 10% discount.</p>
               <div 
             className='Smoobo' 
             style={{ 

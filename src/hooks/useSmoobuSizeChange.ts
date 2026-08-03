@@ -29,8 +29,8 @@ export const useSmoobuSizeChange = (options: UseSmoobuClickOptions = {}) => {
     hasTriggeredRef.current = true;
 
     const message = isSpanishPage
-      ? 'Usa el código #norefundallowed para disfrutar de un 10% de descuento en reservas no reembolsables.'
-      : 'Use the code #norefundallowed to enjoy a 10% discount on non-refundable reservations.';
+      ? 'Elige la tarifa no reembolsable en el motor de reservas para disfrutar de un 10% de descuento.'
+      : 'Select the non-refundable rate in the booking tool to enjoy a 10% discount.';
 
     addMessageTip({
       id: 'welcome-message',

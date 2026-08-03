@@ -7,6 +7,13 @@
 html {
     background-color: #F5F2E9;
     color: $kalawala-text-gray;
+    // Safety net against document-level sideways scroll: no section should push
+    // wider than the viewport, but if one regresses the page itself must not
+    // slide (which leaves an empty strip to the right of every section).
+    // `clip` — not `hidden` — because `overflow-x: hidden` turns this element
+    // into the scroll container for the sticky navbar and stops it sticking;
+    // `clip` clips the overflow without creating a scroll container.
+    overflow-x: clip;
 }
 
 body {
@@ -14,6 +21,7 @@ body {
     font-family: $secondary-font;
     color: $kalawala-text-gray;
     -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
 }
 
 h1,

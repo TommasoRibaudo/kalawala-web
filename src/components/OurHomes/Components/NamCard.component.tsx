@@ -38,14 +38,17 @@ const NamCard: FC<IHomeCard> = ({ guestNumber, name, image, houseLangCode }) => 
                 </div>
                 <div className="content text-center">
                     <h3 className="highlight">{name}</h3>
-                    <div style={{ display: "block" }}>
-                        <div className="container-rounded-border border-highlight" style={{ marginRight: '6px' }}>
-                            <FontAwesomeIcon icon={faUser} fontSize={"18px"} style={{ margin: '2px 4px 2px 2px', color: '#5A6570' }} />
-                            <b className="highlight" style={{ fontSize: '18px', color: '#5A6570' }}>{`X${guestNumber}`}</b>
+                    {/* Same .icons / .icon-group markup as OtherHomesCard so the
+                        "Our Homes" and "Explore other stays" amenity rows render
+                        identically (brand-green, flat, no bordered guest pill). */}
+                    <div className="icons">
+                        <div className="icon-group">
+                            <FontAwesomeIcon icon={faUser} />
+                            <span>{`X${guestNumber}`}</span>
                         </div>
-                        <FontAwesomeIcon icon={faSnowflake} fontSize={"20px"} style={{ marginRight: '6px', color: '#5A6570' }} />
-                        <FontAwesomeIcon icon={faUtensils} fontSize={"20px"} style={{ marginRight: '6px', color: '#5A6570' }} />
-                        <FontAwesomeIcon icon={faWifi} fontSize={"20px"} style={{ color: '#5A6570' }} />
+                        <FontAwesomeIcon icon={faSnowflake} />
+                        <FontAwesomeIcon icon={faUtensils} />
+                        <FontAwesomeIcon icon={faWifi} />
                     </div>
                 </div>
             </div>

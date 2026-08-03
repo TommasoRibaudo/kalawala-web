@@ -71,20 +71,20 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
       <p className='price-display' style={{ marginTop: '15px', marginBottom: 0 }}>
         {isSpanish ? (
           <><>
-            Código de descuento: <strong>#norefundallowed</strong>
+            Elige la <strong>tarifa no reembolsable</strong>
           </>
             <br />
             <>
-              La reservación se vuelve No Reembolsable
+              para un 10% de descuento adicional
             </>
           </>
         ) : (
           <><>
-            Discount code: <strong>#norefundallowed</strong>
+            Choose the <strong>non-refundable rate</strong>
           </>
             <br />
             <>
-              Reservation becomes Non Refundable
+              for an extra 10% discount
             </>
           </>
         )}

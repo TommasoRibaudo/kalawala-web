@@ -54,7 +54,17 @@
         justify-content: center;
         gap: 10px;
         font-size: 1.2rem;
-  
+        // Was inheriting the anchor's default browser-blue link colour, which
+        // reads as an off-brand third-party widget. Pin to the neutral grey the
+        // cards have always used and let the FontAwesome SVGs pick it up via
+        // currentColor so any icon added here later stays consistent without
+        // needing its own `color` prop.
+        color: #5A6570;
+
+        svg {
+          color: currentColor;
+        }
+
         .icon-group {
           display: flex;
           align-items: center;

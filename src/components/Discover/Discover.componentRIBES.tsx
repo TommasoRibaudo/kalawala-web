@@ -57,7 +57,7 @@ const DiscoverRIBES = () => {
                     </div>
                     <div className="media-body flex-grow-1" style={{ verticalAlign: "middle" }}>
                       <h3 className="media-heading mt-0 mb-1">Descuento No Reembolsable</h3>
-                      <p>Incluya el código de descuento #norefundallowed al finalizar la compra para obtener un 10% de descuento adicional, pero no será elegible para un reembolso por cancelación.</p>
+                      <p>Elija la tarifa no reembolsable al reservar para obtener un 10% de descuento adicional, pero no será elegible para un reembolso por cancelación.</p>
                     </div>
                   </div>
                 </div>
@@ -69,7 +69,7 @@ const DiscoverRIBES = () => {
                     </div>
                     <div className="media-body flex-grow-1">
                       <h3 className="media-heading mt-0 mb-1">Política de Cancelación Flexible</h3>
-                      <p>Reembolso completo hasta un día antes del check-in, para cualquier reserva que no incluya el descuento #norefundallowed.</p>
+                      <p>Reembolso completo hasta un día antes del check-in en cualquier reserva con tarifa estándar.</p>
                     </div>
                   </div>
                 </div>

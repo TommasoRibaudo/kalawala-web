@@ -364,7 +364,7 @@ test("RdsHoldRepository.listExpiredHolds atomically claims rows with skip-locked
 
   expect(records).toHaveLength(1);
   expect(records[0]).toMatchObject({ status: "expired", smoobuReservationId: 987654 });
-  expect(query).toHaveBeenCalledWith(expect.stringContaining("for update skip locked"), [
+  expect(query).toHaveBeenCalledWith(expect.stringContaining("for update of h skip locked"), [
     "2026-04-15T19:01:00.000Z",
   ]);
   expect(query).toHaveBeenCalledWith(expect.stringContaining("update holds"), [

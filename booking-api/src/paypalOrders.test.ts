@@ -1,4 +1,5 @@
 import { createBookingApiHandler } from "./app";
+import { derivePaypalRequestId } from "./paypalOrders";
 import { InMemoryBookingSessionRepository } from "./bookingSessions";
 import { InMemoryHoldRepository } from "./holds";
 import { InMemoryPaymentRepository } from "./payments";
@@ -393,12 +394,14 @@ test("POST /api/paypal/order sends PayPal-Request-Id header and correct order pa
   expect(orderCall).toBeDefined();
   const orderInit = orderCall?.[1];
 
-  // PayPal-Request-Id must be set and be a UUID
+  // PayPal-Request-Id must be set and be a deterministic (sha256-hex) id derived
+  // from the Idempotency-Key + session, so a retried createOrder is deduped by
+  // PayPal rather than creating a second order (R7).
   expect(orderInit?.headers).toMatchObject({
     Authorization: "Bearer pp-access-token",
   });
   const paypalRequestId = (orderInit?.headers as Record<string, string>)["PayPal-Request-Id"];
-  expect(paypalRequestId).toMatch(/^[0-9a-f-]{36}$/i);
+  expect(paypalRequestId).toMatch(/^[0-9a-f]{64}$/i);
 
   // Order payload correctness
   const orderPayload = JSON.parse(orderInit?.body as string);
@@ -437,8 +440,8 @@ test("POST /api/paypal/order advances session status to paypal_order_created", a
   const payment = await payments.getByBookingSessionId(bookingSessionId);
   expect(payment?.status).toBe("order_created");
   expect(payment?.paypalOrderId).toBe("PAY-ORDER-123");
-  expect(payment?.paypalRequestIdOrder).toMatch(/^[0-9a-f-]{36}$/i);
-  expect(payment?.paypalRequestIdCapture).toMatch(/^[0-9a-f-]{36}$/i);
+  expect(payment?.paypalRequestIdOrder).toMatch(/^[0-9a-f]{64}$/i);
+  expect(payment?.paypalRequestIdCapture).toMatch(/^[0-9a-f]{64}$/i);
   // The two request IDs must be different
   expect(payment?.paypalRequestIdOrder).not.toBe(payment?.paypalRequestIdCapture);
 });
@@ -813,4 +816,60 @@ test("POST /api/paypal/capture requires Idempotency-Key header", async () => {
   expect(response.statusCode).toBe(400);
   const body = JSON.parse(response.body);
   expect(body.error.code).toBe("missing_idempotency_key");
+});
+
+// ─── Race-condition regression tests ────────────────────────────────────────
+
+test("R3: capture returns 200 (not 500) when the session was confirmed by a concurrent actor", async () => {
+  global.fetch = makeHappyPathFetch() as typeof fetch;
+  const handler = createBookingApiHandler(config);
+  const { bookingSessionId } = await setupSessionWithActiveHold(handler);
+
+  await handler(makeOrderEvent({ bookingSessionId }));
+
+  // Simulate a racing PayPal webhook / reconciliation that confirms the session
+  // *between* the capture handler's session read and its markBookingConfirmed:
+  // the real transition succeeds (session → booking_confirmed) and then the
+  // capture endpoint's own CAS finds 0 rows and throws. R3 must swallow that and
+  // return the confirmed booking rather than a 500.
+  const realMarkConfirmed = bookingSessions.markBookingConfirmed.bind(bookingSessions);
+  jest
+    .spyOn(bookingSessions, "markBookingConfirmed")
+    .mockImplementationOnce(async (input) => {
+      await realMarkConfirmed(input);
+      throw new Error(
+        `Cannot transition booking session ${input.bookingSessionId} to booking_confirmed: expected paypal_order_created, got booking_confirmed.`
+      );
+    });
+
+  const captureResp = await handler(
+    makeCaptureEvent({ bookingSessionId, paypalOrderId: "PAY-ORDER-123" })
+  );
+
+  expect(captureResp.statusCode).toBe(200);
+  const body = JSON.parse(captureResp.body);
+  expect(body.booking.status).toBe("booking_confirmed");
+
+  const session = await bookingSessions.getById(bookingSessionId);
+  expect(session?.status).toBe("booking_confirmed");
+});
+
+test("R7: PayPal-Request-Id is deterministic per (idempotency key, session, phase)", () => {
+  const a = derivePaypalRequestId("idem-key-1", "session-1", "order");
+  const b = derivePaypalRequestId("idem-key-1", "session-1", "order");
+  // Stable across retries → PayPal dedupes a retried createOrder.
+  expect(a).toBe(b);
+
+  // Order and capture phases differ.
+  expect(derivePaypalRequestId("idem-key-1", "session-1", "order")).not.toBe(
+    derivePaypalRequestId("idem-key-1", "session-1", "capture")
+  );
+  // Different sessions differ even with a reused idempotency key.
+  expect(derivePaypalRequestId("idem-key-1", "session-1", "order")).not.toBe(
+    derivePaypalRequestId("idem-key-1", "session-2", "order")
+  );
+  // Different keys differ.
+  expect(derivePaypalRequestId("idem-key-1", "session-1", "order")).not.toBe(
+    derivePaypalRequestId("idem-key-2", "session-1", "order")
+  );
 });

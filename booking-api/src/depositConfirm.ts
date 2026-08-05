@@ -135,6 +135,31 @@ export async function handleStaffDepositReviewSubmit(
   const hold = await holds.getByBookingSessionId(session.id);
 
   if (payload.act === "deposit_reject") {
+    // Guard the destructive Smoobu cancel behind a local compare-and-swap FIRST.
+    // markStaffRejected only fires from hold_active, so if a guest's deposit was
+    // confirmed concurrently (between resolveToken's read and now) this returns
+    // undefined and we abort WITHOUT releasing the reservation — otherwise a late
+    // reject would cancel a paid booking and put its dates back on sale (R6).
+    const rejectedSession = await sessions.markStaffRejected({
+      bookingSessionId: session.id,
+      reason: "deposit_not_received",
+      cancelledAt: new Date().toISOString(),
+    });
+
+    if (!rejectedSession) {
+      const current = (await sessions.getById(session.id)) ?? session;
+      return htmlResponse(
+        current.status === "booking_confirmed" ? 200 : 409,
+        renderPage({
+          heading: current.status === "booking_confirmed" ? "Already confirmed" : "No longer actionable",
+          body: `<p>Reservation <strong>${escapeHtml(session.reservationPublicId)}</strong> is <strong>${escapeHtml(
+            current.status
+          )}</strong> and can no longer be rejected.</p>`,
+        }),
+        request.responseHeaders
+      );
+    }
+
     if (hold?.smoobuReservationId) {
       try {
         const smoobuClient = await createSmoobuClient(config);
@@ -146,12 +171,6 @@ export async function handleStaffDepositReviewSubmit(
       }
     }
 
-    await sessions.markCancelled({
-      bookingSessionId: session.id,
-      reason: "deposit_not_received",
-      cancelledBy: "staff",
-      cancelledAt: new Date().toISOString(),
-    });
     if (hold) {
       await holds.cancelHold(hold.id);
     }
@@ -192,16 +211,26 @@ export async function handleStaffDepositReviewSubmit(
     tokenJti: payload.jti,
   });
 
-  // Promote the Smoobu reservation from Blocked channel to Homepage (website) —
-  // the same mechanism PayPal captures use, see smoobuPromotion.ts. This also
-  // moves the hold to `converted`, taking it out of the expiry worker's reach:
-  // listExpiredHolds sweeps creating|active holds past expires_at, so a confirmed
-  // booking left `active` would have its Smoobu reservation cancelled at the TTL.
+  // Move the hold to `converted` immediately, taking it out of the expiry
+  // worker's reach: listExpiredHolds sweeps creating|active holds past
+  // expires_at, so a confirmed booking left `active` would have its Smoobu
+  // reservation cancelled at the TTL. This runs synchronously and reliably,
+  // *before* the best-effort Smoobu promotion below (R1).
   if (hold) {
+    const confirmedHold = await holds.markHoldConfirmed(hold.id).catch(() => hold);
+    if (confirmedHold.status !== "converted") {
+      request.observability.logger.error("booking_confirmed_hold_already_expired", {
+        bookingSessionId: session.id,
+        holdId: hold.id,
+        holdStatus: confirmedHold.status,
+      });
+    }
+    // Promote the Smoobu reservation from Blocked channel to Homepage (website) —
+    // the same mechanism PayPal captures use, see smoobuPromotion.ts.
     await promoteSmoobuReservation(
       {
         session: confirmedSession,
-        hold,
+        hold: confirmedHold,
         notice: `Kalawala manual deposit CONFIRMED by staff on ${confirmedAt}. Reservation ${session.reservationPublicId}.`,
         amountCents: confirmedSession.totalAmountCents ?? 0,
       },

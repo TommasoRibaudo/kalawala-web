@@ -70,11 +70,29 @@ export async function promoteSmoobuReservation(
     return { promoted: false, error: "no_smoobu_reservation_id" };
   }
 
-  const property = BOOKING_PROPERTIES_BY_ID.get(session.propertyId ?? "");
+  // The apartment we promote onto MUST be the one the blocked hold already
+  // occupies (hold.propertyId) — never a re-derivation from the mutable
+  // session.propertyId. The hold's property is immutable, matches the reservation
+  // being replaced, and matches the property named in the staff email. Trusting
+  // session.propertyId here let a Pappagallo deposit (KWL-MWRCRU5G) be sold onto
+  // Rana when the session's property drifted during a multi-home booking. If the
+  // two disagree, promote correctly AND surface it for investigation.
+  if (session.propertyId && session.propertyId !== hold.propertyId) {
+    logger.error("smoobu_promotion_property_mismatch", {
+      bookingSessionId: session.id,
+      holdId: hold.id,
+      holdPropertyId: hold.propertyId,
+      sessionPropertyId: session.propertyId,
+      action: "manual_intervention_required",
+    });
+  }
+
+  const property = BOOKING_PROPERTIES_BY_ID.get(hold.propertyId);
   if (!property) {
     logger.warn("smoobu_promotion_skipped_no_property", {
       bookingSessionId: session.id,
-      propertyId: session.propertyId,
+      holdId: hold.id,
+      propertyId: hold.propertyId,
     });
     return { promoted: false, error: "property_not_found" };
   }
@@ -131,16 +149,13 @@ export async function promoteSmoobuReservation(
       oldSmoobuReservationId: hold.smoobuReservationId,
       error: err instanceof Error ? err.message : String(err),
     });
-    // The old reservation was deleted but the new one failed. This is a
-    // problem — the dates are now unblocked on Smoobu. Log as critical.
-    logger.error("smoobu_promotion_dates_unblocked", {
-      bookingSessionId: session.id,
-      arrivalDate: session.arrivalDate,
-      departureDate: session.departureDate,
-      propertyId: session.propertyId,
-      action: "manual_intervention_required",
-    });
-    return { promoted: false, error: "create_after_delete_failed" };
+    // The old blocked reservation was deleted but the website one failed — the
+    // dates would be back on sale for a booking that is already paid. Smoobu
+    // rejects creating a reservation over a still-existing block, so we can't
+    // create-before-delete; instead we compensate by re-blocking the dates so
+    // the inventory stays held. A later promotion retry can finish the move to
+    // the website channel (R2).
+    return reblockAfterCreateFailure(smoobuClient, holds, hold, session, property, notice, amountCents, observability, logger);
   }
 
   // Step 3: Update local hold to converted with new reservation ID
@@ -252,6 +267,66 @@ async function fallbackUpdateReservation(
       error: updateErr instanceof Error ? updateErr.message : String(updateErr),
     });
     return { promoted: false, error: "delete_and_update_both_failed" };
+  }
+}
+
+/**
+ * Compensating action when the website reservation could not be created after the
+ * old blocked reservation was already deleted. Re-creates a Blocked-channel
+ * reservation so the (paid) booking's dates are not put back on sale, and points
+ * the local hold at the restored reservation. If even this fails, logs a critical
+ * alert for manual intervention.
+ */
+const BLOCKED_CHANNEL_ID: SmoobuChannelId = 11;
+
+async function reblockAfterCreateFailure(
+  smoobuClient: SmoobuClient,
+  holds: HoldRepository,
+  hold: HoldRecord,
+  session: BookingSessionRecord,
+  property: BookingProperty,
+  notice: string,
+  amountCents: number,
+  observability: RouteObservability,
+  logger: ObservabilityLogger
+): Promise<PromoteSmoobuReservationResult> {
+  try {
+    const payload = {
+      ...buildConfirmedReservationPayload(session, property, `RE-BLOCKED after failed promotion. ${notice}`, amountCents),
+      channelId: BLOCKED_CHANNEL_ID,
+    };
+    const response = await smoobuClient.createReservation<SmoobuCreateReservationResponse>(payload, observability);
+    const reblockId = parseSmoobuReservationId(response.data);
+
+    // Point the hold at the restored reservation (still on the blocked channel) so
+    // it is not orphaned and a later promotion retry can pick it up.
+    await holds
+      .convertHold({ holdId: hold.id, newSmoobuReservationId: reblockId, newSmoobuChannelId: BLOCKED_CHANNEL_ID })
+      .catch((convertErr) => {
+        logger.warn("smoobu_promotion_reblock_hold_update_failed", {
+          bookingSessionId: session.id,
+          holdId: hold.id,
+          reblockId,
+          error: convertErr instanceof Error ? convertErr.message : String(convertErr),
+        });
+      });
+
+    logger.warn("smoobu_promotion_reblocked_after_create_failure", {
+      bookingSessionId: session.id,
+      oldSmoobuReservationId: hold.smoobuReservationId,
+      reblockId,
+    });
+    return { promoted: false, error: "create_after_delete_failed_reblocked", newSmoobuReservationId: reblockId };
+  } catch (reblockErr) {
+    logger.error("smoobu_promotion_dates_unblocked", {
+      bookingSessionId: session.id,
+      arrivalDate: session.arrivalDate,
+      departureDate: session.departureDate,
+      propertyId: session.propertyId,
+      error: reblockErr instanceof Error ? reblockErr.message : String(reblockErr),
+      action: "manual_intervention_required",
+    });
+    return { promoted: false, error: "create_after_delete_failed" };
   }
 }
 

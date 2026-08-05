@@ -210,6 +210,40 @@
             margin: 0 10px !important; // Increase spacing
           }
         }
+
+        // Amenity row — kept identical to the "Explore other stays" cards (see
+        // OurOtherHomes/Components/OtherHomesCard.style.scss): flat grey icons
+        // with a guest group, no bordered pill, so both home sections read as
+        // one system instead of two differently-styled widgets.
+        .icons {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+          font-size: 1.2rem;
+          color: #5A6570;
+          margin-top: 6px;
+
+          svg {
+            color: currentColor;
+          }
+
+          .icon-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+          }
+
+          // Override the section-wide `.content svg { font-size: 26px !important }`
+          // mobile rule (tuned for the old inline icons) so these stay the same
+          // size as the other cards on phones too.
+          @media (max-width: 768px) {
+            svg {
+              font-size: 1.2rem !important;
+              margin: 0 !important;
+            }
+          }
+        }
       }
     }
 }

@@ -31,7 +31,7 @@ const CallToActionES = () => {
           <div className="row">
             <div className="col-md-12 text-center" >
               <p style={{ fontWeight: 400, fontSize: 28 }}>Explora la disponibilidad y los precios de todas nuestras propiedades en Puerto Viejo y Playa Chiquita.</p>
-              <p>Usa el código <b>#norefundallowed</b> para disfrutar de un 10% de descuento en reservas no reembolsables.</p>
+              <p>Elige la <b>tarifa no reembolsable</b> en el motor de reservas para disfrutar de un 10% de descuento.</p>
 
               <div
                 className='Smoobo'

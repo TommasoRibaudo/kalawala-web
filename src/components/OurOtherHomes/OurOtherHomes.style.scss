@@ -38,6 +38,7 @@
       display: flex;
       justify-content: center;
       gap: 20px; // Space between cards
+      flex-wrap: wrap; // let cards drop instead of forcing a too-wide row
     }
   }
 
@@ -46,6 +47,23 @@
     .sections-wrapper {
       flex-direction: column;
       align-items: center;
+    }
+  }
+
+  // Below ~480px two 250px cards + gap overflow a ~390px viewport, which is what
+  // pushed the whole page sideways. Drop to one full-width card per row so each
+  // photo stays large enough to sell the house (no cramped two-up, no carousel).
+  @media (max-width: 480px) {
+    .section .cards-container {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    // .other-homes-card caps itself at 250px; let it use the column width on
+    // phones while still leaving a comfortable side margin.
+    .other-homes-card {
+      max-width: 340px;
+      width: 100%;
     }
   }
 }

@@ -24,9 +24,10 @@ const Discover = () => {
             <div className="content-block">
               <h2>Discover Puerto Viejo from the comfort of our homes.</h2>
               <p>Reservas Kalawala offers {PORTFOLIO_PROPERTY_COUNT} remodeled homes and villas, <b>each with a fully equipped private kitchen and bathroom</b>. Houses sleep {PORTFOLIO_GUEST_RANGE.min} to {PORTFOLIO_GUEST_RANGE.max} guests, with {PORTFOLIO_BEDROOM_RANGE.min} to {PORTFOLIO_BEDROOM_RANGE.max} bedrooms and <b>air conditioning throughout</b>.</p>
-              <p>Located in the center of Puerto Viejo, all the bars and restaurants are within <b>walking distance</b>. Cocles beach can be reached by car in 2 minutes, and there are closeby bike and motorbike rentals so that also Punta Uva, Cahuita and Manzanillo are within reach, even without a car!</p>
+              <p>Our homes in the center of Puerto Viejo put you right in the heart of town, with <b>bars, restaurants and shops within walking distance</b>. Cocles beach is a 2-minute drive, and nearby bike and motorbike rentals bring Punta Uva, Cahuita and Manzanillo within reach, even without a car!</p>
+              <p>Our homes in <b>Playa Chiquita</b> sit a short ride southeast of town, in a quieter, greener setting wrapped in jungle and just minutes from some of the coast's most beautiful beaches, like Punta Uva. It's an ideal base if you're after nature and calm, with the buzz of Puerto Viejo close by whenever you want it.</p>
               <p><b>Working from home?</b> We offer <b>free WIFI</b>, with a maximum speed of <b>100Mbps</b>. We stipulated two different contracts with our internet provider, so your internet connection will be shared between fewer devices, achieving less latency during meetings.</p>
-              <p><b>Pet Friendly!</b> In all our spaces. Casa Rana and Casa Gecko are the perfect options for your pet, as they come with a garden. But a small house pet could comfortably stay in the other houses too!</p>
+              <p><b>Pet friendly:</b> Casa Rana, Casa Geco, Casa Tucano and Casa Pappagallo welcome pets. Rana and Geco are the best fit, as they have their own garden.</p>
               <div className="row">
                 <div className="col-md-6">
                   <div className="media d-flex align-items-start">
@@ -60,7 +61,7 @@ const Discover = () => {
                     </div>
                     <div className="media-body flex-grow-1" style={{ verticalAlign: "middle" }}>
                       <h3 className="media-heading mt-0 mb-1">Non Refundable Discount</h3>
-                      <p>Include discount code #norefundallowed at checkout to get an extra 10% discount, but you won't be eligible for a cancellation refund.</p>
+                      <p>Choose the non-refundable rate when you book to get an extra 10% discount, but you won't be eligible for a cancellation refund.</p>
                     </div>
                   </div>
                 </div>
@@ -72,7 +73,7 @@ const Discover = () => {
                     </div>
                     <div className="media-body flex-grow-1">
                       <h3 className="media-heading mt-0 mb-1">Flexible Cancellation Policy</h3>
-                      <p>Full refund up to one day before check-in, for any reservation that does not include the #norefundallowed discount.</p>
+                      <p>Full refund up to one day before check-in on any reservation booked at the standard rate.</p>
                     </div>
                   </div>
                 </div>

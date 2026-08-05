@@ -101,26 +101,17 @@ const HomeReviews: React.FC<HomeReviewsProps> = ({ isSpanish }) => {
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [activeReview]);
 
-  // Let a vertical wheel gesture scroll the page instead of this track.
-  // Chromium redirects vertical wheel input into horizontal scroll on any
-  // element that can only scroll on the X axis — no custom handling needed
-  // to cause it, which is why a visitor scrolling straight down the page
-  // gets stuck the moment the cursor crosses this track. React attaches
-  // wheel listeners as passive by default, so calling preventDefault() from
-  // an onWheel prop is silently ignored; this has to be a real DOM listener
-  // registered with { passive: false }.
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault();
-        window.scrollBy(0, e.deltaY);
-      }
-    };
-    track.addEventListener('wheel', onWheel, { passive: false });
-    return () => track.removeEventListener('wheel', onWheel);
-  }, []);
+  // No wheel handler on purpose. The old one called preventDefault() +
+  // window.scrollBy() on every wheel event so a vertical gesture over the
+  // track scrolled the page — but that replaces the compositor's native
+  // trackpad momentum with discrete main-thread jumps that fight the rAF
+  // auto-scroll loop above, which is exactly what made scrolling feel like it
+  // slowed to a crawl over this section. Instead the track is `overflow-x:
+  // hidden` on desktop (see HomeReviews.style.scss), so it is not a wheel
+  // scroll target at all: vertical wheel passes straight through to the page
+  // with full native momentum, while the marquee still animates via scrollLeft.
+  // Mobile keeps `overflow-x: auto` for native touch swipe (touch emits no
+  // wheel events, so there is nothing to hijack there).
 
   // Panel: lock body scroll + ESC to close
   useEffect(() => {

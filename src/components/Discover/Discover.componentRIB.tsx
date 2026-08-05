@@ -58,7 +58,7 @@ const DiscoverRIB = () => {
                     </div>
                     <div className="media-body flex-grow-1" style={{ verticalAlign: "middle" }}>
                       <h3 className="media-heading mt-0 mb-1">Non Refundable Discount</h3>
-                      <p>Include discount code #norefundallowed at checkout to get an extra 10% discount, but you won't be eligible for a cancellation refund.</p>
+                      <p>Choose the non-refundable rate when you book to get an extra 10% discount, but you won't be eligible for a cancellation refund.</p>
                     </div>
                   </div>
                 </div>
@@ -70,7 +70,7 @@ const DiscoverRIB = () => {
                     </div>
                     <div className="media-body flex-grow-1">
                       <h3 className="media-heading mt-0 mb-1">Flexible Cancellation Policy</h3>
-                      <p>Full refund up to one day before check-in, for any reservation that does not include the #norefundallowed discount.</p>
+                      <p>Full refund up to one day before check-in on any reservation booked at the standard rate.</p>
                     </div>
                   </div>
                 </div>

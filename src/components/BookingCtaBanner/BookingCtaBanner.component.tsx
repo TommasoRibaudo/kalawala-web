@@ -29,11 +29,6 @@ const BookingCtaBanner: React.FC<IBookingCtaBanner> = ({ isSpanish }) => {
   return (
     <section className="booking-cta-banner">
       <div className="container">
-        <p className="booking-cta-banner__text">
-          {isSpanish
-            ? '4.9/5 · reserva directo, sin comisiones de plataforma'
-            : '4.9/5 · book direct, no platform fees'}
-        </p>
         <a href={bookPath} className="booking-cta-banner__btn" onClick={handleClick}>
           {isSpanish ? 'Ver disponibilidad' : 'Check availability'}
         </a>

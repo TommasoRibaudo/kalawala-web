@@ -129,6 +129,18 @@ jobs:
     name: Build & Deploy
     runs-on: ubuntu-latest
     needs: [secret-scan, audit, typecheck, e2e-tests]
+    # Serialise the upload. There is one cPanel account and one
+    # .ftp-deploy-sync-state.json living on it, so two deploys in flight race on
+    # both the connection limit and the state file. Merges land in bursts — #32
+    # and #34 went in 2.5 minutes apart on 2026-08-06 and their deploy jobs ran
+    # within three minutes of each other — so this is not theoretical.
+    #
+    # cancel-in-progress stays false deliberately: cancelling a running upload
+    # strands the server half-synced behind a stale state file, which is exactly
+    # the mess the FIN-packet failure below produced.
+    concurrency:
+      group: deploy-cpanel
+      cancel-in-progress: false
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -198,7 +210,54 @@ jobs:
         env:
           SMOOBU_WEBHOOK_SECRET: ${{ secrets.SMOOBU_WEBHOOK_SECRET }}
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+      # The cPanel FTPS server hangs up mid-sync under load. On 2026-08-06 run
+      # 31111950802 died 2.4 seconds into the transfer with "Server sent FIN
+      # packet unexpectedly, closing connection" after replacing 10 of 50 files,
+      # leaving the site half-updated until the next merge happened to re-sync
+      # it. The action opens a fresh data connection per file, which is the exact
+      # pattern shared-host anti-flood limits are tuned to cut off — so expect
+      # this to recur rather than treating it as a one-off.
+      #
+      # Retrying is safe because the sync is idempotent: the action re-reads the
+      # server's state file, re-hashes the local build and re-uploads whatever is
+      # still stale. A second attempt just finishes the run, redoing the files
+      # the first attempt already copied at no cost beyond bandwidth.
+      #
+      # v4.3.4 has no retry input and its `with` block cannot be shared between
+      # steps, hence the duplication. Raising the `timeout` input would not help:
+      # the server closed the connection, it did not stall.
       - name: Upload to cPanel
+        id: upload
+        continue-on-error: true
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./build/
+          server-dir: ./
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git**
+            **/.git*/
+            **/node_modules/**
+            **/.gitignore
+            **/.gitattributes
+
+      # Anti-flood blocks hold for roughly a minute, so an immediate retry would
+      # walk straight back into the same wall. Wait it out first.
+      - name: Back off before retrying upload
+        if: steps.upload.outcome == 'failure'
+        run: |
+          echo "::warning::FTP upload failed, retrying in 60s. See step log above."
+          sleep 60
+
+      # No continue-on-error here — if the retry also fails the deploy is
+      # genuinely broken and the job should go red.
+      - name: Upload to cPanel (retry)
+        if: steps.upload.outcome == 'failure'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}

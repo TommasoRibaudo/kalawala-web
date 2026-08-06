@@ -15,14 +15,14 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | Phase 0 — not started |
+| **Current phase** | Phase 0 — in progress, partly blocked |
 | **Last updated** | 2026-08-06 |
-| **Branch(es) in flight** | none |
-| **Blocked on** | nothing |
+| **Branch(es) in flight** | `chore/i18n-phase-0-baseline` |
+| **Blocked on** | **Owner action:** Google Search Console + PostHog exports — see [`seo-baseline/README.md`](seo-baseline/README.md). The GSC export cannot be done retroactively. |
 
 Phase progress:
 
-- [ ] Phase 0 — Baseline capture and safety net
+- [ ] Phase 0 — Baseline capture and safety net *(automated parts done; GSC/PostHog exports outstanding)*
 - [ ] Phase 1 — Locale foundation (`isSpanish` → `locale`)
 - [ ] Phase 2 — Message catalogs
 - [ ] Phase 3 — Collapse duplicated page components
@@ -142,18 +142,36 @@ Each phase should be its own PR against `main`.
 ### Phase 0 — Baseline capture and safety net
 
 Do this before touching anything. Once URLs move, you cannot reconstruct what
-"before" looked like.
+"before" looked like. Everything lands in [`seo-baseline/`](seo-baseline/) —
+see its README for the detail.
 
-- [ ] Export current Google Search Console performance: 16 months, by page and by
-      query, for both EN and ES URLs. Save as CSV in `docs/seo-baseline/`.
-- [ ] Record current indexed page count per URL pattern (GSC → Pages).
-- [ ] Save the current `sitemap.xml` from production.
-- [ ] Run Lighthouse on `/`, `/HomeES`, one listing, one blog article; record scores
-      (`npm run lh`).
-- [ ] Write down current monthly organic sessions per language from PostHog.
+- [x] Save the current `sitemap.xml` and `robots.txt` from production
+      (48 URLs, 144 hreflang alternates; robots correctly advertises the sitemap).
+- [x] Capture the live status + redirect chain of all 49 routes
+      (`node scripts/check-urls.mjs capture`).
+- [x] Add `scripts/check-urls.mjs` — the same tool asserts single-hop redirects in
+      Phase 5 and Phase 10.
+- [ ] **Owner:** export GSC performance, 16 months, Pages + Queries tabs, as CSV.
+- [ ] **Owner:** record GSC indexed vs not-indexed page counts.
+- [ ] **Owner:** export PostHog monthly organic sessions, EN vs ES, 12 months.
+- [ ] Lighthouse baseline for `/`, `/HomeES`, `/Geco`, `/twodaysinpuertoviejo`.
 
-**Validation:** the baseline CSVs exist and are committed. This phase is the only
+**Validation:** the baseline files exist and are committed. This phase is the only
 insurance against "did the migration hurt us?" being unanswerable.
+
+> **Finding — every URL already costs a redirect.** All 49 routes return 200, but
+> 48 take a 301 first: `/Geco` → `/Geco/`, Apache `DirectorySlash` resolving the
+> prerendered `Geco/index.html`. Only `/` is direct.
+>
+> This changes Phase 5. A naive `/PlumeriaES` → `/es/plumeria` redirect becomes a
+> **two-hop chain**, because `DirectorySlash` then sends `/es/plumeria` →
+> `/es/plumeria/`. **Redirect targets in the 301 map must include the trailing
+> slash.**
+>
+> It also means the sitemap and every `rel="canonical"` currently point at
+> redirecting URLs (`/Geco`, while `/Geco/` is what gets served). Phase 6 should
+> settle this one way or the other — adopt the trailing slash everywhere, or
+> change `.htaccess` to serve without it.
 
 ### Phase 1 — Locale foundation
 
@@ -236,6 +254,11 @@ hardcoded legacy path remains (`grep -rn '"/\(Home\|Plumeria\|VillaMar\)' src`).
 - [ ] Redirects must be **single-hop**. `/PlumeriaES` → `/es/plumeria` directly,
       never via an intermediate. Chained redirects leak link equity and Google
       reports them.
+- [ ] **Targets must carry the trailing slash** — `/es/plumeria/`, not
+      `/es/plumeria`. Per the Phase 0 finding, `DirectorySlash` adds its own 301
+      otherwise and every migrated URL becomes a two-hop chain. Either emit the
+      slash in the map, or disable `DirectorySlash` and serve without it — but
+      pick one and make the sitemap, canonicals and hreflang agree.
 - [ ] Verify the existing `ErrorDocument 404 /404.html` behaviour still works
       after the new rules (see the comments already in `public/.htaccess`).
 
@@ -411,6 +434,18 @@ what the next session should pick up.
 - Surveyed the codebase (findings recorded in Ground Truth above).
 - Locked the three decisions: path-prefix URLs, blog included, machine
   translation published as-is.
-- Nothing implemented yet. **Next session: start Phase 0** — the GSC baseline
-  export must happen before any URL work, and it is the one step that cannot be
-  done retroactively.
+- Merged as PR #38.
+
+### 2026-08-06 — Phase 0, automated half
+- Captured production `sitemap.xml` (48 URLs) and `robots.txt` into
+  `docs/seo-baseline/`. robots correctly advertises the sitemap.
+- Added `scripts/check-urls.mjs` (capture + verify modes) and captured the live
+  status of all 49 routes.
+- **Found: 48 of 49 URLs already 301 to a trailing slash** via `DirectorySlash`.
+  Recorded against Phase 5 and Phase 6 above — redirect targets must include the
+  trailing slash or every migrated URL becomes a two-hop chain. This is the
+  finding that justified doing Phase 0 properly rather than skipping to Phase 1.
+- **Next session:** Phase 0 is blocked on the owner's GSC + PostHog exports
+  (`docs/seo-baseline/README.md` has click-by-click steps). The GSC export is the
+  only irreversible item — 16-month retention means unexported data is gone.
+  Phase 1 does not depend on it and can start in parallel.

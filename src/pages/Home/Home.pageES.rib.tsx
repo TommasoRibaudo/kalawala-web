@@ -1,12 +1,12 @@
 import { Helmet } from "react-helmet";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
 import {VillasDataListES } from '../../utils/constants';
-import CallToActionES from "../../components/CallToAction/CallToAction.componentES";
+import CallToAction from "../../components/CallToAction/CallToAction.component";
 import FixedNavigationES from "../../components/FixedNavigation/FixedNavigation.componentES";
 import OurHomesRIBES from "../../components/OurHomes/OurHomes.componentRIBES";
 import DiscoverRIBES from "../../components/Discover/Discover.componentRIBES";
 import WelcomeSliderRibES from "../../components/WelcomeSlider/WelcomeSlider.componentRIBES";
-import PortfolioRIBES from "../../components/Portfolio/Portfolio.componentRIBES";
+import PortfolioRIB from "../../components/Portfolio/Portfolio.componentRIB";
 import OurOtherHomesRIBES from "../../components/OurOtherHomes/OurOtherHomes.ComponentRIBES";
 import BookingSearchWidget from "../../components/BookingSearchWidget/BookingSearchWidget.component";
 import Footer from "../../components/Footer/Footer.component";
@@ -29,8 +29,8 @@ const HomeRibES = () => {
       <OurHomesRIBES houseDataList={VillasDataListES}/>
       <OurOtherHomesRIBES/>
       <DiscoverRIBES />
-      <CallToActionES />
-      <PortfolioRIBES />
+      <CallToAction />
+      <PortfolioRIB />
       <ContactUs />
       <Footer locale="es" />
     </div>

@@ -18,6 +18,29 @@ export const es: Messages = {
     chatOnWhatsApp: 'Chatear por WhatsApp',
   },
 
+  callToAction: {
+    exploreAvailability:
+      'Explora la disponibilidad y los precios de todas nuestras propiedades en Puerto Viejo y Playa Chiquita.',
+    nonRefundableLead: 'Elige la',
+    nonRefundableBold: 'tarifa no reembolsable',
+    nonRefundableTail: 'en el motor de reservas para disfrutar de un 10% de descuento.',
+    availabilityDisclaimer:
+      '*Mostrando disponibilidad para todas las propiedades disponibles en la zona de Puerto Viejo, incluidas propiedades anunciadas en otras páginas. ¡Asegúrate de verificar el nombre de la casa y su foto antes de reservar!',
+    bankTransferLead: '¿Prefieres pagar mediante transferencia bancaria o SINPE? Reserva de forma segura con nosotros y envía tu confirmación de depósito a',
+    bankTransferMid: 'o por WhatsApp al',
+    bankTransferTail: 'dentro de las 6 horas posteriores a realizar tu reserva.',
+  },
+
+  contact: {
+    headingMain: 'Nuestros',
+    headingHighlight: 'Contactos',
+    askUsAnything: 'Escríbenos',
+    replyTime: 'Normalmente respondemos en menos de una hora por WhatsApp.',
+    phoneLabel: 'Teléfono, Whatsapp:',
+    chatOnWhatsApp: 'chatear por WhatsApp',
+    emailLabel: 'Correo:',
+  },
+
   reviews: {
     headingMain: 'Lo que dicen nuestros',
     headingHighlight: 'huéspedes',

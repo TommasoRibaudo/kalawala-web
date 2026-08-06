@@ -255,14 +255,58 @@ behaviour changes, no cleanups riding along, or review becomes impossible.
 
 ### Phase 3 — Collapse duplicated page components
 
-- [ ] Merge each `*ES.tsx` / `*_ES.tsx` into its English sibling, driven by
-      `useLocale()` + catalog lookups. **Delete 49 files / ~5,794 lines.**
-- [ ] Same for the 3 home variants and their ES twins.
-- [ ] Update `Router.tsx` imports (still the old route shape at this point).
+**Split into 3a–3d.** Measuring each EN/ES pair showed they are not one kind of
+work, and merging them in one PR would be both unreviewable and unsafe:
 
-**Validation:** typecheck; e2e; screenshot-diff `/` vs `/HomeES` and a listing
-pair against production before/after (`scripts/screenshot-build.mjs` exists).
-Any pixel difference here is a bug — this phase must be visually inert.
+| Family | Pairs | How identical | Character |
+|---|---|---|---|
+| Shared components | ~21 | 59–96% | Mostly strings; a few real divergences |
+| Listing pages | 10 | 72–79% | Highly templated, near-mechanical |
+| Blog pages | 10 | **32–80%** | Genuinely different JSX per article |
+| Home variants + BlogIndex | 4 | 54–73% | Compose everything else |
+
+Blog is the outlier: `CahuitaParkES` is only 32% identical to its English twin,
+`TravellingToPuerto_ES` 43%. Those are not translations of one component, they
+are two components that drifted. Lumping them with the listings would have hidden
+that.
+
+- [ ] **3a — shared components** (leaf-first: a component cannot be merged before
+      the components it renders)
+- [ ] **3b — listing pages** (10 pairs)
+- [ ] **3c — blog pages** (10 pairs, one at a time, highest risk)
+- [ ] **3d — home variants + BlogIndex**, then delete the ES route entries
+- [ ] Update `Router.tsx` imports (still the old route shape at this point)
+
+> **The validation bar changes here.** Phases 1 and 2 could claim *zero*
+> prerender differences. Phase 3 cannot: merging two components that genuinely
+> diverged forces a choice, and some of those choices change a page. The bar is
+> therefore **"every difference is intentional, enumerated, and justified"** —
+> each merge that resolves a divergence must say so in the code and in the PR.
+> A difference nobody can explain is still a bug.
+
+**Validation:** typecheck; unit tests unchanged from baseline; prerender diff with
+every remaining difference explained.
+
+#### 3a — shared components
+
+- [x] `ContactUs` — pure strings. Both now render `id="contact-us"`; the Spanish
+      copy's `contact-usES` was linked from nowhere (`#smoobuComp` is the only
+      in-app hash link).
+- [x] `CallToAction` — two non-translation divergences resolved, both documented
+      in the component: the Spanish copy rendered `<Smoobu2 />` with no
+      `targetId`, falling back to the shared default id where all twelve other
+      call sites pass a unique one; and the bank-transfer paragraph sat inside
+      the widget box in Spanish, outside it in English. Unified on English.
+- [x] `PortfolioImage` — **fixed a real bug.** The English component had its own
+      `case "TucanoES"` / `case "GecoES"` … arms and every one assigned the
+      *English* descriptions array, so Spanish pages rendered through it showed
+      English alt text. Replaced both switches with one locale-keyed lookup.
+- [x] `Portfolio` ×3 variants — collapsed once `PortfolioImage` was locale-aware.
+      Note `/HomeNamES` was already importing the English `PortfolioNam`, so its
+      gallery alt text was English; it is now Spanish. Intentional, and visible
+      in the prerender diff.
+- [ ] `FixedNavigation` ×3, `Discover` ×3, `WelcomeSlider` ×3, `OurHomes` ×3,
+      `OurOtherHomes` ×3, `OtherBlogs`, `ListingAd`, `OtherListings`
 
 ### 🚢 Ship gate A
 

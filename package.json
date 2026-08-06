@@ -96,10 +96,7 @@
   },
   "reactSnap": {
     "source": "build",
-    "minifyHtml": {
-      "collapseWhitespace": false,
-      "removeComments": true
-    },
+    "minifyHtml": false,
     "puppeteerArgs": [
       "--no-sandbox",
       "--disable-setuid-sandbox"

@@ -10,14 +10,15 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import ListingDelfin from '../ListingDelfin.page_ES';
 import { houseDataList } from '../../../../utils/constants';
+import type { Locale } from '../../../../i18n';
 
 // Mock the booking search widget that replaced the Smoobu iframe
 jest.mock('../../../../components/BookingSearchWidget/BookingSearchWidget.component', () => {
-  return function MockBookingSearchWidget({ isSpanish, defaultGuests, variant }: { isSpanish: boolean; defaultGuests?: number; variant?: string }) {
+  return function MockBookingSearchWidget({ locale, defaultGuests, variant }: { locale: Locale; defaultGuests?: number; variant?: string }) {
     return (
       <div
         data-testid="booking-search-widget"
-        data-is-spanish={String(isSpanish)}
+        data-is-spanish={String(locale)}
         data-default-guests={defaultGuests}
         data-variant={variant}
       >

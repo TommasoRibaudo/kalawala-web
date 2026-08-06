@@ -50,7 +50,7 @@ const BlogIndex = () => {
           </ul>
         </Col>
       </Row>
-      <Footer isSpanish={false} />
+      <Footer locale="en" />
     </div>
   );
 };

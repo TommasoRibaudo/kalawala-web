@@ -19,7 +19,7 @@ jest.mock('posthog-js', () => ({ __esModule: true, default: { capture: jest.fn()
 function renderWidget() {
   return render(
     <MemoryRouter>
-      <BookingSearchWidget isSpanish={false} />
+      <BookingSearchWidget locale="en" />
     </MemoryRouter>
   );
 }

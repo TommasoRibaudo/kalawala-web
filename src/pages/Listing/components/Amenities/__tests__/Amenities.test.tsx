@@ -9,7 +9,7 @@ const amenities: AmenityType[] = [
 
 describe('Amenities', () => {
   test('leads with bedroom, bathroom and occupancy counts when given a property key', () => {
-    render(<Amenities amenities={amenities} propertyKey="Geco" isSpanish={false} />);
+    render(<Amenities amenities={amenities} propertyKey="Geco" locale="en" />);
 
     expect(screen.getByText('2 bedrooms')).toBeInTheDocument();
     expect(screen.getByText('1 bathroom')).toBeInTheDocument();
@@ -27,7 +27,7 @@ describe('Amenities', () => {
   });
 
   test('renders the counts in Spanish', () => {
-    render(<Amenities amenities={amenities} propertyKey="Delfin" isSpanish={true} />);
+    render(<Amenities amenities={amenities} propertyKey="Delfin" locale="es" />);
 
     expect(screen.getByText('2 habitaciones')).toBeInTheDocument();
     expect(screen.getByText('2 baños')).toBeInTheDocument();

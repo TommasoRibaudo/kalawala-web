@@ -1,17 +1,18 @@
 import React from 'react';
 import { PROPERTY_MARKETING_CONFIG } from '../../utils/constants';
 import './FeatureHighlights.style.scss';
+import type { Locale } from '../../i18n';
 
 interface FeatureHighlightsProps {
   propertyKey: string;
   propertyName: string;
-  isSpanish: boolean;
+  locale: Locale;
 }
 
 const FeatureHighlights: React.FC<FeatureHighlightsProps> = ({ 
   propertyKey, 
   propertyName,
-  isSpanish 
+  locale 
 }) => {
   const config = PROPERTY_MARKETING_CONFIG[propertyKey];
   
@@ -20,12 +21,10 @@ const FeatureHighlights: React.FC<FeatureHighlightsProps> = ({
     return null;
   }
 
-  const features = isSpanish 
-    ? config.featureHighlights.es 
+  const features = locale === 'es' ? config.featureHighlights.es 
     : config.featureHighlights.en;
 
-  const sectionTitle = isSpanish 
-    ? `¿Por qué los huéspedes eligen ${propertyName}?`
+  const sectionTitle = locale === 'es' ? `¿Por qué los huéspedes eligen ${propertyName}?`
     : `Why guests choose ${propertyName}`;
 
   return (

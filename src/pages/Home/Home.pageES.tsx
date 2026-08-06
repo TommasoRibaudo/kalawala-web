@@ -59,15 +59,15 @@ const HomeES = () => {
       <WelcomeSliderES />
       <FixedNavigationES isBlog={false}/>
       <HelpMeChoose title="Elige tu" titleHighlight="Estadía Ideal" options={helpMeChooseOptionsES} />
-      <HomeReviews isSpanish={true} />
+      <HomeReviews locale="es" />
       <OurHomesES houseDataList={houseDataList}/>
       <OurOtherHomesES/>
-      <BookingCtaBanner isSpanish={true} />
+      <BookingCtaBanner locale="es" />
       <DiscoverES />
       <PortfolioES />
       {/* <Testimonial /> */}
       <ContactUsES />
-      <Footer isSpanish={true} />
+      <Footer locale="es" />
 
     </div>
   )

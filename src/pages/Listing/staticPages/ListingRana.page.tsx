@@ -78,17 +78,17 @@ const ListingRana = () => {
                             </a>
                         </p>
                         {/* Add marketing section after title */}
-                        <ListingMarketingSection propertyKey="Rana" isSpanish={false} />
+                        <ListingMarketingSection propertyKey="Rana" locale="en" />
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
-                    <SocialStatement propertyKey="Rana" isSpanish={false} />
+                    <SocialStatement propertyKey="Rana" locale="en" />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Rana" isSpanish={false} />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Rana" locale="en" />
                     </div>
 
                     {/* Add feature highlights before description */}
-                    <FeatureHighlights propertyKey="Rana" propertyName="House Rana" isSpanish={false} />
+                    <FeatureHighlights propertyKey="Rana" propertyName="House Rana" locale="en" />
 
                     <div className="description">
                         <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
@@ -133,12 +133,12 @@ const ListingRana = () => {
                         </p>
                     </div>
 
-                    <GuestReviews propertyKey="RANA" isSpanish={false} />
+                    <GuestReviews propertyKey="RANA" locale="en" />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    <PriceConfirmationSection propertyKey="Rana" isSpanish={false} />
-                    <BookingSearchWidget isSpanish={false} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Rana" />
+                    <PriceConfirmationSection propertyKey="Rana" locale="en" />
+                    <BookingSearchWidget locale="en" defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Rana" />
                 </Col>
             </Row>
 
@@ -146,7 +146,7 @@ const ListingRana = () => {
                 <OtherListings listings={homesSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
-            <Footer isSpanish={false} />
+            <Footer locale="en" />
 
         </div>
     )

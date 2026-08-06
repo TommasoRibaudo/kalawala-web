@@ -29,7 +29,7 @@ const WelcomeSliderES = () => {
         <br />
 
         <div className="hero-booking">
-          <BookingSearchWidget isSpanish={true} variant="hero" />
+          <BookingSearchWidget locale="es" variant="hero" />
           <p className="hero-trust">✓ Confirmación instantánea · ✓ Reserva segura · ✓ Sin comisiones</p>
         </div>
       </div>

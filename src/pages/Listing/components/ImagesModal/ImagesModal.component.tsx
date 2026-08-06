@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import './ImagesModal.style.scss';
 import { getHouseImages } from "../../../../utils/houseImages";
 import ZoomableImage from "./ZoomableImage.component";
+import type { Locale } from '../../../../i18n';
 
 
 interface IIMagesModal {
@@ -9,11 +10,12 @@ interface IIMagesModal {
   houseName: string;
 }
 
-const isSpanish = (houseName: string) => houseName.endsWith('ES');
+/** House codes carry their own language: "GecoES" is the Spanish listing. */
+const localeOfHouse = (houseName: string): Locale => (houseName.endsWith('ES') ? 'es' : 'en');
 
 const ImagesModal = ({ closeModal, houseName }: IIMagesModal) => {
   const images = getHouseImages(houseName);
-  const spanish = isSpanish(houseName);
+  const spanish = localeOfHouse(houseName) === 'es';
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
   const isViewerOpen = viewerIndex !== null;
 

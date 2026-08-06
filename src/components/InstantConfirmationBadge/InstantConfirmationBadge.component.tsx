@@ -1,16 +1,17 @@
 import React from 'react';
 import './InstantConfirmationBadge.style.scss';
+import type { Locale } from '../../i18n';
 
 interface InstantConfirmationBadgeProps {
-  isSpanish: boolean;
+  locale: Locale;
 }
 
-const InstantConfirmationBadge: React.FC<InstantConfirmationBadgeProps> = ({ isSpanish }) => {
+const InstantConfirmationBadge: React.FC<InstantConfirmationBadgeProps> = ({ locale }) => {
   return (
     <div className="instant-confirmation-badge">
       <span className="checkmark">✔</span>
       <span className="text">
-        {isSpanish ? 'Confirmación inmediata' : 'Instant confirmation'}
+        {locale === 'es' ? 'Confirmación inmediata' : 'Instant confirmation'}
       </span>
     </div>
   );

@@ -61,16 +61,16 @@ const Home = () => {
       <WelcomeSlider />
       <FixedNavigation isBlog={false} />
       <HelpMeChoose title="Find your" titleHighlight="Ideal Stay" options={helpMeChooseOptions} />
-      <HomeReviews isSpanish={false} />
+      <HomeReviews locale="en" />
       <OurHomes houseDataList={houseDataEngList} />
       <OurOtherHomes />
-      <BookingCtaBanner isSpanish={false} />
+      <BookingCtaBanner locale="en" />
       <Discover />
       {/* <CallToAction /> */}
       <Portfolio />
       {/* <Testimonial /> */}
       <ContactUs />
-      <Footer isSpanish={false} />
+      <Footer locale="en" />
 
     </div>
   )

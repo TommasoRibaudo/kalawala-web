@@ -28,7 +28,7 @@ const HomeRib = () => {
       </Helmet>
       <WelcomeSliderRib />
       <FixedNavigationRib isBlog={false} />
-      <BookingSearchWidget isSpanish={false} variant="hero" />
+      <BookingSearchWidget locale="en" variant="hero" />
       <OurHomesRIB houseDataList={ribHouseDataEngList} />
       <OurOtherHomesRIB />
       <DiscoverRIB />
@@ -36,7 +36,7 @@ const HomeRib = () => {
       <PortfolioRIB />
       {/* <Testimonial /> */}
       <ContactUs />
-      <Footer isSpanish={false} />
+      <Footer locale="en" />
     </div>
   )
 }

@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { CookieConsentService, ConsentPreferences } from '../../services/CookieConsent.service';
 import { isPrerender } from '../../utils/isPrerender';
 import './CookieConsentBanner.scss';
+import type { Locale } from '../../i18n';
 
 interface CookieConsentBannerProps {
   onConsentChange?: (canTrack: boolean) => void;
@@ -40,35 +41,39 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onCons
   const currentPath = window.location.pathname;
   const currentSearch = window.location.search;
 
-  const isSpanish = currentPath.toUpperCase().endsWith('ES') ||
+  // Kept verbatim rather than delegating to detectLocaleFromPath: this one also
+  // honours /es, /spanish and ?lang=es, which the shared detector deliberately
+  // does not. Phase 4 folds these in once the locale is a real route segment.
+  const spanish = currentPath.toUpperCase().endsWith('ES') ||
                    currentPath.includes('/es') ||
                    currentPath.includes('/spanish') ||
                    currentSearch.includes('lang=es');
+  const locale: Locale = spanish ? 'es' : 'en';
 
   // Text content based on language
   const text = {
-    title: isSpanish ? '🍪 Cookies' : '🍪 Cookies',
-    description: isSpanish 
+    title: (locale === 'es') ? '🍪 Cookies' : '🍪 Cookies',
+    description: (locale === 'es') 
       ? 'Usamos cookies para mejorar tu experiencia y analizar el tráfico.'
       : 'We use cookies to improve your experience and analyze traffic.',
-    acceptAll: isSpanish ? 'Aceptar' : 'Accept',
-    rejectAll: isSpanish ? 'Rechazar' : 'Reject',
-    customize: isSpanish ? 'Opciones' : 'Options',
-    essential: isSpanish ? 'Esenciales' : 'Essential',
-    analytics: isSpanish ? 'Análisis' : 'Analytics',
-    marketing: isSpanish ? 'Marketing' : 'Marketing',
-    required: isSpanish ? '(Req.)' : '(Req.)',
-    essentialDesc: isSpanish 
+    acceptAll: (locale === 'es') ? 'Aceptar' : 'Accept',
+    rejectAll: (locale === 'es') ? 'Rechazar' : 'Reject',
+    customize: (locale === 'es') ? 'Opciones' : 'Options',
+    essential: (locale === 'es') ? 'Esenciales' : 'Essential',
+    analytics: (locale === 'es') ? 'Análisis' : 'Analytics',
+    marketing: (locale === 'es') ? 'Marketing' : 'Marketing',
+    required: (locale === 'es') ? '(Req.)' : '(Req.)',
+    essentialDesc: (locale === 'es') 
       ? 'Necesarias para el funcionamiento del sitio.'
       : 'Required for the site to function.',
-    analyticsDesc: isSpanish
+    analyticsDesc: (locale === 'es')
       ? 'Nos ayudan a entender el uso del sitio.'
       : 'Help us understand site usage.',
-    marketingDesc: isSpanish
+    marketingDesc: (locale === 'es')
       ? 'Para mostrar anuncios relevantes.'
       : 'To show relevant ads.',
-    savePreferences: isSpanish ? 'Guardar' : 'Save',
-    cancel: isSpanish ? 'Cancelar' : 'Cancel'
+    savePreferences: (locale === 'es') ? 'Guardar' : 'Save',
+    cancel: (locale === 'es') ? 'Cancelar' : 'Cancel'
   };
 
   useEffect(() => {

@@ -78,18 +78,18 @@ const ListingDelfin = () => {
                             </a>
                         </p>
                         {/* Add marketing section after title */}
-                        <ListingMarketingSection propertyKey="Delfin" isSpanish={true} />
+                        <ListingMarketingSection propertyKey="Delfin" locale="es" />
 
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
-                    <SocialStatement propertyKey="Delfin" isSpanish={true} />
+                    <SocialStatement propertyKey="Delfin" locale="es" />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Delfin" isSpanish={true} />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Delfin" locale="es" />
                     </div>
 
                     {/* Add feature highlights before description */}
-                    <FeatureHighlights propertyKey="Delfin" propertyName="Casa Delfín" isSpanish={true} />
+                    <FeatureHighlights propertyKey="Delfin" propertyName="Casa Delfín" locale="es" />
 
                     <div className="description">
                         <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
@@ -130,12 +130,12 @@ const ListingDelfin = () => {
                         </p>
                     </div>
 
-                    <GuestReviews propertyKey="DELFINES" isSpanish={true} />
+                    <GuestReviews propertyKey="DELFINES" locale="es" />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    <PriceConfirmationSection propertyKey="Delfin" isSpanish={true} />
-                    <BookingSearchWidget isSpanish={true} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Delfin" />
+                    <PriceConfirmationSection propertyKey="Delfin" locale="es" />
+                    <BookingSearchWidget locale="es" defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Delfin" />
                 </Col>
             </Row>
 
@@ -143,7 +143,7 @@ const ListingDelfin = () => {
                 <OtherListingsES listings={homesSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
-            <Footer isSpanish={true} />
+            <Footer locale="es" />
 
         </div>
     )

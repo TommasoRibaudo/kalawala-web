@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
+import { detectLocaleFromPath } from '../i18n';
 
 /**
  * Catch-all 404.
@@ -15,9 +16,9 @@ import { Link, useLocation } from 'react-router-dom';
  */
 const NotFound = () => {
   const { pathname } = useLocation();
-  const isSpanish = pathname.endsWith('ES');
+  const locale = detectLocaleFromPath(pathname);
 
-  const copy = isSpanish
+  const copy = (locale === 'es')
     ? {
         title: 'Página no encontrada | Reservas Kalawala',
         heading: 'No encontramos esta página',
@@ -36,7 +37,7 @@ const NotFound = () => {
   return (
     <main className="container" style={{ padding: '120px 16px', textAlign: 'center' }}>
       <Helmet>
-        <html lang={isSpanish ? 'es' : 'en'} />
+        <html lang={(locale === 'es') ? 'es' : 'en'} />
         <title>{copy.title}</title>
         <meta name="robots" content="noindex, follow" />
       </Helmet>

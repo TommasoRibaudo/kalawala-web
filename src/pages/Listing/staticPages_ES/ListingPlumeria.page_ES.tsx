@@ -78,17 +78,17 @@ const ListingPlumeriaES = () => {
                             </a>
                         </p>
                         {/* Add marketing section after title */}
-                        <ListingMarketingSection propertyKey="Plumeria" isSpanish={true} />
+                        <ListingMarketingSection propertyKey="Plumeria" locale="es" />
                     </div>
                     <ImagesContainer showModal={handleShow} houseName="Plumeria" />
                     {/* Add social statement after images */}
-                    <SocialStatement propertyKey="Plumeria" isSpanish={true} />
+                    <SocialStatement propertyKey="Plumeria" locale="es" />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Plumeria" isSpanish={true} />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Plumeria" locale="es" />
                     </div>
 
                     {/* Add feature highlights before description */}
-                    <FeatureHighlights propertyKey="Plumeria" propertyName="Casa Plumeria" isSpanish={true} />
+                    <FeatureHighlights propertyKey="Plumeria" propertyName="Casa Plumeria" locale="es" />
                     <div className="description">
                         <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
                             <p><strong>Entrada:</strong> 3:00 PM</p>
@@ -120,12 +120,12 @@ const ListingPlumeriaES = () => {
                         </p>
                     </div>
 
-                    <GuestReviews propertyKey="PLUMERIA" isSpanish={true} />
+                    <GuestReviews propertyKey="PLUMERIA" locale="es" />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    <PriceConfirmationSection propertyKey="Plumeria" isSpanish={true} />
-                    <BookingSearchWidget isSpanish={true} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Plumeria" />
+                    <PriceConfirmationSection propertyKey="Plumeria" locale="es" />
+                    <BookingSearchWidget locale="es" defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Plumeria" />
                 </Col>
             </Row>
 
@@ -133,7 +133,7 @@ const ListingPlumeriaES = () => {
                 <OtherListingsES listings={NamSnippetES} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName="Plumeria" />}
-            <Footer isSpanish={true} />
+            <Footer locale="es" />
 
         </div>
     )

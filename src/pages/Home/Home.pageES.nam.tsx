@@ -61,15 +61,15 @@ const HomeNamES = () => {
       <WelcomeSliderNamES />
       <FixedNavigationES isBlog={false}/>
       <HelpMeChoose title="Elige tu" titleHighlight="Estadía Ideal" options={helpMeChooseOptionsES} />
-      <BookingSearchWidget isSpanish={true} variant="hero" />
-      <HomeReviews isSpanish={true} />
+      <BookingSearchWidget locale="es" variant="hero" />
+      <HomeReviews locale="es" />
       <OurHomes houseDataList={NamDataListES}/>
       <OurOtherHomesNamES />
       <DiscoverNamES />
       <PortfolioNam />
       {/* <Testimonial /> */}
       <ContactUs />
-      <Footer isSpanish={true} />
+      <Footer locale="es" />
 
     </div>
   )

@@ -1,3 +1,4 @@
+import type { Locale } from '../i18n';
 import { PROPERTY_CAPACITY } from './constants';
 
 /**
@@ -16,7 +17,7 @@ export type CapacityFact = {
 
 export const getCapacityFacts = (
   propertyKey: string,
-  isSpanish: boolean
+  locale: Locale
 ): CapacityFact[] => {
   const capacity = PROPERTY_CAPACITY[propertyKey];
 
@@ -30,22 +31,19 @@ export const getCapacityFacts = (
     {
       key: 'bedrooms',
       icon: 'bed',
-      label: isSpanish
-        ? `${bedrooms} ${bedrooms === 1 ? 'habitación' : 'habitaciones'}`
+      label: locale === 'es' ? `${bedrooms} ${bedrooms === 1 ? 'habitación' : 'habitaciones'}`
         : `${bedrooms} ${bedrooms === 1 ? 'bedroom' : 'bedrooms'}`
     },
     {
       key: 'bathrooms',
       icon: 'bath',
-      label: isSpanish
-        ? `${bathrooms} ${bathrooms === 1 ? 'baño' : 'baños'}`
+      label: locale === 'es' ? `${bathrooms} ${bathrooms === 1 ? 'baño' : 'baños'}`
         : `${bathrooms} ${bathrooms === 1 ? 'bathroom' : 'bathrooms'}`
     },
     {
       key: 'guests',
       icon: 'guests',
-      label: isSpanish
-        ? `Hasta ${maxGuests} ${maxGuests === 1 ? 'huésped' : 'huéspedes'}`
+      label: locale === 'es' ? `Hasta ${maxGuests} ${maxGuests === 1 ? 'huésped' : 'huéspedes'}`
         : `Up to ${maxGuests} ${maxGuests === 1 ? 'guest' : 'guests'}`
     }
   ];

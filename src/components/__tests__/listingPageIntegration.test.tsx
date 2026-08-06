@@ -50,7 +50,7 @@ describe('Listing Page Integration Tests', () => {
 
   describe('Component Rendering Integration', () => {
     test('ListingMarketingSection renders descriptive title only', () => {
-      render(<ListingMarketingSection propertyKey="Rana" isSpanish={false} />);
+      render(<ListingMarketingSection propertyKey="Rana" locale="en" />);
       
       // Should contain descriptive title only (price and confirmation moved to separate component)
       expect(screen.getByText('Family home, pet friendly with air conditioning')).toBeInTheDocument();
@@ -61,7 +61,7 @@ describe('Listing Page Integration Tests', () => {
     });
 
     test('PriceConfirmationSection renders price and confirmation badge', () => {
-      render(<PriceConfirmationSection propertyKey="Rana" isSpanish={false} />);
+      render(<PriceConfirmationSection propertyKey="Rana" locale="en" />);
       
       // Falls back to the configured price when live rates are unavailable.
       expect(screen.getByText(/From \$160 per night/)).toBeInTheDocument();
@@ -72,7 +72,7 @@ describe('Listing Page Integration Tests', () => {
     });
 
     test('ListingMarketingSection renders Spanish descriptive title only', () => {
-      render(<ListingMarketingSection propertyKey="Rana" isSpanish={true} />);
+      render(<ListingMarketingSection propertyKey="Rana" locale="es" />);
       
       // Should contain Spanish descriptive title only
       expect(screen.getByText('Casa familiar, pet friendly con aire acondicionado')).toBeInTheDocument();
@@ -83,7 +83,7 @@ describe('Listing Page Integration Tests', () => {
     });
 
     test('PriceConfirmationSection renders Spanish price and confirmation badge', () => {
-      render(<PriceConfirmationSection propertyKey="Rana" isSpanish={true} />);
+      render(<PriceConfirmationSection propertyKey="Rana" locale="es" />);
       
       // Spanish quotes USD too — the booking engine charges in USD, so a colón
       // figure here would contradict the calendar and the checkout total.
@@ -95,13 +95,13 @@ describe('Listing Page Integration Tests', () => {
     });
 
     test('SocialStatement renders property-specific content', () => {
-      render(<SocialStatement propertyKey="VillaMar" isSpanish={false} />);
+      render(<SocialStatement propertyKey="VillaMar" locale="en" />);
       
       expect(screen.getByText('Chosen for its private pool perfect for romantic getaways')).toBeInTheDocument();
     });
 
     test('FeatureHighlights renders with emoji icons', () => {
-      render(<FeatureHighlights propertyKey="Tucano" propertyName="Casa Tucano" isSpanish={false} />);
+      render(<FeatureHighlights propertyKey="Tucano" propertyName="Casa Tucano" locale="en" />);
       
       expect(screen.getByText('Why guests choose Casa Tucano')).toBeInTheDocument();
       
@@ -112,7 +112,7 @@ describe('Listing Page Integration Tests', () => {
     });
 
     test('InstantConfirmationBadge renders with correct styling', () => {
-      render(<InstantConfirmationBadge isSpanish={false} />);
+      render(<InstantConfirmationBadge locale="en" />);
       
       const badge = screen.getByText('✔');
       expect(badge).toBeInTheDocument();
@@ -125,13 +125,13 @@ describe('Listing Page Integration Tests', () => {
       // Mock mobile viewport
       mockMatchMedia(true); // Simulate mobile media query match
       
-      render(<ListingMarketingSection propertyKey="Delfin" isSpanish={false} />);
+      render(<ListingMarketingSection propertyKey="Delfin" locale="en" />);
       
       // Components should still render descriptive title on mobile
       expect(screen.getByText('Spacious house perfect for large families')).toBeInTheDocument();
       
       // Price and confirmation should be tested separately in PriceConfirmationSection
-      render(<PriceConfirmationSection propertyKey="Delfin" isSpanish={false} />);
+      render(<PriceConfirmationSection propertyKey="Delfin" locale="en" />);
       expect(screen.getByText(/From \$199 per night/)).toBeInTheDocument();
       expect(screen.getByText('✔')).toBeInTheDocument();
       expect(screen.getByText('Instant confirmation')).toBeInTheDocument();
@@ -141,7 +141,7 @@ describe('Listing Page Integration Tests', () => {
       // Mock desktop viewport
       mockMatchMedia(false); // Simulate desktop media query (no match for mobile)
       
-      render(<FeatureHighlights propertyKey="VillaCoral" propertyName="Villa Coral" isSpanish={true} />);
+      render(<FeatureHighlights propertyKey="VillaCoral" propertyName="Villa Coral" locale="es" />);
       
       // Components should render all content on desktop
       expect(screen.getByText('¿Por qué los huéspedes eligen Villa Coral?')).toBeInTheDocument();
@@ -151,10 +151,10 @@ describe('Listing Page Integration Tests', () => {
     test('Layout maintains proper structure across different screen sizes', () => {
       render(
         <div>
-          <ListingMarketingSection propertyKey="Areka" isSpanish={false} />
-          <PriceConfirmationSection propertyKey="Areka" isSpanish={false} />
-          <SocialStatement propertyKey="Areka" isSpanish={false} />
-          <FeatureHighlights propertyKey="Areka" propertyName="Casa Areka" isSpanish={false} />
+          <ListingMarketingSection propertyKey="Areka" locale="en" />
+          <PriceConfirmationSection propertyKey="Areka" locale="en" />
+          <SocialStatement propertyKey="Areka" locale="en" />
+          <FeatureHighlights propertyKey="Areka" propertyName="Casa Areka" locale="en" />
         </div>
       );
       
@@ -178,7 +178,7 @@ describe('Listing Page Integration Tests', () => {
   describe('Error Handling Integration', () => {
     test('Components handle missing configuration gracefully', () => {
       // Test with non-existent property key
-      render(<ListingMarketingSection propertyKey="NonExistentProperty" isSpanish={false} />);
+      render(<ListingMarketingSection propertyKey="NonExistentProperty" locale="en" />);
       
       // Component should not crash and should render nothing
       expect(screen.queryByText(/per night/)).not.toBeInTheDocument();
@@ -186,21 +186,21 @@ describe('Listing Page Integration Tests', () => {
 
     test('PriceConfirmationSection handles missing configuration gracefully', () => {
       // Test with non-existent property key
-      render(<PriceConfirmationSection propertyKey="NonExistentProperty" isSpanish={false} />);
+      render(<PriceConfirmationSection propertyKey="NonExistentProperty" locale="en" />);
       
       // Component should not crash and should render nothing
       expect(screen.queryByText(/per night/)).not.toBeInTheDocument();
     });
 
     test('Components handle invalid property keys gracefully', () => {
-      render(<SocialStatement propertyKey="" isSpanish={false} />);
+      render(<SocialStatement propertyKey="" locale="en" />);
       
       // Component should not crash
       expect(document.body).toBeInTheDocument();
     });
 
     test('FeatureHighlights handles missing property name gracefully', () => {
-      render(<FeatureHighlights propertyKey="Giulia" propertyName="" isSpanish={false} />);
+      render(<FeatureHighlights propertyKey="Giulia" propertyName="" locale="en" />);
       
       // Should still render the section, even with empty property name
       expect(screen.getByText(/Why guests choose/)).toBeInTheDocument();
@@ -208,14 +208,14 @@ describe('Listing Page Integration Tests', () => {
   });
 
   describe('Language Consistency Integration', () => {
-    test('All components use consistent language when isSpanish=true', () => {
+    test('All components use consistent language when locale=true', () => {
       render(
         <div>
-          <ListingMarketingSection propertyKey="Plumeria" isSpanish={true} />
-          <PriceConfirmationSection propertyKey="Plumeria" isSpanish={true} />
-          <SocialStatement propertyKey="Plumeria" isSpanish={true} />
-          <FeatureHighlights propertyKey="Plumeria" propertyName="Casa Plumeria" isSpanish={true} />
-          <InstantConfirmationBadge isSpanish={true} />
+          <ListingMarketingSection propertyKey="Plumeria" locale="es" />
+          <PriceConfirmationSection propertyKey="Plumeria" locale="es" />
+          <SocialStatement propertyKey="Plumeria" locale="es" />
+          <FeatureHighlights propertyKey="Plumeria" propertyName="Casa Plumeria" locale="es" />
+          <InstantConfirmationBadge locale="es" />
         </div>
       );
       
@@ -228,14 +228,14 @@ describe('Listing Page Integration Tests', () => {
       expect(screen.getAllByText('Confirmación inmediata')[0]).toBeInTheDocument();
     });
 
-    test('All components use consistent language when isSpanish=false', () => {
+    test('All components use consistent language when locale=false', () => {
       render(
         <div>
-          <ListingMarketingSection propertyKey="Giulia" isSpanish={false} />
-          <PriceConfirmationSection propertyKey="Giulia" isSpanish={false} />
-          <SocialStatement propertyKey="Giulia" isSpanish={false} />
-          <FeatureHighlights propertyKey="Giulia" propertyName="Casa Giulia" isSpanish={false} />
-          <InstantConfirmationBadge isSpanish={false} />
+          <ListingMarketingSection propertyKey="Giulia" locale="en" />
+          <PriceConfirmationSection propertyKey="Giulia" locale="en" />
+          <SocialStatement propertyKey="Giulia" locale="en" />
+          <FeatureHighlights propertyKey="Giulia" propertyName="Casa Giulia" locale="en" />
+          <InstantConfirmationBadge locale="en" />
         </div>
       );
       

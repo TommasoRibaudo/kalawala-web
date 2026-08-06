@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import { SampleNextArrow, SamplePrevArrow } from "../../../components/CustomSlick/SlickDarkArrow.Component";
 import { cdnImage } from "../../../utils/imageCdn";
+import { useMessages } from '../../../i18n';
 
 interface IOtherBlogs {
   currentBlog: string
@@ -12,6 +13,7 @@ interface IOtherBlogs {
 }
 
 const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
+  const m = useMessages();
   // Seeded null, not window.innerWidth — react-snap's puppeteer viewport at
   // prerender time and a real visitor's viewport at hydration time are
   // different numbers, and windowWidth below drives slidesToShow (which
@@ -75,7 +77,7 @@ const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
 
   return (
     <div className="other-blogs-container">
-      <h2 className="other-blogs-header">Check out our other blogs!</h2>
+      <h2 className="other-blogs-header">{m.sections.otherBlogsHeading}</h2>
       <div className="other-blogs-slider">
         <Slider {...sliderSettings}>
           {filteredBlogs.map(({ title, thumbnail, id }) => (
@@ -86,7 +88,7 @@ const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && handleBlogClick(id)}
-                aria-label={`Read blog: ${title}`}
+                aria-label={m.sections.readBlog(title)}
               >
                 <div
                   className="blog-card-image"

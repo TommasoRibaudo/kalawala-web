@@ -9,7 +9,7 @@ import OtherBlogs from "../Components/OtherBlogs.Component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
-import ListingAdES from "../Components/ListingAd/ListingAd.componentES";
+import ListingAd from "../Components/ListingAd/ListingAd.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";

@@ -2,6 +2,7 @@ import React from 'react';
 import HomeCard from './Components/HomeCard.component';
 import './OurHomes.style.scss'
 import { HouseDataType } from '../../utils/types';
+import { useMessages } from '../../i18n';
 
 interface IOurHomes{
     style?: any;
@@ -9,13 +10,14 @@ interface IOurHomes{
 }
 
 const OurHomes: React.FC<IOurHomes> = ({ style, houseDataList }) => {
+    const m = useMessages();
     // Homes data is passed as props
     return (
         <section id="house-list" className="bg-one about section" style={style}>
             <div className="container">
                 <div className="row">
                     <div className="title text-center wow fadeIn" data-wow-duration="1500ms">
-                        <h2>Our <span className="color">Homes</span> </h2>
+                        <h2>{m.sections.ourLead} <span className="color">{m.sections.homesHighlight}</span> </h2>
                         <div className="border"></div>
                     </div>
                     <div className={`homes-grid${houseDataList.length === 5 ? ' homes-grid--five' : ''}`}>

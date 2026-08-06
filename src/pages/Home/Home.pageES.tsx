@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import OurHomesES from "../../components/OurHomes/OurHomes.componentES";
+import OurHomes from "../../components/OurHomes/OurHomes.component";
 import WelcomeSliderES from "../../components/WelcomeSlider/WelcomeSlider.componentES";
 import { houseDataList } from '../../utils/constants';
 import DiscoverES from "../../components/Discover/Discover.componentES";
@@ -60,7 +60,7 @@ const HomeES = () => {
       <FixedNavigationES isBlog={false}/>
       <HelpMeChoose title="Elige tu" titleHighlight="Estadía Ideal" options={helpMeChooseOptionsES} />
       <HomeReviews locale="es" />
-      <OurHomesES houseDataList={houseDataList}/>
+      <OurHomes houseDataList={houseDataList}/>
       <OurOtherHomesES/>
       <BookingCtaBanner locale="es" />
       <DiscoverES />

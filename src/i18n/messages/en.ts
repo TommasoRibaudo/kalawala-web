@@ -43,6 +43,25 @@ export const en = {
     bankTransferTail: 'within 6 hours of making your reservation.',
   },
 
+  hero: {
+    namTitle: 'Namaitami Homes',
+    tagline: 'Fully equipped vacation homes in the heart of Puerto Viejo and Playa Chiquita.',
+    trust: '✓ Instant confirmation · ✓ Secure booking · ✓ No platform fees',
+    rating: '⭐⭐⭐⭐⭐ 4.9/5 from thousands of stays since 2015',
+  },
+
+  sections: {
+    // "Our Homes" / "Our Villas" — split so the second word carries the accent.
+    ourLead: 'Our',
+    homesHighlight: 'Homes',
+    homeHighlight: 'Home',
+    villasHighlight: 'Villas',
+    exploreOtherStays: 'Explore Other Unique Stays in Puerto Viejo & Playa Chiquita.',
+    otherBlogsHeading: 'Check out our other blogs!',
+    readBlog: (title: string) => `Read blog: ${title}`,
+    weOfferEquipped: 'We offer fully equipped homes:',
+  },
+
   contact: {
     // Split so the second word can carry the colour accent.
     headingMain: 'Get In',

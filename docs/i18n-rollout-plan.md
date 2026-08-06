@@ -305,8 +305,38 @@ every remaining difference explained.
       Note `/HomeNamES` was already importing the English `PortfolioNam`, so its
       gallery alt text was English; it is now Spanish. Intentional, and visible
       in the prerender diff.
-- [ ] `FixedNavigation` ×3, `Discover` ×3, `WelcomeSlider` ×3, `OurHomes` ×3,
-      `OurOtherHomes` ×3, `OtherBlogs`, `ListingAd`, `OtherListings`
+- [x] `OtherBlogs`, `OurHomes` ×3, `ListingAd` — heading strings only.
+      Two Spanish blog pages imported *both* the EN and ES `OtherBlogs`; the
+      duplicate import went with the merge.
+- [ ] `WelcomeSlider` ×3 — **two decisions needed first, see below**
+- [ ] `OurOtherHomes` ×3 — headings plus `redirectPath` locale suffixes
+      (`/VillaMarES`), which should move to `localeSuffix()`
+- [ ] `Discover` ×3 — long prose with inline `<b>` and interpolated constants.
+      Belongs in `src/i18n/content/`, not the string catalog, per the rule that
+      catalogs stay React-free.
+- [ ] `FixedNavigation` ×3 — brand href (`/#body` vs `/HomeES`) and booking href
+      differ; both should come from `bookingPath()` / the route model
+- [ ] `OtherListings` — **decision needed, see below**
+
+##### Open decisions blocking the rest of 3a
+
+1. **`WelcomeSlider` RIB: the Spanish copy renders a CTA button the English one
+   does not** — "Reservá Ahora - Los precios más barato!", linking to
+   `homeVillasES#callToActionES`. English imports `Button` but renders none.
+   This is a content/marketing difference, not a translation, so merging forces
+   a call: add the CTA to English, drop it from Spanish, or keep it Spanish-only
+   behind a documented conditional. **Its anchor is also now stale** — Phase 3a
+   unified the section id to `callToAction`, so `#callToActionES` no longer
+   resolves and must be fixed whichever way this goes.
+
+2. **`OtherListings`: the Spanish copy is memoised and the English one is not.**
+   ES uses `useCallback`/`useMemo` around the resize handler and filtering; EN
+   uses plain functions. A performance divergence, not a translation. Merging
+   should take the memoised version unless there is a reason not to.
+
+3. Minor, decided: the base Spanish hero tagline reads "en el corazon" (missing
+   the accent) where the Nam variant reads "en el corazón". Unifying on the
+   accented form is a small copy fix, applied when `WelcomeSlider` merges.
 
 ### 🚢 Ship gate A
 

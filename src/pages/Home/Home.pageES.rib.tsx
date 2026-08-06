@@ -3,7 +3,7 @@ import ContactUs from "../../components/ContactUs/ContactUs.component";
 import {VillasDataListES } from '../../utils/constants';
 import CallToAction from "../../components/CallToAction/CallToAction.component";
 import FixedNavigationES from "../../components/FixedNavigation/FixedNavigation.componentES";
-import OurHomesRIBES from "../../components/OurHomes/OurHomes.componentRIBES";
+import OurHomesRIB from "../../components/OurHomes/OurHomes.componentRIB";
 import DiscoverRIBES from "../../components/Discover/Discover.componentRIBES";
 import WelcomeSliderRibES from "../../components/WelcomeSlider/WelcomeSlider.componentRIBES";
 import PortfolioRIB from "../../components/Portfolio/Portfolio.componentRIB";
@@ -26,7 +26,7 @@ const HomeRibES = () => {
       <WelcomeSliderRibES />
       <FixedNavigationES isBlog={false}/>
       <BookingSearchWidget locale="es" variant="hero" />
-      <OurHomesRIBES houseDataList={VillasDataListES}/>
+      <OurHomesRIB houseDataList={VillasDataListES}/>
       <OurOtherHomesRIBES/>
       <DiscoverRIBES />
       <CallToAction />

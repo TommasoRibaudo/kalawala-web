@@ -9,14 +9,13 @@ import OtherBlogs from "../Components/OtherBlogs.Component";
 //import constants
 import { allHomesSnippetES, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
-import ListingAdES from "../Components/ListingAd/ListingAd.componentES";
+import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
-import OtherBlogsES from "../Components/OtherBlogs.ComponentES";
 
 
 const BestTimeToVisitPuertoES = () => {
@@ -242,7 +241,7 @@ const BestTimeToVisitPuertoES = () => {
                         </div>
                     </div>
 
-                    <OtherBlogsES currentBlog="mejorEpocaPuertoViejo" blogs={blogsES} />
+                    <OtherBlogs currentBlog="mejorEpocaPuertoViejo" blogs={blogsES} />
                 </Col>
             </Row>
 

@@ -17,7 +17,7 @@ interface IHomeCard {
 
 const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangCode }) => {
 
-    // Spanish house codes contain "ES" (see OurHomes.componentES filter), so the
+    // Spanish house codes contain "ES" (see OurHomes.component filter), so the
     // card can label its own CTA without threading a language prop from parents.
     const cardLocale: Locale = houseLangCode.includes('ES') ? 'es' : 'en';
     const navigate = useNavigate();

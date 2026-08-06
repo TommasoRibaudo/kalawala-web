@@ -31,6 +31,30 @@ export const es: Messages = {
     bankTransferTail: 'dentro de las 6 horas posteriores a realizar tu reserva.',
   },
 
+  hero: {
+    namTitle: 'Casitas Namaitami',
+    tagline:
+      'Casas de vacaciones completamente equipadas ubicadas en el corazón de Puerto Viejo y Playa Chiquita.',
+    trust: '✓ Confirmación instantánea · ✓ Reserva segura · ✓ Sin comisiones',
+    rating: '⭐⭐⭐⭐⭐ 4.9/5 de miles de estadías desde 2015',
+  },
+
+  sections: {
+    ourLead: 'Nuestras',
+    homesHighlight: 'Casas',
+    // The Nam variant reads "Our Home" (singular) in English but the Spanish
+    // copy said "Nuestras Casas" in both. Kept as it was rather than "correcting"
+    // it — the singular/plural mismatch is a copy decision, not a bug.
+    homeHighlight: 'Casas',
+    villasHighlight: 'Villas',
+    // The three Spanish copies of this line disagreed on capitalisation
+    // ("Explore otras…" vs "Explore Otras…"). Unified on sentence case.
+    exploreOtherStays: 'Explore otras estadías únicas en Puerto Viejo y Playa Chiquita.',
+    otherBlogsHeading: '¡Mira nuestros otros blogs!',
+    readBlog: (title: string) => `Leer blog: ${title}`,
+    weOfferEquipped: 'Ofrecemos casas completamente equipadas:',
+  },
+
   contact: {
     headingMain: 'Nuestros',
     headingHighlight: 'Contactos',

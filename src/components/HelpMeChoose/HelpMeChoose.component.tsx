@@ -20,7 +20,14 @@ interface IHelpMeChoose {
 const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options }) => {
     const navigate = useNavigate();
 
-    const handleClick = (houseLangCode: string) => {
+    const handleClick = (event: React.MouseEvent<HTMLAnchorElement>, houseLangCode: string) => {
+        // A real href already handles ctrl/cmd-click, middle-click and "open in
+        // new tab" correctly — only take over plain left-clicks so those keep
+        // working, and use the SPA transition (no full reload) for everything else.
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+            return;
+        }
+        event.preventDefault();
         navigate(`/${houseLangCode}`);
         setTimeout(() => {
             window.scrollTo(0, 0);
@@ -34,22 +41,29 @@ const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options 
                     <h2>{title} {titleHighlight && <span className="color">{titleHighlight}</span>}</h2>
                 </div>
                 <div className="help-me-choose-cards">
-                    {options.map((option) => (
-                        <div 
-                            key={option.houseLangCode} 
-                            className="help-me-choose-card"
-                            onClick={() => handleClick(option.houseLangCode)}
-                        >
-                            <div className="card-image-wrapper">
-                                <img src={option.image} alt={option.houseName} width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(option.image)} sizes="(max-width: 575px) 86vw, (max-width: 991px) 320px, 250px" />
-                            </div>
-                            <div className="card-content">
-                                <span className="card-emoji">{option.emoji}</span>
-                                <span className="card-label">{option.label}</span>
-                                <span className="card-house-name">{option.houseName}</span>
-                            </div>
-                        </div>
-                    ))}
+                    {options.map((option) => {
+                        // Spanish house codes contain "ES" — same convention HomeCard
+                        // uses to label its own CTA without a language prop.
+                        const isSpanish = option.houseLangCode.includes('ES');
+                        return (
+                            <a
+                                key={option.houseLangCode}
+                                className="help-me-choose-card"
+                                href={`/${option.houseLangCode}`}
+                                onClick={(event) => handleClick(event, option.houseLangCode)}
+                            >
+                                <div className="card-image-wrapper">
+                                    <img src={option.image} alt={option.houseName} width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(option.image)} sizes="(max-width: 575px) 86vw, (max-width: 991px) 320px, 250px" />
+                                </div>
+                                <div className="card-content">
+                                    <span className="card-emoji">{option.emoji}</span>
+                                    <span className="card-label">{option.label}</span>
+                                    <span className="card-house-name">{option.houseName}</span>
+                                    <span className="card-cta">{isSpanish ? 'Ver casa →' : 'View home →'}</span>
+                                </div>
+                            </a>
+                        );
+                    })}
                 </div>
             </div>
         </section>

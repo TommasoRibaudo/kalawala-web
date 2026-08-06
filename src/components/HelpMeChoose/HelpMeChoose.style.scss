@@ -43,6 +43,12 @@
         }
     }
 
+    // Matches the listing-card treatment in OurHomes/Components/HomeCard.style.scss
+    // so both home sections read as one system. The card and the section behind it
+    // are both white ($section-bg and $kalawala-light-cream are each #FFFFFF), so
+    // without a shadow this read as flat page content rather than something you
+    // could click — the only affordance was a hover-only image lift you had to
+    // hover to discover.
     .help-me-choose-card {
         background: $section-bg;
         overflow: visible;
@@ -51,6 +57,17 @@
         min-width: 250px;
         max-width: 350px;
         padding: 15px;
+        // It is a real anchor now, so reset the link defaults and give keyboard
+        // users the same focus ring the listing cards have.
+        text-decoration: none;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(11, 48, 40, 0.08);
+        transition: transform .35s ease, box-shadow .35s ease;
+
+        &:focus-visible {
+            outline: 2px solid $primary-color;
+            outline-offset: 2px;
+        }
 
         @media (max-width: 1023px) {
             flex: 0 1 calc(50% - 10px);
@@ -63,22 +80,33 @@
             max-width: 100%;
         }
 
-        &:hover .card-image-wrapper {
-            transform: translateY(-10px);
+        // Lift the whole card rather than just the image, so the affordance is
+        // visible at rest and obvious on hover.
+        &:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(11, 48, 40, 0.16);
+        }
+
+        &:hover .card-image-wrapper img {
+            transform: scale(1.03);
+        }
+
+        &:hover .card-cta {
+            gap: 12px; // nudge the arrow forward on hover
         }
 
         .card-image-wrapper {
             width: 100%;
             height: 180px;
-            overflow: hidden;
+            overflow: hidden; // clips the hover zoom on the photo below
             margin-bottom: 15px;
-            transition: transform 0.3s ease;
 
             img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
                 border-radius: 8px;
+                transition: transform .45s ease;
             }
         }
 
@@ -102,6 +130,20 @@
 
             .card-house-name {
                 display: none;
+            }
+
+            // Explicit "View home →" affordance — the strongest single cue that
+            // the whole card is a link. Kept identical to HomeCard's .card-cta.
+            .card-cta {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 14px;
+                font-weight: 600;
+                font-size: 1rem;
+                letter-spacing: 0.02em;
+                color: $primary-color;
+                transition: gap .25s ease;
             }
         }
     }

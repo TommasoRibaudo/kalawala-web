@@ -151,10 +151,11 @@ see its README for the detail.
       (`node scripts/check-urls.mjs capture`).
 - [x] Add `scripts/check-urls.mjs` — the same tool asserts single-hop redirects in
       Phase 5 and Phase 10.
+- [x] Lighthouse baseline for `/`, `/HomeES`, `/Geco`, `/twodaysinpuertoviejo`
+      (`seo-baseline/lighthouse-2026-08-06.md` — perf 89–90, SEO 100 across the board).
 - [ ] **Owner:** export GSC performance, 16 months, Pages + Queries tabs, as CSV.
 - [ ] **Owner:** record GSC indexed vs not-indexed page counts.
 - [ ] **Owner:** export PostHog monthly organic sessions, EN vs ES, 12 months.
-- [ ] Lighthouse baseline for `/`, `/HomeES`, `/Geco`, `/twodaysinpuertoviejo`.
 
 **Validation:** the baseline files exist and are committed. This phase is the only
 insurance against "did the migration hurt us?" being unanswerable.

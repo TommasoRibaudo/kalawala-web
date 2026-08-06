@@ -76,9 +76,6 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
           <a href="/bookES" className="nav-cta-btn" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("bookES") }}>
             Reservar
           </a>
-          <div className="mobile-flag">
-            <LanguageSwitcher />
-          </div>
           <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick}>
             <img src={SolidBars} style={{ height: "25px" }} alt="Menu toggle" />
           </Navbar.Toggle>
@@ -90,6 +87,9 @@ const FixedNavigationES = ({ isBlog }: IFixedNavigationES) => {
             <Nav.Link href="/portalES" className="navText" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("portalES") }}>Mi Reserva</Nav.Link>
             <Nav.Link href="https://wa.me/50684632276" className="navText" target="_blank" rel="noopener noreferrer">WhatsApp</Nav.Link>
           </Nav>
+          <div className="mobile-flag">
+            <LanguageSwitcher />
+          </div>
         <div className="navbar-flag">
             <a href="/bookES" className="nav-cta-btn" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("bookES") }}>
               Reservar

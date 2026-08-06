@@ -39,22 +39,22 @@ const BestTimeToVisitPuertoES = () => {
                 />
                 <link
                     rel="canonical"
-                    href="https://www.reservaskalawala.com/mejorEpocaPuertoViejo"
+                    href="https://www.reservaskalawala.com/bestTimeToVisitPuertoES"
                 />
                 <link
                     rel="alternate"
                     hrefLang="es"
-                    href="https://www.reservaskalawala.com/mejorEpocaPuertoViejo"
+                    href="https://www.reservaskalawala.com/bestTimeToVisitPuertoES"
                 />
                 <link
                     rel="alternate"
                     hrefLang="en"
-                    href="https://www.reservaskalawala.com/bestTimePuertoViejo"
+                    href="https://www.reservaskalawala.com/bestTimeToVisitPuerto"
                 />
                 <link
                     rel="alternate"
                     hrefLang="x-default"
-                    href="https://www.reservaskalawala.com/mejorEpocaPuertoViejo"
+                    href="https://www.reservaskalawala.com/bestTimeToVisitPuerto"
                 />
             </Helmet>
 

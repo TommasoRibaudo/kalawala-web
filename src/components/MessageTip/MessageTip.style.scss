@@ -2,7 +2,7 @@
 .message-tip-container {
   position: fixed;
   bottom: calc(20px + env(safe-area-inset-bottom)); // Safe area for mobile browser UI / notch
-  right: 20px;
+  inset-inline-end: 20px;
   z-index: 9999;
   pointer-events: none; // Allow clicks to pass through container
   
@@ -14,8 +14,8 @@
   // Mobile adjustments
   @media (max-width: 768px) {
     display: block; // Show on mobile
-    right: 15px;
-    left: 15px; // Allow full width on mobile
+    inset-inline-end: 15px;
+    inset-inline-start: 15px; // Allow full width on mobile
     
     // On mobile, positioning is handled dynamically via inline styles
     // This ensures proper positioning above sticky CTA buttons

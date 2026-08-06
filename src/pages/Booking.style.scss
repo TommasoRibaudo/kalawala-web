@@ -78,8 +78,8 @@
   &--left {
     position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
     transform: translateX(-100%);
     opacity: 0;
     pointer-events: none;
@@ -88,8 +88,8 @@
   &--right {
     position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
     transform: translateX(100%);
     opacity: 0;
     pointer-events: none;
@@ -538,7 +538,7 @@
   color: rgba(23, 23, 23, 0.72);
   font-size: 14px;
   margin: 0;
-  text-align: right;
+  text-align: end;
 }
 
 // ---------------------------------------------------------------------------
@@ -578,7 +578,7 @@
 
 .booking-results-featured-missing {
   background: rgba(138, 162, 136, 0.14);
-  border-left: 4px solid $kalawala-light-green;
+  border-inline-start: 4px solid $kalawala-light-green;
   border-radius: 8px;
   margin-bottom: 26px;
   padding: 14px 18px;
@@ -599,7 +599,7 @@
 
 .booking-warning-list {
   background: rgba(138, 162, 136, 0.14);
-  border-left: 4px solid $kalawala-light-green;
+  border-inline-start: 4px solid $kalawala-light-green;
   border-radius: 8px;
   color: $kalawala-darker-green;
   list-style: none;
@@ -627,7 +627,7 @@
 
   .booking-warning-list {
     background: transparent;
-    border-left: none;
+    border-inline-start: none;
     border-radius: 0;
     color: rgba(23, 23, 23, 0.66);
     font-size: 14px;
@@ -635,13 +635,13 @@
     padding: 0;
 
     li {
-      padding-left: 16px;
+      padding-inline-start: 16px;
       position: relative;
 
       &::before {
         color: $kalawala-light-green;
         content: '•';
-        left: 0;
+        inset-inline-start: 0;
         position: absolute;
       }
     }
@@ -751,7 +751,7 @@
   color: $white;
   font-size: 13px;
   font-weight: 700;
-  left: 14px;
+  inset-inline-start: 14px;
   padding: 7px 10px;
   top: 14px;
 }
@@ -919,7 +919,7 @@ li.booking-result-card__amenities-toggle {
 
   small del {
     font-size: inherit;
-    margin-right: 2px;
+    margin-inline-end: 2px;
   }
 }
 
@@ -1341,7 +1341,7 @@ li.booking-result-card__amenities-toggle {
   gap: 14px;
   margin: 0 0 22px;
   padding: 18px 0;
-  text-align: left;
+  text-align: start;
 
   div {
     display: grid;
@@ -1629,7 +1629,7 @@ li.booking-result-card__amenities-toggle {
 // ahead of the label so the row scans as "🐾 travelling with a pet".
 .booking-pet-toggle {
   .form-check-label svg {
-    margin-right: 6px;
+    margin-inline-end: 6px;
   }
 }
 
@@ -1680,7 +1680,7 @@ li.booking-result-card__amenities-toggle {
     color: $kalawala-darker-green;
     font-size: 13px;
     font-weight: 700;
-    margin-left: 6px;
+    margin-inline-start: 6px;
     white-space: nowrap;
   }
 
@@ -1731,7 +1731,7 @@ li.booking-result-card__amenities-toggle {
   }
 
   .booking-quote-expiry {
-    text-align: left;
+    text-align: start;
   }
 
   .booking-deposit-handoff__contacts {

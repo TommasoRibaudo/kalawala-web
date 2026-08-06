@@ -71,7 +71,7 @@
             line-height: 1;
             position: absolute;
             top: 50%;
-            left: 50%;
+            inset-inline-start: 50%;
             transform: translate(-50%, -50%);
         }
         
@@ -81,18 +81,18 @@
     }
     
     .slick-prev {
-        left: 10px;
+        inset-inline-start: 10px;
         
         &:before {
-            margin-left: -1px; // Slight adjustment for visual centering
+            margin-inline-start: -1px; // Slight adjustment for visual centering
         }
     }
     
     .slick-next {
-        right: 10px;
+        inset-inline-end: 10px;
         
         &:before {
-            margin-left: 1px; // Slight adjustment for visual centering
+            margin-inline-start: 1px; // Slight adjustment for visual centering
         }
     }
 }
@@ -151,11 +151,11 @@
         padding: 20px 50px;
         
         .slick-prev {
-            left: 5px;
+            inset-inline-start: 5px;
         }
         
         .slick-next {
-            right: 5px;
+            inset-inline-end: 5px;
         }
     }
 }

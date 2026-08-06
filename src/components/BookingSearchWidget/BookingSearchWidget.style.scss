@@ -93,7 +93,7 @@
     width: auto !important;
     margin: 10px 0 0 !important;
     line-height: 1.4;
-    text-align: left;
+    text-align: start;
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
@@ -106,7 +106,7 @@
     width: auto !important;
     margin: 6px 0 0 !important;
     line-height: 1.4;
-    text-align: left;
+    text-align: start;
   }
 
   &__dates-trigger {
@@ -120,7 +120,7 @@
     font-size: 15px;
     gap: 8px;
     padding: 10px 12px;
-    text-align: left;
+    text-align: start;
     transition: border-color 0.2s, box-shadow 0.2s;
     width: 100%;
 
@@ -151,7 +151,7 @@
     border: 1px solid rgba(41, 79, 68, 0.18);
     border-radius: 12px;
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
-    left: 0;
+    inset-inline-start: 0;
     margin-top: 6px;
     max-width: calc(100vw - 32px);
     padding: 16px;
@@ -228,7 +228,7 @@
     color: rgba(23, 23, 23, 0.6) !important;
     width: auto !important;
     margin: 6px 0 0 !important;
-    text-align: left;
+    text-align: start;
   }
 
   &__guest-count {
@@ -239,7 +239,7 @@
     text-align: center;
 
     svg {
-      margin-right: 4px;
+      margin-inline-end: 4px;
       color: $kalawala-dark-green;
     }
   }

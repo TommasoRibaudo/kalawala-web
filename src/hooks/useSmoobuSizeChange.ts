@@ -1,8 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useMessageTip } from '../components/MessageTip/MessageTipContainer.component';
+import { getMessages, type Locale } from '../i18n';
 
 interface UseSmoobuClickOptions {
-  isSpanishPage?: boolean;
+  locale?: Locale;
 }
 
 /**
@@ -11,7 +12,7 @@ interface UseSmoobuClickOptions {
  * The tip is shown only once per session.
  */
 export const useSmoobuSizeChange = (options: UseSmoobuClickOptions = {}) => {
-  const { isSpanishPage = false } = options;
+  const { locale = 'en' } = options;
   const { addMessageTip, getMessageTipsCount } = useMessageTip();
   const hasTriggeredRef = useRef(false);
 
@@ -28,9 +29,7 @@ export const useSmoobuSizeChange = (options: UseSmoobuClickOptions = {}) => {
     
     hasTriggeredRef.current = true;
 
-    const message = isSpanishPage
-      ? 'Elige la tarifa no reembolsable en el motor de reservas para disfrutar de un 10% de descuento.'
-      : 'Select the non-refundable rate in the booking tool to enjoy a 10% discount.';
+    const message = getMessages(locale).tips.nonRefundableDiscount;
 
     addMessageTip({
       id: 'welcome-message',
@@ -38,7 +37,7 @@ export const useSmoobuSizeChange = (options: UseSmoobuClickOptions = {}) => {
       delay: 2000,
       duration: 20000
     });
-  }, [addMessageTip, getMessageTipsCount, isSpanishPage]);
+  }, [addMessageTip, getMessageTipsCount, locale]);
 
   useEffect(() => {
     const smoobuElement = document.querySelector('.Smoobo') as HTMLElement;

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { GUEST_REVIEWS, Review } from './reviewsData';
 import './GuestReviews.style.scss';
 import type { Locale } from '../../i18n';
+import { getMessages, pickLocalized } from '../../i18n';
 
 interface GuestReviewsProps {
   propertyKey: string;
@@ -58,8 +59,8 @@ const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, locale }) => {
   const reviews = GUEST_REVIEWS[propertyKey];
   if (!reviews || reviews.length === 0) return null;
 
-  const heading = locale === 'es' ? 'Lo que dicen nuestros huéspedes' : 'What our guests are saying';
-  const closeLabel = locale === 'es' ? 'Cerrar reseñas' : 'Close reviews';
+  const heading = getMessages(locale).reviews.heading;
+  const closeLabel = getMessages(locale).reviews.closeReviews;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) closePanel();
@@ -73,7 +74,7 @@ const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, locale }) => {
   };
 
   const renderReviewMeta = (review: Review) => {
-    const text = locale === 'es' ? review.text.es : review.text.en;
+    const text = pickLocalized(review.text, locale);
     const stayLabel = locale === 'es' ? translateStayType(review.stayType) : review.stayType;
     return { text, stayLabel };
   };

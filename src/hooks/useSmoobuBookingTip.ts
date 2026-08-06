@@ -1,8 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useMessageTip } from '../components/MessageTip/MessageTipContainer.component';
+import { getMessages, type Locale } from '../i18n';
 
 interface UseSmoobuBookingTipOptions {
-  isSpanishPage?: boolean;
+  locale?: Locale;
   propertyName?: string;
 }
 
@@ -13,13 +14,13 @@ interface UseSmoobuBookingTipOptions {
  * 
  * @example
  * // In English listing pages:
- * useSmoobuBookingTip({ isSpanishPage: false, propertyName: 'House Delfin' });
+ * useSmoobuBookingTip({ locale: 'en', propertyName: 'House Delfin' });
  * 
  * // In Spanish listing pages:
- * useSmoobuBookingTip({ isSpanishPage: true, propertyName: 'Casa Delfín' });
+ * useSmoobuBookingTip({ locale: 'es', propertyName: 'Casa Delfín' });
  */
 export const useSmoobuBookingTip = (options: UseSmoobuBookingTipOptions = {}) => {
-  const { isSpanishPage = false, propertyName = 'this property' } = options;
+  const { locale = 'en', propertyName = 'this property' } = options;
   const { addMessageTip, getMessageTipsCount } = useMessageTip();
   const hasTriggeredRef = useRef(false);
 
@@ -41,9 +42,7 @@ export const useSmoobuBookingTip = (options: UseSmoobuBookingTipOptions = {}) =>
     
     hasTriggeredRef.current = true;
 
-    const message = isSpanishPage
-      ? `✔ Confirmación inmediata garantizada para ${propertyName}. ¡Reserva ahora y asegura tu estadía!`
-      : `✔ Instant confirmation guaranteed for ${propertyName}. Book now and secure your stay!`;
+    const message = getMessages(locale).tips.instantConfirmation(propertyName);
 
     addMessageTip({
       id: 'booking-encouragement',
@@ -51,7 +50,7 @@ export const useSmoobuBookingTip = (options: UseSmoobuBookingTipOptions = {}) =>
       delay: 2000,
       duration: 15000
     });
-  }, [addMessageTip, getMessageTipsCount, isSpanishPage, propertyName]);
+  }, [addMessageTip, getMessageTipsCount, locale, propertyName]);
 
   useEffect(() => {
     let cleanup: (() => void) | null = null;

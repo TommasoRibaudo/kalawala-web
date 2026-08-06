@@ -7,7 +7,7 @@ import { faCalendarDays, faUser, faWifi, faSnowflake, faCar, faKitchenSet, faArr
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
 import FixedNavigationES from '../components/FixedNavigation/FixedNavigation.componentES';
-import { useLanguageDetection } from '../hooks/useLanguageDetection';
+import { bookingLanguage, useLocale } from '../i18n';
 import { persistPortalSession, savePortalCredentials, readPortalCredentials, removePortalCredentials } from '../services/PortalSession.service';
 import {
   BookingApiError,
@@ -161,9 +161,14 @@ const StepIndicator = ({ currentStep, strings }: { currentStep: WizardStep; stri
 const BookingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const detectedSpanishPage = useLanguageDetection();
-  const isSpanishPage = detectedSpanishPage || location.pathname.toLowerCase().startsWith('/bookes');
-  const language: BookingLanguage = isSpanishPage ? 'es' : 'en';
+  const locale = useLocale();
+    // /bookES/return and /bookES/confirmed are already covered by
+  // detectLocaleFromPath's 'ES/' clause; the lowercase check stays for
+  // hand-typed URLs, which is the one case the shared detector will not match.
+  const language: BookingLanguage =
+    locale === 'es' || location.pathname.toLowerCase().startsWith('/bookes')
+      ? 'es'
+      : bookingLanguage(locale);
   const strings = bookingStrings[language];
   const [searchParams, setSearchParams] = useSearchParams();
   const isPayPalReturnRoute = isBookingReturnPath(location.pathname);

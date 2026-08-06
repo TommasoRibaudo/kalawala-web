@@ -110,7 +110,7 @@ const RandomPopupHandler = () => {
   // the message catalogs in Phase 2.
   const locale = useLocale();
 
-  useRandomPopup({ isSpanishPage: locale === 'es' });
+  useRandomPopup({ locale });
 
   return null; // This component doesn't render anything
 };

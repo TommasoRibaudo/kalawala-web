@@ -2,22 +2,23 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { PROPERTY_DISPLAY_NAMES, BLOG_ARTICLES } from '../../utils/constants';
 import './Footer.style.scss';
-import type { Locale } from '../../i18n';
+import { bookingPath, getMessages, localeSuffix, type Locale } from '../../i18n';
 
 interface IFooter {
   locale: Locale;
 }
 
 const Footer: React.FC<IFooter> = ({ locale }) => {
-  const suffix = locale === 'es' ? 'ES' : '';
-  const bookPath = locale === 'es' ? '/bookES' : '/book';
+  const m = getMessages(locale);
+  const suffix = localeSuffix(locale);
+  const bookPath = bookingPath(locale);
 
   return (
     <footer className="site-footer">
       <div className="container">
         <div className="footer-grid">
           <div className="footer-col">
-            <h4>{locale === 'es' ? 'Nuestras Casas' : 'Our Homes'}</h4>
+            <h4>{m.footer.ourHomes}</h4>
             <ul>
               {Object.entries(PROPERTY_DISPLAY_NAMES).map(([code, name]) => (
                 <li key={code}>
@@ -28,8 +29,11 @@ const Footer: React.FC<IFooter> = ({ locale }) => {
           </div>
 
           <div className="footer-col">
-            <h4>{locale === 'es' ? 'Guías de Viaje' : 'Travel Guides'}</h4>
+            <h4>{m.footer.travelGuides}</h4>
             <ul>
+              {/* Locale-keyed DATA, not chrome: BLOG_ARTICLES stores flat
+                  titleEn/titleEs/pathEn/pathEs fields. Phase 3 reshapes these to
+                  LocalizedValue and Phase 4 replaces the paths with routes.config. */}
               {BLOG_ARTICLES.map((article) => (
                 <li key={article.key}>
                   <Link to={locale === 'es' ? article.pathEs : article.pathEn}>
@@ -41,14 +45,14 @@ const Footer: React.FC<IFooter> = ({ locale }) => {
           </div>
 
           <div className="footer-col">
-            <h4>{locale === 'es' ? 'Contacto' : 'Contact'}</h4>
+            <h4>{m.footer.contact}</h4>
             <ul className="footer-contact">
               <li>
                 <a href="tel:+50684632276">+506 8463-2276</a>
               </li>
               <li>
                 <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">
-                  {locale === 'es' ? 'Chatear por WhatsApp' : 'Chat on WhatsApp'}
+                  {m.footer.chatOnWhatsApp}
                 </a>
               </li>
               <li>
@@ -59,9 +63,9 @@ const Footer: React.FC<IFooter> = ({ locale }) => {
           </div>
 
           <div className="footer-col footer-cta-col">
-            <h4>{locale === 'es' ? '¿Listo para reservar?' : 'Ready to book?'}</h4>
+            <h4>{m.common.readyToBook}</h4>
             <Link to={bookPath} className="footer-cta-btn">
-              {locale === 'es' ? 'Ver disponibilidad' : 'Check availability'}
+              {m.common.checkAvailability}
             </Link>
           </div>
         </div>

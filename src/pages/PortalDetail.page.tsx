@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router-dom';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
 import FixedNavigationES from '../components/FixedNavigation/FixedNavigation.componentES';
-import { useLanguageDetection } from '../hooks/useLanguageDetection';
+import { useLocale } from '../i18n';
 import {
   BookingApiError,
   BookingLanguage,
@@ -212,8 +212,8 @@ const WeatherWidget = ({ language }: { language: BookingLanguage }) => {
 const PortalDetailPage = () => {
   const { reservationPublicId } = useParams<{ reservationPublicId: string }>();
   const navigate = useNavigate();
-  const isSpanishPage = useLanguageDetection();
-  const language: BookingLanguage = isSpanishPage ? 'es' : 'en';
+  const locale = useLocale();
+  const language: BookingLanguage = locale === 'es' ? 'es' : 'en';
   const strings = portalDetailStrings[language];
   const Navigation = language === 'es' ? FixedNavigationES : FixedNavigation;
 

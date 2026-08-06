@@ -11,8 +11,8 @@
     padding: 1rem;
     background: $primary-bg;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 2px 12px rgba(11, 48, 40, 0.08);
+    transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
     text-decoration: none;
     cursor: pointer;
 
@@ -71,10 +71,29 @@
           gap: 5px;
         }
       }
+
+      // Explicit "View home →" affordance, matching the "Our Homes" cards so both
+      // sections read as one system. Plain text arrow, brand-green.
+      .card-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        letter-spacing: 0.02em;
+        color: $primary-color;
+        transition: gap .25s ease;
+      }
     }
-  
+
     &:hover {
-      transform: translateY(-5px);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 32px rgba(11, 48, 40, 0.16);
+    }
+
+    &:hover .card-cta {
+      gap: 12px;
     }
   }
   

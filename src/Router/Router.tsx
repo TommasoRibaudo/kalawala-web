@@ -67,10 +67,6 @@ const BestTimeToVisitPuertoES = lazy(() => import(/* webpackChunkName: "route-be
 const PuertoHiddenGemsES = lazy(() => import(/* webpackChunkName: "route-puertohiddengemses" */ '../pages/Blog/staticPages_ES/PuertoHiddenGemsES'));
 const HomeES = lazy(() => import(/* webpackChunkName: "route-homees" */ '../pages/Home/Home.pageES'));
 const Success = lazy(() => import(/* webpackChunkName: "route-success" */ '../pages/Home/Success.page'));
-const HomeNam = lazy(() => import(/* webpackChunkName: "route-homenam" */ '../pages/Home/Home.page.nam'));
-const HomeNamES = lazy(() => import(/* webpackChunkName: "route-homenames" */ '../pages/Home/Home.pageES.nam'));
-const HomeRib = lazy(() => import(/* webpackChunkName: "route-homevillas" */ '../pages/Home/Home.page.rib'));
-const HomeRibES = lazy(() => import(/* webpackChunkName: "route-homevillases" */ '../pages/Home/Home.pageES.rib'));
 const NotFound = lazy(() => import(/* webpackChunkName: "route-404" */ '../pages/NotFound.page'));
 const BlogIndex = lazy(() => import(/* webpackChunkName: "route-blog" */ '../pages/Blog/BlogIndex.page'));
 const BlogIndexES = lazy(() => import(/* webpackChunkName: "route-bloges" */ '../pages/Blog/BlogIndex.page_ES'));
@@ -234,10 +230,6 @@ const AppRouter = () => {
       <Route path='/puertoHiddenGems' element={<PuertoHiddenGems />} />
       <Route path='/HomeES' element={<HomeES/>} />
       <Route path='/Success' element={<Success/>} />
-      <Route path='/HomeNam' element={<HomeNam/>} />
-      <Route path='/HomeNamES' element={<HomeNamES/>} />
-      <Route path='/HomeVillas' element={<HomeRib/>} />
-      <Route path='/HomeVillasES' element={<HomeRibES/>} />
       <Route path='/Areka' element={<ListingAreka/>}/>
       <Route path='/Giulia' element={<ListingGiulia/>}/>
       <Route path='/Plumeria' element={<ListingPlumeria/>}/>

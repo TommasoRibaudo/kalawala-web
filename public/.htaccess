@@ -117,6 +117,28 @@ ErrorDocument 404 /404.html
 
     RewriteRule ^index\.html$ - [L]
 
+    # ========================================================================
+    # Retired pages: the Namaitami and Villas landing pages.
+    #
+    # /HomeNam, /HomeNamES, /HomeVillas and /HomeVillasES were removed from the
+    # site. They were in reactSnap.include and therefore in sitemap.xml, so they
+    # are known to Google — dropping them without a redirect would turn four
+    # indexed URLs into 404s and throw away whatever authority they hold.
+    # 301 to the equivalent home page in the same language instead.
+    #
+    # The trailing slash on /HomeES/ is deliberate. Apache's DirectorySlash
+    # redirects /HomeES to /HomeES/ on its own, so targeting the unslashed form
+    # would make every one of these a two-hop chain. See
+    # docs/seo-baseline/README.md.
+    #
+    # Case-insensitive (NC) because the old nav linked "homeVillasES" lowercase
+    # in at least one place.
+    # ========================================================================
+    RewriteRule ^HomeNamES/?$ /HomeES/ [R=301,L,NC]
+    RewriteRule ^HomeVillasES/?$ /HomeES/ [R=301,L,NC]
+    RewriteRule ^HomeNam/?$ / [R=301,L,NC]
+    RewriteRule ^HomeVillas/?$ / [R=301,L,NC]
+
     # Client-side-only routes with no pre-rendered file: the booking engine,
     # the guest portal, and the PayPal return page. Their content depends on
     # server-side session state or query params, so react-snap never

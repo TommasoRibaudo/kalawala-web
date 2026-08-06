@@ -16,6 +16,9 @@ interface IHomeCard {
 
 const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangCode }) => {
 
+    // Spanish house codes contain "ES" (see OurHomes.componentES filter), so the
+    // card can label its own CTA without threading a language prop from parents.
+    const isSpanish = houseLangCode.includes('ES');
     const navigate = useNavigate();
     const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
         // A real href already handles ctrl/cmd-click, middle-click and "open in
@@ -51,6 +54,7 @@ const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangC
                         <FontAwesomeIcon icon={faWifi} />
                         <FontAwesomeIcon icon={faParking} />
                     </div>
+                    <span className="card-cta">{isSpanish ? 'Ver casa →' : 'View home →'}</span>
                 </div>
             </div>
 

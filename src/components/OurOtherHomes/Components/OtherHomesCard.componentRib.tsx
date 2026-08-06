@@ -14,6 +14,9 @@ interface IOtherHomesCard {
 }
 
 const OtherHomesCardRib: FC<IOtherHomesCard> = ({ guestNumber, name, image, redirectPath }) => {
+    // Spanish routes end in "ES" (e.g. /VillaMarES), so the card labels its own
+    // CTA without a language prop.
+    const isSpanish = !!redirectPath?.endsWith('ES');
     const navigate = useNavigate();
 
     const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -49,6 +52,7 @@ const OtherHomesCardRib: FC<IOtherHomesCard> = ({ guestNumber, name, image, redi
                     <FontAwesomeIcon icon={faWifi} />
                     <FontAwesomeIcon icon={faParking} />
                 </div>
+                <span className="card-cta">{isSpanish ? 'Ver casa →' : 'View home →'}</span>
             </div>
         </a>
     );

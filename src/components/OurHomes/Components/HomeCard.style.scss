@@ -132,8 +132,14 @@
     .block {
       background: $kalawala-light-cream; // was #242930 — a dark-theme leftover
       padding:30px;
-      border-bottom:2px solid transparent;
-      transition: .5s all;
+      // The card and the section behind it are both white, so with no shadow the
+      // card read as flat page content, not something you could click. A resting
+      // shadow + rounded corners give it a distinct "surface", and `cursor` is a
+      // belt-and-suspenders signal on top of the anchor wrapping the whole card.
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(11, 48, 40, 0.08);
+      cursor: pointer;
+      transition: transform .35s ease, box-shadow .35s ease;
       margin-bottom:20px;
       position: relative;
       z-index: 1;
@@ -143,11 +149,18 @@
         padding: 20px 15px; // Reduce padding on mobile to make more room for image
       }
 
+      // Lift the whole card (not just the image) and deepen the shadow so the
+      // interactive affordance is obvious without the user having to hover to
+      // discover it.
       &:hover {
-        border-bottom:2px solid $primary-color;
+        transform: translateY(-6px);
+        box-shadow: 0 16px 32px rgba(11, 48, 40, 0.16);
       }
-      &:hover .icon-box {
-        transform: translateY(-10px);
+      &:hover .our-homes-img-m {
+        transform: scale(1.03);
+      }
+      &:hover .card-cta {
+        gap: 12px; // nudge the arrow forward on hover
       }
       // !important throughout: this same `.about .block .icon-box` selector is
       // also defined, at equal specificity, in styles/style.css and the legacy
@@ -164,9 +177,9 @@
         margin: 0 auto 24px !important;
         padding: 0 !important;
         border: none !important;
+        border-radius: 12px;
+        overflow: hidden; // clip the hover zoom on the photo below
         transform: translateZ(0px);
-        transition-duration: 0.3s;
-        transition-property: transform;
 
         &::before, &::after {
           content: none !important; // kill the legacy diamond icon frame
@@ -179,6 +192,7 @@
           margin: 0 !important;
           object-fit: cover;
           border-radius: 12px;
+          transition: transform .45s ease;
         }
       }
 
@@ -242,6 +256,26 @@
               font-size: 1.2rem !important;
               margin: 0 !important;
             }
+          }
+        }
+
+        // Explicit "View home →" affordance — the strongest single cue that the
+        // whole card is a link. The arrow is a plain text glyph, not a
+        // FontAwesome svg, so the `.content svg { font-size: 26px !important }`
+        // mobile rule above leaves it alone.
+        .card-cta {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          margin-top: 18px;
+          font-weight: 600;
+          font-size: 1rem;
+          letter-spacing: 0.02em;
+          color: $primary-color;
+          transition: gap .25s ease;
+
+          @media (max-width: 768px) {
+            font-size: 1.15rem;
           }
         }
       }

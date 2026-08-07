@@ -284,3 +284,81 @@ const gettingToGandoca: Partial<Record<Locale, GettingToGandocaContent>> = {
 export function gettingToGandocaContent(locale: Locale): GettingToGandocaContent {
   return gettingToGandoca[locale] ?? gettingToGandoca.en!;
 }
+
+export interface TravellingToPuertoContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  /** Rendered before StayRecommendation. */
+  paragraphsBeforeStay: React.ReactNode[];
+  stayRecommendationTitle: string;
+  /** Rendered after StayRecommendation; WhyStayWithUs follows all of it. */
+  paragraphsBetween: React.ReactNode[];
+}
+
+const travellingToPuerto: Partial<Record<Locale, TravellingToPuertoContent>> = {
+  en: {
+    seoTitle: 'How to get to Puerto Viejo from San Jose',
+    seoDescription:
+      "If you're planning a trip to Puerto Viejo, Costa Rica, you may be wondering how to get there using public transportation. Fortunately, there are several options available that can take you to this beautiful Caribbean town in Talamanca.",
+    heading: 'How to get to Puerto Viejo from San Jose',
+    paragraphsBeforeStay: [
+      "If you're planning a trip to Puerto Viejo, Costa Rica, you may be wondering how to get there using public transportation. Fortunately, there are several options available that can take you to this beautiful Caribbean town in Talamanca.",
+      <>One of the most popular ways to get to Puerto Viejo is by bus. The primary bus company that services the route from San José to Puerto Viejo is <a href="https://www.mepecr.com/HorarioS_S.html" target="_blank" rel="noopener noreferrer">MEPE</a>. The bus station is located in the center of San José, exactly on 9th avenue and 12th street, making it easy to find.</>,
+      <b><i>The <a href="https://www.mepecr.com/HorarioS_S.html" target="_blank" rel="noopener noreferrer">bus schedule</a> to Puerto Viejo is as follows: 6am, 8am, 10am, 2pm, and the last one at 4pm.</i></b>,
+      'While you cannot reserve tickets in advance, it\'s always a good idea to arrive at the bus station early to secure your spot on the bus. Keep in mind that during peak travel seasons, such as holidays and weekends, the buses can get crowded quickly, so plan accordingly.',
+    ],
+    stayRecommendationTitle: 'Where to stay when traveling to Puerto Viejo?',
+    paragraphsBetween: [
+      'The bus has many stops, and will also stop at the bus station in limón, Cahuita and finally, Puerto Viejo.',
+      "If you're looking to save some money on transportation costs, the cheapest option is to take the public bus. These buses are clean, reliable, and offer an affordable way to get to Puerto Viejo. While they may not be as luxurious as some of the private shuttle services, they will get you to your destination safely and on time.",
+      "With regular bus schedules from San José and other nearby towns, it's easy to plan your trip and enjoy all that Puerto Viejo has to offer.",
+      <b><i>Another option to get to Puerto Viejo from San Jose is to take the bus from <a href="https://maps.app.goo.gl/a5kV7YvzybHjVae28" target="_blank" rel="noopener noreferrer">Caribeños</a>, which goes directly to Limón. From there, you can transfer to a bus that goes to Puerto Viejo.</i></b>,
+      <>The bus schedule from San Jose to Limón leaves from the <a href="https://maps.app.goo.gl/a5kV7YvzybHjVae28" target="_blank" rel="noopener noreferrer">Caribeños stop</a> located in Calle Central, Cinco Esquinas. Buses leave every hour from 6am until 7pm, so it's easy to plan your trip accordingly. Once you arrive in Limón, you can walk to the <a href="https://maps.app.goo.gl/WV4CmLqzco2Eft7y9" target="_blank" rel="noopener noreferrer">Mepe</a> Bus stop, which is located near the central market, and take a bus that leaves every hour to Puerto Viejo.</>,
+      "However, it's important to note that the journey from San Jose to Limón can take around 3 to 4 hours, depending on traffic and road conditions. So, it's crucial to plan ahead to avoid being stuck in Limón overnight. Also, the last bus from Limón to Puerto Viejo leaves at 8pm, so make sure to arrive in Limón with enough time to make the transfer.",
+      <>Another way to get to Puerto Viejo is by using <a href="mailto:reservas.kalawala@gmail.com?subject=Organise private transportation&body= " target="_blank" rel="noopener noreferrer">private transportation</a>. This option can be shared with other travelers or private for you and your companions, making it a convenient and comfortable way to travel to your destination.</>,
+      'With private transportation, you can be picked up from wherever you prefer and be dropped off directly at your accommodation in Puerto Viejo. This option can be especially helpful for those who have heavy luggage, prefer more privacy, or have specific travel needs.',
+      'Depending on the number of travelers, private transportation can be a more cost-effective option compared to taking a shared shuttle.',
+      'Additionally, it offers the flexibility to set your own schedule and stop along the way to enjoy some of the beautiful sights along the route.',
+      "If you're interested in booking private transportation to Puerto Viejo, there are several reputable companies that offer this service. It's always a good idea to research your options and compare prices to find the best deal.",
+      'We also offer this service and can provide you with the routes and prices to help you make the most informed decision for your travels.',
+      "Overall, whether you prefer the convenience of public transportation or the comfort of private transportation, there are several ways to get to Puerto Viejo. Regardless of your choice, you're sure to enjoy the stunning scenery and vibrant culture of this beautiful Caribbean town in Talamanca, Costa Rica.",
+    ],
+  },
+  es: {
+    seoTitle: 'Como llegar a Puerto Viejo desde San Jose',
+    seoDescription:
+      'Si estás planeando un viaje a Puerto Viejo, Costa Rica, es posible que te preguntes cómo llegar allí usando transporte público. Afortunadamente, hay varias opciones disponibles que pueden llevarte a este hermoso pueblo caribeño en Talamanca.',
+    heading: 'Cómo llegar a Puerto Viejo desde San José',
+    paragraphsBeforeStay: [
+      'Si estás planeando un viaje a Puerto Viejo, Costa Rica, es posible que te preguntes cómo llegar allí usando transporte público. Afortunadamente, hay varias opciones disponibles que pueden llevarte a este hermoso pueblo caribeño en Talamanca.',
+      <>Una de las formas más populares de llegar a Puerto Viejo es en bús público. La principal compañía de autobuses que ofrece la ruta desde San José a Puerto Viejo es <a href="https://www.mepecr.com/HorarioS_S.html" target="_blank" rel="noopener noreferrer">MEPE</a>. La estación de autobuses está ubicada en el centro de San José, exactamente en la avenida 9 y calle 12, por lo que es fácil de encontrar.</>,
+      <b><i>El <a href="https://www.mepecr.com/HorarioS_S.html" target="_blank" rel="noopener noreferrer">horario de autobuses</a> a Puerto Viejo es el siguiente: 6am, 8am, 10am, 2pm y el último a las 4pm.</i></b>,
+      'Si bien no es posible reservar boletos con anticipación, siempre es una buena idea llegar temprano a la estación de autobuses para asegurar tu lugar en el autobús. Ten en cuenta que durante los periodos de temporada alta, como vacaciones y fines de semana, los autobuses pueden llenarse rápidamente, así que planifica con anticipación.',
+    ],
+    stayRecommendationTitle: '¿Dónde hospedarte cuando viajes a Puerto Viejo?',
+    paragraphsBetween: [
+      'El autobús tiene muchas paradas y también se detendrá en la estación de autobuses de Limón, Cahuita y finalmente, Puerto Viejo.',
+      'Si estás buscando ahorrar algo de dinero en costos de transporte, la opción más económica es tomar el autobús público. Estos autobuses son limpios, confiables y ofrecen una forma asequible de llegar a Puerto Viejo. Aunque no sean tan lujosos como algunos de los servicios de transporte privado, te llevarán a tu destino de manera segura y a tiempo.',
+      'Con horarios de autobuses regulares desde San José y otras ciudades cercanas, es fácil planificar tu viaje y disfrutar de todo lo que Puerto Viejo tiene para ofrecer.',
+      // The pre-merge Spanish page merged this paragraph and the next into one
+      // ungrammatical sentence ("Una otra opción ... desde San José ubicada en
+      // Calle Central..." — missing its verb entirely). Retranslated as two
+      // paragraphs to match the English structure.
+      <b><i>Otra opción para llegar a Puerto Viejo desde San José es tomar el autobús desde <a href="https://maps.app.goo.gl/a5kV7YvzybHjVae28" target="_blank" rel="noopener noreferrer">Caribeños</a>, que va directamente a Limón. Desde allí, puedes hacer transbordo a un autobús que va a Puerto Viejo.</i></b>,
+      <>El horario de autobuses desde San José a Limón sale desde la <a href="https://maps.app.goo.gl/a5kV7YvzybHjVae28" target="_blank" rel="noopener noreferrer">parada de Caribeños</a> ubicada en Calle Central, Cinco Esquinas. Los autobuses salen cada hora desde las 6am hasta las 7pm, por lo que es fácil planificar tu viaje con antelación. Una vez que llegues a Limón, puedes caminar hasta la parada de autobús de <a href="https://maps.app.goo.gl/WV4CmLqzco2Eft7y9" target="_blank" rel="noopener noreferrer">Mepe</a>, que está cerca del mercado central, y tomar un autobús que sale cada hora hacia Puerto Viejo.</>,
+      'Sin embargo, es importante tener en cuenta que el viaje desde San José a Limón puede durar entre 3 y 4 horas, dependiendo del tráfico y las condiciones de la carretera. Por lo tanto, es crucial planificar con anticipación para evitar quedarte atrapado en Limón durante la noche. Además, el último autobús de Limón a Puerto Viejo sale a las 8pm, así que asegúrate de llegar a Limón con tiempo suficiente para hacer la transferencia.',
+      <>Otra forma de llegar a Puerto Viejo es utilizando <a href="mailto:reservas.kalawala@gmail.com?subject=Organise private transportation&body= " target="_blank" rel="noopener noreferrer">transporte privado</a>. Esta opción se puede compartir con otros viajeros o ser privada para ti y tus acompañantes, lo que la convierte en una forma conveniente y cómoda de viajar a tu destino.</>,
+      'Con el transporte privado, puedes ser recogido en el lugar que prefieras y ser dejado directamente en tu alojamiento en Puerto Viejo. Esta opción puede ser especialmente útil para aquellos que tienen equipaje pesado, prefieren más privacidad o tienen necesidades de viaje específicas.',
+      'Dependiendo del número de viajeros, el transporte privado puede ser una opción más rentable en comparación con tomar un servicio de transporte compartido.',
+      'Además, ofrece la flexibilidad de establecer tu propio horario y hacer paradas en el camino para disfrutar de algunas de las hermosas vistas a lo largo de la ruta.',
+      'Si estás interesado en reservar transporte privado a Puerto Viejo, hay varias empresas de buena reputación que ofrecen este servicio. Siempre es una buena idea investigar tus opciones y comparar precios para encontrar la mejor oferta.',
+      'También ofrecemos este servicio y podemos proporcionarte las rutas y precios para ayudarte a tomar la decisión más informada para tu viaje.',
+      'En general, ya sea que prefieras la conveniencia del transporte público o la comodidad del transporte privado, hay varias formas de llegar a Puerto Viejo. Independientemente de tu elección, seguro disfrutarás de los impresionantes paisajes y la vibrante cultura de este hermoso pueblo caribeño en Talamanca, Costa Rica.',
+    ],
+  },
+};
+
+export function travellingToPuertoContent(locale: Locale): TravellingToPuertoContent {
+  return travellingToPuerto[locale] ?? travellingToPuerto.en!;
+}

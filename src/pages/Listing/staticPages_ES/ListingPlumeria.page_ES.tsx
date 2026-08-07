@@ -12,14 +12,14 @@ import { AmenityType } from "../../../utils/types";
 import { NamDataListES } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 
-import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
-import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
+import OtherListings from "../components/OtherListings/OtherListings.component";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
+import FixedNavigation from '../../../components/FixedNavigation/FixedNavigation.component';
 
 
 const ListingPlumeriaES = () => {
@@ -64,7 +64,7 @@ const ListingPlumeriaES = () => {
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/PlumeriaES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Plumeria" />
             </Helmet>
-            <FixedNavigationES isBlog={false} />
+            <FixedNavigation isBlog={false} />
             {isScreenSmall && (
                 <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">VER DISPONIBILIDAD</Button></div>)}
 
@@ -130,7 +130,7 @@ const ListingPlumeriaES = () => {
             </Row>
 
             <div className="other-listings-bottom">
-                <OtherListingsES listings={NamSnippetES} currentListing={listing || ''} />
+                <OtherListings listings={NamSnippetES} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName="Plumeria" />}
             <Footer locale="es" />

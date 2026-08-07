@@ -3,7 +3,6 @@ import { Alert, Button, Col, Container, Form, Row, Spinner } from 'react-bootstr
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router-dom';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
-import FixedNavigationES from '../components/FixedNavigation/FixedNavigation.componentES';
 import { useLocale } from '../i18n';
 import {
   BookingApiError,
@@ -215,7 +214,9 @@ const PortalDetailPage = () => {
   const locale = useLocale();
   const language: BookingLanguage = locale === 'es' ? 'es' : 'en';
   const strings = portalDetailStrings[language];
-  const Navigation = language === 'es' ? FixedNavigationES : FixedNavigation;
+  // Phase 3a collapsed the two navigation components into one. `language` is
+  // passed explicitly rather than left to useLocale(): on this page it can be
+  // Spanish while the URL is not (see the lowercase /bookes fallback above).
 
   const [data, setData] = React.useState<PortalReservationResponse | null>(null);
   const [loadError, setLoadError] = React.useState<string | null>(null);
@@ -466,7 +467,7 @@ const PortalDetailPage = () => {
         <meta name="description" content={strings.metaDescription} />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <Navigation isBlog={false} />
+      <FixedNavigation isBlog={false} locale={language} />
 
       <main className="portal-detail-container" aria-busy={isLoading}>
         <Container>

@@ -3,7 +3,6 @@ import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
 // import Amenities from "./components/Amenities/Amenities.component";
-import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 //import constants
 import { allHomesSnippetES} from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
@@ -15,6 +14,7 @@ import StayRecommendation from "../../../components/StayRecommendation/StayRecom
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import FixedNavigation from '../../../components/FixedNavigation/FixedNavigation.component';
 
 
 const TwoDaysInPV = () => {
@@ -38,7 +38,7 @@ const TwoDaysInPV = () => {
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/gettingtogandocaES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/gettingtogandoca" />
             </Helmet>
-            <FixedNavigationES isBlog={true} />
+            <FixedNavigation isBlog={true} />
             <Row className="subContainer" style={{ justifyContent: 'center' }}>
 
                 <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>

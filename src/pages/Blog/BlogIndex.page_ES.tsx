@@ -3,9 +3,9 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { Col, Row } from 'react-bootstrap';
 import '../Listing/Listing.style.scss';
-import FixedNavigationES from '../../components/FixedNavigation/FixedNavigation.componentES';
 import Footer from '../../components/Footer/Footer.component';
 import { BLOG_ARTICLES } from '../../utils/constants';
+import FixedNavigation from '../../components/FixedNavigation/FixedNavigation.component';
 
 const BlogIndexES = () => {
   useEffect(() => {
@@ -27,7 +27,7 @@ const BlogIndexES = () => {
         <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/blogES" />
         <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/blog" />
       </Helmet>
-      <FixedNavigationES isBlog={true} />
+      <FixedNavigation isBlog={true} />
       <Row className="subContainer" style={{ justifyContent: 'center' }}>
         <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>
           <div className="heading title-container">

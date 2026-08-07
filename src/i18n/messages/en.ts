@@ -23,6 +23,13 @@ export const en = {
     instantConfirmation: 'Instant confirmation',
   },
 
+  nav: {
+    home: 'Home',
+    blog: 'Blog',
+    myBooking: 'My Booking',
+    bookNow: 'Book now',
+  },
+
   footer: {
     ourHomes: 'Our Homes',
     travelGuides: 'Travel Guides',
@@ -44,7 +51,9 @@ export const en = {
   },
 
   hero: {
-    namTitle: 'Namaitami Homes',
+    // `namTitle` lived here until PR #43 retired the Namaitami page. Removed
+    // rather than left dormant: Phase 8 translates every key in this file into
+    // six more languages, and a dead one is six wasted translations.
     tagline: 'Fully equipped vacation homes in the heart of Puerto Viejo and Playa Chiquita.',
     trust: '✓ Instant confirmation · ✓ Secure booking · ✓ No platform fees',
     rating: '⭐⭐⭐⭐⭐ 4.9/5 from thousands of stays since 2015',
@@ -57,7 +66,15 @@ export const en = {
     homeHighlight: 'Home',
     villasHighlight: 'Villas',
     exploreOtherStays: 'Explore Other Unique Stays in Puerto Viejo & Playa Chiquita.',
+    // The two column headings under "Explore Other Unique Stays". The Spanish
+    // second heading is not a translation of the English — EN says "Private
+    // Retreat", ES says "Casitas Privadas A Solo Unos Pasos" ("private cottages
+    // just steps away"). Each locale keeps its own copy; that is what a catalog
+    // is for, and picking one to be "correct" would be a marketing decision.
+    villasWithPool: 'Private Pool Luxury Villas in Playa Chiquita, Puerto Viejo.',
+    privateRetreat: 'Private Retreat in Playa Chiquita, Puerto Viejo',
     otherBlogsHeading: 'Check out our other blogs!',
+    otherListingsHeading: 'Check out our other options!',
     readBlog: (title: string) => `Read blog: ${title}`,
     weOfferEquipped: 'We offer fully equipped homes:',
   },
@@ -98,6 +115,7 @@ export const en = {
 
   property: {
     capacityAriaLabel: 'Property capacity',
+    viewListing: (name: string) => `View listing: ${name}`,
     whyGuestsChoose: (propertyName: string) => `Why guests choose ${propertyName}`,
     bedrooms: (count: number) => `${count} ${count === 1 ? 'bedroom' : 'bedrooms'}`,
     bathrooms: (count: number) => `${count} ${count === 1 ? 'bathroom' : 'bathrooms'}`,

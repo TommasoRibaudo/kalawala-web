@@ -2,6 +2,7 @@ import React from 'react';
 import './WelcomeSlider.style.scss';
 import BookingSearchWidget from '../BookingSearchWidget/BookingSearchWidget.component';
 import { cdnImage, cdnSrcSet } from '../../utils/imageCdn';
+import { useLocale, useMessages } from '../../i18n';
 
 export const HERO_BANNER =
   'https://lh3.googleusercontent.com/d/1c25flui45r6oVIvPMqKLemVsWgjbhsAH=w1000';
@@ -29,8 +30,16 @@ export const HERO_BANNER =
  * alt="" is deliberate: the photo is decorative backdrop, and the <h1> over it
  * already carries the meaning. Giving it descriptive alt text would make
  * screen readers announce scenery before the page's actual heading.
+ *
+ * PHASE 3a merged the Spanish copy into this one. The tagline now comes from
+ * the catalog, which carries the accented "corazón" — the Spanish component had
+ * "corazon" unaccented while the (now retired) Namaitami variant had it right.
+ * That is a deliberate copy fix, not a rendering change.
  */
 const WelcomeSlider = () => {
+  const locale = useLocale();
+  const m = useMessages();
+
   return (
     <section className="hero-area overlay">
       <img
@@ -46,20 +55,18 @@ const WelcomeSlider = () => {
 
       <div className="block">
         <h1>RESERVAS KALAWALA</h1>
-        <p id="short-description">
-          Fully equipped vacation homes in the heart of Puerto Viejo and Playa Chiquita.
-        </p>
+        <p id="short-description">{m.hero.tagline}</p>
         <br />
 
         <div className="hero-booking">
-          <BookingSearchWidget locale="en" variant="hero" />
-          <p className="hero-trust">✓ Instant confirmation · ✓ Secure booking · ✓ No platform fees</p>
+          <BookingSearchWidget locale={locale} variant="hero" />
+          <p className="hero-trust">{m.hero.trust}</p>
         </div>
       </div>
 
       {/* ⭐ pinned to the bottom of the SECTION, behind the search widget/calendar */}
       <div className="hero-rating">
-        <p>⭐⭐⭐⭐⭐ 4.9/5 from thousands of stays since 2015</p>
+        <p>{m.hero.rating}</p>
       </div>
     </section>
   );

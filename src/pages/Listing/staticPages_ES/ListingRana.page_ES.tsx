@@ -10,8 +10,7 @@ import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType, HouseDataType } from "../../../utils/types";
 import { houseDataList } from "../../../utils/constants";
 
-import OtherListingsES from "../components/OtherListings/OtherListings.componentES";
-import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
+import OtherListings from "../components/OtherListings/OtherListings.component";
 import { Helmet } from "react-helmet";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
 import SocialStatement from "../../../components/SocialStatement/SocialStatement.component";
@@ -19,6 +18,7 @@ import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHigh
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
+import FixedNavigation from '../../../components/FixedNavigation/FixedNavigation.component';
 
 
 const ListingRana = () => {
@@ -64,7 +64,7 @@ const ListingRana = () => {
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/RanaES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Rana" />
             </Helmet>
-            <FixedNavigationES isBlog={false} />
+            <FixedNavigation isBlog={false} />
             {isScreenSmall && (
                 <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">VER DISPONIBILIDAD</Button></div>)}
 
@@ -144,7 +144,7 @@ const ListingRana = () => {
             </Row>
 
             <div className="other-listings-bottom">
-                <OtherListingsES listings={homesSnippet} currentListing={listing || ''} />
+                <OtherListings listings={homesSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
             <Footer locale="es" />

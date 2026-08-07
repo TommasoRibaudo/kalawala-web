@@ -1,16 +1,16 @@
 import { Helmet } from "react-helmet";
 import OurHomes from "../../components/OurHomes/OurHomes.component";
-import WelcomeSliderES from "../../components/WelcomeSlider/WelcomeSlider.componentES";
+import WelcomeSlider from "../../components/WelcomeSlider/WelcomeSlider.component";
 import { houseDataList } from '../../utils/constants';
-import DiscoverES from "../../components/Discover/Discover.componentES";
-import FixedNavigationES from "../../components/FixedNavigation/FixedNavigation.componentES";
+import Discover from "../../components/Discover/Discover.component";
 import Portfolio from "../../components/Portfolio/Portfolio.component";
 import ContactUs from "../../components/ContactUs/ContactUs.component";
-import OurOtherHomesES from "../../components/OurOtherHomes/OurOtherHomes.ComponentES";
+import OurOtherHomes from "../../components/OurOtherHomes/OurOtherHomes.component";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
 import Footer from "../../components/Footer/Footer.component";
 import BookingCtaBanner from "../../components/BookingCtaBanner/BookingCtaBanner.component";
+import FixedNavigation from '../../components/FixedNavigation/FixedNavigation.component';
 
 const helpMeChooseOptionsES = [
     {
@@ -56,14 +56,14 @@ const HomeES = () => {
         <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/HomeES" />
         <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/" />
       </Helmet>
-      <WelcomeSliderES />
-      <FixedNavigationES isBlog={false}/>
+      <WelcomeSlider />
+      <FixedNavigation isBlog={false}/>
       <HelpMeChoose title="Elige tu" titleHighlight="Estadía Ideal" options={helpMeChooseOptionsES} />
       <HomeReviews locale="es" />
       <OurHomes houseDataList={houseDataList}/>
-      <OurOtherHomesES/>
+      <OurOtherHomes />
       <BookingCtaBanner locale="es" />
-      <DiscoverES />
+      <Discover />
       <Portfolio />
       {/* <Testimonial /> */}
       <ContactUs />

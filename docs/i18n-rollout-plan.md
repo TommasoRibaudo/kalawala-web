@@ -21,7 +21,7 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | Phase 3a — in progress. Phases 0–2 complete in code, **nothing merged yet.** |
+| **Current phase** | Phase 3b — next. Phases 0–3a complete in code, **nothing merged yet.** |
 | **Last updated** | 2026-08-06 |
 | **Branch(es) in flight** | A six-deep stack, all open, all based on `main`: **#39** → **#40** → **#41** → **#42** → **#43** → **#44**. See [Merge order](#merge-order) — they must land in that sequence. |
 | **Blocked on** | **Owner action:** GSC + PostHog exports (Phase 0) — see [`seo-baseline/README.md`](seo-baseline/README.md); the GSC export cannot be done retroactively. **Owner action:** Hebrew/Devanagari font files (Phase H-B). Neither blocks Phase 3b–3d. |
@@ -31,7 +31,7 @@ Phase progress:
 - [ ] Phase 0 — Baseline capture and safety net *(automated parts done; GSC/PostHog exports outstanding)*
 - [x] Phase 1 — Locale foundation (`isSpanish` → `locale`) — PR #40
 - [x] Phase 2 — Message catalogs — PR #41
-- [ ] Phase 3 — Collapse duplicated page components *(3a partly done in PR #42; 3b–3d outstanding)*
+- [ ] Phase 3 — Collapse duplicated page components *(3a done; 3b–3d outstanding)*
 - [ ] **Ship gate A — EN/ES refactor released, zero visible change**
 - [ ] Phase 4 — Route restructure to `/:locale/`
 - [ ] Phase 5 — 301 redirect map
@@ -96,14 +96,14 @@ Recorded so future sessions don't re-derive it. Re-verify with the commands in
 each row if the tree has moved on significantly.
 
 > **This table describes `main`, which is the pre-refactor state.** The PR stack
-> has moved several of these numbers a long way. Measured at the top of the stack
-> (`feat/rtl-groundwork-he-hi`):
+> has moved several of these numbers a long way. Measured at the head of the
+> stack, after Phase 3a:
 >
-> | Fact | On `main` | Top of stack |
+> | Fact | On `main` | Head of stack |
 > |---|---|---|
 > | `isSpanish` occurrences in `src/` | 364 | **6** (comments and one deprecated shim) |
-> | ES-duplicated files | 47 | **27** |
-> | `src/i18n/` | does not exist | 17 files |
+> | ES-duplicated files | 47 | **22** — all pages; no shared components left |
+> | `src/i18n/` | does not exist | 18 files, incl. the first `content/` module |
 > | Locales declared | — | 8 (`RELEASED_LOCALES` still `['en','es']`) |
 > | `reactSnap.include` routes | 49 | 45 (Nam/Villas retired in #43) |
 >
@@ -326,16 +326,16 @@ Blog is the outlier: `CahuitaParkES` is only 32% identical to its English twin,
 are two components that drifted. Lumping them with the listings would have hidden
 that.
 
-- [ ] **3a — shared components** (leaf-first: a component cannot be merged before
-      the components it renders) — **11 merged in PR #42, 5 pairs left**
+- [x] **3a — shared components** (leaf-first: a component cannot be merged before
+      the components it renders) — 11 in PR #42, the last 5 pairs after it
 - [ ] **3b — listing pages** (10 pairs)
 - [ ] **3c — blog pages** (10 pairs + `BlogIndex`, one at a time, highest risk)
 - [ ] **3d — `Home.pageES`**, then delete the ES route entries
 - [ ] Update `Router.tsx` imports (still the old route shape at this point)
 
-**27 duplicated files remain**, down from 47 on `main`: 5 shared components,
-10 listing pages, 11 blog files (10 articles + `BlogIndex.page_ES`), and
-`Home.pageES`. The table above counted 4 home/index pairs; PR #43 retired the
+**22 duplicated files remain**, down from 47 on `main`: 10 listing pages, 11
+blog files (10 articles + `BlogIndex.page_ES`), and `Home.pageES`. No shared
+components are left — 3a is done. The table above counted 4 home/index pairs; PR #43 retired the
 Namaitami and Villas homes, leaving one.
 
 > **The validation bar changes here.** Phases 1 and 2 could claim *zero*
@@ -374,16 +374,81 @@ deleting the `Nam`/`NamES`/`RIB`/`RIBES` copies of `WelcomeSlider`, `Discover`,
 `FixedNavigation`, `OurOtherHomes`, `Portfolio` and `OurHomes`. What was "×3" in
 the original survey is now a single EN/ES pair each. **Five pairs remain in 3a:**
 
-- [ ] `WelcomeSlider` — one pair. Hero copy only, now that the RIB variant is gone.
-      Apply the accent fix below when it merges.
-- [ ] `OurOtherHomes` — headings plus `redirectPath` locale suffixes
-      (`/VillaMarES`), which should move to `localeSuffix()`
-- [ ] `Discover` — long prose with inline `<b>` and interpolated constants.
-      Belongs in `src/i18n/content/`, not the string catalog, per the rule that
-      catalogs stay React-free.
-- [ ] `FixedNavigation` — brand href (`/#body` vs `/HomeES`) and booking href
-      differ; both should come from `bookingPath()` / the route model
-- [ ] `OtherListings` — **take the memoised version**, see below
+- [x] `WelcomeSlider` — hero copy from the catalog. Applied the accent fix:
+      Spanish now reads "corazón".
+- [x] `OurOtherHomes` — headings from the catalog; the four hardcoded
+      `/VillaMarES`-style paths now build from `localeSuffix()`.
+- [x] `Discover` — moved to `src/i18n/content/discover.tsx`, the first module
+      under `content/`. See the note below on why prose does not go in the
+      catalogs.
+- [x] `FixedNavigation` — **fixed a live bug**, see below. All five links now
+      come from path helpers; added `homePath`, `blogPath`, `portalPath`.
+- [x] `OtherListings` — merged onto the memoised version per the decision above,
+      plus a name-normalisation fix. See below.
+
+**Phase 3a is complete. All 21 shared components are merged.**
+
+> **`Discover` established the `content/` convention.** Its five paragraphs carry
+> inline `<b>` and interpolate portfolio counts. Splitting them into
+> lead/bold/tail catalog fragments — the pattern used for the two short
+> call-to-action lines — does not scale past a sentence or two, and putting JSX
+> in `messages/*.ts` breaks the rule that a translator edits strings, not
+> elements. So: **catalogs are strings, content is prose.** Phases 3b and 3c move
+> the listing and blog bodies to `content/` on the same principle.
+>
+> One difference from `getMessages`: content falls back to English per *key set*,
+> not per key. A half-translated paragraph reads worse than an English one.
+
+> **`FixedNavigation` fixed a live Spanish bug.** Its Home link was
+> `HomeES#body` — no leading slash, so a *relative* href. From `/blogES` it
+> resolved correctly by luck, but Phase 0 established that every URL 301s to a
+> trailing slash, and from `/blogES/` the same href resolves to
+> `/blogES/HomeES#body`, a 404. Every link now comes from a path helper, so none
+> can be relative again.
+>
+> Two smaller unifications onto the English behaviour, both documented in the
+> component: the menu toggle keeps English's explicit width/height (Spanish set
+> only a style height, leaving intrinsic size unknown until the SVG loads), and
+> the brand link carries `#body` in both languages.
+>
+> `Booking.page`, `Portal.page` and `PortalDetail.page` chose between the two nav
+> components at runtime. They now render the one component and pass `locale`
+> explicitly, because `Booking.page` treats a hand-typed lowercase `/bookes` as
+> Spanish while `detectLocaleFromPath` — deliberately case-sensitive — does not.
+> Letting the nav infer its own locale there would have regressed that page.
+
+> **The prerender diff caught two changes nobody asked for.** Both were mine,
+> and both are the reason this phase validates against a build rather than
+> against a reading of the code.
+>
+> 1. **A dormant catalog key was not what visitors see.** Phase 2 extracted
+>    `hero.tagline` from the Namaitami variant, and nothing rendered it — the
+>    homepage still had its own string inline. Wiring `WelcomeSlider` to the
+>    catalog therefore swapped the Spanish homepage hero from "Casas
+>    completamente equipadas en el corazon…" to the longer Namaitami wording,
+>    silently, above the fold, on the LCP element. The catalog now carries the
+>    live wording with only the accent fixed.
+>
+>    **The general lesson for 3b and 3c:** a catalog key extracted from a variant
+>    that no longer renders is not evidence of what the page says. Diff the
+>    build, not the source.
+>
+> 2. **A transcription slip in moved prose.** Copying Discover's Spanish copy
+>    into `content/` turned "Fácil de seguir, ¡check-in…!" into "¡Fácil de
+>    seguir, check-in…!". The inverted mark opens the second clause, not the
+>    sentence. Moving prose between files is exactly where this happens; 3c moves
+>    2,100 lines of it.
+>
+> `hero.namTitle` was also deleted — dead since #43 retired the Namaitami page,
+> and Phase 8 would otherwise have translated it into six more languages.
+
+> **`OtherListings` had a third divergence beyond memoisation.** `currentListing`
+> is the page's `houseLangCode` and carries the locale suffix ("GecoES") while
+> `homesSnippet` names do not ("Geco"). English compared them raw, which worked
+> only because English has no suffix; the same code on a Spanish page would have
+> listed the current property among the "other" ones. Both sides are now
+> normalised. This also makes `NamSnippetES` in `constants.ts` redundant —
+> **delete it in 3b**, when the Spanish listing pages that reference it go.
 
 ##### Decisions — all resolved 2026-08-06
 
@@ -802,8 +867,40 @@ what the next session should pick up.
   three phases were complete; the ground-truth table described `main` without
   saying so; route-count math still assumed 49 routes and 6 languages. Now ~185
   routes across 8 locales, from 45.
-- **Next session:** finish 3a — five pairs left (`WelcomeSlider`,
-  `OurOtherHomes`, `Discover`, `FixedNavigation`, `OtherListings`), both
-  decisions now recorded above. Then 3b (10 listing pages, near-mechanical).
-  Merging the stack is the higher-value move if it can happen first — it is the
-  only copy of phases 1–3a, and `main` drifts under it every week.
+- **Next session:** merging the stack is the higher-value move — it is the only
+  copy of phases 1–3a, and `main` drifts under it every week.
+
+### 2026-08-06 — Phase 3a completed
+
+- Merged the last five shared-component pairs: `WelcomeSlider`, `OurOtherHomes`,
+  `Discover`, `FixedNavigation`, `OtherListings`. **Phase 3a is done — no
+  duplicated shared components remain**, only pages.
+- Added `src/i18n/content/discover.tsx`, the first `content/` module, and the
+  strings-vs-prose rule that goes with it. 3b and 3c follow the same pattern.
+- Added `homePath`, `blogPath`, `portalPath` to `paths.ts`.
+- **Two real bugs fixed**, both Spanish-only and both detailed under 3a: the nav
+  Home link was a relative href that 404s from any trailing-slash URL, and
+  `OtherListings` compared a suffixed `currentListing` against unsuffixed names.
+  That makes **five** pre-existing bugs this phase has surfaced, all of the same
+  shape — a Spanish page quietly diverging from its English twin.
+- `FixedNavigation` gained an optional `locale` prop. `Booking.page` needs it:
+  it treats a hand-typed lowercase `/bookes` as Spanish, which the deliberately
+  case-sensitive `detectLocaleFromPath` does not match.
+- **Validation:** `npx tsc --noEmit` clean. Unit tests **4 suites / 27 tests
+  failing, 299 passed / 326 total — identical to the documented baseline.**
+  Production build clean.
+- **Prerender diff, 45 pages, against the pre-3a stack head:**
+  **zero English pages changed**; 22 Spanish pages differ, every difference
+  enumerated above. Comparing *visible text* rather than markup, **1 page of 45
+  changed** — `HomeES`, for the accent fix alone.
+- Two normalisations were needed to make that diff readable, both recorded here
+  so the next session does not rediscover them: webpack **renumbers chunks**
+  when the module graph changes (`/static/css/1860.…` → `9699.…`), and the
+  booking **calendar renders relative to the build date** — these two builds
+  straddled midnight, so every calendar page differed on "August 6" being today
+  in one and past in the other. Neither is a content change. Build both sides on
+  the same day if you can.
+- **Next session:** 3b, the 10 listing pages. They are the most templated of the
+  three families (72–79% identical) and should be the fastest. Delete
+  `NamSnippetES` from `constants.ts` as part of it. Leave 3c (blog) for last —
+  `CahuitaParkES` is 32% identical to its twin and needs one PR per article.

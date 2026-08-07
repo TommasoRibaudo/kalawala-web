@@ -15,7 +15,6 @@ import StayRecommendation from "../../../components/StayRecommendation/StayRecom
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
-import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 
 
 const BestTimeToVisitPuertoES = () => {
@@ -58,7 +57,7 @@ const BestTimeToVisitPuertoES = () => {
                 />
             </Helmet>
 
-            <FixedNavigationES isBlog={true} />
+            <FixedNavigation isBlog={true} />
 
             <Row className="subContainer" style={{ justifyContent: 'center' }}>
                 <Col

@@ -2307,22 +2307,28 @@ export interface PropertyRecommendation {
   houseCode?: number;
 }
 
+// Found while merging Phase 3c (blog): this constant's `reason` text was
+// Spanish while its links were unsuffixed (English-style), and TwoDaysInPV.tsx
+// renders it on the *English* page — visitors were reading Spanish
+// recommendation copy under an English article. Translated to English here;
+// PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES below is the real Spanish counterpart
+// (ES-suffixed links) and was already correct.
 export const PUERTO_VIEJO_BLOG_RECOMMENDATIONS: PropertyRecommendation[] = [
   {
     name: 'Casa Geco',
-    reason: 'Ideal si quieres moverte caminando',
+    reason: 'Ideal for getting around on foot',
     link: '/Geco',
     houseCode: 1
   },
   {
     name: 'Casa Plumeria',
-    reason: 'Perfecta para descansar cerca de la playa',
+    reason: 'Perfect for relaxing near the beach',
     link: '/Plumeria',
     houseCode: 8
   },
   {
     name: 'Villa Coral',
-    reason: 'Si buscas una escapada corta con piscina privada',
+    reason: 'Great for a short getaway with a private pool',
     link: '/VillaCoral',
     houseCode: 6
   }
@@ -2350,6 +2356,31 @@ export const GENERAL_PUERTO_VIEJO_RECOMMENDATIONS: PropertyRecommendation[] = [
   }
 ];
 
+// Spanish counterpart of GENERAL_PUERTO_VIEJO_RECOMMENDATIONS. Did not exist
+// before Phase 3c — every Spanish page whose English twin used the general set
+// was falling back to PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES instead (or, on
+// BestTimeToVisitPuertoES/PuertoHiddenGemsES, rendering the raw English array).
+export const GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES: PropertyRecommendation[] = [
+  {
+    name: 'Casa Geco',
+    reason: 'Perfecta para explorar a pie',
+    link: '/GecoES',
+    houseCode: 1
+  },
+  {
+    name: 'Casa Plumeria',
+    reason: 'Ideal para relajarte cerca de la playa',
+    link: '/PlumeriaES',
+    houseCode: 8
+  },
+  {
+    name: 'Villa Coral',
+    reason: 'Excelente para escapadas cortas con piscina privada',
+    link: '/VillaCoralES',
+    houseCode: 6
+  }
+];
+
 // Cahuita-focused recommendations
 export const CAHUITA_AREA_RECOMMENDATIONS: PropertyRecommendation[] = [
   {
@@ -2368,6 +2399,30 @@ export const CAHUITA_AREA_RECOMMENDATIONS: PropertyRecommendation[] = [
     name: 'Villa Coral',
     reason: 'Perfect for relaxing after park visits',
     link: '/VillaCoral',
+    houseCode: 6
+  }
+];
+
+// Spanish counterpart of CAHUITA_AREA_RECOMMENDATIONS. Did not exist before
+// Phase 3c — TenHoursInPuertoES's "¿Dónde hospedarte cuando explores Cahuita?"
+// heading was followed by the generic Puerto Viejo list, not a Cahuita one.
+export const CAHUITA_AREA_RECOMMENDATIONS_ES: PropertyRecommendation[] = [
+  {
+    name: 'Casa Plumeria',
+    reason: 'Retiro Perfecto para Parejas',
+    link: '/PlumeriaES',
+    houseCode: 8
+  },
+  {
+    name: 'Casa Geco',
+    reason: 'Fácil acceso al transporte',
+    link: '/GecoES',
+    houseCode: 1
+  },
+  {
+    name: 'Villa Coral',
+    reason: 'Perfecta para relajarte después de visitar el parque',
+    link: '/VillaCoralES',
     houseCode: 6
   }
 ];

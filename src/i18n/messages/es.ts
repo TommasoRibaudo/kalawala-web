@@ -99,6 +99,13 @@ export const es: Messages = {
       'Después de seleccionar fechas y presionar buscar, desplázate hacia abajo para ver el precio y reservar.',
   },
 
+  blog: {
+    // Two Spanish pages capitalised the second and third words
+    // ("Reserva Tu Estadía"); the other eight didn't. Unified on the majority
+    // form.
+    bookYourStay: 'Reserva tu Estadía',
+  },
+
   property: {
     capacityAriaLabel: 'Capacidad de la casa',
     viewListing: (name: string) => `Ver alojamiento: ${name}`,

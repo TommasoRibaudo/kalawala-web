@@ -35,8 +35,13 @@ const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
     return () => window.removeEventListener("resize", handleResize)
   }, [handleResize])
 
-  const filteredBlogs = useMemo(() => 
-    blogs.filter(blog => blog.title !== currentBlog), 
+  // Found while merging Phase 3c: this used to compare against `blog.title`
+  // (a human-readable sentence), but every call site passes an `id`-shaped
+  // slug. The two never matched, so the "exclude the current article"
+  // filter was a no-op on all 20 pre-merge pages — every carousel included a
+  // card linking back to the page you were already on.
+  const filteredBlogs = useMemo(() =>
+    blogs.filter(blog => blog.id !== currentBlog),
     [blogs, currentBlog]
   )
 

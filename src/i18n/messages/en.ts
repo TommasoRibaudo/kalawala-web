@@ -113,6 +113,10 @@ export const en = {
       'After selecting dates and pressing search, scroll down to see the price and book.',
   },
 
+  blog: {
+    bookYourStay: 'Book Your Stay',
+  },
+
   property: {
     capacityAriaLabel: 'Property capacity',
     viewListing: (name: string) => `View listing: ${name}`,

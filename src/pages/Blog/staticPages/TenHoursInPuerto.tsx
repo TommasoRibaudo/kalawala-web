@@ -117,7 +117,12 @@ const TenHoursInPuerto = () => {
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
                         <h2 className="smoobu-title">{m.blog.bookYourStay}</h2>
                         <div className="smoobu-wrapper">
-                            <Smoobu2 targetId={`tenHours${localeSuffix(locale)}SmoobuBooking`} />
+                            {/* "blogSmoobuBooking" is the id Smoobu2.style.scss actually
+                                styles ("Blog-specific Smoobu container styling") — the
+                                pre-merge per-article ids (tenHoursSmoobuBooking,
+                                tenHoursESSmoobuBooking, ...) matched no selector, so every
+                                blog widget except one page rendered unstyled. */}
+                            <Smoobu2 targetId="blogSmoobuBooking" />
                         </div>
                     </div>
 

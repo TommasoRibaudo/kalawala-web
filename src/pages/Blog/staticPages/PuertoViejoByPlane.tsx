@@ -125,7 +125,7 @@ const PuertoViejoByPlane = () => {
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
                         <h2 className="smoobu-title">{m.blog.bookYourStay}</h2>
                         <div className="smoobu-wrapper">
-                            <Smoobu2 targetId={`plane${localeSuffix(locale)}SmoobuBooking`} />
+                            <Smoobu2 targetId="blogSmoobuBooking" />
                         </div>
                     </div>
 

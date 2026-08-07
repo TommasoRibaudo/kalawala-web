@@ -4,12 +4,14 @@ import { ListingType } from "../../../../utils/types";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import { SampleNextArrow, SamplePrevArrow } from "../../../../components/CustomSlick/SlickDarkArrow.Component";
+import { useMessages } from '../../../../i18n';
 
 interface IOtherListing {
     listings: ListingType[]
 }
 
 const ListingAd: FC<IOtherListing> = ({ listings }) => {
+    const m = useMessages();
 
     // Seeded null, not window.innerWidth — react-snap's puppeteer viewport at
     // prerender time and a real visitor's viewport at hydration time are
@@ -45,7 +47,7 @@ const ListingAd: FC<IOtherListing> = ({ listings }) => {
     return (
         <>
             <div className="cont d-flex justify-content-center adContainer">
-                <div className="header">We offer fully equipped homes:
+                <div className="header">{m.sections.weOfferEquipped}
                     <br />
                 </div>
                 {isMobile ?

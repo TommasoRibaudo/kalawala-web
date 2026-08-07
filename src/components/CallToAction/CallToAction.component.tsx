@@ -1,8 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import './CallToAction.style.scss'
 import Smoobu2 from '../Smoobu2/Smoobu2.component';
+import { useMessages } from '../../i18n';
 
+/**
+ * Replaces the former CallToAction / CallToActionES pair.
+ *
+ * Two divergences existed between the two copies that were not translation:
+ *
+ *  - The Spanish copy rendered `<Smoobu2 />` with no `targetId`, falling back to
+ *    the shared default id `apartmentIframeAll`, where every one of the twelve
+ *    other Smoobu2 call sites passes a unique one. Unified on the English
+ *    behaviour. Harmless either way today (nothing links the id, and no second
+ *    widget shares the page), but the default was an oversight in the copy.
+ *  - The bank-transfer paragraph sat inside the widget box in Spanish and
+ *    outside it in English. Unified on the English placement.
+ */
 const CallToAction = () => {
+  const m = useMessages();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -30,8 +45,8 @@ const CallToAction = () => {
         <div className="container">
           <div className="row">
             <div className="col-md-12 text-center" >
-              <p style={{ fontWeight: 400, fontSize: 28 }}>Explore Availability and Prices Across All Our Properties in Puerto Viejo and Playa Chiquita.</p>
-              <p>Select the <b>non-refundable rate</b> in the booking tool to enjoy a 10% discount.</p>
+              <p style={{ fontWeight: 400, fontSize: 28 }}>{m.callToAction.exploreAvailability}</p>
+              <p>{m.callToAction.nonRefundableLead} <b>{m.callToAction.nonRefundableBold}</b> {m.callToAction.nonRefundableTail}</p>
               <div 
             className='Smoobo' 
             style={{ 
@@ -42,9 +57,9 @@ const CallToAction = () => {
             }}
             >
               <Smoobu2 targetId="callToActionSmoobu" /> 
-              <p style={{ color: 'black', fontWeight: 550, fontSize: 12 }}>*Showing availability for all available properties in the puerto viejo area, including properties advertised on other pages, make sure you check the name of the house and its photo before booking!</p>
+              <p style={{ color: 'black', fontWeight: 550, fontSize: 12 }}>{m.callToAction.availabilityDisclaimer}</p>
             </div>
-            <p style={{marginTop: 10}}>Prefer to pay via bank transfer or SINPE? Book securely with us and send your deposit confirmation to <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> or via WhatsApp at <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">+506 8463 2276</a> within 6 hours of making your reservation.</p>
+            <p style={{marginTop: 10}}>{m.callToAction.bankTransferLead} <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> {m.callToAction.bankTransferMid} <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">+506 8463 2276</a> {m.callToAction.bankTransferTail}</p>
           </div>
           </div>
         </div>

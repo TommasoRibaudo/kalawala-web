@@ -30,6 +30,49 @@ export const en = {
     chatOnWhatsApp: 'Chat on WhatsApp',
   },
 
+  callToAction: {
+    exploreAvailability:
+      'Explore Availability and Prices Across All Our Properties in Puerto Viejo and Playa Chiquita.',
+    nonRefundableLead: 'Select the',
+    nonRefundableBold: 'non-refundable rate',
+    nonRefundableTail: 'in the booking tool to enjoy a 10% discount.',
+    availabilityDisclaimer:
+      '*Showing availability for all available properties in the puerto viejo area, including properties advertised on other pages, make sure you check the name of the house and its photo before booking!',
+    bankTransferLead: 'Prefer to pay via bank transfer or SINPE? Book securely with us and send your deposit confirmation to',
+    bankTransferMid: 'or via WhatsApp at',
+    bankTransferTail: 'within 6 hours of making your reservation.',
+  },
+
+  hero: {
+    namTitle: 'Namaitami Homes',
+    tagline: 'Fully equipped vacation homes in the heart of Puerto Viejo and Playa Chiquita.',
+    trust: '✓ Instant confirmation · ✓ Secure booking · ✓ No platform fees',
+    rating: '⭐⭐⭐⭐⭐ 4.9/5 from thousands of stays since 2015',
+  },
+
+  sections: {
+    // "Our Homes" / "Our Villas" — split so the second word carries the accent.
+    ourLead: 'Our',
+    homesHighlight: 'Homes',
+    homeHighlight: 'Home',
+    villasHighlight: 'Villas',
+    exploreOtherStays: 'Explore Other Unique Stays in Puerto Viejo & Playa Chiquita.',
+    otherBlogsHeading: 'Check out our other blogs!',
+    readBlog: (title: string) => `Read blog: ${title}`,
+    weOfferEquipped: 'We offer fully equipped homes:',
+  },
+
+  contact: {
+    // Split so the second word can carry the colour accent.
+    headingMain: 'Get In',
+    headingHighlight: 'Touch',
+    askUsAnything: 'Ask us anything',
+    replyTime: 'We usually reply within an hour on WhatsApp.',
+    phoneLabel: 'Phone, Whatsapp:',
+    chatOnWhatsApp: 'chat on WhatsApp',
+    emailLabel: 'Email:',
+  },
+
   reviews: {
     // HomeReviews splits its heading so the second half can be colour-accented.
     headingMain: 'What our guests are',

@@ -9,7 +9,7 @@ import OtherBlogs from "../Components/OtherBlogs.Component";
 //import constants
 import { allHomesSnippetES } from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
-import ListingAdES from "../Components/ListingAd/ListingAd.componentES";
+import ListingAd from "../Components/ListingAd/ListingAd.component";
 import { Helmet } from "react-helmet";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";

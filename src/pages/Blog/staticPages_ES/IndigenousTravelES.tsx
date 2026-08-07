@@ -7,7 +7,7 @@ import { blogsES } from "../../../assets/blogs/blogs";
 //import constants
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
-import ListingAdES from "../Components/ListingAd/ListingAd.componentES";
+import ListingAd from "../Components/ListingAd/ListingAd.component";
 import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 import { allHomesSnippetES } from "../../../utils/constants";
 import OtherBlogs from "../Components/OtherBlogs.Component";

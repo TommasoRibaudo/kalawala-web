@@ -1,11 +1,11 @@
 import { Helmet } from "react-helmet";
-import OurHomesES from "../../components/OurHomes/OurHomes.componentES";
+import OurHomes from "../../components/OurHomes/OurHomes.component";
 import WelcomeSliderES from "../../components/WelcomeSlider/WelcomeSlider.componentES";
 import { houseDataList } from '../../utils/constants';
 import DiscoverES from "../../components/Discover/Discover.componentES";
 import FixedNavigationES from "../../components/FixedNavigation/FixedNavigation.componentES";
-import PortfolioES from "../../components/Portfolio/Portfolio.componentES";
-import ContactUsES from "../../components/ContactUs/ContactUs.componentES";
+import Portfolio from "../../components/Portfolio/Portfolio.component";
+import ContactUs from "../../components/ContactUs/ContactUs.component";
 import OurOtherHomesES from "../../components/OurOtherHomes/OurOtherHomes.ComponentES";
 import HelpMeChoose from "../../components/HelpMeChoose/HelpMeChoose.component";
 import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
@@ -60,13 +60,13 @@ const HomeES = () => {
       <FixedNavigationES isBlog={false}/>
       <HelpMeChoose title="Elige tu" titleHighlight="Estadía Ideal" options={helpMeChooseOptionsES} />
       <HomeReviews locale="es" />
-      <OurHomesES houseDataList={houseDataList}/>
+      <OurHomes houseDataList={houseDataList}/>
       <OurOtherHomesES/>
       <BookingCtaBanner locale="es" />
       <DiscoverES />
-      <PortfolioES />
+      <Portfolio />
       {/* <Testimonial /> */}
-      <ContactUsES />
+      <ContactUs />
       <Footer locale="es" />
 
     </div>

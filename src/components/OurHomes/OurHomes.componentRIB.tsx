@@ -2,6 +2,7 @@ import './OurHomes.style.scss'
 import { HouseDataType } from '../../utils/types';
 import React from 'react';
 import VillaCard from './Components/VillaCard.component';
+import { useMessages } from '../../i18n';
 
 interface IOurHomes{
     style?: any;
@@ -9,6 +10,7 @@ interface IOurHomes{
 }
 
 const OurHomesRIB = ({style, houseDataList}:IOurHomes) => {
+    const m = useMessages();
 
     
     return (
@@ -16,7 +18,7 @@ const OurHomesRIB = ({style, houseDataList}:IOurHomes) => {
             <div className="container">
                 <div className="row">
                     <div className="title text-center wow fadeIn" data-wow-duration="1500ms">
-                        <h2>Our <span className="color">Villas</span> </h2>
+                        <h2>{m.sections.ourLead} <span className="color">{m.sections.villasHighlight}</span> </h2>
                         <div className="border"></div>
                     </div>
                     <div className="homes-grid">

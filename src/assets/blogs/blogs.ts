@@ -51,28 +51,28 @@ export const blogs = [
     {
         id: "cahuitaParkwhattodo",
         title: "Visiting Cahuita National Park: What to Know Before You Go",
-        text: "Planning your transportation in Costa Rica's Caribbean coast? Look no further! This comprehensive guide provides you with all the bus schedules you need to travel from Puerto Viejo to major destinations including San Jose, Limón, Cahuita, Manzanillo, and Sixaola. Whether you're searching for 'bus San Jose Puerto Viejo', 'bus Cahuita Puerto Viejo', or 'bus from Puerto Viejo to San Jose', we've got you covered with the most up-to-date MEPE bus timetables.<br/>MEPE (Empresa de Transportes Públicos de Limón) is the primary bus company operating throughout Costa Rica's Caribbean coast. Known for their reliable service and extensive network, MEPE buses connect Puerto Viejo with major cities and tourist destinations across the region. Their modern fleet provides comfortable transportation for both locals and visitors, making it the preferred choice for budget-conscious travelers exploring Costa Rica's stunning Caribbean coastline.<br/>Puerto Viejo serves as a major transportation hub for the Southern Caribbean region. From here, you can easily reach San Jose (4-5 hours), Limón (1 hour), Cahuita (30 minutes), Manzanillo (20 minutes), and Sixaola (1.5 hours).<br/>Complete schedules include Limón to Puerto Viejo routes with Monday-Saturday and Sunday schedules, plus Puerto Viejo to Manzanillo timetables. Additional routes for Cahuita, San Jose, and Sixaola are being updated. Travel tips include arriving early, bringing cash (colones), and knowing that Limón serves as the main connection hub for San Jose and other destinations.",
+        text: "Cahuita National Park is one of the easiest and most relaxed national parks to visit on Costa Rica's Caribbean coast. It combines jungle trails, white-sand beaches, wildlife, and coral reefs in one place.",
         thumbnail:"https://pixabay.com/get/g648d00416193a3478059ee6a683f1fe0ccf051614aeaa74b633c7aaf78894891e22ae09c588bb97a06725ac09e08253ad077e3ef0b11c705e588e1895d987a05_1280.jpg",
         pictures: ["", ""]
     },
     {
         id: "indigenousTravelPV",
-        title: "Visiting Cahuita National Park: What to Know Before You Go",
-        text: "Planning your transportation in Costa Rica's Caribbean coast? Look no further! This comprehensive guide provides you with all the bus schedules you need to travel from Puerto Viejo to major destinations including San Jose, Limón, Cahuita, Manzanillo, and Sixaola. Whether you're searching for 'bus San Jose Puerto Viejo', 'bus Cahuita Puerto Viejo', or 'bus from Puerto Viejo to San Jose', we've got you covered with the most up-to-date MEPE bus timetables.<br/>MEPE (Empresa de Transportes Públicos de Limón) is the primary bus company operating throughout Costa Rica's Caribbean coast. Known for their reliable service and extensive network, MEPE buses connect Puerto Viejo with major cities and tourist destinations across the region. Their modern fleet provides comfortable transportation for both locals and visitors, making it the preferred choice for budget-conscious travelers exploring Costa Rica's stunning Caribbean coastline.<br/>Puerto Viejo serves as a major transportation hub for the Southern Caribbean region. From here, you can easily reach San Jose (4-5 hours), Limón (1 hour), Cahuita (30 minutes), Manzanillo (20 minutes), and Sixaola (1.5 hours).<br/>Complete schedules include Limón to Puerto Viejo routes with Monday-Saturday and Sunday schedules, plus Puerto Viejo to Manzanillo timetables. Additional routes for Cahuita, San Jose, and Sixaola are being updated. Travel tips include arriving early, bringing cash (colones), and knowing that Limón serves as the main connection hub for San Jose and other destinations.",
+        title: "Indigenous Culture Near Puerto Viejo de Talamanca",
+        text: "Discover Indigenous Bribri culture near Puerto Viejo de Talamanca. Learn about ancestral cacao, traditional medicine, and authentic cultural experiences in Indigenous communities of Costa Rica's South Caribbean.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Palenque_bribri._Costa_Rica.jpg/960px-Palenque_bribri._Costa_Rica.jpg",
         pictures: ["", ""]
     },
     {
         id: "bestTimeToVisitPuerto",
         title: "Best Time to Visit Puerto Viejo de Limón, Costa Rica",
-        text: "Planning your transportation in Costa Rica's Caribbean coast? Look no further! This comprehensive guide provides you with all the bus schedules you need to travel from Puerto Viejo to major destinations including San Jose, Limón, Cahuita, Manzanillo, and Sixaola. Whether you're searching for 'bus San Jose Puerto Viejo', 'bus Cahuita Puerto Viejo', or 'bus from Puerto Viejo to San Jose', we've got you covered with the most up-to-date MEPE bus timetables.<br/>MEPE (Empresa de Transportes Públicos de Limón) is the primary bus company operating throughout Costa Rica's Caribbean coast. Known for their reliable service and extensive network, MEPE buses connect Puerto Viejo with major cities and tourist destinations across the region. Their modern fleet provides comfortable transportation for both locals and visitors, making it the preferred choice for budget-conscious travelers exploring Costa Rica's stunning Caribbean coastline.<br/>Puerto Viejo serves as a major transportation hub for the Southern Caribbean region. From here, you can easily reach San Jose (4-5 hours), Limón (1 hour), Cahuita (30 minutes), Manzanillo (20 minutes), and Sixaola (1.5 hours).<br/>Complete schedules include Limón to Puerto Viejo routes with Monday-Saturday and Sunday schedules, plus Puerto Viejo to Manzanillo timetables. Additional routes for Cahuita, San Jose, and Sixaola are being updated. Travel tips include arriving early, bringing cash (colones), and knowing that Limón serves as the main connection hub for San Jose and other destinations.",
+        text: "Find the best time to visit Puerto Viejo de Limón. Learn why September and October are the most reliable months for clear skies and calm ocean, plus what to expect in other seasons.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619",
         pictures: ["", ""]
     },
     {
         id: "puertoHiddenGems",
         title: "Hidden Gems in Puerto Viejo: Quiet Spots Locals Love",
-        text: "Planning your transportation in Costa Rica's Caribbean coast? Look no further! This comprehensive guide provides you with all the bus schedules you need to travel from Puerto Viejo to major destinations including San Jose, Limón, Cahuita, Manzanillo, and Sixaola. Whether you're searching for 'bus San Jose Puerto Viejo', 'bus Cahuita Puerto Viejo', or 'bus from Puerto Viejo to San Jose', we've got you covered with the most up-to-date MEPE bus timetables.<br/>MEPE (Empresa de Transportes Públicos de Limón) is the primary bus company operating throughout Costa Rica's Caribbean coast. Known for their reliable service and extensive network, MEPE buses connect Puerto Viejo with major cities and tourist destinations across the region. Their modern fleet provides comfortable transportation for both locals and visitors, making it the preferred choice for budget-conscious travelers exploring Costa Rica's stunning Caribbean coastline.<br/>Puerto Viejo serves as a major transportation hub for the Southern Caribbean region. From here, you can easily reach San Jose (4-5 hours), Limón (1 hour), Cahuita (30 minutes), Manzanillo (20 minutes), and Sixaola (1.5 hours).<br/>Complete schedules include Limón to Puerto Viejo routes with Monday-Saturday and Sunday schedules, plus Puerto Viejo to Manzanillo timetables. Additional routes for Cahuita, San Jose, and Sixaola are being updated. Travel tips include arriving early, bringing cash (colones), and knowing that Limón serves as the main connection hub for San Jose and other destinations.",
+        text: "Puerto Viejo has famous beaches, music, and nightlife. But some of its best places stay off the main list. These spots feel calmer, closer to nature, and more personal.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205",
         pictures: ["", ""]
     }
@@ -108,7 +108,7 @@ export const blogsES = [
     },
     {
         id: "TenHoursInPuertoES",
-        title: "Diez Horas Para Eplorar Cahuita",
+        title: "Diez Horas Para Explorar Cahuita",
         text: "",
         thumbnail:"https://lh3.googleusercontent.com/d/1H81sxVh2z1VmcbZvVTlhdEINmQ0tQ5Es=w1000",
         pictures: ["", ""]
@@ -130,28 +130,28 @@ export const blogsES = [
     {
         id: "cahuitaParkwhattodoES",
         title: "Visitar el Parque Nacional Cahuita: lo que tenés que saber",
-        text: "Planning your transportation in Costa Rica's Caribbean coast? Look no further! This comprehensive guide provides you with all the bus schedules you need to travel from Puerto Viejo to major destinations including San Jose, Limón, Cahuita, Manzanillo, and Sixaola. Whether you're searching for 'bus San Jose Puerto Viejo', 'bus Cahuita Puerto Viejo', or 'bus from Puerto Viejo to San Jose', we've got you covered with the most up-to-date MEPE bus timetables.<br/>MEPE (Empresa de Transportes Públicos de Limón) is the primary bus company operating throughout Costa Rica's Caribbean coast. Known for their reliable service and extensive network, MEPE buses connect Puerto Viejo with major cities and tourist destinations across the region. Their modern fleet provides comfortable transportation for both locals and visitors, making it the preferred choice for budget-conscious travelers exploring Costa Rica's stunning Caribbean coastline.<br/>Puerto Viejo serves as a major transportation hub for the Southern Caribbean region. From here, you can easily reach San Jose (4-5 hours), Limón (1 hour), Cahuita (30 minutes), Manzanillo (20 minutes), and Sixaola (1.5 hours).<br/>Complete schedules include Limón to Puerto Viejo routes with Monday-Saturday and Sunday schedules, plus Puerto Viejo to Manzanillo timetables. Additional routes for Cahuita, San Jose, and Sixaola are being updated. Travel tips include arriving early, bringing cash (colones), and knowing that Limón serves as the main connection hub for San Jose and other destinations.",
+        text: "El Parque Nacional Cahuita es uno de los parques más accesibles y tranquilos del Caribe costarricense. Combina selva, playa, fauna y arrecife en un solo lugar.",
         thumbnail:"https://pixabay.com/get/g648d00416193a3478059ee6a683f1fe0ccf051614aeaa74b633c7aaf78894891e22ae09c588bb97a06725ac09e08253ad077e3ef0b11c705e588e1895d987a05_1280.jpg",
         pictures: ["", ""]
     },
     {
         id: "indigenousTravelPVES",
         title: "Cultura Indigena Cerca de Puerto Viejo De Limón",
-        text: "Discover Indigenous Bribri culture near Puerto Viejo de Talamanca. Learn about ancestral cacao, traditional medicine, and authentic cultural experiences in Indigenous communities of Costa Rica’s South Caribbean.",
+        text: "Descubre la cultura indígena Bribri cerca de Puerto Viejo de Talamanca. Aprende sobre cacao ancestral, medicina tradicional y experiencias culturales auténticas en comunidades indígenas del Caribe Sur de Costa Rica.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Palenque_bribri._Costa_Rica.jpg/960px-Palenque_bribri._Costa_Rica.jpg",
         pictures: ["", ""]
     },
     {
         id: "bestTimeToVisitPuertoES",
         title: "La Mejor Época para Visitar Puerto Viejo de Limón, Costa Rica",
-        text: "Discover Indigenous Bribri culture near Puerto Viejo de Talamanca. Learn about ancestral cacao, traditional medicine, and authentic cultural experiences in Indigenous communities of Costa Rica’s South Caribbean.",
+        text: "Descubre la mejor época para visitar Puerto Viejo de Limón. Septiembre y octubre ofrecen el clima más estable, con cielos despejados y mar tranquilo en el Caribe costarricense.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619",
         pictures: ["", ""]
     },
     {
         id: "puertoHiddenGemsES",
         title: "Joyas escondidas en Puerto Viejo",
-        text: "Discover Indigenous Bribri culture near Puerto Viejo de Talamanca. Learn about ancestral cacao, traditional medicine, and authentic cultural experiences in Indigenous communities of Costa Rica’s South Caribbean.",
+        text: "Puerto Viejo tiene playas famosas, música y vida nocturna. Pero algunos de sus mejores lugares quedan fuera de las listas más conocidas. Son espacios más tranquilos, conectados con la naturaleza y con un sabor local auténtico.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205",
         pictures: ["", ""]
     }

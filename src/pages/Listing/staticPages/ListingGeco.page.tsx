@@ -10,7 +10,6 @@ import { homesSnippet } from "../../../utils/constants";
 import { HouseDataType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
-import { houseDataList } from "../../../utils/constants";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import { Helmet } from "react-helmet";
 
@@ -19,10 +18,17 @@ import SocialStatement from "../../../components/SocialStatement/SocialStatement
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
+import { useLocale, useMessages } from "../../../i18n";
+import { localeSuffix } from "../../../i18n/paths";
+import { listingContent } from "../../../i18n/content/listings";
+import { houseDataByLangCode } from "../../../utils/constants";
 
 
 const ListingGeco = () => {
-    const listing = 'Geco'
+    const locale = useLocale();
+    const m = useMessages();
+    const content = listingContent('Geco', locale);
+    const listing = `Geco${localeSuffix(locale)}`
     // Seeded null, not read from useMediaQuery/matchMedia synchronously —
     // react-snap's puppeteer viewport at prerender time and a real visitor's
     // viewport at hydration time are different numbers, and isScreenSmall
@@ -39,7 +45,7 @@ const ListingGeco = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = houseDataList.find((house) => house.houseLangCode === listing);
+    const houseData: HouseDataType | undefined = houseDataByLangCode(listing);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -58,89 +64,60 @@ const ListingGeco = () => {
         <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Casa Geco - Pet Friendly Home in Puerto Viejo</title>
-                <meta name="description" content="Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/Geco" />
+                <title>{content.seoTitle}</title>
+                <meta name="description" content={content.seoDescription} />
+                <link rel="canonical" href={`https://www.reservaskalawala.com/Geco${localeSuffix(locale)}`} />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Geco" />
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/GecoES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Geco" />
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (
-                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">{m.property.stickyCta}</Button></div>)}
 
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
-                        <h1 className="title">Casa Geco</h1>
+                        <h1 className="title">{content.heading}</h1>
                         <p className="location">
                             <a href="https://maps.app.goo.gl/ixZHjG7yYsMF9U2e9" target="_blank" rel="noopener noreferrer">
                                 Puerto Viejo de Talamanca, Limón, Costa Rica
                             </a>
                         </p>
                         {/* Add marketing section after title */}
-                        <ListingMarketingSection propertyKey="Geco" locale="en" />
+                        <ListingMarketingSection propertyKey="Geco" locale={locale} />
 
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
-                    <SocialStatement propertyKey="Geco" locale="en" />
+                    <SocialStatement propertyKey="Geco" locale={locale} />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Geco" locale="en" />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Geco" locale={locale} />
                     </div>
 
                     {/* Add feature highlights before description */}
-                    <FeatureHighlights propertyKey="Geco" propertyName="House Geco" locale="en" />
+                    <FeatureHighlights propertyKey="Geco" propertyName={content.featureName} locale={locale} />
 
                     <div className="description">
                         <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
-                            <p ><strong>Check-in:</strong> 2:00 PM</p>
-                            <p ><strong>Check-out:</strong> 11:00 AM</p>
+                            <p><strong>{m.property.checkInLabel}</strong> {content.checkIn}</p>
+                            <p><strong>{m.property.checkOutLabel}</strong> {content.checkOut}</p>
                         </div>
-                        <p>
-                            Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer.
-                            <br />
-                        </p>
-                        <p>
-                            Most shops and restaurants are just a short walk away, and there is a nearby jungle path that runs along the ocean and leads to natural pools in the coral and to Cocles.
-                            <br />
-                        </p>
-                        <p>
-                            All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home.
-                            <br />
-                        </p>
-                        <p>
-                            We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.
-                            <br />
-                        </p>
-                        <p>
-                            Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
-                            <br />
-                        </p>
-                        <p>
-                            If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.
-                            <br />
-                        </p>
-                        <p>
-                            Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.
-                            <br />
-                        </p>
-                        <p>
-                            The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!
-                            <br />
-                        </p>
-                        <p>
-                            Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.
-                            <br />
-                        </p>
+                        {content.paragraphs.map((paragraph, i) => {
+                            // Index keys: a fixed, ordered block of prose that is
+                            // never reordered, filtered or appended to.
+                            const text = typeof paragraph === 'string' ? paragraph : paragraph.text;
+                            const withBreak = typeof paragraph === 'string';
+                            return <p key={i}>{text}{withBreak && <br />}</p>;
+                        })}
                     </div>
 
-                    <GuestReviews propertyKey="GECO" locale="en" />
+                    <GuestReviews propertyKey="GECO" locale={locale} />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    <PriceConfirmationSection propertyKey="Geco" locale="en" />
-                    <BookingSearchWidget locale="en" defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Geco" />
+                    <PriceConfirmationSection propertyKey="Geco" locale={locale} />
+                    <BookingSearchWidget locale={locale} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Geco" />
                 </Col>
             </Row>
 
@@ -148,7 +125,7 @@ const ListingGeco = () => {
                 <OtherListings listings={homesSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
-            <Footer locale="en" />
+            <Footer locale={locale} />
 
         </div>
     )

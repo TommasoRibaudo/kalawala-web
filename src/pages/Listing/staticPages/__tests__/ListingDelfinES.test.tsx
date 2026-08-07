@@ -1,14 +1,18 @@
 /**
  * ListingDelfinES Component Tests
  * 
- * Tests for Spanish Delfin listing page component
+ * Tests for the Spanish rendering of the Delfin listing page.
+ *
+ * Phase 3b merged ListingDelfin.page_ES into ListingDelfin.page, so Spanish is
+ * now selected by the route the page is rendered at, not by which module the
+ * test imports. Hence MemoryRouter at /DelfinES rather than BrowserRouter.
  * Requirements: 2.1, 2.2, 2.3, 5.4
  */
 
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import ListingDelfin from '../ListingDelfin.page_ES';
+import { MemoryRouter } from 'react-router-dom';
+import ListingDelfin from '../ListingDelfin.page';
 import { houseDataList } from '../../../../utils/constants';
 import type { Locale } from '../../../../i18n';
 
@@ -101,9 +105,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should render ListingDelfinES component successfully', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     expect(screen.getByTestId('fixed-navigation-es')).toBeInTheDocument();
@@ -114,9 +118,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should lookup DelfinES data correctly using houseLangCode', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     // Verify that the component finds the correct Spanish house data
@@ -129,9 +133,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should seed the booking search widget with the property capacity', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     const bookingWidget = screen.getByTestId('booking-search-widget');
@@ -142,9 +146,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should display Spanish amenities excluding pet-friendly', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     const delfinESData = houseDataList.find((house) => house.houseLangCode === 'DelfinES');
@@ -164,9 +168,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should have Helmet component for Spanish SEO', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     // Verify Helmet is present (it will be in the DOM even if not visible in test)
@@ -176,9 +180,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should display correct Spanish property description content', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     // Check for key Spanish description elements
@@ -191,9 +195,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should display Spanish check-in and check-out times', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     expect(screen.getByText('Entrada:')).toBeInTheDocument();
@@ -218,9 +222,9 @@ describe('ListingDelfinES Component', () => {
     } as unknown as MediaQueryList);
 
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
 
     expect(screen.getByText('VER DISPONIBILIDAD')).toBeInTheDocument();
@@ -230,9 +234,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should handle image modal functionality with Spanish content', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     // Initially modal should not be visible
@@ -256,9 +260,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should pass correct props to Spanish OtherListings component', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     const otherListings = screen.getByTestId('other-listings-es');
@@ -267,9 +271,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should pass correct houseName to ImagesContainer', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     const imagesContainer = screen.getByTestId('images-container');
@@ -278,9 +282,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should use Spanish navigation component', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     const navigation = screen.getByTestId('fixed-navigation-es');
@@ -289,9 +293,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should scroll to top on component mount', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
@@ -299,9 +303,9 @@ describe('ListingDelfinES Component', () => {
 
   test('should have correct location link', () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={['/DelfinES']}>
         <ListingDelfin />
-      </BrowserRouter>
+      </MemoryRouter>
     );
     
     const locationLink = screen.getByRole('link', { name: /Puerto Viejo de Talamanca/i });

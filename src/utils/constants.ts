@@ -60,20 +60,6 @@ export const NamSnippet: ListingType[] = [
         mainImage: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000"
     },
 ]
-export const NamSnippetES: ListingType[] = [
-    {
-        name: 'ArekaES',
-        mainImage: "https://lh3.googleusercontent.com/d/1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey=w1000"
-    },
-    {
-        name: 'GiuliaES',
-        mainImage: "https://lh3.googleusercontent.com/d/1e0esqkSBKBdT-F2kLg5PsyF46zEWtWQ8=w1000"
-    },
-    {
-        name: 'PlumeriaES',
-        mainImage: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000"
-    },
-]
 export const VillaSnippet: ListingType[] = [
     {
         name: 'Villa Mar',
@@ -85,19 +71,7 @@ export const VillaSnippet: ListingType[] = [
     }
 ]
 
-export const VillaMarSnippet: ListingType[] = [
-    {
-        name: 'Villa Coral',
-        mainImage: "https://lh3.googleusercontent.com/d/1frKDGGLk1nJQQaxoxng6TgmUVzxTx08A=w1000"
-    }
-]
 
-export const VillaCoralSnippet: ListingType[] = [
-    {
-        name: 'Villa Mar',
-        mainImage: "https://lh3.googleusercontent.com/d/1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn=w1000"
-    }
-]
 
 export const allHomesSnippet: ListingType[] = [
     {
@@ -2473,3 +2447,33 @@ export const BLOG_ARTICLES: BlogArticle[] = [
   { key: 'besttime', titleEn: 'Best Time to Visit', titleEs: 'Mejor época para visitar', pathEn: '/bestTimeToVisitPuerto', pathEs: '/bestTimeToVisitPuertoES' },
   { key: 'hiddengems', titleEn: 'Hidden Gems in Puerto Viejo', titleEs: 'Joyas escondidas', pathEn: '/puertoHiddenGems', pathEs: '/puertoHiddenGemsES' },
 ];
+
+/**
+ * Every property that has a listing page, in every language, keyed by
+ * `houseLangCode` ("Geco", "GecoES", "ArekaES", …).
+ *
+ * The underlying arrays are split three ways for historical reasons:
+ * `houseDataList` holds both languages for the town houses, while the Namaitami
+ * and Villa properties keep separate `…ES` arrays. A listing page therefore had
+ * to know which of five arrays its own data lived in, and the Spanish pages
+ * imported a different one from their English twins — which is precisely the
+ * kind of per-language wiring PHASE 3 removes.
+ *
+ * `houseLangCode` is unique across these five arrays, so one lookup replaces
+ * that choice entirely. (It is *not* unique against `houseDataEngList` and
+ * `ribHouseDataEngList`, which repeat the English entries for the home page
+ * cards; those are deliberately excluded here.)
+ *
+ * PHASE 4 should fold this into routes.config.ts, where each route already
+ * knows its property and locale.
+ */
+const LISTING_PAGE_DATA: HouseDataType[] = [
+    ...houseDataList,
+    ...NamDataList,
+    ...NamDataListES,
+    ...VillasDataList,
+    ...VillasDataListES,
+];
+
+export const houseDataByLangCode = (langCode: string): HouseDataType | undefined =>
+    LISTING_PAGE_DATA.find((house) => house.houseLangCode === langCode);

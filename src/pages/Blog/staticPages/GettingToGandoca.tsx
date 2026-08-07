@@ -3,7 +3,7 @@ import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
-import { blogs } from "../../../assets/blogs/blogs";
+import { blogs, blogsES } from "../../../assets/blogs/blogs";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import OtherBlogs from "../Components/OtherBlogs.Component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
@@ -11,13 +11,33 @@ import { Helmet } from "react-helmet";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
-import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
+import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import { useLocale, useMessages } from "../../../i18n";
+import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { gettingToGandocaContent } from "../../../i18n/content/blog";
 
+// Matches the real "gettingtogandoca" thumbnail in assets/blogs/blogs.ts and
+// the pre-merge Spanish page. The pre-merge English page pointed at a
+// placeholder id ("1example-gandoca-image") that 404s.
+const HERO_IMAGE = 'https://cdn.pixabay.com/photo/2020/01/07/05/11/beach-4746787_960_720.jpg';
 
-const HERO_IMAGE =
-  'https://lh3.googleusercontent.com/d/1example-gandoca-image=w1000';
+const scheduleBadges = (times: string[]) => (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
+        {times.map((time) => (
+            <span key={time} style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>{time}</span>
+        ))}
+    </div>
+);
+
+const TO_MANZANILLO = ['7:40 AM', '8:10 AM', '9:40 AM', '11:40 AM', '1:40 PM', '4:40 PM', '6:40 PM'];
+const TO_PUERTO_VIEJO = ['5:00 AM', '6:30 AM', '8:00 AM', '10:00 AM', '10:30 AM', '12:30 PM', '1:30 PM', '3:30 PM', '4:00 PM', '5:00 PM'];
 
 const GettingToGandoca = () => {
+    const locale = useLocale();
+    const m = useMessages();
+    const content = gettingToGandocaContent(locale);
+    const lang = bookingLanguage(locale);
+    const selfId = `gettingtogandoca${localeSuffix(locale)}`;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -27,9 +47,9 @@ const GettingToGandoca = () => {
         <div className={`listingContainer`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>How to Get to Gandoca-Manzanillo National Wildlife Refuge from Puerto Viejo, Costa Rica</title>
-                <meta name="description" content="The Gandoca-Manzanillo National Wildlife Refuge, located in the province of Limón, is one of the best-kept secrets of Costa Rica's Southern Caribbean. This impressive wildlife refuge offers a rich variety of ecosystems, from mangroves and coral reefs to pristine beaches." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/gettingtogandoca" />
+                <title>{content.seoTitle}</title>
+                <meta name="description" content={content.seoDescription} />
+                <link rel="canonical" href={`https://www.reservaskalawala.com/gettingtogandoca${localeSuffix(locale)}`} />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/gettingtogandoca" />
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/gettingtogandocaES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/gettingtogandoca" />
@@ -41,7 +61,7 @@ const GettingToGandoca = () => {
 
                     <div className="blog-header" style={{ maxWidth: 1000, marginBottom: '2rem' }}>
                         <div className="heading title-container">
-                            <h1 className="title blog-title">How to Get to Gandoca-Manzanillo National Wildlife Refuge from Puerto Viejo, Costa Rica</h1>
+                            <h1 className="title blog-title">{content.heading}</h1>
                             <div className="border"></div>
                         </div>
 
@@ -66,7 +86,7 @@ const GettingToGandoca = () => {
                                     height: 'auto',
                                     display: 'block'
                                 }}
-                                alt="Gandoca-Manzanillo National Wildlife Refuge"
+                                alt={content.heroAlt}
                                 width="1000"
                                 height="600"
                             />
@@ -74,62 +94,39 @@ const GettingToGandoca = () => {
                     </div>
 
                     <div className="description" style={{ maxWidth: 1000, }}>
-                        <p>The <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Gandoca-Manzanillo National Wildlife Refuge</a>, located in the province of Limón, is one of the best-kept secrets of Costa Rica's Southern Caribbean. This impressive wildlife refuge offers a rich variety of ecosystems, from mangroves and coral reefs to pristine beaches. If you're in Puerto Viejo de Talamanca and looking for a nature getaway, this is an excellent option. In this guide, we show you how to easily get there from Puerto Viejo so you can fully explore this natural paradise.</p>
+                        <p>{content.intro}</p>
                         <br />
-                        <h3><strong>Transportation Options</strong></h3>
+                        <h3><strong>{content.transportOptionsHeading}</strong></h3>
                         <br />
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
-                            title="Where to stay when visiting Gandoca-Manzanillo?"
-                            properties={GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
-                            language="en"
+                            title={content.stayRecommendationTitle}
+                            properties={locale === 'es' ? GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES : GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
+                            language={lang}
                         />
                         <br />
 
-                        <h4><strong>1. Bus from Puerto Viejo to Manzanillo</strong></h4>
-                        <p>The simplest and most economical way to reach <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Gandoca-Manzanillo National Wildlife Refuge</a> is by taking a bus from downtown Puerto Viejo to Manzanillo. The <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">bus stop</a> is located where you buy the tickets, near the basketball court or by the Deleite Ice Cream Shop.</p>
+                        <h4><strong>{content.busHeading}</strong></h4>
+                        <p>{content.busIntro}</p>
                         <br />
-                        <p><strong>Bus schedules:</strong></p>
+                        <p><strong>{content.busSchedulesLabel}</strong></p>
                         <br />
                         <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ddd' }}>
                                 <thead>
                                     <tr style={{ backgroundColor: '#f5f5f5' }}>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'left' }}>Route</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'center' }}>Departure Times</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'left' }}>{content.tableRouteHeader}</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'center' }}>{content.tableDepartureHeader}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>Puerto Viejo → Manzanillo</strong></td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:40 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:10 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>9:40 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>11:40 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>1:40 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:40 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:40 PM</span>
-                                            </div>
-                                        </td>
+                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>{scheduleBadges(TO_MANZANILLO)}</td>
                                     </tr>
                                     <tr style={{ backgroundColor: '#f9f9f9' }}>
                                         <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>Manzanillo → Puerto Viejo</strong></td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:00 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:00 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>10:00 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>10:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>12:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>1:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>3:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:00 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:00 PM</span>
-                                            </div>
-                                        </td>
+                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>{scheduleBadges(TO_PUERTO_VIEJO)}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -137,34 +134,34 @@ const GettingToGandoca = () => {
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                         <div style={{ maxWidth: 1000 }}>
                             <WhyStayWithUs
-                                language="en"
-                                ctaLink="/"
+                                language={lang}
+                                ctaLink={homePath(locale)}
                             />
                         </div>
-                        <h4><strong>2. Rent a Scooter or a 4x4</strong></h4>
-                        <p>If you prefer to explore at your own pace, renting a scooter or a 4x4 is an excellent option. If you're staying in our houses in downtown Puerto Viejo, you can rent vehicles at <a href="https://maps.app.goo.gl/uao7BMUuwFLyRL6dA" target="_blank" rel="noopener noreferrer">Mistery Jungle</a>, right in front, with prices starting at $30. If you're staying in our villas in Playa Chiquita, you can request to have the vehicle delivered directly to your villa.</p>
+                        <h4><strong>{content.scooterHeading}</strong></h4>
+                        <p>{content.scooterParagraph1}</p>
                         <br />
-                        <p>This option is ideal for those seeking a personalized adventure, as it allows you to make stops wherever you like and explore the charming town of Manzanillo without worrying about bus schedules. Enjoy the freedom to explore your way and discover all the corners this beautiful destination has to offer.</p>
+                        <p>{content.scooterParagraph2}</p>
                         <br />
-                        <h4><strong>3. Travel by Car from Puerto Viejo</strong></h4>
-                        <p>If you decide to travel by car from Puerto Viejo, simply head towards Manzanillo and cover the 14 km distance. Upon arrival, you'll find parking available outside the reserve, where some locals offer to watch your vehicle for a small fee. We recommend not leaving valuables inside the car as a safety measure.</p>
+                        <h4><strong>{content.carHeading}</strong></h4>
+                        <p>{content.carParagraph}</p>
                         <br />
-                        <h3><strong>Conclusion</strong></h3>
-                        <p>Gandoca-Manzanillo National Wildlife Refuge is a must-visit destination for nature and adventure lovers. Whether you choose to travel by bus, rent a vehicle, or drive, getting to this natural paradise is easy and accessible.</p>
+                        <h3><strong>{content.conclusionHeading}</strong></h3>
+                        <p>{content.conclusionParagraph1}</p>
                         <br />
-                        <p>We invite you to plan your visit to this beautiful refuge and take the opportunity to stay in our cozy houses in Puerto Viejo de Talamanca. We offer a comfortable and relaxing environment, perfect for enjoying nature and exploring all that the region has to offer. Discover the charm of Gandoca-Manzanillo National Wildlife Refuge and the warmth of our villas!</p>
+                        <p>{content.conclusionParagraph2}</p>
                     </div>
 
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h2 className="smoobu-title">Book Your Stay</h2>
+                        <h2 className="smoobu-title">{m.blog.bookYourStay}</h2>
                         <div className="smoobu-wrapper">
-                            <Smoobu2 targetId="gandocaSmoobuBooking" />
+                            <Smoobu2 targetId="blogSmoobuBooking" />
                         </div>
                     </div>
 
-                    <OtherBlogs currentBlog="gettingtogandoca" blogs={blogs} />
+                    <OtherBlogs currentBlog={selfId} blogs={locale === 'es' ? blogsES : blogs} />
                 </Col>
             </Row>
             <ContactUs />

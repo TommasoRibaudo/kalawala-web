@@ -194,3 +194,93 @@ const twoDaysInPV: Partial<Record<Locale, TwoDaysInPVContent>> = {
 export function twoDaysInPVContent(locale: Locale): TwoDaysInPVContent {
   return twoDaysInPV[locale] ?? twoDaysInPV.en!;
 }
+
+export interface GettingToGandocaContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  intro: React.ReactNode;
+  transportOptionsHeading: string;
+  stayRecommendationTitle: string;
+  busHeading: string;
+  busIntro: React.ReactNode;
+  busSchedulesLabel: string;
+  tableRouteHeader: string;
+  tableDepartureHeader: string;
+  scooterHeading: string;
+  scooterParagraph1: React.ReactNode;
+  scooterParagraph2: string;
+  carHeading: string;
+  carParagraph: string;
+  conclusionHeading: string;
+  conclusionParagraph1: string;
+  conclusionParagraph2: string;
+}
+
+const gettingToGandoca: Partial<Record<Locale, GettingToGandocaContent>> = {
+  en: {
+    seoTitle: 'How to Get to Gandoca-Manzanillo National Wildlife Refuge from Puerto Viejo, Costa Rica',
+    seoDescription:
+      "The Gandoca-Manzanillo National Wildlife Refuge, located in the province of Limón, is one of the best-kept secrets of Costa Rica's Southern Caribbean. This impressive wildlife refuge offers a rich variety of ecosystems, from mangroves and coral reefs to pristine beaches.",
+    heading: 'How to Get to Gandoca-Manzanillo National Wildlife Refuge from Puerto Viejo, Costa Rica',
+    heroAlt: 'Gandoca-Manzanillo National Wildlife Refuge',
+    intro:
+      <>The <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Gandoca-Manzanillo National Wildlife Refuge</a>, located in the province of Limón, is one of the best-kept secrets of Costa Rica's Southern Caribbean. This impressive wildlife refuge offers a rich variety of ecosystems, from mangroves and coral reefs to pristine beaches. If you're in Puerto Viejo de Talamanca and looking for a nature getaway, this is an excellent option. In this guide, we show you how to easily get there from Puerto Viejo so you can fully explore this natural paradise.</>,
+    transportOptionsHeading: 'Transportation Options',
+    stayRecommendationTitle: 'Where to stay when visiting Gandoca-Manzanillo?',
+    busHeading: '1. Bus from Puerto Viejo to Manzanillo',
+    busIntro:
+      <>The simplest and most economical way to reach <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Gandoca-Manzanillo National Wildlife Refuge</a> is by taking a bus from downtown Puerto Viejo to Manzanillo. The <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">bus stop</a> is located where you buy the tickets, near the basketball court or by the Deleite Ice Cream Shop.</>,
+    busSchedulesLabel: 'Bus schedules:',
+    tableRouteHeader: 'Route',
+    tableDepartureHeader: 'Departure Times',
+    scooterHeading: '2. Rent a Scooter or a 4x4',
+    scooterParagraph1:
+      <>If you prefer to explore at your own pace, renting a scooter or a 4x4 is an excellent option. If you're staying in our houses in downtown Puerto Viejo, you can rent vehicles at <a href="https://maps.app.goo.gl/uao7BMUuwFLyRL6dA" target="_blank" rel="noopener noreferrer">Mistery Jungle</a>, right in front, with prices starting at $30. If you're staying in our villas in Playa Chiquita, you can request to have the vehicle delivered directly to your villa.</>,
+    scooterParagraph2:
+      'This option is ideal for those seeking a personalized adventure, as it allows you to make stops wherever you like and explore the charming town of Manzanillo without worrying about bus schedules. Enjoy the freedom to explore your way and discover all the corners this beautiful destination has to offer.',
+    carHeading: '3. Travel by Car from Puerto Viejo',
+    carParagraph:
+      "If you decide to travel by car from Puerto Viejo, simply head towards Manzanillo and cover the 14 km distance. Upon arrival, you'll find parking available outside the reserve, where some locals offer to watch your vehicle for a small fee. We recommend not leaving valuables inside the car as a safety measure.",
+    conclusionHeading: 'Conclusion',
+    conclusionParagraph1:
+      'Gandoca-Manzanillo National Wildlife Refuge is a must-visit destination for nature and adventure lovers. Whether you choose to travel by bus, rent a vehicle, or drive, getting to this natural paradise is easy and accessible.',
+    conclusionParagraph2:
+      'We invite you to plan your visit to this beautiful refuge and take the opportunity to stay in our cozy houses in Puerto Viejo de Talamanca. We offer a comfortable and relaxing environment, perfect for enjoying nature and exploring all that the region has to offer. Discover the charm of Gandoca-Manzanillo National Wildlife Refuge and the warmth of our villas!',
+  },
+  es: {
+    seoTitle: 'Cómo Llegar al Refugio Nacional Gandoca-Manzanillo desde Puerto Viejo, Costa Rica',
+    seoDescription:
+      'El Refugio Nacional Gandoca-Manzanillo, ubicado en la provincia de Limón, es uno de los secretos mejor guardados del Caribe Sur de Costa Rica. Este impresionante refugio de vida silvestre ofrece una rica variedad de ecosistemas, desde manglares y arrecifes de coral hasta playas vírgenes.',
+    heading: 'Cómo Llegar al Refugio Nacional Gandoca-Manzanillo desde Puerto Viejo, Costa Rica',
+    heroAlt: 'Playa del Refugio Nacional Gandoca-Manzanillo',
+    intro:
+      <>El <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Refugio Nacional Gandoca-Manzanillo</a>, ubicado en la provincia de Limón, es uno de los secretos mejor guardados del Caribe Sur de Costa Rica. Este impresionante refugio de vida silvestre ofrece una rica variedad de ecosistemas, desde manglares y arrecifes de coral hasta playas vírgenes. Si estás en Puerto Viejo de Talamanca y buscas una escapada a la naturaleza, esta es una excelente opción. En esta guía, te mostramos cómo llegar fácilmente desde Puerto Viejo para que puedas explorar al máximo este paraíso natural.</>,
+    transportOptionsHeading: 'Opciones de Transporte',
+    stayRecommendationTitle: '¿Dónde hospedarte cuando visites Gandoca-Manzanillo?',
+    busHeading: '1. Autobús desde Puerto Viejo a Manzanillo',
+    busIntro:
+      <>La forma más sencilla y económica de llegar al <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Refugio Nacional Gandoca-Manzanillo</a> es tomando un autobús desde el centro de Puerto Viejo con destino a Manzanillo. La <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">parada</a> se encuentra donde se compran los tiquetes, cerca de la cancha de baloncesto o por la Heladería Deleite.</>,
+    busSchedulesLabel: 'Horarios de los buses:',
+    tableRouteHeader: 'Ruta',
+    tableDepartureHeader: 'Horarios de Salida',
+    scooterHeading: '2. Rentar un Scooter o un 4x4',
+    scooterParagraph1:
+      <>Si prefieres explorar a tu propio ritmo, rentar un scooter o un 4x4 es una excelente opción. Si te hospedas en nuestras casas en el centro de Puerto Viejo, puedes rentar vehículos en <a href="https://maps.app.goo.gl/uao7BMUuwFLyRL6dA" target="_blank" rel="noopener noreferrer">Mistery Jungle</a>, justo al frente, con precios que comienzan en $30. Si estás alojado en nuestras villas en Playa Chiquita, puedes solicitar que te entreguen el vehículo directamente en tu villa.</>,
+    scooterParagraph2:
+      'Esta opción es ideal para quienes buscan una aventura personalizada, ya que te permite hacer paradas donde desees y recorrer el encantador pueblo de Manzanillo sin preocuparte por los horarios del autobús. Disfruta de la libertad de explorar a tu manera y descubre todos los rincones que este hermoso destino tiene para ofrecer.',
+    carHeading: '3. Viajar en Carro desde Puerto Viejo',
+    carParagraph:
+      'Si decides viajar en carro desde Puerto Viejo, simplemente toma dirección a Manzanillo y recorre los 14 km de distancia. Al llegar, encontrarás estacionamiento disponible fuera de la reserva, donde algunas personas de la zona ofrecen cuidar tu vehículo a cambio de una pequeña tarifa. Te recomendamos no dejar objetos de valor dentro del carro por seguridad.',
+    conclusionHeading: 'Conclusión',
+    conclusionParagraph1:
+      'El Refugio Nacional Gandoca-Manzanillo es un destino imperdible para los amantes de la naturaleza y la aventura. Ya sea que decidas viajar en autobús, rentar un vehículo o ir en carro, llegar a este paraíso natural es fácil y accesible.',
+    conclusionParagraph2:
+      'Te invitamos a planificar tu visita a este hermoso refugio y a aprovechar la oportunidad de hospedarte en nuestras acogedoras casas en Puerto Viejo de Talamanca. Ofrecemos un ambiente cómodo y relajante, perfecto para disfrutar de la naturaleza y explorar todo lo que la región tiene para ofrecer. ¡No esperes más y ven a descubrir el encanto del Refugio Nacional Gandoca-Manzanillo y la calidez de nuestras villas!',
+  },
+};
+
+export function gettingToGandocaContent(locale: Locale): GettingToGandocaContent {
+  return gettingToGandoca[locale] ?? gettingToGandoca.en!;
+}

@@ -514,3 +514,150 @@ const cahuitaPark: Partial<Record<Locale, CahuitaParkContent>> = {
 export function cahuitaParkContent(locale: Locale): CahuitaParkContent {
   return cahuitaPark[locale] ?? cahuitaPark.en!;
 }
+
+export interface BestTimeToVisitContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: [string, string];
+  stayRecommendationTitle: string;
+  hardToPredictHeading: string;
+  hardToPredictParagraphs: [string, string];
+  surprisesListItems: [string, string, string];
+  bestTimeHeading: string;
+  bestTimeParagraphs: [React.ReactNode, string];
+  /** Independently authored per locale — Spanish has an extra water-temperature
+   * bullet and splits English's third point in two. Not reconciled, per the
+   * precedent set for listing copy in Phase 3b: each locale's own list. */
+  bestTimeListItems: string[];
+  febAprHeading: string;
+  febAprParagraphs: [string, string];
+  wetMonthsHeading: string;
+  wetMonthsParagraphs: [string, React.ReactNode, React.ReactNode, string];
+  tipsHeading: string;
+  /** Also independently authored — English includes an MSN weather-app link
+   * Spanish doesn't. Left as published rather than added to Spanish, for the
+   * same reason. */
+  tipsListItems: React.ReactNode[];
+  conclusionHeading: string;
+  conclusionParagraph: string;
+}
+
+const bestTimeToVisit: Partial<Record<Locale, BestTimeToVisitContent>> = {
+  en: {
+    seoTitle: 'Best Time to Visit Puerto Viejo de Limón, Costa Rica',
+    seoDescription:
+      'Find the best time to visit Puerto Viejo de Limón. Learn why September and October are the most reliable months for clear skies and calm ocean, plus what to expect in other seasons.',
+    heading: 'The Best Time of the Year to Visit Puerto Viejo de Limón, Costa Rica',
+    heroAlt: 'Beach in Puerto Viejo de Limón, Costa Rica',
+    photoCredit: <>Photo by <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a></>,
+    introParagraphs: [
+      'Choosing when to visit Puerto Viejo is not as simple as checking a weather chart. The South Caribbean coast can change from week to week.',
+      'Multi-year cycles also affect it. Some years are drier. Some years are wetter. That is why "average" weather can feel wrong when you arrive.',
+    ],
+    stayRecommendationTitle: 'Looking to stay in Puerto Viejo?',
+    hardToPredictHeading: 'Why Puerto Viejo Weather Is Hard to Predict',
+    hardToPredictParagraphs: [
+      'Puerto Viejo does not follow the same seasons as the Pacific side of Costa Rica: rain and ocean conditions depend on wider Caribbean systems.',
+      'This means you can get surprises in any month:',
+    ],
+    surprisesListItems: [
+      'Weeks that stay sunny during "rainy season"',
+      'Heavy rain during months labeled "dry season"',
+      'Ocean conditions that shift fast',
+    ],
+    bestTimeHeading: 'The True Best Time to Visit: September and October',
+    bestTimeParagraphs: [
+      <>Contrary to what many websites mention, the most reliable time to visit is <strong>September and October</strong>.</>,
+      'It is often called the Caribbean summer. It is the one period that consistently brings the mix most travelers want.',
+    ],
+    bestTimeListItems: [
+      'Clear skies for many days in a row',
+      'Calm ocean conditions',
+      'Great beach days without the peak-season crowds',
+    ],
+    febAprHeading: 'February to April: Not as Reliable as Advertised',
+    febAprParagraphs: [
+      'Many guides list February to April as the dry season. In my experience, this time can be as varied and unpredictable as any other month.',
+      'You might get perfect beach days. You might also get rain, clouds, and changing sea conditions. It can be a good time to visit, but it is not a sure thing.',
+    ],
+    wetMonthsHeading: 'Months That Tend to Be Wetter',
+    wetMonthsParagraphs: [
+      'Some months are more likely to bring heavy rain and greyer skies.',
+      <><strong>December</strong> tends to be very rainy. The ocean can also feel rougher.</>,
+      <><strong>May and June</strong> also tend to be wet, with more frequent showers and higher humidity.</>,
+      'These months can still be beautiful, especially if you like a greener landscape and do not mind getting caught in rain.',
+    ],
+    tipsHeading: 'Quick Planning Tips',
+    tipsListItems: [
+      'If you want the best odds of sun and calm sea, plan for September or October.',
+      'If you travel in other months, pack for mixed weather and stay flexible.',
+      'For snorkeling and swimming, calm ocean matters as much as rain.',
+      <><a href="https://www.msn.com/es-xl/el-tiempo/pronostico/in-Puerto-Viejo,Limon?loc=eyJhIjoiSG90ZWwgUHVlcnRvIFZpZWpvIiwibCI6IlB1ZXJ0byBWaWVqbyIsInIiOiJMaW1vbiIsImMiOiJDb3N0YSBSaWNhIiwiaSI6IkNSIiwidCI6MTAxLCJnIjoiZXMteGwiLCJ4IjoiLTgyLjc1MzQwMjcwOTk2MDk0IiwieSI6IjkuNjU3MTk5ODU5NjE5MTQifQ%3D%3D&weadegreetype=C" target="_blank" rel="noopener noreferrer">MSN</a> is my go to app for predicting the weather.</>,
+    ],
+    conclusionHeading: 'Key Takeaways',
+    conclusionParagraph:
+      'Puerto Viejo weather can change a lot from year to year, so charts do not tell the full story. If you want the most reliable mix of clear skies and a calm ocean, September and October are the best choice.',
+  },
+  es: {
+    seoTitle: 'La Mejor Época para Visitar Puerto Viejo de Limón, Costa Rica',
+    seoDescription:
+      'Descubre la mejor época para visitar Puerto Viejo de Limón. Septiembre y octubre ofrecen el clima más estable, con cielos despejados y mar tranquilo en el Caribe costarricense.',
+    heading: 'La Mejor Época del Año para Visitar Puerto Viejo de Limón, Costa Rica',
+    heroAlt: 'Playa en Puerto Viejo de Limón, Costa Rica',
+    photoCredit: <>Foto de <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a></>,
+    introParagraphs: [
+      'Elegir cuándo visitar Puerto Viejo no es tan simple como revisar una tabla del clima. En el Caribe Sur, el tiempo puede cambiar de una semana a otra.',
+      'Además, existen ciclos de varios años que influyen mucho. Algunos años son más secos. Otros son más lluviosos. Por eso, los promedios muchas veces no reflejan la realidad.',
+    ],
+    stayRecommendationTitle: '¿Buscas dónde hospedarte en Puerto Viejo?',
+    hardToPredictHeading: 'Por Qué el Clima en Puerto Viejo es Difícil de Predecir',
+    hardToPredictParagraphs: [
+      'Puerto Viejo no sigue las mismas estaciones que el Pacífico de Costa Rica. Aquí, la lluvia y el estado del mar dependen de sistemas caribeños más amplios.',
+      'Esto provoca situaciones como:',
+    ],
+    surprisesListItems: [
+      'Días soleados en plena "temporada lluviosa"',
+      'Lluvia intensa en meses considerados "secos"',
+      'Cambios rápidos en el estado del mar',
+    ],
+    bestTimeHeading: 'La Mejor Época para Visitar: Septiembre y Octubre',
+    bestTimeParagraphs: [
+      <>A diferencia de lo que indican muchos sitios web, la época más confiable para visitar Puerto Viejo es <strong>septiembre y octubre</strong>.</>,
+      'A este periodo se le conoce como el verano del Caribe. Es el momento del año que ofrece las condiciones más estables.',
+    ],
+    bestTimeListItems: [
+      'Cielos despejados durante varios días seguidos',
+      'Mar tranquilo',
+      'Agua cálida ideal para nadar y hacer snorkel',
+      'Menos turistas que en temporada alta',
+    ],
+    febAprHeading: 'Febrero a Abril: No Tan Seguro Como Parece',
+    febAprParagraphs: [
+      'Muchos guías mencionan febrero a abril como la estación seca. En mi experiencia, este periodo puede ser tan variable como cualquier otro mes.',
+      'Algunos días pueden ser perfectos. Otros pueden traer lluvia, nubes y un mar cambiante. Es una buena época para viajar, pero no es garantía de clima seco.',
+    ],
+    wetMonthsHeading: 'Meses que Suelen Ser Más Lluviosos',
+    wetMonthsParagraphs: [
+      'Hay meses que muestran un patrón más claro de lluvias frecuentes.',
+      <><strong>Diciembre</strong> suele ser muy lluvioso y el mar puede estar más movido.</>,
+      <><strong>Mayo y junio</strong> también tienden a ser meses húmedos, con lluvias constantes y mayor sensación de humedad.</>,
+      'Aun así, estos meses tienen paisajes muy verdes y pueden ser una buena opción si no te molesta la lluvia.',
+    ],
+    tipsHeading: 'Consejos Rápidos para Planear tu Viaje',
+    tipsListItems: [
+      'Si buscas sol y mar tranquilo, septiembre y octubre son la mejor opción.',
+      'En otros meses, viaja con expectativas flexibles y ropa adecuada para lluvia.',
+      'Para nadar y hacer snorkel, el estado del mar es tan importante como el clima.',
+    ],
+    conclusionHeading: 'Conclusión',
+    conclusionParagraph:
+      'El clima en Puerto Viejo cambia mucho de un año a otro, por lo que las estadísticas no siempre ayudan. Si quieres la combinación más confiable de buen clima y mar calmado, septiembre y octubre son la mejor elección.',
+  },
+};
+
+export function bestTimeToVisitContent(locale: Locale): BestTimeToVisitContent {
+  return bestTimeToVisit[locale] ?? bestTimeToVisit.en!;
+}

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 
 import './HomeCard.style.scss'
+import type { Locale } from '../../../i18n';
 
 interface IHomeCard {
     name: string;
@@ -18,7 +19,7 @@ const VillaCard: FC<IHomeCard> = ({ guestNumber, name, image, houseLangCode }) =
 
     // Spanish house codes contain "ES", so the card can label its own CTA
     // without threading a language prop from parents.
-    const isSpanish = houseLangCode.includes('ES');
+    const cardLocale: Locale = houseLangCode.includes('ES') ? 'es' : 'en';
     const navigate = useNavigate();
     const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
         // A real href already handles ctrl/cmd-click, middle-click and "open in
@@ -69,7 +70,7 @@ const VillaCard: FC<IHomeCard> = ({ guestNumber, name, image, houseLangCode }) =
                         <FontAwesomeIcon icon={faWifi} />
                         <FontAwesomeIcon icon={faParking} />
                     </div>
-                    <span className="card-cta">{isSpanish ? 'Ver casa →' : 'View home →'}</span>
+                    <span className="card-cta">{cardLocale === 'es' ? 'Ver casa →' : 'View home →'}</span>
                 </div>
             </div>
 

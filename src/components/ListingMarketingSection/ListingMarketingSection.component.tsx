@@ -1,15 +1,16 @@
 import React from 'react';
 import { PROPERTY_MARKETING_CONFIG } from '../../utils/constants';
 import './ListingMarketingSection.style.scss';
+import type { Locale } from '../../i18n';
 
 interface ListingMarketingSectionProps {
   propertyKey: string;
-  isSpanish: boolean;
+  locale: Locale;
 }
 
 const ListingMarketingSection: React.FC<ListingMarketingSectionProps> = ({ 
   propertyKey, 
-  isSpanish 
+  locale 
 }) => {
   const config = PROPERTY_MARKETING_CONFIG[propertyKey];
   
@@ -18,7 +19,7 @@ const ListingMarketingSection: React.FC<ListingMarketingSectionProps> = ({
     return null;
   }
 
-  const descriptiveTitle = isSpanish ? config.descriptiveTitle.es : config.descriptiveTitle.en;
+  const descriptiveTitle = locale === 'es' ? config.descriptiveTitle.es : config.descriptiveTitle.en;
 
   return (
     <div className="listing-marketing-section">

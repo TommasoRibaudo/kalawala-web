@@ -3,17 +3,18 @@ import { AmenityType } from "../../../../utils/types";
 import AmenityIcon from "../../../../components/AmenityIcon/AmenityIcon.component";
 import { getCapacityFacts } from "../../../../utils/propertyCapacity";
 import './Amenities.style.scss'
+import type { Locale } from '../../../../i18n';
 
 interface IAmenities {
     amenities: AmenityType[]
     // Optional: when given, the grid leads with the property's bedroom, bathroom
     // and occupancy counts before the amenities themselves.
     propertyKey?: string
-    isSpanish?: boolean
+    locale?: Locale
 }
 
-const Amenities: FC<IAmenities> = ({ amenities, propertyKey, isSpanish = false }) => {
-    const capacityFacts = propertyKey ? getCapacityFacts(propertyKey, isSpanish) : [];
+const Amenities: FC<IAmenities> = ({ amenities, propertyKey, locale = 'en' }) => {
+    const capacityFacts = propertyKey ? getCapacityFacts(propertyKey, locale) : [];
 
     return (
         <div className="amenitiesCont d-flex justify-content-center">

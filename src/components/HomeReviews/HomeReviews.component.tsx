@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GUEST_REVIEWS, Review } from '../GuestReviews/reviewsData';
 import './HomeReviews.style.scss';
+import type { Locale } from '../../i18n';
 
 interface HomeReviewsProps {
-  isSpanish: boolean;
+  locale: Locale;
 }
 
 interface FlatReview extends Review {
@@ -63,16 +64,16 @@ function translateStayType(stayType: string): string {
 const SCROLL_SPEED_DESKTOP = 0.02; // px per ms
 const SCROLL_SPEED_MOBILE  = 0.01; // px per ms
 
-const HomeReviews: React.FC<HomeReviewsProps> = ({ isSpanish }) => {
+const HomeReviews: React.FC<HomeReviewsProps> = ({ locale }) => {
   const [activeReview, setActiveReview] = useState<FlatReview | null>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
   const rafRef = useRef<number>();
   const lastTimeRef = useRef<number | null>(null);
 
-  const headingMain = isSpanish ? 'Lo que dicen nuestros' : 'What our guests are';
-  const headingHighlight = isSpanish ? 'huéspedes' : 'saying';
-  const closeLabel = isSpanish ? 'Cerrar reseña' : 'Close review';
+  const headingMain = locale === 'es' ? 'Lo que dicen nuestros' : 'What our guests are';
+  const headingHighlight = locale === 'es' ? 'huéspedes' : 'saying';
+  const closeLabel = locale === 'es' ? 'Cerrar reseña' : 'Close review';
 
   // Auto-scroll via rAF
   useEffect(() => {
@@ -152,9 +153,9 @@ const HomeReviews: React.FC<HomeReviewsProps> = ({ isSpanish }) => {
         onTouchEnd={() => { pausedRef.current = false; }}
       >
         {DOUBLED.map((review, index) => {
-          const text = isSpanish ? review.text.es : review.text.en;
-          const propertyLabel = isSpanish ? review.propertyLabelES : review.propertyLabel;
-          const stayLabel = isSpanish ? translateStayType(review.stayType) : review.stayType;
+          const text = locale === 'es' ? review.text.es : review.text.en;
+          const propertyLabel = locale === 'es' ? review.propertyLabelES : review.propertyLabel;
+          const stayLabel = locale === 'es' ? translateStayType(review.stayType) : review.stayType;
 
           return (
             <div
@@ -183,9 +184,9 @@ const HomeReviews: React.FC<HomeReviewsProps> = ({ isSpanish }) => {
       </div>
 
       {activeReview && (() => {
-        const text = isSpanish ? activeReview.text.es : activeReview.text.en;
-        const propertyLabel = isSpanish ? activeReview.propertyLabelES : activeReview.propertyLabel;
-        const stayLabel = isSpanish ? translateStayType(activeReview.stayType) : activeReview.stayType;
+        const text = locale === 'es' ? activeReview.text.es : activeReview.text.en;
+        const propertyLabel = locale === 'es' ? activeReview.propertyLabelES : activeReview.propertyLabel;
+        const stayLabel = locale === 'es' ? translateStayType(activeReview.stayType) : activeReview.stayType;
         return (
           <div
             className="home-reviews__overlay"

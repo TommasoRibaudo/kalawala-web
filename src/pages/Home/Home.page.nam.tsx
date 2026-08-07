@@ -60,15 +60,15 @@ const HomeNam = () => {
       <WelcomeSliderNam />
       <FixedNavigation isBlog={false} />
       <HelpMeChoose title="Find your" titleHighlight="Ideal Stay" options={helpMeChooseOptions} />
-      <BookingSearchWidget isSpanish={false} variant="hero" />
-      <HomeReviews isSpanish={false} />
+      <BookingSearchWidget locale="en" variant="hero" />
+      <HomeReviews locale="en" />
       <OurHomesNam NamDataList={NamDataList} />
       <OurOtherHomesNam />
       <DiscoverNam />
       <PortfolioNam />
       {/* <Testimonial /> */}
       <ContactUs />
-      <Footer isSpanish={false} />
+      <Footer locale="en" />
 
     </div>
   )

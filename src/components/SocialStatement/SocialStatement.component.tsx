@@ -1,15 +1,16 @@
 import React from 'react';
 import { PROPERTY_MARKETING_CONFIG } from '../../utils/constants';
 import './SocialStatement.style.scss';
+import type { Locale } from '../../i18n';
 
 interface SocialStatementProps {
   propertyKey: string;
-  isSpanish: boolean;
+  locale: Locale;
 }
 
 const SocialStatement: React.FC<SocialStatementProps> = ({ 
   propertyKey, 
-  isSpanish 
+  locale 
 }) => {
   const config = PROPERTY_MARKETING_CONFIG[propertyKey];
   
@@ -18,8 +19,7 @@ const SocialStatement: React.FC<SocialStatementProps> = ({
     return null;
   }
 
-  const socialStatement = isSpanish 
-    ? config.socialStatement.es 
+  const socialStatement = locale === 'es' ? config.socialStatement.es 
     : config.socialStatement.en;
 
   return (

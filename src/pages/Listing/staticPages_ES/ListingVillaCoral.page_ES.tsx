@@ -78,17 +78,17 @@ const ListingVillaCoralES = () => {
                             </a>
                         </p>
                         {/* Add marketing section after title */}
-                        <ListingMarketingSection propertyKey="VillaCoral" isSpanish={true} />
+                        <ListingMarketingSection propertyKey="VillaCoral" locale="es" />
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
-                    <SocialStatement propertyKey="VillaCoral" isSpanish={true} />
+                    <SocialStatement propertyKey="VillaCoral" locale="es" />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="VillaCoral" isSpanish={true} />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="VillaCoral" locale="es" />
                     </div>
 
                     {/* Add feature highlights before description */}
-                    <FeatureHighlights propertyKey="VillaCoral" propertyName="Villa Coral" isSpanish={true} />
+                    <FeatureHighlights propertyKey="VillaCoral" propertyName="Villa Coral" locale="es" />
 
                     <div className="description">
                         <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
@@ -128,12 +128,12 @@ const ListingVillaCoralES = () => {
                         </p>
                     </div>
 
-                    <GuestReviews propertyKey="VILLA CORAL" isSpanish={true} />
+                    <GuestReviews propertyKey="VILLA CORAL" locale="es" />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    <PriceConfirmationSection propertyKey="VillaCoral" isSpanish={true} />
-                    <BookingSearchWidget isSpanish={true} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="VillaCoral" />
+                    <PriceConfirmationSection propertyKey="VillaCoral" locale="es" />
+                    <BookingSearchWidget locale="es" defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="VillaCoral" />
                 </Col>
             </Row>
 
@@ -141,7 +141,7 @@ const ListingVillaCoralES = () => {
                 <OtherListingsES listings={VillaCoralSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
-            <Footer isSpanish={true} />
+            <Footer locale="es" />
 
         </div>
     )

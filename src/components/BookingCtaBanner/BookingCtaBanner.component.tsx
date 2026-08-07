@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './BookingCtaBanner.style.scss';
+import type { Locale } from '../../i18n';
 
 interface IBookingCtaBanner {
-  isSpanish: boolean;
+  locale: Locale;
 }
 
 /**
@@ -13,9 +14,9 @@ interface IBookingCtaBanner {
  * be dropped in after a section a visitor has just finished reading (Our
  * Homes, the reviews) so the ask is never more than one section away.
  */
-const BookingCtaBanner: React.FC<IBookingCtaBanner> = ({ isSpanish }) => {
+const BookingCtaBanner: React.FC<IBookingCtaBanner> = ({ locale }) => {
   const navigate = useNavigate();
-  const bookPath = isSpanish ? '/bookES' : '/book';
+  const bookPath = locale === 'es' ? '/bookES' : '/book';
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
@@ -30,7 +31,7 @@ const BookingCtaBanner: React.FC<IBookingCtaBanner> = ({ isSpanish }) => {
     <section className="booking-cta-banner">
       <div className="container">
         <a href={bookPath} className="booking-cta-banner__btn" onClick={handleClick}>
-          {isSpanish ? 'Ver disponibilidad' : 'Check availability'}
+          {locale === 'es' ? 'Ver disponibilidad' : 'Check availability'}
         </a>
       </div>
     </section>

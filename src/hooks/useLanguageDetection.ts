@@ -1,16 +1,15 @@
-import { useLocation } from 'react-router-dom';
+import { useLocale } from '../i18n';
 
 /**
- * Hook to detect if the current page is in Spanish based on the URL
- * @returns boolean indicating if the current page is Spanish
+ * @deprecated Use `useLocale()` from `src/i18n` instead.
+ *
+ * Kept as a thin shim so Phase 1 stays a mechanical change: its four remaining
+ * callers (Portal.page, PortalDetail.page, PortalGuard, Booking.page) branch on
+ * a boolean in a lot of places, and rewriting all of that belongs with the
+ * message-catalog work in Phase 2 rather than here.
+ *
+ * The detection logic itself is gone — this now delegates to the single source
+ * of truth, so it cannot drift from the rest of the app. Delete the shim once
+ * those four callers move to `useLocale()`.
  */
-export const useLanguageDetection = (): boolean => {
-  const location = useLocation();
-  
-  // Determine if current page is Spanish based on route
-  const isSpanishPage = location.pathname.endsWith('ES') || 
-                       location.pathname.includes('ES/') ||
-                       location.pathname === '/HomeES';
-  
-  return isSpanishPage;
-};
+export const useLanguageDetection = (): boolean => useLocale() === 'es';

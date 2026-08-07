@@ -2,6 +2,7 @@ import React from 'react';
 import { cdnSrcSet } from '../../utils/imageCdn';
 import { useNavigate } from 'react-router-dom';
 import './HelpMeChoose.style.scss';
+import type { Locale } from '../../i18n';
 
 interface HelpMeChooseOption {
     emoji: string;
@@ -44,7 +45,7 @@ const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options 
                     {options.map((option) => {
                         // Spanish house codes contain "ES" — same convention HomeCard
                         // uses to label its own CTA without a language prop.
-                        const isSpanish = option.houseLangCode.includes('ES');
+                        const cardLocale: Locale = option.houseLangCode.includes('ES') ? 'es' : 'en';
                         return (
                             <a
                                 key={option.houseLangCode}
@@ -59,7 +60,7 @@ const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options 
                                     <span className="card-emoji">{option.emoji}</span>
                                     <span className="card-label">{option.label}</span>
                                     <span className="card-house-name">{option.houseName}</span>
-                                    <span className="card-cta">{isSpanish ? 'Ver casa →' : 'View home →'}</span>
+                                    <span className="card-cta">{cardLocale === 'es' ? 'Ver casa →' : 'View home →'}</span>
                                 </div>
                             </a>
                         );

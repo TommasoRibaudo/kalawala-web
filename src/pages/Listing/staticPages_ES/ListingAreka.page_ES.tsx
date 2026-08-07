@@ -78,17 +78,17 @@ const ListingArekaES = () => {
                             </a>
                         </p>
                         {/* Add marketing section after title */}
-                        <ListingMarketingSection propertyKey="Areka" isSpanish={true} />
+                        <ListingMarketingSection propertyKey="Areka" locale="es" />
                     </div>
                     <ImagesContainer showModal={handleShow} houseName="Areka" />
                     {/* Add social statement after images */}
-                    <SocialStatement propertyKey="Areka" isSpanish={true} />
+                    <SocialStatement propertyKey="Areka" locale="es" />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Areka" isSpanish={true} />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Areka" locale="es" />
                     </div>
 
                     {/* Add feature highlights before description */}
-                    <FeatureHighlights propertyKey="Areka" propertyName="Casa Areka" isSpanish={true} />
+                    <FeatureHighlights propertyKey="Areka" propertyName="Casa Areka" locale="es" />
 
                     <div className="description">
                         <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
@@ -121,12 +121,12 @@ const ListingArekaES = () => {
                         </p>
                     </div>
 
-                    <GuestReviews propertyKey="AREKA" isSpanish={true} />
+                    <GuestReviews propertyKey="AREKA" locale="es" />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    <PriceConfirmationSection propertyKey="Areka" isSpanish={true} />
-                    <BookingSearchWidget isSpanish={true} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Areka" />
+                    <PriceConfirmationSection propertyKey="Areka" locale="es" />
+                    <BookingSearchWidget locale="es" defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Areka" />
                 </Col>
             </Row>
 
@@ -134,7 +134,7 @@ const ListingArekaES = () => {
                 <OtherListingsES listings={NamSnippetES} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName="Areka" />}
-            <Footer isSpanish={true} />
+            <Footer locale="es" />
 
         </div>
     )

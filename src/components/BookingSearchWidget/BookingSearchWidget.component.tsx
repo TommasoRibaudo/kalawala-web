@@ -7,10 +7,11 @@ import CalendarWithPriceDots from '../CalendarWithPriceDots';
 import { MAX_PORTFOLIO_GUESTS } from '../../utils/constants';
 import { getCostaRicaToday, nightsBetween } from '../../utils/dates';
 import './BookingSearchWidget.style.scss';
+import type { Locale } from '../../i18n';
 
 interface BookingSearchWidgetProps {
   /** Whether the current page is Spanish */
-  isSpanish: boolean;
+  locale: Locale;
   /** Optional: pre-select a number of guests (e.g. from property guestNumber) */
   defaultGuests?: number;
   /** Variant: 'sidebar' for listing pages, 'hero' for homepages */
@@ -61,13 +62,13 @@ const strings = {
 };
 
 const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
-  isSpanish,
+  locale,
   defaultGuests = 2,
   variant = 'sidebar',
   apartmentSlug,
 }) => {
   const navigate = useNavigate();
-  const lang = isSpanish ? 'es' : 'en';
+  const lang = locale === 'es' ? 'es' : 'en';
   const s = strings[lang];
   const today = useMemo(() => getCostaRicaToday(), []);
 
@@ -153,7 +154,7 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
 
     setIsSubmitting(true);
 
-    const bookPath = isSpanish ? '/bookES' : '/book';
+    const bookPath = locale === 'es' ? '/bookES' : '/book';
     const params = new URLSearchParams({
       arrivalDate,
       departureDate,

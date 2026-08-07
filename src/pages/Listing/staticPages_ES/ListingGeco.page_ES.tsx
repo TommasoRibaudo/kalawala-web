@@ -77,17 +77,17 @@ const ListingGecoES = () => {
                             </a>
                         </p>
                         {/* Add marketing section after title */}
-                        <ListingMarketingSection propertyKey="Geco" isSpanish={true} />
+                        <ListingMarketingSection propertyKey="Geco" locale="es" />
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
-                    <SocialStatement propertyKey="Geco" isSpanish={true} />
+                    <SocialStatement propertyKey="Geco" locale="es" />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Geco" isSpanish={true} />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Geco" locale="es" />
                     </div>
 
                     {/* Add feature highlights before description */}
-                    <FeatureHighlights propertyKey="Geco" propertyName="Casa Geco" isSpanish={true} />
+                    <FeatureHighlights propertyKey="Geco" propertyName="Casa Geco" locale="es" />
 
                     <div className="description">
                         <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
@@ -132,12 +132,12 @@ const ListingGecoES = () => {
                         </p>
                     </div>
 
-                    <GuestReviews propertyKey="GECO" isSpanish={true} />
+                    <GuestReviews propertyKey="GECO" locale="es" />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    <PriceConfirmationSection propertyKey="Geco" isSpanish={true} />
-                    <BookingSearchWidget isSpanish={true} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Geco" />
+                    <PriceConfirmationSection propertyKey="Geco" locale="es" />
+                    <BookingSearchWidget locale="es" defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Geco" />
                 </Col>
             </Row>
 
@@ -145,7 +145,7 @@ const ListingGecoES = () => {
                 <OtherListingsES listings={homesSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
-            <Footer isSpanish={true} />
+            <Footer locale="es" />
 
         </div>
     )

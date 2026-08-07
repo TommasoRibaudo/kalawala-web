@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GUEST_REVIEWS, Review } from './reviewsData';
 import './GuestReviews.style.scss';
+import type { Locale } from '../../i18n';
 
 interface GuestReviewsProps {
   propertyKey: string;
-  isSpanish: boolean;
+  locale: Locale;
 }
 
 const STARS = '★★★★★';
 
-const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, isSpanish }) => {
+const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, locale }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -57,8 +58,8 @@ const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, isSpanish }) =
   const reviews = GUEST_REVIEWS[propertyKey];
   if (!reviews || reviews.length === 0) return null;
 
-  const heading = isSpanish ? 'Lo que dicen nuestros huéspedes' : 'What our guests are saying';
-  const closeLabel = isSpanish ? 'Cerrar reseñas' : 'Close reviews';
+  const heading = locale === 'es' ? 'Lo que dicen nuestros huéspedes' : 'What our guests are saying';
+  const closeLabel = locale === 'es' ? 'Cerrar reseñas' : 'Close reviews';
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) closePanel();
@@ -72,8 +73,8 @@ const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, isSpanish }) =
   };
 
   const renderReviewMeta = (review: Review) => {
-    const text = isSpanish ? review.text.es : review.text.en;
-    const stayLabel = isSpanish ? translateStayType(review.stayType) : review.stayType;
+    const text = locale === 'es' ? review.text.es : review.text.en;
+    const stayLabel = locale === 'es' ? translateStayType(review.stayType) : review.stayType;
     return { text, stayLabel };
   };
 

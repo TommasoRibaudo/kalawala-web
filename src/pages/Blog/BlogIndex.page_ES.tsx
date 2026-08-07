@@ -45,7 +45,7 @@ const BlogIndexES = () => {
           </ul>
         </Col>
       </Row>
-      <Footer isSpanish={true} />
+      <Footer locale="es" />
     </div>
   );
 };

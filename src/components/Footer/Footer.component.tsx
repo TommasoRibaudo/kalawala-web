@@ -2,21 +2,22 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { PROPERTY_DISPLAY_NAMES, BLOG_ARTICLES } from '../../utils/constants';
 import './Footer.style.scss';
+import type { Locale } from '../../i18n';
 
 interface IFooter {
-  isSpanish: boolean;
+  locale: Locale;
 }
 
-const Footer: React.FC<IFooter> = ({ isSpanish }) => {
-  const suffix = isSpanish ? 'ES' : '';
-  const bookPath = isSpanish ? '/bookES' : '/book';
+const Footer: React.FC<IFooter> = ({ locale }) => {
+  const suffix = locale === 'es' ? 'ES' : '';
+  const bookPath = locale === 'es' ? '/bookES' : '/book';
 
   return (
     <footer className="site-footer">
       <div className="container">
         <div className="footer-grid">
           <div className="footer-col">
-            <h4>{isSpanish ? 'Nuestras Casas' : 'Our Homes'}</h4>
+            <h4>{locale === 'es' ? 'Nuestras Casas' : 'Our Homes'}</h4>
             <ul>
               {Object.entries(PROPERTY_DISPLAY_NAMES).map(([code, name]) => (
                 <li key={code}>
@@ -27,12 +28,12 @@ const Footer: React.FC<IFooter> = ({ isSpanish }) => {
           </div>
 
           <div className="footer-col">
-            <h4>{isSpanish ? 'Guías de Viaje' : 'Travel Guides'}</h4>
+            <h4>{locale === 'es' ? 'Guías de Viaje' : 'Travel Guides'}</h4>
             <ul>
               {BLOG_ARTICLES.map((article) => (
                 <li key={article.key}>
-                  <Link to={isSpanish ? article.pathEs : article.pathEn}>
-                    {isSpanish ? article.titleEs : article.titleEn}
+                  <Link to={locale === 'es' ? article.pathEs : article.pathEn}>
+                    {locale === 'es' ? article.titleEs : article.titleEn}
                   </Link>
                 </li>
               ))}
@@ -40,14 +41,14 @@ const Footer: React.FC<IFooter> = ({ isSpanish }) => {
           </div>
 
           <div className="footer-col">
-            <h4>{isSpanish ? 'Contacto' : 'Contact'}</h4>
+            <h4>{locale === 'es' ? 'Contacto' : 'Contact'}</h4>
             <ul className="footer-contact">
               <li>
                 <a href="tel:+50684632276">+506 8463-2276</a>
               </li>
               <li>
                 <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">
-                  {isSpanish ? 'Chatear por WhatsApp' : 'Chat on WhatsApp'}
+                  {locale === 'es' ? 'Chatear por WhatsApp' : 'Chat on WhatsApp'}
                 </a>
               </li>
               <li>
@@ -58,9 +59,9 @@ const Footer: React.FC<IFooter> = ({ isSpanish }) => {
           </div>
 
           <div className="footer-col footer-cta-col">
-            <h4>{isSpanish ? '¿Listo para reservar?' : 'Ready to book?'}</h4>
+            <h4>{locale === 'es' ? '¿Listo para reservar?' : 'Ready to book?'}</h4>
             <Link to={bookPath} className="footer-cta-btn">
-              {isSpanish ? 'Ver disponibilidad' : 'Check availability'}
+              {locale === 'es' ? 'Ver disponibilidad' : 'Check availability'}
             </Link>
           </div>
         </div>

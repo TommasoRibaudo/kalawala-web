@@ -5,18 +5,19 @@ import { getCostaRicaToday } from '../../utils/dates';
 import { formatBookingMoney } from '../../utils/money';
 import InstantConfirmationBadge from '../InstantConfirmationBadge/InstantConfirmationBadge.component';
 import './PriceConfirmationSection.style.scss';
+import type { Locale } from '../../i18n';
 
 interface PriceConfirmationSectionProps {
   propertyKey: string;
-  isSpanish: boolean;
+  locale: Locale;
 }
 
 const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
   propertyKey,
-  isSpanish
+  locale
 }) => {
   const config = PROPERTY_MARKETING_CONFIG[propertyKey];
-  const language = isSpanish ? 'es' : 'en';
+  const language = locale === 'es' ? 'es' : 'en';
   const currentMonth = React.useMemo(() => getCostaRicaToday().slice(0, 7), []);
   // Shares the cache with the search widget's calendar, so this costs no extra
   // request — and the headline price can never contradict the dots below it.
@@ -36,12 +37,10 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
       ? formatBookingMoney(liveLowestCents, currency, language, { hideZeroCents: true })
       : `$${config.price.usd}`;
 
-  const tooltipText = isSpanish
-    ? 'Precio más bajo disponible este mes. Las tarifas varían según la temporada y las fechas elegidas.'
+  const tooltipText = locale === 'es' ? 'Precio más bajo disponible este mes. Las tarifas varían según la temporada y las fechas elegidas.'
     : 'Lowest available rate this month. Rates vary by season and by the dates you choose.';
 
-  const priceText = isSpanish
-    ? (
+  const priceText = locale === 'es' ? (
       <>
         Desde {priceLabel} por noche{' '}
         <span className="average-indicator">
@@ -66,10 +65,10 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
         {priceText}
       </div>
       <div className="confirmation-badge">
-        <InstantConfirmationBadge isSpanish={isSpanish} />
+        <InstantConfirmationBadge locale={locale} />
       </div>
       <p className='price-display' style={{ marginTop: '15px', marginBottom: 0 }}>
-        {isSpanish ? (
+        {locale === 'es' ? (
           <><>
             Elige la <strong>tarifa no reembolsable</strong>
           </>

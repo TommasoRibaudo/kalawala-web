@@ -25,14 +25,14 @@ const HomeRibES = () => {
       </Helmet>
       <WelcomeSliderRibES />
       <FixedNavigationES isBlog={false}/>
-      <BookingSearchWidget isSpanish={true} variant="hero" />
+      <BookingSearchWidget locale="es" variant="hero" />
       <OurHomesRIBES houseDataList={VillasDataListES}/>
       <OurOtherHomesRIBES/>
       <DiscoverRIBES />
       <CallToActionES />
       <PortfolioRIBES />
       <ContactUs />
-      <Footer isSpanish={true} />
+      <Footer locale="es" />
     </div>
   )
 }

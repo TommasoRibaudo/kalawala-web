@@ -176,17 +176,29 @@ insurance against "did the migration hurt us?" being unanswerable.
 
 ### Phase 1 — Locale foundation
 
-- [ ] Add `src/i18n/locales.ts`: `Locale` union type, `LOCALES`, display names,
-      flag codes, `DEFAULT_LOCALE`.
-- [ ] Add `useLocale()` hook + `LocaleProvider`, reading from the route param
-      (falls back to `en` until Phase 4 lands the routes).
-- [ ] Mechanically replace `isSpanish: boolean` with `locale: Locale` across all
-      69 files. At this stage every call site passes `'en'` or `'es'` — behaviour
-      is unchanged.
-- [ ] Replace the 49 inline `isSpanish ? a : b` ternaries with catalog lookups
-      (Phase 2 provides the catalog; stub it with an `en`/`es` map first).
-- [ ] Delete `isSpanishPath()` string math from `Flag.component.tsx`; locale now
-      comes from the route, not from guessing at a suffix.
+- [x] Add `src/i18n/locales.ts`: `Locale` union type, `LOCALES` (all six),
+      `DEFAULT_LOCALE`, `RELEASED_LOCALES`, `LOCALE_META` (native names + flag codes).
+- [x] Add `useLocale()` hook, plus `detectLocaleFromPath()` as the single source
+      of truth for "what language is this URL?".
+- [x] Mechanically replace `isSpanish: boolean` with `locale: Locale`.
+      **Zero `isSpanish` identifiers remain in `src/`.**
+- [x] Collapse the nine hand-rolled Spanish-route checks onto `detectLocaleFromPath`.
+- [x] Delete `isSpanishPath()` string math from `Flag.component.tsx`.
+- [ ] ~~Replace the 49 inline ternaries with catalog lookups~~ — **moved to Phase 2**,
+      see the scope note below.
+
+> **Scope change, made deliberately.** The original Phase 1 also converted the 49
+> inline `isSpanish ? a : b` ternaries to catalog lookups. That was moved to
+> Phase 2, because designing the catalog API is not a mechanical change and
+> mixing it into a 60-file rename makes the diff unreviewable — which this
+> phase's own note warns against. The ternaries are now `locale === 'es' ? a : b`:
+> behaviour-identical, and DE/FR/IT/PT correctly fall through to English until
+> Phase 2 gives them real lookups.
+>
+> Two shims are left standing on purpose, both marked `@deprecated` in code:
+> `useLanguageDetection()` (now delegating to `useLocale()`, so it can no longer
+> drift) and `useRandomPopup`'s `isSpanishPage` boolean. Their callers branch on
+> a boolean in many places; converting them belongs with Phase 2.
 
 **Validation:** `npx tsc --noEmit` clean; `npm run test:e2e`; manual pass over
 `/` and `/HomeES` confirming zero visual change. The TypeScript union is doing

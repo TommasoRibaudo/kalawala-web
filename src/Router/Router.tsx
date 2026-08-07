@@ -5,6 +5,7 @@ import * as PostHog from '../services/PostHog.service';
 import MessageTipContainer from '../components/MessageTip/MessageTipContainer.component';
 import { useRandomPopup } from '../hooks/useRandomPopup';
 import PortalGuard from '../components/PortalGuard/PortalGuard.component';
+import { useLocale } from '../i18n';
 
 /*
  * Every routed page is code-split.
@@ -104,16 +105,13 @@ const PostHogPageView = () => {
 
 // Component to handle random popup logic inside Router context
 const RandomPopupHandler = () => {
-  const location = useLocation();
-  
-  // Determine if current page is Spanish based on route
-  const isSpanishPage = location.pathname.endsWith('ES') || 
-                       location.pathname.includes('ES/') ||
-                       location.pathname === '/HomeES';
-  
-  // Use the random popup hook once at the app level
-  useRandomPopup({ isSpanishPage });
-  
+  // Was a fourth hand-rolled copy of the Spanish-route check; now the shared
+  // detector. useRandomPopup still takes a boolean — it moves to a locale with
+  // the message catalogs in Phase 2.
+  const locale = useLocale();
+
+  useRandomPopup({ isSpanishPage: locale === 'es' });
+
   return null; // This component doesn't render anything
 };
 

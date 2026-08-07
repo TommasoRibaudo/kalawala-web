@@ -661,3 +661,148 @@ const bestTimeToVisit: Partial<Record<Locale, BestTimeToVisitContent>> = {
 export function bestTimeToVisitContent(locale: Locale): BestTimeToVisitContent {
   return bestTimeToVisit[locale] ?? bestTimeToVisit.en!;
 }
+
+interface TourOperator {
+  name: string;
+  href: string;
+  description: string;
+}
+
+export interface IndigenousTravelContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  introParagraph: string;
+  stayRecommendationTitle: string;
+  afterStayParagraph: string;
+  territoriesHeading: string;
+  territoriesParagraphs: [string, string];
+  experiencesHeading: string;
+  experiencesIntro: string;
+  dailyLifeHeading: string;
+  dailyLifeParagraph: string;
+  cacaoHeading: string;
+  cacaoParagraphs: [string, string];
+  medicinalHeading: string;
+  medicinalParagraphs: [string, string];
+  operatorsHeading: string;
+  operatorsIntro: string;
+  operators: [TourOperator, TourOperator, TourOperator];
+  askAboutTourParagraph: string;
+  tipsHeading: string;
+  tipsParagraphs: [string, string, string];
+  differentWayHeading: string;
+  differentWayParagraphs: [string, string];
+}
+
+const indigenousTravel: Partial<Record<Locale, IndigenousTravelContent>> = {
+  en: {
+    seoTitle: 'Indigenous Culture Near Puerto Viejo de Talamanca',
+    seoDescription:
+      "Discover Indigenous Bribri culture near Puerto Viejo de Talamanca. Learn about ancestral cacao, traditional medicine, and authentic cultural experiences in Indigenous communities of Costa Rica's South Caribbean.",
+    heading: 'Indigenous Culture Near Puerto Viejo de Talamanca',
+    heroAlt: 'Bribri Indigenous culture near Puerto Viejo',
+    introParagraph:
+      'Puerto Viejo de Talamanca is known for its beaches, relaxed atmosphere, and incredible jungle. But just inland, there is another side of the region that many travelers never see.',
+    stayRecommendationTitle: 'Looking to stay in Puerto Viejo?',
+    afterStayParagraph:
+      "Close to town, Indigenous territories offer a deeper look into life on Costa Rica's South Caribbean coast. Here, culture is part of everyday life.",
+    territoriesHeading: 'Indigenous Territories Near Puerto Viejo',
+    territoriesParagraphs: [
+      "Puerto Viejo is located near the Bribri Indigenous Territory of Talamanca and the Keköldi Indigenous Reserve. These lands belong to the Bribri people, one of Costa Rica's most important Indigenous groups.",
+      'Many families still speak the Bribri language, grow their own food, and use traditional knowledge in their daily routines.',
+    ],
+    experiencesHeading: 'What Cultural Experiences Are Like',
+    experiencesIntro:
+      'Most visits are led by members of the community. Groups are small, and the focus is on learning, respect, and personal connection.',
+    dailyLifeHeading: 'Daily life and community visits',
+    dailyLifeParagraph:
+      'Visitors walk through family land, see traditional homes, and learn how Bribri families organize daily life, work, and social roles.',
+    cacaoHeading: 'Cacao and tradition',
+    cacaoParagraphs: [
+      'Cacao plays a central role in Bribri culture. Many tours show the ancestral preparation process, from the cacao pod to the final drink.',
+      'Guides explain why cacao is important in ceremonies and everyday life, and visitors usually taste it prepared in the traditional way.',
+    ],
+    medicinalHeading: 'Medicinal plants and nature',
+    medicinalParagraphs: [
+      'Some experiences include forest walks focused on medicinal plants and their traditional uses for health and daily care.',
+      'Many tours end with a visit to a waterfall inside Indigenous territory, valued for both its natural beauty and cultural meaning.',
+    ],
+    operatorsHeading: 'Local Tour Operators in Puerto Viejo',
+    operatorsIntro: 'Several local agencies work directly with Indigenous communities to offer these experiences in a responsible way.',
+    operators: [
+      { name: 'Life Culture Travel Costa Rica', href: 'https://lifeculturetravelcostarica.com/', description: 'Offers cultural experiences including Bribri shaman and chocolate tours, medicinal plant walks, and local community immersion.' },
+      { name: 'Exploradores Outdoors', href: 'https://exploradoresoutdoors.com/tours/indigenous-experience-chocolate-tour/', description: 'Provides an Indigenous experience and chocolate tour that covers Bribri traditions, medicinal plants, and a visit to a waterfall.' },
+      { name: 'Bribri Magic Chocolate & Waterfall Experience', href: 'https://www.viator.com/tours/Limon/Chocolate-taste-true/d4513-238841P2', description: 'Small-group tour from Puerto Viejo to learn Bribri culture, make cacao, and swim in a waterfall.' },
+    ],
+    askAboutTourParagraph: 'When booking, ask if the tour is guided by community members and how the visit supports local families.',
+    tipsHeading: 'Practical Tips for Visitors',
+    tipsParagraphs: [
+      'Tours operate year-round and usually start in the morning.',
+      "Bring closed shoes, water, sun protection, and insect repellent. Always follow your guide's instructions and ask before taking photos.",
+      'Buying crafts or food directly from families is one of the best ways to support the community.',
+    ],
+    differentWayHeading: 'A Different Way to Experience the South Caribbean',
+    differentWayParagraphs: [
+      'Visiting Indigenous communities near Puerto Viejo adds depth and meaning to your trip. It is about learning, not rushing.',
+      'This experience suits travelers who want a calmer, more authentic connection with the place they are visiting.',
+    ],
+  },
+  es: {
+    seoTitle: 'Cultura Indígena Cerca de Puerto Viejo de Talamanca',
+    seoDescription:
+      'Descubre la cultura indígena Bribri cerca de Puerto Viejo de Talamanca. Aprende sobre cacao ancestral, medicina tradicional y experiencias culturales auténticas en comunidades indígenas del Caribe Sur de Costa Rica.',
+    heading: 'Cultura Indígena Cerca de Puerto Viejo de Talamanca',
+    heroAlt: 'Cultura indígena Bribri cerca de Puerto Viejo',
+    introParagraph:
+      'Puerto Viejo de Talamanca es conocido por sus playas, su ambiente relajado y su selva tropical. Pero muy cerca del pueblo existe otra experiencia que muchos viajeros pasan por alto.',
+    stayRecommendationTitle: '¿Busca Casas Equipadas en Puerto Viejo?',
+    afterStayParagraph:
+      'Lejos de las costas turisticas, se encuentran territorios indígenas donde la cultura no es un espectáculo, sino parte de la vida diaria. Visitar estas comunidades permite entender otra forma de vivir en el Caribe Sur de Costa Rica.',
+    territoriesHeading: 'Territorios Indígenas Cerca de Puerto Viejo',
+    territoriesParagraphs: [
+      'Puerto Viejo se ubica cerca del Territorio Indígena Bribri de Talamanca y de la Reserva Indígena Keköldi. Estas tierras son hogar del pueblo Bribri, uno de los grupos indígenas más importantes del país.',
+      'Aquí se conservan el idioma Bribri, la agricultura tradicional, el uso de plantas medicinales y una fuerte conexión con la naturaleza. No son zonas turísticas artificiales, son comunidades vivas.',
+    ],
+    experiencesHeading: '¿Cómo Son las Experiencias Culturales?',
+    experiencesIntro: 'Las visitas suelen ser guiadas por personas de la misma comunidad. Los grupos son pequeños y el enfoque es educativo y respetuoso.',
+    dailyLifeHeading: 'Vida diaria y comunidad',
+    dailyLifeParagraph:
+      'Durante el recorrido, los visitantes conocen cómo viven las familias, cómo organizan su trabajo diario y cómo se relacionan con la tierra que habitan.',
+    cacaoHeading: 'Cacao y tradición',
+    cacaoParagraphs: [
+      'El cacao tiene un papel central en la cultura Bribri. Muchas experiencias muestran el proceso ancestral de preparación, desde el fruto hasta la bebida final.',
+      'Además de probar el cacao, los guías explican su valor cultural y espiritual dentro de la comunidad.',
+    ],
+    medicinalHeading: 'Plantas medicinales y naturaleza',
+    medicinalParagraphs: [
+      'Algunos recorridos incluyen caminatas por el bosque para aprender sobre plantas medicinales y su uso tradicional.',
+      'Muchas visitas terminan en cascadas ubicadas dentro del territorio indígena, espacios valorados tanto por su belleza natural como por su significado cultural.',
+    ],
+    operatorsHeading: 'Agencias Locales en Puerto Viejo',
+    operatorsIntro: 'En Puerto Viejo existen agencias locales que trabajan en conjunto con comunidades indígenas para ofrecer estas experiencias de forma responsable.',
+    operators: [
+      { name: 'Life Culture Travel Costa Rica', href: 'https://lifeculturetravelcostarica.com/', description: 'Ofrece experiencias culturales que incluyen visitas a comunidades Bribri, tours de cacao, caminatas de plantas medicinales y aprendizaje sobre la vida local.' },
+      { name: 'Exploradores Outdoors', href: 'https://exploradoresoutdoors.com/tours/indigenous-experience-chocolate-tour/', description: 'Brinda tours indígenas enfocados en tradiciones Bribri, cacao ancestral, plantas medicinales y visitas a cascadas dentro del territorio indígena.' },
+      { name: 'Bribri Magic Chocolate & Waterfall Experience', href: 'https://www.viator.com/tours/Limon/Chocolate-taste-true/d4513-238841P2', description: 'Operador de grupos pequeños que combina la preparación tradicional de cacao, aprendizaje cultural Bribri y una visita a una cascada.' },
+    ],
+    askAboutTourParagraph: 'Al reservar, es recomendable preguntar si el tour es guiado por miembros de la comunidad y cómo se distribuyen los beneficios.',
+    tipsHeading: 'Consejos Prácticos para la Visita',
+    tipsParagraphs: [
+      'Estas experiencias están disponibles durante todo el año y suelen comenzar por la mañana.',
+      'Se recomienda llevar zapatos cerrados, agua, protección solar y repelente. Siempre sigue las indicaciones del guía y pide permiso antes de tomar fotografías.',
+      'Comprar artesanías o productos directamente a las familias es una forma concreta de apoyar a la comunidad.',
+    ],
+    differentWayHeading: 'Una Forma Distinta de Conocer el Caribe Sur',
+    differentWayParagraphs: [
+      // Pre-merge page ended this sentence without a period.
+      'Explorar la cultura indígena cerca de Puerto Viejo añade una dimensión más profunda al viaje. Es una oportunidad para aprender y conocer la cultura local.',
+      'Es una experiencia tranquila, auténtica y muy distinta a las actividades típicas de playa. Ideal para quienes buscan entender mejor el lugar que visitan.',
+    ],
+  },
+};
+
+export function indigenousTravelContent(locale: Locale): IndigenousTravelContent {
+  return indigenousTravel[locale] ?? indigenousTravel.en!;
+}

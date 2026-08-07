@@ -9,13 +9,19 @@ import OtherBlogs from "../Components/OtherBlogs.Component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
-import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
+import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import { useLocale, useMessages } from "../../../i18n";
+import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { indigenousTravelContent } from "../../../i18n/content/blog";
+
+const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Palenque_bribri._Costa_Rica.jpg/960px-Palenque_bribri._Costa_Rica.jpg";
 
 const IndigenousTravel = () => {
-    // const { blogId } = useParams();
-
-    const blogId = 'indigenousTravelPV'
-    const blogData = blogs.find((blog) => blog.id === blogId);
+    const locale = useLocale();
+    const m = useMessages();
+    const content = indigenousTravelContent(locale);
+    const lang = bookingLanguage(locale);
+    const selfId = `indigenousTravelPV${localeSuffix(locale)}`;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -25,14 +31,14 @@ const IndigenousTravel = () => {
         <div className={`listingContainer`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Indigenous Culture Near Puerto Viejo de Talamanca</title>
+                <title>{content.seoTitle}</title>
                 <meta
                     name="description"
-                    content="Discover Indigenous Bribri culture near Puerto Viejo de Talamanca. Learn about ancestral cacao, traditional medicine, and authentic cultural experiences in Indigenous communities of Costa Rica’s South Caribbean."
+                    content={content.seoDescription}
                 />
                 <link
                     rel="canonical"
-                    href="https://www.reservaskalawala.com/indigenousTravelPV"
+                    href={`https://www.reservaskalawala.com/indigenousTravelPV${localeSuffix(locale)}`}
                 />
                 <link
                     rel="alternate"
@@ -65,7 +71,7 @@ const IndigenousTravel = () => {
 
                     <div className="heading title-container" style={{ maxWidth: 1000 }}>
                         <h1 className="title blog-title">
-                            Indigenous Culture Near Puerto Viejo de Talamanca
+                            {content.heading}
                         </h1>
                         <br />
                         <div className="border"></div>
@@ -82,188 +88,117 @@ const IndigenousTravel = () => {
                                 loading="eager"
                                 fetchPriority="high"
                                 decoding="async"
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Palenque_bribri._Costa_Rica.jpg/960px-Palenque_bribri._Costa_Rica.jpg"
+                                src={HERO_IMAGE}
                                 className="responsive-image"
-                                alt="Bribri Indigenous culture near Puerto Viejo"
+                                alt={content.heroAlt}
                             />
                         </div>
 
                         <br />
 
-                        <p>
-                            Puerto Viejo de Talamanca is known for its beaches, relaxed
-                            atmosphere, and incredible jungle. But just inland, there is
-                            another side of the region that many travelers never see.
-                        </p>
+                        <p>{content.introParagraph}</p>
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
-                            title="Looking to stay in Puerto Viejo?"
-                            properties={GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
-                            language="en"
+                            title={content.stayRecommendationTitle}
+                            properties={locale === 'es' ? GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES : GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
+                            language={lang}
                         />
 
-                        <p>
-                            Close to town, Indigenous territories offer a deeper look
-                            into life on Costa Rica’s South Caribbean coast. Here,
-                            culture is part of everyday life.
-                        </p>
+                        <p>{content.afterStayParagraph}</p>
 
                         <br />
 
-                        <h2>Indigenous Territories Near Puerto Viejo</h2>
+                        <h2>{content.territoriesHeading}</h2>
 
-                        <p>
-                            Puerto Viejo is located near the Bribri Indigenous Territory
-                            of Talamanca and the Keköldi Indigenous Reserve. These lands
-                            belong to the Bribri people, one of Costa Rica’s most
-                            important Indigenous groups.
-                        </p>
+                        <p>{content.territoriesParagraphs[0]}</p>
 
                         <br />
 
-                        <p>
-                            Many families still speak the Bribri language, grow their
-                            own food, and use traditional knowledge in their daily
-                            routines.
-                        </p>
+                        <p>{content.territoriesParagraphs[1]}</p>
 
                         <br />
 
-                        <h2>What Cultural Experiences Are Like</h2>
+                        <h2>{content.experiencesHeading}</h2>
 
-                        <p>
-                            Most visits are led by members of the community. Groups are
-                            small, and the focus is on learning, respect, and personal
-                            connection.
-                        </p>
+                        <p>{content.experiencesIntro}</p>
 
                         <br />
 
-                        <h3>Daily life and community visits</h3>
+                        <h3>{content.dailyLifeHeading}</h3>
 
-                        <p>
-                            Visitors walk through family land, see traditional homes,
-                            and learn how Bribri families organize daily life, work,
-                            and social roles.
-                        </p>
+                        <p>{content.dailyLifeParagraph}</p>
 
                         <br />
 
-                        <h3>Cacao and tradition</h3>
+                        <h3>{content.cacaoHeading}</h3>
 
-                        <p>
-                            Cacao plays a central role in Bribri culture. Many tours
-                            show the ancestral preparation process, from the cacao pod
-                            to the final drink.
-                        </p>
+                        <p>{content.cacaoParagraphs[0]}</p>
 
                         <br />
 
-                        <p>
-                            Guides explain why cacao is important in ceremonies and
-                            everyday life, and visitors usually taste it prepared in
-                            the traditional way.
-                        </p>
+                        <p>{content.cacaoParagraphs[1]}</p>
 
                         <br />
 
-                        <h3>Medicinal plants and nature</h3>
+                        <h3>{content.medicinalHeading}</h3>
 
-                        <p>
-                            Some experiences include forest walks focused on medicinal
-                            plants and their traditional uses for health and daily
-                            care.
-                        </p>
+                        <p>{content.medicinalParagraphs[0]}</p>
 
                         <br />
 
-                        <p>
-                            Many tours end with a visit to a waterfall inside Indigenous
-                            territory, valued for both its natural beauty and cultural
-                            meaning.
-                        </p>
+                        <p>{content.medicinalParagraphs[1]}</p>
 
                         <br />
 
-                        <h2>Local Tour Operators in Puerto Viejo</h2>
+                        <h2>{content.operatorsHeading}</h2>
 
-                        <p>
-                            Several local agencies work directly with Indigenous
-                            communities to offer these experiences in a responsible
-                            way.
-                        </p>
+                        <p>{content.operatorsIntro}</p>
 
                         <br />
 
                         <ul>
-                            <li>
-                                <a href="https://lifeculturetravelcostarica.com/" target="_blank" rel="noopener noreferrer">
-                                    <strong>Life Culture Travel Costa Rica</strong>
-                                </a> – Offers cultural experiences including Bribri shaman and chocolate tours, medicinal plant walks, and local community immersion.
-                            </li>
-                            <li>
-                                <a href="https://exploradoresoutdoors.com/tours/indigenous-experience-chocolate-tour/" target="_blank" rel="noopener noreferrer">
-                                    <strong>Exploradores Outdoors</strong>
-                                </a> – Provides an Indigenous experience and chocolate tour that covers Bribri traditions, medicinal plants, and a visit to a waterfall.
-                            </li>
-                            <li>
-                                <a href="https://www.viator.com/tours/Limon/Chocolate-taste-true/d4513-238841P2" target="_blank" rel="noopener noreferrer">
-                                    <strong>Bribri Magic Chocolate & Waterfall Experience</strong>
-                                </a> – Small-group tour from Puerto Viejo to learn Bribri culture, make cacao, and swim in a waterfall.
-                            </li>
+                            {content.operators.map((op) => (
+                                <li key={op.href}>
+                                    <a href={op.href} target="_blank" rel="noopener noreferrer">
+                                        <strong>{op.name}</strong>
+                                    </a> – {op.description}
+                                </li>
+                            ))}
                         </ul>
 
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                         <div style={{ maxWidth: 1000 }}>
                             <WhyStayWithUs
-                                language="en"
-                                ctaLink="/"
+                                language={lang}
+                                ctaLink={homePath(locale)}
                             />
                         </div>
 
-                        <p>
-                            When booking, ask if the tour is guided by community members
-                            and how the visit supports local families.
-                        </p>
+                        <p>{content.askAboutTourParagraph}</p>
 
                         <br />
 
-                        <h2>Practical Tips for Visitors</h2>
+                        <h2>{content.tipsHeading}</h2>
 
-                        <p>
-                            Tours operate year-round and usually start in the morning.
-                        </p>
+                        <p>{content.tipsParagraphs[0]}</p>
 
                         <br />
 
-                        <p>
-                            Bring closed shoes, water, sun protection, and insect
-                            repellent. Always follow your guide’s instructions and ask
-                            before taking photos.
-                        </p>
+                        <p>{content.tipsParagraphs[1]}</p>
 
                         <br />
 
-                        <p>
-                            Buying crafts or food directly from families is one of the
-                            best ways to support the community.
-                        </p>
+                        <p>{content.tipsParagraphs[2]}</p>
 
                         <br />
 
-                        <h2>A Different Way to Experience the South Caribbean</h2>
+                        <h2>{content.differentWayHeading}</h2>
 
-                        <p>
-                            Visiting Indigenous communities near Puerto Viejo adds depth
-                            and meaning to your trip. It is about learning, not rushing.
-                        </p>
+                        <p>{content.differentWayParagraphs[0]}</p>
 
                         <br />
 
-                        <p>
-                            This experience suits travelers who want a calmer, more
-                            authentic connection with the place they are visiting.
-                        </p>
+                        <p>{content.differentWayParagraphs[1]}</p>
                     </div>
 
                     <div
@@ -274,15 +209,15 @@ const IndigenousTravel = () => {
                             marginBottom: '2rem',
                         }}
                     >
-                        <h2 className="smoobu-title">Book Your Stay</h2>
+                        <h2 className="smoobu-title">{m.blog.bookYourStay}</h2>
                         <div className="smoobu-wrapper">
-                            <Smoobu2 targetId="indigenousCultureENSmoobuBooking" />
+                            <Smoobu2 targetId="blogSmoobuBooking" />
                         </div>
                     </div>
 
                     <OtherBlogs
-                        currentBlog="indigenousTravelPV"
-                        blogs={blogsES}
+                        currentBlog={selfId}
+                        blogs={locale === 'es' ? blogsES : blogs}
                     />
                 </Col>
             </Row>

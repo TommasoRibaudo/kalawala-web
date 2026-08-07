@@ -21,10 +21,10 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | **Phase 3 complete.** Ship gate A — next: merge the stack, release as a no-op, watch GSC/PostHog for a week. **Nothing merged yet.** |
+| **Current phase** | **Phase 4 complete** (uncommitted-to-`main` branch `feat/i18n-phase-4-routes-config`, not merged/deployed). Next: Phase 5 (301 redirects). |
 | **Last updated** | 2026-08-07 |
-| **Branch(es) in flight** | A nine-deep stack, based on `main`: **#39** → **#40** → **#41** → **#42** → **#43** → **#44** → **#45** → **#46** → **#47**. See [Merge order](#merge-order) — they must land in that sequence. |
-| **Blocked on** | **Owner action:** PostHog export (organic sessions, EN vs ES, 12 months) still outstanding — the only open Phase 0 item. **Resolved:** GSC performance re-exported at the full 16 months; Hebrew/Hindi fonts (H-B) pulled from Google Fonts. None of this blocks Phase 3c–3d. |
+| **Branch(es) in flight** | `feat/i18n-phase-4-routes-config`, based on `main` at `ca64c370` (post ship gate A). Not yet pushed/opened as a PR. |
+| **Blocked on** | Nothing. **Owner action still outstanding:** PostHog export (organic sessions, EN vs ES, 12 months) — the only open Phase 0 item, non-blocking. |
 
 Phase progress:
 
@@ -32,8 +32,8 @@ Phase progress:
 - [x] Phase 1 — Locale foundation (`isSpanish` → `locale`) — PR #40
 - [x] Phase 2 — Message catalogs — PR #41
 - [x] Phase 3 — Collapse duplicated page components (3a, 3b, 3c, 3d) — **zero duplicated pages remain in `src/pages/`**
-- [ ] **Ship gate A — EN/ES refactor released, zero visible change** *(next)*
-- [ ] Phase 4 — Route restructure to `/:locale/`
+- [x] **Ship gate A — EN/ES refactor released, zero visible change** — PRs #39→#47 merged to `main` and deployed to production
+- [x] Phase 4 — Route restructure to `/:locale/` *(branch `feat/i18n-phase-4-routes-config`, not yet merged)*
 - [ ] Phase 5 — 301 redirect map
 - [ ] Phase 6 — SEO head, hreflang, sitemap
 - [ ] **Ship gate B — URL migration released, still EN/ES only**
@@ -53,6 +53,9 @@ Hebrew/Hindi track (see [that section](#hebrew-and-hindi--rtl-and-non-latin-scri
 - [ ] H-E/H-F — language redirect + hreflang *(needs Phase 4)*
 
 ### Merge order
+
+**Done — all nine merged to `main` 2026-08-07, in order, as ship gate A.**
+Left below for the historical record of why the stack was ordered this way.
 
 The open PRs are a linear git stack even though GitHub shows every base as
 `main`. Merge **#39 → #40 → #41 → #42 → #43 → #44 → #45 → #46 → #47**, in that order; each later
@@ -704,7 +707,7 @@ Build clean, 45/45 preloads. Prerender diff against the pre-3d build:
 **visible text unchanged on all 45 pages** — the strongest result of any
 phase so far, since there was nothing to reconcile.
 
-### 🚢 Ship gate A
+### 🚢 Ship gate A ✅ *(2026-08-07)*
 
 Release Phases 1–3 to production as a **no-op**. Same URLs, same two languages,
 same pixels. Watch GSC and PostHog for a week.
@@ -713,22 +716,39 @@ This gate exists so that if rankings or conversions move later, you know whether
 the cause was the refactor or the URL change. Skipping it merges two large risks
 into one unattributable event.
 
-### Phase 4 — Route restructure to `/:locale/`
+**What actually happened:** PRs #39→#47 merged to `main` in order and deployed
+to production 2026-08-07. The owner then chose to **skip the week-long
+GSC/PostHog observation window** and start Phase 4 immediately rather than
+wait — see the session log entry below for the reasoning. This means Phase 4's
+URL migration risk is no longer cleanly separated from the Phase 1–3 refactor
+risk in the observed data; if rankings or conversions move after Phase 4/5/6
+ship, GSC/PostHog won't distinguish "was it the refactor" from "was it the
+URL change." A conscious tradeoff, not an oversight.
 
-- [ ] Add `src/routes.config.ts` — every page declared once: key, component,
+### Phase 4 — Route restructure to `/:locale/` ✅ *(2026-08-07, branch `feat/i18n-phase-4-routes-config`)*
+
+- [x] Add `src/routes.config.ts` — every page declared once: key, component,
       chunk name, per-locale slug, prerender flag, sitemap flag.
-- [ ] Rewrite `Router.tsx` to generate routes from the config. Preserve the
+- [x] Rewrite `Router.tsx` to generate routes from the config. Preserve the
       `webpackChunkName` comments — `scripts/inject-route-preloads.js` recomputes
       those names and **fails the build** if one is missing from
       `asset-manifest.json`.
-- [ ] Keep `/` as canonical English home; `/en/` 301s to `/`.
-- [ ] Locale-aware internal links: every `<Link>`/`href` resolves through a
-      `localePath()` helper. Audit for hardcoded paths (`/Plumeria`, `/HomeES`)
-      left in components — `HelpMeChoose` and the listing cards both build hrefs
-      from a `houseLangCode`, which disappears with this change.
+- [x] Keep `/` as canonical English home; `/en/` 301s to `/`.
+- [x] Locale-aware internal links: every `<Link>`/`href` resolves through
+      `routes.config.ts`'s `pathForKey`/`pathForLegacyId`/`routeKeyForSlug`/
+      `pathInLocale` helpers instead of a `localePath()` single function —
+      see the session log for why. `HelpMeChoose` and the listing cards, which
+      built hrefs from a `houseLangCode`, were the two call sites the plan
+      flagged as at-risk; both fixed, along with nine more found in the sweep.
 
-**Validation:** typecheck; e2e; every route in the config resolves in dev; no
-hardcoded legacy path remains (`grep -rn '"/\(Home\|Plumeria\|VillaMar\)' src`).
+**Validation:** typecheck clean; unit tests at the pre-existing baseline (4
+suites / 27 failing, unchanged); full e2e suite run against both this branch
+and the pre-Phase-4 commit to separate real regressions from pre-existing
+flakiness — zero regressions; every route in `routes.config.ts` resolves in a
+production build (45/45 react-snap crawl, 45/45 preloads, sitemap/md/llms
+generated); grep sweep for hardcoded legacy paths (single- and double-quoted)
+returns clean. See the session log for the single-quote gap the plan's own
+suggested grep command missed.
 
 ### Phase 5 — 301 redirect map
 
@@ -1258,3 +1278,76 @@ what the next session should pick up.
 > **Housekeeping note for whoever picks this up:** the plan's Ground Truth table
 > still describes `main`, deliberately. The "head of stack" column next to it is
 > the one to trust for current numbers.
+
+### 2026-08-07 — Ship gate A shipped, observation window skipped, Phase 4 done
+
+- **Ship gate A:** merged #39 → #40 → #41 → #42 → #43 → #44 → #45 → #46 → #47
+  to `main` in order and deployed to production. This is the first work from
+  this rollout to reach `main` — everything before this was stacked branches.
+- **Observation window skipped by owner decision.** The plan calls for
+  watching GSC/PostHog for a week before touching any URL, specifically so a
+  later ranking/conversion move can be attributed to "the refactor" vs "the
+  URL change." The owner chose to skip straight to Phase 4 instead of
+  waiting. Recorded here so it's not mistaken for an oversight: **that
+  attribution is now gone.** If something moves after Phase 4/5/6 ship, GSC
+  and PostHog will show one unattributable event, not two separable ones.
+- **Phase 4 — route restructure — done**, on branch
+  `feat/i18n-phase-4-routes-config` (not merged/deployed; deploying needs its
+  own explicit go-ahead per this session's established pattern).
+  - `src/routes.config.ts` is the new single source of truth: every page's
+    key, lazy component, chunk name, per-locale slug, and prerender/sitemap
+    flags in one place. `Router.tsx` generates its route list from it instead
+    of hand-declaring EN/ES pairs.
+  - **Deviated from the plan's `localePath()` helper.** The plan called for
+    one function every link resolves through. Building it, a single function
+    didn't fit three genuinely different call shapes: resolving a route *key*
+    you already know (`pathForKey`), resolving a *legacy houseLangCode/blog-id
+    string* you're migrating off of (`pathForLegacyId`), and resolving *the
+    same page in another locale while preserving a live dynamic param*, e.g.
+    the language switcher on a reservation detail page (`pathInLocale` +
+    `routeKeyForPath`). Forcing these through one signature would have meant
+    either a very wide options bag or silent misuse. Went with four small,
+    purpose-named functions instead.
+  - Fixed thirteen internal-link call sites (nine components/pages, plus
+    `constants.ts`'s six recommendation arrays) that built hrefs from a
+    `houseLangCode` or blog id suffix — exactly the risk the plan flagged for
+    `HelpMeChoose` and the listing cards, plus more the sweep turned up.
+  - **Real bug found, not routing-related:** `CookieConsentBanner` had its
+    own independent locale detection (`endsWith('ES') || includes('/es') ||
+    includes('/spanish') || 'lang=es' in the query string`) that had already
+    drifted from `detectLocaleFromPath()` before this phase touched anything.
+    Replaced with the shared helper after confirming `/spanish` and
+    `?lang=es` never corresponded to real routes.
+  - **Grep sweep gap:** the plan's own suggested validation command
+    (`grep -rn '"/\(Home\|Plumeria\|VillaMar\)' src`) only matches
+    double-quoted strings. It missed 17 single-quoted `link: '/Geco'`-style
+    fields across `constants.ts`'s recommendation arrays, which only
+    surfaced as a `StayRecommendation.test.tsx` failure. Re-ran the sweep
+    with single-quote patterns afterward — clean.
+  - **e2e validation methodology:** rather than just fixing the obvious
+    hardcoded-path literals in `tests/e2e/*.spec.ts` and trusting a green
+    run, ran the full suite against both this branch and a worktree at
+    `ca64c370` (the pre-Phase-4 commit) to separate real regressions from
+    pre-existing failures. Worth doing — a same-worktree re-run right after
+    editing test files produced 27 failures, most of them a
+    `webpack-dev-server-client-overlay` iframe intercepting clicks because
+    the dev server was recompiling from my own concurrent file edits, not a
+    real bug. A clean run (no edits in flight) plus the baseline comparison
+    brought that down to 16, and all 16 reproduce identically on
+    `ca64c370`: strict-mode locator ambiguities (`getByRole` substring name
+    matching across many similar property-card links) in
+    navigation/listing-page/responsive specs, `booking-search-widget`'s
+    date-input tests targeting native `<input type="date">` elements a
+    since-shipped calendar-popover redesign already replaced, and 4
+    already-known-stale visual-regression baselines (see
+    [[visual-regression-baselines-stale]] in the assistant's memory —
+    2 embed that same widget redesign, 1 embeds the current month). Zero
+    regressions from the URL scheme change itself.
+  - Unit test suite: 4 suites / 27 failing, exactly at the documented
+    baseline. The previously-unidentified 4th baseline suite is now known:
+    `StayRecommendation.test.tsx`, whose one remaining failure
+    (`getByText('Plumeria')` not matching the rendered `"Casa Plumeria"`) is
+    a pre-existing fixture/component name mismatch, unrelated to routing.
+- **Next session:** Phase 5 (301 redirect map). Phase 4's branch is
+  uncommitted-to-`main` and undeployed — push/PR/merge/deploy all need their
+  own explicit go-ahead, same as ship gate A did.

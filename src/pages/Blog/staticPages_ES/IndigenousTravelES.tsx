@@ -8,13 +8,13 @@ import { blogsES } from "../../../assets/blogs/blogs";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
 import ListingAd from "../Components/ListingAd/ListingAd.component";
-import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 import { allHomesSnippetES } from "../../../utils/constants";
 import OtherBlogs from "../Components/OtherBlogs.Component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import FixedNavigation from '../../../components/FixedNavigation/FixedNavigation.component';
 
 
 const IndigenousTravelES = () => {
@@ -55,7 +55,7 @@ const IndigenousTravelES = () => {
                 />
             </Helmet>
 
-            <FixedNavigationES isBlog={true} />
+            <FixedNavigation isBlog={true} />
 
             <Row className="subContainer" style={{ justifyContent: 'center' }}>
                 <Col

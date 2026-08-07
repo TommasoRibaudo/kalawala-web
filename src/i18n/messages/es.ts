@@ -11,6 +11,13 @@ export const es: Messages = {
     instantConfirmation: 'Confirmación inmediata',
   },
 
+  nav: {
+    home: 'Inicio',
+    blog: 'Blog',
+    myBooking: 'Mi Reserva',
+    bookNow: 'Reservar',
+  },
+
   footer: {
     ourHomes: 'Nuestras Casas',
     travelGuides: 'Guías de Viaje',
@@ -32,9 +39,11 @@ export const es: Messages = {
   },
 
   hero: {
-    namTitle: 'Casitas Namaitami',
-    tagline:
-      'Casas de vacaciones completamente equipadas ubicadas en el corazón de Puerto Viejo y Playa Chiquita.',
+    // The live homepage wording, not the longer one Phase 2 lifted from the
+    // Namaitami variant — that page is retired and its tagline was never what
+    // Spanish visitors saw. The only deliberate change is the accent on
+    // "corazón"; the homepage had "corazon".
+    tagline: 'Casas completamente equipadas en el corazón de Puerto Viejo y Playa Chiquita.',
     trust: '✓ Confirmación instantánea · ✓ Reserva segura · ✓ Sin comisiones',
     rating: '⭐⭐⭐⭐⭐ 4.9/5 de miles de estadías desde 2015',
   },
@@ -50,7 +59,10 @@ export const es: Messages = {
     // The three Spanish copies of this line disagreed on capitalisation
     // ("Explore otras…" vs "Explore Otras…"). Unified on sentence case.
     exploreOtherStays: 'Explore otras estadías únicas en Puerto Viejo y Playa Chiquita.',
+    villasWithPool: 'Villas de Lujo Con Piscina Privada En Playa Chiquita, Puerto Viejo.',
+    privateRetreat: 'Casitas Privadas A Solo Unos Pasos Playa Chiquita, Puerto Viejo',
     otherBlogsHeading: '¡Mira nuestros otros blogs!',
+    otherListingsHeading: '¡Revisa nuestras otras opciones!',
     readBlog: (title: string) => `Leer blog: ${title}`,
     weOfferEquipped: 'Ofrecemos casas completamente equipadas:',
   },
@@ -89,6 +101,7 @@ export const es: Messages = {
 
   property: {
     capacityAriaLabel: 'Capacidad de la casa',
+    viewListing: (name: string) => `Ver alojamiento: ${name}`,
     whyGuestsChoose: (propertyName: string) => `¿Por qué los huéspedes eligen ${propertyName}?`,
     bedrooms: (count: number) => `${count} ${count === 1 ? 'habitación' : 'habitaciones'}`,
     bathrooms: (count: number) => `${count} ${count === 1 ? 'baño' : 'baños'}`,

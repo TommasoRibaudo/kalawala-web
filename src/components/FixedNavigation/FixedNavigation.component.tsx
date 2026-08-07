@@ -6,14 +6,46 @@ import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from "react-router-dom";
 import SolidBars from "../../assets/images/bars-solid.svg";
 import { LanguageSwitcher } from "../FlagComponent/Flag.component";
+import { useLocale, messagesFor } from "../../i18n";
+import type { Locale } from "../../i18n";
+import { bookingPath, homePath, blogPath, portalPath } from "../../i18n/paths";
 
 interface IFixedNavigation {
   isBlog: boolean
+  /**
+   * Overrides the locale taken from the URL. Only `Booking.page` needs it: that
+   * page also treats a hand-typed lowercase `/bookes` as Spanish, which
+   * `detectLocaleFromPath` deliberately does not match (it is case-sensitive, so
+   * that a future route ending in "es" is not mistaken for Spanish). Without
+   * this the nav would render in English on a page whose body is Spanish.
+   */
+  locale?: Locale
 }
 
-const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
+/**
+ * PHASE 3a merged the Spanish copy into this one.
+ *
+ * **It fixes a live bug.** The Spanish nav's Home link was `HomeES#body` with no
+ * leading slash — a *relative* href. From `/blogES` it happened to resolve to
+ * `/HomeES#body`, but Phase 0 established that every URL on this site 301s to a
+ * trailing slash, and from `/blogES/` the same href resolves to
+ * `/blogES/HomeES#body`, which is a 404. Every link now comes from a path
+ * helper, so none of them can be relative.
+ *
+ * Two smaller unifications, both onto the English behaviour:
+ *  - The menu toggle image keeps English's explicit width/height attributes.
+ *    Spanish set only a height in a style prop, which leaves the intrinsic size
+ *    unknown until the SVG loads and lets the button shift.
+ *  - The brand link is `<home>#body` in both languages. Spanish linked to
+ *    `/HomeES` with no fragment; adding it matches English and the nav's own
+ *    Home link.
+ */
+const FixedNavigation = ({ isBlog, locale: localeOverride }: IFixedNavigation) => {
   const [isActive, setIsActive] = useState<boolean>(true);
   const navbarRef = useRef<HTMLDivElement>(null);
+  const detectedLocale = useLocale();
+  const locale = localeOverride ?? detectedLocale;
+  const m = messagesFor(locale);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -42,8 +74,12 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
 
   const navigate = useNavigate();
 
-  const handleLinkClick = (url: string) => {
-    navigate(`/${url}`);
+  // Takes a full path now. It used to take a bare segment and prepend the
+  // slash, which meant the caller wrote "book" while the href next to it read
+  // "/book" — two spellings of one route, and the Spanish copy got them out of
+  // step. The path helpers return a leading slash, so it takes them verbatim.
+  const handleLinkClick = (path: string) => {
+    navigate(path);
     setIsActive(false);
     closeMenu();
   };
@@ -62,7 +98,7 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
   return (
     <Navbar ref={navbarRef} className="navigation" expand="lg" sticky="top" variant="dark" data-bs-theme="dark">
       <Container>
-        <Navbar.Brand href="/#body" className="d-flex align-items-center">
+        <Navbar.Brand href={`${homePath(locale)}#body`} className="d-flex align-items-center">
           <img 
             src="https://lh3.googleusercontent.com/d/1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn=w1000" 
             alt="Reservas Kalawala" 
@@ -73,8 +109,8 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
           />
         </Navbar.Brand>
         <div className="mobile-controls">
-          <a href="/book" className="nav-cta-btn" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("book") }}>
-            Book now
+          <a href={bookingPath(locale)} className="nav-cta-btn" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick(bookingPath(locale)) }}>
+            {m.nav.bookNow}
           </a>
           <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick}>
             <img 
@@ -88,17 +124,17 @@ const FixedNavigation = ({ isBlog }: IFixedNavigation) => {
         </div>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="navMenu me-auto">
-            <Nav.Link href="/#body" className={`navText${(isActive && !isBlog) ? ' active' : ''}`} onClick={closeMenu}>Home</Nav.Link>
-            <Nav.Link href="/blog" className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>Blog</Nav.Link>
-            <Nav.Link href="/portal" className="navText" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("portal") }}>My Booking</Nav.Link>
+            <Nav.Link href={`${homePath(locale)}#body`} className={`navText${(isActive && !isBlog) ? ' active' : ''}`} onClick={closeMenu}>{m.nav.home}</Nav.Link>
+            <Nav.Link href={blogPath(locale)} className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>{m.nav.blog}</Nav.Link>
+            <Nav.Link href={portalPath(locale)} className="navText" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick(portalPath(locale)) }}>{m.nav.myBooking}</Nav.Link>
             <Nav.Link href="https://wa.me/50684632276" className="navText" target="_blank" rel="noopener noreferrer">WhatsApp</Nav.Link>
           </Nav>
           <div className="mobile-flag">
             <LanguageSwitcher />
           </div>
         <div className="navbar-flag">
-            <a href="/book" className="nav-cta-btn" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick("book") }}>
-              Book now
+            <a href={bookingPath(locale)} className="nav-cta-btn" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick(bookingPath(locale)) }}>
+              {m.nav.bookNow}
             </a>
             <LanguageSwitcher />
         </div>

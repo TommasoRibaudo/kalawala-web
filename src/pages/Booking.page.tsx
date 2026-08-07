@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDays, faUser, faWifi, faSnowflake, faCar, faKitchenSet, faArrowLeft, faCheck, faPlus, faLocationDot, faBath, faPaw, faSwimmingPool } from '@fortawesome/free-solid-svg-icons';
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
-import FixedNavigationES from '../components/FixedNavigation/FixedNavigation.componentES';
 import { bookingLanguage, useLocale } from '../i18n';
 import { persistPortalSession, savePortalCredentials, readPortalCredentials, removePortalCredentials } from '../services/PortalSession.service';
 import {
@@ -210,7 +209,9 @@ const BookingPage = () => {
   const [bookingConfirmation, setBookingConfirmation] = React.useState<PayPalCaptureResponse | null>(() => isConfirmationRoute ? readBookingConfirmationState() : null);
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const Navigation = language === 'es' ? FixedNavigationES : FixedNavigation;
+  // Phase 3a collapsed the two navigation components into one. `language` is
+  // passed explicitly rather than left to useLocale(): on this page it can be
+  // Spanish while the URL is not (see the lowercase /bookes fallback above).
   const [searchCaptchaRequired, setSearchCaptchaRequired] = React.useState(false);
   const [holdCaptchaRequired, setHoldCaptchaRequired] = React.useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -488,7 +489,7 @@ const BookingPage = () => {
     return (
       <div id="body" className="booking-page">
         <Helmet><title>{strings.paypalReturnTitle} | {strings.siteTitle}</title><meta name="description" content={strings.metaDescription} /><link rel="canonical" href={`https://www.reservaskalawala.com/${language === 'es' ? 'bookES/return' : 'book/return'}`} /></Helmet>
-        <Navigation isBlog={false} />
+        <FixedNavigation isBlog={false} locale={language} />
         <main className="booking-wizard"><Container><Row className="justify-content-center"><Col lg={8} xl={7}>
           <PayPalReturnPanel strings={strings} language={language} isProcessing={isCapturingPayPal} error={paypalCaptureError} result={paypalCaptureResult} />
         </Col></Row></Container></main>
@@ -499,7 +500,7 @@ const BookingPage = () => {
   return (
     <div id="body" className="booking-page">
       <Helmet><title>{isConfirmationRoute ? strings.confirmationTitle : strings.documentTitle} | {strings.siteTitle}</title><meta name="description" content={strings.metaDescription} /><link rel="canonical" href={`https://www.reservaskalawala.com/${language === 'es' ? 'bookES' : 'book'}`} /></Helmet>
-      <Navigation isBlog={false} />
+      <FixedNavigation isBlog={false} locale={language} />
       <main className="booking-wizard">
         <Container>
           <Row className="justify-content-center"><Col lg={10} xl={9}><StepIndicator currentStep={wizardStep} strings={strings} /></Col></Row>

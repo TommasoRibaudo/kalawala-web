@@ -50,9 +50,10 @@ jest.mock('../../components/ImagesModal/ImagesModal.component', () => {
   };
 });
 
-// Mock the Spanish OtherListings component
-jest.mock('../../components/OtherListings/OtherListings.componentES', () => {
-  return function MockOtherListingsES({ listings, currentListing }: { listings: any[]; currentListing: string }) {
+// Mock OtherListings. Phase 3a merged the Spanish copy into the shared
+// component, so this now mocks the one component both languages render.
+jest.mock('../../components/OtherListings/OtherListings.component', () => {
+  return function MockOtherListings({ listings, currentListing }: { listings: any[]; currentListing: string }) {
     return (
       <div data-testid="other-listings-es" data-current-listing={currentListing}>
         Otras Propiedades: {listings.length} propiedades
@@ -76,9 +77,12 @@ jest.mock('../../components/Amenities/Amenities.component', () => {
   };
 });
 
-// Mock the Spanish FixedNavigation component
-jest.mock('../../../../components/FixedNavigation/FixedNavigation.componentES', () => {
-  return function MockFixedNavigationES({ isBlog }: { isBlog: boolean }) {
+// Mock FixedNavigation, now shared by both languages after the Phase 3a merge.
+// The path was also wrong before this: it pointed at
+// `../components/FixedNavigation/...`, which resolves inside `staticPages_ES/`
+// and does not exist, so this mock never applied.
+jest.mock('../../../../components/FixedNavigation/FixedNavigation.component', () => {
+  return function MockFixedNavigation({ isBlog }: { isBlog: boolean }) {
     return <div data-testid="fixed-navigation-es" data-is-blog={isBlog}>Navegación</div>;
   };
 });

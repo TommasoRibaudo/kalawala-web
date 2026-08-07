@@ -22,6 +22,25 @@ export function bookingPath(locale: Locale): string {
 }
 
 /**
+ * The home route. English is the one locale whose home is the bare root rather
+ * than a suffixed page, which is why this cannot be `/Home${localeSuffix()}`.
+ *
+ * PHASE 4 keeps `/` as the canonical English home and 301s `/en/` to it, so the
+ * asymmetry outlives this file — it just moves into routes.config.ts.
+ */
+export function homePath(locale: Locale): string {
+  return locale === 'es' ? '/HomeES' : '/';
+}
+
+export function blogPath(locale: Locale): string {
+  return `/blog${localeSuffix(locale)}`;
+}
+
+export function portalPath(locale: Locale): string {
+  return `/portal${localeSuffix(locale)}`;
+}
+
+/**
  * Language for the booking flow, which is translated only into English and
  * Spanish — its strings live in `bookingStrings`, not in the message catalogs,
  * because the booking widget and the portal share them.

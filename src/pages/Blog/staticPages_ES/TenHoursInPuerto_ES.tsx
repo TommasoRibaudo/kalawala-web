@@ -6,7 +6,6 @@ import { allHomesSnippetES } from "../../../utils/constants";
 
 // import Amenities from "./components/Amenities/Amenities.component";
 import { blogsES } from "../../../assets/blogs/blogs";
-import FixedNavigationES from "../../../components/FixedNavigation/FixedNavigation.componentES";
 import { Helmet } from "react-helmet";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import ListingAd from "../Components/ListingAd/ListingAd.component";
@@ -15,6 +14,7 @@ import StayRecommendation from "../../../components/StayRecommendation/StayRecom
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import FixedNavigation from '../../../components/FixedNavigation/FixedNavigation.component';
 
 
 const HERO_IMAGE =
@@ -40,7 +40,7 @@ const TenHoursInPuertoES = () => {
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/TenHoursInPuertoES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/TenHoursInPuerto" />
             </Helmet>
-            <FixedNavigationES isBlog={true} />
+            <FixedNavigation isBlog={true} />
             <Row className="subContainer" style={{ justifyContent: 'center' }}>
 
                 <Col className="info col" lg={{ order: 'first', span: 8 }} md={{ order: 'first', span: 10 }} sm={12} xs={12}>

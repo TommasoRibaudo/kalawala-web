@@ -1,66 +1,108 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState, useCallback, useMemo } from "react";
 import './OtherListings.style.scss'
 import { ListingType } from "../../../../utils/types";
 import { useNavigate } from "react-router-dom";
+import { useLocale, useMessages } from "../../../../i18n";
+import { localeSuffix } from "../../../../i18n/paths";
 
-interface IOtherListing {
+interface IOtherListings {
     currentListing: string
     listings: ListingType[]
 }
 
-const OtherListings: FC<IOtherListing> = ({ currentListing, listings }) => {
+/**
+ * PHASE 3a merged the Spanish copy into this one. Three of the divergences were
+ * not translation, and each is resolved deliberately:
+ *
+ * 1. **Memoisation.** Spanish wrapped the resize handler and the filtering in
+ *    useCallback/useMemo; English used plain functions. Merged onto the memoised
+ *    version. This changes re-render cost on English pages, not their output —
+ *    so it is invisible to a prerender diff and is called out here instead.
+ *
+ * 2. **Name normalisation.** `currentListing` is the page's houseLangCode, so it
+ *    carries the locale suffix ("GecoES") while `homesSnippet` names do not
+ *    ("Geco"). English compared them raw, which was only ever correct because
+ *    English has no suffix — the same code on a Spanish page would have listed
+ *    the current property among the "other" ones. `baseName` strips the suffix
+ *    from both sides, which is right in every locale.
+ *
+ * 3. **Route building.** English navigated to `/Geco`, Spanish appended or
+ *    preserved "ES" with a substring test. Both are now the same expression:
+ *    base name + `localeSuffix(locale)`.
+ *
+ * The Spanish copy also used `name.replace('ES', '')`, which is unanchored and
+ * would eat "ES" from the middle of a name. `baseName` anchors to the end. No
+ * current property name trips the difference, but "Esmeralda" would have.
+ *
+ * `NamSnippetES` in constants.ts now produces the same result as `NamSnippet`
+ * and is redundant. It is left alone here — deleting it belongs with PHASE 3b,
+ * when the Spanish listing pages that reference it are merged away.
+ */
+
+/** The property name without its locale suffix: "PlumeriaES" -> "Plumeria". */
+const baseName = (name: string) => name.replace(/ES$/, '')
+
+const OtherListings: FC<IOtherListings> = ({ currentListing, listings }) => {
     // Seeded null, not window.innerWidth — react-snap's puppeteer viewport at
     // prerender time and a real visitor's viewport at hydration time are
     // different numbers, and isMobile below drives the layout class, so
-    // reading it synchronously here bakes a mismatch into every hydration.
-    // Same fix as MessageTipContainer.component.tsx: null means "not yet
-    // measured" (isMobile stays false, matching react-snap's desktop-sized
-    // prerender) until the resize effect sets the real width post-mount.
+    // reading the width during render produces a hydration mismatch. Null means
+    // "not measured yet"; the effect below fills it in after mount.
     const [windowWidth, setWindowWidth] = useState<number | null>(null)
     const navigate = useNavigate()
     const gridRef = useRef<HTMLDivElement>(null)
-    const otherListings = listings.filter(listing => listing.name !== currentListing)
+    const locale = useLocale()
+    const m = useMessages()
+
+    const handleResize = useCallback(() => {
+        setWindowWidth(window.innerWidth)
+    }, [])
 
     useEffect(() => {
-        const handleResize = () => setWindowWidth(window.innerWidth)
         handleResize() // real width, read only after mount
         window.addEventListener("resize", handleResize)
         return () => window.removeEventListener("resize", handleResize)
-    }, [])
+    }, [handleResize])
 
     // Only horizontally-scrollable in the 'mobile-scroll' layout. Chromium
     // redirects a vertical wheel gesture into horizontal scroll on any
-    // element that can only scroll on the X axis, so without this a visitor
-    // scrolling down the page gets stuck the moment the cursor crosses this
-    // row. React attaches wheel listeners as passive by default, so
-    // preventDefault() from an onWheel prop is silently ignored — this has
-    // to be a real DOM listener registered with { passive: false }.
+    // horizontally-overflowing element, which made the page feel stuck.
     useEffect(() => {
         const grid = gridRef.current
         if (!grid) return
+
         const onWheel = (e: WheelEvent) => {
-            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-                e.preventDefault()
-                window.scrollBy(0, e.deltaY)
-            }
+            if (!grid.classList.contains('mobile-scroll')) return
+            if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return
+            if (grid.scrollWidth <= grid.clientWidth) return
+            e.preventDefault()
+            grid.scrollLeft += e.deltaY
         }
+
         grid.addEventListener('wheel', onWheel, { passive: false })
         return () => grid.removeEventListener('wheel', onWheel)
     }, [])
 
-    const isMobile = windowWidth !== null && windowWidth <= 1199
+    const otherListings = useMemo(
+        () => listings.filter(listing => baseName(listing.name) !== baseName(currentListing)),
+        [listings, currentListing]
+    )
 
-    const getLayoutClass = () => {
-        if (otherListings.length === 0) return 'no-listings'
-        if (otherListings.length === 1) return 'single-listing'
-        if (isMobile && otherListings.length <= 2) return 'mobile-grid'
+    const handleListingClick = useCallback((name: string) => {
+        const routeName = baseName(name).replace(/\s/g, "")
+        navigate(`/${routeName}${localeSuffix(locale)}`)
+    }, [navigate, locale])
+
+    const layoutClass = useMemo(() => {
+        const isMobile = windowWidth !== null && windowWidth <= 1199
+        const listingCount = otherListings.length
+
+        if (listingCount === 0) return 'no-listings'
+        if (listingCount === 1) return 'single-listing'
+        if (isMobile && listingCount <= 2) return 'mobile-grid'
         if (isMobile) return 'mobile-scroll'
         return 'desktop-grid'
-    }
-
-    const handleListingClick = (name: string) => {
-        navigate(`/${name.replace(/\s/g, "")}`)
-    }
+    }, [windowWidth, otherListings.length])
 
     if (otherListings.length === 0) {
         return null
@@ -68,9 +110,9 @@ const OtherListings: FC<IOtherListing> = ({ currentListing, listings }) => {
 
     return (
         <div className="other-listings-container">
-            <h2 className="other-listings-header">Check out our other options!</h2>
+            <h2 className="other-listings-header">{m.sections.otherListingsHeading}</h2>
             <div
-                className={`other-listings-grid ${getLayoutClass()}`}
+                className={`other-listings-grid ${layoutClass}`}
                 ref={gridRef}
             >
                 {otherListings.map(({ name, mainImage }) => (
@@ -82,10 +124,10 @@ const OtherListings: FC<IOtherListing> = ({ currentListing, listings }) => {
                         onKeyDown={(e) => e.key === 'Enter' && handleListingClick(name)}
                         role="button"
                         tabIndex={0}
-                        aria-label={`View listing: ${name}`}
+                        aria-label={m.property.viewListing(baseName(name))}
                     >
                         <div className="listing-card-overlay">
-                            <h3 className="listing-card-title">{name}</h3>
+                            <h3 className="listing-card-title">{baseName(name)}</h3>
                         </div>
                     </div>
                 ))}

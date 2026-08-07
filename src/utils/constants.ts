@@ -795,51 +795,52 @@ export const ArekaImageDescriptions: IImageDescription[] = [
 ]
 export const ArekaImageDescriptionsES: IImageDescription[] = [
     {
+        roomType: "Dormitorio",
+        roomDescription: "",
+        imageLink: "https://lh3.googleusercontent.com/d/1LJSpQlE5C5C42FEz7M91Pjv4q7QRi-z6=w1000"
+    },
+    {
         roomType: "Baño",
-        roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://lh3.googleusercontent.com/d/1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT=w1000"
+        roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
+        imageLink: "https://lh3.googleusercontent.com/d/1K4SdPnue6pq2HloAAqiS1WZXmc2TlTGb=w1000"
     },
     {
-        roomType: "Bathroom",
-        roomDescription: "We're available 24/7 in case you need any help.",
-        imageLink: "https://lh3.googleusercontent.com/d/1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27=w1000"
+        roomType: "Sala de Estar",
+        roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
+        imageLink: "https://lh3.googleusercontent.com/d/1JLwZIir6MROytS_WMo1anNRyXcbEikJf=w1000"
     },
     {
-        roomType: "Master Bedroom",
-        roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
-        imageLink: "https://lh3.googleusercontent.com/d/1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV=w1000"
+        roomType: "Jardín",
+        roomDescription: "Parqueo privado gratuito.",
+        imageLink: "https://lh3.googleusercontent.com/d/1WhqgYtaq3igaScss30mUr9Vm9xF67Sxn=w1000"
     },
     {
-        roomType: "Master Bedroom",
-        roomDescription: "10inches/25cm tall matresses in every house.",
-        imageLink: "https://lh3.googleusercontent.com/d/1Dbna1MUEB126_-QfkRLVVgha6553hQc_=w1000"
+        roomType: "Terraza",
+        roomDescription: "Ofrecemos descuentos last-minute para reservas de último minuto.",
+        imageLink: "https://lh3.googleusercontent.com/d/10OwN88Pw4C-8CvALS8tz7Tor_Vt1RO6J=w1000"
     },
     {
-        roomType: "Second Bedroom",
-        roomDescription: "Bed Linens always included.",
-        imageLink: "https://lh3.googleusercontent.com/d/1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL=w1000"
+        roomType: "Cocina",
+        roomDescription: "Microondas, cafetera y licuadora incluidos.",
+        imageLink: "https://lh3.googleusercontent.com/d/1qJrVlpa3UVaLStmjI53Znn11wnD4k90G=w1000"
     },
     {
-        roomType: "Kitchen",
-        roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://lh3.googleusercontent.com/d/1NJPqfxBRHstI8oaEzSNUX4Lr0KwR5F_a=w1000"
+        roomType: "Baño",
+        roomDescription: "",
+        imageLink: "https://lh3.googleusercontent.com/d/1rERWm7sKifYsdz365dQE1ZFOO2un22tc=w1000"
     },
     {
-        roomType: "Kitchen",
-        roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://lh3.googleusercontent.com/d/10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G=w1000"
+        roomType: "Dormitorio",
+        roomDescription: "Colchones de 10pulgadas/25cm.",
+        imageLink: "https://lh3.googleusercontent.com/d/1MATVhjV7Y1GUS9mAB0RPZDr7kQEVTM3V=w1000"
     },
     {
-        roomType: "Livingroom",
-        roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://lh3.googleusercontent.com/d/1D7I61hOZ0Tk-5G-8D4WZ088eoEesWKJ_=w1000"
-    },
-    {
-        roomType: "Garden",
-        roomDescription: "Free private parking is available at this location.",
-        imageLink: "https://lh3.googleusercontent.com/d/1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO=w1000"
+        roomType: "Sala de Estar",
+        roomDescription: "Siempre estamos disponibles para ayudarte con cualquier pregunta o inquietud que puedas tener.",
+        imageLink: "https://lh3.googleusercontent.com/d/1sDCA9Limfi4RLW2alJF7Avk37ZLinAue=w1000"
     }
-]
+];
+
 export const PlumeriaImageDescriptions: IImageDescription[] = [
     {
         roomType: "Bedroom",
@@ -874,51 +875,37 @@ export const PlumeriaImageDescriptions: IImageDescription[] = [
 ]
 export const PlumeriaImageDescriptionsES: IImageDescription[] = [
     {
-        roomType: "Bathroom",
-        roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://lh3.googleusercontent.com/d/1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT=w1000"
+        roomType: "Dormitorio",
+        roomDescription: "Siempre estamos disponibles para ayudarte con cualquier pregunta o inquietud que puedas tener.",
+        imageLink: "https://lh3.googleusercontent.com/d/1JGQiusfHscT4pSE-1KpejP0uNLUBOTa-=w1000"
     },
     {
-        roomType: "Bathroom",
-        roomDescription: "We're available 24/7 in case you need any help.",
-        imageLink: "https://lh3.googleusercontent.com/d/1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27=w1000"
+        roomType: "Cocina",
+        roomDescription: "Microondas, cafetera y licuadora incluidos.",
+        imageLink: "https://lh3.googleusercontent.com/d/1_tsBq9D5vzz0ozq6DgfAMA3BaLC3is-O=w1000"
     },
     {
-        roomType: "Master Bedroom",
-        roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
-        imageLink: "https://lh3.googleusercontent.com/d/1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV=w1000"
+        roomType: "Cocina",
+        roomDescription: "Ofrecemos descuentos last-minute para reservas de último minuto.",
+        imageLink: "https://lh3.googleusercontent.com/d/1Yt3dRvt3I0gE7OX8DMZ1x1ax-B8ly78T=w1000"
     },
     {
-        roomType: "Master Bedroom",
-        roomDescription: "10inches/25cm tall matresses in every house.",
-        imageLink: "https://lh3.googleusercontent.com/d/1Dbna1MUEB126_-QfkRLVVgha6553hQc_=w1000"
+        roomType: "Baño",
+        roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
+        imageLink: "https://lh3.googleusercontent.com/d/13tzWvEYl-b6x32kJxPV4W-1--01A9z9K=w1000"
     },
     {
-        roomType: "Second Bedroom",
-        roomDescription: "Bed Linens always included.",
-        imageLink: "https://lh3.googleusercontent.com/d/1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL=w1000"
+        roomType: "Terraza",
+        roomDescription: "Parqueo privado gratuito.",
+        imageLink: "https://lh3.googleusercontent.com/d/1oR1cdPpg6HHGJOqKGVakPiNNYkK8gBtU=w1000"
     },
     {
-        roomType: "Kitchen",
-        roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://lh3.googleusercontent.com/d/1NJPqfxBRHstI8oaEzSNUX4Lr0KwR5F_a=w1000"
-    },
-    {
-        roomType: "Kitchen",
-        roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://lh3.googleusercontent.com/d/10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G=w1000"
-    },
-    {
-        roomType: "Livingroom",
-        roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://lh3.googleusercontent.com/d/1D7I61hOZ0Tk-5G-8D4WZ088eoEesWKJ_=w1000"
-    },
-    {
-        roomType: "Garden",
-        roomDescription: "Free private parking is available at this location.",
-        imageLink: "https://lh3.googleusercontent.com/d/1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO=w1000"
+        roomType: "Baño",
+        roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
+        imageLink: "https://lh3.googleusercontent.com/d/1SsDAb6YcODSPd3ByNtoKIOu4R8j28jFK=w1000"
     }
-]
+];
+
 export const GiuliaImageDescriptions: IImageDescription[] = [
     {
         roomType: "Livingroom",
@@ -969,51 +956,51 @@ export const GiuliaImageDescriptions: IImageDescription[] = [
 ]
 export const GiuliaImageDescriptionsES: IImageDescription[] = [
     {
-        roomType: "Bathroom",
-        roomDescription: "We always provide towels and toiletries.",
-        imageLink: "https://lh3.googleusercontent.com/d/1-ZKRoDNGsf7J1DMw-J5RI8H4HFlgVAuT=w1000"
+        roomType: "Sala de Estar",
+        roomDescription: "100Mbps de Wifi gratis en toda tu casa.",
+        imageLink: "https://lh3.googleusercontent.com/d/1yKDSO3SRCADMUeXB3mu4nTmajFdRhRqI=w1000"
     },
     {
-        roomType: "Bathroom",
-        roomDescription: "We're available 24/7 in case you need any help.",
-        imageLink: "https://lh3.googleusercontent.com/d/1igbIdHZHFVZybTUbI9Ih0AQmjyTT7Y27=w1000"
+        roomType: "Cuarto Principal",
+        roomDescription: "Colchones de 10pulgadas/25cm.",
+        imageLink: "https://lh3.googleusercontent.com/d/15YzK9sR2-30k979pFEvSQaSWUaL70I4S=w1000"
     },
     {
-        roomType: "Master Bedroom",
-        roomDescription: "This room has a TV with a Roku Entertainment System and HDMI port.",
-        imageLink: "https://lh3.googleusercontent.com/d/1Du7hhx0X7ry3QXVFNPBP9LU6ItquZMtV=w1000"
+        roomType: "Segundo Dormitorio",
+        roomDescription: "Ropa de cama siempre incluida.",
+        imageLink: "https://lh3.googleusercontent.com/d/1Lp1mJ-Tgwc8WMnMOvKN2oT9wobpNOLqX=w1000"
     },
     {
-        roomType: "Master Bedroom",
-        roomDescription: "10inches/25cm tall matresses in every house.",
-        imageLink: "https://lh3.googleusercontent.com/d/1Dbna1MUEB126_-QfkRLVVgha6553hQc_=w1000"
+        roomType: "Baño 2",
+        roomDescription: "Siempre estamos disponibles para ayudarte con cualquier pregunta o inquietud que puedas tener.",
+        imageLink: "https://lh3.googleusercontent.com/d/1LX-7Iic67neRM_w79FdmyrWDxdJiJfBr=w1000"
     },
     {
-        roomType: "Second Bedroom",
-        roomDescription: "Bed Linens always included.",
-        imageLink: "https://lh3.googleusercontent.com/d/1phVUR1WvBJmYT2Anr1BEUhwniwApu0TL=w1000"
+        roomType: "Terraza",
+        roomDescription: "Parqueo privado gratuito.",
+        imageLink: "https://lh3.googleusercontent.com/d/1bbRn5NLsJ8cKqm0I697TMNT5z9iDASxF=w1000"
     },
     {
-        roomType: "Kitchen",
-        roomDescription: "Microwave, coffeemaker and blender also included.",
-        imageLink: "https://lh3.googleusercontent.com/d/1NJPqfxBRHstI8oaEzSNUX4Lr0KwR5F_a=w1000"
+        roomType: "Baño 1",
+        roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
+        imageLink: "https://lh3.googleusercontent.com/d/1yI3aOb2sL_IiO-6lOUbxi1TBAL650Mvd=w1000"
     },
     {
-        roomType: "Kitchen",
-        roomDescription: "We offer last-minute discounts, prices are updated daily!",
-        imageLink: "https://lh3.googleusercontent.com/d/10KgLUm_WUcN-GWFvfN52T0j6ckfTvj9G=w1000"
+        roomType: "Cocina",
+        roomDescription: "Microondas, cafetera y licuadora incluidos.",
+        imageLink: "https://lh3.googleusercontent.com/d/1xiRDZCWwEnvjnGLEGE1WkrUyo6iwnOHi=w1000"
     },
     {
-        roomType: "Livingroom",
-        roomDescription: "100Mbps Free Wifi everywhere in your house.",
-        imageLink: "https://lh3.googleusercontent.com/d/1D7I61hOZ0Tk-5G-8D4WZ088eoEesWKJ_=w1000"
+        roomType: "Cuarto Principal",
+        roomDescription: "Esta habitación tiene un televisor con un sistema de entretenimiento Roku y puerto HDMI.",
+        imageLink: "https://lh3.googleusercontent.com/d/1HcR7jVW9GqLhV-X5_Luh0OWpZSIMDjHd=w1000"
     },
     {
-        roomType: "Garden",
-        roomDescription: "Free private parking is available at this location.",
-        imageLink: "https://lh3.googleusercontent.com/d/1vzDKoJQ8fQEHXGXFL525sXJ77ZHbGCNO=w1000"
+        roomType: "Cocina",
+        roomDescription: "Ofrecemos descuentos last-minute para reservas de último minuto.",
+        imageLink: "https://lh3.googleusercontent.com/d/1PPdoFxDWLSizWhHUIQ7i5W7K1WU09sTm=w1000"
     }
-]
+];
 
 export const ribHouseDataEngList: HouseDataType[] = [
     {

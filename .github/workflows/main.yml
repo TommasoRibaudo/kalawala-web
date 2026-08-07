@@ -4,6 +4,16 @@ on:
   push:
     branches:
       - main
+  # Manual trigger. Added after the 2026-08-06 GitHub Actions incident, during
+  # which webhook delivery was throttled to roughly 15% and two merges to main
+  # produced no workflow run at all — the push events were recorded, but no run
+  # was ever created. With only a `push` trigger there was no way to deploy:
+  # a missed trigger does not fire retroactively, and there was no button to
+  # press. This gives one.
+  #
+  # Also useful for redeploying the current main without an empty commit, e.g.
+  # after rotating an FTP or Smoobu secret.
+  workflow_dispatch:
 
 jobs:
   secret-scan:

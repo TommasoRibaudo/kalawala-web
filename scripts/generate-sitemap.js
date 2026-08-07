@@ -13,6 +13,13 @@
  *
  * EN/ES pairs are emitted with xhtml:link hreflang alternates, matching the
  * per-page <link rel="alternate"> tags the components already render.
+ *
+ * PHASE 4: routes moved from an "…ES" suffix to a `/es/…` path prefix (with
+ * English keeping the bare `/` for home). esCounterpart() below is updated
+ * just enough to keep working under the new scheme — it is still pure
+ * string-prefix guessing gated by list membership, same as before. The full
+ * rewrite to read the EN/ES pairing straight from routes.config.ts, which
+ * also adds the other six locales to the hreflang set, is Phase 6's job.
  */
 
 const fs = require('fs');
@@ -23,11 +30,11 @@ const BUILD = path.join(ROOT, 'build');
 const ORIGIN = 'https://www.reservaskalawala.com';
 
 /** Routes that exist for internal flows and should not be indexed. */
-const EXCLUDE = new Set(['/Success', '/404']);
+const EXCLUDE = new Set(['/404']);
 
 function esCounterpart(route, all) {
-  if (route.endsWith('ES')) return null; // handled from the EN side
-  const candidate = route === '/' ? '/HomeES' : `${route}ES`;
+  if (route.startsWith('/es/')) return null; // handled from the EN side
+  const candidate = route === '/' ? '/es/' : route.replace(/^\/en\//, '/es/');
   return all.includes(candidate) ? candidate : null;
 }
 
@@ -50,7 +57,7 @@ function main() {
     // ES routes are emitted alongside their EN partner below, so skip them
     // here or they get listed twice. Any ES route WITHOUT an EN partner is
     // picked up by the leftover pass at the end.
-    if (route.endsWith('ES') && included.includes(route === '/HomeES' ? '/' : route.slice(0, -2))) {
+    if (route.startsWith('/es/') && included.includes(route === '/es/' ? '/' : route.replace(/^\/es\//, '/en/'))) {
       continue;
     }
     const loc = ORIGIN + (route === '/' ? '/' : route);

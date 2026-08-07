@@ -1,6 +1,6 @@
 /**
  * Delfin Routing Integration Tests
- * 
+ *
  * Integration tests for Delfin routing functionality
  * Requirements: 6.1, 6.2, 6.3, 6.4
  */
@@ -8,6 +8,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { ROUTES, pathForKey } from '../../routes.config';
 
 // Mock the validation function to prevent actual validation during tests
 jest.mock('../../utils/runPixelValidation', () => ({
@@ -23,7 +24,7 @@ beforeEach(() => {
   window.fbq.queue = [];
   window.fbq.loaded = true;
   window.fbq.version = '2.0';
-  
+
   // Mock environment variables
   process.env.REACT_APP_META_PIXEL_ID = '1167925005402403';
   process.env.REACT_APP_META_PIXEL_ENABLED = 'true';
@@ -57,32 +58,33 @@ const SimpleTestComponent = ({ name }: { name: string }) => (
   <div data-testid="test-component">{name} Component Loaded</div>
 );
 
-// Test Router Component for isolated testing
+// Test Router Component for isolated testing. PHASE 4: routes are
+// /:locale/slug, with English home as the one bare-root exception.
 const TestRouter = ({ initialRoute }: { initialRoute: string }) => (
   <MemoryRouter initialEntries={[initialRoute]}>
     <Routes>
       <Route path="/" element={<SimpleTestComponent name="Home" />} />
-      <Route path="/Delfin" element={<SimpleTestComponent name="Delfin" />} />
-      <Route path="/DelfinES" element={<SimpleTestComponent name="DelfinES" />} />
-      <Route path="/Rana" element={<SimpleTestComponent name="Rana" />} />
+      <Route path="/en/delfin" element={<SimpleTestComponent name="Delfin" />} />
+      <Route path="/es/delfin" element={<SimpleTestComponent name="DelfinES" />} />
+      <Route path="/en/rana" element={<SimpleTestComponent name="Rana" />} />
     </Routes>
   </MemoryRouter>
 );
 
 describe('Delfin Routing Integration Tests', () => {
-  describe('Navigation to /Delfin route', () => {
-    test('should navigate to /Delfin route and load English component', () => {
-      const { getByTestId } = render(<TestRouter initialRoute="/Delfin" />);
-      
+  describe('Navigation to /en/delfin route', () => {
+    test('should navigate to /en/delfin route and load English component', () => {
+      const { getByTestId } = render(<TestRouter initialRoute="/en/delfin" />);
+
       expect(getByTestId('test-component')).toBeInTheDocument();
       expect(getByTestId('test-component')).toHaveTextContent('Delfin Component Loaded');
     });
   });
 
-  describe('Navigation to /DelfinES route', () => {
-    test('should navigate to /DelfinES route and load Spanish component', () => {
-      const { getByTestId } = render(<TestRouter initialRoute="/DelfinES" />);
-      
+  describe('Navigation to /es/delfin route', () => {
+    test('should navigate to /es/delfin route and load Spanish component', () => {
+      const { getByTestId } = render(<TestRouter initialRoute="/es/delfin" />);
+
       expect(getByTestId('test-component')).toBeInTheDocument();
       expect(getByTestId('test-component')).toHaveTextContent('DelfinES Component Loaded');
     });
@@ -90,22 +92,23 @@ describe('Delfin Routing Integration Tests', () => {
 
   describe('Route consistency and patterns', () => {
     test('should follow consistent routing patterns with existing properties', () => {
-      // Test that Delfin routes follow the same pattern as other properties
-      const englishRoutes = ['/Geco', '/Rana', '/Tucano', '/Pappagallo', '/Delfin'];
-      const spanishRoutes = ['/GecoES', '/RanaES', '/TucanoES', '/PappagalloES', '/DelfinES'];
-      
+      // Test that Delfin routes follow the same pattern as other properties:
+      // lowercase slug, locale prefix, no locale-specific casing.
+      const englishRoutes = ['/en/geco', '/en/rana', '/en/tucano', '/en/pappagallo', '/en/delfin'];
+      const spanishRoutes = ['/es/geco', '/es/rana', '/es/tucano', '/es/pappagallo', '/es/delfin'];
+
       englishRoutes.forEach(route => {
-        expect(route).toMatch(/^\/[A-Z][a-z]+$/);
+        expect(route).toMatch(/^\/en\/[a-z]+$/);
       });
-      
+
       spanishRoutes.forEach(route => {
-        expect(route).toMatch(/^\/[A-Z][a-z]+ES$/);
+        expect(route).toMatch(/^\/es\/[a-z]+$/);
       });
     });
 
     test('should handle invalid routes gracefully', () => {
       const { container } = render(<TestRouter initialRoute="/InvalidRoute" />);
-      
+
       // Should not crash on invalid routes - will show blank page
       expect(container).toBeInTheDocument();
     });
@@ -113,64 +116,60 @@ describe('Delfin Routing Integration Tests', () => {
 
   describe('Integration with existing system', () => {
     test('should maintain router functionality for existing routes', () => {
-      const { getByTestId } = render(<TestRouter initialRoute="/Rana" />);
-      
+      const { getByTestId } = render(<TestRouter initialRoute="/en/rana" />);
+
       expect(getByTestId('test-component')).toBeInTheDocument();
       expect(getByTestId('test-component')).toHaveTextContent('Rana Component Loaded');
     });
 
     test('should not interfere with home page routing', () => {
       const { getByTestId } = render(<TestRouter initialRoute="/" />);
-      
+
       expect(getByTestId('test-component')).toBeInTheDocument();
       expect(getByTestId('test-component')).toHaveTextContent('Home Component Loaded');
     });
   });
 
   describe('Router configuration verification', () => {
-    test('should verify Delfin routes are properly configured in main router', () => {
-      // Import the actual router to verify route configuration
-      const Router = require('../Router').default;
-      const routerString = Router.toString();
-      
-      // Verify Delfin routes are present in the router configuration
-      expect(routerString).toContain('/Delfin');
-      expect(routerString).toContain('/DelfinES');
-      expect(routerString).toContain('ListingDelfin');
-      // Note: The compiled version may have different variable names, so we check for DelfinES pattern
-      expect(routerString).toContain('DelfinES');
+    // PHASE 4: Router.tsx no longer contains any literal route path — every
+    // page is declared once in routes.config.ts and Router.tsx generates
+    // <Route> elements from it. Source-text matching against Router.tsx (the
+    // previous version of these tests) broke for exactly that reason: there
+    // is no more `path='/Delfin'` string to find. Assert against
+    // routes.config.ts's actual data instead, which is both the real source
+    // of truth now and more robust to future refactors of Router.tsx itself.
+    test('should verify Delfin is declared once and shares one component across locales', () => {
+      expect(ROUTES.delfin).toBeDefined();
+      expect(ROUTES.delfin.chunk).toBe('route-delfin');
+      // One component reference for both locales — this is what makes a
+      // second lazy import unnecessary (and the merged-chunk fallback that
+      // used to compensate for a duplicate import obsolete, see
+      // inject-route-preloads.js's routeToChunk comment).
+      expect(ROUTES.delfin.slugs.en).toBe('delfin');
+      expect(ROUTES.delfin.slugs.es).toBe('delfin');
     });
 
-    test('should verify proper import statements exist', () => {
-      // Read the router file content to verify imports
+    test('should resolve Delfin to the correct locale-prefixed path', () => {
+      expect(pathForKey('delfin', 'en')).toBe('/en/delfin');
+      expect(pathForKey('delfin', 'es')).toBe('/es/delfin');
+    });
+
+    test('should verify proper lazy import exists in routes.config.ts', () => {
+      // routes.config.ts is where every page's lazy() import now lives
+      // (Router.tsx just consumes the resulting component references), so
+      // that's the file whose source text is meaningful to assert against.
       const fs = require('fs');
       const path = require('path');
-      const routerPath = path.join(__dirname, '../Router.tsx');
-      const routerContent = fs.readFileSync(routerPath, 'utf8');
+      const routesConfigPath = path.join(__dirname, '../../routes.config.ts');
+      const routesConfigContent = fs.readFileSync(routesConfigPath, 'utf8');
 
-      // Both pages are code-split behind React.lazy, so assert the binding and
-      // the module path rather than an eager `import X from '...'` line — that
-      // form has not existed since routes were split into their own chunks, and
-      // matching on it failed while the routes themselves were perfectly fine.
-      expect(routerContent).toMatch(
-        /const ListingDelfin = lazy\(\(\) => import\([^)]*'\.\.\/pages\/Listing\/staticPages\/ListingDelfin\.page'\)\)/
+      expect(routesConfigContent).toMatch(
+        /const ListingDelfin = lazy\(\(\) => import\([^)]*'\.\/pages\/Listing\/staticPages\/ListingDelfin\.page'\)\)/
       );
       // Phase 3b merged the Spanish page into the English one, so there is no
-      // longer a separate ListingDelfinES binding — both routes render the same
-      // lazy component and the locale comes from the URL.
-      //
-      // A second lazy import of the same module would not have bought a second
-      // chunk anyway: webpack keys chunks by module, so the duplicate collapses
-      // and the extra webpackChunkName is dropped. inject-route-preloads.js
-      // knows this and falls back from `route-delfines` to `route-delfin`.
-      expect(routerContent).not.toMatch(/const ListingDelfinES\s*=/);
-      expect(routerContent).toMatch(
-        /path='\/DelfinES'\s*element=\{<ListingDelfin\s*\/>\}/
-      );
-
-      // Verify routes are configured
-      expect(routerContent).toContain("path='/Delfin'");
-      expect(routerContent).toContain("path='/DelfinES'");
+      // longer a separate ListingDelfinES binding — both routes render the
+      // same lazy component and the locale comes from the URL.
+      expect(routesConfigContent).not.toMatch(/const ListingDelfinES\s*=/);
     });
   });
 });

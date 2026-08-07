@@ -21,7 +21,7 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | Phase 3d — next (`Home.pageES`). Phases 0–3c complete in code, **nothing merged yet.** |
+| **Current phase** | **Phase 3 complete.** Ship gate A — next: merge the stack, release as a no-op, watch GSC/PostHog for a week. **Nothing merged yet.** |
 | **Last updated** | 2026-08-07 |
 | **Branch(es) in flight** | A nine-deep stack, based on `main`: **#39** → **#40** → **#41** → **#42** → **#43** → **#44** → **#45** → **#46** → `refactor/i18n-phase-3c-blog` (branched off #46's tip, not yet a PR). See [Merge order](#merge-order) — they must land in that sequence. |
 | **Blocked on** | **Owner action:** GSC performance export needs redoing at 16 months, not 6 (see [`seo-baseline/README.md`](seo-baseline/README.md)) — not lost yet, but cannot be done once it ages out. **Owner action:** PostHog export still outstanding. **Resolved:** Hebrew/Hindi fonts (H-B) — owner confirmed pulling from Google Fonts. Neither blocks Phase 3c–3d. |
@@ -31,8 +31,8 @@ Phase progress:
 - [ ] Phase 0 — Baseline capture and safety net *(automated parts done; GSC/PostHog exports outstanding)*
 - [x] Phase 1 — Locale foundation (`isSpanish` → `locale`) — PR #40
 - [x] Phase 2 — Message catalogs — PR #41
-- [ ] Phase 3 — Collapse duplicated page components *(3a, 3b, 3c done; 3d outstanding)*
-- [ ] **Ship gate A — EN/ES refactor released, zero visible change**
+- [x] Phase 3 — Collapse duplicated page components (3a, 3b, 3c, 3d) — **zero duplicated pages remain in `src/pages/`**
+- [ ] **Ship gate A — EN/ES refactor released, zero visible change** *(next)*
 - [ ] Phase 4 — Route restructure to `/:locale/`
 - [ ] Phase 5 — 301 redirect map
 - [ ] Phase 6 — SEO head, hreflang, sitemap
@@ -97,12 +97,12 @@ each row if the tree has moved on significantly.
 
 > **This table describes `main`, which is the pre-refactor state.** The PR stack
 > has moved several of these numbers a long way. Measured at the head of the
-> stack, after Phase 3c:
+> stack, after Phase 3d (Phase 3 complete):
 >
 > | Fact | On `main` | Head of stack |
 > |---|---|---|
 > | `isSpanish` occurrences in `src/` | 364 | **6** (comments and one deprecated shim) |
-> | ES-duplicated files | 47 | **1** — `Home.pageES` |
+> | ES-duplicated files | 47 | **0** |
 > | `src/i18n/` | does not exist | 20 files, incl. `content/blog.tsx` |
 > | Locales declared | — | 8 (`RELEASED_LOCALES` still `['en','es']`) |
 > | `reactSnap.include` routes | 49 | 45 (Nam/Villas retired in #43) |
@@ -335,12 +335,10 @@ that.
       the components it renders) — 11 in PR #42, the last 5 pairs after it
 - [x] **3b — listing pages** (10 pairs) — see [below](#3b--listing-pages)
 - [x] **3c — blog pages** (10 pairs + `BlogIndex`) — see [below](#3c--blog-pages)
-- [ ] **3d — `Home.pageES`**, then delete the ES route entries
-- [ ] Update `Router.tsx` imports (still the old route shape at this point)
+- [x] **3d — `Home.pageES`** — see [below](#3d--homepageses)
+- [x] Update `Router.tsx` imports (done incrementally, one merge at a time, across 3a–3d)
 
-**1 duplicated file remains**, down from 47 on `main`: `Home.pageES`. Shared
-components (3a), listing pages (3b) and blog pages (3c) are all done — this is
-the last one.
+**Zero duplicated files remain**, down from 47 on `main`. Phase 3 is complete.
 
 > **The validation bar changes here.** Phases 1 and 2 could claim *zero*
 > prerender differences. Phase 3 cannot: merging two components that genuinely
@@ -679,6 +677,31 @@ above or in its article's own commit — most of it is the self-exclusion fix
 removing a page's own carousel card, the `blogs.ts` title fix propagating
 through other pages' carousels, or a `StayRecommendation`/content
 correction. Nothing unaccounted for.
+
+#### 3d — Home.pageES
+
+The last duplicated file. `src/pages/Home/` now has one component; zero
+duplicated pages remain anywhere in `src/pages/`.
+
+- [x] Page title/description and the `HelpMeChoose` heading + its four option
+      labels moved to a new `m.home` catalog namespace.
+- [x] `houseDataEngList` vs `houseDataList` picked by locale, same pattern as
+      `blogs`/`blogsES` throughout 3c — verified both list the same 10 houses
+      in the same order first.
+- [x] The four `HelpMeChoose` option `houseLangCode`s build from
+      `localeSuffix(locale)` instead of being hardcoded twice.
+
+Unlike most of 3c, **no bugs found** — this pair was already well-paired.
+Two labels were deliberately kept as independently-authored rather than
+"corrected": "Pet-friendly" stays in English on the Spanish page (a commonly
+borrowed term in Costa Rican rental listings), and the fourth option's
+Spanish label ("Opción Recomendada") isn't a translation of English's "Best
+value" — same category of editorial difference as several Phase 3c cases.
+
+**Validation.** `tsc --noEmit` clean. Unit tests at the documented baseline.
+Build clean, 45/45 preloads. Prerender diff against the pre-3d build:
+**visible text unchanged on all 45 pages** — the strongest result of any
+phase so far, since there was nothing to reconcile.
 
 ### 🚢 Ship gate A
 
@@ -1207,6 +1230,29 @@ what the next session should pick up.
   URLs. The nine-deep PR stack (#39–#46 plus this session's unopened
   `refactor/i18n-phase-3c-blog` branch) still hasn't merged anything —
   merging the stack keeps getting more valuable as `main` drifts under it.
+
+### 2026-08-07 — Phase 3d completed, Phase 3 done
+
+- `Home.pageES` merged into `Home.page.tsx` — the last duplicated file.
+  **`ES-duplicated files` is now 0, from 47 on `main`.**
+- Unlike every article in 3c, this pair was already well-paired: no bugs
+  found. The only real work was moving hardcoded EN/ES strings (page
+  title/description, the `HelpMeChoose` heading and its four option labels)
+  into a new `m.home` catalog namespace, and picking `houseDataEngList` vs
+  `houseDataList` by locale.
+- **Validation:** typecheck clean; tests at baseline; build clean, 45/45
+  preloads; prerender diff against the pre-3d build — **visible text
+  unchanged on all 45 pages**, the cleanest result of any phase in this
+  rollout.
+- **Phase 3 is complete.** Zero duplicated page components remain in
+  `src/pages/`. `isSpanish` occurrences: 6 (comments/shim only, from 364 on
+  `main`).
+- **Next session:** ship gate A. Merge the nine-deep stack (#39 → #40 → #41 →
+  #42 → #43 → #44 → #45 → #46 → this session's unopened
+  `refactor/i18n-phase-3c-blog` branch, which needs its own PR first) in
+  order, release to production as a no-op, and watch GSC/PostHog for a week
+  before Phase 4 touches any URL. Nothing in this rollout has reached `main`
+  yet — the stack is currently the only copy of nine sessions' work.
 
 > **Housekeeping note for whoever picks this up:** the plan's Ground Truth table
 > still describes `main`, deliberately. The "head of stack" column next to it is

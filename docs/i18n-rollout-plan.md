@@ -23,8 +23,8 @@ resume without re-investigating the codebase.
 |---|---|
 | **Current phase** | **Phase 3 complete.** Ship gate A — next: merge the stack, release as a no-op, watch GSC/PostHog for a week. **Nothing merged yet.** |
 | **Last updated** | 2026-08-07 |
-| **Branch(es) in flight** | A nine-deep stack, based on `main`: **#39** → **#40** → **#41** → **#42** → **#43** → **#44** → **#45** → **#46** → `refactor/i18n-phase-3c-blog` (branched off #46's tip, not yet a PR). See [Merge order](#merge-order) — they must land in that sequence. |
-| **Blocked on** | **Owner action:** GSC performance export needs redoing at 16 months, not 6 (see [`seo-baseline/README.md`](seo-baseline/README.md)) — not lost yet, but cannot be done once it ages out. **Owner action:** PostHog export still outstanding. **Resolved:** Hebrew/Hindi fonts (H-B) — owner confirmed pulling from Google Fonts. Neither blocks Phase 3c–3d. |
+| **Branch(es) in flight** | A nine-deep stack, based on `main`: **#39** → **#40** → **#41** → **#42** → **#43** → **#44** → **#45** → **#46** → **#47**. See [Merge order](#merge-order) — they must land in that sequence. |
+| **Blocked on** | **Owner action:** PostHog export (organic sessions, EN vs ES, 12 months) still outstanding — the only open Phase 0 item. **Resolved:** GSC performance re-exported at the full 16 months; Hebrew/Hindi fonts (H-B) pulled from Google Fonts. None of this blocks Phase 3c–3d. |
 
 Phase progress:
 
@@ -55,7 +55,7 @@ Hebrew/Hindi track (see [that section](#hebrew-and-hindi--rtl-and-non-latin-scri
 ### Merge order
 
 The open PRs are a linear git stack even though GitHub shows every base as
-`main`. Merge **#39 → #40 → #41 → #42 → #43 → #44 → #45 → #46**, in that order; each later
+`main`. Merge **#39 → #40 → #41 → #42 → #43 → #44 → #45 → #46 → #47**, in that order; each later
 PR's diff collapses to its own work once its parent lands. Out of order means
 resolving the whole stack by hand.
 
@@ -208,10 +208,11 @@ see its README for the detail.
       Phase 5 and Phase 10.
 - [x] Lighthouse baseline for `/`, `/HomeES`, `/Geco`, `/twodaysinpuertoviejo`
       (`seo-baseline/lighthouse-2026-08-06.md` — perf 89–90, SEO 100 across the board).
-- [x] **Owner:** export GSC performance as CSV — received 2026-08-07, all
-      tabs, but at a 6-month range; **needs re-export at 16 months**, see
-      [`seo-baseline/README.md`](seo-baseline/README.md). Not yet lost, but
-      cannot be recovered once it ages past 16 months.
+- [x] **Owner:** export GSC performance as CSV — received 2026-08-07 at 6
+      months, re-exported the same day at the full 16-month window (the
+      site's property lives under the `reservas.kalawala@gmail.com` Google
+      account, not the default signed-in one — worth knowing if this needs
+      re-running). See [`seo-baseline/README.md`](seo-baseline/README.md).
 - [x] **Owner:** record GSC indexed vs not-indexed page counts — captured via
       the 2026-08-07 coverage export (54 indexed / 7 not); see
       [`seo-baseline/gsc-summary-2026-08-07.md`](seo-baseline/gsc-summary-2026-08-07.md).

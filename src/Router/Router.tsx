@@ -46,21 +46,9 @@ const CahuitaPark = lazy(() => import(/* webpackChunkName: "route-cahuitaparkwha
 const IndigenousTravel = lazy(() => import(/* webpackChunkName: "route-indigenoustravelpv" */ '../pages/Blog/staticPages/IndigenousTravel'));
 const BestTimeToVisitPuerto = lazy(() => import(/* webpackChunkName: "route-besttimetovisitpuerto" */ '../pages/Blog/staticPages/BestTimeToVisitPuerto'));
 const PuertoHiddenGems = lazy(() => import(/* webpackChunkName: "route-puertohiddengems" */ '../pages/Blog/staticPages/PuertoHiddenGems'));
-const TwoDaysInPVES = lazy(() => import(/* webpackChunkName: "route-twodaysinpuertoviejoes" */ '../pages/Blog/staticPages_ES/TwoDaysInPV_ES'));
-const GettingToGandocaES = lazy(() => import(/* webpackChunkName: "route-gettingtogandocaes" */ '../pages/Blog/staticPages_ES/GettingToGandoca_ES'));
-const TravellingToPuertoES = lazy(() => import(/* webpackChunkName: "route-travellingtopuertoviejoes" */ '../pages/Blog/staticPages_ES/TravellingToPuerto_ES'));
-const PuertoViejoByPlaneES = lazy(() => import(/* webpackChunkName: "route-puertoviejobyplanees" */ '../pages/Blog/staticPages_ES/PuertoViejoByPlane_ES'));
-const TenHoursInPuertoES = lazy(() => import(/* webpackChunkName: "route-tenhoursinpuertoes" */ '../pages/Blog/staticPages_ES/TenHoursInPuerto_ES'));
-const BusHoursES = lazy(() => import(/* webpackChunkName: "route-bushourses" */ '../pages/Blog/staticPages_ES/BusHoursES'));
-const CahuitaParkES = lazy(() => import(/* webpackChunkName: "route-cahuitaparkwhattodoes" */ '../pages/Blog/staticPages_ES/CahuitaParkES'));
-const IndigenousTravelES = lazy(() => import(/* webpackChunkName: "route-indigenoustravelpves" */ '../pages/Blog/staticPages_ES/IndigenousTravelES'));
-const BestTimeToVisitPuertoES = lazy(() => import(/* webpackChunkName: "route-besttimetovisitpuertoes" */ '../pages/Blog/staticPages_ES/BestTimeToVisitPuertoES'));
-const PuertoHiddenGemsES = lazy(() => import(/* webpackChunkName: "route-puertohiddengemses" */ '../pages/Blog/staticPages_ES/PuertoHiddenGemsES'));
-const HomeES = lazy(() => import(/* webpackChunkName: "route-homees" */ '../pages/Home/Home.pageES'));
 const Success = lazy(() => import(/* webpackChunkName: "route-success" */ '../pages/Home/Success.page'));
 const NotFound = lazy(() => import(/* webpackChunkName: "route-404" */ '../pages/NotFound.page'));
 const BlogIndex = lazy(() => import(/* webpackChunkName: "route-blog" */ '../pages/Blog/BlogIndex.page'));
-const BlogIndexES = lazy(() => import(/* webpackChunkName: "route-bloges" */ '../pages/Blog/BlogIndex.page_ES'));
 // import About from './About';
 // import Contact from './Contact';
 
@@ -194,33 +182,33 @@ const AppRouter = () => {
       <Route path='/Pappagallo'  element={<ListingPappagallo />}/>
       <Route path='/Delfin'  element={<ListingDelfin />}/>
       <Route path='/blog' element={<BlogIndex />} />
-      <Route path='/blogES' element={<BlogIndexES />} />
+      <Route path='/blogES' element={<BlogIndex />} />
       <Route path='/twodaysinpuertoviejo' element={<TwoDaysInPV />} />
       <Route path='/gettingtogandoca' element={<GettingToGandoca />} />
       <Route path='/travellingtopuertoviejo' element={<TravellingToPuerto />} />
       <Route path='/puertoviejobyplane' element={<PuertoViejoByPlane />} />
       <Route path='/TenHoursInPuerto' element={<TenHoursInPuerto />} />
       <Route path='/bushours' element={<BusHours />} />
-      <Route path='/bushoursES' element={<BusHoursES />} />
+      <Route path='/bushoursES' element={<BusHours />} />
       <Route path='/GecoES'  element={<ListingGeco />}/>
       <Route path='/RanaES'  element={<ListingRana />}/>
       <Route path='/TucanoES'  element={<ListingTucano />}/>
       <Route path='/PappagalloES'  element={<ListingPappagallo />}/>
       <Route path='/DelfinES'  element={<ListingDelfin />}/>
-      <Route path='/twodaysinpuertoviejoES' element={<TwoDaysInPVES />} />
-      <Route path='/gettingtogandocaES' element={<GettingToGandocaES />} />
-      <Route path='/travellingtopuertoviejoES' element={<TravellingToPuertoES />} />
-      <Route path='/puertoviejobyplaneES' element={<PuertoViejoByPlaneES />} />
-      <Route path='/TenHoursInPuertoES' element={<TenHoursInPuertoES />} />
+      <Route path='/twodaysinpuertoviejoES' element={<TwoDaysInPV />} />
+      <Route path='/gettingtogandocaES' element={<GettingToGandoca />} />
+      <Route path='/travellingtopuertoviejoES' element={<TravellingToPuerto />} />
+      <Route path='/puertoviejobyplaneES' element={<PuertoViejoByPlane />} />
+      <Route path='/TenHoursInPuertoES' element={<TenHoursInPuerto />} />
       <Route path='/cahuitaparkwhattodo' element={<CahuitaPark />} />
-      <Route path='/cahuitaparkwhattodoES' element={<CahuitaParkES />} />
+      <Route path='/cahuitaparkwhattodoES' element={<CahuitaPark />} />
       <Route path='/indigenousTravelPV' element={<IndigenousTravel />} />
-      <Route path='/indigenousTravelPVES' element={<IndigenousTravelES />} />
+      <Route path='/indigenousTravelPVES' element={<IndigenousTravel />} />
       <Route path='/bestTimeToVisitPuerto' element={<BestTimeToVisitPuerto />} />
-      <Route path='/bestTimeToVisitPuertoES' element={<BestTimeToVisitPuertoES />} />
-      <Route path='/puertoHiddenGemsES' element={<PuertoHiddenGemsES />} />
+      <Route path='/bestTimeToVisitPuertoES' element={<BestTimeToVisitPuerto />} />
+      <Route path='/puertoHiddenGemsES' element={<PuertoHiddenGems />} />
       <Route path='/puertoHiddenGems' element={<PuertoHiddenGems />} />
-      <Route path='/HomeES' element={<HomeES/>} />
+      <Route path='/HomeES' element={<Home/>} />
       <Route path='/Success' element={<Success/>} />
       <Route path='/Areka' element={<ListingAreka/>}/>
       <Route path='/Giulia' element={<ListingGiulia/>}/>

@@ -67,29 +67,32 @@ without it. Either is fine; the current split is not.
 
 ---
 
+## GSC export received — 2026-08-07, partial
+
+The owner provided a full Performance export (all tabs: pages, queries,
+countries, devices, search appearance, daily chart) and a full Coverage
+export (indexing chart, critical/non-critical issues). Both are in this
+directory (`gsc-*-2026-08-07.csv`); see
+[`gsc-summary-2026-08-07.md`](gsc-summary-2026-08-07.md) for the read-out.
+
+**One thing still needs redoing:** the Performance export used Search
+Console's "Last 6 months" preset (2026-02-06 → 2026-08-05), not the 16-month
+window this checklist calls for. GSC still has the full 16 months as of this
+writing, so nothing is lost — but it should be re-pulled with a custom
+16-month range before that window rolls forward. See the summary doc for the
+exact steps.
+
 ## Still to capture — needs your account access
 
-I cannot reach Google Search Console or PostHog. These are the parts of Phase 0
-that need you, and the GSC export is the one that **cannot be done later**.
-
-### 1. Google Search Console — performance export
-
-<https://search.google.com/search-console> → property `reservaskalawala.com`
-
-- **Performance → Search results**, set the date range to **16 months** (the
-  maximum retained; anything older is already gone).
-- Export twice, via the **Export** button top-right → *Download CSV*:
-  - **Pages** tab → save as `gsc-pages-16mo-2026-08-06.csv`
-  - **Queries** tab → save as `gsc-queries-16mo-2026-08-06.csv`
-- Drop both files in this directory.
-
-### 2. Google Search Console — indexing snapshot
+### 1. Google Search Console — indexing snapshot
 
 - **Indexing → Pages**. Record the number of **indexed** vs **not indexed** pages
   and the breakdown by reason.
-- A screenshot saved as `gsc-indexing-2026-08-06.png` is enough.
+- A screenshot saved as `gsc-indexing-2026-08-07.png` is enough — though the
+  2026-08-07 coverage CSV already has these numbers (54 indexed / 7 not, see
+  the summary doc), so this is now optional rather than blocking.
 
-### 3. PostHog — organic sessions by language
+### 2. PostHog — organic sessions by language
 
 - Monthly organic sessions for the last 12 months, split EN vs ES (the URL suffix
   `ES` separates them today — after the migration it will be the `/es/` prefix).

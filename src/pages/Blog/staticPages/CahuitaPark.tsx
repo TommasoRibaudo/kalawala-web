@@ -4,19 +4,24 @@ import '../../Listing/Listing.style.scss';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
-import { blogs } from "../../../assets/blogs/blogs";
+import { blogs, blogsES } from "../../../assets/blogs/blogs";
 import OtherBlogs from "../Components/OtherBlogs.Component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
-import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
+import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import { useLocale, useMessages } from "../../../i18n";
+import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { cahuitaParkContent } from "../../../i18n/content/blog";
 
+const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Cahuita_national_park%2C_Costa_Rica.jpg/1280px-Cahuita_national_park%2C_Costa_Rica.jpg?20090819063715";
 
 const CahuitaPark = () => {
-    // const { blogId } = useParams();
-
-    const blogId = 'cahuitaParkwhattodo'
-    const blogData = blogs.find((blog) => blog.id === blogId);
+    const locale = useLocale();
+    const m = useMessages();
+    const content = cahuitaParkContent(locale);
+    const lang = bookingLanguage(locale);
+    const selfId = `cahuitaParkwhattodo${localeSuffix(locale)}`;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -26,9 +31,9 @@ const CahuitaPark = () => {
         <div className={`listingContainer`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Visiting Cahuita National Park: What to Know Before You Go</title>
-                <meta name="description" content="Cahuita National Park is one of the easiest and most relaxed national parks to visit on Costa Rica’s Caribbean coast. It combines jungle trails, white-sand beaches, wildlife, and coral reefs in one place." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/cahuitaparkwhattodo" />
+                <title>{content.seoTitle}</title>
+                <meta name="description" content={content.seoDescription} />
+                <link rel="canonical" href={`https://www.reservaskalawala.com/cahuitaparkwhattodo${localeSuffix(locale)}`} />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/cahuitaparkwhattodo" />
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/cahuitaparkwhattodoES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/cahuitaparkwhattodo" />
@@ -40,13 +45,14 @@ const CahuitaPark = () => {
 
                     <div className="blog-header" style={{ maxWidth: 1000, marginBottom: '2rem' }}>
                         <div className="heading title-container">
-                            <h1 className="title blog-title">Visiting Cahuita National Park: What to Know Before You Go</h1>
+                            <h1 className="title blog-title">{content.heading}</h1>
                             <div className="border"></div>
                         </div>
 
                         <div className="blog-hero-image" style={{
                             display: 'flex',
-                            justifyContent: 'center',
+                            flexDirection: 'column',
+                            alignItems: 'center',
                             marginTop: '1.5rem',
                             borderRadius: '8px',
                             overflow: 'hidden',
@@ -56,7 +62,7 @@ const CahuitaPark = () => {
                                 loading="eager"
                                 fetchPriority="high"
                                 decoding="async"
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Cahuita_national_park%2C_Costa_Rica.jpg/1280px-Cahuita_national_park%2C_Costa_Rica.jpg?20090819063715"
+                                src={HERO_IMAGE}
                                 className="responsive-image"
                                 style={{
                                     maxWidth: '100%',
@@ -67,93 +73,89 @@ const CahuitaPark = () => {
                                 width="1000"
                                 height="600"
                             />
+                            <p style={{ fontSize: '0.85rem', margin: '4px 0 0' }}>{content.photoCredit}</p>
                         </div>
                     </div>
                     <div className="description" style={{ maxWidth: 1000, }}>
 
-                        <p><a href="https://maps.app.goo.gl/vHs1CB5nqzLDoGhv9" target="_blank" rel="noopener noreferrer">Cahuita National Park</a> is one of the easiest and most relaxed national parks to visit on Costa Rica’s Caribbean coast. It combines jungle trails, white-sand beaches, wildlife, and coral reefs in one place.</p>
-                        <p>If you are staying near Cahuita town or Puerto Viejo, this is a great half-day or full-day trip. Below is a clear guide to help you plan your visit.</p>
+                        {content.introParagraphs.map((p, i) => <p key={i}>{p}</p>)}
 
                         <br />
-                        <h3><strong>Enter from Cahuita Town</strong></h3>
+                        <h3><strong>{content.enterHeading}</strong></h3>
                         <p></p>
-                        <p>The most common entrance is in Cahuita town, near Playa Blanca.</p>
-                        <p>This entrance works on a <strong>donation basis</strong>, which makes it cheaper than other park entrances. The donation helps support park maintenance and local guides.</p>
-                        <p>Arrive early in the morning if you can. It is cooler, quieter, and better for wildlife spotting.</p>
+                        {content.enterParagraphs.map((p, i) => <p key={i}>{p}</p>)}
 
                         <br />
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
-                            title="Where to stay near Cahuita National Park?"
-                            properties={GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
-                            language="en"
+                            title={content.stayRecommendationTitle}
+                            properties={locale === 'es' ? GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES : GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
+                            language={lang}
                         />
                         <br />
 
-                        <h3><strong>Snorkeling Inside the Park</strong></h3>
-                        <p>Snorkeling is one of the main reasons people visit Cahuita National Park.</p>
-                        <p>The coral reef here is one of the largest on Costa Rica’s Caribbean coast. You can see colorful fish, coral formations, and sometimes rays.</p>
-                        <p>Most visitors book a guided snorkeling tour, which includes:</p>
+                        <h3><strong>{content.snorkelHeading}</strong></h3>
+                        <p>{content.snorkelParagraphs[0]}</p>
+                        <p>{content.snorkelParagraphs[1]}</p>
+                        <p>{content.snorkelParagraphs[2]}</p>
                         <ul>
-                            <li><strong>A local guide</strong></li>
-                            <li><strong>Snorkeling gear</strong> </li>
-                            <li><strong>A boat ride to the reef</strong> </li>
+                            <li><strong>{content.snorkelListItems[0]}</strong></li>
+                            <li><strong>{content.snorkelListItems[1]}</strong> </li>
+                            <li><strong>{content.snorkelListItems[2]}</strong> </li>
                         </ul>
                         <br />
 
-                        <p>Conditions depend on the weather, so visibility can change from day to day.</p>
+                        <p>{content.snorkelClosing}</p>
 
                         <br />
-                        <h3><strong>Watch Your Food Around Wildlife</strong></h3>
-                        <p>Cahuita is full of animals. You may see monkeys, raccoons, iguanas, coatis, and sloths.</p>
-                        <p>Some animals are very used to visitors and may try to steal food. Keep snacks in a closed bag and never leave food unattended.</p>
-                        <p>Feeding animals is not allowed and can harm them.</p>
+                        <h3><strong>{content.wildlifeHeading}</strong></h3>
+                        {content.wildlifeParagraphs.map((p, i) => <p key={i}>{p}</p>)}
 
                         <br />
-                        <h3><strong>Know the Park Schedule</strong></h3>
-                        <p>The park <strong>closes at 4:00 p.m.</strong> Visitors must exit before that time.</p>
-                        <p>This is another reason to enter early. You will have more time to walk, swim, and relax without rushing.</p>
+                        <h3><strong>{content.scheduleHeading}</strong></h3>
+                        <p>{content.scheduleParagraphs[0]}</p>
+                        <p>{content.scheduleParagraphs[1]}</p>
 
                     {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                     <div style={{ maxWidth: 1000 }}>
                         <WhyStayWithUs
-                            language="en"
-                            ctaLink="/"
+                            language={lang}
+                            ctaLink={homePath(locale)}
                         />
                     </div>
 
-                        <h3><strong>Boat Ride Back Instead of Walking</strong></h3>
-                        <p>The main trail runs along the coast and can be long if you walk the full route.</p>
-                        <p>Many visitors choose to walk one way and <strong>return by boat</strong>. Local boat operators offer rides back toward Cahuita town.</p>
-                        <p>This is a good option if you want to enjoy the trail without walking the entire distance.</p>
+                        <h3><strong>{content.boatHeading}</strong></h3>
+                        <p>{content.boatParagraphs[0]}</p>
+                        <p>{content.boatParagraphs[1]}</p>
+                        <p>{content.boatParagraphs[2]}</p>
 
                         <br />
-                        <h3><strong>Plastic Is Not Allowed</strong></h3>
-                        <p><strong>Single-use plastics</strong> are not allowed inside the park.</p>
-                        <p>This includes plastic bags, disposable bottles, and plastic food packaging. Bring reusable bottles and containers.</p>
-                        <p>Park staff may check bags at the entrance.</p>
+                        <h3><strong>{content.plasticHeading}</strong></h3>
+                        <p>{content.plasticParagraphs[0]}</p>
+                        <p>{content.plasticParagraphs[1]}</p>
+                        <p>{content.plasticParagraphs[2]}</p>
 
                         <br />
-                        <h3><strong>Final Tips Before You Go</strong></h3>
+                        <h3><strong>{content.tipsHeading}</strong></h3>
                         <ul>
-                            <li><strong>Wear comfortable walking shoes or sandals</strong></li>
-                            <li><strong>Bring water in a reusable bottle</strong> </li>
-                            <li><strong>Use reef-safe sunscreen</strong> </li>
-                            <li><strong>Start early to avoid heat and crowds</strong> </li>
+                            <li><strong>{content.tipsListItems[0]}</strong></li>
+                            <li><strong>{content.tipsListItems[1]}</strong> </li>
+                            <li><strong>{content.tipsListItems[2]}</strong> </li>
+                            <li><strong>{content.tipsListItems[3]}</strong> </li>
                         </ul>
-                        <p><strong>Cahuita National Park is calm, beautiful, and easy to visit.</strong> With a little planning, it is one of the best nature experiences on the Caribbean coast of Costa Rica.</p>
+                        <p>{content.closing}</p>
                     </div>
 
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h2 className="smoobu-title">Book Your Stay</h2>
+                        <h2 className="smoobu-title">{m.blog.bookYourStay}</h2>
                         <div className="smoobu-wrapper">
-                            <Smoobu2 targetId="cahuitaParkSmoobuBooking" />
+                            <Smoobu2 targetId="blogSmoobuBooking" />
                         </div>
                     </div>
 
-                    <OtherBlogs currentBlog="cahuitaParkwhattodo" blogs={blogs} />
+                    <OtherBlogs currentBlog={selfId} blogs={locale === 'es' ? blogsES : blogs} />
                 </Col>
             </Row>
             <ContactUs />

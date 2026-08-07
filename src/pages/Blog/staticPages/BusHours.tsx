@@ -4,15 +4,76 @@ import '../../Listing/Listing.style.scss';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
-import { blogs } from "../../../assets/blogs/blogs";
+import { blogs, blogsES } from "../../../assets/blogs/blogs";
 import OtherBlogs from "../Components/OtherBlogs.Component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
-import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from "../../../utils/constants";
+import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import { useLocale, useMessages } from "../../../i18n";
+import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { busHoursContent, BusHoursContent } from "../../../i18n/content/blog";
 
+const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg";
+
+const badges = (times: string[], color: string) => (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
+        {times.map((time) => (
+            <span key={time} style={{ backgroundColor: color, padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>{time}</span>
+        ))}
+    </div>
+);
+
+const SimpleScheduleTable = ({ content, rows }: { content: BusHoursContent, rows: [string, string[]][] }) => (
+    <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ddd' }}>
+            <thead>
+                <tr style={{ backgroundColor: '#f5f5f5' }}>
+                    <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'left', width: '50%' }}>{content.tableRouteHeader}</th>
+                    <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'center', width: '50%' }}>{content.tableDepartureHeader}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows.map(([route, times], i) => (
+                    <tr key={route} style={i % 2 === 1 ? { backgroundColor: '#f9f9f9' } : undefined}>
+                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>{route}</strong></td>
+                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>{badges(times, '#e8f4f8')}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    </div>
+);
+
+const SplitScheduleTable = ({ content, rows }: { content: BusHoursContent, rows: [string, string[], string[]][] }) => (
+    <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ddd' }}>
+            <thead>
+                <tr style={{ backgroundColor: '#f5f5f5' }}>
+                    <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'left', width: '25%' }}>{content.tableRouteHeader}</th>
+                    <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'center', width: '37.5%' }}>{content.tableWeekdayHeader}</th>
+                    <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'center', width: '37.5%' }}>{content.tableSundayHeader}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows.map(([route, weekday, sunday], i) => (
+                    <tr key={route} style={i % 2 === 1 ? { backgroundColor: '#f9f9f9' } : undefined}>
+                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>{route}</strong></td>
+                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>{badges(weekday, '#e8f4f8')}</td>
+                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>{badges(sunday, '#f0f8e8')}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    </div>
+);
 
 const BusHours = () => {
+    const locale = useLocale();
+    const m = useMessages();
+    const content = busHoursContent(locale);
+    const lang = bookingLanguage(locale);
+    const selfId = `bushours${localeSuffix(locale)}`;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -22,9 +83,9 @@ const BusHours = () => {
         <div className={`listingContainer`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Complete Bus Schedule from Puerto Viejo, Costa Rica - MEPE Bus Routes & Timetables</title>
-                <meta name="description" content="Find the complete bus schedule from Puerto Viejo to San Jose, Limón, Cahuita, Manzanillo, and Sixaola. MEPE bus timetables, routes, and transportation information for Costa Rica's Caribbean coast." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/bushours" />
+                <title>{content.seoTitle}</title>
+                <meta name="description" content={content.seoDescription} />
+                <link rel="canonical" href={`https://www.reservaskalawala.com/bushours${localeSuffix(locale)}`} />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/bushours" />
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/bushoursES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/bushours" />
@@ -36,13 +97,14 @@ const BusHours = () => {
 
                     <div className="blog-header" style={{ maxWidth: 1000, marginBottom: '2rem' }}>
                         <div className="heading title-container">
-                            <h1 className="title blog-title">Complete Bus Schedule from Puerto Viejo, Costa Rica - MEPE Bus Routes & Timetables</h1>
+                            <h1 className="title blog-title">{content.heading}</h1>
                             <div className="border"></div>
                         </div>
 
                         <div className="blog-hero-image" style={{
                             display: 'flex',
-                            justifyContent: 'center',
+                            flexDirection: 'column',
+                            alignItems: 'center',
                             marginTop: '1.5rem',
                             borderRadius: '8px',
                             overflow: 'hidden',
@@ -52,7 +114,7 @@ const BusHours = () => {
                                 loading="eager"
                                 fetchPriority="high"
                                 decoding="async"
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg"
+                                src={HERO_IMAGE}
                                 className="responsive-image"
                                 style={{
                                     maxWidth: '100%',
@@ -63,332 +125,108 @@ const BusHours = () => {
                                 width="1000"
                                 height="600"
                             />
-                            Photo by <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a>
+                            <p style={{ fontSize: '0.85rem', margin: '4px 0 0' }}>{content.photoCredit}</p>
                         </div>
                     </div>
                     <div className="description" style={{ maxWidth: 1000, }}>
-                        <p>Planning your transportation in Costa Rica's Caribbean coast? Look no further! This comprehensive guide provides you with all the bus schedules you need to travel from Puerto Viejo to major destinations including <strong>San Jose</strong>, <strong>Limón</strong>, <strong>Cahuita</strong>, <strong>Manzanillo</strong>, and <strong>Sixaola</strong>. Whether you're searching for "bus San Jose Puerto Viejo", "bus Cahuita Puerto Viejo", or "bus from Puerto Viejo to San Jose", we've got you covered with the most up-to-date MEPE bus timetables.</p>
+                        <p>{content.introParagraph}</p>
                         <br />
-                        <h3><strong>About MEPE Bus Service</strong></h3>
-                        <p><strong><a href="https://www.mepe.co.cr/Ingles/index.html" target="_blank" rel="noopener noreferrer">MEPE</a> (Empresa de Transportes Públicos de Limón)</strong> is the primary bus company operating throughout Costa Rica's Caribbean coast. Known for their reliable service and extensive network, MEPE buses connect Puerto Viejo with major cities and tourist destinations across the region. Their modern fleet provides comfortable transportation for both locals and visitors, making it the preferred choice for budget-conscious travelers exploring Costa Rica's stunning Caribbean coastline.</p>
+                        <h3><strong>{content.aboutHeading}</strong></h3>
+                        <p>{content.aboutParagraph1}</p>
                         <br />
-                        <p>MEPE buses are easily recognizable by their distinctive blue and white colors, and they operate on fixed schedules that are generally punctual. The company has been serving the Caribbean region for decades, building a reputation for safety, affordability, and comprehensive coverage of the area's most important routes.</p>
+                        <p>{content.aboutParagraph2}</p>
                         <br />
 
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
-                            title="Where to stay while using Puerto Viejo bus services?"
-                            properties={GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
-                            language="en"
+                            title={content.stayRecommendationTitle}
+                            properties={locale === 'es' ? GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES : GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
+                            language={lang}
                         />
                         <br />
 
-                        <h3><strong>Bus Routes from Puerto Viejo</strong></h3>
-                        <p>Puerto Viejo serves as a major transportation hub for the Southern Caribbean region. From here, you can easily reach:</p>
+                        <h3><strong>{content.routesHeading}</strong></h3>
+                        <p>{content.routesIntro}</p>
                         <ul>
-                            <li><strong>San Jose</strong> - Costa Rica's capital city (approximately 4-5 hours)</li>
-                            <li><strong>Limón</strong> - The Caribbean port city (approximately 1 hour)</li>
-                            <li><strong>Cahuita</strong> - Famous for its national park and beaches (approximately 30 minutes)</li>
-                            <li><strong>Manzanillo</strong> - Gateway to Gandoca-Manzanillo Wildlife Refuge (approximately 20 minutes)</li>
-                            <li><strong>Sixaola</strong> - Border town with Panama (approximately 1.5 hours)</li>
+                            {content.destinations.map((d) => <li key={d}><strong>{d.split(' - ')[0]}</strong> - {d.split(' - ')[1]}</li>)}
                         </ul>
                         <br />
-                        <h3><strong>Complete Bus Schedules</strong></h3>
+                        <h3><strong>{content.schedulesHeading}</strong></h3>
                         <br />
-                        <h4><strong>San José ↔ Puerto Viejo (stops in Cahuita)</strong></h4>
-                        <p>This is the main route connecting Puerto Viejo with Costa Rica's capital city. Perfect for travelers arriving from or heading to San José International Airport.</p>
+                        <h4><strong>{content.sanJoseHeading}</strong></h4>
+                        <p>{content.sanJoseIntro}</p>
                         <br />
-                        <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ddd' }}>
-                                <thead>
-                                    <tr style={{ backgroundColor: '#f5f5f5' }}>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'left', width: '50%' }}>Route</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'center', width: '50%' }}>Departure Times</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>San José → Puerto Viejo</strong></td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:00 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:00 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>10:00 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>2:00 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:00 PM</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr style={{ backgroundColor: '#f9f9f9' }}>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>Puerto Viejo → San José</strong></td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>3:00 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>9:00 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>12:00 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:00 PM</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <SimpleScheduleTable content={content} rows={[
+                            ['San José → Puerto Viejo', ['6:00 AM', '8:00 AM', '10:00 AM', '2:00 PM', '4:00 PM']],
+                            ['Puerto Viejo → San José', ['3:00 AM', '5:30 AM', '9:00 AM', '12:00 PM', '4:00 PM']],
+                        ]} />
                         <br />
-                        <h4><strong>Limón ↔ Puerto Viejo (stops in Cahuita)</strong></h4>
-                        <p>This is one of the most frequent routes, connecting Puerto Viejo with the port city of Limón. Perfect for travelers heading to or from San Jose, as Limón serves as a major connection point.</p>
+                        <h4><strong>{content.limonHeading}</strong></h4>
+                        <p>{content.limonIntro}</p>
                         <br />
-                        <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ddd' }}>
-                                <thead>
-                                    <tr style={{ backgroundColor: '#f5f5f5' }}>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'left', width: '25%' }}>Route</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'center', width: '37.5%' }}>Monday - Saturday</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'center', width: '37.5%' }}>Sunday & Holidays</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>Limón → Puerto Viejo</strong></td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>9:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>10:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>11:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>12:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>1:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>2:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>3:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:00 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:00 PM</span>
-                                            </div>
-                                        </td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>9:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>10:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>11:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>12:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>2:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:00 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:00 PM</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr style={{ backgroundColor: '#f9f9f9' }}>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>Puerto Viejo → Limón</strong></td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>9:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>10:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>11:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>12:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>1:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>2:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>3:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 PM</span>
-                                            </div>
-                                        </td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>9:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>11:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>1:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>3:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:15 PM</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <SplitScheduleTable content={content} rows={[
+                            ['Limón → Puerto Viejo',
+                                ['5:30 AM', '6:30 AM', '7:30 AM', '8:30 AM', '9:30 AM', '10:30 AM', '11:30 AM', '12:30 PM', '1:30 PM', '2:30 PM', '3:30 PM', '4:30 PM', '6:30 PM', '7:00 PM', '8:00 PM'],
+                                ['6:30 AM', '8:30 AM', '9:30 AM', '10:30 AM', '11:30 AM', '12:30 PM', '2:30 PM', '4:30 PM', '6:30 PM', '7:00 PM', '8:00 PM']],
+                            ['Puerto Viejo → Limón',
+                                ['5:30 AM', '6:30 AM', '7:30 AM', '8:30 AM', '9:30 AM', '10:30 AM', '11:30 AM', '12:30 PM', '1:30 PM', '2:30 PM', '3:30 PM', '4:30 PM', '5:30 PM', '6:30 PM'],
+                                ['5:30 AM', '7:30 AM', '9:30 AM', '11:30 AM', '1:30 PM', '3:30 PM', '5:30 PM', '6:30 PM', '8:15 PM']],
+                        ]} />
                         <br />
-                        <h4><strong>Puerto Viejo ↔ Manzanillo</strong></h4>
-                        <p>This route takes you to the beautiful beaches of Manzanillo and provides access to the Gandoca-Manzanillo National Wildlife Refuge.</p>
+                        <h4><strong>{content.manzanilloHeading}</strong></h4>
+                        <p>{content.manzanilloIntro}</p>
                         <br />
-                        <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ddd' }}>
-                                <thead>
-                                    <tr style={{ backgroundColor: '#f5f5f5' }}>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'left' }}>Route</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'center' }}>Departure Times</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>Puerto Viejo → Manzanillo</strong></td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:40 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:10 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>9:40 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>11:40 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>1:40 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:40 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:40 PM</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr style={{ backgroundColor: '#f9f9f9' }}>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>Manzanillo → Puerto Viejo</strong></td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:00 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:00 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>10:00 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>10:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>12:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>1:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>3:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:00 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:00 PM</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <SimpleScheduleTable content={content} rows={[
+                            ['Puerto Viejo → Manzanillo', ['7:40 AM', '8:10 AM', '9:40 AM', '11:40 AM', '1:40 PM', '4:40 PM', '6:40 PM']],
+                            ['Manzanillo → Puerto Viejo', ['5:00 AM', '6:30 AM', '8:00 AM', '10:00 AM', '10:30 AM', '12:30 PM', '1:30 PM', '3:30 PM', '4:00 PM', '5:00 PM']],
+                        ]} />
                         <br />
-                        <h4><strong>Sixaola ↔ Puerto Viejo (stops in Bri Bri)</strong></h4>
-                        <p>This route connects Puerto Viejo with the border town of Sixaola, perfect for travelers heading to Panama. The route also stops in Bri Bri, providing access to indigenous communities and cultural experiences.</p>
+                        <h4><strong>{content.sixaolaHeading}</strong></h4>
+                        <p>{content.sixaolaIntro}</p>
                         <br />
-                        <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ddd' }}>
-                                <thead>
-                                    <tr style={{ backgroundColor: '#f5f5f5' }}>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'left', width: '25%' }}>Route</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'center', width: '37.5%' }}>Monday - Saturday</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '12px', textAlign: 'center', width: '37.5%' }}>Sunday & Holidays</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>Sixaola → Puerto Viejo</strong></td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>9:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>10:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>11:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>12:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>1:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>2:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>3:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:00 PM</span>
-                                            </div>
-                                        </td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>9:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>11:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>1:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>3:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:00 PM</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr style={{ backgroundColor: '#f9f9f9' }}>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}><strong>Puerto Viejo → Sixaola</strong></td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>9:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>10:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>11:30 AM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>12:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>1:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>2:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>3:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>5:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>7:30 PM</span>
-                                                <span style={{ backgroundColor: '#e8f4f8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:15 PM</span>
-                                            </div>
-                                        </td>
-                                        <td style={{ border: '1px solid #ddd', padding: '12px', verticalAlign: 'top' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px', fontSize: '14px' }}>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>10:30 AM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>12:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>2:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>4:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>6:30 PM</span>
-                                                <span style={{ backgroundColor: '#f0f8e8', padding: '4px 8px', borderRadius: '4px', textAlign: 'center' }}>8:15 PM</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <SplitScheduleTable content={content} rows={[
+                            ['Sixaola → Puerto Viejo',
+                                ['5:30 AM', '6:30 AM', '7:30 AM', '8:30 AM', '9:30 AM', '10:30 AM', '11:30 AM', '12:30 PM', '1:30 PM', '2:30 PM', '3:30 PM', '4:30 PM', '5:30 PM', '7:00 PM'],
+                                ['5:30 AM', '7:30 AM', '9:30 AM', '11:30 AM', '1:30 PM', '3:30 PM', '5:30 PM', '7:00 PM']],
+                            ['Puerto Viejo → Sixaola',
+                                ['6:30 AM', '7:30 AM', '8:30 AM', '9:30 AM', '10:30 AM', '11:30 AM', '12:30 PM', '1:30 PM', '2:30 PM', '3:30 PM', '4:30 PM', '5:30 PM', '6:30 PM', '7:30 PM', '8:15 PM'],
+                                ['6:30 AM', '8:30 AM', '10:30 AM', '12:30 PM', '2:30 PM', '4:30 PM', '6:30 PM', '8:15 PM']],
+                        ]} />
                     {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                     <div style={{ maxWidth: 1000 }}>
                         <WhyStayWithUs
-                            language="en"
-                            ctaLink="/"
+                            language={lang}
+                            ctaLink={homePath(locale)}
                         />
                     </div>
-                        <h3><strong>Tips for Bus Travel in Puerto Viejo</strong></h3>
+                        <h3><strong>{content.tipsHeading}</strong></h3>
                         <ul>
-                            <li><strong>Arrive Early:</strong> Buses can fill up quickly, especially during peak tourist season</li>
-                            <li><strong>Cash Only:</strong> MEPE buses accept cash payments only - have colones ready</li>
-                            <li><strong>Baggage:</strong> Small bags can be stored overhead, larger luggage goes in the cargo area</li>
-                            <li><strong>Comfort:</strong> Bring water and snacks for longer journeys</li>
-                            <li><strong>Connections:</strong> while Limón is the main hub for connections to San Jose and other destinations, you can also get to Puerto Viejo from San Jose.</li>
+                            {content.tipsListItems.map((item, i) => {
+                                const [label, ...rest] = item.split(': ');
+                                return <li key={i}><strong>{label}:</strong> {rest.join(': ')}</li>;
+                            })}
                         </ul>
                         <br />
-                        <h3><strong>Where to Buy Tickets</strong></h3>
-                        <p>Bus tickets can be purchased at the main bus stops in Puerto Viejo. The primary bus stop is located near the basketball court in downtown Puerto Viejo, close to the Deleite Ice Cream Shop.</p>
+                        <h3><strong>{content.ticketsHeading}</strong></h3>
+                        <p>{content.ticketsParagraph}</p>
                         <br />
-                        <h3><strong>Contact for Bus Information</strong></h3>
-                        <p>Need updated information about schedules or routes? You can contact the bus company via WhatsApp for the most current information about bus services:</p>
+                        <h3><strong>{content.contactHeading}</strong></h3>
+                        <p>{content.contactIntro}</p>
                         <p><strong>WhatsApp: <a href="https://wa.me/50672852592" target="_blank" rel="noopener noreferrer">+(506) 7285-2592</a></strong></p>
                         <br />
-                        <p>For the most comfortable stay while exploring the Caribbean coast, consider booking one of our fully equipped homes in Puerto Viejo or Playa Chiquita. We offer convenient locations near bus stops and provide all the amenities you need for a perfect Costa Rican getaway!</p>
+                        <p>{content.closingParagraph}</p>
                     </div>
 
 
                     {/* Smoobu Booking Component */}
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
-                        <h2 className="smoobu-title">Book Your Stay</h2>
+                        <h2 className="smoobu-title">{m.blog.bookYourStay}</h2>
                         <div className="smoobu-wrapper">
-                            <Smoobu2 targetId="busHoursSmoobuBooking" />
+                            <Smoobu2 targetId="blogSmoobuBooking" />
                         </div>
                     </div>
 
-                    <OtherBlogs currentBlog="bushours" blogs={blogs} />
+                    <OtherBlogs currentBlog={selfId} blogs={locale === 'es' ? blogsES : blogs} />
                 </Col>
             </Row>
             <ContactUs />

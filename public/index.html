@@ -517,6 +517,47 @@
       unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
     }
 
+    /*
+     * Hebrew and Devanagari (i18n-rollout-plan.md, phase H-B). Urbanist ships
+     * no glyphs for either script, so these two subsets are pulled from
+     * separate typefaces chosen to sit well next to Urbanist (Heebo for
+     * Hebrew, Noto Sans Devanagari for Hindi) but declared under the same
+     * `font-family: 'Urbanist'` and given the scripts' own unicode-range.
+     * The browser picks whichever @font-face matches a given character, so a
+     * Latin-only visitor's page never requests either file, exactly like the
+     * latin/latin-ext split above.
+     *
+     * Google's stock "hebrew" and "devanagari" subsets both reach a few
+     * codepoints outside their own script — combining marks, the ZWNJ/ZWJ
+     * format characters, a couple of currency symbols — that Urbanist's own
+     * latin/latin-ext ranges already claim. Left in, those ranges would
+     * overlap two @font-face rules for the same family/weight/style, and
+     * Chrome resolves that ambiguity in favor of whichever rule was declared
+     * later — these two blocks, since they come after Latin. A single
+     * zero-width joiner inside an emoji rendered as text anywhere on the page
+     * (⟨👨‍👩‍👧⟩ uses one) was enough to make Chrome fetch both files on an
+     * all-English page. Trimmed to each script's own block plus the
+     * codepoints Urbanist's ranges don't already cover, verified with a
+     * set-subtraction script rather than by eye.
+     */
+    @font-face {
+      font-family: 'Urbanist';
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+      src: url('/fonts/heebo-hebrew.woff2') format('woff2');
+      unicode-range: U+0307, U+0590-05FF, U+25CC, U+FB1D-FB4F;
+    }
+
+    @font-face {
+      font-family: 'Urbanist';
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+      src: url('/fonts/noto-sans-devanagari.woff2') format('woff2');
+      unicode-range: U+0900-097F, U+1CD0-1CF9, U+20F0, U+25CC, U+A830-A839, U+A8E0-A8FF, U+11B00-11B09;
+    }
+
     * {
       box-sizing: border-box;
     }

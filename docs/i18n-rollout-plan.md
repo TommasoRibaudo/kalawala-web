@@ -21,18 +21,18 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | Phase 3c — next (blog). Phases 0–3b complete in code, **nothing merged yet.** |
+| **Current phase** | **Phase 3 complete.** Ship gate A — next: merge the stack, release as a no-op, watch GSC/PostHog for a week. **Nothing merged yet.** |
 | **Last updated** | 2026-08-07 |
-| **Branch(es) in flight** | An eight-deep stack, all open, all based on `main`: **#39** → **#40** → **#41** → **#42** → **#43** → **#44** → **#45** → **#46**. See [Merge order](#merge-order) — they must land in that sequence. |
-| **Blocked on** | **Owner action:** GSC + PostHog exports (Phase 0) — see [`seo-baseline/README.md`](seo-baseline/README.md); the GSC export cannot be done retroactively. **Owner action:** Hebrew/Devanagari font files (Phase H-B). Neither blocks Phase 3c–3d. |
+| **Branch(es) in flight** | A nine-deep stack, based on `main`: **#39** → **#40** → **#41** → **#42** → **#43** → **#44** → **#45** → **#46** → **#47**. See [Merge order](#merge-order) — they must land in that sequence. |
+| **Blocked on** | **Owner action:** PostHog export (organic sessions, EN vs ES, 12 months) still outstanding — the only open Phase 0 item. **Resolved:** GSC performance re-exported at the full 16 months; Hebrew/Hindi fonts (H-B) pulled from Google Fonts. None of this blocks Phase 3c–3d. |
 
 Phase progress:
 
 - [ ] Phase 0 — Baseline capture and safety net *(automated parts done; GSC/PostHog exports outstanding)*
 - [x] Phase 1 — Locale foundation (`isSpanish` → `locale`) — PR #40
 - [x] Phase 2 — Message catalogs — PR #41
-- [ ] Phase 3 — Collapse duplicated page components *(3a, 3b done; 3c–3d outstanding)*
-- [ ] **Ship gate A — EN/ES refactor released, zero visible change**
+- [x] Phase 3 — Collapse duplicated page components (3a, 3b, 3c, 3d) — **zero duplicated pages remain in `src/pages/`**
+- [ ] **Ship gate A — EN/ES refactor released, zero visible change** *(next)*
 - [ ] Phase 4 — Route restructure to `/:locale/`
 - [ ] Phase 5 — 301 redirect map
 - [ ] Phase 6 — SEO head, hreflang, sitemap
@@ -47,7 +47,7 @@ Hebrew/Hindi track (see [that section](#hebrew-and-hindi--rtl-and-non-latin-scri
 
 - [x] H-A — locale model: `he`/`hi` declared, `dir` per locale — PR #44
 - [x] H-C3 — CSS logical properties (207 declarations, 33 files) — PR #44
-- [ ] H-B — font subsets **(blocked on owner)**
+- [x] H-B — font subsets — PR #44 area, landed 2026-08-07 (see [H-B](#h-b--fonts--2026-08-07))
 - [ ] H-C1/C2 — `dir="rtl"` on `<html>`, Bootstrap RTL stylesheet *(needs Phase 4)*
 - [ ] H-C4 — `react-slick` carousel mirroring
 - [ ] H-E/H-F — language redirect + hreflang *(needs Phase 4)*
@@ -55,7 +55,7 @@ Hebrew/Hindi track (see [that section](#hebrew-and-hindi--rtl-and-non-latin-scri
 ### Merge order
 
 The open PRs are a linear git stack even though GitHub shows every base as
-`main`. Merge **#39 → #40 → #41 → #42 → #43 → #44 → #45 → #46**, in that order; each later
+`main`. Merge **#39 → #40 → #41 → #42 → #43 → #44 → #45 → #46 → #47**, in that order; each later
 PR's diff collapses to its own work once its parent lands. Out of order means
 resolving the whole stack by hand.
 
@@ -97,13 +97,13 @@ each row if the tree has moved on significantly.
 
 > **This table describes `main`, which is the pre-refactor state.** The PR stack
 > has moved several of these numbers a long way. Measured at the head of the
-> stack, after Phase 3a:
+> stack, after Phase 3d (Phase 3 complete):
 >
 > | Fact | On `main` | Head of stack |
 > |---|---|---|
 > | `isSpanish` occurrences in `src/` | 364 | **6** (comments and one deprecated shim) |
-> | ES-duplicated files | 47 | **12** — blog articles, BlogIndex, Home.pageES |
-> | `src/i18n/` | does not exist | 19 files, incl. two `content/` modules |
+> | ES-duplicated files | 47 | **0** |
+> | `src/i18n/` | does not exist | 20 files, incl. `content/blog.tsx` |
 > | Locales declared | — | 8 (`RELEASED_LOCALES` still `['en','es']`) |
 > | `reactSnap.include` routes | 49 | 45 (Nam/Villas retired in #43) |
 >
@@ -208,8 +208,14 @@ see its README for the detail.
       Phase 5 and Phase 10.
 - [x] Lighthouse baseline for `/`, `/HomeES`, `/Geco`, `/twodaysinpuertoviejo`
       (`seo-baseline/lighthouse-2026-08-06.md` — perf 89–90, SEO 100 across the board).
-- [ ] **Owner:** export GSC performance, 16 months, Pages + Queries tabs, as CSV.
-- [ ] **Owner:** record GSC indexed vs not-indexed page counts.
+- [x] **Owner:** export GSC performance as CSV — received 2026-08-07 at 6
+      months, re-exported the same day at the full 16-month window (the
+      site's property lives under the `reservas.kalawala@gmail.com` Google
+      account, not the default signed-in one — worth knowing if this needs
+      re-running). See [`seo-baseline/README.md`](seo-baseline/README.md).
+- [x] **Owner:** record GSC indexed vs not-indexed page counts — captured via
+      the 2026-08-07 coverage export (54 indexed / 7 not); see
+      [`seo-baseline/gsc-summary-2026-08-07.md`](seo-baseline/gsc-summary-2026-08-07.md).
 - [ ] **Owner:** export PostHog monthly organic sessions, EN vs ES, 12 months.
 
 **Validation:** the baseline files exist and are committed. This phase is the only
@@ -329,14 +335,11 @@ that.
 - [x] **3a — shared components** (leaf-first: a component cannot be merged before
       the components it renders) — 11 in PR #42, the last 5 pairs after it
 - [x] **3b — listing pages** (10 pairs) — see [below](#3b--listing-pages)
-- [ ] **3c — blog pages** (10 pairs + `BlogIndex`, one at a time, highest risk)
-- [ ] **3d — `Home.pageES`**, then delete the ES route entries
-- [ ] Update `Router.tsx` imports (still the old route shape at this point)
+- [x] **3c — blog pages** (10 pairs + `BlogIndex`) — see [below](#3c--blog-pages)
+- [x] **3d — `Home.pageES`** — see [below](#3d--homepageses)
+- [x] Update `Router.tsx` imports (done incrementally, one merge at a time, across 3a–3d)
 
-**12 duplicated files remain**, down from 47 on `main`: 11 blog files (10
-articles + `BlogIndex.page_ES`) and `Home.pageES`. Shared components (3a) and
-listing pages (3b) are done; only prose-heavy pages are left. The table above counted 4 home/index pairs; PR #43 retired the
-Namaitami and Villas homes, leaving one.
+**Zero duplicated files remain**, down from 47 on `main`. Phase 3 is complete.
 
 > **The validation bar changes here.** Phases 1 and 2 could claim *zero*
 > prerender differences. Phase 3 cannot: merging two components that genuinely
@@ -580,6 +583,127 @@ Prerender diff against the post-3a build:
 > **Do it as part of Phase 4**, where `routes.config.ts` already has to name a
 > component per route.
 
+#### 3c — blog pages
+
+All 10 article pairs merged, plus `BlogIndex`; `src/pages/Blog/staticPages_ES/`
+and `BlogIndex.page_ES.tsx` are gone. One commit per article, in ascending
+size order except the two flagged pairs (`CahuitaPark`, `TravellingToPuerto`),
+done after three easier merges established the pattern.
+
+- [x] Long-form copy extracted to `src/i18n/content/blog.tsx` — no shared
+      shape across articles, unlike `listings.ts`. Each article gets its own
+      interface (paragraph arrays, or a `HiddenGemSection`/table-row shape
+      where the content itself isn't uniform paragraphs). JSX-bearing, on the
+      `discover.tsx` precedent, since several articles carry inline `<a>`/
+      `<strong>` markup mid-paragraph.
+- [x] `m.blog.bookYourStay` added to the catalogs — "Book Your Stay" was
+      identical UI chrome on all ten pre-merge pages, not per-article prose.
+- [x] `OtherBlogs.Component.tsx`'s self-exclusion filter fixed: it compared
+      `currentBlog` against `blog.title` (a full sentence) instead of
+      `blog.id`, so it was a no-op on all 20 pre-merge pages — every carousel
+      included a card linking back to the page you were already on.
+- [x] `Smoobu2.style.scss`'s "Blog-specific Smoobu container styling" only
+      ever matched `id="blogSmoobuBooking"`, but nine of ten pre-merge pages
+      used a unique per-article id instead, so their booking widgets rendered
+      unstyled. All merged pages now use the shared id.
+- [x] `GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES` and
+      `CAHUITA_AREA_RECOMMENDATIONS_ES` added to `constants.ts` — did not
+      exist before this phase, so most Spanish pages fell back to a
+      differently-scoped English-derived set instead of a translated
+      counterpart of their own article's set.
+
+> **Nine content bugs found by merging, not by reading** — the same failure
+> shape 3a and 3b both surfaced, now at higher volume because ten independent
+> pages means ten independent chances for the English and Spanish authoring
+> passes to drift:
+>
+> 1. `PuertoViejoByPlane`'s English hero image was a placeholder Drive id
+>    (`1example-plane-image`) that 404s; `GettingToGandoca`'s English hero had
+>    the same pattern. Both replaced with the real photo the Spanish page and
+>    `assets/blogs/blogs.ts` already used.
+> 2. `TwoDaysInPV` (English) had a paragraph duplicated verbatim, back to
+>    back.
+> 3. `GettingToGandoca` (Spanish) imported `blogs` (English) instead of
+>    `blogsES` for its own OtherBlogs carousel. `IndigenousTravel` had the
+>    reverse — the *English* page imported `blogsES`.
+> 4. `TravellingToPuerto` (Spanish) had two paragraphs merged into one
+>    ungrammatical sentence, missing a verb between "San José" and "ubicada".
+>    Retranslated as two paragraphs to match the English structure.
+> 5. `CahuitaPark` (Spanish) carried a second, duplicate `StayRecommendation`
+>    block titled about Puerto Viejo bus services — unrelated to the article,
+>    pasted in from `BusHours`. `BusHours` (Spanish) turned out to be the
+>    other half of that swap: still named `CahuitaParkES` internally, still
+>    carrying `CahuitaPark`'s real `StayRecommendation` title. Two files
+>    cross-contaminated from a shared template.
+> 6. `BestTimeToVisitPuerto` (Spanish) rendered `PUERTO_VIEJO_BLOG_RECOMMENDATIONS`
+>    (a different article's set, and — after finding #7 below — briefly
+>    English-language) under its own heading.
+> 7. `PUERTO_VIEJO_BLOG_RECOMMENDATIONS` (no `_ES` suffix, implying English)
+>    held Spanish `reason` text under English-style links. `TwoDaysInPV`
+>    (English) rendered it as-is. Translated the text; the real Spanish
+>    counterpart (`_ES`, correct links) was already right.
+> 8. `PuertoHiddenGems` and `BestTimeToVisitPuerto` both gave their hero image
+>    the alt text "Kayaking in Punta Uva" — describing a different photo than
+>    the one actually shown (a general Puerto Viejo de Talamanca shot).
+> 9. `assets/blogs/blogs.ts`: four English `title`/`text` fields (and their
+>    four Spanish counterparts) were one of two copy-pasted blurbs — either
+>    "Visiting Cahuita National Park…" or an untranslated English sentence
+>    about Bribri culture. `title` renders on every OtherBlogs carousel card
+>    linking to those articles, so this was live and visible sitewide, not
+>    just on each article's own page. Fixed in a standalone commit since it's
+>    a data bug, not any one page's.
+>
+> Every EN/ES pair also needed its own read for `StayRecommendation` and
+> `WhyStayWithUs` position: the two components sat at genuinely different
+> points in the two languages' flow on six of ten articles. Standardized on
+> English's ordering throughout, consistent with 3a's `OtherListings`
+> precedent — the choice is arbitrary, but doing it the same way ten times is
+> what keeps the site coherent.
+
+**Validation.** `tsc --noEmit` clean after every commit. Unit tests 4 suites /
+27 failing, 299 passed / 326 — the documented baseline, checked after article
+6 and again at the end. Build clean, 45/45 preloads, checked three times
+across the phase (after article 1, article 6, and the final BusHours commit).
+
+Prerender diff against the post-3b build (`67ae3498`), same day to avoid the
+midnight/calendar-date artifact 3a's diff hit:
+
+| Measure | Result |
+|---|---|
+| Visible text | **20 of 45 pages changed — exactly the 10 articles × 2 languages.** BlogIndex and all 25 non-blog pages: 0 changed. |
+| Markup | 42 pages differ; the 22 non-blog differences are webpack chunk-hash renumbering only (spot-checked), same artifact 3a's diff noted. |
+
+Every one of the 20 text diffs was read in full and traces to a change listed
+above or in its article's own commit — most of it is the self-exclusion fix
+removing a page's own carousel card, the `blogs.ts` title fix propagating
+through other pages' carousels, or a `StayRecommendation`/content
+correction. Nothing unaccounted for.
+
+#### 3d — Home.pageES
+
+The last duplicated file. `src/pages/Home/` now has one component; zero
+duplicated pages remain anywhere in `src/pages/`.
+
+- [x] Page title/description and the `HelpMeChoose` heading + its four option
+      labels moved to a new `m.home` catalog namespace.
+- [x] `houseDataEngList` vs `houseDataList` picked by locale, same pattern as
+      `blogs`/`blogsES` throughout 3c — verified both list the same 10 houses
+      in the same order first.
+- [x] The four `HelpMeChoose` option `houseLangCode`s build from
+      `localeSuffix(locale)` instead of being hardcoded twice.
+
+Unlike most of 3c, **no bugs found** — this pair was already well-paired.
+Two labels were deliberately kept as independently-authored rather than
+"corrected": "Pet-friendly" stays in English on the Spanish page (a commonly
+borrowed term in Costa Rican rental listings), and the fourth option's
+Spanish label ("Opción Recomendada") isn't a translation of English's "Best
+value" — same category of editorial difference as several Phase 3c cases.
+
+**Validation.** `tsc --noEmit` clean. Unit tests at the documented baseline.
+Build clean, 45/45 preloads. Prerender diff against the pre-3d build:
+**visible text unchanged on all 45 pages** — the strongest result of any
+phase so far, since there was nothing to reconcile.
+
 ### 🚢 Ship gate A
 
 Release Phases 1–3 to production as a **no-op**. Same URLs, same two languages,
@@ -817,20 +941,54 @@ Direction is stored per locale rather than as an `isHebrew` check, for the same
 reason `isSpanish` had to go: a boolean cannot describe the next RTL language if
 Arabic or Farsi is ever added.
 
-### H-B — Fonts ⛔ *blocked on owner*
+### H-B — Fonts ✅ *(2026-08-07)*
 
 The site self-hosts Urbanist with **Latin + Latin-Ext subsets only**. Neither
 Hebrew nor Devanagari is covered, so both languages currently fall back to a
 system sans-serif.
 
-- [ ] **Owner:** supply woff2 files, or confirm pulling them from Google Fonts.
-      Suggested pairings: **Heebo** or **Rubik** for Hebrew (both were designed
-      alongside Latin faces and sit well next to Urbanist), **Noto Sans
-      Devanagari** for Hindi.
-- [ ] Add them as `@font-face` blocks that keep `font-family: 'Urbanist'` and
-      declare the new `unicode-range`s. The browser then picks per character and
-      **no component changes** — this is why it is a CSS-only task.
-- [ ] Verify a Latin-only visitor downloads neither file.
+- [x] **Owner:** confirmed pulling from Google Fonts rather than supplying
+      files. Picked **Heebo** over Rubik for Hebrew (both were suggested;
+      Heebo's Google Fonts subset is the one pulled below). **Noto Sans
+      Devanagari** for Hindi, as suggested.
+- [x] Added as `@font-face` blocks in `public/index.html` that keep
+      `font-family: 'Urbanist'` and declare the script's own `unicode-range`
+      (pulled verbatim from Google's own CSS split, not hand-derived):
+      Hebrew `U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC,
+      U+FB1D-FB4F`; Devanagari `U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8,
+      U+20B9, U+20F0, U+25CC, U+A830-A839, U+A8E0-A8FF, U+11B00-11B09`. Both
+      pulled as variable fonts (wght 100–900, roman only — neither script gets
+      an italic block; Hebrew and Devanagari UI text does not conventionally
+      use one) — same shape as the existing Latin/Latin-ext pairs. Files:
+      `public/fonts/heebo-hebrew.woff2` (12 KB), `public/fonts/noto-sans-devanagari.woff2`
+      (118 KB — Devanagari has far more glyphs/conjuncts than Hebrew).
+      `public/.htaccess`'s `^/fonts/` immutable-cache rule is path-based, so it
+      already covers the two new files with no edit needed.
+- [x] **Verified in-browser, not just by inspection — and it caught a real bug.**
+      Google's stock `hebrew` and `devanagari` subsets both reach a few
+      codepoints outside their own script (combining marks, the ZWNJ/ZWJ
+      format characters, a couple of currency symbols) that Urbanist's own
+      `latin`/`latin-ext` ranges already claim. With the new blocks declared
+      after Latin, Chrome resolves the overlap in favor of the later rule —
+      **a single zero-width joiner inside an emoji rendered as text
+      (`👨‍👩‍👧` in a `.card-emoji` span) was enough to make an all-English
+      homepage fetch both new font files.** Caught via
+      `performance.getEntriesByType('resource')` in the browser, not by
+      reading the CSS. Fixed by computing the exact overlap with a
+      set-subtraction script and trimming both ranges to what's actually
+      script-exclusive (see the comment above the two blocks in
+      `public/index.html` for the trimmed ranges and why). Re-verified after
+      the fix: a plain-English page fetches only the two Urbanist Latin
+      files; injecting real Hebrew and Devanagari text fetches and correctly
+      renders through Heebo/Noto Sans Devanagari.
+      >
+      > **The general lesson for Phase 8:** unicode-range subsets published
+      > for one type family are not automatically disjoint from another
+      > family's subsets once both are grafted onto a shared `font-family`
+      > name. Overlap resolution is ambiguity, not a browser bug — check it
+      > with a resource-timing trace on a real page, the same way 3a/3b's
+      > "diff the build, not the source" lesson applies here to fonts instead
+      > of markup.
 
 Nothing downstream can be visually checked until this lands: screenshots of a
 system-fallback font tell you nothing about the real layout.
@@ -1039,6 +1197,63 @@ what the next session should pick up.
   commit**, and diff markup as well as text: 3b proved the text diff is blind to
   `alt` attributes. The preload fallback for merged chunks is already in place.
   Then 3d (`Home.pageES`), then ship gate A.
+
+### 2026-08-07 — Phase 3c completed
+
+- All 10 blog articles merged, one commit each, plus `BlogIndex`.
+  `src/pages/Blog/staticPages_ES/` and `BlogIndex.page_ES.tsx` are gone. **1
+  duplicated file left: `Home.pageES`.**
+- Content extracted to `src/i18n/content/blog.tsx`, per-article shapes rather
+  than one shared interface — the 3b generator pattern doesn't apply here,
+  since the articles genuinely aren't one kind of content the way listing
+  descriptions were.
+- **Nine content bugs found by merging** (full list in the [3c
+  section](#3c--blog-pages) above): two broken/placeholder hero images, a
+  duplicated paragraph, two pages reading the wrong language's carousel data,
+  a garbled untranslated paragraph, two files cross-contaminated from a
+  shared template (stray/mistitled `StayRecommendation` blocks), an
+  English-recommendation-set-on-a-Spanish-page bug that had been hiding
+  behind a confusingly-named constant, and four `assets/blogs/blogs.ts`
+  entries sharing copy-pasted titles that were live on every OtherBlogs
+  carousel card linking to them. Also fixed sitewide: `OtherBlogs`'s
+  self-exclusion filter compared the wrong field and was a no-op on all 20
+  pre-merge pages, and the blog Smoobu widget's styled id was only ever used
+  by one of ten pre-merge pages, so nine widgets rendered unstyled.
+- **Validation:** typecheck clean after every commit; tests at baseline (4
+  suites / 27 failing, 299 passed / 326) checked twice; build clean with
+  45/45 preloads checked three times. Prerender diff against the post-3b
+  build: **visible text changed on exactly the 20 pages this phase touched**
+  (10 articles × 2 languages) and nowhere else; every diff read and traced to
+  a documented fix.
+- **Next session:** 3d, `Home.pageES` — the last duplicated file, then update
+  `Router.tsx` imports and Phase 3 is done. After that, ship gate A: release
+  phases 1–3 as a no-op and watch GSC/PostHog for a week before touching
+  URLs. The nine-deep PR stack (#39–#46 plus this session's unopened
+  `refactor/i18n-phase-3c-blog` branch) still hasn't merged anything —
+  merging the stack keeps getting more valuable as `main` drifts under it.
+
+### 2026-08-07 — Phase 3d completed, Phase 3 done
+
+- `Home.pageES` merged into `Home.page.tsx` — the last duplicated file.
+  **`ES-duplicated files` is now 0, from 47 on `main`.**
+- Unlike every article in 3c, this pair was already well-paired: no bugs
+  found. The only real work was moving hardcoded EN/ES strings (page
+  title/description, the `HelpMeChoose` heading and its four option labels)
+  into a new `m.home` catalog namespace, and picking `houseDataEngList` vs
+  `houseDataList` by locale.
+- **Validation:** typecheck clean; tests at baseline; build clean, 45/45
+  preloads; prerender diff against the pre-3d build — **visible text
+  unchanged on all 45 pages**, the cleanest result of any phase in this
+  rollout.
+- **Phase 3 is complete.** Zero duplicated page components remain in
+  `src/pages/`. `isSpanish` occurrences: 6 (comments/shim only, from 364 on
+  `main`).
+- **Next session:** ship gate A. Merge the nine-deep stack (#39 → #40 → #41 →
+  #42 → #43 → #44 → #45 → #46 → this session's unopened
+  `refactor/i18n-phase-3c-blog` branch, which needs its own PR first) in
+  order, release to production as a no-op, and watch GSC/PostHog for a week
+  before Phase 4 touches any URL. Nothing in this rollout has reached `main`
+  yet — the stack is currently the only copy of nine sessions' work.
 
 > **Housekeeping note for whoever picks this up:** the plan's Ground Truth table
 > still describes `main`, deliberately. The "head of stack" column next to it is

@@ -113,6 +113,29 @@ export const en = {
       'After selecting dates and pressing search, scroll down to see the price and book.',
   },
 
+  blog: {
+    bookYourStay: 'Book Your Stay',
+    indexTitle: 'Puerto Viejo Travel Guides | Reservas Kalawala',
+    indexDescription:
+      "Ten local guides to Puerto Viejo de Talamanca: getting there, getting around, and what to do once you're here.",
+    indexHeading: 'Puerto Viejo Travel Guides',
+  },
+
+  home: {
+    pageTitle: 'Reservas Kalawala | Puerto Viejo House Rental',
+    pageDescription:
+      "Discover our homes, cheaper than any other platform! Welcome to Kalawala, we offer fully equipped vacation homes nestled in the heart of Puerto Viejo de Talamanca, Costa Rica. Our houses offer space for up to 5 people, 2 A/C units, fully equipped private bathroom and kitchen and free Wi-Fi internet connection.",
+    helpMeChooseTitle: 'Find your',
+    helpMeChooseTitleHighlight: 'Ideal Stay',
+    optionCouples: 'Ideal for couples',
+    optionFamilies: 'Perfect for families',
+    // Kept in English on the Spanish homepage too — "pet-friendly" is the
+    // pre-merge Spanish copy's own choice, a commonly borrowed term in Costa
+    // Rican rental listings, not an untranslated leftover.
+    optionPetFriendly: 'Pet-friendly',
+    optionBestValue: 'Best value',
+  },
+
   property: {
     capacityAriaLabel: 'Property capacity',
     viewListing: (name: string) => `View listing: ${name}`,

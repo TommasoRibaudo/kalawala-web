@@ -1,0 +1,638 @@
+{
+  "origin": "https://www.reservaskalawala.com",
+  "capturedAt": "2026-08-06T20:02:24.788Z",
+  "results": [
+    {
+      "route": "/",
+      "url": "https://www.reservaskalawala.com/",
+      "status": 200,
+      "hops": 0,
+      "chain": [],
+      "final": "https://www.reservaskalawala.com/"
+    },
+    {
+      "route": "/404",
+      "url": "https://www.reservaskalawala.com/404",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/404/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/404/"
+    },
+    {
+      "route": "/Geco",
+      "url": "https://www.reservaskalawala.com/Geco",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/Geco/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/Geco/"
+    },
+    {
+      "route": "/Rana",
+      "url": "https://www.reservaskalawala.com/Rana",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/Rana/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/Rana/"
+    },
+    {
+      "route": "/Tucano",
+      "url": "https://www.reservaskalawala.com/Tucano",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/Tucano/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/Tucano/"
+    },
+    {
+      "route": "/Pappagallo",
+      "url": "https://www.reservaskalawala.com/Pappagallo",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/Pappagallo/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/Pappagallo/"
+    },
+    {
+      "route": "/Delfin",
+      "url": "https://www.reservaskalawala.com/Delfin",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/Delfin/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/Delfin/"
+    },
+    {
+      "route": "/Areka",
+      "url": "https://www.reservaskalawala.com/Areka",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/Areka/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/Areka/"
+    },
+    {
+      "route": "/Giulia",
+      "url": "https://www.reservaskalawala.com/Giulia",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/Giulia/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/Giulia/"
+    },
+    {
+      "route": "/Plumeria",
+      "url": "https://www.reservaskalawala.com/Plumeria",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/Plumeria/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/Plumeria/"
+    },
+    {
+      "route": "/VillaMar",
+      "url": "https://www.reservaskalawala.com/VillaMar",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/VillaMar/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/VillaMar/"
+    },
+    {
+      "route": "/VillaCoral",
+      "url": "https://www.reservaskalawala.com/VillaCoral",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/VillaCoral/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/VillaCoral/"
+    },
+    {
+      "route": "/HomeES",
+      "url": "https://www.reservaskalawala.com/HomeES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/HomeES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/HomeES/"
+    },
+    {
+      "route": "/GecoES",
+      "url": "https://www.reservaskalawala.com/GecoES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/GecoES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/GecoES/"
+    },
+    {
+      "route": "/RanaES",
+      "url": "https://www.reservaskalawala.com/RanaES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/RanaES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/RanaES/"
+    },
+    {
+      "route": "/TucanoES",
+      "url": "https://www.reservaskalawala.com/TucanoES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/TucanoES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/TucanoES/"
+    },
+    {
+      "route": "/PappagalloES",
+      "url": "https://www.reservaskalawala.com/PappagalloES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/PappagalloES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/PappagalloES/"
+    },
+    {
+      "route": "/DelfinES",
+      "url": "https://www.reservaskalawala.com/DelfinES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/DelfinES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/DelfinES/"
+    },
+    {
+      "route": "/ArekaES",
+      "url": "https://www.reservaskalawala.com/ArekaES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/ArekaES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/ArekaES/"
+    },
+    {
+      "route": "/GiuliaES",
+      "url": "https://www.reservaskalawala.com/GiuliaES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/GiuliaES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/GiuliaES/"
+    },
+    {
+      "route": "/PlumeriaES",
+      "url": "https://www.reservaskalawala.com/PlumeriaES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/PlumeriaES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/PlumeriaES/"
+    },
+    {
+      "route": "/VillaMarES",
+      "url": "https://www.reservaskalawala.com/VillaMarES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/VillaMarES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/VillaMarES/"
+    },
+    {
+      "route": "/VillaCoralES",
+      "url": "https://www.reservaskalawala.com/VillaCoralES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/VillaCoralES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/VillaCoralES/"
+    },
+    {
+      "route": "/HomeNam",
+      "url": "https://www.reservaskalawala.com/HomeNam",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/HomeNam/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/HomeNam/"
+    },
+    {
+      "route": "/HomeNamES",
+      "url": "https://www.reservaskalawala.com/HomeNamES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/HomeNamES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/HomeNamES/"
+    },
+    {
+      "route": "/HomeVillas",
+      "url": "https://www.reservaskalawala.com/HomeVillas",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/HomeVillas/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/HomeVillas/"
+    },
+    {
+      "route": "/HomeVillasES",
+      "url": "https://www.reservaskalawala.com/HomeVillasES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/HomeVillasES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/HomeVillasES/"
+    },
+    {
+      "route": "/blog",
+      "url": "https://www.reservaskalawala.com/blog",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/blog/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/blog/"
+    },
+    {
+      "route": "/blogES",
+      "url": "https://www.reservaskalawala.com/blogES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/blogES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/blogES/"
+    },
+    {
+      "route": "/twodaysinpuertoviejo",
+      "url": "https://www.reservaskalawala.com/twodaysinpuertoviejo",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/twodaysinpuertoviejo/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/twodaysinpuertoviejo/"
+    },
+    {
+      "route": "/gettingtogandoca",
+      "url": "https://www.reservaskalawala.com/gettingtogandoca",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/gettingtogandoca/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/gettingtogandoca/"
+    },
+    {
+      "route": "/travellingtopuertoviejo",
+      "url": "https://www.reservaskalawala.com/travellingtopuertoviejo",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/travellingtopuertoviejo/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/travellingtopuertoviejo/"
+    },
+    {
+      "route": "/puertoviejobyplane",
+      "url": "https://www.reservaskalawala.com/puertoviejobyplane",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/puertoviejobyplane/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/puertoviejobyplane/"
+    },
+    {
+      "route": "/TenHoursInPuerto",
+      "url": "https://www.reservaskalawala.com/TenHoursInPuerto",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/TenHoursInPuerto/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/TenHoursInPuerto/"
+    },
+    {
+      "route": "/bushours",
+      "url": "https://www.reservaskalawala.com/bushours",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/bushours/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/bushours/"
+    },
+    {
+      "route": "/cahuitaparkwhattodo",
+      "url": "https://www.reservaskalawala.com/cahuitaparkwhattodo",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/cahuitaparkwhattodo/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/cahuitaparkwhattodo/"
+    },
+    {
+      "route": "/indigenousTravelPV",
+      "url": "https://www.reservaskalawala.com/indigenousTravelPV",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/indigenousTravelPV/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/indigenousTravelPV/"
+    },
+    {
+      "route": "/bestTimeToVisitPuerto",
+      "url": "https://www.reservaskalawala.com/bestTimeToVisitPuerto",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/bestTimeToVisitPuerto/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/bestTimeToVisitPuerto/"
+    },
+    {
+      "route": "/puertoHiddenGems",
+      "url": "https://www.reservaskalawala.com/puertoHiddenGems",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/puertoHiddenGems/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/puertoHiddenGems/"
+    },
+    {
+      "route": "/twodaysinpuertoviejoES",
+      "url": "https://www.reservaskalawala.com/twodaysinpuertoviejoES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/twodaysinpuertoviejoES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/twodaysinpuertoviejoES/"
+    },
+    {
+      "route": "/gettingtogandocaES",
+      "url": "https://www.reservaskalawala.com/gettingtogandocaES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/gettingtogandocaES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/gettingtogandocaES/"
+    },
+    {
+      "route": "/travellingtopuertoviejoES",
+      "url": "https://www.reservaskalawala.com/travellingtopuertoviejoES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/travellingtopuertoviejoES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/travellingtopuertoviejoES/"
+    },
+    {
+      "route": "/puertoviejobyplaneES",
+      "url": "https://www.reservaskalawala.com/puertoviejobyplaneES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/puertoviejobyplaneES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/puertoviejobyplaneES/"
+    },
+    {
+      "route": "/TenHoursInPuertoES",
+      "url": "https://www.reservaskalawala.com/TenHoursInPuertoES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/TenHoursInPuertoES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/TenHoursInPuertoES/"
+    },
+    {
+      "route": "/bushoursES",
+      "url": "https://www.reservaskalawala.com/bushoursES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/bushoursES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/bushoursES/"
+    },
+    {
+      "route": "/cahuitaparkwhattodoES",
+      "url": "https://www.reservaskalawala.com/cahuitaparkwhattodoES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/cahuitaparkwhattodoES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/cahuitaparkwhattodoES/"
+    },
+    {
+      "route": "/indigenousTravelPVES",
+      "url": "https://www.reservaskalawala.com/indigenousTravelPVES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/indigenousTravelPVES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/indigenousTravelPVES/"
+    },
+    {
+      "route": "/bestTimeToVisitPuertoES",
+      "url": "https://www.reservaskalawala.com/bestTimeToVisitPuertoES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/bestTimeToVisitPuertoES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/bestTimeToVisitPuertoES/"
+    },
+    {
+      "route": "/puertoHiddenGemsES",
+      "url": "https://www.reservaskalawala.com/puertoHiddenGemsES",
+      "status": 200,
+      "hops": 1,
+      "chain": [
+        {
+          "status": 301,
+          "to": "https://www.reservaskalawala.com/puertoHiddenGemsES/"
+        }
+      ],
+      "final": "https://www.reservaskalawala.com/puertoHiddenGemsES/"
+    }
+  ]
+}

@@ -155,8 +155,17 @@ describe('Delfin Routing Integration Tests', () => {
       expect(routerContent).toMatch(
         /const ListingDelfin = lazy\(\(\) => import\([^)]*'\.\.\/pages\/Listing\/staticPages\/ListingDelfin\.page'\)\)/
       );
+      // Phase 3b merged the Spanish page into the English one, so there is no
+      // longer a separate ListingDelfinES binding — both routes render the same
+      // lazy component and the locale comes from the URL.
+      //
+      // A second lazy import of the same module would not have bought a second
+      // chunk anyway: webpack keys chunks by module, so the duplicate collapses
+      // and the extra webpackChunkName is dropped. inject-route-preloads.js
+      // knows this and falls back from `route-delfines` to `route-delfin`.
+      expect(routerContent).not.toMatch(/const ListingDelfinES\s*=/);
       expect(routerContent).toMatch(
-        /const ListingDelfinES = lazy\(\(\) => import\([^)]*'\.\.\/pages\/Listing\/staticPages_ES\/ListingDelfin\.page_ES'\)\)/
+        /path='\/DelfinES'\s*element=\{<ListingDelfin\s*\/>\}/
       );
 
       // Verify routes are configured

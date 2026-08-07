@@ -10,7 +10,6 @@ import { NamSnippet } from "../../../utils/constants";
 import { HouseDataType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
-import { NamDataList } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
@@ -18,10 +17,17 @@ import SocialStatement from "../../../components/SocialStatement/SocialStatement
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
+import { useLocale, useMessages } from "../../../i18n";
+import { localeSuffix } from "../../../i18n/paths";
+import { listingContent } from "../../../i18n/content/listings";
+import { houseDataByLangCode } from "../../../utils/constants";
 
 
 const ListingPlumeria = () => {
-    const listing = "Plumeria"
+    const locale = useLocale();
+    const m = useMessages();
+    const content = listingContent('Plumeria', locale);
+    const listing = `Plumeria${localeSuffix(locale)}`
     // Seeded null, not read from useMediaQuery/matchMedia synchronously —
     // react-snap's puppeteer viewport at prerender time and a real visitor's
     // viewport at hydration time are different numbers, and isScreenSmall
@@ -36,7 +42,7 @@ const ListingPlumeria = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const houseData: HouseDataType | undefined = NamDataList.find((house) => house.houseLangCode === listing);
+    const houseData: HouseDataType | undefined = houseDataByLangCode(listing);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -55,72 +61,59 @@ const ListingPlumeria = () => {
         <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Casa Plumeria - Couples Retreat</title>
-                <meta name="description" content="New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/Plumeria" />
+                <title>{content.seoTitle}</title>
+                <meta name="description" content={content.seoDescription} />
+                <link rel="canonical" href={`https://www.reservaskalawala.com/Plumeria${localeSuffix(locale)}`} />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/Plumeria" />
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/PlumeriaES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/Plumeria" />
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (
-                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">{m.property.stickyCta}</Button></div>)}
 
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
-                        <h1 className="title">Casa Plumeria</h1>
+                        <h1 className="title">{content.heading}</h1>
                         <p className="location">
                             <a href="https://maps.app.goo.gl/cT74qg6iqX35aa5t9" target="_blank" rel="noopener noreferrer">
                                 Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica
                             </a>
                         </p>
                         {/* Add marketing section after title */}
-                        <ListingMarketingSection propertyKey="Plumeria" locale="en" />
+                        <ListingMarketingSection propertyKey="Plumeria" locale={locale} />
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
-                    <SocialStatement propertyKey="Plumeria" locale="en" />
+                    <SocialStatement propertyKey="Plumeria" locale={locale} />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Plumeria" locale="en" />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="Plumeria" locale={locale} />
                     </div>
 
                     {/* Add feature highlights before description */}
-                    <FeatureHighlights propertyKey="Plumeria" propertyName="House Plumeria" locale="en" />
+                    <FeatureHighlights propertyKey="Plumeria" propertyName={content.featureName} locale={locale} />
 
                     <div className="description">
                         <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
-                            <p ><strong>Check-in:</strong> 3:00 PM</p>
-                            <p ><strong>Check-out:</strong> 12:00 PM (noon)</p>
+                            <p><strong>{m.property.checkInLabel}</strong> {content.checkIn}</p>
+                            <p><strong>{m.property.checkOutLabel}</strong> {content.checkOut}</p>
                         </div>
-                        <p>
-                            New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife.
-                            <br />
-                        </p>
-                        <p>
-                            The space, completely private, has A/C, fully equipped kitchen, a private bathroom with hot water. The parking space is private, spacious and enclosed. Every house has a small porch for our guests.
-                            <br />
-                        </p>
-                        <p>
-                            Close by you may find restaurants, supermarkets, and bike rentals. We trust our guests to follow common sense when leaving our house, that's why we have 0 check-out rules and no check-out list.
-                            <br />
-                        </p>
-                        <p>
-                            Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
-                            <br />
-                        </p>
-                        <p>
-                            Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.
-                            <br />
-                        </p>
+                        {content.paragraphs.map((paragraph, i) => {
+                            // Index keys: a fixed, ordered block of prose that is
+                            // never reordered, filtered or appended to.
+                            const text = typeof paragraph === 'string' ? paragraph : paragraph.text;
+                            const withBreak = typeof paragraph === 'string';
+                            return <p key={i}>{text}{withBreak && <br />}</p>;
+                        })}
                     </div>
 
-                    <GuestReviews propertyKey="PLUMERIA" locale="en" />
+                    <GuestReviews propertyKey="PLUMERIA" locale={locale} />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    <PriceConfirmationSection propertyKey="Plumeria" locale="en" />
-                    <BookingSearchWidget locale="en" defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Plumeria" />
+                    <PriceConfirmationSection propertyKey="Plumeria" locale={locale} />
+                    <BookingSearchWidget locale={locale} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="Plumeria" />
                 </Col>
             </Row>
 
@@ -128,7 +121,7 @@ const ListingPlumeria = () => {
                 <OtherListings listings={NamSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
-            <Footer locale="en" />
+            <Footer locale={locale} />
 
         </div>
     )

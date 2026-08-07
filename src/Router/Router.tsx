@@ -36,16 +36,6 @@ const ListingGiulia = lazy(() => import(/* webpackChunkName: "route-giulia" */ '
 const ListingPlumeria = lazy(() => import(/* webpackChunkName: "route-plumeria" */ '../pages/Listing/staticPages/ListingPlumeria.page'));
 const ListingVillaMar = lazy(() => import(/* webpackChunkName: "route-villamar" */ '../pages/Listing/staticPages/ListingVillaMar.page'));
 const ListingVillaCoral = lazy(() => import(/* webpackChunkName: "route-villacoral" */ '../pages/Listing/staticPages/ListingVillaCoral.page'));
-const ListingGecoES = lazy(() => import(/* webpackChunkName: "route-gecoes" */ '../pages/Listing/staticPages_ES/ListingGeco.page_ES'));
-const ListingRanaES = lazy(() => import(/* webpackChunkName: "route-ranaes" */ '../pages/Listing/staticPages_ES/ListingRana.page_ES'));
-const ListingTucanoES = lazy(() => import(/* webpackChunkName: "route-tucanoes" */ '../pages/Listing/staticPages_ES/ListingTucano.page_ES'));
-const ListingPappagalloES = lazy(() => import(/* webpackChunkName: "route-pappagalloes" */ '../pages/Listing/staticPages_ES/ListingPappagallo.page_ES'));
-const ListingDelfinES = lazy(() => import(/* webpackChunkName: "route-delfines" */ '../pages/Listing/staticPages_ES/ListingDelfin.page_ES'));
-const ListingArekaES = lazy(() => import(/* webpackChunkName: "route-arekaes" */ '../pages/Listing/staticPages_ES/ListingAreka.page_ES'));
-const ListingGiuliaES = lazy(() => import(/* webpackChunkName: "route-giuliaes" */ '../pages/Listing/staticPages_ES/ListingGiulia.page_ES'));
-const ListingPlumeriaES = lazy(() => import(/* webpackChunkName: "route-plumeriaes" */ '../pages/Listing/staticPages_ES/ListingPlumeria.page_ES'));
-const ListingVillaMarES = lazy(() => import(/* webpackChunkName: "route-villamares" */ '../pages/Listing/staticPages_ES/ListingVillaMar.page_ES'));
-const ListingVillaCoralES = lazy(() => import(/* webpackChunkName: "route-villacorales" */ '../pages/Listing/staticPages_ES/ListingVillaCoral.page_ES'));
 const TwoDaysInPV = lazy(() => import(/* webpackChunkName: "route-twodaysinpuertoviejo" */ '../pages/Blog/staticPages/TwoDaysInPV'));
 const GettingToGandoca = lazy(() => import(/* webpackChunkName: "route-gettingtogandoca" */ '../pages/Blog/staticPages/GettingToGandoca'));
 const TravellingToPuerto = lazy(() => import(/* webpackChunkName: "route-travellingtopuertoviejo" */ '../pages/Blog/staticPages/TravellingToPuerto'));
@@ -212,11 +202,11 @@ const AppRouter = () => {
       <Route path='/TenHoursInPuerto' element={<TenHoursInPuerto />} />
       <Route path='/bushours' element={<BusHours />} />
       <Route path='/bushoursES' element={<BusHoursES />} />
-      <Route path='/GecoES'  element={<ListingGecoES />}/>
-      <Route path='/RanaES'  element={<ListingRanaES />}/>
-      <Route path='/TucanoES'  element={<ListingTucanoES />}/>
-      <Route path='/PappagalloES'  element={<ListingPappagalloES />}/>
-      <Route path='/DelfinES'  element={<ListingDelfinES />}/>
+      <Route path='/GecoES'  element={<ListingGeco />}/>
+      <Route path='/RanaES'  element={<ListingRana />}/>
+      <Route path='/TucanoES'  element={<ListingTucano />}/>
+      <Route path='/PappagalloES'  element={<ListingPappagallo />}/>
+      <Route path='/DelfinES'  element={<ListingDelfin />}/>
       <Route path='/twodaysinpuertoviejoES' element={<TwoDaysInPVES />} />
       <Route path='/gettingtogandocaES' element={<GettingToGandocaES />} />
       <Route path='/travellingtopuertoviejoES' element={<TravellingToPuertoES />} />
@@ -237,11 +227,11 @@ const AppRouter = () => {
       <Route path='/Plumeria' element={<ListingPlumeria/>}/>
       <Route path='/VillaMar' element={<ListingVillaMar/>}/>
       <Route path='/VillaCoral' element={<ListingVillaCoral/>}/>
-      <Route path='/ArekaES' element={<ListingArekaES/>}/>
-      <Route path='/GiuliaES' element={<ListingGiuliaES/>}/>
-      <Route path='/PlumeriaES' element={<ListingPlumeriaES/>}/>
-      <Route path='/VillaMarES' element={<ListingVillaMarES/>}/>
-      <Route path='/VillaCoralES' element={<ListingVillaCoralES/>}/>
+      <Route path='/ArekaES' element={<ListingAreka />}/>
+      <Route path='/GiuliaES' element={<ListingGiulia />}/>
+      <Route path='/PlumeriaES' element={<ListingPlumeria />}/>
+      <Route path='/VillaMarES' element={<ListingVillaMar />}/>
+      <Route path='/VillaCoralES' element={<ListingVillaCoral />}/>
       
 
 

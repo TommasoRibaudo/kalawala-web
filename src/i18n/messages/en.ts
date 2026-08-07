@@ -116,6 +116,13 @@ export const en = {
   property: {
     capacityAriaLabel: 'Property capacity',
     viewListing: (name: string) => `View listing: ${name}`,
+    checkInLabel: 'Check-in:',
+    checkOutLabel: 'Check-out:',
+    // The mobile sticky CTA on a property page. Deliberately not
+    // `common.checkAvailability` — that reads "Check availability" in sentence
+    // case, and this button has always been title case in English and full caps
+    // in Spanish. Sharing the key would have quietly restyled both.
+    stickyCta: 'Check Availability',
     whyGuestsChoose: (propertyName: string) => `Why guests choose ${propertyName}`,
     bedrooms: (count: number) => `${count} ${count === 1 ? 'bedroom' : 'bedrooms'}`,
     bathrooms: (count: number) => `${count} ${count === 1 ? 'bathroom' : 'bathrooms'}`,

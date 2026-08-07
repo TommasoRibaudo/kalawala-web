@@ -63,8 +63,21 @@ function main() {
 
   for (const route of routes) {
     const chunk = routeToChunk(route);
-    const asset = byChunk.get(chunk);
-    if (!asset) { missing.push(`${route} -> ${chunk}`); continue; }
+    // A Spanish route whose page has been merged into its English twin shares
+    // that twin's chunk: webpack keys chunks by module, so two lazy imports of
+    // the same file collapse into one and the second webpackChunkName is
+    // dropped. `/GecoES` therefore resolves `route-geco`, not `route-gecoes`.
+    //
+    // The fallback is tried only when the exact chunk is absent, so a Spanish
+    // page that still has its own module (the blog articles, for now) keeps
+    // using its own chunk. If neither exists the route is still reported
+    // missing and the build still fails — the check is narrowed, not weakened.
+    const merged = /es$/.test(chunk) ? chunk.replace(/es$/, '') : null;
+    const asset = byChunk.get(chunk) || (merged ? byChunk.get(merged) : undefined);
+    if (!asset) {
+      missing.push(`${route} -> ${chunk}${merged ? ` (nor ${merged})` : ''}`);
+      continue;
+    }
 
     const dir = route === '/' ? BUILD : path.join(BUILD, route.replace(/^\//, ''));
     const file = path.join(dir, 'index.html');

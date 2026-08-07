@@ -21,17 +21,17 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | Phase 3b — next. Phases 0–3a complete in code, **nothing merged yet.** |
-| **Last updated** | 2026-08-06 |
-| **Branch(es) in flight** | A six-deep stack, all open, all based on `main`: **#39** → **#40** → **#41** → **#42** → **#43** → **#44**. See [Merge order](#merge-order) — they must land in that sequence. |
-| **Blocked on** | **Owner action:** GSC + PostHog exports (Phase 0) — see [`seo-baseline/README.md`](seo-baseline/README.md); the GSC export cannot be done retroactively. **Owner action:** Hebrew/Devanagari font files (Phase H-B). Neither blocks Phase 3b–3d. |
+| **Current phase** | Phase 3c — next (blog). Phases 0–3b complete in code, **nothing merged yet.** |
+| **Last updated** | 2026-08-07 |
+| **Branch(es) in flight** | An eight-deep stack, all open, all based on `main`: **#39** → **#40** → **#41** → **#42** → **#43** → **#44** → **#45** → **#46**. See [Merge order](#merge-order) — they must land in that sequence. |
+| **Blocked on** | **Owner action:** GSC + PostHog exports (Phase 0) — see [`seo-baseline/README.md`](seo-baseline/README.md); the GSC export cannot be done retroactively. **Owner action:** Hebrew/Devanagari font files (Phase H-B). Neither blocks Phase 3c–3d. |
 
 Phase progress:
 
 - [ ] Phase 0 — Baseline capture and safety net *(automated parts done; GSC/PostHog exports outstanding)*
 - [x] Phase 1 — Locale foundation (`isSpanish` → `locale`) — PR #40
 - [x] Phase 2 — Message catalogs — PR #41
-- [ ] Phase 3 — Collapse duplicated page components *(3a done; 3b–3d outstanding)*
+- [ ] Phase 3 — Collapse duplicated page components *(3a, 3b done; 3c–3d outstanding)*
 - [ ] **Ship gate A — EN/ES refactor released, zero visible change**
 - [ ] Phase 4 — Route restructure to `/:locale/`
 - [ ] Phase 5 — 301 redirect map
@@ -54,8 +54,8 @@ Hebrew/Hindi track (see [that section](#hebrew-and-hindi--rtl-and-non-latin-scri
 
 ### Merge order
 
-The six open PRs are a linear git stack even though GitHub shows every base as
-`main`. Merge **#39 → #40 → #41 → #42 → #43 → #44**, in that order; each later
+The open PRs are a linear git stack even though GitHub shows every base as
+`main`. Merge **#39 → #40 → #41 → #42 → #43 → #44 → #45 → #46**, in that order; each later
 PR's diff collapses to its own work once its parent lands. Out of order means
 resolving the whole stack by hand.
 
@@ -102,8 +102,8 @@ each row if the tree has moved on significantly.
 > | Fact | On `main` | Head of stack |
 > |---|---|---|
 > | `isSpanish` occurrences in `src/` | 364 | **6** (comments and one deprecated shim) |
-> | ES-duplicated files | 47 | **22** — all pages; no shared components left |
-> | `src/i18n/` | does not exist | 18 files, incl. the first `content/` module |
+> | ES-duplicated files | 47 | **12** — blog articles, BlogIndex, Home.pageES |
+> | `src/i18n/` | does not exist | 19 files, incl. two `content/` modules |
 > | Locales declared | — | 8 (`RELEASED_LOCALES` still `['en','es']`) |
 > | `reactSnap.include` routes | 49 | 45 (Nam/Villas retired in #43) |
 >
@@ -328,14 +328,14 @@ that.
 
 - [x] **3a — shared components** (leaf-first: a component cannot be merged before
       the components it renders) — 11 in PR #42, the last 5 pairs after it
-- [ ] **3b — listing pages** (10 pairs)
+- [x] **3b — listing pages** (10 pairs) — see [below](#3b--listing-pages)
 - [ ] **3c — blog pages** (10 pairs + `BlogIndex`, one at a time, highest risk)
 - [ ] **3d — `Home.pageES`**, then delete the ES route entries
 - [ ] Update `Router.tsx` imports (still the old route shape at this point)
 
-**22 duplicated files remain**, down from 47 on `main`: 10 listing pages, 11
-blog files (10 articles + `BlogIndex.page_ES`), and `Home.pageES`. No shared
-components are left — 3a is done. The table above counted 4 home/index pairs; PR #43 retired the
+**12 duplicated files remain**, down from 47 on `main`: 11 blog files (10
+articles + `BlogIndex.page_ES`) and `Home.pageES`. Shared components (3a) and
+listing pages (3b) are done; only prose-heavy pages are left. The table above counted 4 home/index pairs; PR #43 retired the
 Namaitami and Villas homes, leaving one.
 
 > **The validation bar changes here.** Phases 1 and 2 could claim *zero*
@@ -469,6 +469,116 @@ the original survey is now a single EN/ES pair each. **Five pairs remain in 3a:*
 3. Minor: the base Spanish hero tagline reads "en el corazon" (missing the
    accent) where the retired Nam variant read "en el corazón". Unify on the
    accented form when `WelcomeSlider` merges.
+
+#### 3b — listing pages
+
+All 10 pairs merged; `src/pages/Listing/staticPages_ES/` is gone.
+
+- [x] Long-form copy extracted to `src/i18n/content/listings.ts` — 144
+      paragraphs across 20 page/locale combinations, plus SEO title and
+      description, `<h1>`, the FeatureHighlights name, and check-in/out times.
+- [x] Catalog gains `property.checkInLabel` / `checkOutLabel` / `stickyCta`.
+- [x] `houseDataByLangCode()` in `constants.ts` replaces the five-way choice of
+      which data array a page reads from.
+- [x] Deleted `NamSnippetES`, `VillaMarSnippet`, `VillaCoralSnippet` — the
+      3a merge of `OtherListings` made them redundant.
+- [x] Router's 10 ES routes point at the merged modules, keeping their distinct
+      `webpackChunkName`s.
+
+> **The extraction was generated, not hand-copied.** Phase 3a's one content bug
+> was a transcription slip while moving a single Spanish sentence; 3b moves
+> forty times as much prose. A script parsed the fields out of the 20 page
+> components and emitted the content module, so the copy is byte-identical by
+> construction rather than by proofreading.
+>
+> The first parser was quietly wrong — a non-greedy regex for the description
+> `<div>` stopped at the nested check-times `</div>`, yielding empty paragraph
+> lists that *looked* like a clean run. Balanced-tag scanning fixed it. Worth
+> remembering for 3c: a generator that silently produces nothing is worse than
+> one that crashes.
+
+> **English and Spanish descriptions are not translations of each other.** Casa
+> Delfin has 8 Spanish paragraphs against 6 English (Spanish documents the
+> cleaning service and the cot, English documents pickup-truck parking); Giulia
+> and Plumeria differ the other way. Each locale keeps its own array and nothing
+> pairs them up. Phase 8 should treat these as *existing copy to translate into
+> the other six languages*, not as a matched pair to reconcile.
+
+> **A trailing `<br/>` inside `<p>` is carried as data.** 7 of 144 paragraphs
+> lack it, at no regular position. `ListingParagraph` is therefore
+> `string | { text, trailingBreak: false }` — the object form appears 7 times.
+> Normalising would have changed vertical spacing on five pages, which nobody
+> asked for.
+
+> **Three more Spanish pages were rendering English — the same bug, for the
+> sixth, seventh and eighth time.** `ListingAreka.page_ES`, `ListingGiulia` and
+> `ListingPlumeria` passed a hardcoded `houseName="Areka"` to `ImagesContainer`
+> and `ImagesModal` where every other Spanish page passed the locale-suffixed
+> `listing`. `ImagesContainer` keys its gallery off that name, so those three
+> pages served **English `alt` text on Spanish pages**: "Livingroom" for
+> `Sala de Estar`, "Master Bedroom" for `Cuarto Principal`, "Terrace" for
+> `Terraza`. Merging onto `listing` fixes all three.
+>
+> **The visible-text diff could not see this**, because `alt` is an attribute,
+> not text — it showed 0 of 45 pages changed. Only the markup diff caught it.
+> Run both.
+
+> **The villas have two identifiers, and the merge tripped over it.** For every
+> other property the `houseLangCode` and the name passed to `ImagesContainer` /
+> `OtherListings` are the same string. For the villas they are not:
+> `houseLangCode` is `VillaMar`, the display/image name is `Villa Mar`. The
+> pre-merge pages hid this by passing a *literal* `'VillaMar'` to `.find()`
+> while using the spaced form everywhere else, so rewriting the lookup to use
+> the shared `listing` value returned `undefined` and the pages threw
+> `Cannot read property 'guestNumber' of undefined`.
+>
+> **The build caught it, not the type checker** — `houseData` is
+> `HouseDataType | undefined` and the pages already used `houseData!`, so the
+> non-null assertion swallowed it at compile time and react-snap surfaced it as
+> a page error. Worth remembering: `!` is exactly where a prerender is more
+> honest than `tsc`.
+
+> **A merged page means a merged chunk, and the preload guard caught it.**
+> The first attempt kept ten `ListingXES` lazy imports pointing at the merged
+> module with their own `webpackChunkName`. That does not work: **webpack keys
+> chunks by module**, so two lazy imports of one file collapse into a single
+> chunk and the second name is silently dropped. `route-gecoes` and its nine
+> siblings never got built.
+>
+> `scripts/inject-route-preloads.js` failed the build with all ten listed —
+> which is exactly what that check exists for, and the plan had flagged it as a
+> Phase 4 hazard. It is a Phase 3 hazard too, for any merged page.
+>
+> The fix: the ES routes render the English component directly (ten redundant
+> lazy consts deleted), and the script falls back from `route-<x>es` to
+> `route-<x>` **only when the exact chunk is absent**. A Spanish page that still
+> has its own module — every blog article, until 3c — keeps its own chunk, and a
+> route with neither still fails the build. Narrowed, not weakened.
+>
+> **3c and 3d will hit this again**, once per merged blog article and once for
+> `Home.pageES`. The fallback already covers them.
+
+**Validation.** `tsc --noEmit` clean. Unit tests 4 suites / 27 failing, 299
+passed / 326 — the documented baseline. Build clean, 45/45 preloads.
+
+Prerender diff against the post-3a build:
+
+| Measure | Result |
+|---|---|
+| Visible text | **0 of 45 pages changed** |
+| Markup | 11 pages differ, all accounted for |
+| — 10 Spanish listing pages | preload points at the merged chunk (`route-gecoes` → `route-geco`) |
+| — Areka/Giulia/PlumeriaES | plus the `alt`-text fix above |
+| — `Pappagallo` (English) | four space characters removed before a `<br>` — the extractor collapses incidental trailing whitespace. No visual effect; it is the only English page touched |
+
+> **The 10 pages are now ~95% identical.** With content and data lookup both
+> externalised, each page component differs only in its property key, its
+> `OtherListings` snippet, and its chunk. Collapsing them into a single
+> `<ListingPage propertyKey=… />` is the obvious next move — deliberately *not*
+> done here, because 3b's job was merging language pairs and a second structural
+> change in the same diff would have made the prerender evidence unreadable.
+> **Do it as part of Phase 4**, where `routes.config.ts` already has to name a
+> component per route.
 
 ### 🚢 Ship gate A
 
@@ -904,3 +1014,32 @@ what the next session should pick up.
   three families (72–79% identical) and should be the fastest. Delete
   `NamSnippetES` from `constants.ts` as part of it. Leave 3c (blog) for last —
   `CahuitaParkES` is 32% identical to its twin and needs one PR per article.
+
+### 2026-08-07 — Phase 3b completed
+
+- All 10 listing pairs merged; `staticPages_ES/` is gone. **12 duplicated files
+  left**, all blog or home.
+- Copy extracted to `src/i18n/content/listings.ts` **by generator, not by hand**
+  — 144 paragraphs across 20 page/locale combinations.
+- `houseDataByLangCode()` replaces the five-array lookup;
+  `NamSnippetES`/`VillaMarSnippet`/`VillaCoralSnippet` deleted.
+- **Three more Spanish pages fixed**: Areka, Giulia and Plumeria served English
+  image `alt` text. Eight instances of this bug class so far, all found by
+  merging rather than by looking.
+- **Validation:** typecheck clean; tests at baseline (4 suites / 27 failing, 299
+  passed / 326); build clean with 45/45 preloads. Prerender diff: **visible text
+  unchanged on all 45 pages**; 11 pages differ in markup, each accounted for.
+- Three things went wrong and are written up under 3b: a silently-empty
+  generator (non-greedy regex stopping at a nested `</div>`), the villas' two
+  identifiers hidden behind a `!` assertion, and webpack merging chunks so the
+  preload guard failed the build.
+- **Next session:** 3c, the blog. It is the risky one — `CahuitaParkES` is 32%
+  identical to its English twin and `TravellingToPuerto_ES` 43%, so these are
+  independently written articles rather than translations. Do **one article per
+  commit**, and diff markup as well as text: 3b proved the text diff is blind to
+  `alt` attributes. The preload fallback for merged chunks is already in place.
+  Then 3d (`Home.pageES`), then ship gate A.
+
+> **Housekeeping note for whoever picks this up:** the plan's Ground Truth table
+> still describes `main`, deliberately. The "head of stack" column next to it is
+> the one to trust for current numbers.

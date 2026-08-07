@@ -10,7 +10,6 @@ import { VillaSnippet } from "../../../utils/constants";
 import { HouseDataType } from "../../../utils/types";
 import Amenities from "../components/Amenities/Amenities.component";
 import { AmenityType } from "../../../utils/types";
-import { VillasDataList } from "../../../utils/constants";
 import { Helmet } from "react-helmet";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ListingMarketingSection from "../../../components/ListingMarketingSection/ListingMarketingSection.component";
@@ -18,10 +17,17 @@ import SocialStatement from "../../../components/SocialStatement/SocialStatement
 import FeatureHighlights from "../../../components/FeatureHighlights/FeatureHighlights.component";
 import PriceConfirmationSection from "../../../components/PriceConfirmationSection/PriceConfirmationSection.component";
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
+import { useLocale, useMessages } from "../../../i18n";
+import { localeSuffix } from "../../../i18n/paths";
+import { listingContent } from "../../../i18n/content/listings";
+import { houseDataByLangCode } from "../../../utils/constants";
 
 
 const ListingVillaMar = () => {
-    const listing = 'Villa Mar'
+    const locale = useLocale();
+    const m = useMessages();
+    const content = listingContent('VillaMar', locale);
+    const listing = `Villa Mar${localeSuffix(locale)}`
     // Seeded null, not read from useMediaQuery/matchMedia synchronously —
     // react-snap's puppeteer viewport at prerender time and a real visitor's
     // viewport at hydration time are different numbers, and isScreenSmall
@@ -40,7 +46,11 @@ const ListingVillaMar = () => {
     // value used below for ImagesContainer/OtherListings/ImagesModal — it is
     // NOT the houseLangCode, which has no space (matches the /VillaMar route,
     // same as the propertyKey="VillaMar" literals elsewhere in this file).
-    const houseData: HouseDataType | undefined = VillasDataList.find((house) => house.houseLangCode === 'VillaMar');
+    // The villas are the one place where the property's houseLangCode
+    // ("VillaMar") is not the string used for images and OtherListings
+    // ("Villa Mar"). The pre-merge pages hid this by passing a literal to
+    // .find() while using `listing` everywhere else.
+    const houseData: HouseDataType | undefined = houseDataByLangCode(`VillaMar${localeSuffix(locale)}`);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -59,82 +69,59 @@ const ListingVillaMar = () => {
         <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Villa Mar - Home with private pool in Playa Chiquita</title>
-                <meta name="description" content="Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting." />
-                <link rel="canonical" href="https://www.reservaskalawala.com/VillaMar" />
+                <title>{content.seoTitle}</title>
+                <meta name="description" content={content.seoDescription} />
+                <link rel="canonical" href={`https://www.reservaskalawala.com/VillaMar${localeSuffix(locale)}`} />
                 <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/VillaMar" />
                 <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/VillaMarES" />
                 <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/VillaMar" />
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (
-                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">Check Availability</Button></div>)}
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">{m.property.stickyCta}</Button></div>)}
 
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
                     <div className="heading">
-                        <h1 className="title">Villa Mar</h1>
+                        <h1 className="title">{content.heading}</h1>
                         <p className="location">
                             <a href="https://maps.app.goo.gl/cJa27cXoXunmuNkf7" target="_blank" rel="noopener noreferrer">
                                 Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica
                             </a>
                         </p>
                         {/* Add marketing section after title */}
-                        <ListingMarketingSection propertyKey="VillaMar" locale="en" />
+                        <ListingMarketingSection propertyKey="VillaMar" locale={locale} />
                     </div>
                     <ImagesContainer showModal={handleShow} houseName={listing!} />
                     {/* Add social statement after images */}
-                    <SocialStatement propertyKey="VillaMar" locale="en" />
+                    <SocialStatement propertyKey="VillaMar" locale={locale} />
                     <div className="amenaties">
-                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="VillaMar" locale="en" />
+                        <Amenities amenities={houseData?.amenities as AmenityType[]} propertyKey="VillaMar" locale={locale} />
                     </div>
 
                     {/* Add feature highlights before description */}
-                    <FeatureHighlights propertyKey="VillaMar" propertyName="Villa Mar" locale="en" />
+                    <FeatureHighlights propertyKey="VillaMar" propertyName={content.featureName} locale={locale} />
 
                     <div className="description">
                         <div className="check-times" style={{ marginBottom: '20px', padding: '15px', borderRadius: '8px' }}>
-                            <p ><strong>Check-in:</strong> 3:00 PM</p>
-                            <p ><strong>Check-out:</strong> 12:00 PM (noon)</p>
+                            <p><strong>{m.property.checkInLabel}</strong> {content.checkIn}</p>
+                            <p><strong>{m.property.checkOutLabel}</strong> {content.checkOut}</p>
                         </div>
-                        <p>
-                            Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting.
-                            <br />
-                        </p>
-                        <p>
-                            Stay connected with high-speed internet up to 100Mbps and take advantage of the dedicated workspace if you need to attend to tasks during your visit.
-                            <br />
-                        </p>
-                        <p>
-                            The villa, boasting a private pool, kitchen and bathroom, has been decorated by Puerto Rican Interior designer Lourdes Menéndez
-                            <br />
-                        </p>
-                        <p>
-                            Relax and unwind in your own private paradise with a pristine pool just for you. The villa features a spacious main bedroom and living room, both equipped with air conditioning to escape the heat.
-                        </p>
-                        <p>
-                            Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
-                            <br />
-                        </p>
-                        <p>
-                            If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.
-                            <br />
-                        </p>
-                        <p>
-                            Explore the beauty of Playa Chiquita, Punta Uva and the vibrant culture of Puerto Viejo, all while having a comfortable home base to return to. Make the most of your Costa Rican getaway with this inviting villa as your accommodation.
-                            <br />
-                        </p>
-                        <p>
-                            Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.
-                        </p>
+                        {content.paragraphs.map((paragraph, i) => {
+                            // Index keys: a fixed, ordered block of prose that is
+                            // never reordered, filtered or appended to.
+                            const text = typeof paragraph === 'string' ? paragraph : paragraph.text;
+                            const withBreak = typeof paragraph === 'string';
+                            return <p key={i}>{text}{withBreak && <br />}</p>;
+                        })}
                     </div>
 
-                    <GuestReviews propertyKey="VILLA MAR" locale="en" />
+                    <GuestReviews propertyKey="VILLA MAR" locale={locale} />
 
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
-                    <PriceConfirmationSection propertyKey="VillaMar" locale="en" />
-                    <BookingSearchWidget locale="en" defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="VillaMar" />
+                    <PriceConfirmationSection propertyKey="VillaMar" locale={locale} />
+                    <BookingSearchWidget locale={locale} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="VillaMar" />
                 </Col>
             </Row>
 
@@ -142,7 +129,7 @@ const ListingVillaMar = () => {
                 <OtherListings listings={VillaSnippet} currentListing={listing || ''} />
             </div>
             {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
-            <Footer locale="en" />
+            <Footer locale={locale} />
 
         </div>
     )

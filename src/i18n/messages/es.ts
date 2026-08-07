@@ -102,6 +102,9 @@ export const es: Messages = {
   property: {
     capacityAriaLabel: 'Capacidad de la casa',
     viewListing: (name: string) => `Ver alojamiento: ${name}`,
+    checkInLabel: 'Entrada:',
+    checkOutLabel: 'Salida:',
+    stickyCta: 'VER DISPONIBILIDAD',
     whyGuestsChoose: (propertyName: string) => `¿Por qué los huéspedes eligen ${propertyName}?`,
     bedrooms: (count: number) => `${count} ${count === 1 ? 'habitación' : 'habitaciones'}`,
     bathrooms: (count: number) => `${count} ${count === 1 ? 'baño' : 'baños'}`,

@@ -75,11 +75,11 @@ test.describe('Navigation', () => {
     await appPage.goto('/');
 
     // Requirement 4.5 — Clicking "Blog" navigates to a blog page.
-    // The Blog link href is /twodaysinpuertoviejo.
+    // The Blog link href is /en/twodaysinpuertoviejo.
     await nav.blogLink(appPage).click();
 
-    await appPage.waitForURL('**/twodaysinpuertoviejo');
-    expect(appPage.url()).toContain('/twodaysinpuertoviejo');
+    await appPage.waitForURL('**/en/twodaysinpuertoviejo');
+    expect(appPage.url()).toContain('/en/twodaysinpuertoviejo');
   });
 });
 

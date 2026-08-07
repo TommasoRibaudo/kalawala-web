@@ -12,7 +12,7 @@ import { portal } from './helpers/selectors';
  */
 test.describe('Guest Portal', () => {
   test('displays a login form with reservation ID and password fields', async ({ appPage }) => {
-    await appPage.goto('/portal');
+    await appPage.goto('/en/portal');
 
     // Requirement 11.1 — Login form with reservation ID and password fields
     await expect(portal.reservationIdInput(appPage)).toBeVisible();
@@ -58,7 +58,7 @@ test.describe('Guest Portal', () => {
       });
     });
 
-    await appPage.goto('/portal');
+    await appPage.goto('/en/portal');
 
     // Requirement 11.2 — Submit portal login with mocked credentials
     await portal.reservationIdInput(appPage).fill('RES-MOCK-12345');
@@ -66,12 +66,12 @@ test.describe('Guest Portal', () => {
     await portal.submitButton(appPage).click();
 
     // Verify navigation to the reservation detail page
-    await appPage.waitForURL('**/portal/RES-MOCK-12345');
-    expect(appPage.url()).toContain('/portal/RES-MOCK-12345');
+    await appPage.waitForURL('**/en/portal/RES-MOCK-12345');
+    expect(appPage.url()).toContain('/en/portal/RES-MOCK-12345');
   });
 
   test('Spanish portal page displays Spanish-language labels', async ({ appPage }) => {
-    await appPage.goto('/portalES');
+    await appPage.goto('/es/portal');
 
     // Requirement 11.3 — Spanish-language labels are displayed
     await expect(portal.reservationIdInput(appPage)).toBeVisible();

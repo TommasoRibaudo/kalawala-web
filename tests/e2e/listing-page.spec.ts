@@ -7,7 +7,7 @@ import { nav } from './helpers/selectors';
  * Uses the `appPage` fixture so cookie consent is already dismissed and
  * API mocks are active before every test.
  *
- * The listing page (`/Geco`) renders:
+ * The listing page (`/en/geco`) renders:
  *   - Property name as an `<h1>` heading
  *   - An image grid (`.imagesContainer`) that opens a full-screen gallery on click
  *   - An amenities section (`.amenaties` → `.amenitiesCont`)
@@ -36,7 +36,7 @@ test.describe('Listing Page', () => {
   test('listing page loads with property name, images, amenities, and booking widget', async ({ appPage }) => {
     // Requirement 6.1 — Verify property name, image grid, amenities, and
     // BookingSearchWidget are visible on the English listing page.
-    await appPage.goto('/Geco');
+    await appPage.goto('/en/geco');
 
     // Property name heading
     await expect(appPage.getByRole('heading', { name: 'House Geco', level: 1 })).toBeVisible();
@@ -65,7 +65,7 @@ test.describe('Listing Page', () => {
     // Requirement 6.2 — Verify that interacting with the image area advances
     // to show more images. The listing page uses a clickable image grid that
     // opens a full-screen gallery modal (ImagesModal) rather than a carousel.
-    await appPage.goto('/Geco');
+    await appPage.goto('/en/geco');
 
     const imagesContainer = appPage.locator('.imagesContainer');
     await expect(imagesContainer).toBeVisible();
@@ -83,7 +83,7 @@ test.describe('Listing Page', () => {
 
   test('guest reviews section is present on the listing page', async ({ appPage }) => {
     // Requirement 6.3 — Verify the guest reviews section is present.
-    await appPage.goto('/Geco');
+    await appPage.goto('/en/geco');
 
     const reviewsSection = appPage.locator('.guest-reviews');
     await expect(reviewsSection).toBeVisible();
@@ -100,8 +100,8 @@ test.describe('Listing Page', () => {
   });
 
   test('Spanish listing page displays Spanish-language content', async ({ appPage }) => {
-    // Requirement 6.4 — Verify that `/GecoES` displays Spanish content.
-    await appPage.goto('/GecoES');
+    // Requirement 6.4 — Verify that `/es/geco` displays Spanish content.
+    await appPage.goto('/es/geco');
 
     // Spanish property name
     await expect(appPage.getByRole('heading', { name: 'Casa Geco', level: 1 })).toBeVisible();

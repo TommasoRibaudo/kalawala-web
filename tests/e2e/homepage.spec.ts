@@ -18,7 +18,7 @@ test.describe('Homepage', () => {
   });
 
   test('Spanish homepage renders with navigation bar visible', async ({ appPage }) => {
-    await appPage.goto('/HomeES');
+    await appPage.goto('/es/');
 
     // Requirement 3.2 — Navigation bar is visible on the Spanish homepage
     await expect(nav.bar(appPage)).toBeVisible();

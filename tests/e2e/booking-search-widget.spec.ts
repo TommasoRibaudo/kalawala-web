@@ -7,12 +7,12 @@ import { bookingWidget } from './helpers/selectors';
  * Uses the `appPage` fixture so cookie consent is already dismissed and
  * API mocks are active before every test.
  *
- * The BookingSearchWidget appears on listing pages (e.g. `/Geco`) and
+ * The BookingSearchWidget appears on listing pages (e.g. `/en/geco`) and
  * contains:
  *   - Check-in date input (native `<input type="date">`)
  *   - Check-out date input (native `<input type="date">`)
  *   - Guest count with increment / decrement buttons (minimum 1)
- *   - A submit button that navigates to `/book` (or `/bookES`) with
+ *   - A submit button that navigates to `/en/book` (or `/es/book`) with
  *     query params: arrivalDate, departureDate, guests, autoSearch
  *
  * Validates: Requirements 7.1, 7.2, 7.3, 7.4
@@ -33,7 +33,7 @@ test.describe('Booking Search Widget', () => {
       });
     });
 
-    await appPage.goto('/Geco');
+    await appPage.goto('/en/geco');
   });
 
   test('filling in dates and guests and submitting navigates to /book with correct query params', async ({ appPage }) => {
@@ -53,10 +53,10 @@ test.describe('Booking Search Widget', () => {
     await bookingWidget.submitButton(appPage).click();
 
     // Wait for navigation to the booking page
-    await appPage.waitForURL(/\/book\?/);
+    await appPage.waitForURL(/\/en\/book\?/);
 
     const url = new URL(appPage.url());
-    expect(url.pathname).toBe('/book');
+    expect(url.pathname).toBe('/en/book');
     expect(url.searchParams.get('arrivalDate')).toBe(checkIn);
     expect(url.searchParams.get('departureDate')).toBe(checkOut);
     expect(url.searchParams.get('guests')).toBe('6');

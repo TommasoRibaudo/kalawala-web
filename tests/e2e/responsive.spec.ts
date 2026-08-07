@@ -12,7 +12,7 @@ import { nav, bookingWidget } from './helpers/selectors';
 
 /** Booking page URL with query params for a valid search */
 const BOOKING_URL =
-  '/book?arrivalDate=2028-06-15&departureDate=2028-06-20&guests=2&autoSearch=true';
+  '/en/book?arrivalDate=2028-06-15&departureDate=2028-06-20&guests=2&autoSearch=true';
 
 test.describe('Responsive Behavior', () => {
   test('homepage at mobile viewport shows hamburger menu and hides desktop nav links', async ({
@@ -57,7 +57,7 @@ test.describe('Responsive Behavior', () => {
       });
     });
 
-    await mobilePage.goto('/Geco');
+    await mobilePage.goto('/en/geco');
 
     // Wait for the page content to render
     await expect(

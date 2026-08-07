@@ -16,6 +16,7 @@ import {
 import { clearPortalSession, readPortalToken } from '../services/PortalSession.service';
 import { portalDetailStrings, PortalDetailStrings } from './PortalDetail.i18n';
 import './PortalDetail.style.scss';
+import { pathForKey } from '../routes.config';
 
 /** Coordinates and Google Maps place ID per property group. */
 const KALAWALA_LOCATION = { lat: 9.6587676, lng: -82.7499424, placeId: '0x8fa6515b59164895:0xcb6669ca079882c8' };
@@ -44,7 +45,7 @@ function getGoogleMapsUrl(slug: string | undefined): string {
 }
 
 function portalLoginPath(language: BookingLanguage): string {
-  return language === 'es' ? '/portalES' : '/portal';
+  return pathForKey('portal', language);
 }
 
 /**

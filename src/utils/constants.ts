@@ -1,4 +1,5 @@
 import { HouseDataType, ListingType, PropertyCapacity, PropertyMarketingContent } from "./types";
+import { pathForKey, pathForLegacyId } from "../routes.config";
 
 // Random popup configuration
 export const RANDOM_POPUP_CONFIG = {
@@ -2313,23 +2314,31 @@ export interface PropertyRecommendation {
 // recommendation copy under an English article. Translated to English here;
 // PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES below is the real Spanish counterpart
 // (ES-suffixed links) and was already correct.
+//
+// PHASE 4: `link` fields compute from routes.config.ts via pathForLegacyId
+// instead of hardcoding the pre-restructure `/Geco`-style paths — this file
+// is a plain-string sweep away from every other internal-link call site (the
+// `link: '/...'` fields here are single-quoted; the sweep that caught the
+// rest of the codebase's hardcoded paths only searched double-quoted
+// strings), so StayRecommendation's rendered hrefs would otherwise have kept
+// pointing at pre-Phase-4 URLs.
 export const PUERTO_VIEJO_BLOG_RECOMMENDATIONS: PropertyRecommendation[] = [
   {
     name: 'Casa Geco',
     reason: 'Ideal for getting around on foot',
-    link: '/Geco',
+    link: pathForLegacyId('Geco'),
     houseCode: 1
   },
   {
     name: 'Casa Plumeria',
     reason: 'Perfect for relaxing near the beach',
-    link: '/Plumeria',
+    link: pathForLegacyId('Plumeria'),
     houseCode: 8
   },
   {
     name: 'Villa Coral',
     reason: 'Great for a short getaway with a private pool',
-    link: '/VillaCoral',
+    link: pathForLegacyId('VillaCoral'),
     houseCode: 6
   }
 ];
@@ -2339,19 +2348,19 @@ export const GENERAL_PUERTO_VIEJO_RECOMMENDATIONS: PropertyRecommendation[] = [
   {
     name: 'Casa Geco',
     reason: 'Perfect for exploring on foot',
-    link: '/Geco',
+    link: pathForLegacyId('Geco'),
     houseCode: 1
   },
   {
     name: 'Casa Plumeria',
     reason: 'Ideal for beach relaxation',
-    link: '/Plumeria',
+    link: pathForLegacyId('Plumeria'),
     houseCode: 8
   },
   {
     name: 'Villa Coral',
     reason: 'Great for short getaways with private pool',
-    link: '/VillaCoral',
+    link: pathForLegacyId('VillaCoral'),
     houseCode: 6
   }
 ];
@@ -2364,19 +2373,19 @@ export const GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES: PropertyRecommendation[] =
   {
     name: 'Casa Geco',
     reason: 'Perfecta para explorar a pie',
-    link: '/GecoES',
+    link: pathForLegacyId('GecoES'),
     houseCode: 1
   },
   {
     name: 'Casa Plumeria',
     reason: 'Ideal para relajarte cerca de la playa',
-    link: '/PlumeriaES',
+    link: pathForLegacyId('PlumeriaES'),
     houseCode: 8
   },
   {
     name: 'Villa Coral',
     reason: 'Excelente para escapadas cortas con piscina privada',
-    link: '/VillaCoralES',
+    link: pathForLegacyId('VillaCoralES'),
     houseCode: 6
   }
 ];
@@ -2386,19 +2395,19 @@ export const CAHUITA_AREA_RECOMMENDATIONS: PropertyRecommendation[] = [
   {
     name: 'Casa Plumeria',
     reason: 'Perfect Retreat for Couples',
-    link: '/Plumeria',
+    link: pathForLegacyId('Plumeria'),
     houseCode: 8
   },
   {
     name: 'Casa Geco',
     reason: 'Easy access to transportation',
-    link: '/Geco',
+    link: pathForLegacyId('Geco'),
     houseCode: 1
   },
   {
     name: 'Villa Coral',
     reason: 'Perfect for relaxing after park visits',
-    link: '/VillaCoral',
+    link: pathForLegacyId('VillaCoral'),
     houseCode: 6
   }
 ];
@@ -2410,19 +2419,19 @@ export const CAHUITA_AREA_RECOMMENDATIONS_ES: PropertyRecommendation[] = [
   {
     name: 'Casa Plumeria',
     reason: 'Retiro Perfecto para Parejas',
-    link: '/PlumeriaES',
+    link: pathForLegacyId('PlumeriaES'),
     houseCode: 8
   },
   {
     name: 'Casa Geco',
     reason: 'Fácil acceso al transporte',
-    link: '/GecoES',
+    link: pathForLegacyId('GecoES'),
     houseCode: 1
   },
   {
     name: 'Villa Coral',
     reason: 'Perfecta para relajarte después de visitar el parque',
-    link: '/VillaCoralES',
+    link: pathForLegacyId('VillaCoralES'),
     houseCode: 6
   }
 ];
@@ -2432,19 +2441,19 @@ export const PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES: PropertyRecommendation[] = [
   {
     name: 'Casa Geco',
     reason: 'Ideal si quieres moverte caminando',
-    link: '/GecoES',
+    link: pathForLegacyId('GecoES'),
     houseCode: 1
   },
   {
     name: 'Casa Plumeria',
     reason: 'Perfecta para descansar cerca de la playa',
-    link: '/PlumeriaES',
+    link: pathForLegacyId('PlumeriaES'),
     houseCode: 8
   },
   {
     name: 'Villa Coral',
     reason: 'Si buscas una escapada corta con piscina privada',
-    link: '/VillaCoralES',
+    link: pathForLegacyId('VillaCoralES'),
     houseCode: 6
   }
 ];
@@ -2489,18 +2498,24 @@ export interface BlogArticle {
  * The ten travel guides, in one place, so the footer and the blog index don't
  * drift apart. Titles here are short link labels, not the full SEO <title> —
  * see src/pages/Blog/staticPages(_ES) for the per-article long-form title.
+ *
+ * PHASE 4: pathEn/pathEs are computed from routes.config.ts (the actual route
+ * table) instead of being hand-maintained literals, so this can't drift from
+ * what Router.tsx serves the way the old `/TenHoursInPuerto` /
+ * `/bestTimeToVisitPuerto` casing already had (routes.config.ts's slugs are
+ * uniformly lowercase).
  */
 export const BLOG_ARTICLES: BlogArticle[] = [
-  { key: 'twodays', titleEn: '2 Days in Puerto Viejo', titleEs: '2 días en Puerto Viejo', pathEn: '/twodaysinpuertoviejo', pathEs: '/twodaysinpuertoviejoES' },
-  { key: 'gandoca', titleEn: 'Getting to Gandoca-Manzanillo', titleEs: 'Cómo llegar a Gandoca-Manzanillo', pathEn: '/gettingtogandoca', pathEs: '/gettingtogandocaES' },
-  { key: 'sanjose', titleEn: 'From San José to Puerto Viejo', titleEs: 'De San José a Puerto Viejo', pathEn: '/travellingtopuertoviejo', pathEs: '/travellingtopuertoviejoES' },
-  { key: 'byplane', titleEn: 'Getting to Puerto Viejo by Plane', titleEs: 'Llegar a Puerto Viejo en avión', pathEn: '/puertoviejobyplane', pathEs: '/puertoviejobyplaneES' },
-  { key: 'tenhours', titleEn: 'Ten Hours to Explore Cahuita', titleEs: 'Diez horas para explorar Cahuita', pathEn: '/TenHoursInPuerto', pathEs: '/TenHoursInPuertoES' },
-  { key: 'bushours', titleEn: 'Bus Schedule & Routes', titleEs: 'Horarios de autobuses', pathEn: '/bushours', pathEs: '/bushoursES' },
-  { key: 'cahuitapark', titleEn: 'Visiting Cahuita National Park', titleEs: 'Visitar el Parque Nacional Cahuita', pathEn: '/cahuitaparkwhattodo', pathEs: '/cahuitaparkwhattodoES' },
-  { key: 'indigenous', titleEn: 'Indigenous Culture Nearby', titleEs: 'Cultura indígena cercana', pathEn: '/indigenousTravelPV', pathEs: '/indigenousTravelPVES' },
-  { key: 'besttime', titleEn: 'Best Time to Visit', titleEs: 'Mejor época para visitar', pathEn: '/bestTimeToVisitPuerto', pathEs: '/bestTimeToVisitPuertoES' },
-  { key: 'hiddengems', titleEn: 'Hidden Gems in Puerto Viejo', titleEs: 'Joyas escondidas', pathEn: '/puertoHiddenGems', pathEs: '/puertoHiddenGemsES' },
+  { key: 'twodays', titleEn: '2 Days in Puerto Viejo', titleEs: '2 días en Puerto Viejo', pathEn: pathForKey('blogTwodays', 'en'), pathEs: pathForKey('blogTwodays', 'es') },
+  { key: 'gandoca', titleEn: 'Getting to Gandoca-Manzanillo', titleEs: 'Cómo llegar a Gandoca-Manzanillo', pathEn: pathForKey('blogGandoca', 'en'), pathEs: pathForKey('blogGandoca', 'es') },
+  { key: 'sanjose', titleEn: 'From San José to Puerto Viejo', titleEs: 'De San José a Puerto Viejo', pathEn: pathForKey('blogSanjose', 'en'), pathEs: pathForKey('blogSanjose', 'es') },
+  { key: 'byplane', titleEn: 'Getting to Puerto Viejo by Plane', titleEs: 'Llegar a Puerto Viejo en avión', pathEn: pathForKey('blogByplane', 'en'), pathEs: pathForKey('blogByplane', 'es') },
+  { key: 'tenhours', titleEn: 'Ten Hours to Explore Cahuita', titleEs: 'Diez horas para explorar Cahuita', pathEn: pathForKey('blogTenhours', 'en'), pathEs: pathForKey('blogTenhours', 'es') },
+  { key: 'bushours', titleEn: 'Bus Schedule & Routes', titleEs: 'Horarios de autobuses', pathEn: pathForKey('blogBushours', 'en'), pathEs: pathForKey('blogBushours', 'es') },
+  { key: 'cahuitapark', titleEn: 'Visiting Cahuita National Park', titleEs: 'Visitar el Parque Nacional Cahuita', pathEn: pathForKey('blogCahuitapark', 'en'), pathEs: pathForKey('blogCahuitapark', 'es') },
+  { key: 'indigenous', titleEn: 'Indigenous Culture Nearby', titleEs: 'Cultura indígena cercana', pathEn: pathForKey('blogIndigenous', 'en'), pathEs: pathForKey('blogIndigenous', 'es') },
+  { key: 'besttime', titleEn: 'Best Time to Visit', titleEs: 'Mejor época para visitar', pathEn: pathForKey('blogBesttime', 'en'), pathEs: pathForKey('blogBesttime', 'es') },
+  { key: 'hiddengems', titleEn: 'Hidden Gems in Puerto Viejo', titleEs: 'Joyas escondidas', pathEn: pathForKey('blogHiddengems', 'en'), pathEs: pathForKey('blogHiddengems', 'es') },
 ];
 
 /**

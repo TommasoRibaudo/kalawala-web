@@ -5,6 +5,7 @@ import { faSnowflake, faUtensils, faWifi, faUser, faParking } from '@fortawesome
 import { useNavigate } from "react-router-dom";
 import './HomeCard.style.scss'
 import type { Locale } from '../../../i18n';
+import { pathForLegacyId } from '../../../routes.config';
 
 interface IHomeCard {
     name: string;
@@ -29,13 +30,13 @@ const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangC
             return;
         }
         event.preventDefault();
-        navigate(`/${houseLangCode}`);
+        navigate(pathForLegacyId(houseLangCode));
         setTimeout(() => {
             window.scrollTo(0, 0);
         }, 0);
     };
     return (
-        <a className="home-card-item" data-wow-duration="500ms" href={`/${houseLangCode}`} onClick={handleClick}>
+        <a className="home-card-item" data-wow-duration="500ms" href={pathForLegacyId(houseLangCode)} onClick={handleClick}>
             <div className="block">
                 <div className="icon-box d-block mx-auto">
                     <img src={image} alt={name} className="img-fluid rounded our-homes-img-m" width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(image)} sizes="(max-width: 767px) 90vw, (max-width: 1199px) 45vw, 350px" />

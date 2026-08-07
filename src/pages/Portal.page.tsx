@@ -8,10 +8,12 @@ import { BookingApiError, BookingLanguage, portalLogin } from '../services/Booki
 import { persistPortalSession, readLatestPortalCredentials, readPortalCredentials, removePortalCredentials } from '../services/PortalSession.service';
 import { portalStrings, PortalStrings } from './Portal.i18n';
 import './Portal.style.scss';
+import { pathForKey } from '../routes.config';
 
 function portalDetailPath(language: BookingLanguage, reservationPublicId: string): string {
-  const base = language === 'es' ? '/portalES' : '/portal';
-  return `${base}/${encodeURIComponent(reservationPublicId)}`;
+  // pathForKey('portalDetail', ...) returns the route pattern with a literal
+  // ":reservationPublicId" token; substitute in the real id.
+  return pathForKey('portalDetail', language).replace(':reservationPublicId', encodeURIComponent(reservationPublicId));
 }
 
 function getLoginError(error: unknown, strings: PortalStrings): string {

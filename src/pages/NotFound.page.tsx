@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
 import { detectLocaleFromPath } from '../i18n';
+import { pathForKey } from '../routes.config';
 
 /**
  * Catch-all 404.
@@ -24,14 +25,14 @@ const NotFound = () => {
         heading: 'No encontramos esta página',
         body: 'Es posible que el enlace esté roto o que la página se haya movido.',
         cta: 'Volver al inicio',
-        home: '/HomeES',
+        home: pathForKey('home', locale),
       }
     : {
         title: 'Page not found | Reservas Kalawala',
         heading: 'We could not find that page',
         body: 'The link may be broken, or the page may have moved.',
         cta: 'Back to home',
-        home: '/',
+        home: pathForKey('home', locale),
       };
 
   return (

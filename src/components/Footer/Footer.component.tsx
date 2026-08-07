@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { PROPERTY_DISPLAY_NAMES, BLOG_ARTICLES } from '../../utils/constants';
 import './Footer.style.scss';
-import { bookingPath, getMessages, localeSuffix, type Locale } from '../../i18n';
+import { bookingPath, getMessages, type Locale } from '../../i18n';
+import { pathForKey, routeKeyForSlug } from '../../routes.config';
 
 interface IFooter {
   locale: Locale;
@@ -10,7 +11,6 @@ interface IFooter {
 
 const Footer: React.FC<IFooter> = ({ locale }) => {
   const m = getMessages(locale);
-  const suffix = localeSuffix(locale);
   const bookPath = bookingPath(locale);
 
   return (
@@ -20,11 +20,14 @@ const Footer: React.FC<IFooter> = ({ locale }) => {
           <div className="footer-col">
             <h4>{m.footer.ourHomes}</h4>
             <ul>
-              {Object.entries(PROPERTY_DISPLAY_NAMES).map(([code, name]) => (
-                <li key={code}>
-                  <Link to={`/${code}${suffix}`}>{name}</Link>
-                </li>
-              ))}
+              {Object.entries(PROPERTY_DISPLAY_NAMES).map(([code, name]) => {
+                const key = routeKeyForSlug(code);
+                return key ? (
+                  <li key={code}>
+                    <Link to={pathForKey(key, locale)}>{name}</Link>
+                  </li>
+                ) : null;
+              })}
             </ul>
           </div>
 
@@ -32,8 +35,8 @@ const Footer: React.FC<IFooter> = ({ locale }) => {
             <h4>{m.footer.travelGuides}</h4>
             <ul>
               {/* Locale-keyed DATA, not chrome: BLOG_ARTICLES stores flat
-                  titleEn/titleEs/pathEn/pathEs fields. Phase 3 reshapes these to
-                  LocalizedValue and Phase 4 replaces the paths with routes.config. */}
+                  titleEn/titleEs/pathEn/pathEs fields. pathEn/pathEs are
+                  computed from routes.config.ts (PHASE 4). */}
               {BLOG_ARTICLES.map((article) => (
                 <li key={article.key}>
                   <Link to={locale === 'es' ? article.pathEs : article.pathEn}>

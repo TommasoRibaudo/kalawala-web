@@ -50,7 +50,6 @@ const HomeES = lazy(() => import(/* webpackChunkName: "route-homees" */ '../page
 const Success = lazy(() => import(/* webpackChunkName: "route-success" */ '../pages/Home/Success.page'));
 const NotFound = lazy(() => import(/* webpackChunkName: "route-404" */ '../pages/NotFound.page'));
 const BlogIndex = lazy(() => import(/* webpackChunkName: "route-blog" */ '../pages/Blog/BlogIndex.page'));
-const BlogIndexES = lazy(() => import(/* webpackChunkName: "route-bloges" */ '../pages/Blog/BlogIndex.page_ES'));
 // import About from './About';
 // import Contact from './Contact';
 
@@ -184,7 +183,7 @@ const AppRouter = () => {
       <Route path='/Pappagallo'  element={<ListingPappagallo />}/>
       <Route path='/Delfin'  element={<ListingDelfin />}/>
       <Route path='/blog' element={<BlogIndex />} />
-      <Route path='/blogES' element={<BlogIndexES />} />
+      <Route path='/blogES' element={<BlogIndex />} />
       <Route path='/twodaysinpuertoviejo' element={<TwoDaysInPV />} />
       <Route path='/gettingtogandoca' element={<GettingToGandoca />} />
       <Route path='/travellingtopuertoviejo' element={<TravellingToPuerto />} />

@@ -104,6 +104,10 @@ export const es: Messages = {
     // ("Reserva Tu Estadía"); the other eight didn't. Unified on the majority
     // form.
     bookYourStay: 'Reserva tu Estadía',
+    indexTitle: 'Guías de Viaje de Puerto Viejo | Reservas Kalawala',
+    indexDescription:
+      'Diez guías locales de Puerto Viejo de Talamanca: cómo llegar, cómo moverte y qué hacer una vez que estés aquí.',
+    indexHeading: 'Guías de Viaje de Puerto Viejo',
   },
 
   property: {

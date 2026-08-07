@@ -115,6 +115,10 @@ export const en = {
 
   blog: {
     bookYourStay: 'Book Your Stay',
+    indexTitle: 'Puerto Viejo Travel Guides | Reservas Kalawala',
+    indexDescription:
+      "Ten local guides to Puerto Viejo de Talamanca: getting there, getting around, and what to do once you're here.",
+    indexHeading: 'Puerto Viejo Travel Guides',
   },
 
   property: {

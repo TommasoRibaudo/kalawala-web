@@ -362,3 +362,155 @@ const travellingToPuerto: Partial<Record<Locale, TravellingToPuertoContent>> = {
 export function travellingToPuertoContent(locale: Locale): TravellingToPuertoContent {
   return travellingToPuerto[locale] ?? travellingToPuerto.en!;
 }
+
+export interface CahuitaParkContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: string[];
+  enterHeading: string;
+  enterParagraphs: string[];
+  stayRecommendationTitle: string;
+  snorkelHeading: string;
+  snorkelParagraphs: [string, string, string];
+  snorkelListItems: [string, string, string];
+  snorkelClosing: string;
+  wildlifeHeading: string;
+  wildlifeParagraphs: [string, string, string];
+  scheduleHeading: string;
+  scheduleParagraphs: [React.ReactNode, string];
+  boatHeading: string;
+  boatParagraphs: [string, React.ReactNode, string];
+  plasticHeading: string;
+  plasticParagraphs: [React.ReactNode, string, string];
+  tipsHeading: string;
+  tipsListItems: [string, string, string, string];
+  closing: React.ReactNode;
+}
+
+const cahuitaPark: Partial<Record<Locale, CahuitaParkContent>> = {
+  en: {
+    seoTitle: 'Visiting Cahuita National Park: What to Know Before You Go',
+    seoDescription:
+      "Cahuita National Park is one of the easiest and most relaxed national parks to visit on Costa Rica's Caribbean coast. It combines jungle trails, white-sand beaches, wildlife, and coral reefs in one place.",
+    heading: 'Visiting Cahuita National Park: What to Know Before You Go',
+    photoCredit: <>Photo by <a href="https://haakonkrohn.com/" target="_blank" rel="noopener noreferrer">Haakon S. Krohn</a></>,
+    introParagraphs: [
+      "Cahuita National Park is one of the easiest and most relaxed national parks to visit on Costa Rica's Caribbean coast. It combines jungle trails, white-sand beaches, wildlife, and coral reefs in one place.",
+      'If you are staying near Cahuita town or Puerto Viejo, this is a great half-day or full-day trip. Below is a clear guide to help you plan your visit.',
+    ],
+    enterHeading: 'Enter from Cahuita Town',
+    enterParagraphs: [
+      'The most common entrance is in Cahuita town, near Playa Blanca.',
+      'This entrance works on a donation basis, which makes it cheaper than other park entrances. The donation helps support park maintenance and local guides.',
+      'Arrive early in the morning if you can. It is cooler, quieter, and better for wildlife spotting.',
+    ],
+    stayRecommendationTitle: 'Where to stay near Cahuita National Park?',
+    snorkelHeading: 'Snorkeling Inside the Park',
+    snorkelParagraphs: [
+      'Snorkeling is one of the main reasons people visit Cahuita National Park.',
+      "The coral reef here is one of the largest on Costa Rica's Caribbean coast. You can see colorful fish, coral formations, and sometimes rays.",
+      'Most visitors book a guided snorkeling tour, which includes:',
+    ],
+    snorkelListItems: ['A local guide', 'Snorkeling gear', 'A boat ride to the reef'],
+    snorkelClosing: 'Conditions depend on the weather, so visibility can change from day to day.',
+    wildlifeHeading: 'Watch Your Food Around Wildlife',
+    wildlifeParagraphs: [
+      'Cahuita is full of animals. You may see monkeys, raccoons, iguanas, coatis, and sloths.',
+      'Some animals are very used to visitors and may try to steal food. Keep snacks in a closed bag and never leave food unattended.',
+      'Feeding animals is not allowed and can harm them.',
+    ],
+    scheduleHeading: 'Know the Park Schedule',
+    scheduleParagraphs: [
+      <>The park <strong>closes at 4:00 p.m.</strong> Visitors must exit before that time.</>,
+      'This is another reason to enter early. You will have more time to walk, swim, and relax without rushing.',
+    ],
+    boatHeading: 'Boat Ride Back Instead of Walking',
+    boatParagraphs: [
+      'The main trail runs along the coast and can be long if you walk the full route.',
+      <>Many visitors choose to walk one way and <strong>return by boat</strong>. Local boat operators offer rides back toward Cahuita town.</>,
+      'This is a good option if you want to enjoy the trail without walking the entire distance.',
+    ],
+    plasticHeading: 'Plastic Is Not Allowed',
+    plasticParagraphs: [
+      <><strong>Single-use plastics</strong> are not allowed inside the park.</>,
+      'This includes plastic bags, disposable bottles, and plastic food packaging. Bring reusable bottles and containers.',
+      'Park staff may check bags at the entrance.',
+    ],
+    tipsHeading: 'Final Tips Before You Go',
+    tipsListItems: [
+      'Wear comfortable walking shoes or sandals',
+      'Bring water in a reusable bottle',
+      'Use reef-safe sunscreen',
+      'Start early to avoid heat and crowds',
+    ],
+    closing: <><strong>Cahuita National Park is calm, beautiful, and easy to visit.</strong> With a little planning, it is one of the best nature experiences on the Caribbean coast of Costa Rica.</>,
+  },
+  es: {
+    seoTitle: 'Visitar el Parque Nacional Cahuita: lo que tenés que saber',
+    seoDescription:
+      'El Parque Nacional Cahuita es uno de los parques más accesibles y tranquilos del Caribe costarricense. Combina selva, playa, fauna y arrecife en un solo lugar.',
+    heading: 'Visitar el Parque Nacional Cahuita: lo que tenés que saber',
+    photoCredit: <>Foto de <a href="https://haakonkrohn.com/" target="_blank" rel="noopener noreferrer">Haakon S. Krohn</a></>,
+    introParagraphs: [
+      'El Parque Nacional Cahuita es uno de los parques más accesibles y tranquilos del Caribe costarricense. Combina selva, playa, fauna y arrecife en un solo lugar.',
+      'Si estás en Cahuita o Puerto Viejo, es una excursión ideal de medio día o de día completo. Acá te dejo una guía clara para organizar tu visita.',
+    ],
+    enterHeading: 'Entrada por el pueblo de Cahuita',
+    enterParagraphs: [
+      'La entrada más usada es la que está en el pueblo de Cahuita, cerca de Playa Blanca.',
+      'Esta entrada funciona con donación voluntaria, por lo que suele ser más económica. La donación ayuda al mantenimiento del parque y a la comunidad local.',
+      'Lo mejor es entrar temprano. Hay menos calor, menos gente y más animales activos.',
+    ],
+    // The pre-merge Spanish page left this title untranslated (literally
+    // "Where to stay near Cahuita National Park?") and also had a second,
+    // duplicate StayRecommendation later with a title about Puerto Viejo bus
+    // services — unrelated to this article, apparently pasted in from
+    // BusHours. Translated the real title; the stray second block is dropped.
+    stayRecommendationTitle: '¿Dónde hospedarte cerca del Parque Nacional Cahuita?',
+    snorkelHeading: 'Snorkel dentro del parque',
+    snorkelParagraphs: [
+      'El snorkel es una de las actividades principales del parque.',
+      'El arrecife de Cahuita es uno de los más grandes del Caribe de Costa Rica. Podés ver peces de colores, corales y, a veces, rayas.',
+      'Lo más común es hacerlo con un tour guiado, que suele incluir:',
+    ],
+    snorkelListItems: ['Guía local', 'Equipo de snorkel', 'Traslado en bote hasta el arrecife'],
+    snorkelClosing: 'La visibilidad depende del clima y del estado del mar.',
+    wildlifeHeading: 'Cuidado con la comida y los animales',
+    wildlifeParagraphs: [
+      'El parque tiene mucha fauna. Es común ver monos, mapaches, iguanas, pizotes y perezosos.',
+      'Algunos animales intentan robar comida. Guardá bien tus snacks y no los dejés a la vista.',
+      'No está permitido alimentar a los animales.',
+    ],
+    scheduleHeading: 'Horario del parque',
+    scheduleParagraphs: [
+      <>El parque <strong>cierra a las 4:00 p.m.</strong> Todos los visitantes deben salir antes de esa hora.</>,
+      'Por eso conviene entrar temprano y recorrer el parque sin apuro.',
+    ],
+    boatHeading: 'Regresar en bote',
+    boatParagraphs: [
+      'El sendero principal es largo si lo caminás completo.',
+      <>Muchos visitantes hacen el recorrido a pie en un solo sentido y <strong>regresan en bote</strong> hacia Cahuita. Hay lancheros locales que ofrecen este servicio.</>,
+      'Es una buena opción si no querés caminar todo el trayecto de regreso.',
+    ],
+    plasticHeading: 'No se permite plástico',
+    plasticParagraphs: [
+      <>No se permite el ingreso de <strong>plásticos de un solo uso</strong>.</>,
+      'Esto incluye bolsas plásticas, botellas desechables y empaques de comida. Llevá botella reutilizable y recipientes reutilizables.',
+      'En la entrada pueden revisar los bolsos.',
+    ],
+    tipsHeading: 'Consejos finales',
+    tipsListItems: [
+      'Usá zapatos cómodos',
+      'Llevá agua en botella reutilizable',
+      'Usá protector solar biodegradable',
+      'Entrá temprano',
+    ],
+    closing: <><strong>El Parque Nacional Cahuita es fácil de visitar, natural y muy especial.</strong> Con una buena planificación, es una de las mejores experiencias del Caribe de Costa Rica.</>,
+  },
+};
+
+export function cahuitaParkContent(locale: Locale): CahuitaParkContent {
+  return cahuitaPark[locale] ?? cahuitaPark.en!;
+}

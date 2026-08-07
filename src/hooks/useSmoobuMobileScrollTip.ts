@@ -1,8 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useMessageTip } from '../components/MessageTip/MessageTipContainer.component';
+import { getMessages, type Locale } from '../i18n';
 
 interface UseSmoobuMobileScrollTipOptions {
-  isSpanishPage?: boolean;
+  locale?: Locale;
   isScreenSmall: boolean;
 }
 
@@ -12,10 +13,10 @@ interface UseSmoobuMobileScrollTipOptions {
  * 
  * @example
  * // In listing pages:
- * useSmoobuMobileScrollTip({ isSpanishPage: false, isScreenSmall: true });
+ * useSmoobuMobileScrollTip({ locale: 'en', isScreenSmall: true });
  */
 export const useSmoobuMobileScrollTip = (options: UseSmoobuMobileScrollTipOptions) => {
-  const { isSpanishPage = false, isScreenSmall } = options;
+  const { locale = 'en', isScreenSmall } = options;
   const { addMessageTip, getMessageTipsCount } = useMessageTip();
   const hasTriggeredRef = useRef(false);
 
@@ -29,9 +30,7 @@ export const useSmoobuMobileScrollTip = (options: UseSmoobuMobileScrollTipOption
     
     hasTriggeredRef.current = true;
 
-    const message = isSpanishPage
-      ? `Después de seleccionar fechas y presionar buscar, desplázate hacia abajo para ver el precio y reservar.`
-      : `After selecting dates and pressing search, scroll down to see the price and book.`;
+    const message = getMessages(locale).tips.mobileScroll;
 
     addMessageTip({
       id: 'mobile-scroll-instruction',
@@ -39,7 +38,7 @@ export const useSmoobuMobileScrollTip = (options: UseSmoobuMobileScrollTipOption
       delay: 5000,
       duration: 12000
     });
-  }, [addMessageTip, getMessageTipsCount, isSpanishPage, isScreenSmall]);
+  }, [addMessageTip, getMessageTipsCount, locale, isScreenSmall]);
 
   useEffect(() => {
     // Only set up listeners if on small screen

@@ -1,4 +1,4 @@
-import type { Locale } from '../i18n';
+import { getMessages, type Locale } from '../i18n';
 import { PROPERTY_CAPACITY } from './constants';
 
 /**
@@ -26,25 +26,23 @@ export const getCapacityFacts = (
   }
 
   const { bedrooms, bathrooms, maxGuests } = capacity;
+  const m = getMessages(locale).property;
 
   return [
     {
       key: 'bedrooms',
       icon: 'bed',
-      label: locale === 'es' ? `${bedrooms} ${bedrooms === 1 ? 'habitación' : 'habitaciones'}`
-        : `${bedrooms} ${bedrooms === 1 ? 'bedroom' : 'bedrooms'}`
+      label: m.bedrooms(bedrooms)
     },
     {
       key: 'bathrooms',
       icon: 'bath',
-      label: locale === 'es' ? `${bathrooms} ${bathrooms === 1 ? 'baño' : 'baños'}`
-        : `${bathrooms} ${bathrooms === 1 ? 'bathroom' : 'bathrooms'}`
+      label: m.bathrooms(bathrooms)
     },
     {
       key: 'guests',
       icon: 'guests',
-      label: locale === 'es' ? `Hasta ${maxGuests} ${maxGuests === 1 ? 'huésped' : 'huéspedes'}`
-        : `Up to ${maxGuests} ${maxGuests === 1 ? 'guest' : 'guests'}`
+      label: m.upToGuests(maxGuests)
     }
   ];
 };

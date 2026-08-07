@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { GUEST_REVIEWS, Review } from '../GuestReviews/reviewsData';
 import './HomeReviews.style.scss';
 import type { Locale } from '../../i18n';
+import { getMessages, pickLocalized } from '../../i18n';
 
 interface HomeReviewsProps {
   locale: Locale;
@@ -71,9 +72,10 @@ const HomeReviews: React.FC<HomeReviewsProps> = ({ locale }) => {
   const rafRef = useRef<number>();
   const lastTimeRef = useRef<number | null>(null);
 
-  const headingMain = locale === 'es' ? 'Lo que dicen nuestros' : 'What our guests are';
-  const headingHighlight = locale === 'es' ? 'huéspedes' : 'saying';
-  const closeLabel = locale === 'es' ? 'Cerrar reseña' : 'Close review';
+  const m = getMessages(locale);
+  const headingMain = m.reviews.headingMain;
+  const headingHighlight = m.reviews.headingHighlight;
+  const closeLabel = m.reviews.closeReview;
 
   // Auto-scroll via rAF
   useEffect(() => {
@@ -153,7 +155,7 @@ const HomeReviews: React.FC<HomeReviewsProps> = ({ locale }) => {
         onTouchEnd={() => { pausedRef.current = false; }}
       >
         {DOUBLED.map((review, index) => {
-          const text = locale === 'es' ? review.text.es : review.text.en;
+          const text = pickLocalized(review.text, locale);
           const propertyLabel = locale === 'es' ? review.propertyLabelES : review.propertyLabel;
           const stayLabel = locale === 'es' ? translateStayType(review.stayType) : review.stayType;
 
@@ -184,7 +186,7 @@ const HomeReviews: React.FC<HomeReviewsProps> = ({ locale }) => {
       </div>
 
       {activeReview && (() => {
-        const text = locale === 'es' ? activeReview.text.es : activeReview.text.en;
+        const text = pickLocalized(activeReview.text, locale);
         const propertyLabel = locale === 'es' ? activeReview.propertyLabelES : activeReview.propertyLabel;
         const stayLabel = locale === 'es' ? translateStayType(activeReview.stayType) : activeReview.stayType;
         return (

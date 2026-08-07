@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useMessageTip } from '../components/MessageTip/MessageTipContainer.component';
 import { RANDOM_POPUP_CONFIG } from '../utils/constants';
+import { pickLocalized, type Locale } from '../i18n';
 
 interface UseRandomPopupOptions {
-  isSpanishPage?: boolean;
+  locale?: Locale;
   enabled?: boolean;
 }
 
@@ -39,7 +40,7 @@ const markPopupAsShown = (): void => {
 };
 
 export const useRandomPopup = (options: UseRandomPopupOptions = {}) => {
-  const { isSpanishPage = false, enabled = true } = options;
+  const { locale = 'en', enabled = true } = options;
   const { addMessageTip } = useMessageTip();
 
   useEffect(() => {
@@ -71,9 +72,7 @@ export const useRandomPopup = (options: UseRandomPopupOptions = {}) => {
       markPopupAsShown();
       
       // Get appropriate message based on language
-      const message = isSpanishPage 
-        ? RANDOM_POPUP_CONFIG.messages.es 
-        : RANDOM_POPUP_CONFIG.messages.en;
+      const message = pickLocalized(RANDOM_POPUP_CONFIG.messages, locale);
 
       // Show the popup
       addMessageTip({
@@ -85,7 +84,7 @@ export const useRandomPopup = (options: UseRandomPopupOptions = {}) => {
     }, randomDelay);
 
     return () => clearTimeout(timer);
-  }, [addMessageTip, isSpanishPage, enabled]);
+  }, [addMessageTip, locale, enabled]);
 
   // Return function to manually trigger popup (for testing)
   return {
@@ -100,9 +99,7 @@ export const useRandomPopup = (options: UseRandomPopupOptions = {}) => {
       }
       
       // Get appropriate message based on language
-      const message = isSpanishPage 
-        ? RANDOM_POPUP_CONFIG.messages.es 
-        : RANDOM_POPUP_CONFIG.messages.en;
+      const message = pickLocalized(RANDOM_POPUP_CONFIG.messages, locale);
 
       // Show the popup immediately
       addMessageTip({

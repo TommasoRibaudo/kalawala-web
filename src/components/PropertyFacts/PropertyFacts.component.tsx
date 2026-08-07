@@ -4,6 +4,7 @@ import { faBath, faBed, faUserGroup, IconDefinition } from '@fortawesome/free-so
 import { CapacityFact, getCapacityFacts } from '../../utils/propertyCapacity';
 import './PropertyFacts.style.scss';
 import type { Locale } from '../../i18n';
+import { getMessages } from '../../i18n';
 
 interface PropertyFactsProps {
   propertyKey: string;
@@ -30,7 +31,7 @@ const PropertyFacts: React.FC<PropertyFactsProps> = ({
   return (
     <ul
       className="property-facts"
-      aria-label={locale === 'es' ? 'Capacidad de la casa' : 'Property capacity'}
+      aria-label={getMessages(locale).property.capacityAriaLabel}
     >
       {facts.map(({ key, icon, label }) => (
         <li className="property-facts__item" key={key}>

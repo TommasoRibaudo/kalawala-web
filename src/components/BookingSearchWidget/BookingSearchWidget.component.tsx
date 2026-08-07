@@ -8,6 +8,7 @@ import { MAX_PORTFOLIO_GUESTS } from '../../utils/constants';
 import { getCostaRicaToday, nightsBetween } from '../../utils/dates';
 import './BookingSearchWidget.style.scss';
 import type { Locale } from '../../i18n';
+import { bookingPath, bookingLanguage } from '../../i18n';
 
 interface BookingSearchWidgetProps {
   /** Whether the current page is Spanish */
@@ -68,7 +69,7 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
   apartmentSlug,
 }) => {
   const navigate = useNavigate();
-  const lang = locale === 'es' ? 'es' : 'en';
+  const lang = bookingLanguage(locale);
   const s = strings[lang];
   const today = useMemo(() => getCostaRicaToday(), []);
 
@@ -154,7 +155,7 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
 
     setIsSubmitting(true);
 
-    const bookPath = locale === 'es' ? '/bookES' : '/book';
+    const bookPath = bookingPath(locale);
     const params = new URLSearchParams({
       arrivalDate,
       departureDate,

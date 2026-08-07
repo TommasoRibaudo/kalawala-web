@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
 import FixedNavigationES from '../components/FixedNavigation/FixedNavigation.componentES';
-import { useLanguageDetection } from '../hooks/useLanguageDetection';
+import { useLocale } from '../i18n';
 import { BookingApiError, BookingLanguage, portalLogin } from '../services/BookingApi.service';
 import { persistPortalSession, readLatestPortalCredentials, readPortalCredentials, removePortalCredentials } from '../services/PortalSession.service';
 import { portalStrings, PortalStrings } from './Portal.i18n';
@@ -33,8 +33,8 @@ function getLoginError(error: unknown, strings: PortalStrings): string {
 const PortalLoginPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const isSpanishPage = useLanguageDetection();
-  const language: BookingLanguage = isSpanishPage ? 'es' : 'en';
+  const locale = useLocale();
+  const language: BookingLanguage = locale === 'es' ? 'es' : 'en';
   const strings = portalStrings[language];
   const Navigation = language === 'es' ? FixedNavigationES : FixedNavigation;
 

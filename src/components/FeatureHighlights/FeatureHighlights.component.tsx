@@ -2,6 +2,7 @@ import React from 'react';
 import { PROPERTY_MARKETING_CONFIG } from '../../utils/constants';
 import './FeatureHighlights.style.scss';
 import type { Locale } from '../../i18n';
+import { getMessages, pickLocalized } from '../../i18n';
 
 interface FeatureHighlightsProps {
   propertyKey: string;
@@ -21,11 +22,11 @@ const FeatureHighlights: React.FC<FeatureHighlightsProps> = ({
     return null;
   }
 
-  const features = locale === 'es' ? config.featureHighlights.es 
-    : config.featureHighlights.en;
+  const features = pickLocalized(config.featureHighlights, locale)
+;
 
-  const sectionTitle = locale === 'es' ? `¿Por qué los huéspedes eligen ${propertyName}?`
-    : `Why guests choose ${propertyName}`;
+  const sectionTitle = getMessages(locale).property.whyGuestsChoose(propertyName)
+;
 
   return (
     <div className="feature-highlights">

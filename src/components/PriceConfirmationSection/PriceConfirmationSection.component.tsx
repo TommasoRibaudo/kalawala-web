@@ -6,6 +6,7 @@ import { formatBookingMoney } from '../../utils/money';
 import InstantConfirmationBadge from '../InstantConfirmationBadge/InstantConfirmationBadge.component';
 import './PriceConfirmationSection.style.scss';
 import type { Locale } from '../../i18n';
+import { getMessages, bookingLanguage } from '../../i18n';
 
 interface PriceConfirmationSectionProps {
   propertyKey: string;
@@ -17,7 +18,7 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
   locale
 }) => {
   const config = PROPERTY_MARKETING_CONFIG[propertyKey];
-  const language = locale === 'es' ? 'es' : 'en';
+  const language = bookingLanguage(locale);
   const currentMonth = React.useMemo(() => getCostaRicaToday().slice(0, 7), []);
   // Shares the cache with the search widget's calendar, so this costs no extra
   // request — and the headline price can never contradict the dots below it.
@@ -37,8 +38,8 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
       ? formatBookingMoney(liveLowestCents, currency, language, { hideZeroCents: true })
       : `$${config.price.usd}`;
 
-  const tooltipText = locale === 'es' ? 'Precio más bajo disponible este mes. Las tarifas varían según la temporada y las fechas elegidas.'
-    : 'Lowest available rate this month. Rates vary by season and by the dates you choose.';
+  const tooltipText = getMessages(locale).price.tooltip
+;
 
   const priceText = locale === 'es' ? (
       <>

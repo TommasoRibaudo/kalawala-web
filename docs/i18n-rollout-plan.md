@@ -209,17 +209,49 @@ behaviour changes, no cleanups riding along, or review becomes impossible.
 
 ### Phase 2 — Message catalogs
 
-- [ ] Create `src/i18n/messages/{en,es}.ts`. Populate from the existing ternaries
-      and the `{en, es}` blocks already in `constants.ts` (59 of them).
-- [ ] Extract listing long-form copy out of the 10 page components into
-      `src/i18n/content/listings/`.
-- [ ] Extract blog article bodies into `src/i18n/content/blog/`.
-- [ ] Add a `t()` accessor with a missing-key policy: throw in development, fall
-      back to English in production, and log the miss.
-- [ ] Add a CI check that every locale file has the same key set as `en.ts`.
-      Without this, six locales silently drift.
+- [x] Create `src/i18n/messages/{en,es,de,fr,it,pt}.ts`. `en` is the shape source;
+      `es` is typed as `Messages`; the four unreleased locales are
+      `Partial<Messages>` and currently empty.
+- [x] `getMessages(locale)` merges a catalog over English, so an unreleased
+      language renders in English rather than blank.
+- [x] `useMessages()` hook + `messagesFor(locale)`.
+- [x] `pickLocalized()` for locale-keyed **content** (`{en, es}` values that live
+      with their data in `constants.ts`) — a different problem from UI chrome.
+- [x] `paths.ts`: `localeSuffix`, `bookingPath`, `bookingLanguage`, replacing the
+      `/bookES` arithmetic that was inlined in three components.
+- [x] Convert the shared-component ternaries to catalog lookups.
+- [x] **Remove every language boolean.** `useLanguageDetection` is deleted; the
+      five message-tip hooks (`useRandomPopup`, `useSmoobuBookingTip`,
+      `useSmoobuMobileScrollTip`, `useSmoobuSizeChange`) and `PortalGuard`,
+      `Portal.page`, `PortalDetail.page`, `Booking.page` all take a `Locale`.
+- [ ] ~~Extract listing long-form copy and blog article bodies~~ — **moved to
+      Phase 3**, see the scope note below.
+- [x] ~~`t()` with a runtime missing-key policy~~ — replaced by a typed catalog
+      object, which is strictly better; see below.
+- [x] ~~CI key-parity check~~ — replaced by compile-time enforcement.
 
-**Validation:** key-parity check passes for en/es; typecheck; e2e.
+**Validation:** typecheck; unit tests unchanged from baseline; prerender diff.
+
+> **`t()` and the key-parity check were both replaced by the type system.**
+> The plan called for a `t('some.key')` accessor plus a CI script comparing key
+> sets. `useMessages()` returns the catalog *object* instead, so `m.footer.ourHomes`
+> is checked by the compiler and autocompletes. `es.ts` is typed as `Messages`,
+> so a missing or misspelled key is a build error — which is what the CI script
+> was for, except it runs on every keystroke and cannot be forgotten. There is no
+> runtime missing-key path left to log.
+>
+> When Phase 8 fills a locale, flip its type from `Partial<Messages>` to
+> `Messages` and the compiler starts demanding completeness.
+
+> **Content extraction moved to Phase 3.** The EN and ES page components are not
+> "same structure, different strings" — `TwoDaysInPV.tsx` and `TwoDaysInPV_ES.tsx`
+> are 142 and 127 lines with different imports and different JSX. Extracting
+> their content requires first reconciling the two structures, which *is* the
+> Phase 3 merge. Doing it here would mean editing the same 40 files twice.
+>
+> Left behind for Phase 3, each marked in code: `BLOG_ARTICLES`' flat
+> `titleEn/titleEs/pathEn/pathEs` fields, and the reviews' `propertyLabelES` and
+> `translateStayType`. All are data-shape changes, not chrome.
 
 ### Phase 3 — Collapse duplicated page components
 

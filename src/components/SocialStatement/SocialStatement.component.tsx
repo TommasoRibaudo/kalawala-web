@@ -2,6 +2,7 @@ import React from 'react';
 import { PROPERTY_MARKETING_CONFIG } from '../../utils/constants';
 import './SocialStatement.style.scss';
 import type { Locale } from '../../i18n';
+import { pickLocalized } from '../../i18n';
 
 interface SocialStatementProps {
   propertyKey: string;
@@ -19,8 +20,8 @@ const SocialStatement: React.FC<SocialStatementProps> = ({
     return null;
   }
 
-  const socialStatement = locale === 'es' ? config.socialStatement.es 
-    : config.socialStatement.en;
+  const socialStatement = pickLocalized(config.socialStatement, locale)
+;
 
   return (
     <div className="social-statement">

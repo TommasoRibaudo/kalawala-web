@@ -990,3 +990,149 @@ const puertoHiddenGems: Partial<Record<Locale, PuertoHiddenGemsContent>> = {
 export function puertoHiddenGemsContent(locale: Locale): PuertoHiddenGemsContent {
   return puertoHiddenGems[locale] ?? puertoHiddenGems.en!;
 }
+
+export interface BusHoursContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  photoCredit: React.ReactNode;
+  introParagraph: React.ReactNode;
+  aboutHeading: string;
+  aboutParagraph1: React.ReactNode;
+  aboutParagraph2: string;
+  stayRecommendationTitle: string;
+  routesHeading: string;
+  routesIntro: string;
+  destinations: [string, string, string, string, string];
+  schedulesHeading: string;
+  sanJoseHeading: string;
+  sanJoseIntro: string;
+  limonHeading: string;
+  limonIntro: string;
+  manzanilloHeading: string;
+  manzanilloIntro: string;
+  sixaolaHeading: string;
+  sixaolaIntro: string;
+  tableRouteHeader: string;
+  tableDepartureHeader: string;
+  tableWeekdayHeader: string;
+  tableSundayHeader: string;
+  tipsHeading: string;
+  tipsListItems: [string, string, string, string, string];
+  ticketsHeading: string;
+  ticketsParagraph: string;
+  contactHeading: string;
+  contactIntro: string;
+  closingParagraph: string;
+}
+
+const busHours: Partial<Record<Locale, BusHoursContent>> = {
+  en: {
+    seoTitle: 'Complete Bus Schedule from Puerto Viejo, Costa Rica - MEPE Bus Routes & Timetables',
+    seoDescription:
+      "Find the complete bus schedule from Puerto Viejo to San Jose, Limón, Cahuita, Manzanillo, and Sixaola. MEPE bus timetables, routes, and transportation information for Costa Rica's Caribbean coast.",
+    heading: 'Complete Bus Schedule from Puerto Viejo, Costa Rica - MEPE Bus Routes & Timetables',
+    photoCredit: <>Photo by <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a></>,
+    introParagraph:
+      <>Planning your transportation in Costa Rica's Caribbean coast? Look no further! This comprehensive guide provides you with all the bus schedules you need to travel from Puerto Viejo to major destinations including <strong>San Jose</strong>, <strong>Limón</strong>, <strong>Cahuita</strong>, <strong>Manzanillo</strong>, and <strong>Sixaola</strong>. Whether you're searching for "bus San Jose Puerto Viejo", "bus Cahuita Puerto Viejo", or "bus from Puerto Viejo to San Jose", we've got you covered with the most up-to-date MEPE bus timetables.</>,
+    aboutHeading: 'About MEPE Bus Service',
+    aboutParagraph1:
+      <><strong><a href="https://www.mepe.co.cr/Ingles/index.html" target="_blank" rel="noopener noreferrer">MEPE</a> (Empresa de Transportes Públicos de Limón)</strong> is the primary bus company operating throughout Costa Rica's Caribbean coast. Known for their reliable service and extensive network, MEPE buses connect Puerto Viejo with major cities and tourist destinations across the region. Their modern fleet provides comfortable transportation for both locals and visitors, making it the preferred choice for budget-conscious travelers exploring Costa Rica's stunning Caribbean coastline.</>,
+    aboutParagraph2:
+      'MEPE buses are easily recognizable by their distinctive blue and white colors, and they operate on fixed schedules that are generally punctual. The company has been serving the Caribbean region for decades, building a reputation for safety, affordability, and comprehensive coverage of the area\'s most important routes.',
+    // The pre-merge Spanish page's title here ("¿Dónde hospedarte para visitar
+    // el Parque Nacional Cahuita?") belonged to a different article — see the
+    // CahuitaPark commit, which found the reverse: a stray StayRecommendation
+    // with this article's title. The two pages were cross-contaminated.
+    stayRecommendationTitle: 'Where to stay while using Puerto Viejo bus services?',
+    routesHeading: 'Bus Routes from Puerto Viejo',
+    routesIntro: 'Puerto Viejo serves as a major transportation hub for the Southern Caribbean region. From here, you can easily reach:',
+    destinations: [
+      "San Jose - Costa Rica's capital city (approximately 4-5 hours)",
+      'Limón - The Caribbean port city (approximately 1 hour)',
+      'Cahuita - Famous for its national park and beaches (approximately 30 minutes)',
+      'Manzanillo - Gateway to Gandoca-Manzanillo Wildlife Refuge (approximately 20 minutes)',
+      'Sixaola - Border town with Panama (approximately 1.5 hours)',
+    ],
+    schedulesHeading: 'Complete Bus Schedules',
+    sanJoseHeading: 'San José ↔ Puerto Viejo (stops in Cahuita)',
+    sanJoseIntro: "This is the main route connecting Puerto Viejo with Costa Rica's capital city. Perfect for travelers arriving from or heading to San José International Airport.",
+    limonHeading: 'Limón ↔ Puerto Viejo (stops in Cahuita)',
+    limonIntro: 'This is one of the most frequent routes, connecting Puerto Viejo with the port city of Limón. Perfect for travelers heading to or from San Jose, as Limón serves as a major connection point.',
+    manzanilloHeading: 'Puerto Viejo ↔ Manzanillo',
+    manzanilloIntro: 'This route takes you to the beautiful beaches of Manzanillo and provides access to the Gandoca-Manzanillo National Wildlife Refuge.',
+    sixaolaHeading: 'Sixaola ↔ Puerto Viejo (stops in Bri Bri)',
+    sixaolaIntro: 'This route connects Puerto Viejo with the border town of Sixaola, perfect for travelers heading to Panama. The route also stops in Bri Bri, providing access to indigenous communities and cultural experiences.',
+    tableRouteHeader: 'Route',
+    tableDepartureHeader: 'Departure Times',
+    tableWeekdayHeader: 'Monday - Saturday',
+    tableSundayHeader: 'Sunday & Holidays',
+    tipsHeading: 'Tips for Bus Travel in Puerto Viejo',
+    tipsListItems: [
+      'Arrive Early: Buses can fill up quickly, especially during peak tourist season',
+      'Cash Only: MEPE buses accept cash payments only - have colones ready',
+      'Baggage: Small bags can be stored overhead, larger luggage goes in the cargo area',
+      'Comfort: Bring water and snacks for longer journeys',
+      'Connections: while Limón is the main hub for connections to San Jose and other destinations, you can also get to Puerto Viejo from San Jose.',
+    ],
+    ticketsHeading: 'Where to Buy Tickets',
+    ticketsParagraph: 'Bus tickets can be purchased at the main bus stops in Puerto Viejo. The primary bus stop is located near the basketball court in downtown Puerto Viejo, close to the Deleite Ice Cream Shop.',
+    contactHeading: 'Contact for Bus Information',
+    contactIntro: 'Need updated information about schedules or routes? You can contact the bus company via WhatsApp for the most current information about bus services:',
+    closingParagraph: 'For the most comfortable stay while exploring the Caribbean coast, consider booking one of our fully equipped homes in Puerto Viejo or Playa Chiquita. We offer convenient locations near bus stops and provide all the amenities you need for a perfect Costa Rican getaway!',
+  },
+  es: {
+    seoTitle: 'Horarios Completos de Autobuses desde Puerto Viejo, Costa Rica - Rutas y Horarios MEPE',
+    seoDescription:
+      'Encuentra los horarios completos de autobuses desde Puerto Viejo hacia San José, Limón, Cahuita, Manzanillo y Sixaola. Horarios MEPE, rutas e información de transporte para la costa caribeña de Costa Rica.',
+    heading: 'Horarios Completos de Autobuses desde Puerto Viejo, Costa Rica - Rutas y Horarios MEPE',
+    photoCredit: <>Foto de <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a></>,
+    introParagraph:
+      <>¿Planificando tu transporte en la costa caribeña de Costa Rica? ¡No busques más! Esta guía completa te proporciona todos los horarios de autobuses que necesitas para viajar desde Puerto Viejo a destinos principales incluyendo <strong>San José</strong>, <strong>Limón</strong>, <strong>Cahuita</strong>, <strong>Manzanillo</strong> y <strong>Sixaola</strong>. Ya sea que busques "autobús San José Puerto Viejo", "autobús Cahuita Puerto Viejo" o "autobús de Puerto Viejo a San José", te tenemos cubierto con los horarios MEPE más actualizados.</>,
+    aboutHeading: 'Acerca del Servicio de Autobuses MEPE',
+    aboutParagraph1:
+      <><strong><a href="https://www.mepe.co.cr/Ingles/index.html" target="_blank" rel="noopener noreferrer">MEPE</a> (Empresa de Transportes Públicos de Limón)</strong> es la empresa de autobuses principal que opera en toda la costa caribeña de Costa Rica. Conocida por su servicio confiable y red extensa, los autobuses MEPE conectan Puerto Viejo con las principales ciudades y destinos turísticos de la región. Su flota moderna proporciona transporte cómodo tanto para locales como visitantes, convirtiéndola en la opción preferida para viajeros conscientes del presupuesto que exploran la impresionante costa caribeña de Costa Rica.</>,
+    aboutParagraph2:
+      'Los autobuses MEPE son fácilmente reconocibles por sus distintivos colores azul y blanco, y operan en horarios fijos que generalmente son puntuales. La empresa ha estado sirviendo a la región del Caribe durante décadas, construyendo una reputación de seguridad, asequibilidad y cobertura integral de las rutas más importantes del área.',
+    stayRecommendationTitle: '¿Dónde hospedarte mientras usas los servicios de autobús de Puerto Viejo?',
+    routesHeading: 'Rutas de Autobuses desde Puerto Viejo',
+    routesIntro: 'Puerto Viejo sirve como un importante centro de transporte para la región del Caribe Sur. Desde aquí, puedes llegar fácilmente a:',
+    destinations: [
+      'San José - La capital de Costa Rica (aproximadamente 4-5 horas)',
+      'Limón - La ciudad portuaria del Caribe (aproximadamente 1 hora)',
+      'Cahuita - Famosa por su parque nacional y playas (aproximadamente 30 minutos)',
+      'Manzanillo - Puerta de entrada al Refugio de Vida Silvestre Gandoca-Manzanillo (aproximadamente 20 minutos)',
+      'Sixaola - Ciudad fronteriza con Panamá (aproximadamente 1.5 horas)',
+    ],
+    schedulesHeading: 'Horarios Completos de Autobuses',
+    sanJoseHeading: 'San José ↔ Puerto Viejo (para en Cahuita)',
+    sanJoseIntro: 'Esta es la ruta principal que conecta Puerto Viejo con la capital de Costa Rica. Perfecta para viajeros que llegan o se dirigen al Aeropuerto Internacional de San José.',
+    limonHeading: 'Limón ↔ Puerto Viejo (para en Cahuita)',
+    limonIntro: 'Esta es una de las rutas más frecuentes, conectando Puerto Viejo con la ciudad portuaria de Limón. Perfecta para viajeros que se dirigen hacia o desde San José, ya que Limón sirve como un importante punto de conexión.',
+    manzanilloHeading: 'Puerto Viejo ↔ Manzanillo',
+    manzanilloIntro: 'Esta ruta te lleva a las hermosas playas de Manzanillo y proporciona acceso al Refugio Nacional de Vida Silvestre Gandoca-Manzanillo.',
+    sixaolaHeading: 'Sixaola ↔ Puerto Viejo (para en Bri Bri)',
+    sixaolaIntro: 'Esta ruta conecta Puerto Viejo con la ciudad fronteriza de Sixaola, perfecta para viajeros que se dirigen a Panamá. La ruta también para en Bri Bri, proporcionando acceso a comunidades indígenas y experiencias culturales.',
+    tableRouteHeader: 'Ruta',
+    tableDepartureHeader: 'Horarios de Salida',
+    tableWeekdayHeader: 'Lunes - Sábado',
+    tableSundayHeader: 'Domingo y Feriados',
+    tipsHeading: 'Consejos para Viajar en Autobús en Puerto Viejo',
+    tipsListItems: [
+      'Llega Temprano: Los autobuses pueden llenarse rápidamente, especialmente durante la temporada alta turística',
+      'Solo Efectivo: Los autobuses MEPE solo aceptan pagos en efectivo - ten colones listos',
+      'Equipaje: Las bolsas pequeñas se pueden guardar arriba, el equipaje más grande va en el área de carga',
+      'Comodidad: Trae agua y bocadillos para viajes más largos',
+      'Conexiones: aunque Limón es el centro principal para conexiones a San José y otros destinos, también puedes llegar a Puerto Viejo desde San José.',
+    ],
+    ticketsHeading: 'Dónde Comprar Boletos',
+    ticketsParagraph: 'Los boletos de autobús se pueden comprar en las paradas principales de autobús en Puerto Viejo. La parada principal de autobús está ubicada cerca de la cancha de baloncesto en el centro de Puerto Viejo, cerca de la Heladería Deleite.',
+    contactHeading: 'Contacto para Información de Autobuses',
+    contactIntro: '¿Necesitas información actualizada sobre horarios o rutas? Puedes contactar por WhatsApp la empresa de buses para obtener la información más reciente sobre los servicios de autobús:',
+    closingParagraph: 'Para la estadía más cómoda mientras exploras la costa caribeña, considera reservar una de nuestras casas completamente equipadas en Puerto Viejo o Playa Chiquita. ¡Ofrecemos ubicaciones convenientes cerca de las paradas de autobús y proporcionamos todas las comodidades que necesitas para una escapada perfecta costarricense!',
+  },
+};
+
+export function busHoursContent(locale: Locale): BusHoursContent {
+  return busHours[locale] ?? busHours.en!;
+}

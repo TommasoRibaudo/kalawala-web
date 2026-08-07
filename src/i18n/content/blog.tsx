@@ -74,3 +74,65 @@ const tenHoursInPuerto: Partial<Record<Locale, TenHoursInPuertoContent>> = {
 export function tenHoursInPuertoContent(locale: Locale): TenHoursInPuertoContent {
   return tenHoursInPuerto[locale] ?? tenHoursInPuerto.en!;
 }
+
+export interface PuertoViejoByPlaneContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  intro: React.ReactNode;
+  stayRecommendationTitle: string;
+  /** Booking the flight, the SJO layover, the Cessna leg, the Limón transfer. */
+  bodyParagraphs: React.ReactNode[];
+  /** The wrap-up, after WhyStayWithUs. */
+  closingParagraphs: React.ReactNode[];
+}
+
+const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
+  en: {
+    seoTitle: 'Getting to Puerto Viejo By Plane',
+    seoDescription:
+      "Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón.",
+    heading: 'Getting to Puerto Viejo By Plane',
+    heroAlt: 'Flying to Puerto Viejo Costa Rica',
+    intro:
+      "Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón.",
+    stayRecommendationTitle: 'Where to stay when flying to Puerto Viejo?',
+    bodyParagraphs: [
+      <>To book your flight, simply visit <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> and select your travel dates and times. You will then be prompted to enter your personal and payment details to complete your booking. It's important to note that Sansa Airlines offers several flight options throughout the day, making it easy to find a flight that fits your schedule.</>,
+      <>The first leg of the journey is to fly to San Jose International Airport, also known as <a href="https://maps.app.goo.gl/4wEYh3ZHCWNWSrQo6" target="_blank" rel="noopener noreferrer">Juan Santamaría</a> (SJO), the largest airport in Costa Rica. SJO is well-connected to many international destinations, making it a convenient starting point for your journey to Puerto Viejo. Once you land in SJO, you will have to pass customs and head to the Domestic Gate: there is a big old airplane outside, so it's easy to spot.</>,
+      <>The flight takes approximately 40 minutes on a small but safe Cessna, giving you a bird's eye view of <a href="https://maps.app.goo.gl/ZZoEh3xB5jQGG4Mf9" target="_blank" rel="noopener noreferrer">Braulio Carrillo National Park</a>.</>,
+      "Once you arrive in Limón, a private transfer will drive you to Puerto Viejo for approximately $75 USD. A chauffeur will be waiting for you at the airport and will drive you directly to your accommodation, ensuring a stress-free and comfortable journey. Alternatively, you can take a bus or taxi from Limón to Puerto Viejo, but we recommend arranging a private transfer beforehand to save time and avoid any potential scam.",
+    ],
+    closingParagraphs: [
+      "At this point, all that's left is for you to kick back and enjoy the laid-back vibes of Puerto Viejo. Whether you're looking to relax on the beach, explore the jungle, or indulge in some delicious Caribbean cuisine, Puerto Viejo has something for everyone.",
+      "In conclusion, traveling to Puerto Viejo from any destination is easy and convenient thanks to the domestic flight from San Jose to Limón. With a quick and comfortable flight and the option of arranging a private transfer, you'll be sipping on a tropical cocktail in no time. So what are you waiting for? Book your trip to Puerto Viejo today and experience the magic of this charming beach town for yourself! And don't hesitate to contact us for help organizing your trip or scheduling a private transfer from Limón.",
+    ],
+  },
+  es: {
+    seoTitle: 'Llegar a Puerto Viejo en Avión',
+    seoDescription:
+      'Llegar a Puerto Viejo en avión es más fácil de lo que piensas. En este artículo, te mostraremos cómo viajar desde cualquier destino a Puerto Viejo tomando un vuelo doméstico desde San José a Limón.',
+    heading: 'Llegar a Puerto Viejo en Avión',
+    // The pre-merge ES page's alt text ("Kayaking in Punta Uva") described a
+    // different photo entirely; EN's alt was correct for this image.
+    heroAlt: 'Flying to Puerto Viejo Costa Rica',
+    intro:
+      'Llegar a Puerto Viejo en avión es más fácil de lo que piensas. En este artículo, te mostraremos cómo viajar desde cualquier destino a Puerto Viejo tomando un vuelo doméstico desde San José a Limón.',
+    stayRecommendationTitle: '¿Dónde hospedarte cuando vueles a Puerto Viejo?',
+    bodyParagraphs: [
+      <>Para reservar tu vuelo, simplemente visita <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> y selecciona tus fechas y horarios de viaje. Luego se te pedirá que ingreses tus datos personales y de pago para completar tu reserva. Es importante tener en cuenta que Sansa Airlines ofrece varias opciones de vuelo durante el día, lo que facilita encontrar un vuelo que se ajuste a tu horario.</>,
+      <>La primera parte del viaje consiste en volar al Aeropuerto Internacional de San José, también conocido como <a href="https://maps.app.goo.gl/4wEYh3ZHCWNWSrQo6" target="_blank" rel="noopener noreferrer">Juan Santamaría</a> (SJO), el aeropuerto más grande de Costa Rica. SJO está bien conectado con muchos destinos internacionales, lo que lo convierte en un punto de partida conveniente para tu viaje a Puerto Viejo. Una vez que aterrices en SJO, tendrás que pasar por la aduana y dirigirte al Gate Doméstico: hay un avión antiguo grande afuera, así que es fácil de reconocer.</>,
+      <>El vuelo dura aproximadamente 40 minutos en un pequeño pero seguro Cessna, que te ofrece una vista panorámica del <a href="https://maps.app.goo.gl/ZZoEh3xB5jQGG4Mf9" target="_blank" rel="noopener noreferrer">Parque Nacional Braulio Carrillo</a>.</>,
+      'Una vez que llegues a Limón, un traslado privado te llevará a Puerto Viejo por aproximadamente $75 USD. Un chófer te estará esperando en el aeropuerto y te llevará directamente a tu alojamiento, garantizando un viaje cómodo y sin estrés. Alternativamente, puedes tomar un autobús o un taxi desde Limón a Puerto Viejo, pero te recomendamos organizar un traslado privado con antelación para ahorrar tiempo y evitar posibles estafas.',
+    ],
+    closingParagraphs: [
+      'En este punto, lo único que te queda por hacer es relajarte y disfrutar del ambiente tranquilo de Puerto Viejo. Ya sea que busques relajarte en la playa, explorar la jungla o disfrutar de una deliciosa comida caribeña, Puerto Viejo tiene algo para todos.',
+      'En conclusión, viajar a Puerto Viejo desde cualquier destino es fácil y conveniente gracias al vuelo doméstico desde San José a Limón. Con un vuelo rápido y cómodo y la opción de organizar un traslado privado, estarás disfrutando de un cóctel tropical en poco tiempo. ¿Qué estás esperando? ¡Reserva tu viaje a Puerto Viejo hoy y experimenta la magia de este encantador pueblo de playa por ti mismo! Y no dudes en contactarnos para ayudarte a organizar tu viaje o programar un traslado privado desde Limón.',
+    ],
+  },
+};
+
+export function puertoViejoByPlaneContent(locale: Locale): PuertoViejoByPlaneContent {
+  return puertoViejoByPlane[locale] ?? puertoViejoByPlane.en!;
+}

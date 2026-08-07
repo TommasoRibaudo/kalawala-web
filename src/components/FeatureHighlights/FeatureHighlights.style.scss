@@ -35,7 +35,7 @@
 
     // Ensure emojis are properly spaced
     &::first-letter {
-      margin-right: 0.5rem;
+      margin-inline-end: 0.5rem;
     }
   }
 }

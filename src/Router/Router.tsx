@@ -6,6 +6,7 @@ import MessageTipContainer from '../components/MessageTip/MessageTipContainer.co
 import { useRandomPopup } from '../hooks/useRandomPopup';
 import PortalGuard from '../components/PortalGuard/PortalGuard.component';
 import { useLocale } from '../i18n';
+import LocaleHtmlAttrs from '../components/LocaleHtmlAttrs/LocaleHtmlAttrs.component';
 
 /*
  * Every routed page is code-split.
@@ -178,6 +179,7 @@ const AppRouter = () => {
 
   return (
     <BrowserRouter>
+      <LocaleHtmlAttrs />
       <PostHogPageView />
       <RandomPopupHandler />
       <Suspense fallback={null}>

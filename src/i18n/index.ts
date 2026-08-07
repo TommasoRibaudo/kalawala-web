@@ -1,5 +1,6 @@
-export { LOCALES, DEFAULT_LOCALE, RELEASED_LOCALES, LOCALE_META, isLocale } from './locales';
-export type { Locale } from './locales';
+export { LOCALES, DEFAULT_LOCALE, RELEASED_LOCALES, LOCALE_META, isLocale, directionOf } from './locales';
+export type { Locale, Direction } from './locales';
+export { useDirection } from './useDirection';
 export { detectLocaleFromPath } from './detectLocale';
 export { useLocale } from './useLocale';
 export { getMessages } from './messages';

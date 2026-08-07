@@ -30,16 +30,16 @@
   }
   > span {
     color: #666;
-    border-right: 1px solid #dedede;
+    border-inline-end: 1px solid #dedede;
     display: inline-block;
     font-size: 13px;
     margin: 10px 10px 0 0;
-    padding-right: 10px;
+    padding-inline-end: 10px;
     &:last-child {
-      border-right: 0;
+      border-inline-end: 0;
     }
     i {
-      margin-right: 5px;
+      margin-inline-end: 5px;
     }
   }
 }
@@ -87,11 +87,11 @@
     }
   }
   .prev-post i {
-    margin-right: 10px;
+    margin-inline-end: 10px;
   }
 
   .next-post i {
-    margin-left: 10px;
+    margin-inline-start: 10px;
   }
 }
 
@@ -123,7 +123,7 @@
   margin-top: 40px;
 }
 .post-author {
-  margin-right: 20px;
+  margin-inline-end: 20px;
 }
 
 .post-author > img {
@@ -148,11 +148,11 @@
 .comment-wrap {
   border: 1px solid #dedede;
   border-radius: 1px;
-  margin-left: 20px;
+  margin-inline-start: 20px;
   padding: 10px;
   position: relative;
   .author-avatar {
-    margin-right: 10px;
+    margin-inline-end: 10px;
   }
   .media {
     .media-heading {

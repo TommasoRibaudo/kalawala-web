@@ -41,7 +41,7 @@
   .hero-rating {
     position: absolute;
     bottom: 45px;
-    left: 50%;
+    inset-inline-start: 50%;
     transform: translateX(-50%);
     width: 100%;
     text-align: center;
@@ -70,7 +70,7 @@
       width: 100%;
       margin: 0 auto;
       padding: 0 16px;
-      text-align: left;
+      text-align: start;
 
       // Sits on the dark hero overlay rather than the old cream panel.
       .hero-trust {
@@ -86,8 +86,8 @@
       margin-top: 15px;
       font-size: 16px;
       width: 70%;
-      margin-left: auto;
-      margin-right: auto;
+      margin-inline-start: auto;
+      margin-inline-end: auto;
     }
 
     .video-button {
@@ -100,7 +100,7 @@
         border-radius: 50px;
         line-height: 60px;
         font-size: 20px;
-        margin-left: 3px;
+        margin-inline-start: 3px;
         color: $primary-color;
       }
     }
@@ -154,7 +154,7 @@
 }
 
 .hero-video {
-  left: 50%;
+  inset-inline-start: 50%;
   min-height: 100%;
   min-width: 100%;
   position: absolute;
@@ -170,10 +170,10 @@
     background: rgba(0, 0, 0, 0.63);
     position: absolute;
     top: 0;
-    right: 0;
+    inset-inline-end: 0;
     bottom: 0;
     z-index: 1;
-    left: 0;
+    inset-inline-start: 0;
   }
 }
 

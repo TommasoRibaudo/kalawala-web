@@ -167,8 +167,8 @@ a:hover {
     background-color: #fff;
     content: '';
     height: 6px;
-    left: 50%;
-    margin-left: -20px;
+    inset-inline-start: 50%;
+    margin-inline-start: -20px;
     position: absolute;
     top: -4px;
     width: 50px;
@@ -184,8 +184,8 @@ a:hover {
 }
 
 .sub-title>h3 {
-    border-left: 3px solid #ddd;
-    border-right: 3px solid #ddd;
+    border-inline-start: 3px solid #ddd;
+    border-inline-end: 3px solid #ddd;
     display: inline-block;
     padding: 5px 25px;
     text-transform: uppercase;
@@ -322,7 +322,7 @@ a:hover {
 .preloader {
     background: #fff;
     height: 100%;
-    left: 0;
+    inset-inline-start: 0;
     position: fixed;
     text-align: center;
     top: 0;
@@ -342,7 +342,7 @@ a:hover {
     width: 33%;
     height: 33%;
     background-color: #57cbcc;
-    float: left;
+    float: inline-start;
     -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
     animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
 }
@@ -462,9 +462,9 @@ a:hover {
     background: rgba(0, 0, 0, 0.096);
     position: absolute;
     top: 0;
-    right: 0;
+    inset-inline-end: 0;
     bottom: 0;
-    left: 0;
+    inset-inline-start: 0;
 }
 
 .header-bradcrumb {
@@ -568,8 +568,8 @@ a:hover {
     position: absolute;
     content: '';
     top: 0;
-    right: 0;
-    left: 0;
+    inset-inline-end: 0;
+    inset-inline-start: 0;
     bottom: 0;
 }
 
@@ -657,7 +657,7 @@ a:hover {
     border-radius: 50px;
     line-height: 60px;
     font-size: 20px;
-    margin-left: 3px;
+    margin-inline-start: 3px;
     color: #57cbcc;
 }
 
@@ -693,7 +693,7 @@ a:hover {
 }
 
 .hero-video {
-    left: 50%;
+    inset-inline-start: 50%;
     min-height: 100%;
     min-width: 100%;
     position: absolute;
@@ -711,10 +711,10 @@ a:hover {
     background: rgba(0, 0, 0, 0.63);
     position: absolute;
     top: 0;
-    right: 0;
+    inset-inline-end: 0;
     bottom: 0;
     z-index: 1;
-    left: 0;
+    inset-inline-start: 0;
 }
 
 .dark-bg {
@@ -762,8 +762,8 @@ a:hover {
     background-color: transparent;
     margin: 46.19px auto 0px;
     padding: 20px 0;
-    /* border-left: 2px solid rgba(236, 239, 241, 0.07);
-    border-right: 2px solid rgba(236, 239, 241, 0.07); */
+    /* border-inline-start: 2px solid rgba(236, 239, 241, 0.07);
+    border-inline-end: 2px solid rgba(236, 239, 241, 0.07); */
     font-size: 50px;
     -webkit-transform: translateZ(0px);
     transform: translateZ(0px);
@@ -782,7 +782,7 @@ a:hover {
     width: 113.14px;
     height: 113.14px;
     background-color: inherit;
-    left: 20.4315px;
+    inset-inline-start: 20.4315px;
     -webkit-transform: scaleY(0.5774) rotate(-45deg);
     transform: scaleY(0.5774) rotate(-45deg);
 } */
@@ -791,13 +791,13 @@ a:hover {
 /* .about .block .icon-box:before {
     top: -56.5685px;
     border-top: 2px solid rgba(236, 239, 241, 0.07);
-    border-right: 2px solid rgba(236, 239, 241, 0.07);
+    border-inline-end: 2px solid rgba(236, 239, 241, 0.07);
 }
 
 .about .block .icon-box:after {
     bottom: -56.5685px;
     border-bottom: 2px solid rgba(236, 239, 241, 0.07);
-    border-left: 2px solid rgba(236, 239, 241, 0.07);
+    border-inline-start: 2px solid rgba(236, 239, 241, 0.07);
 } */
 
 .about .block .icon-box h3 {
@@ -818,7 +818,7 @@ a:hover {
 }
 
 .about-2 .content-block .media .pull-left {
-    padding-right: 15px;
+    padding-inline-end: 15px;
 }
 
 .about-2 .content-block .media i {
@@ -925,7 +925,7 @@ a:hover {
 
 .con-info i,
 .con-info span {
-    float: left;
+    float: inline-start;
 }
 
 .con-info span {
@@ -1076,9 +1076,9 @@ a:hover {
     background: white;
     opacity: 0;
     top: 20px;
-    right: 20px;
+    inset-inline-end: 20px;
     bottom: 20px;
-    left: 20px;
+    inset-inline-start: 20px;
     position: absolute;
     content: '';
 }
@@ -1104,7 +1104,7 @@ a:hover {
 .portfolio-block .caption {
     position: absolute;
     top: 50%;
-    left: 50%;
+    inset-inline-start: 50%;
     opacity: 0;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
@@ -1143,7 +1143,7 @@ a:hover {
 
 .service-block {
     padding: 60px 20px;
-    border-left: 1px solid rgba(236, 239, 241, 0.07);
+    border-inline-start: 1px solid rgba(236, 239, 241, 0.07);
     border-top: 1px solid rgba(236, 239, 241, 0.07);
     margin-bottom: 40px;
     box-shadow: 2px 2px 5px rgba(44, 44, 44, 0.3), 13px 13px 0 rgba(255, 255, 255, 0.7);
@@ -1267,7 +1267,7 @@ a:hover {
     text-align: center;
     height: 100%;
     width: 100%;
-    left: 0;
+    inset-inline-start: 0;
     top: 0;
     opacity: 0;
     filter: alpha(opacity=0);
@@ -1408,7 +1408,7 @@ a:hover {
 }
 
 #our-clietns .owl-prev {
-    margin-right: 15px;
+    margin-inline-end: 15px;
 }
 
 #our-clients .item {
@@ -1481,19 +1481,19 @@ a:hover {
 
 .post-meta>span {
     color: #666;
-    border-right: 1px solid #dedede;
+    border-inline-end: 1px solid #dedede;
     display: inline-block;
     font-size: 13px;
     margin: 10px 10px 0 0;
-    padding-right: 10px;
+    padding-inline-end: 10px;
 }
 
 .post-meta>span:last-child {
-    border-right: 0;
+    border-inline-end: 0;
 }
 
 .post-meta>span i {
-    margin-right: 5px;
+    margin-inline-end: 5px;
 }
 
 .post-excerpt {
@@ -1541,11 +1541,11 @@ a:hover {
 }
 
 .next-prev .prev-post i {
-    margin-right: 10px;
+    margin-inline-end: 10px;
 }
 
 .next-prev .next-post i {
-    margin-left: 10px;
+    margin-inline-start: 10px;
 }
 
 .social-profile ul li {
@@ -1572,7 +1572,7 @@ a:hover {
 }
 
 .post-author {
-    margin-right: 20px;
+    margin-inline-end: 20px;
 }
 
 .post-author>img {
@@ -1593,13 +1593,13 @@ a:hover {
 .comment-wrap {
     border: 1px solid #dedede;
     border-radius: 1px;
-    margin-left: 20px;
+    margin-inline-start: 20px;
     padding: 10px;
     position: relative;
 }
 
 .comment-wrap .author-avatar {
-    margin-right: 10px;
+    margin-inline-end: 10px;
 }
 
 .comment-wrap .media .media-heading {
@@ -1732,7 +1732,7 @@ a:hover {
     display: none;
     padding: 8px 12px;
     position: fixed;
-    right: 20px;
+    inset-inline-end: 20px;
     z-index: 600;
 }
 
@@ -1821,22 +1821,22 @@ a:hover {
 
 #gallery-post .owl-prev,
 #post-thumb .owl-prev {
-    left: -45px;
+    inset-inline-start: -45px;
 }
 
 #gallery-post .owl-next,
 #post-thumb .owl-next {
-    right: -45px;
+    inset-inline-end: -45px;
 }
 
 #gallery-post:hover .owl-prev,
 #post-thumb:hover .owl-prev {
-    left: 0;
+    inset-inline-start: 0;
 }
 
 #gallery-post:hover .owl-next,
 #post-thumb:hover .owl-next {
-    right: 0;
+    inset-inline-end: 0;
 }
 
 #gallery-post,
@@ -1857,19 +1857,19 @@ a:hover {
 }
 
 .post-meta>span {
-    border-right: 1px solid #4e595f;
+    border-inline-end: 1px solid #4e595f;
     display: inline-block;
     font-size: 12px;
     margin: 10px 10px 0 0;
-    padding-right: 10px;
+    padding-inline-end: 10px;
 }
 
 .post-meta>span:last-child {
-    border-right: 0;
+    border-inline-end: 0;
 }
 
 .post-meta>span>i {
-    margin-right: 5px;
+    margin-inline-end: 5px;
 }
 
 .post-meta a:hover {
@@ -1915,7 +1915,7 @@ aside.widget {
     height: 32px;
     outline: 0;
     position: absolute;
-    right: 0;
+    inset-inline-end: 0;
     text-align: center;
     top: 0;
     width: 32px;
@@ -1931,7 +1931,7 @@ aside.widget {
 }
 
 .tab-post-nav li {
-    float: left;
+    float: inline-start;
 }
 
 .tab-post-nav li.active a {
@@ -1972,7 +1972,7 @@ aside.widget {
 }
 
 .categories>li:hover a {
-    padding-left: 10px;
+    padding-inline-start: 10px;
     color: #6CB670;
 }
 
@@ -1981,7 +1981,7 @@ aside.widget {
 }
 
 .categories li a {
-    padding-left: 5px;
+    padding-inline-start: 5px;
 }
 
 .widget-content .tag {
@@ -1989,7 +1989,7 @@ aside.widget {
     color: #fff;
     display: inline-block;
     margin-bottom: 10px;
-    margin-right: 5px;
+    margin-inline-end: 5px;
     padding: 5px 13px;
 }
 
@@ -2004,12 +2004,12 @@ aside.widget {
 }
 
 .post-pagination ul li {
-    margin-right: 5px;
-    float: left;
+    margin-inline-end: 5px;
+    float: inline-start;
 }
 
 .post-pagination ul li:last-child {
-    margin-right: 0;
+    margin-inline-end: 0;
 }
 
 .post-pagination ul li.disabled a {
@@ -2046,7 +2046,7 @@ aside.widget {
 }
 
 blockquote {
-    border-left: 5px solid #6cb670;
+    border-inline-start: 5px solid #6cb670;
     font-style: italic;
     line-height: 22px;
     margin: 20px 0;
@@ -2064,19 +2064,19 @@ blockquote {
 }
 
 .prev-post i {
-    float: left;
-    margin-right: 10px;
+    float: inline-start;
+    margin-inline-end: 10px;
     margin-top: -4px;
 }
 
 .next-post i {
-    float: right;
-    margin-left: 10px;
+    float: inline-end;
+    margin-inline-start: 10px;
     margin-top: -3px;
 }
 
 .post-author {
-    margin-right: 20px;
+    margin-inline-end: 20px;
 }
 
 .post-author>img {
@@ -2115,14 +2115,14 @@ blockquote {
 .comment-wrap {
     border: 1px solid #4e595f;
     border-radius: 1px;
-    margin-left: 20px;
+    margin-inline-start: 20px;
     padding: 10px;
     position: relative;
 }
 
 .comment-wrap .author-avatar {
-    margin-left: -25px;
-    margin-right: 20px;
+    margin-inline-start: -25px;
+    margin-inline-end: 20px;
 }
 
 .author-comment {
@@ -2142,11 +2142,11 @@ blockquote {
 }
 
 .comment-content {
-    margin-left: 45px;
+    margin-inline-start: 45px;
 }
 
 .comment-list ul li {
-    padding-left: 25px;
+    padding-inline-start: 25px;
 }
 
 .comment-reply-form {

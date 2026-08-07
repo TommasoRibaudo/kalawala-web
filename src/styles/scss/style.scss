@@ -133,22 +133,22 @@ overflow-x: hidden;
 
 #gallery-post .owl-prev,
 #post-thumb .owl-prev {
-    left: -45px;
+    inset-inline-start: -45px;
 }
 
 #gallery-post .owl-next,
 #post-thumb .owl-next {
-    right: -45px;
+    inset-inline-end: -45px;
 }
 
 #gallery-post:hover .owl-prev,
 #post-thumb:hover .owl-prev {
-    left: 0;
+    inset-inline-start: 0;
 }
 
 #gallery-post:hover .owl-next,
 #post-thumb:hover .owl-next {
-    right: 0;
+    inset-inline-end: 0;
 }
 
 #gallery-post,
@@ -169,19 +169,19 @@ overflow-x: hidden;
 }
 
 .post-meta > span {
-	border-right: 1px solid #4e595f;
+	border-inline-end: 1px solid #4e595f;
 	display: inline-block;
 	font-size: 12px;
 	margin: 10px 10px 0 0;
-	padding-right: 10px;
+	padding-inline-end: 10px;
 }
 
 .post-meta > span:last-child {
-    border-right: 0;
+    border-inline-end: 0;
 }
 
 .post-meta > span > i {
-    margin-right: 5px;
+    margin-inline-end: 5px;
 }
 
 .post-meta a:hover {
@@ -227,7 +227,7 @@ aside.widget {
 	height: 32px;
 	outline: 0;
 	position: absolute;
-	right: 0;
+	inset-inline-end: 0;
 	text-align: center;
 	top: 0;
 	width: 32px;
@@ -243,7 +243,7 @@ aside.widget {
 }
 
 .tab-post-nav li {
-	float: left;
+	float: inline-start;
 }
 
 .tab-post-nav li.active a {  
@@ -288,7 +288,7 @@ aside.widget {
 }
 
 .categories > li:hover a {
-    padding-left: 10px;
+    padding-inline-start: 10px;
     color: #6CB670;
 }
 
@@ -297,7 +297,7 @@ aside.widget {
 }
 
 .categories li a {
-    padding-left: 5px;
+    padding-inline-start: 5px;
 }
 
 .widget-content .tag {
@@ -305,7 +305,7 @@ aside.widget {
 	color: #fff;
 	display: inline-block;
 	margin-bottom: 10px;
-	margin-right: 5px;
+	margin-inline-end: 5px;
 	padding: 5px 13px;
 }
 
@@ -320,12 +320,12 @@ aside.widget {
 }
 
 .post-pagination ul li {
-    margin-right: 5px;
-    float: left;
+    margin-inline-end: 5px;
+    float: inline-start;
 }
 
 .post-pagination ul li:last-child {
-    margin-right: 0;
+    margin-inline-end: 0;
 }
 
 .post-pagination ul li.disabled a {
@@ -361,7 +361,7 @@ aside.widget {
 }
 
 blockquote {
-    border-left: 5px solid #6cb670;
+    border-inline-start: 5px solid #6cb670;
     font-style: italic;
     line-height: 22px;
     margin: 20px 0;
@@ -379,19 +379,19 @@ blockquote {
 }
 
 .prev-post i {
-    float: left;
-    margin-right: 10px;
+    float: inline-start;
+    margin-inline-end: 10px;
     margin-top: -4px;
 }
 
 .next-post i {
-    float: right;
-    margin-left: 10px;
+    float: inline-end;
+    margin-inline-start: 10px;
     margin-top: -3px;
 }
 
 .post-author {
-    margin-right: 20px;
+    margin-inline-end: 20px;
 }
 
 .post-author > img {
@@ -430,14 +430,14 @@ blockquote {
 .comment-wrap {
 	border: 1px solid #4e595f;
 	border-radius: 1px;
-	margin-left: 20px;
+	margin-inline-start: 20px;
 	padding: 10px;
 	position: relative;
 }
 
 .comment-wrap .author-avatar {
-	margin-left: -25px;
-	margin-right: 20px;
+	margin-inline-start: -25px;
+	margin-inline-end: 20px;
 }
 
 .author-comment {
@@ -456,11 +456,11 @@ blockquote {
 }
 
 .comment-content {
-    margin-left: 45px;
+    margin-inline-start: 45px;
 }
 
 .comment-list ul li {
-    padding-left: 25px;
+    padding-inline-start: 25px;
 }
 
 .comment-reply-form {

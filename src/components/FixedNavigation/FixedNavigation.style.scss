@@ -26,8 +26,8 @@
   }
 
   .container {
-    margin-right: auto;
-    margin-left: auto;
+    margin-inline-end: auto;
+    margin-inline-start: auto;
   }
 
   .navMenu {
@@ -55,7 +55,7 @@
 
 .navbar-flag {
   position: absolute;
-  right: 15px;
+  inset-inline-end: 15px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -189,7 +189,7 @@
 
   /* Fix hamburger menu positioning and margins */
   .navbar-toggler {
-    margin-right: 15px;
+    margin-inline-end: 15px;
     padding: 8px 12px;
     border: none;
 
@@ -214,8 +214,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
     position: absolute !important;
     top: 100% !important;
-    left: 10px !important;
-    right: 10px !important;
+    inset-inline-start: 10px !important;
+    inset-inline-end: 10px !important;
     z-index: 1001 !important;
     /* 400px clipped the sixth link ("My Booking") on common phone
        viewports — six nav items plus the language switcher need more room

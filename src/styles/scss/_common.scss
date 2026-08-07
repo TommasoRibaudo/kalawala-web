@@ -157,8 +157,8 @@ a:hover {
     background-color: $light;
     content: '';
     height: 6px;
-    left: 50%;
-    margin-left: -20px;
+    inset-inline-start: 50%;
+    margin-inline-start: -20px;
     position: absolute;
     top: -4px;
     width: 50px;
@@ -176,8 +176,8 @@ a:hover {
 }
 
 .sub-title>h3 {
-  border-left: 3px solid #ddd;
-  border-right: 3px solid #ddd;
+  border-inline-start: 3px solid #ddd;
+  border-inline-end: 3px solid #ddd;
   display: inline-block;
   padding: 5px 25px;
   text-transform: uppercase;
@@ -315,7 +315,7 @@ a:hover {
 .preloader {
   background: $light;
   height: 100%;
-  left: 0;
+  inset-inline-start: 0;
   position: fixed;
   text-align: center;
   top: 0;
@@ -335,7 +335,7 @@ a:hover {
   width: 33%;
   height: 33%;
   background-color: $primary-color;
-  float: left;
+  float: inline-start;
   -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
   animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
 }
@@ -460,9 +460,9 @@ a:hover {
     background: rgba(0, 0, 0, 0.096);
     position: absolute;
     top: 0;
-    right: 0;
+    inset-inline-end: 0;
     bottom: 0;
-    left: 0;
+    inset-inline-start: 0;
   }
 }
 

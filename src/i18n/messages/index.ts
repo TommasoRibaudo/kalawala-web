@@ -5,10 +5,12 @@ import { de } from './de';
 import { fr } from './fr';
 import { it } from './it';
 import { pt } from './pt';
+import { he } from './he';
+import { hi } from './hi';
 
 export type { Messages } from './en';
 
-const CATALOGS: Record<Locale, Partial<Messages>> = { en, es, de, fr, it, pt };
+const CATALOGS: Record<Locale, Partial<Messages>> = { en, es, de, fr, it, pt, he, hi };
 
 /**
  * The complete message catalog for a locale, with English filling any gap.

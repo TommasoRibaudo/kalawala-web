@@ -101,7 +101,7 @@
   &__grid {
     border: 1px solid rgba(11, 48, 40, 0.12);
     border-bottom: 0;
-    border-right: 0;
+    border-inline-end: 0;
   }
 
   &__status {
@@ -159,8 +159,8 @@
   aspect-ratio: 1;
   background: #ffffff;
   border-bottom: 1px solid rgba(11, 48, 40, 0.12);
-  border-left: 0;
-  border-right: 1px solid rgba(11, 48, 40, 0.12);
+  border-inline-start: 0;
+  border-inline-end: 1px solid rgba(11, 48, 40, 0.12);
   border-top: 0;
   color: inherit;
   cursor: pointer;

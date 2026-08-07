@@ -5,8 +5,8 @@
 .cookie-consent-banner {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   background: rgba(11, 48, 40, 0.9); // Green glassy background
   backdrop-filter: blur(20px); // Increased blur for better glassy effect
   border-top: 1px solid rgba(138, 162, 136, 0.3);

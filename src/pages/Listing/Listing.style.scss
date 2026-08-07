@@ -165,8 +165,8 @@ html,
         // button spilled out over the photo gallery. Owning the positioning
         // here means losing the utility class cannot reproduce that.
         position: fixed;
-        left: 0;
-        right: 0;
+        inset-inline-start: 0;
+        inset-inline-end: 0;
         bottom: 0;
         z-index: 1030; // same layer .fixed-bottom used; still under the modals
 

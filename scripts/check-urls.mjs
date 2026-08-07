@@ -89,7 +89,20 @@ async function capture() {
   const stamp = new Date().toISOString().slice(0, 10);
   const outDir = path.join(ROOT, 'docs', 'seo-baseline');
   fs.mkdirSync(outDir, { recursive: true });
-  const out = path.join(outDir, `url-status-${stamp}.json`);
+  const label = process.argv.find((a) => a.startsWith('--label='))?.slice(8);
+  const out = path.join(outDir, `url-status-${stamp}${label ? `-${label}` : ''}.json`);
+
+  // Refuse to clobber. The pre-migration baseline cannot be recreated once the
+  // URLs move, and re-running capture on the same day would otherwise silently
+  // overwrite it with a post-change snapshot — which is precisely the failure
+  // this directory exists to prevent. (It nearly happened: a re-run replaced the
+  // 49-route baseline with a 45-route one.)
+  if (fs.existsSync(out) && !process.argv.includes('--force')) {
+    console.error(`[check-urls] ${path.relative(ROOT, out)} already exists.`);
+    console.error('[check-urls] Pass --label=<name> to write a separate file, or --force to overwrite.');
+    process.exit(1);
+  }
+
   fs.writeFileSync(out, JSON.stringify({ origin: ORIGIN, capturedAt: new Date().toISOString(), results }, null, 2));
 
   const ok = results.filter((r) => r.status === 200).length;

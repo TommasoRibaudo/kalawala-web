@@ -46,7 +46,6 @@ const CahuitaPark = lazy(() => import(/* webpackChunkName: "route-cahuitaparkwha
 const IndigenousTravel = lazy(() => import(/* webpackChunkName: "route-indigenoustravelpv" */ '../pages/Blog/staticPages/IndigenousTravel'));
 const BestTimeToVisitPuerto = lazy(() => import(/* webpackChunkName: "route-besttimetovisitpuerto" */ '../pages/Blog/staticPages/BestTimeToVisitPuerto'));
 const PuertoHiddenGems = lazy(() => import(/* webpackChunkName: "route-puertohiddengems" */ '../pages/Blog/staticPages/PuertoHiddenGems'));
-const HomeES = lazy(() => import(/* webpackChunkName: "route-homees" */ '../pages/Home/Home.pageES'));
 const Success = lazy(() => import(/* webpackChunkName: "route-success" */ '../pages/Home/Success.page'));
 const NotFound = lazy(() => import(/* webpackChunkName: "route-404" */ '../pages/NotFound.page'));
 const BlogIndex = lazy(() => import(/* webpackChunkName: "route-blog" */ '../pages/Blog/BlogIndex.page'));
@@ -209,7 +208,7 @@ const AppRouter = () => {
       <Route path='/bestTimeToVisitPuertoES' element={<BestTimeToVisitPuerto />} />
       <Route path='/puertoHiddenGemsES' element={<PuertoHiddenGems />} />
       <Route path='/puertoHiddenGems' element={<PuertoHiddenGems />} />
-      <Route path='/HomeES' element={<HomeES/>} />
+      <Route path='/HomeES' element={<Home/>} />
       <Route path='/Success' element={<Success/>} />
       <Route path='/Areka' element={<ListingAreka/>}/>
       <Route path='/Giulia' element={<ListingGiulia/>}/>

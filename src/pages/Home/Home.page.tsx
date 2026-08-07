@@ -10,67 +10,68 @@ import HomeReviews from "../../components/HomeReviews/HomeReviews.component";
 import Footer from "../../components/Footer/Footer.component";
 import BookingCtaBanner from "../../components/BookingCtaBanner/BookingCtaBanner.component";
 
-import { houseDataEngList } from '../../utils/constants';
+import { houseDataEngList, houseDataList } from '../../utils/constants';
 import OurOtherHomes from "../../components/OurOtherHomes/OurOtherHomes.component";
+import { useLocale, useMessages } from "../../i18n";
+import { localeSuffix } from "../../i18n/paths";
 
-const helpMeChooseOptions = [
+const Home = () => {
+  const locale = useLocale();
+  const m = useMessages();
+
+  const helpMeChooseOptions = [
     {
         emoji: "🧡",
-        label: "Ideal for couples",
+        label: m.home.optionCouples,
         houseName: "Villa Mar",
-        houseLangCode: "VillaMar",
+        houseLangCode: `VillaMar${localeSuffix(locale)}`,
         image: "https://lh3.googleusercontent.com/d/1cl5zzeKajmxVv5_q9cH0cvYQkCRl6kCn=w1000"
     },
     {
         emoji: "👨‍👩‍👧",
-        label: "Perfect for families",
+        label: m.home.optionFamilies,
         houseName: "Casa Delfines",
-        houseLangCode: "Delfin",
+        houseLangCode: `Delfin${localeSuffix(locale)}`,
         image: "https://lh3.googleusercontent.com/d/1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW=w1000"
     },
     {
         emoji: "🐾",
-        label: "Pet-friendly",
+        label: m.home.optionPetFriendly,
         houseName: "Casa Rana",
-        houseLangCode: "Rana",
+        houseLangCode: `Rana${localeSuffix(locale)}`,
         image: "https://lh3.googleusercontent.com/d/1UiGI8gFf6UR5kn8Eo30u457NX8NkP95X=w1000"
     },
     {
         emoji: "⭐",
-        label: "Best value",
+        label: m.home.optionBestValue,
         houseName: "Casa Plumeria",
-        houseLangCode: "Plumeria",
+        houseLangCode: `Plumeria${localeSuffix(locale)}`,
         image: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000"
     }
-];
-
-const Home = () => {
-
+  ];
 
   return (
     <div id="body">
       <Helmet>
         <meta charSet="utf-8" />
-        <title>Reservas Kalawala | Puerto Viejo House Rental</title>
-        <meta name="description" content="Discover our homes, cheaper than any other platform! Welcome to Kalawala, we offer fully equipped vacation homes nestled in the heart of Puerto Viejo de Talamanca, Costa Rica. Our houses offer space for up to 5 people, 2 A/C units, fully equipped private bathroom and kitchen and free Wi-Fi internet connection." />
-        <link rel="canonical" href="https://www.reservaskalawala.com/" />
+        <title>{m.home.pageTitle}</title>
+        <meta name="description" content={m.home.pageDescription} />
+        <link rel="canonical" href={`https://www.reservaskalawala.com/${locale === 'es' ? 'HomeES' : ''}`} />
         <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/" />
         <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/HomeES" />
         <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/" />
       </Helmet>
       <WelcomeSlider />
       <FixedNavigation isBlog={false} />
-      <HelpMeChoose title="Find your" titleHighlight="Ideal Stay" options={helpMeChooseOptions} />
-      <HomeReviews locale="en" />
-      <OurHomes houseDataList={houseDataEngList} />
+      <HelpMeChoose title={m.home.helpMeChooseTitle} titleHighlight={m.home.helpMeChooseTitleHighlight} options={helpMeChooseOptions} />
+      <HomeReviews locale={locale} />
+      <OurHomes houseDataList={locale === 'es' ? houseDataList : houseDataEngList} />
       <OurOtherHomes />
-      <BookingCtaBanner locale="en" />
+      <BookingCtaBanner locale={locale} />
       <Discover />
-      {/* <CallToAction /> */}
       <Portfolio />
-      {/* <Testimonial /> */}
       <ContactUs />
-      <Footer locale="en" />
+      <Footer locale={locale} />
 
     </div>
   )

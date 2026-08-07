@@ -47,7 +47,6 @@ const IndigenousTravel = lazy(() => import(/* webpackChunkName: "route-indigenou
 const BestTimeToVisitPuerto = lazy(() => import(/* webpackChunkName: "route-besttimetovisitpuerto" */ '../pages/Blog/staticPages/BestTimeToVisitPuerto'));
 const PuertoHiddenGems = lazy(() => import(/* webpackChunkName: "route-puertohiddengems" */ '../pages/Blog/staticPages/PuertoHiddenGems'));
 const BusHoursES = lazy(() => import(/* webpackChunkName: "route-bushourses" */ '../pages/Blog/staticPages_ES/BusHoursES'));
-const PuertoHiddenGemsES = lazy(() => import(/* webpackChunkName: "route-puertohiddengemses" */ '../pages/Blog/staticPages_ES/PuertoHiddenGemsES'));
 const HomeES = lazy(() => import(/* webpackChunkName: "route-homees" */ '../pages/Home/Home.pageES'));
 const Success = lazy(() => import(/* webpackChunkName: "route-success" */ '../pages/Home/Success.page'));
 const NotFound = lazy(() => import(/* webpackChunkName: "route-404" */ '../pages/NotFound.page'));
@@ -210,7 +209,7 @@ const AppRouter = () => {
       <Route path='/indigenousTravelPVES' element={<IndigenousTravel />} />
       <Route path='/bestTimeToVisitPuerto' element={<BestTimeToVisitPuerto />} />
       <Route path='/bestTimeToVisitPuertoES' element={<BestTimeToVisitPuerto />} />
-      <Route path='/puertoHiddenGemsES' element={<PuertoHiddenGemsES />} />
+      <Route path='/puertoHiddenGemsES' element={<PuertoHiddenGems />} />
       <Route path='/puertoHiddenGems' element={<PuertoHiddenGems />} />
       <Route path='/HomeES' element={<HomeES/>} />
       <Route path='/Success' element={<Success/>} />

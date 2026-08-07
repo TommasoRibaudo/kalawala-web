@@ -806,3 +806,187 @@ const indigenousTravel: Partial<Record<Locale, IndigenousTravelContent>> = {
 export function indigenousTravelContent(locale: Locale): IndigenousTravelContent {
   return indigenousTravel[locale] ?? indigenousTravel.en!;
 }
+
+export interface HiddenGemSection {
+  headingText: string;
+  headingHref?: string;
+  paragraphs: [React.ReactNode, React.ReactNode];
+  list?: { label: string; items: [string, string, string] };
+  tipLine?: string;
+}
+
+export interface PuertoHiddenGemsContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: [string, string];
+  stayRecommendationTitle: string;
+  sections: [HiddenGemSection, HiddenGemSection, HiddenGemSection, HiddenGemSection, HiddenGemSection, HiddenGemSection];
+  tipsHeading: string;
+  tipsIntro: string;
+  tipsListItems: [string, string, string, string];
+  closingParagraph: string;
+}
+
+const puertoHiddenGems: Partial<Record<Locale, PuertoHiddenGemsContent>> = {
+  en: {
+    seoTitle: 'Hidden Gems in Puerto Viejo: Quiet Spots Locals Love',
+    seoDescription:
+      'Puerto Viejo has famous beaches, music, and nightlife. But some of its best places stay off the main list. These spots feel calmer, closer to nature, and more personal. If you want fewer crowds and real local flavor, start here. These hidden gems are easy to reach and worth the effort.',
+    heading: 'Hidden Gems in Puerto Viejo: Quiet Spots Locals Love',
+    // The pre-merge pages' alt text ("Kayaking in Punta Uva") described a
+    // different photo; this hero is a general Puerto Viejo de Talamanca shot.
+    heroAlt: 'Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Photo by <a href="https://commons.wikimedia.org/wiki/User:Letartean" target="_blank" rel="noopener noreferrer">Letartean</a></>,
+    introParagraphs: [
+      'Puerto Viejo is easy to love. Most visitors hit the famous beaches, grab a cocktail in town, and call it a day. But the best moments often happen in quieter places: small coves, hidden stretches of sand, and simple local meals that taste like the Caribbean.',
+      'Below are a few hidden gems around Puerto Viejo that feel calmer and more personal. None of them require a complicated plan. You just need a bit of time, sun protection, and a slow pace.',
+    ],
+    stayRecommendationTitle: 'Where to stay in Puerto Viejo for easy access to these hidden gems',
+    sections: [
+      {
+        headingText: 'Playa Chiquita',
+        headingHref: 'https://maps.app.goo.gl/tTS4h2KYududsyh8A',
+        paragraphs: [
+          'Playa Chiquita is a more secluded stretch of sand that many people skip. It feels tucked away, with fewer crowds and a calmer mood.',
+          "The water is not always calm, but the vibes there definitely are. It's the perfect spot for a slow morning.",
+        ],
+        list: { label: 'Perfect for:', items: ['Relaxing under the trees', 'Exploring on foot', 'A simple picnic'] },
+      },
+      {
+        headingText: 'Playa Grande',
+        headingHref: 'https://maps.app.goo.gl/zpRcsq96dC9MnVRU7',
+        paragraphs: [
+          "Playa Grande is known by surfers, but it's also one of the most striking beaches in the area. It feels wide, open, and less traveled than other spots.",
+          "Even if you don't surf, it's worth a visit for the scenery and long walks. Just keep in mind the waves can be strong.",
+        ],
+        list: { label: 'Good to know:', items: ['Better for experienced surfers than swimmers', 'Great for photos and walks', 'Usually quieter than Cocles'] },
+      },
+      {
+        headingText: 'Punta Cocles Coves & Jaguar Rescue Center',
+        headingHref: 'https://www.jaguarrescue.foundation',
+        paragraphs: [
+          <>In front of the <a href="https://www.jaguarrescue.foundation" target="_blank" rel="noopener noreferrer">Jaguar Rescue Center</a>, you'll find small coves and quieter beach corners. The rocky points break up the coastline, so it's easy to find a spot that feels private.</>,
+          'This area is also one of the best places to spot wildlife. You might see monkeys in the trees or a sloth high up near the road.',
+        ],
+        tipLine: 'Tip: Go early in the morning for fewer people and more animal activity.',
+      },
+      {
+        headingText: 'Punta Uva Kayaking Without a Tour',
+        paragraphs: [
+          "Punta Uva is famous for its beach, but the river is the real secret. You don't need a tour to enjoy it. Just rent a kayak and explore at your own pace.",
+          "The water is usually smooth, and the jungle feels close on both sides. It's peaceful and easy, even if you're not an expert paddler.",
+        ],
+        list: { label: 'Bring:', items: ['Sun protection', 'Water and a dry bag', 'Respectful distance for wildlife'] },
+      },
+      {
+        headingText: 'Restaurante Caribeño 1872 for Rice and Beans',
+        paragraphs: [
+          <>If you want one meal that feels truly local, check out <a href="https://maps.app.goo.gl/ynskDRDozJkGW1ML6" target="_blank" rel="noopener noreferrer">Restaurante Caribeño 1872</a> for rich, flavorful Caribbean food.</>,
+          "The flavor is rich, the portions feel generous, and the vibe is relaxed. It's the kind of place you'll want to return to.",
+        ],
+      },
+      {
+        headingText: 'Punta Mona & Gandoca-Manzanillo Wildlife Refuge',
+        headingHref: 'https://maps.app.goo.gl/8dDzcZiUrhuuPmCy8',
+        paragraphs: [
+          'Punta Mona feels far, in the best way. You can rent a boat and ask the driver to take you along the coast to the pristine beaches and quiet shores inside the Gandoca-Manzanillo National Wildlife Refuge.',
+          "The reward is clear water, quiet shoreline, and a sense that you've left the busy world behind.",
+        ],
+        list: { label: 'Good to know:', items: ['Bring snacks and water (there are no shops)', 'Go with calm weather and sea conditions', 'Pack out everything you bring in'] },
+      },
+    ],
+    tipsHeading: 'Quick Tips to Enjoy These Spots',
+    tipsIntro: 'A few small choices make a big difference in Puerto Viejo—both for your day and for the places you visit.',
+    tipsListItems: [
+      'Start early to get calm beaches and cooler weather',
+      'Use reef-safe sunscreen when you swim or snorkel',
+      'Keep a respectful distance from wildlife',
+      "Don't leave valuables on the beach",
+    ],
+    closingParagraph:
+      "These hidden gems are what make the trip feel special—quiet water, wild coastlines, and food that tastes like home in the Caribbean. Pick two or three from this list and leave space for slow moments. That's when Puerto Viejo shows its best side.",
+  },
+  es: {
+    seoTitle: 'Joyas escondidas en Puerto Viejo',
+    seoDescription:
+      'Puerto Viejo tiene playas famosas, música y vida nocturna. Pero algunos de sus mejores lugares quedan fuera de las listas más conocidas. Son espacios más tranquilos, conectados con la naturaleza y con un sabor local auténtico. Si buscas menos gente y experiencias reales, empieza aquí.',
+    heading: 'Joyas escondidas en Puerto Viejo',
+    heroAlt: 'Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto de <a href="https://commons.wikimedia.org/wiki/User:Letartean" target="_blank" rel="noopener noreferrer">Letartean</a></>,
+    introParagraphs: [
+      'Puerto Viejo es fácil de amar. La mayoría de los visitantes va a las playas más conocidas, se toma un cóctel en el pueblo y sigue al siguiente destino. Pero los mejores momentos suelen aparecer en lugares más tranquilos: pequeñas caletas, tramos de arena escondidos y comidas sencillas que saben a Caribe.',
+      'A continuación te compartimos algunas joyas escondidas alrededor de Puerto Viejo de Talamanca, Costa Rica, que se sienten más calmadas y personales. No requieren planes complicados. Solo un poco de tiempo, protección solar y ganas de ir despacio.',
+    ],
+    stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo para llegar fácil a estas joyas escondidas',
+    sections: [
+      {
+        headingText: 'Playa Chiquita',
+        headingHref: 'https://maps.app.goo.gl/tTS4h2KYududsyh8A',
+        paragraphs: [
+          'Playa Chiquita es un tramo de playa más apartado que muchas personas pasan por alto. Se siente recogido, con menos gente y un ambiente más relajado.',
+          'El mar no siempre está completamente calmado, pero la energía del lugar sí lo está. Es un sitio ideal para una mañana lenta.',
+        ],
+        list: { label: 'Ideal para:', items: ['Descansar bajo los árboles', 'Explorar caminando', 'Un picnic sencillo'] },
+      },
+      {
+        headingText: 'Playa Grande',
+        headingHref: 'https://maps.app.goo.gl/zpRcsq96dC9MnVRU7',
+        paragraphs: [
+          'Playa Grande es conocida entre surfistas, pero también es una de las playas más impactantes de la zona. Es amplia, abierta y mucho menos transitada que otras.',
+          'Aunque no practiques surf, vale la pena visitarla por el paisaje y las caminatas largas. Eso sí, las olas suelen ser fuertes.',
+        ],
+        list: { label: 'A tener en cuenta:', items: ['Mejor para surfistas con experiencia que para nadar', 'Excelente para fotos y caminatas', 'Suele ser más tranquila que Cocles'] },
+      },
+      {
+        headingText: 'Caletas de Punta Cocles y Jaguar Rescue Center',
+        headingHref: 'https://www.jaguarrescue.foundation',
+        paragraphs: [
+          <>Frente al <a href="https://www.jaguarrescue.foundation" target="_blank" rel="noopener noreferrer">Jaguar Rescue Center</a>, encontrarás pequeñas caletas y rincones de playa más tranquilos. Las formaciones rocosas dividen la costa y facilitan encontrar un espacio con sensación de privacidad.</>,
+          'Además, esta zona es excelente para observar fauna. Es común ver monos entre los árboles o algún perezoso cerca de la carretera.',
+        ],
+        tipLine: 'Consejo: ve temprano en la mañana para menos gente y más actividad animal.',
+      },
+      {
+        headingText: 'Kayak en Punta Uva sin tour',
+        paragraphs: [
+          'Punta Uva es famosa por su playa, pero el río es el verdadero secreto. No necesitas contratar un tour. Basta con alquilar un kayak y explorar a tu ritmo.',
+          'El agua suele estar tranquila y la selva se siente muy cerca en ambos lados. Es una experiencia relajada, incluso si no tienes mucha experiencia remando.',
+        ],
+        list: { label: 'Lleva contigo:', items: ['Protección solar', 'Agua y una bolsa seca', 'Distancia respetuosa con la fauna'] },
+      },
+      {
+        headingText: 'Restaurante Caribeño 1872 y su rice and beans',
+        paragraphs: [
+          <>Si buscas una comida realmente local, visita <a href="https://maps.app.goo.gl/ynskDRDozJkGW1ML6" target="_blank" rel="noopener noreferrer">Restaurante Caribeño 1872</a>. Su rice and beans es uno de esos platos simples que se vuelven inolvidables cuando están bien hechos.</>,
+          'El sabor es intenso, las porciones generosas y el ambiente relajado. Es el tipo de lugar al que dan ganas de volver.',
+        ],
+      },
+      {
+        headingText: 'Punta Mona y el Refugio de Vida Silvestre Gandoca-Manzanillo',
+        headingHref: 'https://maps.app.goo.gl/8dDzcZiUrhuuPmCy8',
+        paragraphs: [
+          'Punta Mona se siente lejana, en el mejor sentido. Puedes alquilar una lancha y pedir que te lleven por la costa hasta playas vírgenes y tranquilas dentro del Refugio de Vida Silvestre Gandoca-Manzanillo.',
+          'La recompensa es agua clara, orillas silenciosas y la sensación de haber dejado atrás el movimiento del mundo.',
+        ],
+        list: { label: 'Recomendaciones:', items: ['Lleva agua y algo de comer (no hay tiendas)', 'Elige días con buen clima y mar tranquilo', 'Llévate de vuelta todo lo que lleves'] },
+      },
+    ],
+    tipsHeading: 'Consejos rápidos para disfrutar estos lugares',
+    tipsIntro: 'Pequeñas decisiones pueden marcar una gran diferencia en Puerto Viejo, tanto para tu experiencia como para los sitios que visitas.',
+    tipsListItems: [
+      'Empieza temprano para encontrar playas más tranquilas',
+      'Usa bloqueador solar amigable con los arrecifes',
+      'Mantén distancia y respeto con la fauna',
+      'No dejes objetos de valor en la playa',
+    ],
+    closingParagraph:
+      'Estas joyas escondidas son las que hacen que el viaje se sienta especial: aguas tranquilas, costas salvajes y comida que sabe a hogar caribeño. Elige dos o tres y deja espacio para ir sin prisa. Ahí es cuando Puerto Viejo muestra su mejor cara.',
+  },
+};
+
+export function puertoHiddenGemsContent(locale: Locale): PuertoHiddenGemsContent {
+  return puertoHiddenGems[locale] ?? puertoHiddenGems.en!;
+}

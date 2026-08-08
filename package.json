@@ -35,7 +35,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "cross-env DISABLE_ESLINT_PLUGIN=true GENERATE_SOURCEMAP=false react-scripts build",
-    "postbuild": "react-snap && node scripts/generate-404.js && node scripts/inject-route-preloads.js && node scripts/generate-sitemap.js && node scripts/generate-md-pages.js && node scripts/generate-llms-full.js",
+    "postbuild": "react-snap && node scripts/generate-404.js && node scripts/generate-redirects.js && node scripts/inject-route-preloads.js && node scripts/generate-sitemap.js && node scripts/generate-md-pages.js && node scripts/generate-llms-full.js",
     "build-local": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "booking-api:build": "npm --prefix booking-api run build",
     "booking-api:migrate": "npm --prefix booking-api run migrate",

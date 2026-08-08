@@ -83,6 +83,10 @@ export const hi: Messages = {
 
   price: {
     tooltip: 'इस महीने की सबसे कम उपलब्ध दर। कीमतें मौसम और चुनी गई तारीखों के अनुसार बदलती हैं।',
+    fromPerNight: (price: string) => `${price} प्रति रात से शुरू`,
+    discountLead: 'चुनें',
+    discountBold: 'गैर-वापसी योग्य दर',
+    discountTail: 'अतिरिक्त 10% छूट के लिए',
   },
 
   tips: {

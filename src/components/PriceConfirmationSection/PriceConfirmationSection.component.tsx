@@ -38,27 +38,18 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
       ? formatBookingMoney(liveLowestCents, currency, language, { hideZeroCents: true })
       : `$${config.price.usd}`;
 
-  const tooltipText = getMessages(locale).price.tooltip
-;
+  const priceMessages = getMessages(locale).price;
+  const tooltipText = priceMessages.tooltip;
 
-  const priceText = locale === 'es' ? (
-      <>
-        Desde {priceLabel} por noche{' '}
-        <span className="average-indicator">
-          <span className="info-icon">ⓘ</span>
-          <span className="tooltip">{tooltipText}</span>
-        </span>
-      </>
-    )
-    : (
-      <>
-        From {priceLabel} per night{' '}
-        <span className="average-indicator">
-          <span className="info-icon">ⓘ</span>
-          <span className="tooltip">{tooltipText}</span>
-        </span>
-      </>
-    );
+  const priceText = (
+    <>
+      {priceMessages.fromPerNight(priceLabel)}{' '}
+      <span className="average-indicator">
+        <span className="info-icon">ⓘ</span>
+        <span className="tooltip">{tooltipText}</span>
+      </span>
+    </>
+  );
 
   return (
     <div className="price-confirmation-section">
@@ -69,25 +60,13 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
         <InstantConfirmationBadge locale={locale} />
       </div>
       <p className='price-display' style={{ marginTop: '15px', marginBottom: 0 }}>
-        {locale === 'es' ? (
-          <><>
-            Elige la <strong>tarifa no reembolsable</strong>
-          </>
-            <br />
-            <>
-              para un 10% de descuento adicional
-            </>
-          </>
-        ) : (
-          <><>
-            Choose the <strong>non-refundable rate</strong>
-          </>
-            <br />
-            <>
-              for an extra 10% discount
-            </>
-          </>
-        )}
+        <>
+          {priceMessages.discountLead} <strong>{priceMessages.discountBold}</strong>
+        </>
+        <br />
+        <>
+          {priceMessages.discountTail}
+        </>
       </p>
     </div>
   );

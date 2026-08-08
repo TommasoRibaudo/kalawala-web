@@ -89,6 +89,10 @@ export const he: Messages = {
 
   price: {
     tooltip: 'התעריף הזול ביותר הזמין החודש. המחירים משתנים בהתאם לעונה ולתאריכים שנבחרו.',
+    fromPerNight: (price: string) => `החל מ-${price} ללילה`,
+    discountLead: 'בחרו את',
+    discountBold: 'התעריף שאינו ניתן להחזר',
+    discountTail: 'להנחה נוספת של 10%',
   },
 
   tips: {

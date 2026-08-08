@@ -82,6 +82,10 @@ export const fr: Messages = {
 
   price: {
     tooltip: 'Tarif le plus bas disponible ce mois-ci. Les tarifs varient selon la saison et les dates choisies.',
+    fromPerNight: (price: string) => `À partir de ${price} par nuit`,
+    discountLead: 'Choisissez le',
+    discountBold: 'tarif non remboursable',
+    discountTail: 'pour une réduction supplémentaire de 10 %',
   },
 
   tips: {

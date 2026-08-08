@@ -18,7 +18,7 @@ export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = 'en';
 
 /** Locales with real content, i.e. what the language switcher may offer. */
-export const RELEASED_LOCALES: readonly Locale[] = ['en', 'es'];
+export const RELEASED_LOCALES: readonly Locale[] = ['en', 'es', 'de', 'fr', 'it', 'pt', 'he', 'hi'];
 
 export type Direction = 'ltr' | 'rtl';
 

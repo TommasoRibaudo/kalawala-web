@@ -31,10 +31,14 @@ export const nav = {
     page.getByRole('link', { name: 'Blog' }),
   hamburgerToggle: (page: Page): Locator =>
     page.getByRole('button', { name: /Toggle navigation/i }),
-  languageSwitcherEN: (page: Page): Locator =>
-    page.getByRole('button', { name: /Switch language to Español/i }),
-  languageSwitcherES: (page: Page): Locator =>
-    page.getByRole('button', { name: /Switch language to English/i }),
+  // Phase 7's combo box renders twice in the DOM — a desktop copy inside
+  // .navbar-flag and a mobile copy inside .mobile-flag, one hidden by CSS
+  // depending on viewport. A bare aria-label locator would match both and
+  // throw a strict-mode violation, so these are scoped to their container.
+  languageSwitcherDesktop: (page: Page): Locator =>
+    page.locator('.navbar-flag .language-switcher-select'),
+  languageSwitcherMobile: (page: Page): Locator =>
+    page.locator('.mobile-flag .language-switcher-select'),
 };
 
 // ---------------------------------------------------------------------------

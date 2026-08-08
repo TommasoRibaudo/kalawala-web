@@ -4,10 +4,11 @@ import { nav } from './helpers/selectors';
 /**
  * Language Switching E2E tests.
  *
- * The LanguageSwitcher component renders a `<button>` with an `aria-label`
- * of "Switch language to Español" (on English pages) or "Switch language to
- * English" (on Spanish pages). Clicking it calls `navigate()` with the
- * alternate-language path while preserving query/hash state.
+ * Phase 7 replaced the binary EN/ES toggle button with a combo box (a native
+ * <select>, aria-label "Select language") listing every RELEASED_LOCALES
+ * entry. Selecting an option navigates via routes.config's pathInLocale,
+ * preserving query/hash, falling back to that locale's home only if the
+ * current page has no counterpart.
  *
  * Path mapping (Phase 4 — path-prefix scheme, English home keeps bare `/`):
  *   `/`          ↔ `/es/`
@@ -21,7 +22,7 @@ test.describe('Language Switching', () => {
     // homepage navigates to the Spanish homepage.
     await appPage.goto('/');
 
-    await nav.languageSwitcherEN(appPage).click();
+    await nav.languageSwitcherDesktop(appPage).selectOption('es');
 
     await appPage.waitForURL('**/es/');
     expect(appPage.url()).toContain('/es/');
@@ -32,7 +33,7 @@ test.describe('Language Switching', () => {
     // navigates to the corresponding English page.
     await appPage.goto('/es/');
 
-    await nav.languageSwitcherES(appPage).click();
+    await nav.languageSwitcherDesktop(appPage).selectOption('en');
 
     // /es/ → / (the root English homepage)
     await appPage.waitForURL(/\/$/);
@@ -41,10 +42,36 @@ test.describe('Language Switching', () => {
 
   test('switching language on "/en/geco" navigates to "/es/geco"', async ({ appPage }) => {
     // Requirement 5.3 — Activating the Language_Switcher on an English
-    // Listing_Page navigates to the Spanish variant.
+    // Listing_Page navigates to the Spanish variant, not that locale's home.
     await appPage.goto('/en/geco');
 
-    await nav.languageSwitcherEN(appPage).click();
+    await nav.languageSwitcherDesktop(appPage).selectOption('es');
+
+    await appPage.waitForURL('**/es/geco');
+    expect(appPage.url()).toContain('/es/geco');
+  });
+
+  test('the select shows the current locale and both released options', async ({ appPage }) => {
+    await appPage.goto('/en/geco');
+
+    const select = nav.languageSwitcherDesktop(appPage);
+    await expect(select).toHaveValue('en');
+
+    const optionValues = await select.locator('option').evaluateAll(
+      (options) => options.map((o) => (o as HTMLOptionElement).value),
+    );
+    expect(optionValues.sort()).toEqual(['en', 'es']);
+  });
+
+  test('a stored preference from a previous visit is honoured on the next one', async ({ appPage }) => {
+    // Requirement: "persist the choice and honour it on next visit". Simulate
+    // a returning visitor who picked Spanish last time by seeding
+    // localStorage directly, then landing fresh on an English URL.
+    await appPage.addInitScript(() => {
+      localStorage.setItem('kalawala_locale_preference', 'es');
+    });
+
+    await appPage.goto('/en/geco');
 
     await appPage.waitForURL('**/es/geco');
     expect(appPage.url()).toContain('/es/geco');

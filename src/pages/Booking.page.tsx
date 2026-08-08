@@ -50,6 +50,8 @@ import { PROPERTY_DISPLAY_NAMES } from '../utils/constants';
 import { bookingStrings, BookingStrings } from './Booking.i18n';
 import './Booking.style.scss';
 import { pathForKey, routeKeyForSlug } from '../routes.config';
+import { directionOf } from '../i18n/locales';
+import { canonicalUrl } from '../i18n/seo';
 
 type WizardStep = 'search' | 'results' | 'checkout' | 'deposit' | 'confirmation';
 
@@ -489,7 +491,7 @@ const BookingPage = () => {
   if (isPayPalReturnRoute && !bookingConfirmation) {
     return (
       <div id="body" className="booking-page">
-        <Helmet><title>{strings.paypalReturnTitle} | {strings.siteTitle}</title><meta name="description" content={strings.metaDescription} /><link rel="canonical" href={`https://www.reservaskalawala.com/${language === 'es' ? 'bookES/return' : 'book/return'}`} /></Helmet>
+        <Helmet><html lang={language} dir={directionOf(language)} /><title>{strings.paypalReturnTitle} | {strings.siteTitle}</title><meta name="description" content={strings.metaDescription} /><link rel="canonical" href={canonicalUrl('bookReturn', language)} /></Helmet>
         <FixedNavigation isBlog={false} locale={language} />
         <main className="booking-wizard"><Container><Row className="justify-content-center"><Col lg={8} xl={7}>
           <PayPalReturnPanel strings={strings} language={language} isProcessing={isCapturingPayPal} error={paypalCaptureError} result={paypalCaptureResult} />
@@ -500,7 +502,7 @@ const BookingPage = () => {
 
   return (
     <div id="body" className="booking-page">
-      <Helmet><title>{isConfirmationRoute ? strings.confirmationTitle : strings.documentTitle} | {strings.siteTitle}</title><meta name="description" content={strings.metaDescription} /><link rel="canonical" href={`https://www.reservaskalawala.com/${language === 'es' ? 'bookES' : 'book'}`} /></Helmet>
+      <Helmet><html lang={language} dir={directionOf(language)} /><title>{isConfirmationRoute ? strings.confirmationTitle : strings.documentTitle} | {strings.siteTitle}</title><meta name="description" content={strings.metaDescription} /><link rel="canonical" href={canonicalUrl('book', language)} /></Helmet>
       <FixedNavigation isBlog={false} locale={language} />
       <main className="booking-wizard">
         <Container>

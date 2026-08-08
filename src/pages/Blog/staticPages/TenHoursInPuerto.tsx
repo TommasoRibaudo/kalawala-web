@@ -14,6 +14,8 @@ import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { CAHUITA_AREA_RECOMMENDATIONS, CAHUITA_AREA_RECOMMENDATIONS_ES } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { directionOf } from "../../../i18n/locales";
+import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { tenHoursInPuertoContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE =
@@ -33,13 +35,12 @@ const TenHoursInPuerto = () => {
 
         <div className={`listingContainer`}>
             <Helmet>
+                <html lang={locale} dir={directionOf(locale)} />
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta name="description" content={content.seoDescription} />
-                <link rel="canonical" href={`https://www.reservaskalawala.com/TenHoursInPuerto${localeSuffix(locale)}`} />
-                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/TenHoursInPuerto" />
-                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/TenHoursInPuertoES" />
-                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/TenHoursInPuerto" />
+                <link rel="canonical" href={canonicalUrl('blogTenhours', locale)} />
+                {hreflangLinks('blogTenhours')}
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer" style={{ justifyContent: 'center' }}>

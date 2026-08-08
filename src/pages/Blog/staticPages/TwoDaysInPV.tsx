@@ -14,6 +14,8 @@ import StayRecommendation from "../../../components/StayRecommendation/StayRecom
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { directionOf } from "../../../i18n/locales";
+import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { twoDaysInPVContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE =
@@ -33,13 +35,12 @@ const TwoDaysInPV = () => {
 
         <div className={`listingContainer`}>
             <Helmet>
+                <html lang={locale} dir={directionOf(locale)} />
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta name="description" content={content.seoDescription} />
-                <link rel="canonical" href={`https://www.reservaskalawala.com/twodaysinpuertoviejo${localeSuffix(locale)}`} />
-                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/twodaysinpuertoviejo" />
-                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/twodaysinpuertoviejoES" />
-                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/twodaysinpuertoviejo" />
+                <link rel="canonical" href={canonicalUrl('blogTwodays', locale)} />
+                {hreflangLinks('blogTwodays')}
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer" style={{ justifyContent: 'center' }}>

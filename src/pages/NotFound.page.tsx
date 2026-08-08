@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
 import { detectLocaleFromPath } from '../i18n';
 import { pathForKey } from '../routes.config';
+import { directionOf } from '../i18n/locales';
 
 /**
  * Catch-all 404.
@@ -12,8 +13,8 @@ import { pathForKey } from '../routes.config';
  * index as a real, empty page. `noindex` plus a genuine message is the
  * minimum honest response.
  *
- * Language is inferred the same way the rest of the app does it: Spanish
- * routes end in "ES" (see hooks/useLanguageDetection.ts).
+ * Language is inferred the same way the rest of the app does it: from the
+ * URL's locale path prefix (see detectLocaleFromPath).
  */
 const NotFound = () => {
   const { pathname } = useLocation();
@@ -38,7 +39,7 @@ const NotFound = () => {
   return (
     <main className="container" style={{ padding: '120px 16px', textAlign: 'center' }}>
       <Helmet>
-        <html lang={(locale === 'es') ? 'es' : 'en'} />
+        <html lang={locale} dir={directionOf(locale)} />
         <title>{copy.title}</title>
         <meta name="robots" content="noindex, follow" />
       </Helmet>

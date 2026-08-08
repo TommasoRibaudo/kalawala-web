@@ -14,6 +14,8 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { directionOf } from "../../../i18n/locales";
+import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { puertoViejoByPlaneContent } from "../../../i18n/content/blog";
 
 // The pre-merge English page pointed this at a placeholder id
@@ -38,13 +40,12 @@ const PuertoViejoByPlane = () => {
 
         <div className={`listingContainer`}>
             <Helmet>
+                <html lang={locale} dir={directionOf(locale)} />
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta name="description" content={content.seoDescription} />
-                <link rel="canonical" href={`https://www.reservaskalawala.com/puertoviejobyplane${localeSuffix(locale)}`} />
-                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/puertoviejobyplane" />
-                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/puertoviejobyplaneES" />
-                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/puertoviejobyplane" />
+                <link rel="canonical" href={canonicalUrl('blogByplane', locale)} />
+                {hreflangLinks('blogByplane')}
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer" style={{ justifyContent: 'center' }}>

@@ -7,6 +7,8 @@ import FixedNavigation from '../../components/FixedNavigation/FixedNavigation.co
 import Footer from '../../components/Footer/Footer.component';
 import { BLOG_ARTICLES } from '../../utils/constants';
 import { useLocale, useMessages } from '../../i18n';
+import { directionOf } from '../../i18n/locales';
+import { canonicalUrl, hreflangLinks } from '../../i18n/seo';
 
 /**
  * The nav's "Blog" link used to go straight to a single article — the other
@@ -25,17 +27,15 @@ const BlogIndex = () => {
   return (
     <div className="listingContainer">
       <Helmet>
-        <html lang={locale} />
+        <html lang={locale} dir={directionOf(locale)} />
         <meta charSet="utf-8" />
         <title>{m.blog.indexTitle}</title>
         <meta
           name="description"
           content={m.blog.indexDescription}
         />
-        <link rel="canonical" href={`https://www.reservaskalawala.com/blog${locale === 'es' ? 'ES' : ''}`} />
-        <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/blog" />
-        <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/blogES" />
-        <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/blog" />
+        <link rel="canonical" href={canonicalUrl('blog', locale)} />
+        {hreflangLinks('blog')}
       </Helmet>
       <FixedNavigation isBlog={true} />
       <Row className="subContainer" style={{ justifyContent: 'center' }}>

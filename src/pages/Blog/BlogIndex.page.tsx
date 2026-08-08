@@ -7,7 +7,6 @@ import FixedNavigation from '../../components/FixedNavigation/FixedNavigation.co
 import Footer from '../../components/Footer/Footer.component';
 import { BLOG_ARTICLES } from '../../utils/constants';
 import { useLocale, useMessages } from '../../i18n';
-import { directionOf } from '../../i18n/locales';
 import { canonicalUrl, hreflangLinks } from '../../i18n/seo';
 
 /**
@@ -27,7 +26,6 @@ const BlogIndex = () => {
   return (
     <div className="listingContainer">
       <Helmet>
-        <html lang={locale} dir={directionOf(locale)} />
         <meta charSet="utf-8" />
         <title>{m.blog.indexTitle}</title>
         <meta

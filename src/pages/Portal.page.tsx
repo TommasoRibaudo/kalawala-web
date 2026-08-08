@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
 import { useLocale } from '../i18n';
-import { directionOf } from '../i18n/locales';
 import { canonicalUrl } from '../i18n/seo';
 import { BookingApiError, BookingLanguage, portalLogin } from '../services/BookingApi.service';
 import { persistPortalSession, readLatestPortalCredentials, readPortalCredentials, removePortalCredentials } from '../services/PortalSession.service';
@@ -121,7 +120,6 @@ const PortalLoginPage = () => {
   return (
     <div id="body" className="portal-page">
       <Helmet>
-        <html lang={language} dir={directionOf(language)} />
         <title>{strings.documentTitle} | {strings.siteTitle}</title>
         <meta name="description" content={strings.metaDescription} />
         <meta name="robots" content="noindex, nofollow" />

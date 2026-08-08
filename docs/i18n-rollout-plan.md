@@ -21,9 +21,9 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | **Ship gate B shipped.** PRs #48→#49→#50 merged to `main` and deployed to production 2026-08-08. Every URL now lives at `/:locale/slug` (English home still bare `/`). Next: Phase 7 (language switcher combo box). |
+| **Current phase** | **Phase 7 complete** (branch `feat/i18n-phase-7-language-switcher`, not yet merged/deployed). The binary EN/ES toggle is now an eight-language-ready combo box. Next: Phase 8 (translated content) — the first phase in this rollout that produces actual translations rather than machinery. |
 | **Last updated** | 2026-08-08 |
-| **Branch(es) in flight** | None — `main` is the tip of the rollout. |
+| **Branch(es) in flight** | `feat/i18n-phase-7-language-switcher`, based on `main` (post ship gate B). Not yet pushed/opened as a PR. |
 | **Blocked on** | Nothing. **Owner action still outstanding:** PostHog export (organic sessions, EN vs ES, 12 months) — the only open Phase 0 item, non-blocking. |
 
 Phase progress:
@@ -37,7 +37,7 @@ Phase progress:
 - [x] Phase 5 — 301 redirect map — PR #49
 - [x] Phase 6 — SEO head, hreflang, sitemap — PR #50
 - [x] **Ship gate B — URL migration released, still EN/ES only** — deployed 2026-08-08
-- [ ] Phase 7 — Language switcher combo box
+- [x] Phase 7 — Language switcher combo box *(branch `feat/i18n-phase-7-language-switcher`, not yet merged)*
 - [ ] Phase 8 — Translated content for DE/FR/IT/PT/HE/HI
 - [ ] Phase 9 — Build pipeline scale-up
 - [ ] **Ship gate C — eight languages live**
@@ -853,38 +853,55 @@ production — see the session log; Docker never became available to test it
 pre-deploy, and it wasn't re-attempted post-deploy either. Worth running at
 some point: `ORIGIN=https://www.reservaskalawala.com node scripts/check-urls.mjs verify docs/seo-baseline/url-status-2026-08-06.json`.
 
-### Phase 7 — Language switcher combo box
+### Phase 7 — Language switcher combo box ✅ *(2026-08-08, branch `feat/i18n-phase-7-language-switcher`)*
 
 Replaces the current binary toggle button.
 
-- [ ] Combo box (dropdown) listing all eight languages with flag + native language
-      name (`Deutsch`, `Français`, `Italiano`, `Português`, `עברית`, `हिन्दी`) —
-      never the English exonym. `LOCALE_META` already carries these.
-- [ ] The switcher renders from `RELEASED_LOCALES`, **not** `LOCALES` — a locale
-      appears only once its content exists. Adding a language to the switcher is
-      therefore a one-line change at the end of Phase 8, not a UI change.
-- [ ] The Hebrew and Hindi rows must render in their own script at the correct
-      direction even while the surrounding page is LTR. A single `dir="auto"` on
-      the option label handles this.
-- [ ] Selecting a language navigates to the **same page** in that locale via
-      `routes.config.ts`, preserving query and hash. Falls back to that locale's
-      home only if the page genuinely has no counterpart.
-- [ ] Accessibility: a real `<select>`, or a listbox with proper
-      `role`/`aria-expanded`/`aria-activedescendant`, full keyboard operation and
-      a visible focus ring. Match the focus-ring treatment used by the listing
-      cards (`outline: 2px solid $primary-color; outline-offset: 2px`).
-- [ ] **Mobile: the switcher occupies the final line of the menu**, full width,
-      below the nav links — per the agreed design.
-- [ ] Persist the choice (localStorage) and honour it on next visit, but **never
-      auto-redirect a search-engine crawler** based on it; the URL is always
-      authoritative.
-- [ ] The nav was duplicated six ways
-      (`FixedNavigation.component{,ES,Nam,NamES,RIB,RIBES}.tsx`). PR #43 deleted
-      the four Nam/RIB copies and Phase 3a merges the remaining EN/ES pair —
-      confirm that has landed so the switcher is added once, not twice.
+- [x] Combo box listing every `RELEASED_LOCALES` entry with flag + native
+      language name — never the English exonym. Currently renders `en`/`es`
+      only (`English`/`Español`); expands to all eight with zero UI code
+      change once Phase 8 releases the rest, since it reads the same list
+      Phase 8 will extend. **Flag rendering deviated from the plan's
+      implied approach** — see the session log; Unicode flag emoji don't
+      render as flags in Chrome on Windows (a long-standing, deliberate
+      Chromium choice, not a bug), so the flag is an SVG
+      (`country-flag-icons`, the library the old button already used)
+      shown next to the select rather than inside each `<option>`.
+- [x] Renders from `RELEASED_LOCALES`, not `LOCALES`.
+- [x] `dir="auto"` on every `<option>` — in place now for `he`/`hi`, inert
+      until Phase 8 adds them to `RELEASED_LOCALES`.
+- [x] Selecting a locale navigates to the same page via `routes.config.ts`'s
+      `pathInLocale`, preserving query/hash; falls back to that locale's
+      home only if the page has no counterpart (verified manually on a deep
+      listing page: lands on the same property, not the Spanish homepage).
+- [x] Accessibility: a real `<select>`, not a custom listbox — see the
+      session log for why. Visible focus ring, but with
+      `$kalawala-light-green` in place of the plan's literal
+      `$primary-color`: that color is the codebase's usual focus-ring
+      choice, but it's `#0B3028`, nearly the same dark green as this nav
+      bar's own background — invisible where the listing cards (light
+      background) can use it fine. Same fix `CookieConsentBanner` already
+      applied for the same reason.
+- [x] Mobile: full-width row below the nav links — confirmed visually.
+- [x] Persisted to `localStorage`, honoured on the next visit via a
+      `sessionStorage`-guarded redirect (`src/i18n/localePreference.ts`) so
+      it fires once per tab rather than fighting normal in-app navigation.
+      Never fires for a crawler — a fresh visit has no `localStorage` entry
+      — so no separate crawler-detection logic was needed.
+- [x] Confirmed only one `FixedNavigation` component exists (Phase 3a's
+      merge), so the switcher is wired in once.
 
-**Validation:** keyboard-only walkthrough; mobile viewport screenshot; switching
-locale on a deep listing page lands on the same property, not the homepage.
+**Validation:** keyboard-only walkthrough done manually (focus the select,
+arrow keys change the value and navigate immediately); mobile viewport
+screenshot done manually (`.mobile-flag`'s full-width row, flag + "English"
+legible against the dark bar); switching locale on a deep listing page
+(`/en/geco`) confirmed landing on `/es/geco`, not the Spanish homepage.
+Automated: e2e suite extended with two new tests (option list matches
+`RELEASED_LOCALES` with the current one selected; a seeded `localStorage`
+preference redirects a fresh visit) — both pass alongside the existing three,
+scoped to avoid a strict-mode violation from the switcher now rendering
+twice in the DOM (desktop + mobile copies). Full e2e/unit suites at the same
+pre-existing baseline as every prior phase this session, zero regressions.
 
 ### Phase 8 — Translated content for DE/FR/IT/PT/HE/HI
 
@@ -1604,3 +1621,78 @@ what the next session should pick up.
   unstarted phase, currently just a binary EN/ES toggle
   (`Flag.component.tsx`) that needs to become an 8-way picker. `main` is
   now the tip of the rollout; no branches in flight.
+
+### 2026-08-08 — Phase 7 done, plus a cleanup Phase 6 should have caught
+
+- **Cleanup before starting Phase 7:** while reading `FixedNavigation`'s
+  imports, found `src/components/LocaleHtmlAttrs/LocaleHtmlAttrs.component.tsx`
+  — already mounted once at the router root (`Router.tsx`, inside
+  `<BrowserRouter>`) before Phase 6 even started, and its own doc comment
+  explains it's deliberately rendered there instead of per-page *because*
+  Helmet collects from anywhere in the tree, so one mount already covers
+  every route. Phase 6 missed this entirely and hand-added the same
+  `<html lang dir>` tag to 24 individual pages. Harmless — Helmet resolves
+  duplicate tags by setting the same value twice — but pure duplication with
+  no reason to exist. Removed it from all 24, plus the one page
+  (`BlogIndex.page.tsx`) that had a lang-only version of the same redundancy
+  predating Phase 6. Verified against the built HTML that `lang`/`dir` are
+  still correct everywhere, sourced solely from `LocaleHtmlAttrs`.
+  **Lesson: grep for existing handling before building new handling** — a
+  wider search before Phase 6 (`grep -rn "<html lang" src`, not just
+  `grep -rn 'rel="canonical"'`) would have caught this the first time.
+- **Phase 7 — language switcher combo box — done**, on branch
+  `feat/i18n-phase-7-language-switcher` (not merged/deployed).
+  - Native `<select>` over a custom listbox — WAI-ARIA combobox patterns are
+    easy to get subtly wrong, and the plan explicitly allowed either; a real
+    `<select>` gets keyboard operation, mobile OS picker UI, and screen
+    reader support for free, at the cost of `<option>` only being able to
+    render text.
+  - **Real bug caught by checking an actual browser render, not just the
+    code:** the first version put Unicode regional-indicator flag emoji
+    inside each `<option>` (simple, no extra element needed). Opened it in
+    Chrome on Windows — the actual dev environment this session runs in,
+    and a large fraction of any general site's real traffic — and the flags
+    didn't render as flags at all; Chromium deliberately shows the literal
+    two-letter fallback ("US" instead of 🇺🇸) on Windows, a long-standing,
+    intentional decision, not a bug to work around. Switched to an SVG flag
+    (`country-flag-icons`, what the old button already used) rendered as a
+    sibling of the select showing the currently-selected locale, since SVG
+    doesn't have that failure mode. This is the second time this session a
+    "looks right in the code, checked the actual rendered output, found it
+    wasn't" moment happened (the first was Phase 6's `hreflangLinks`
+    component silently not rendering) — worth treating as a pattern:
+    anything touching `<Helmet>` children or emoji/Unicode rendering in this
+    codebase specifically warrants checking the real output, not just a
+    clean compile.
+  - `src/i18n/localePreference.ts`: persists the choice to `localStorage`,
+    honours it on the next visit via a `sessionStorage`-guarded redirect
+    (fires once per tab, not on every in-app navigation — `FixedNavigation`
+    isn't a single root layout, every page mounts its own copy, so an
+    unguarded effect would fight a visitor who explicitly clicked a
+    different-locale link).
+  - Focus ring uses `$kalawala-light-green`, not the plan's literal
+    `$primary-color` — that's `#0B3028`, nearly the same dark green as this
+    nav bar's own background, the same problem `CookieConsentBanner` had
+    already solved the same way elsewhere in this codebase.
+  - Manually verified: keyboard-only operation (arrow keys change the value
+    and navigate immediately while the select is focused, no click needed);
+    switching locale on `/en/geco` lands on `/es/geco`, not the Spanish
+    homepage; the mobile full-width row reads correctly against the dark
+    bar.
+  - e2e: two tests added (option list matches `RELEASED_LOCALES` with the
+    current one selected; a seeded `localStorage` preference redirects a
+    fresh visit), existing three updated from `.click()` on a button to
+    `.selectOption()` on the select. The switcher now renders twice in the
+    DOM (desktop + mobile copies, one hidden by CSS per viewport) — bare
+    `aria-label` locators would hit both and throw a strict-mode violation,
+    so the new selectors are scoped to `.navbar-flag`/`.mobile-flag`.
+    `Booking.page.test.tsx` had one more click-a-button assertion, updated
+    the same way.
+  - Validation: typecheck clean; full e2e suite at the same pre-existing 16
+    failures (50 passed, up from 48 — the two new tests); unit suite at the
+    same 4-suite baseline; production build green.
+- **Next session:** Phase 8 (translated content for DE/FR/IT/PT/HE/HI) — the
+  first phase that actually produces translations rather than machinery.
+  Machine translation, published as-is, per the locked decision. `main` has
+  no branches in flight; `feat/i18n-phase-7-language-switcher` is the tip,
+  not yet pushed/PR'd/merged/deployed.

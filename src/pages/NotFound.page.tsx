@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
 import { detectLocaleFromPath } from '../i18n';
 import { pathForKey } from '../routes.config';
-import { directionOf } from '../i18n/locales';
 
 /**
  * Catch-all 404.
@@ -39,7 +38,6 @@ const NotFound = () => {
   return (
     <main className="container" style={{ padding: '120px 16px', textAlign: 'center' }}>
       <Helmet>
-        <html lang={locale} dir={directionOf(locale)} />
         <title>{copy.title}</title>
         <meta name="robots" content="noindex, follow" />
       </Helmet>

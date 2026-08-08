@@ -332,7 +332,7 @@ test('language switcher toggles booking routes and preserves search query state'
   expect(activeSlide().getByLabelText('Check-out')).toHaveValue('2099-10-05');
   expect(activeSlide().getByLabelText('Guests')).toHaveValue(4);
 
-  fireEvent.click(screen.getAllByRole('button', { name: /switch language to espa/i })[0]);
+  fireEvent.change(screen.getAllByLabelText('Select language')[0], { target: { value: 'es' } });
 
   expect(screen.getByTestId('location')).toHaveTextContent(
     '/es/book?arrivalDate=2099-10-01&departureDate=2099-10-05&guests=4'

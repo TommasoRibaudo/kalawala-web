@@ -13,7 +13,6 @@ import StayRecommendation from "../../../components/StayRecommendation/StayRecom
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
-import { directionOf } from "../../../i18n/locales";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { puertoHiddenGemsContent, HiddenGemSection } from "../../../i18n/content/blog";
 
@@ -57,7 +56,6 @@ const PuertoHiddenGems = () => {
 
         <div className={`listingContainer`}>
             <Helmet>
-                <html lang={locale} dir={directionOf(locale)} />
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta name="description" content={content.seoDescription} />

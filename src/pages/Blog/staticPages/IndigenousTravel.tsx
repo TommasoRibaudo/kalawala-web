@@ -12,6 +12,8 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { directionOf } from "../../../i18n/locales";
+import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { indigenousTravelContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Palenque_bribri._Costa_Rica.jpg/960px-Palenque_bribri._Costa_Rica.jpg";
@@ -30,6 +32,7 @@ const IndigenousTravel = () => {
 
         <div className={`listingContainer`}>
             <Helmet>
+                <html lang={locale} dir={directionOf(locale)} />
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta
@@ -38,23 +41,9 @@ const IndigenousTravel = () => {
                 />
                 <link
                     rel="canonical"
-                    href={`https://www.reservaskalawala.com/indigenousTravelPV${localeSuffix(locale)}`}
+                    href={canonicalUrl('blogIndigenous', locale)}
                 />
-                <link
-                    rel="alternate"
-                    hrefLang="es"
-                    href="https://www.reservaskalawala.com/indigenousTravelPVES"
-                />
-                <link
-                    rel="alternate"
-                    hrefLang="en"
-                    href="https://www.reservaskalawala.com/indigenousTravelPV"
-                />
-                <link
-                    rel="alternate"
-                    hrefLang="x-default"
-                    href="https://www.reservaskalawala.com/indigenousTravelPV"
-                />
+                {hreflangLinks('blogIndigenous')}
             </Helmet>
 
             <FixedNavigation isBlog={true} />

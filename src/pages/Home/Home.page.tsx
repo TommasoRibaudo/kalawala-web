@@ -14,6 +14,8 @@ import { houseDataEngList, houseDataList } from '../../utils/constants';
 import OurOtherHomes from "../../components/OurOtherHomes/OurOtherHomes.component";
 import { useLocale, useMessages } from "../../i18n";
 import { localeSuffix } from "../../i18n/paths";
+import { directionOf } from "../../i18n/locales";
+import { canonicalUrl, hreflangLinks } from "../../i18n/seo";
 
 const Home = () => {
   const locale = useLocale();
@@ -53,13 +55,12 @@ const Home = () => {
   return (
     <div id="body">
       <Helmet>
+        <html lang={locale} dir={directionOf(locale)} />
         <meta charSet="utf-8" />
         <title>{m.home.pageTitle}</title>
         <meta name="description" content={m.home.pageDescription} />
-        <link rel="canonical" href={`https://www.reservaskalawala.com/${locale === 'es' ? 'HomeES' : ''}`} />
-        <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/" />
-        <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/HomeES" />
-        <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/" />
+        <link rel="canonical" href={canonicalUrl('home', locale)} />
+        {hreflangLinks('home')}
       </Helmet>
       <WelcomeSlider />
       <FixedNavigation isBlog={false} />

@@ -14,6 +14,8 @@ import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { directionOf } from "../../../i18n/locales";
+import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { travellingToPuertoContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE =
@@ -33,13 +35,12 @@ const TravellingToPuerto = () => {
 
         <div className={`listingContainer`}>
             <Helmet>
+                <html lang={locale} dir={directionOf(locale)} />
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta name="description" content={content.seoDescription} />
-                <link rel="canonical" href={`https://www.reservaskalawala.com/travellingtopuertoviejo${localeSuffix(locale)}`} />
-                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/travellingtopuertoviejo" />
-                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/travellingtopuertoviejoES" />
-                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/travellingtopuertoviejo" />
+                <link rel="canonical" href={canonicalUrl('blogSanjose', locale)} />
+                {hreflangLinks('blogSanjose')}
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer" style={{ justifyContent: 'center' }}>

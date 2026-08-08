@@ -19,6 +19,8 @@ import PriceConfirmationSection from "../../../components/PriceConfirmationSecti
 import GuestReviews from "../../../components/GuestReviews/GuestReviews.component";
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix } from "../../../i18n/paths";
+import { directionOf } from "../../../i18n/locales";
+import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { listingContent } from "../../../i18n/content/listings";
 import { houseDataByLangCode } from "../../../utils/constants";
 
@@ -68,13 +70,12 @@ const ListingVillaCoral = () => {
     return (
         <div className={`listingContainer${show ? ' modal-open' : ''}`}>
             <Helmet>
+                <html lang={locale} dir={directionOf(locale)} />
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta name="description" content={content.seoDescription} />
-                <link rel="canonical" href={`https://www.reservaskalawala.com/VillaCoral${localeSuffix(locale)}`} />
-                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/VillaCoral" />
-                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/VillaCoralES" />
-                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/VillaCoral" />
+                <link rel="canonical" href={canonicalUrl('villacoral', locale)} />
+                {hreflangLinks('villacoral')}
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (

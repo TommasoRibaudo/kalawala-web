@@ -12,6 +12,8 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { directionOf } from "../../../i18n/locales";
+import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { cahuitaParkContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Cahuita_national_park%2C_Costa_Rica.jpg/1280px-Cahuita_national_park%2C_Costa_Rica.jpg?20090819063715";
@@ -30,13 +32,12 @@ const CahuitaPark = () => {
 
         <div className={`listingContainer`}>
             <Helmet>
+                <html lang={locale} dir={directionOf(locale)} />
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta name="description" content={content.seoDescription} />
-                <link rel="canonical" href={`https://www.reservaskalawala.com/cahuitaparkwhattodo${localeSuffix(locale)}`} />
-                <link rel="alternate" hrefLang="en" href="https://www.reservaskalawala.com/cahuitaparkwhattodo" />
-                <link rel="alternate" hrefLang="es" href="https://www.reservaskalawala.com/cahuitaparkwhattodoES" />
-                <link rel="alternate" hrefLang="x-default" href="https://www.reservaskalawala.com/cahuitaparkwhattodo" />
+                <link rel="canonical" href={canonicalUrl('blogCahuitapark', locale)} />
+                {hreflangLinks('blogCahuitapark')}
             </Helmet>
             <FixedNavigation isBlog={true} />
             <Row className="subContainer" style={{ justifyContent: 'center' }}>

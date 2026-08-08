@@ -12,6 +12,8 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { directionOf } from "../../../i18n/locales";
+import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { bestTimeToVisitContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619";
@@ -30,6 +32,7 @@ const BestTimeToVisitPuerto = () => {
 
         <div className={`listingContainer`}>
             <Helmet>
+                <html lang={locale} dir={directionOf(locale)} />
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta
@@ -38,23 +41,9 @@ const BestTimeToVisitPuerto = () => {
                 />
                 <link
                     rel="canonical"
-                    href={`https://www.reservaskalawala.com/bestTimeToVisitPuerto${localeSuffix(locale)}`}
+                    href={canonicalUrl('blogBesttime', locale)}
                 />
-                <link
-                    rel="alternate"
-                    hrefLang="es"
-                    href="https://www.reservaskalawala.com/bestTimeToVisitPuertoES"
-                />
-                <link
-                    rel="alternate"
-                    hrefLang="en"
-                    href="https://www.reservaskalawala.com/bestTimeToVisitPuerto"
-                />
-                <link
-                    rel="alternate"
-                    hrefLang="x-default"
-                    href="https://www.reservaskalawala.com/bestTimeToVisitPuerto"
-                />
+                {hreflangLinks('blogBesttime')}
             </Helmet>
 
             <FixedNavigation isBlog={true} />

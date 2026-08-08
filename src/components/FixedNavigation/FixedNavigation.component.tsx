@@ -9,6 +9,7 @@ import { LanguageSwitcher } from "../FlagComponent/Flag.component";
 import { useLocale, messagesFor } from "../../i18n";
 import type { Locale } from "../../i18n";
 import { bookingPath, homePath, blogPath, portalPath } from "../../i18n/paths";
+import { useApplyStoredLocalePreference } from "../../i18n/localePreference";
 
 interface IFixedNavigation {
   isBlog: boolean
@@ -46,6 +47,7 @@ const FixedNavigation = ({ isBlog, locale: localeOverride }: IFixedNavigation) =
   const detectedLocale = useLocale();
   const locale = localeOverride ?? detectedLocale;
   const m = messagesFor(locale);
+  useApplyStoredLocalePreference();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

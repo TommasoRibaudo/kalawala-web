@@ -21,9 +21,9 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | **Phase 5 complete** (branch `feat/i18n-phase-5-redirects`, stacked on `feat/i18n-phase-4-routes-config` — PR #48). Neither merged/deployed. Next: Phase 6 (SEO head, hreflang, sitemap). |
+| **Current phase** | **Phase 6 complete** (branch `feat/i18n-phase-6-seo-head`, stacked on `feat/i18n-phase-5-redirects` → `feat/i18n-phase-4-routes-config`, PR #48). Phases 4–6 are all of ship gate B's scope and none are merged/deployed yet. Next: either get 4–6 merged and deployed as ship gate B, or continue to Phase 7. |
 | **Last updated** | 2026-08-07 |
-| **Branch(es) in flight** | `feat/i18n-phase-4-routes-config` (PR #48, open) → `feat/i18n-phase-5-redirects` (stacked on top, not yet pushed/opened as a PR — needs #48 merged first, or its own PR based on #48's branch). |
+| **Branch(es) in flight** | `feat/i18n-phase-4-routes-config` (PR #48, open) → `feat/i18n-phase-5-redirects` (not yet pushed/opened as a PR) → `feat/i18n-phase-6-seo-head` (not yet pushed/opened as a PR). |
 | **Blocked on** | Nothing. **Owner action still outstanding:** PostHog export (organic sessions, EN vs ES, 12 months) — the only open Phase 0 item, non-blocking. Phase 5's redirect map should be verified with `scripts/check-urls.mjs verify` against a real host before ship gate B — see Phase 5's session log entry for why that didn't happen this session. |
 
 Phase progress:
@@ -35,7 +35,7 @@ Phase progress:
 - [x] **Ship gate A — EN/ES refactor released, zero visible change** — PRs #39→#47 merged to `main` and deployed to production
 - [x] Phase 4 — Route restructure to `/:locale/` *(branch `feat/i18n-phase-4-routes-config`, PR #48 open, not yet merged)*
 - [x] Phase 5 — 301 redirect map *(branch `feat/i18n-phase-5-redirects`, not yet merged; live-host verification still outstanding)*
-- [ ] Phase 6 — SEO head, hreflang, sitemap
+- [x] Phase 6 — SEO head, hreflang, sitemap *(branch `feat/i18n-phase-6-seo-head`, not yet merged)*
 - [ ] **Ship gate B — URL migration released, still EN/ES only**
 - [ ] Phase 7 — Language switcher combo box
 - [ ] Phase 8 — Translated content for DE/FR/IT/PT/HE/HI
@@ -789,30 +789,44 @@ verify` — the tool the plan and Phase 0 already built for this — should stil
 be run against a real host (a preview deploy, or Docker once available)
 before this phase is considered fully proven, and again post-deploy.
 
-### Phase 6 — SEO head, hreflang, sitemap
+### Phase 6 — SEO head, hreflang, sitemap ✅ *(2026-08-07, branch `feat/i18n-phase-6-seo-head`)*
 
-- [ ] Per-page `<Helmet>` emits the **full 8-way hreflang matrix** plus
-      `x-default` (pointing at English, per the locked decision). Currently
-      hardcoded EN/ES per page — generate from `routes.config.ts` instead.
-- [ ] Hebrew is `he`, Hindi is `hi` — bare language subtags, no region, matching
-      the `Locale` union. Do not use `iw` (the obsolete Hebrew code); some
-      tooling still emits it and Google treats the two as distinct.
-- [ ] hreflang must be **reciprocal**: if `/de/plumeria` lists `/fr/plumeria`,
-      the French page must list the German one. Google silently ignores
-      non-reciprocal annotations, which is the most common way this is got wrong.
-- [ ] `<html lang>` must reflect the actual locale. It is currently static
-      `lang="en"` in `public/index.html` — set it per page via Helmet's
-      `htmlAttributes` so the prerendered HTML carries the right value.
-- [ ] Canonical per page points at itself in its own locale — never cross-locale.
-- [ ] Rewrite `scripts/generate-sitemap.js` to build from `routes.config.ts`
-      instead of pairing EN/ES by string suffix. The current `esCounterpart()`
-      suffix logic must go entirely.
-- [ ] Use Portuguese as `pt` unless you specifically want `pt-BR` vs `pt-PT`;
-      pick one and be consistent between hreflang, `<html lang>` and GSC.
+- [x] Per-page `<Helmet>` emits the hreflang matrix (every `RELEASED_LOCALES`
+      entry, currently `en`+`es`) plus `x-default` pointing at English.
+      `src/i18n/seo.tsx`'s `hreflangLinks(routeKey)` generates it from
+      `routes.config.ts` (via `RELEASED_LOCALES`, not the full 8-locale
+      `LOCALES` set) — this is *not* a hardcoded 2-locale matrix, it expands
+      on its own as Phase 8 releases each language, same way the sitemap does.
+- [x] Hebrew/Hindi bare subtags — already correct in `locales.ts` from H-A
+      (PR #44); nothing to change here.
+- [x] hreflang is reciprocal — verified programmatically on the built sitemap
+      (see session log): all 44 URLs carry exactly 3 alternates, every
+      alternate target lists the page linking to it back.
+- [x] `<html lang>` (plus `dir`, for RTL-readiness) set per page via Helmet's
+      plain-JSX `<html lang dir />` child — the pattern `BlogIndex.page.tsx`
+      already used for `lang`, extended to every page and to `dir`. Not
+      Helmet's `htmlAttributes` prop, which does the same thing; matched the
+      codebase's existing precedent instead of introducing a second API for
+      the same result. `public/index.html`'s static `lang="en"` is
+      unchanged — it's the correct pre-hydration fallback (`DEFAULT_LOCALE`),
+      not a bug.
+- [x] Canonical per page points at itself in its own locale —
+      `canonicalUrl(routeKey, locale)`, same file.
+- [x] `scripts/generate-sitemap.js` rewritten. `esCounterpart()` and the
+      string-suffix pairing are gone entirely — routes now group by their
+      locale-independent identity (the path with its `/:locale/` prefix
+      stripped), which is why this also needs no change when Phase 8 adds
+      six more locales.
+- [x] Portuguese as bare `pt` — already how `locales.ts` had it declared
+      since H-A; nothing to decide.
 
-**Validation:** parse the built `sitemap.xml` and assert every URL has 6
-alternates + `x-default`, and that the alternate graph is symmetric. Assert
-prerendered HTML for one page per locale carries the right `<html lang>`.
+**Validation:** parsed the built `sitemap.xml` — all 44 URLs have exactly 3
+alternates (`en`, `es`, `x-default`) and the alternate graph is symmetric.
+Confirmed per-page prerendered HTML carries the right `<html lang dir>` and a
+canonical matching the served (slashed) URL, spot-checked on `/en/geco/`,
+`/es/geco/`, `/` and `/es/`. Full e2e suite at the same 16 pre-existing
+failures as Phase 4/5 (zero regressions); unit suite at the same 4-suite
+baseline; typecheck clean.
 
 ### 🚢 Ship gate B
 
@@ -1427,3 +1441,91 @@ what the next session should pick up.
   redirects, or continue straight to Phase 6 (SEO head, hreflang, sitemap)
   on a third stacked branch — both are reasonable; ask before deploying
   either way, same pattern as ship gate A.
+
+### 2026-08-07 — Google Search Console indexing alert investigated, Phase 6 done
+
+- **Owner forwarded two Search Console emails** ("new reasons preventing
+  indexing"). Logged into `reservas.kalawala@gmail.com` (the account that
+  owns the Search Console property — a separate account from the one
+  driving this session; `tommasoribaudo1@gmail.com` is only its *recovery*
+  address, which doesn't receive Search Console's own mail) and read the
+  actual Indexing report rather than reasoning from the email summary alone.
+  Findings, against **current production** — none of Phase 4/5/6 has
+  deployed, so this reflects the pre-migration site:
+  - **"Page with redirect" (15 URLs) and "Alternate page with proper
+    canonical tag" (13 URLs)** are the same root cause, and it's exactly
+    what `docs/seo-baseline/README.md` already documented from Phase 0:
+    Apache's `DirectorySlash` 301s an unslashed URL (`/Geco`) to its
+    slashed form (`/Geco/`), but the served page's own canonical tag still
+    points at the unslashed one. Confirmed by checking
+    `ListingGeco.page.tsx`'s canonical directly — still `/Geco` at the time
+    of checking.
+  - **"Not found (404)" (9 URLs)** — all first detected **2024-06-08**, two
+    years before this rollout started. `/blog/slug`-prefixed paths and two
+    URLs (`bestTimePuertoViejo`, `mejorEpocaPuertoViejo`) that never matched
+    any route in the current scheme. Unrelated cruft, not addressed.
+  - **"Excluded by noindex" (2 URLs)** — `/portal` (correct, by design) and
+    one malformed crawl artifact (`/HomeVillasES/HomeES`, a concatenation of
+    two page names that no page ever actually links to). Not a bug.
+  - This fully confirmed Phase 6's scope was already correctly targeted at
+    the real problem — nothing new to add to the checklist.
+- **Phase 6 — SEO head, hreflang, sitemap — done**, on branch
+  `feat/i18n-phase-6-seo-head` (stacked on Phase 5; not merged/deployed).
+  - New `src/i18n/seo.tsx`: `canonicalUrl(routeKey, locale)` and
+    `hreflangLinks(routeKey)`, both built from `routes.config.ts`. Applied
+    across all 24 pages that carry a canonical tag (10 listings, `BlogIndex`
+    + 10 articles, `Home`, `Booking`, `Portal`), plus `<html lang dir>` on
+    those and on `PortalDetail`/`NotFound` (noindex, so no canonical/hreflang
+    needed there, just correctness for when RTL locales eventually ship).
+  - **Two real bugs found by checking the actual built output, not just
+    reading the code:**
+    1. **Double-slash.** `pathForKey('home', 'es')` already returns `/es/`
+       (trailing slash baked in, from the empty-slug branch) — a naive
+       `path + '/'` in both `seo.tsx`'s `seoPath()` and, separately,
+       `generate-sitemap.js`'s `withTrailingSlash()` turned that into
+       `/es//`. Both fixed with an `endsWith('/')` check before appending.
+       Same bug, hit twice in two different files, because both were
+       written from the same (wrong) assumption about `pathForKey`'s output
+       shape — worth remembering for any future code that appends a slash
+       to a `pathForKey()` result.
+    2. **`hreflangLinks` silently producing nothing.** The first version was
+       a component, `<HreflangLinks routeKey="geco" />`, rendered as a
+       direct child of `<Helmet>`. react-helmet inspects `props.children`
+       looking for literal host tag types (title, meta, link, ...) and
+       never invokes custom components — so `<HreflangLinks/>` was silently
+       dropped, not rendered. Typecheck, build, and a first skim of the HTML
+       output all looked fine; only grepping the built page for `hreflang=`
+       and finding nothing caught it. Fixed by making it a plain function
+       returning an array of real `<link>` elements, called inline as
+       `{hreflangLinks('geco')}` — by the time Helmet sees the array, its
+       elements already are `<link>`s, not hidden behind a component
+       boundary. Re-verified against the actual built HTML afterward, not
+       just the fix compiling.
+  - **Real bug found in the sweep, unrelated to head tags:**
+    `src/i18n/content/blog.tsx` had a hardcoded old-scheme link
+    (`https://reservaskalawala.com/Tucano`, and missing `www.` too) inside a
+    blog article's inline JSX prose — invisible to every prior grep sweep
+    because those only checked `href="..."` on components, not link targets
+    buried in static content strings. Fixed to the new scheme.
+  - **Process note, for honesty:** the fix above was described in one
+    commit's message but the file was never actually `git add`ed into that
+    commit — caught by re-running `git status` before starting the *next*
+    commit, rather than trusting the previous message. Included in the
+    following commit instead of amending, with a note. Worth being
+    deliberate about checking `git status`/`git diff --stat` against a
+    commit's own message before moving on, not just before the first
+    commit of a session.
+  - `scripts/generate-sitemap.js` rewritten: routes now group by their
+    locale-independent identity (path with the `/:locale/` prefix stripped)
+    instead of EN/ES string-suffix pairing. Verified programmatically: all
+    44 URLs carry exactly 3 alternates (`en`, `es`, `x-default`) and the
+    hreflang graph is fully reciprocal.
+  - Validation: typecheck clean; full e2e suite at the same 16 pre-existing
+    failures as Phase 4/5 (zero regressions); unit suite at the same
+    4-suite baseline; production build green.
+- **Next session:** ship gate B is Phases 4–6 together — none of the three
+  are merged or deployed. Decide whether to merge/deploy them as a unit (and
+  live-verify Phase 5's redirects per its own outstanding item first) or
+  continue to Phase 7 (language switcher combo box) on a fourth stacked
+  branch. Same pattern as before: implementing/stacking branches doesn't
+  need a fresh ask each time, but push/PR/merge/deploy each do.

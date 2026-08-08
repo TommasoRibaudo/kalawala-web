@@ -43,7 +43,7 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-function renderBookingPage(path = '/book') {
+function renderBookingPage(path = '/en/book') {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <BookingPage />
@@ -57,12 +57,12 @@ function LocationProbe() {
   return <div data-testid="location">{`${location.pathname}${location.search}`}</div>;
 }
 
-function renderBookingRoutes(path = '/book') {
+function renderBookingRoutes(path = '/en/book') {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route
-          path="/book"
+          path="/en/book"
           element={
             <>
               <BookingPage />
@@ -71,7 +71,7 @@ function renderBookingRoutes(path = '/book') {
           }
         />
         <Route
-          path="/bookES"
+          path="/es/book"
           element={
             <>
               <BookingPage />
@@ -193,7 +193,7 @@ test('submits availability search and renders available properties', async () =>
   expect(screen.getByText('1 home is available')).toBeInTheDocument();
   expect(screen.getByText('$510.00')).toBeInTheDocument();
   expect(screen.getByText(/sleeps 5/i)).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: 'View listing' })).toHaveAttribute('href', '/Geco');
+  expect(screen.getByRole('link', { name: 'View listing' })).toHaveAttribute('href', '/en/geco');
   expect(screen.getByRole('link', { name: 'View listing' })).toHaveAttribute('target', '_blank');
   expect(screen.getByRole('link', { name: 'View listing' })).toHaveAttribute('rel', 'noopener noreferrer');
 });
@@ -212,7 +212,7 @@ test('renders Spanish no-availability state for bookES route', async () => {
     availabilityWarnings: [{ code: 'no_properties_available', messageKey: 'booking.noAvailability' }],
   });
 
-  renderBookingPage('/bookES');
+  renderBookingPage('/es/book');
 
   fireEvent.change(activeSlide().getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
   fireEvent.change(activeSlide().getByLabelText('Salida'), { target: { value: '2099-07-14' } });
@@ -278,7 +278,7 @@ function mockSpanishSearchWithExchangeRate(exchangeRate: { body: unknown; status
 }
 
 async function runSpanishSearch() {
-  renderBookingPage('/bookES');
+  renderBookingPage('/es/book');
   fireEvent.change(activeSlide().getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
   fireEvent.change(activeSlide().getByLabelText('Salida'), { target: { value: '2099-07-14' } });
   fireEvent.click(screen.getByRole('button', { name: /buscar disponibilidad/i }));
@@ -314,7 +314,7 @@ test('leaves the dollar prices alone when the exchange rate cannot be fetched', 
 test('does not request an exchange rate on the English booking flow', async () => {
   mockJsonResponse({ ...spanishSearchResult, language: 'en' });
 
-  renderBookingPage('/book');
+  renderBookingPage('/en/book');
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-07-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-07-14' } });
   fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
@@ -326,7 +326,7 @@ test('does not request an exchange rate on the English booking flow', async () =
 });
 
 test('language switcher toggles booking routes and preserves search query state', () => {
-  renderBookingRoutes('/book?arrivalDate=2099-10-01&departureDate=2099-10-05&guests=4');
+  renderBookingRoutes('/en/book?arrivalDate=2099-10-01&departureDate=2099-10-05&guests=4');
 
   expect(activeSlide().getByLabelText('Check-in')).toHaveValue('2099-10-01');
   expect(activeSlide().getByLabelText('Check-out')).toHaveValue('2099-10-05');
@@ -335,7 +335,7 @@ test('language switcher toggles booking routes and preserves search query state'
   fireEvent.click(screen.getAllByRole('button', { name: /switch language to espa/i })[0]);
 
   expect(screen.getByTestId('location')).toHaveTextContent(
-    '/bookES?arrivalDate=2099-10-01&departureDate=2099-10-05&guests=4'
+    '/es/book?arrivalDate=2099-10-01&departureDate=2099-10-05&guests=4'
   );
   expect(activeSlide().getByLabelText('Llegada')).toHaveValue('2099-10-01');
   expect(activeSlide().getByLabelText('Salida')).toHaveValue('2099-10-05');
@@ -379,7 +379,7 @@ test('builds Spanish listing links from the property slug and opens them in a ne
     availabilityWarnings: [],
   });
 
-  renderBookingPage('/bookES');
+  renderBookingPage('/es/book');
 
   fireEvent.change(activeSlide().getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
   fireEvent.change(activeSlide().getByLabelText('Salida'), { target: { value: '2099-07-14' } });
@@ -389,10 +389,10 @@ test('builds Spanish listing links from the property slug and opens them in a ne
 
   const viewListingLink = screen.getByRole('link', { name: 'Ver alojamiento' });
   const imageListingLink = screen.getByRole('link', { name: 'Ver alojamiento: Casa Geco' });
-  expect(viewListingLink).toHaveAttribute('href', '/GecoES');
+  expect(viewListingLink).toHaveAttribute('href', '/es/geco');
   expect(viewListingLink).toHaveAttribute('target', '_blank');
   expect(viewListingLink).toHaveAttribute('rel', 'noopener noreferrer');
-  expect(imageListingLink).toHaveAttribute('href', '/GecoES');
+  expect(imageListingLink).toHaveAttribute('href', '/es/geco');
   expect(imageListingLink).toHaveAttribute('target', '_blank');
   expect(imageListingLink).toHaveAttribute('rel', 'noopener noreferrer');
 });
@@ -693,7 +693,7 @@ test('captures PayPal payment on the return route using token and stored booking
     },
   });
 
-  renderBookingPage('/book/return?token=PAY-ORDER-123&PayerID=PAYER-456');
+  renderBookingPage('/en/book/return?token=PAY-ORDER-123&PayerID=PAYER-456');
 
   expect(screen.getByText('Processing your PayPal payment')).toBeInTheDocument();
   await screen.findByText('Your stay is booked.');
@@ -718,7 +718,7 @@ test('captures PayPal payment on the return route using token and stored booking
   expect(screen.getByText('Casa Geco')).toBeInTheDocument();
   expect(screen.getByText('Jun 10, 2099 to Jun 14, 2099')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Manage booking' }));
-  expect(screen.getByTestId('location')).toHaveTextContent('/portal?reservationId=res_PUBLIC123');
+  expect(screen.getByTestId('location')).toHaveTextContent('/en/portal?reservationId=res_PUBLIC123');
   expect(window.sessionStorage.getItem('kalawala_paypal_checkout')).toBeNull();
   expect(window.sessionStorage.getItem('kalawala_booking_confirmation')).toContain('res_PUBLIC123');
   await waitFor(() =>
@@ -784,12 +784,12 @@ test('renders the confirmed route from stored confirmation data without firing p
   );
   window.sessionStorage.setItem('kalawala_booking_confirmation_tracked_res_PUBLIC123', '1');
 
-  renderBookingPage('/book/confirmed');
+  renderBookingPage('/en/book/confirmed');
 
   await screen.findByRole('heading', { name: 'Booking confirmed' });
   expect(screen.getByText('res_PUBLIC123')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Manage booking' }));
-  expect(screen.getByTestId('location')).toHaveTextContent('/portal?reservationId=res_PUBLIC123');
+  expect(screen.getByTestId('location')).toHaveTextContent('/en/portal?reservationId=res_PUBLIC123');
   expect(posthog.capture).not.toHaveBeenCalledWith('booking_confirmed', expect.anything());
 });
 
@@ -824,19 +824,19 @@ test('renders Spanish confirmation copy and portal link', async () => {
     })
   );
 
-  renderBookingPage('/bookES/confirmed');
+  renderBookingPage('/es/book/confirmed');
 
   await screen.findByRole('heading', { name: 'Reserva confirmada' });
   expect(screen.getByText('Tu estad\u00eda est\u00e1 reservada.')).toBeInTheDocument();
   expect(screen.getByText('Pago confirmado')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Gestionar reserva' }));
-  expect(screen.getByTestId('location')).toHaveTextContent('/portalES?reservationId=res_PUBLIC123');
+  expect(screen.getByTestId('location')).toHaveTextContent('/es/portal?reservationId=res_PUBLIC123');
 });
 
 test('shows a return error without calling capture when PayPal return context is missing', async () => {
   global.fetch = jest.fn() as typeof fetch;
 
-  renderBookingPage('/book/return?token=PAY-ORDER-123&PayerID=PAYER-456');
+  renderBookingPage('/en/book/return?token=PAY-ORDER-123&PayerID=PAYER-456');
 
   await screen.findByText('We could not find the PayPal return details for this booking.');
   expect(global.fetch).not.toHaveBeenCalled();
@@ -862,7 +862,7 @@ test('shows capture error and keeps the return page when the capture API fails',
     500
   );
 
-  renderBookingPage('/book/return?token=PAY-ORDER-123&PayerID=PAYER-456');
+  renderBookingPage('/en/book/return?token=PAY-ORDER-123&PayerID=PAYER-456');
 
   expect(screen.getByText('Processing your PayPal payment')).toBeInTheDocument();
   await screen.findByText('We could not verify the PayPal payment right now. Please contact Kalawala.');

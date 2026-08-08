@@ -6,6 +6,7 @@ import Slider from "react-slick";
 import { SampleNextArrow, SamplePrevArrow } from "../../../components/CustomSlick/SlickDarkArrow.Component";
 import { cdnImage } from "../../../utils/imageCdn";
 import { useMessages } from '../../../i18n';
+import { pathForLegacyId } from '../../../routes.config';
 
 interface IOtherBlogs {
   currentBlog: string
@@ -73,7 +74,7 @@ const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
   }), [windowWidth, filteredBlogs.length])
 
   const handleBlogClick = useCallback((id: string) => {
-    navigate(`/${id}`)
+    navigate(pathForLegacyId(id))
   }, [navigate])
 
   if (filteredBlogs.length === 0) {

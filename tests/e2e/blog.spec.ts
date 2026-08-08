@@ -11,7 +11,7 @@ import { nav } from './helpers/selectors';
  */
 test.describe('Blog', () => {
   test('English blog page loads with blog content and navigation bar visible', async ({ appPage }) => {
-    await appPage.goto('/twodaysinpuertoviejo');
+    await appPage.goto('/en/twodaysinpuertoviejo');
 
     // Requirement 10.1 — Blog content and navigation bar are visible
     await expect(nav.bar(appPage)).toBeVisible();
@@ -27,7 +27,7 @@ test.describe('Blog', () => {
   });
 
   test('Spanish blog page loads with Spanish-language blog content', async ({ appPage }) => {
-    await appPage.goto('/twodaysinpuertoviejoES');
+    await appPage.goto('/es/twodaysinpuertoviejo');
 
     // Requirement 10.2 — Spanish-language blog content is displayed
     await expect(nav.bar(appPage)).toBeVisible();
@@ -43,7 +43,7 @@ test.describe('Blog', () => {
   });
 
   test('blog page has correct document title', async ({ appPage }) => {
-    await appPage.goto('/twodaysinpuertoviejo');
+    await appPage.goto('/en/twodaysinpuertoviejo');
 
     // Requirement 10.3 — Page title is set correctly via Helmet
     await expect(appPage).toHaveTitle('2 Days One Night in Puerto Viejo');

@@ -14,12 +14,23 @@
  *
  * Chunk naming
  * ------------
- * routeToChunk() below MUST match the webpackChunkName comments in
- * src/Router/Router.tsx. Rather than trust that, the script resolves every
+ * routeToChunk() below MUST match the webpackChunkName values declared in
+ * src/routes.config.ts. Rather than trust that, the script resolves every
  * expected chunk against build/asset-manifest.json and exits non-zero if one is
  * missing. A renamed route then breaks the build loudly instead of silently
  * shipping a page whose chunk is discovered late — the exact regression this
  * script exists to prevent, and one that no test would otherwise catch.
+ *
+ * PHASE 4: routes are now `/:locale/slug` (e.g. `/en/geco`, `/es/geco`), and
+ * a few pages — `book`, `book/return`, `book/confirmed` — share one chunk
+ * under different sub-paths. Deriving the chunk from the *whole* path (the
+ * old rule) would compute "route-book-return" for `/en/book/return`, which
+ * matches no real chunk. Using only the first segment *after* the locale
+ * prefix fixes both problems at once: every sub-path of `book` reduces to
+ * "book", and — as a bonus — English and Spanish now resolve to the *same*
+ * chunk name directly, since the locale no longer lives inside the slug.
+ * That retires the old ES-merged-chunk fallback below entirely; there is no
+ * more EN/ES chunk-name collision to work around.
  */
 
 const fs = require('fs');
@@ -29,10 +40,16 @@ const ROOT = path.resolve(__dirname, '..');
 const BUILD = path.join(ROOT, 'build');
 const MANIFEST = path.join(BUILD, 'asset-manifest.json');
 
-/** Keep in sync with routeToChunk() used to generate Router.tsx. */
+// Keep in sync with src/i18n/locales.ts's LOCALES. Duplicated rather than
+// imported because this script runs as plain Node against a TS source file.
+const LOCALES = ['en', 'es', 'de', 'fr', 'it', 'pt', 'he', 'hi'];
+
+/** Keep in sync with the `chunk` field per route in src/routes.config.ts. */
 function routeToChunk(route) {
-  if (route === '/') return 'route-home';
-  return 'route-' + route.replace(/^\//, '').replace(/\//g, '-').toLowerCase();
+  const parts = route.replace(/^\//, '').split('/').filter(Boolean);
+  const rest = parts.length && LOCALES.includes(parts[0]) ? parts.slice(1) : parts;
+  const first = rest[0];
+  return 'route-' + (first ? first.toLowerCase() : 'home');
 }
 
 function main() {
@@ -63,19 +80,9 @@ function main() {
 
   for (const route of routes) {
     const chunk = routeToChunk(route);
-    // A Spanish route whose page has been merged into its English twin shares
-    // that twin's chunk: webpack keys chunks by module, so two lazy imports of
-    // the same file collapse into one and the second webpackChunkName is
-    // dropped. `/GecoES` therefore resolves `route-geco`, not `route-gecoes`.
-    //
-    // The fallback is tried only when the exact chunk is absent, so a Spanish
-    // page that still has its own module (the blog articles, for now) keeps
-    // using its own chunk. If neither exists the route is still reported
-    // missing and the build still fails — the check is narrowed, not weakened.
-    const merged = /es$/.test(chunk) ? chunk.replace(/es$/, '') : null;
-    const asset = byChunk.get(chunk) || (merged ? byChunk.get(merged) : undefined);
+    const asset = byChunk.get(chunk);
     if (!asset) {
-      missing.push(`${route} -> ${chunk}${merged ? ` (nor ${merged})` : ''}`);
+      missing.push(`${route} -> ${chunk}`);
       continue;
     }
 

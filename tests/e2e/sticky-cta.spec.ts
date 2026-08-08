@@ -12,7 +12,7 @@ import { test, expect, devices } from '@playwright/test';
  * checks the bar on every one of them rather than on a sample.
  */
 
-const EN_SLUGS = [
+const SLUGS = [
   'Geco',
   'Rana',
   'Tucano',
@@ -27,9 +27,13 @@ const EN_SLUGS = [
 
 test.use({ ...devices['Pixel 5'] });
 
-for (const slug of [...EN_SLUGS, ...EN_SLUGS.map((s) => `${s}ES`)]) {
-  test(`/${slug} pins the mobile CTA to the bottom of the viewport`, async ({ page }) => {
-    await page.goto(`/${slug}`);
+const paths = ['en', 'es'].flatMap((locale) =>
+  SLUGS.map((slug) => `/${locale}/${slug.toLowerCase()}`),
+);
+
+for (const path of paths) {
+  test(`${path} pins the mobile CTA to the bottom of the viewport`, async ({ page }) => {
+    await page.goto(path);
 
     const bar = page.locator('.sticky-cta-mobile');
     await expect(bar).toBeVisible();

@@ -61,7 +61,7 @@ test.describe('Visual Regression', () => {
         });
       });
 
-      await appPage.goto('/Geco');
+      await appPage.goto('/en/geco');
       await appPage.waitForLoadState('networkidle');
 
       await expect(appPage).toHaveScreenshot(
@@ -71,7 +71,7 @@ test.describe('Visual Regression', () => {
     });
 
     test('booking search page visual snapshot', async ({ appPage }) => {
-      await appPage.goto('/book');
+      await appPage.goto('/en/book');
       await appPage.waitForLoadState('networkidle');
 
       await expect(appPage).toHaveScreenshot(

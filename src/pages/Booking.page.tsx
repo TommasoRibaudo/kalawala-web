@@ -49,6 +49,7 @@ import { addDays, getCostaRicaToday } from '../utils/dates';
 import { PROPERTY_DISPLAY_NAMES } from '../utils/constants';
 import { bookingStrings, BookingStrings } from './Booking.i18n';
 import './Booking.style.scss';
+import { pathForKey, routeKeyForSlug } from '../routes.config';
 
 type WizardStep = 'search' | 'results' | 'checkout' | 'deposit' | 'confirmation';
 
@@ -161,13 +162,12 @@ const BookingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const locale = useLocale();
-    // /bookES/return and /bookES/confirmed are already covered by
-  // detectLocaleFromPath's 'ES/' clause; the lowercase check stays for
-  // hand-typed URLs, which is the one case the shared detector will not match.
-  const language: BookingLanguage =
-    locale === 'es' || location.pathname.toLowerCase().startsWith('/bookes')
-      ? 'es'
-      : bookingLanguage(locale);
+    // PHASE 4: the lowercase-/bookes hand-typed-URL special case this used to
+  // need is gone. Locale used to live as an "ES" suffix stuck onto the page
+  // slug, so a hand-typed lowercase "es" would slip past the case-sensitive
+  // suffix check; now locale is its own already-lowercase path segment
+  // (/es/book), so there's no case mismatch left to guard against.
+  const language: BookingLanguage = bookingLanguage(locale);
   const strings = bookingStrings[language];
   const [searchParams, setSearchParams] = useSearchParams();
   const isPayPalReturnRoute = isBookingReturnPath(location.pathname);
@@ -474,13 +474,14 @@ const BookingPage = () => {
     // Try the durable credential cache first, then fall back to the session-only auto-login.
     const cached = readPortalCredentials(reservationPublicId);
     const storedPassword = cached?.password ?? readPortalAutoLogin();
-    const base = language === 'es' ? '/portalES' : '/portal';
+    const base = pathForKey('portal', language);
+    const detailPath = (id: string) => pathForKey('portalDetail', language).replace(':reservationPublicId', encodeURIComponent(id));
     if (!storedPassword) { navigate(`${base}?reservationId=${encodeURIComponent(reservationPublicId)}`); return; }
     try {
       const response = await portalLogin({ reservationPublicId, password: storedPassword, language });
       persistPortalSession(response.token, response.reservationPublicId);
       clearPortalAutoLogin();
-      navigate(`${base}/${encodeURIComponent(response.reservationPublicId)}`);
+      navigate(detailPath(response.reservationPublicId));
     } catch { removePortalCredentials(reservationPublicId); clearPortalAutoLogin(); navigate(`${base}?reservationId=${encodeURIComponent(reservationPublicId)}`); }
   };
 
@@ -1243,9 +1244,9 @@ function formatDuration(durationMs: number): string {
 }
 function formatPaymentStatus(status: string, strings: BookingStrings): string { return status === 'captured' ? strings.paymentConfirmed : status; }
 function redirectToUrl(url: string): void { window.location.assign(url); }
-function isBookingReturnPath(pathname: string): boolean { const n = pathname.replace(/\/+$/, '').toLowerCase(); return n === '/book/return' || n === '/bookes/return'; }
-function isBookingConfirmedPath(pathname: string): boolean { const n = pathname.replace(/\/+$/, '').toLowerCase(); return n === '/book/confirmed' || n === '/bookes/confirmed'; }
-function confirmedBookingPath(language: BookingLanguage): string { return language === 'es' ? '/bookES/confirmed' : '/book/confirmed'; }
+function isBookingReturnPath(pathname: string): boolean { const n = pathname.replace(/\/+$/, '').toLowerCase(); return n === pathForKey('bookReturn', 'en') || n === pathForKey('bookReturn', 'es'); }
+function isBookingConfirmedPath(pathname: string): boolean { const n = pathname.replace(/\/+$/, '').toLowerCase(); return n === pathForKey('bookConfirmed', 'en') || n === pathForKey('bookConfirmed', 'es'); }
+function confirmedBookingPath(language: BookingLanguage): string { return pathForKey('bookConfirmed', language); }
 function persistPayPalCheckoutState(state: StoredPayPalCheckout): void { try { window.sessionStorage.setItem(paypalCheckoutStorageKey, JSON.stringify(state)); } catch { /* non-critical */ } }
 function readPayPalCheckoutState(): StoredPayPalCheckout | null { try { const raw = window.sessionStorage.getItem(paypalCheckoutStorageKey); if (!raw) return null; const p = JSON.parse(raw) as Partial<StoredPayPalCheckout>; if (typeof p.bookingSessionId !== 'string' || typeof p.paypalOrderId !== 'string' || (p.language !== 'en' && p.language !== 'es')) return null; return { bookingSessionId: p.bookingSessionId, paypalOrderId: p.paypalOrderId, reservationPublicId: typeof p.reservationPublicId === 'string' ? p.reservationPublicId : undefined, language: p.language }; } catch { return null; } }
 function clearPayPalCheckoutState(bookingSessionId: string): void { try { const s = readPayPalCheckoutState(); if (!s || s.bookingSessionId === bookingSessionId) window.sessionStorage.removeItem(paypalCheckoutStorageKey); } catch { /* non-critical */ } }
@@ -1254,7 +1255,11 @@ function readBookingConfirmationState(): PayPalCaptureResponse | null { try { co
 function maybeTrackBookingConfirmation(result: PayPalCaptureResponse): void { const property = result.booking.property; const price = result.booking.price; if (!property?.propertyId || !property.slug || !property.name || !price?.currency || typeof price.totalAmountCents !== 'number') return; trackBookingConfirmed({ reservation_id: result.booking.reservationPublicId, property_id: property.propertyId, property_slug: property.slug, property_name: property.name, value_cents: price.totalAmountCents, currency: price.currency, arrival_date: result.booking.arrivalDate, departure_date: result.booking.departureDate, payment_method: 'paypal', language: result.booking.language }); }
 function wasBookingConfirmationTracked(reservationPublicId: string): boolean { try { return window.sessionStorage.getItem(`${bookingConfirmationTrackedPrefix}${reservationPublicId}`) === '1'; } catch { return false; } }
 function markBookingConfirmationTracked(reservationPublicId: string): void { try { window.sessionStorage.setItem(`${bookingConfirmationTrackedPrefix}${reservationPublicId}`, '1'); } catch { /* non-critical */ } }
-function buildListingUrl(slug: string, language: BookingLanguage): string { return `/${slug.replace(/^\/+/, '')}${language === 'es' ? 'ES' : ''}`; }
+function buildListingUrl(slug: string, language: BookingLanguage): string {
+  const key = routeKeyForSlug(slug.replace(/^\/+/, ''));
+  if (!key) return '/'; // unknown property slug — fall back to home rather than a broken link
+  return pathForKey(key, language);
+}
 
 // Portal auto-login helpers
 // The password is stashed in sessionStorage temporarily during the checkout→confirmation flow.

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import { SampleNextArrow, SamplePrevArrow } from "../../../../components/CustomSlick/SlickDarkArrow.Component";
 import { useMessages } from '../../../../i18n';
+import { pathForLegacyId } from '../../../../routes.config';
 
 interface IOtherListing {
     listings: ListingType[]
@@ -61,7 +62,7 @@ const ListingAd: FC<IOtherListing> = ({ listings }) => {
                                     backgroundPosition: 'center'
                                 }}
                                 className="listing d-flex align-items-end"
-                                onClick={() => { navigate(`/${name}`) }}
+                                onClick={() => { navigate(pathForLegacyId(name)) }}
 
                             >
                                 <div className="name">{name}</div>
@@ -71,7 +72,7 @@ const ListingAd: FC<IOtherListing> = ({ listings }) => {
                     <div className={`${isMobile ? 'hstack' : 'vstack'} gap-5 subCont`}>
                         {listings.map(({ name, mainImage }) => {
                             return (
-                                <div style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { navigate(`/${name}`) }}>
+                                <div style={{ backgroundImage: `url(${mainImage})`, }} className="listing d-flex align-items-end" onClick={() => { navigate(pathForLegacyId(name)) }}>
                                     <div className="name">{name}</div>
                                 </div>)
                         })} 

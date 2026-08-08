@@ -8,7 +8,7 @@ import { bookingFlow, bookingWidget } from './helpers/selectors';
  * API mocks (availability, hold, PayPal order, PayPal capture) are active
  * before every test.
  *
- * The booking page at `/book` with `autoSearch=true` triggers an automatic
+ * The booking page at `/en/book` with `autoSearch=true` triggers an automatic
  * availability search on page load. The mocked availability response returns
  * two properties: Casa Geco and Casa Rana.
  *
@@ -17,7 +17,7 @@ import { bookingFlow, bookingWidget } from './helpers/selectors';
 
 /** Booking page URL with query params that trigger an automatic search */
 const BOOKING_URL =
-  '/book?arrivalDate=2028-06-15&departureDate=2028-06-20&guests=2&autoSearch=true';
+  '/en/book?arrivalDate=2028-06-15&departureDate=2028-06-20&guests=2&autoSearch=true';
 
 test.describe('Booking Flow', () => {
   test('displays property cards in the results step after search', async ({ appPage }) => {
@@ -159,7 +159,7 @@ test.describe('Booking Flow', () => {
     // Requirement 8.6 — Step indicator shows Confirmed step
 
     // Simulate arriving at the confirmation page with stored confirmation data.
-    // The PayPal capture flow normally redirects to /book/confirmed after
+    // The PayPal capture flow normally redirects to /en/book/confirmed after
     // capturing the order. We inject the confirmation state into sessionStorage
     // (which is what the app uses) and navigate directly to the confirmed route.
     await appPage.addInitScript(() => {
@@ -197,7 +197,7 @@ test.describe('Booking Flow', () => {
       );
     });
 
-    await appPage.goto('/book/confirmed');
+    await appPage.goto('/en/book/confirmed');
 
     // The confirmation panel should be visible
     const confirmationPanel = appPage.locator('.booking-confirmation-panel');

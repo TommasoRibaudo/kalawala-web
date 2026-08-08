@@ -3,6 +3,7 @@ import { cdnSrcSet } from '../../utils/imageCdn';
 import { useNavigate } from 'react-router-dom';
 import './HelpMeChoose.style.scss';
 import type { Locale } from '../../i18n';
+import { pathForLegacyId } from '../../routes.config';
 
 interface HelpMeChooseOption {
     emoji: string;
@@ -29,7 +30,7 @@ const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options 
             return;
         }
         event.preventDefault();
-        navigate(`/${houseLangCode}`);
+        navigate(pathForLegacyId(houseLangCode));
         setTimeout(() => {
             window.scrollTo(0, 0);
         }, 0);
@@ -50,7 +51,7 @@ const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options 
                             <a
                                 key={option.houseLangCode}
                                 className="help-me-choose-card"
-                                href={`/${option.houseLangCode}`}
+                                href={pathForLegacyId(option.houseLangCode)}
                                 onClick={(event) => handleClick(event, option.houseLangCode)}
                             >
                                 <div className="card-image-wrapper">

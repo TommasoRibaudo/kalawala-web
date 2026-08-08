@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { CookieConsentService, ConsentPreferences } from '../../services/CookieConsent.service';
 import { isPrerender } from '../../utils/isPrerender';
 import './CookieConsentBanner.scss';
-import type { Locale } from '../../i18n';
+import { detectLocaleFromPath, type Locale } from '../../i18n';
 
 interface CookieConsentBannerProps {
   onConsentChange?: (canTrack: boolean) => void;
@@ -39,16 +39,13 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onCons
   // the first render for the same reason. If per-browser language is wanted
   // later, apply it in a useEffect after mount, not during render.
   const currentPath = window.location.pathname;
-  const currentSearch = window.location.search;
 
-  // Kept verbatim rather than delegating to detectLocaleFromPath: this one also
-  // honours /es, /spanish and ?lang=es, which the shared detector deliberately
-  // does not. Phase 4 folds these in once the locale is a real route segment.
-  const spanish = currentPath.toUpperCase().endsWith('ES') ||
-                   currentPath.includes('/es') ||
-                   currentPath.includes('/spanish') ||
-                   currentSearch.includes('lang=es');
-  const locale: Locale = spanish ? 'es' : 'en';
+  // PHASE 4: locale is now a real route segment (/es/...), so this defers to
+  // the shared detector like every other call site instead of keeping its
+  // own copy. The old copy additionally matched a bare "/spanish" path or a
+  // "?lang=es" query param — grepped the codebase for both and neither
+  // corresponds to an actual route or feature, so they're not carried over.
+  const locale: Locale = detectLocaleFromPath(currentPath);
 
   // Text content based on language
   const text = {

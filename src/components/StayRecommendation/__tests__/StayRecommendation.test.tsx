@@ -40,9 +40,9 @@ describe('StayRecommendation Component', () => {
     const plumeriaLink = screen.getByRole('link', { name: /Plumeria/i });
     const villaCoralLink = screen.getByRole('link', { name: /Villa Coral/i });
     
-    expect(gecoLink).toHaveAttribute('href', '/Geco');
-    expect(plumeriaLink).toHaveAttribute('href', '/Plumeria');
-    expect(villaCoralLink).toHaveAttribute('href', '/VillaCoral');
+    expect(gecoLink).toHaveAttribute('href', '/en/geco');
+    expect(plumeriaLink).toHaveAttribute('href', '/en/plumeria');
+    expect(villaCoralLink).toHaveAttribute('href', '/en/villacoral');
     
     // Check if links open in new tab
     expect(gecoLink).toHaveAttribute('target', '_blank');

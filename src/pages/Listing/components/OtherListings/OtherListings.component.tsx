@@ -3,7 +3,7 @@ import './OtherListings.style.scss'
 import { ListingType } from "../../../../utils/types";
 import { useNavigate } from "react-router-dom";
 import { useLocale, useMessages } from "../../../../i18n";
-import { localeSuffix } from "../../../../i18n/paths";
+import { pathForKey, routeKeyForSlug } from "../../../../routes.config";
 
 interface IOtherListings {
     currentListing: string
@@ -28,7 +28,7 @@ interface IOtherListings {
  *
  * 3. **Route building.** English navigated to `/Geco`, Spanish appended or
  *    preserved "ES" with a substring test. Both are now the same expression:
- *    base name + `localeSuffix(locale)`.
+ *    base name looked up in routes.config.ts + the current locale (PHASE 4).
  *
  * The Spanish copy also used `name.replace('ES', '')`, which is unanchored and
  * would eat "ES" from the middle of a name. `baseName` anchors to the end. No
@@ -90,7 +90,9 @@ const OtherListings: FC<IOtherListings> = ({ currentListing, listings }) => {
 
     const handleListingClick = useCallback((name: string) => {
         const routeName = baseName(name).replace(/\s/g, "")
-        navigate(`/${routeName}${localeSuffix(locale)}`)
+        const key = routeKeyForSlug(routeName)
+        if (!key) return
+        navigate(pathForKey(key, locale))
     }, [navigate, locale])
 
     const layoutClass = useMemo(() => {

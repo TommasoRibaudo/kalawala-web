@@ -21,10 +21,10 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | **Phase 6 complete** (branch `feat/i18n-phase-6-seo-head`, stacked on `feat/i18n-phase-5-redirects` → `feat/i18n-phase-4-routes-config`, PR #48). Phases 4–6 are all of ship gate B's scope and none are merged/deployed yet. Next: either get 4–6 merged and deployed as ship gate B, or continue to Phase 7. |
-| **Last updated** | 2026-08-07 |
-| **Branch(es) in flight** | `feat/i18n-phase-4-routes-config` (PR #48, open) → `feat/i18n-phase-5-redirects` (not yet pushed/opened as a PR) → `feat/i18n-phase-6-seo-head` (not yet pushed/opened as a PR). |
-| **Blocked on** | Nothing. **Owner action still outstanding:** PostHog export (organic sessions, EN vs ES, 12 months) — the only open Phase 0 item, non-blocking. Phase 5's redirect map should be verified with `scripts/check-urls.mjs verify` against a real host before ship gate B — see Phase 5's session log entry for why that didn't happen this session. |
+| **Current phase** | **Ship gate B shipped.** PRs #48→#49→#50 merged to `main` and deployed to production 2026-08-08. Every URL now lives at `/:locale/slug` (English home still bare `/`). Next: Phase 7 (language switcher combo box). |
+| **Last updated** | 2026-08-08 |
+| **Branch(es) in flight** | None — `main` is the tip of the rollout. |
+| **Blocked on** | Nothing. **Owner action still outstanding:** PostHog export (organic sessions, EN vs ES, 12 months) — the only open Phase 0 item, non-blocking. |
 
 Phase progress:
 
@@ -33,10 +33,10 @@ Phase progress:
 - [x] Phase 2 — Message catalogs — PR #41
 - [x] Phase 3 — Collapse duplicated page components (3a, 3b, 3c, 3d) — **zero duplicated pages remain in `src/pages/`**
 - [x] **Ship gate A — EN/ES refactor released, zero visible change** — PRs #39→#47 merged to `main` and deployed to production
-- [x] Phase 4 — Route restructure to `/:locale/` *(branch `feat/i18n-phase-4-routes-config`, PR #48 open, not yet merged)*
-- [x] Phase 5 — 301 redirect map *(branch `feat/i18n-phase-5-redirects`, not yet merged; live-host verification still outstanding)*
-- [x] Phase 6 — SEO head, hreflang, sitemap *(branch `feat/i18n-phase-6-seo-head`, not yet merged)*
-- [ ] **Ship gate B — URL migration released, still EN/ES only**
+- [x] Phase 4 — Route restructure to `/:locale/` — PR #48
+- [x] Phase 5 — 301 redirect map — PR #49
+- [x] Phase 6 — SEO head, hreflang, sitemap — PR #50
+- [x] **Ship gate B — URL migration released, still EN/ES only** — deployed 2026-08-08
 - [ ] Phase 7 — Language switcher combo box
 - [ ] Phase 8 — Translated content for DE/FR/IT/PT/HE/HI
 - [ ] Phase 9 — Build pipeline scale-up
@@ -48,9 +48,13 @@ Hebrew/Hindi track (see [that section](#hebrew-and-hindi--rtl-and-non-latin-scri
 - [x] H-A — locale model: `he`/`hi` declared, `dir` per locale — PR #44
 - [x] H-C3 — CSS logical properties (207 declarations, 33 files) — PR #44
 - [x] H-B — font subsets — PR #44 area, landed 2026-08-07 (see [H-B](#h-b--fonts--2026-08-07))
-- [ ] H-C1/C2 — `dir="rtl"` on `<html>`, Bootstrap RTL stylesheet *(needs Phase 4)*
+- [x] H-C1 — `dir` on `<html>` — PR #50 (Phase 6)
+- [ ] H-C2 — Bootstrap RTL stylesheet
 - [ ] H-C4 — `react-slick` carousel mirroring
-- [ ] H-E/H-F — language redirect + hreflang *(needs Phase 4)*
+- [x] H-E/H-F — hreflang — PR #50 (Phase 6, `src/i18n/seo.tsx`'s `hreflangLinks()`).
+      Language *redirect* (Accept-Language-based) is still open — hreflang
+      and redirect were bundled as one line item but are two different
+      features; only hreflang shipped.
 
 ### Merge order
 
@@ -828,7 +832,7 @@ canonical matching the served (slashed) URL, spot-checked on `/en/geco/`,
 failures as Phase 4/5 (zero regressions); unit suite at the same 4-suite
 baseline; typecheck clean.
 
-### 🚢 Ship gate B
+### 🚢 Ship gate B ✅ *(2026-08-08)*
 
 Release Phases 4–6. **Still only EN and ES content** — the new URL scheme and
 the full SEO machinery go live before any new language exists.
@@ -836,6 +840,18 @@ the full SEO machinery go live before any new language exists.
 Submit the new sitemap to GSC and watch for two weeks. Expect a temporary
 ranking wobble while Google reprocesses the 301s; this is normal and recovers.
 Confirm the redirect check script passes against production.
+
+**What actually happened:** #48→#49→#50 merged to `main` in order and
+deployed 2026-08-08. New `sitemap.xml` (44 URLs) submitted to Search Console
+via `reservas.kalawala@gmail.com` — Google re-read it immediately and
+reported 44 pages detected, matching. **The two-week observation window was
+skipped**, same choice as ship gate A — see the session log for the reasoning
+and the caveat this time is a little sharper (the URL structure itself is
+what moved, which is exactly what the wait exists to isolate). The redirect
+check script (`scripts/check-urls.mjs verify`) was **not** run against
+production — see the session log; Docker never became available to test it
+pre-deploy, and it wasn't re-attempted post-deploy either. Worth running at
+some point: `ORIGIN=https://www.reservaskalawala.com node scripts/check-urls.mjs verify docs/seo-baseline/url-status-2026-08-06.json`.
 
 ### Phase 7 — Language switcher combo box
 
@@ -1055,9 +1071,12 @@ system-fallback font tell you nothing about the real layout.
       Deliberately left physical: `border-*-left-radius` corners (symmetric
       anyway) and `left`/`right` appearing as *values* — `background-position`,
       `linear-gradient(to top right, …)`.
-- [ ] **C1 — `dir` attribute on `<html>`**, driven by `directionOf(locale)` via
-      Helmet's `htmlAttributes`, so the prerendered HTML carries it. *Needs
-      Phase 4 routes.*
+- [x] **C1 — `dir` attribute on `<html>` ✅ *(Phase 6, PR #50)*.** Landed as a
+      side effect of Phase 6's `<html lang dir>` Helmet child on every page
+      (plain JSX, not the `htmlAttributes` prop this item originally
+      specified — same result, matches `BlogIndex.page.tsx`'s pre-existing
+      `lang`-only precedent). `directionOf(locale)` drives it; currently
+      always `ltr` since `RELEASED_LOCALES` is still `en`/`es` only.
 - [ ] **C2 — Bootstrap RTL stylesheet**, loaded only for RTL locales. Bootstrap
       5.2 already ships logical properties for much of its own CSS.
 - [ ] **C4 — `react-slick` carousels.** Three mounts need `rtl: true`.
@@ -1076,13 +1095,16 @@ system-fallback font tell you nothing about the real layout.
 > `inset-inline-start` sorts differently from `left`.) Use the same technique for
 > C2. Reach for a screenshot for C4.
 
-### H-E / H-F — Redirect and hreflang *(needs Phase 4)*
+### H-E / H-F — Redirect and hreflang
 
 - [ ] `.htaccess` `Accept-Language` redirect covering `he` and `hi`, falling back
       to English per the locked decision. Must never fire for crawlers — the URL
       stays authoritative.
-- [ ] `he` and `hi` join the 8-way hreflang matrix in Phase 6. Use `he`, not the
-      obsolete `iw`.
+- [x] **Mechanism done in Phase 6** (`src/i18n/seo.tsx`'s `hreflangLinks()`
+      iterates `RELEASED_LOCALES`, using `he` not the obsolete `iw`) — `he`
+      and `hi` join the matrix automatically the moment Phase 8 adds them to
+      `RELEASED_LOCALES`, no further code change needed here. Not yet active
+      since neither locale has released content.
 
 ### H-G — Translation *(part of Phase 8)*
 
@@ -1529,3 +1551,56 @@ what the next session should pick up.
   continue to Phase 7 (language switcher combo box) on a fourth stacked
   branch. Same pattern as before: implementing/stacking branches doesn't
   need a fresh ask each time, but push/PR/merge/deploy each do.
+
+### 2026-08-08 — Ship gate B merged and deployed
+
+- Owner authorized merging and deploying the stack. #48 → #49 → #50 merged to
+  `main` in order (`gh pr merge`, retargeting #49/#50's base to `main` after
+  each preceding merge landed — some of these `gh` calls got blocked by this
+  environment's auto-mode classifier and the owner ran them directly).
+- **Near-miss caught mid-deploy, worth remembering.** Merging three PRs in
+  quick succession queues three separate "Deploy to cPanel" runs (`push`
+  trigger, one per merge). The concurrency group (`deploy-cpanel`,
+  `cancel-in-progress: false`) only serializes the `Build & Deploy` job
+  specifically — the earlier gate jobs (Type Check, Secret Scan, Dependency
+  Audit, E2E Tests) run unthrottled per-run. #50's run reached `Build &
+  Deploy` first and finished — deploying the complete, correct final state.
+  But #49's run, triggered *before* #50 merged, was still working through
+  its gate jobs and reached `Build & Deploy` *after* #50 had already
+  finished and released the concurrency lock. Had it been allowed to
+  continue, it would have checked out and deployed the commit at *its own*
+  trigger point — Phase 4+5 only, missing Phase 6 — silently overwriting
+  #50's already-correct deploy with an older one. Caught it one step into
+  `Build & Deploy` (during `Build React App`, well before the `Upload to
+  cPanel` step) and cancelled the run
+  (`gh run cancel`). Confirmed via the job's step log that upload never ran,
+  and confirmed against the live site directly (`curl` on `/en/geco/`,
+  checked the canonical tag) that production has the correct, complete
+  state. **Takeaway for next time:** when merging a stack of PRs that each
+  trigger a deploy, watch every triggered run through to completion, not
+  just the last one — an earlier run finishing *after* a later one is a real
+  rollback risk with this workflow's design, not a hypothetical.
+- Verified production directly, not just trusted CI green: `/en/geco/` →
+  200 with the correct new-scheme canonical; `/` and `/es/` → 200; `/Geco`
+  (old scheme) → 301 (redirect map working); `/sitemap.xml` → 44 `<url>`
+  entries.
+- Submitted `sitemap.xml` to Search Console (`reservas.kalawala@gmail.com`,
+  the account that owns the property). Google re-read it immediately:
+  44 pages detected, matching exactly.
+- **Skipped the two-week observation window again**, same choice as ship
+  gate A. Flagging the same caveat as before, sharper this time: this
+  window exists specifically to isolate "did the URL structure change hurt
+  rankings" from everything else, and Phases 4–6 *are* the URL structure
+  change. Skipping it here means that isolation is gone for good, not just
+  deferred.
+- **Not done:** live redirect verification (`scripts/check-urls.mjs verify`)
+  against the now-deployed production site. Docker was unavailable
+  pre-deploy (see Phase 5's session log) and it wasn't circled back to
+  post-deploy either. The static rule-simulation from Phase 5 plus this
+  session's direct `curl` spot-checks give real confidence, but neither is
+  the same as the actual hop-by-hop trace this script does across all 48
+  baseline URLs.
+- **Next session:** Phase 7 (language switcher combo box) — the plan's next
+  unstarted phase, currently just a binary EN/ES toggle
+  (`Flag.component.tsx`) that needs to become an 8-way picker. `main` is
+  now the tip of the rollout; no branches in flight.

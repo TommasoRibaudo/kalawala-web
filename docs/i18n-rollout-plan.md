@@ -1092,28 +1092,45 @@ real deploy (single attempt succeeded, no retry triggered) but wasn't
 separately isolated/timed beyond the workflow's own 3m27s "Build & Deploy"
 job duration.
 
-### Phase 10 — Google Search Console and post-launch monitoring
+### Phase 10 — Google Search Console and post-launch monitoring *(in progress — 2026-08-09)*
+
+The items below split into two groups: what a code-level check can verify
+directly against production (done below, same session as Ship Gate C), and
+what genuinely requires signing into Search Console — Claude Code has no GSC
+access (no MCP server, no OAuth), so those are the owner's to work through.
 
 - [ ] Submit the updated `sitemap.xml`. One sitemap containing all locales with
       hreflang is fine at this size; sitemap indexes are unnecessary below ~50k URLs.
-- [ ] Confirm `public/robots.txt` still advertises the right sitemap URL. Note
+      **Needs GSC access — owner action.**
+- [x] Confirm `public/robots.txt` still advertises the right sitemap URL. Note
       the comment in `generate-sitemap.js`: robots.txt pointed at a sitemap that
-      did not exist for a long time — re-verify rather than assume.
+      did not exist for a long time — re-verify rather than assume. **Verified
+      2026-08-09** against production: `robots.txt` still points at
+      `https://www.reservaskalawala.com/sitemap.xml`, which serves 176 URLs.
 - [ ] Use **URL Inspection → Request indexing** on the eight home pages and a
       couple of top listings to prime discovery. Don't bulk-request; it doesn't help.
+      **Needs GSC access — owner action.**
 - [ ] GSC → **Indexing → Pages**: watch for `Alternate page with proper canonical
       tag` and `Duplicate without user-selected canonical`. Either means the
-      hreflang/canonical wiring is wrong.
+      hreflang/canonical wiring is wrong. **Needs GSC access — owner action.**
 - [ ] GSC → **Enhancements / International Targeting** (where still available):
       check for "no return tag" errors — the reciprocity failure from Phase 6.
+      **Needs GSC access — owner action.**
 - [ ] Watch **Crawl stats** for a spike in 404s — that means a redirect was missed.
-- [ ] Re-run the Phase 5 redirect script against production and confirm all
-      baseline URLs still resolve in one hop.
+      **Needs GSC access — owner action.**
+- [x] Re-run the Phase 5 redirect script against production and confirm all
+      baseline URLs still resolve in one hop. **Done 2026-08-09:**
+      `node scripts/check-urls.mjs verify docs/seo-baseline/url-status-2026-08-06.json`
+      against `https://www.reservaskalawala.com` — all 49 Phase-0-baseline URLs
+      still resolve in at most one hop, post Phases 4–9's full URL restructuring
+      and the eight-language release.
 - [ ] Compare against the Phase 0 baseline at 2, 6 and 12 weeks. Expect a dip
       around weeks 1–3 and recovery after; escalate only if there is no recovery
-      trend by week 6.
+      trend by week 6. **Time-gated — cannot be done yet;** deploy landed
+      2026-08-09, so the earliest checkpoint is roughly 2026-08-23.
 - [ ] No `hreflang` in GSC's old International Targeting report? It was retired —
       rely on URL Inspection per page plus the sitemap's `xhtml:link` alternates.
+      **Needs GSC access — owner action.**
 
 **Note:** Google discovers and ranks new-language pages on its own schedule.
 Realistically expect meaningful DE/FR/IT/PT/HE/HI impressions to take 1–3 months.

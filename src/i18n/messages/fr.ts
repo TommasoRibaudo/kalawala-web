@@ -3,12 +3,129 @@ import type { Messages } from './en';
 /**
  * French UI strings.
  *
- * Deliberately empty until Phase 8 supplies translations. Typed as
- * `Partial<Messages>` rather than `Messages` so an incomplete catalog is legal
- * while the language is unreleased — `getMessages()` fills every gap from
- * English, so the site renders correctly the whole way through the rollout.
- *
- * When this is complete, change the type to `Messages` and the compiler will
- * start enforcing full parity with en.ts.
+ * Formal register ("vous"), matching a hospitality booking site's tone.
+ * French treats zero as singular (`0 chambre`, not `0 chambres`), unlike
+ * English's `count === 1` threshold — the pluralising functions below use
+ * `count > 1`, not `count === 1`, for exactly that reason.
  */
-export const fr: Partial<Messages> = {};
+export const fr: Messages = {
+  common: {
+    checkAvailability: 'Vérifier la disponibilité',
+    readyToBook: 'Prêt à réserver ?',
+    instantConfirmation: 'Confirmation instantanée',
+  },
+
+  nav: {
+    home: 'Accueil',
+    blog: 'Blog',
+    myBooking: 'Ma réservation',
+    bookNow: 'Réserver maintenant',
+  },
+
+  footer: {
+    ourHomes: 'Nos maisons',
+    travelGuides: 'Guides de voyage',
+    contact: 'Contact',
+    chatOnWhatsApp: 'Discuter sur WhatsApp',
+  },
+
+  callToAction: {
+    exploreAvailability:
+      'Découvrez la disponibilité et les tarifs de toutes nos propriétés à Puerto Viejo et Playa Chiquita.',
+    nonRefundableLead: 'Sélectionnez le',
+    nonRefundableBold: 'tarif non remboursable',
+    nonRefundableTail: 'dans l’outil de réservation pour profiter de 10 % de réduction.',
+    availabilityDisclaimer:
+      '*Affiche la disponibilité de toutes les propriétés disponibles dans la région de Puerto Viejo, y compris celles annoncées sur d’autres pages. Vérifiez bien le nom de la maison et sa photo avant de réserver !',
+    bankTransferLead: 'Vous préférez payer par virement bancaire ou SINPE ? Réservez en toute sécurité avec nous et envoyez la confirmation de votre acompte à',
+    bankTransferMid: 'ou par WhatsApp au',
+    bankTransferTail: 'dans les 6 heures suivant votre réservation.',
+  },
+
+  hero: {
+    tagline: 'Maisons de vacances entièrement équipées au cœur de Puerto Viejo et Playa Chiquita.',
+    trust: '✓ Confirmation instantanée · ✓ Réservation sécurisée · ✓ Aucun frais de plateforme',
+    rating: '⭐⭐⭐⭐⭐ 4,9/5 pour des milliers de séjours depuis 2015',
+  },
+
+  sections: {
+    ourLead: 'Nos',
+    homesHighlight: 'Maisons',
+    homeHighlight: 'Maison',
+    villasHighlight: 'Villas',
+    exploreOtherStays: 'Découvrez d’autres séjours uniques à Puerto Viejo et Playa Chiquita.',
+    villasWithPool: 'Villas de luxe avec piscine privée à Playa Chiquita, Puerto Viejo.',
+    privateRetreat: 'Havre de paix privé à Playa Chiquita, Puerto Viejo',
+    otherBlogsHeading: 'Découvrez nos autres articles de blog !',
+    otherListingsHeading: 'Découvrez nos autres options !',
+    readBlog: (title: string) => `Lire l’article : ${title}`,
+    weOfferEquipped: 'Nous proposons des maisons entièrement équipées :',
+  },
+
+  contact: {
+    headingMain: 'Entrez en',
+    headingHighlight: 'Contact',
+    askUsAnything: 'Posez-nous toutes vos questions',
+    replyTime: 'Nous répondons généralement en moins d’une heure sur WhatsApp.',
+    phoneLabel: 'Téléphone, WhatsApp :',
+    chatOnWhatsApp: 'discuter sur WhatsApp',
+    emailLabel: 'E-mail :',
+  },
+
+  reviews: {
+    headingMain: 'Ce que disent',
+    headingHighlight: 'nos voyageurs',
+    heading: 'Ce que disent nos voyageurs',
+    closeReview: 'Fermer l’avis',
+    closeReviews: 'Fermer les avis',
+  },
+
+  price: {
+    tooltip: 'Tarif le plus bas disponible ce mois-ci. Les tarifs varient selon la saison et les dates choisies.',
+    fromPerNight: (price: string) => `À partir de ${price} par nuit`,
+    discountLead: 'Choisissez le',
+    discountBold: 'tarif non remboursable',
+    discountTail: 'pour une réduction supplémentaire de 10 %',
+  },
+
+  tips: {
+    instantConfirmation: (propertyName: string) =>
+      `✔ Confirmation instantanée garantie pour ${propertyName}. Réservez maintenant et assurez votre séjour !`,
+    nonRefundableDiscount:
+      'Sélectionnez le tarif non remboursable dans l’outil de réservation pour profiter de 10 % de réduction.',
+    mobileScroll:
+      'Après avoir sélectionné vos dates et lancé la recherche, faites défiler vers le bas pour voir le prix et réserver.',
+  },
+
+  blog: {
+    bookYourStay: 'Réservez votre séjour',
+    indexTitle: 'Guides de voyage à Puerto Viejo | Reservas Kalawala',
+    indexDescription:
+      'Dix guides locaux sur Puerto Viejo de Talamanca : comment y aller, s’y déplacer et que faire une fois sur place.',
+    indexHeading: 'Guides de voyage à Puerto Viejo',
+  },
+
+  home: {
+    pageTitle: 'Reservas Kalawala | Location de maisons à Puerto Viejo',
+    pageDescription:
+      'Découvrez nos maisons, moins chères que sur toute autre plateforme ! Bienvenue chez Kalawala, nous proposons des maisons de vacances entièrement équipées nichées au cœur de Puerto Viejo de Talamanca, au Costa Rica. Nos maisons offrent de l’espace pour jusqu’à 5 personnes, 2 climatiseurs, une salle de bain et une cuisine privées entièrement équipées, ainsi qu’une connexion Wi-Fi gratuite.',
+    helpMeChooseTitle: 'Trouvez votre',
+    helpMeChooseTitleHighlight: 'séjour idéal',
+    optionCouples: 'Idéal pour les couples',
+    optionFamilies: 'Parfait pour les familles',
+    optionPetFriendly: 'Animaux acceptés',
+    optionBestValue: 'Meilleur rapport qualité-prix',
+  },
+
+  property: {
+    capacityAriaLabel: 'Capacité de la propriété',
+    viewListing: (name: string) => `Voir l’annonce : ${name}`,
+    checkInLabel: 'Arrivée :',
+    checkOutLabel: 'Départ :',
+    stickyCta: 'Vérifier la disponibilité',
+    whyGuestsChoose: (propertyName: string) => `Pourquoi les voyageurs choisissent ${propertyName}`,
+    bedrooms: (count: number) => `${count} ${count > 1 ? 'chambres' : 'chambre'}`,
+    bathrooms: (count: number) => `${count} ${count > 1 ? 'salles de bain' : 'salle de bain'}`,
+    upToGuests: (count: number) => `Jusqu’à ${count} ${count > 1 ? 'personnes' : 'personne'}`,
+  },
+};

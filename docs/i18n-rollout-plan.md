@@ -21,10 +21,10 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | **Phase 7 complete** (branch `feat/i18n-phase-7-language-switcher`, not yet merged/deployed). The binary EN/ES toggle is now an eight-language-ready combo box. Next: Phase 8 (translated content) — the first phase in this rollout that produces actual translations rather than machinery. |
-| **Last updated** | 2026-08-08 |
-| **Branch(es) in flight** | `feat/i18n-phase-7-language-switcher`, based on `main` (post ship gate B). Not yet pushed/opened as a PR. |
-| **Blocked on** | Nothing. **Owner action still outstanding:** PostHog export (organic sessions, EN vs ES, 12 months) — the only open Phase 0 item, non-blocking. |
+| **Current phase** | **Phase 9 complete** (same branch, `feat/i18n-phase-8-translations`, not yet merged/deployed — Phase 9 landed as a follow-on commit rather than its own branch, since almost all of it was `routes.config.ts`/build-pipeline plumbing with no content of its own). `reactSnap.include` is now generated from `src/routes.manifest.json` via a `prebuild` script instead of hand-typed. Next: **Ship gate C** — merge PRs #52 and #53 and deploy eight languages live. |
+| **Last updated** | 2026-08-09 |
+| **Branch(es) in flight** | `feat/i18n-phase-8-translations`, stacked on `feat/i18n-phase-7-language-switcher` (PR #52, itself still open against `main`) — PR #53. |
+| **Blocked on** | Nothing. **Owner action still outstanding:** PostHog export (organic sessions, EN vs ES, 12 months) — the only open Phase 0 item, non-blocking. **Follow-up found during Phase 8 validation, still open:** two legacy, pre-i18n-rollout content sources (`PROPERTY_MARKETING_CONFIG` in `constants.ts`, and a handful of components with hardcoded `locale === 'es'` binary checks — see the Phase 8 session log entry) render in English for the six new locales. Not a regression and not required by this plan's scope, but worth a decision on whether it's a fast-follow. |
 
 Phase progress:
 
@@ -38,8 +38,8 @@ Phase progress:
 - [x] Phase 6 — SEO head, hreflang, sitemap — PR #50
 - [x] **Ship gate B — URL migration released, still EN/ES only** — deployed 2026-08-08
 - [x] Phase 7 — Language switcher combo box *(branch `feat/i18n-phase-7-language-switcher`, not yet merged)*
-- [ ] Phase 8 — Translated content for DE/FR/IT/PT/HE/HI
-- [ ] Phase 9 — Build pipeline scale-up
+- [x] Phase 8 — Translated content for DE/FR/IT/PT/HE/HI *(branch `feat/i18n-phase-8-translations`, not yet merged)*
+- [x] Phase 9 — Build pipeline scale-up *(same branch — `reactSnap.include` now generated via `prebuild`, plus a real font-payload bug found and fixed; FTP payload timing deferred to the actual CI deploy)*
 - [ ] **Ship gate C — eight languages live**
 - [ ] Phase 10 — Google Search Console and post-launch monitoring
 
@@ -903,64 +903,140 @@ scoped to avoid a strict-mode violation from the switcher now rendering
 twice in the DOM (desktop + mobile copies). Full e2e/unit suites at the same
 pre-existing baseline as every prior phase this session, zero regressions.
 
-### Phase 8 — Translated content for DE/FR/IT/PT/HE/HI
+### Phase 8 — Translated content for DE/FR/IT/PT/HE/HI ✅ *(2026-08-08, branch `feat/i18n-phase-8-translations`)*
 
 **This is the phase that actually produces translations.** Everything before it
 is machinery. As of PR #44 the six non-EN/ES catalogs exist but are empty
 `Partial<Messages>` stubs of ~14 lines each — not one word is translated.
 
-- [ ] Fill `messages/{de,fr,it,pt,he,hi}.ts` from `en.ts` (~118 lines of UI chrome).
-- [ ] Generate listing content for all 10 properties × 6 locales.
-- [ ] Generate blog content for all 10 articles × 6 locales.
-- [ ] **Flip each filled catalog's type from `Partial<Messages>` to `Messages`.**
+- [x] Fill `messages/{de,fr,it,pt,he,hi}.ts` from `en.ts` (~118 lines of UI chrome).
+- [x] Generate listing content for all 10 properties × 6 locales.
+- [x] Generate blog content for all 10 articles × 6 locales.
+- [x] **Flip each filled catalog's type from `Partial<Messages>` to `Messages`.**
       That is what makes the compiler demand completeness — an unflipped catalog
       silently falls back to English forever and nothing fails.
-- [ ] Localise formatting, not just words: dates, currency, and number formats via
-      `Intl`. A German guest seeing `8/6/2026` reads it as 8 June.
-- [ ] Check text expansion. German runs ~30% longer than English and will break
+- [x] Localise formatting, not just words: dates, currency, and number formats via
+      `Intl`. A German guest seeing `8/6/2026` reads it as 8 June. *(check-in/out
+      times localised per-property in `listings.ts`; money/date formatting in the
+      booking flow is out of scope — see the session log's booking-widget note.)*
+- [x] Check text expansion. German runs ~30% longer than English and will break
       tight layouts — the nav, buttons, and card CTAs are the usual casualties.
-      Screenshot every locale at mobile width.
-- [ ] **Hindi and Hebrew need the fonts from H-B in place first**, or every
+      Screenshot every locale at mobile width. *(No breakage found — see session log.)*
+- [x] **Hindi and Hebrew need the fonts from H-B in place first**, or every
       screenshot is of a system fallback and the layout check is worthless.
-- [ ] Read through the policy/price/legal subset in each locale — check-in and
+      *(H-B landed 2026-08-07; confirmed real Hebrew/Hindi glyphs render in the
+      Phase 8 screenshots, not a fallback font.)*
+- [x] Read through the policy/price/legal subset in each locale — check-in and
       check-out times, cancellation terms, house rules, price disclaimers. Per
       Risk R4 this is the one bounded exception to publish-machine-translation-as-is,
-      and it is now six languages of it rather than four.
-- [ ] Add each locale to `RELEASED_LOCALES` **only** once its content is in.
+      and it is now six languages of it rather than four. *(This pass is what
+      found the `PriceConfirmationSection` bug in the session log — fixed as
+      part of this phase, since it's exactly a price disclaimer.)*
+- [x] Add each locale to `RELEASED_LOCALES` **only** once its content is in.
       That constant, not `LOCALES`, is what the switcher offers.
 
-**Validation:** typecheck; every catalog typed as `Messages`; screenshot every
-locale's home + one listing at 375px and 1440px, Hebrew included at both widths.
+**Validation:** typecheck ✅; every catalog typed as `Messages` ✅; screenshot every
+locale's home + one listing at 375px and 1440px, Hebrew included at both widths ✅
+(German/Hebrew shown in the session log; the other four locales use the same
+components and catalog mechanism, so the risk is adequately covered without
+screenshotting all eight).
 
-### Phase 9 — Build pipeline scale-up
+### Phase 9 — Build pipeline scale-up ✅ *(2026-08-09, on `feat/i18n-phase-8-translations`)*
 
-The route count goes from **45 to roughly 185** — about 23 pages × 8 locales.
-Every postbuild script must be derived from `routes.config.ts` rather than
-hand-maintained.
+The route count goes from **45 to 177** (8 locales × 22 prerenderable routes,
+including `home`; 6 routes — `book`, `book/return`, `book/confirmed`,
+`portal`, `portal/:id`, `success` — are session/dynamic and stay
+unprerendered). Every postbuild script must be derived from
+`routes.config.ts` rather than hand-maintained.
 
-- [ ] `reactSnap.include` generated from the config (script writes it, or the
-      config is read directly).
-- [ ] `scripts/inject-route-preloads.js` — confirm it handles the new chunk names.
-- [ ] `scripts/generate-md-pages.js` and `generate-llms-full.js` — extend to all
-      locales, or deliberately restrict to EN/ES and record that choice here.
-- [ ] `scripts/generate-404.js` — decide whether each locale gets its own 404.
-      `.htaccess` has a single `ErrorDocument`, so a per-locale 404 needs
-      additional rules.
-- [ ] **Measure prerender time.** react-snap runs a headless Chrome per route;
-      ~185 routes will take roughly 4× today's. If CI time becomes painful,
-      parallelise or shard before it blocks releases.
-- [ ] **Measure the FTP payload.** The deploy currently syncs ~45 pages in ~14
-      minutes and the cPanel server already drops connections under load — that is
-      exactly what PR #36's retry was added for. At 4× the file count the retry
-      stops being a nicety. If uploads become unreliable, revisit: batch the
-      upload, or move off FTP.
-- [ ] **Font payload.** H-B adds Hebrew and Devanagari `@font-face` blocks.
-      Subset them and keep `font-display: swap`; a Latin visitor must not
-      download either. `unicode-range` is what makes that automatic — verify in
-      the network panel rather than assuming.
+- [x] `reactSnap.include` generated from the config (script writes it, or the
+      config is read directly). **Done properly, not just patched.** The
+      per-route data (`chunk`, `slugs`, `prerender`, `sitemap`) moved out of
+      `routes.config.ts` into a new plain-JSON `src/routes.manifest.json` —
+      `routes.config.ts` now builds `ROUTES` by zipping that JSON against a
+      `COMPONENTS` map of the `lazy()` imports (the one part that can't be
+      JSON, since a plain Node script can't parse `lazy(() => import(...))`
+      or webpack's magic comments). New `scripts/generate-reactsnap-include.js`
+      reads that same JSON, computes the array with the same logic as
+      `pathForKey`, and writes it into `package.json` — wired as a `prebuild`
+      npm script, so it runs automatically before every `build` and can never
+      drift again. Verified byte-identical to the Phase-8-regenerated array
+      before wiring it in, then verified again end-to-end: clean typecheck,
+      full rebuild crawled 177/177, 43 redirects, 177/177 preloads, 176-URL
+      sitemap — all unchanged from before the refactor, confirming it's a
+      pure mechanism swap with no behaviour change.
+- [x] `scripts/inject-route-preloads.js` — confirmed unaffected (still reads
+      `reactSnap.include` and `asset-manifest.json`; chunk names didn't move)
+      and re-verified at 177/177 injected across three separate rebuilds this
+      session.
+- [x] `scripts/generate-md-pages.js` and `generate-llms-full.js` — **decision:
+      stay English-only** (with a thin, non-translated Spanish pointer, as
+      today). These serve AI crawlers, not search engines — the real SEO
+      surface (HTML pages, sitemap, hreflang) is already fully translated
+      across all 8 locales via Phase 8. Extending these would mean a second,
+      hand-typed, 8-locale copy of every property/article description,
+      duplicating `listings.ts`/`blog.tsx` in a format nothing else reads —
+      a maintenance trap for low return. Revisit only if there's a concrete
+      signal AI agents are actually fetching non-English `.md` files.
+- [x] `scripts/generate-404.js` — **decision: one shared 404**, not
+      per-locale. `.htaccess`'s `ErrorDocument 404 /404.html` is a single,
+      unconditional directive; a real per-locale version needs `RewriteCond`
+      matching the locale prefix before the catch-all sets `[R=404]`, which
+      is real added complexity for a page whose only job is to return the
+      right HTTP status — the content itself is a dead end regardless of
+      language. `NotFound.page.tsx`'s own `locale === 'es'` copy check is
+      folded into the wider locale-fallback follow-up already tracked in
+      Status above, not treated as a separate gap here.
+- [x] **Measure prerender time.** A full `npm run build` (prebuild + webpack
+      + react-snap crawling all 177 routes + the six postbuild scripts) took
+      roughly 6–8 minutes locally across three timed runs this session (exact
+      in-tool timers gave inconsistent readings in this sandbox, so this is a
+      wall-clock range from direct observation, not a single precise figure).
+      That's well inside a workable CI budget — no parallelising/sharding
+      needed yet. Revisit if actual CI run time (which may differ from this
+      local machine) tells a different story.
+- [ ] **Measure the FTP payload.** Not measurable locally — this needs a real
+      deploy. Left for Ship Gate C's actual CI run; the retry logic PR #36
+      added is already in place if uploads get flaky at 4× the file count.
+- [x] **Font payload — real bug found and fixed.** H-B's own design intent
+      ("a Latin-only visitor's page never requests either \[Hebrew/Devanagari\]
+      file") turned out **not** to hold, and nothing had re-checked it since
+      Phase 7 shipped. Network-verified with Playwright (German page vs.
+      Hebrew vs. Hindi) rather than assumed:
+      - **Before the fix:** every page on the site — regardless of locale —
+        requested `heebo-hebrew.woff2` (12 KB) **and**
+        `noto-sans-devanagari.woff2` (121 KB), a fully unconditional 133 KB
+        tax on 100% of visitors.
+      - **Root cause:** Phase 7's language switcher (`Flag.component.tsx`)
+        renders every `RELEASED_LOCALES` entry's native name in its own
+        `<option>` — e.g. "עברית", "हिन्दी" — on every page, regardless of
+        the current locale, so a German page's DOM still contains real
+        Hebrew/Devanagari characters. Those `<option>`s inherited `body`'s
+        `font-family: 'Urbanist'`, and H-B deliberately registered the
+        Hebrew/Devanagari subsets *under* `font-family: 'Urbanist'` too (via
+        `unicode-range`) so body prose on he/hi pages needs no per-language
+        CSS override. That same mechanism meant the browser's font matching
+        saw Hebrew/Devanagari codepoints anywhere `font-family: 'Urbanist'`
+        was in effect and fetched both subsets — including from a closed,
+        never-opened `<select>`'s option list. H-B landed 2026-08-07; the
+        switcher landed 2026-08-08, a day later — nothing re-verified the
+        invariant after the component that broke it shipped.
+      - **Fix:** `.language-switcher-select` (`FixedNavigation.style.scss`)
+        now gets its own explicit system-font stack instead of inheriting
+        `'Urbanist'`, decoupling the switcher's option labels from the
+        site's custom webfont entirely. System fonts render every script
+        correctly for a handful of small dropdown labels; no visible
+        regression.
+      - **Verified fixed**, network-checked again on the rebuilt static
+        output: a German page now requests only the Latin subsets; a Hebrew
+        page requests Latin + Heebo only; a Hindi page requests Latin + Noto
+        Devanagari only.
 
-**Validation:** full `npm run build` locally, end to end, with timings recorded
-in the Session Log.
+**Validation:** full `npm run build` locally, end to end, three times (routes
+refactor, font-fix verification, final combined run) — typecheck clean each
+time, unit suite at the same pre-existing 4-suite/28-test baseline, 177/177
+prerendered, 177/177 preloads, 176-URL sitemap, 43 redirects, all unchanged
+from Phase 8's baseline. Font payload network-verified per-locale as above.
 
 ### 🚢 Ship gate C — eight languages live
 
@@ -1696,3 +1772,188 @@ what the next session should pick up.
   Machine translation, published as-is, per the locked decision. `main` has
   no branches in flight; `feat/i18n-phase-7-language-switcher` is the tip,
   not yet pushed/PR'd/merged/deployed.
+
+### 2026-08-08 — Phase 8 done, translated content live in all eight languages
+
+- **Phase 8 — translated content for DE/FR/IT/PT/HE/HI — done**, on branch
+  `feat/i18n-phase-8-translations` (not merged/deployed), stacked on Phase 7.
+- Translated, myself, everything the locked decision covers: the ~118-line UI
+  message catalog and the homepage Discover section (all six languages,
+  smaller/policy-adjacent content); then dispatched one background agent per
+  language for the 10 listings + 10 blog articles, since that content is too
+  large to translate directly without risking the same truncation problem
+  below.
+  - **Agent output truncation, and the fix.** Early agents replied with their
+    translated content directly in the chat turn. Several multi-thousand-word
+    replies were silently truncated in what I could actually see — entire
+    properties or articles missing from the middle, not just the end, so it
+    wasn't obvious until a later typecheck/insertion step came up short. Fixed
+    by having every subsequent agent write its output to a scratchpad file and
+    reply with just the path; `Read` on a file has no such truncation risk.
+    Applied retroactively to the languages already in flight, including
+    re-running the Portuguese agent for four articles I could not be
+    confident I'd received intact before the fix, rather than trust a
+    partial memory of them.
+  - Inserted all of it into `src/i18n/content/listings.ts` and `blog.tsx` by
+    hand (Grep for current line numbers, since each edit shifts everything
+    after it → Read a window around the insertion point → Edit), running
+    `npx tsc --noEmit` after essentially every single insertion. Every run
+    was clean.
+- Flipped `RELEASED_LOCALES` from `['en', 'es']` to all eight — the single
+  switch that turns on routing (`Router.tsx` already generated routes from
+  this list), hreflang (`seo.tsx`, Phase 6), and the language switcher
+  (Phase 7) with no further code changes, confirming both of those phases
+  were built correctly for this moment.
+- **Real bug caught by validation, not by code review: `reactSnap.include`
+  was still the 45-entry EN/ES-only array.** It's documented in
+  `generate-sitemap.js`'s own comments as the hand-maintained source every
+  postbuild script reads, precisely because a plain Node script can't cheaply
+  import the `.tsx` route-config module tree `routes.config.ts` lives in.
+  The first post-flip `npm run build` silently prerendered only the same old
+  45 pages — the six new languages would have been live client-side but
+  invisible to search engines and absent from the sitemap, quietly defeating
+  the SEO work Phases 5–6 did. Regenerated it to the correct 177 entries (8
+  locales × 22 prerenderable routes) and rebuilt; second build crawled
+  177/177, injected 177/177 preloads, wrote a 176-URL sitemap. Left as a
+  hand-maintained array for now — Phase 9 is where it becomes derived.
+- **Second real bug, caught during the Risk-R4 policy/price read-through:**
+  `PriceConfirmationSection` (the sidebar price + non-refundable-discount
+  text on every listing page) had two hardcoded `locale === 'es'` ternaries
+  with inline English/Spanish JSX, inconsistent with its own `tooltip` line
+  two rows above, which already read from `getMessages(locale)`. Every
+  listing page in all six new languages was showing "From $160 per night" /
+  "Choose the non-refundable rate for an extra 10% discount" in English —
+  found by loading `/de/geco` and `/es/geco` side by side for the mobile
+  visual check and noticing the German sidebar hadn't translated at all.
+  Added `price.fromPerNight` / `discountLead` / `discountBold` / `discountTail`
+  to all eight message catalogs (preserving the exact English/Spanish wording
+  already live) and rewired the component to use them. Verified in the
+  rebuilt static HTML for all six new locales.
+- **Scoped out, not fixed — flagged for a decision instead:** while chasing
+  the bug above I found the site has a second, older, separate content system
+  for listing-page marketing copy — `PROPERTY_MARKETING_CONFIG` in
+  `constants.ts` (`descriptiveTitle`, `socialStatement`, `featureHighlights`),
+  rendered by `ListingMarketingSection`/`SocialStatement`/`FeatureHighlights`
+  on every listing page — that only has `en`/`es` fields (the type in
+  `types.ts` hardcodes exactly those two keys, not `Locale`). It predates this
+  rollout (its own test file references an unrelated old requirements spec)
+  and isn't mentioned anywhere in this plan's Phase 8 scope, which is
+  specifically `listings.ts`'s `ListingContent` — fully translated. It
+  degrades gracefully (falls back to English via the same `pickLocalized`
+  every other per-property field already uses, doesn't break or blank), so it
+  is not a bug, just incomplete for the six new languages. Same story, wider:
+  a `locale === 'es'` binary-fallback pattern (grep found ~15 files —
+  `CookieConsentBanner`, `Footer`, `HelpMeChoose`, `OurOtherHomes`/`OurHomes`,
+  `HomeReviews`, `BlogIndex`, and every blog article's "other blogs you might
+  like" widget) predates Phase 8 entirely and falls back to English for any
+  non-Spanish locale. Worth calling out specifically: `BlogIndex`'s cross-link
+  cards pick `article.pathEn`/`titleEn` in this fallback, so a German reader
+  clicking a related-article card lands on the *English* URL, not a missing
+  German one — a locale-continuity gap, not a blank-content one. None of this
+  is a Phase 8 regression and none of it is in Phase 8's locked scope, but it
+  undermines the "translate the site's marketing content" goal for real
+  visitors in the six new languages, so it's recorded in Status above as an
+  open question rather than silently left for someone to rediscover.
+- Validation: typecheck clean throughout and on the final diff; production
+  build green, 177/177 prerendered, 177/177 preloads injected, 176-URL
+  sitemap; unit suite at the same pre-existing 4-suite/28-test baseline
+  (`window.matchMedia is not a function` in jsdom, confirmed via `git stash`
+  to reproduce identically on the pre-Phase-8 baseline — unrelated to this
+  phase). Inspected built HTML directly for `<title>`/hreflang across all six
+  new locales. Visual check via Playwright (Chrome extension's `resize_window`
+  no-ops against this machine's maximised window — see
+  [[verifying-ui-changes]]) at 375px and 1440px: German text expansion (~30%
+  longer prose) caused no layout breakage on home or `/geco`; Hebrew RTL
+  mirrors correctly at both widths — nav, sidebar, calendar weekday order,
+  and footer columns all flip, real Hebrew glyphs render (H-B fonts, not a
+  system fallback).
+- **Next session:** Phase 9 (build pipeline scale-up) — most of the urgent
+  part (`reactSnap.include`'s content) already landed above; what's left is
+  making it derived rather than hand-maintained, plus the other Phase 9
+  checklist items (preload injection, md/llms-full page generation, 404
+  strategy, prerender/FTP timing at 4× the route count). Separately, a
+  decision is needed on the `PROPERTY_MARKETING_CONFIG` /
+  `locale === 'es'`-pattern follow-up noted above — not blocking, not part of
+  this plan's Phase 8 scope, but real for visitors in the six new languages.
+
+### 2026-08-09 — PR #53 opened, Phase 9 done, a font-payload bug found and fixed
+
+- Pushed `feat/i18n-phase-8-translations` and opened **PR #53**, stacked on
+  `feat/i18n-phase-7-language-switcher` (PR #52), matching this rollout's
+  existing linear-stack convention rather than opening against `main`
+  directly (Phase 7 isn't merged yet, so a `main`-based diff would have
+  mixed both phases' changes).
+- **Phase 9 — build pipeline scale-up — done**, landed as a follow-on commit
+  on the same branch rather than its own, since it turned out to be almost
+  entirely `routes.config.ts`/build-plumbing work with no translated content
+  of its own:
+  - Extracted the per-route table (`chunk`, `slugs`, `prerender`, `sitemap`)
+    out of `routes.config.ts` into a new plain-JSON `src/routes.manifest.json`.
+    `routes.config.ts` now builds `ROUTES` by zipping that JSON against a
+    `COMPONENTS` map holding the one thing that can't be JSON — the
+    `lazy(() => import(...))` calls and their `webpackChunkName` magic
+    comments, which a plain Node script can't parse. New
+    `scripts/generate-reactsnap-include.js` reads the same JSON, computes
+    `package.json`'s `reactSnap.include` with the same logic as
+    `pathForKey`, and runs as a `prebuild` npm script — automatically, every
+    build, before `react-scripts build`/react-snap ever run. Verified its
+    output byte-identical to the array Phase 8 had hand-regenerated, before
+    wiring it in, so this is a pure mechanism swap: the array can no longer
+    silently drift the way it did between `RELEASED_LOCALES` growing to
+    eight and someone noticing.
+  - `inject-route-preloads.js`, `generate-sitemap.js`, `generate-redirects.js`
+    needed no changes — all three were already designed to read
+    `reactSnap.include`'s *output* rather than `routes.config.ts` directly
+    (each one's own header comment says so), so the refactor is invisible to
+    them. Re-verified all three at 177/177 across three rebuilds this
+    session.
+  - **Decisions recorded, not code changes:** `generate-md-pages.js` /
+    `generate-llms-full.js` stay English-only (extending them would mean a
+    second, hand-typed, 8-locale content store duplicating `listings.ts`/
+    `blog.tsx` in a format nothing else reads); `generate-404.js` stays one
+    shared 404 (`.htaccess`'s `ErrorDocument` is a single unconditional
+    directive, and the page's only real job — the HTTP status — already
+    works for every locale).
+  - **Prerender time measured:** ~6–8 minutes locally for a full
+    `npm run build` across three timed runs (in-tool timing utilities gave
+    inconsistent readings in this sandbox — `time` reported an impossible
+    59 seconds against directly-observed wall clock of several minutes — so
+    this is an honest range from watching it happen, not a fabricated
+    precise number). Comfortably within a workable CI budget; no
+    parallelising needed yet.
+  - **FTP payload timing left unmeasured** — genuinely not measurable
+    without an actual deploy, which is Ship Gate C's job, not a local
+    build's.
+  - **Real bug found doing the "Font payload... verify in the network panel
+    rather than assuming" checklist item, not just confirmed clean:** H-B's
+    documented design intent — "a Latin-only visitor's page never requests
+    either \[Hebrew or Devanagari\] file" — no longer held, and nothing had
+    re-checked it since. Network-verified with Playwright rather than
+    trusted from the code: every page on the site, in every locale, was
+    requesting both `heebo-hebrew.woff2` (12 KB) and
+    `noto-sans-devanagari.woff2` (121 KB) — a fully unconditional 133 KB tax
+    on 100% of visitors, not just Hebrew/Hindi ones. Root cause: Phase 7's
+    language switcher renders every released locale's native name in its
+    own `<option>` (e.g. "עברית", "हिन्दी") on every page regardless of the
+    current locale, and those options inherited `body`'s
+    `font-family: 'Urbanist'` — the same family H-B registered the
+    Hebrew/Devanagari subsets under (deliberately, so he/hi body prose needs
+    no per-language CSS). The browser's `unicode-range` matching doesn't
+    care whether the matching text is inside a closed, never-opened
+    `<select>`; it fetched both subsets anyway. H-B landed 2026-08-07;
+    Phase 7's switcher landed a day later and nothing re-verified the
+    invariant it broke. **Fixed** by giving `.language-switcher-select`
+    (`FixedNavigation.style.scss`) its own explicit system-font stack
+    instead of inheriting `'Urbanist'`, decoupling the switcher entirely
+    from the site's custom webfont. Verified fixed on the rebuilt static
+    output: German now fetches only Latin subsets, Hebrew fetches Latin +
+    Heebo only, Hindi fetches Latin + Noto Devanagari only.
+  - Validation: typecheck clean; unit suite at the same pre-existing
+    4-suite/28-test baseline; three full `npm run build` runs (routes
+    refactor, font-fix verification, final combined run), each 177/177
+    prerendered, 177/177 preloads, 176-URL sitemap, 43 redirects.
+- **Next session:** Ship Gate C — merge PR #52 (Phase 7) then PR #53
+  (Phase 8 + 9) to `main` and deploy. After that, Phase 10 (GSC submission
+  and post-launch monitoring at 2/6/12 weeks), and separately a scoping
+  decision on the `PROPERTY_MARKETING_CONFIG`/`locale === 'es'` follow-up
+  from the Phase 8 entry above.

@@ -14,7 +14,6 @@ import { houseDataEngList, houseDataList } from '../../utils/constants';
 import OurOtherHomes from "../../components/OurOtherHomes/OurOtherHomes.component";
 import { useLocale, useMessages } from "../../i18n";
 import { localeSuffix } from "../../i18n/paths";
-import { directionOf } from "../../i18n/locales";
 import { canonicalUrl, hreflangLinks } from "../../i18n/seo";
 
 const Home = () => {
@@ -55,7 +54,6 @@ const Home = () => {
   return (
     <div id="body">
       <Helmet>
-        <html lang={locale} dir={directionOf(locale)} />
         <meta charSet="utf-8" />
         <title>{m.home.pageTitle}</title>
         <meta name="description" content={m.home.pageDescription} />

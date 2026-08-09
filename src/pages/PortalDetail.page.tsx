@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router-dom';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
 import { useLocale } from '../i18n';
-import { directionOf } from '../i18n/locales';
 import {
   BookingApiError,
   BookingLanguage,
@@ -465,7 +464,6 @@ const PortalDetailPage = () => {
   return (
     <div id="body" className="portal-page">
       <Helmet>
-        <html lang={language} dir={directionOf(language)} />
         <title>{strings.documentTitle} | {strings.siteTitle}</title>
         <meta name="description" content={strings.metaDescription} />
         <meta name="robots" content="noindex, nofollow" />

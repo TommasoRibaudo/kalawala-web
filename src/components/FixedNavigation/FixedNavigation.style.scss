@@ -15,9 +15,14 @@
      the page content underneath it. */
   position: sticky;
   top: 0;
-  background-color: rgba(0, 0, 0, 0.2);
-  -webkit-backdrop-filter: blur(20px) saturate(200%) brightness(1.2);
-  backdrop-filter: blur(20px) saturate(200%) brightness(1.2);
+  // Opaque brand-dark-green glass instead of a near-transparent black tint —
+  // at 0.2 alpha the bar reads as whatever is behind it (bright hero photos,
+  // white page sections), which left the white .navText links unreadable on
+  // desktop. This solid tint keeps the "glass" blur/shine but guarantees
+  // contrast for the light text regardless of backdrop.
+  background-color: rgba($kalawala-darker-green, 0.82);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 30px rgba(0, 0, 0, 0.2);
 
@@ -34,22 +39,96 @@
     .navText {
       font-size: 16px;
       // Light text for the dark glass bar — .navText is reused inside the
-      // mobile dropdown panel below, which is light and overrides this back
-      // to a dark color there. Shadow keeps it legible now that the glass
-      // is transparent enough for bright backdrops to show through.
+      // mobile dropdown panel below, which is also dark glass and reuses
+      // these same colors (see the media query below).
       color: var(--kalawala-light-cream);
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
       line-height: 1.2;
 
       /* Consistent line height */
+      // Active stays white (same contrast as the rest of the bar) and gets
+      // an underline instead of a color swap — $kalawala-light-green as a
+      // *text* color measures ~3:1 against the opaque dark-green bar, short
+      // of the 4.5:1 text needs; as a thin underline accent that bar doesn't
+      // apply. Hover keeps the color swap since it's transient, not the
+      // page's persistent state indicator.
       &.active {
-        color: $kalawala-vivid-beige;
+        color: var(--kalawala-light-cream);
+        text-decoration: underline;
+        text-decoration-color: $kalawala-light-green;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 6px;
       }
 
       &:hover {
-        color: $kalawala-vivid-beige;
+        color: $kalawala-light-green;
       }
     }
+  }
+}
+
+// Phase 7's combo box (a native <select>, see Flag.component.tsx for why)
+// replaces the old flag-icon button. appearance:none strips the OS chrome —
+// white background, black text — that would otherwise be illegible against
+// this bar's dark glass; the rest rebuilds just enough chrome to read as a
+// control rather than plain text, plus a custom chevron since appearance:none
+// drops the native one too.
+// The pill itself. The select inside is chromeless (see below) — this
+// wrapper owns the background/border/radius so the flag icon and the select
+// text read as one control, not two things glued together.
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 6px 10px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.16);
+  }
+
+  // The select is the actual interactive element and gets its own
+  // focus-visible ring below; this wrapper never receives focus itself.
+}
+
+.language-switcher__flag {
+  width: 18px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.language-switcher-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--kalawala-light-cream);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0 18px 0 0;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 10px 6px;
+
+  // $primary-color (#0B3028, the codebase's usual focus-ring color) is
+  // nearly the same dark green as this bar's own background — CookieConsentBanner
+  // hit the same problem and already settled on a light outline for a dark
+  // background, so this matches that precedent instead.
+  &:focus-visible {
+    outline: 2px solid $kalawala-light-green;
+    outline-offset: 2px;
+  }
+
+  // The option *list* is OS/browser-rendered and not meaningfully styleable
+  // beyond color — but left unset it can default to the same near-invisible
+  // dark-on-dark the trigger itself needed fixing, on some platforms.
+  option {
+    color: #000;
+    background-color: #fff;
   }
 }
 
@@ -64,22 +143,6 @@
   /* Spaces the desktop "Book now" pill from the language switcher — they
      share this box so the CTA sits right next to the flag, same as it
      does in .mobile-controls on mobile. */
-
-  button {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-
-  svg {
-    width: 32px;
-    /* Adjust the size as needed */
-    height: 24px;
-    /* Adjust the height proportionally */
-  }
 }
 
 .mobile-controls {
@@ -115,20 +178,6 @@
 
 .mobile-flag {
   display: none;
-
-  button {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-
-  svg {
-    width: 28px;
-    height: 21px;
-  }
 }
 
 @media (min-width: 992px) {
@@ -155,7 +204,17 @@
     width: 100%;
     padding: 14px 0 2px;
     margin-top: 6px;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+
+    // Full-width per the agreed mobile design — the desktop copy stays
+    // auto-width (sized to its content, sitting next to the CTA pill).
+    .language-switcher {
+      width: 100%;
+    }
+
+    .language-switcher-select {
+      flex: 1;
+    }
   }
 
   /* The CTA pill added a fourth element (logo, CTA, flag, hamburger) to a
@@ -180,9 +239,9 @@
     position: sticky !important;
     top: 0 !important;
     z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.2);
-    -webkit-backdrop-filter: blur(20px) saturate(200%) brightness(1.2);
-    backdrop-filter: blur(20px) saturate(200%) brightness(1.2);
+    background-color: rgba($kalawala-darker-green, 0.82);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 30px rgba(0, 0, 0, 0.2);
   }
@@ -197,7 +256,13 @@
       box-shadow: none;
     }
 
-    /* SVG will use its natural color */
+    // The SVG has no fill attribute, so it defaults to black. That read fine
+    // against the old near-transparent bar (whatever was behind showed
+    // through), but disappears against the new opaque dark-green glass —
+    // invert it to white to match the rest of the bar's light content.
+    img {
+      filter: brightness(0) invert(1);
+    }
   }
 
   /* Fix mobile menu background and positioning */
@@ -205,13 +270,17 @@
   .navigation .navbar-collapse.show,
   .navbar-collapse,
   .navbar-collapse.show {
-    background-color: rgba(255, 255, 255, 0.65) !important;
+    // Same dark glass as the bar itself, not the white panel this used to
+    // be — the white read as "solid" only because it was opaque; matching
+    // the bar's tint keeps that solidity while staying one consistent look.
+    background-color: rgba($kalawala-darker-green, 0.9) !important;
     backdrop-filter: blur(20px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
     border-radius: 8px !important;
     padding: 20px 15px !important;
     /* Increased padding for better spacing */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.3) !important;
     position: absolute !important;
     top: 100% !important;
     inset-inline-start: 10px !important;
@@ -230,29 +299,36 @@
 
   // Needs the .navigation prefix to match the desktop rule's specificity
   // (.navigation .navMenu .navText, 3 classes) — a bare .navMenu .navText
-  // here is weaker and silently loses the cascade to the desktop color
-  // (--kalawala-light-cream, i.e. white) regardless of this media query,
-  // which is what made the dropdown unreadable: white text on the white
-  // frosted-glass panel below.
+  // here is weaker and silently loses the cascade to the base rule.
+  // The dropdown is dark glass again now (see .navbar-collapse above), so
+  // this goes back to light text — same colors as the desktop bar, just
+  // with dividers between the stacked links instead of side-by-side spacing.
   .navigation .navMenu {
     .navText {
-      color: var(--kalawala-text-gray);
-      text-shadow: none;
+      color: var(--kalawala-light-cream);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
       font-weight: 500;
       padding: 8px 0;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 
       &:last-child {
         border-bottom: none;
       }
 
+      // Same reasoning as the desktop rule above: white text stays at full
+      // contrast, the green marks "active" as an underline instead of a
+      // low-contrast text color.
       &.active {
-        color: $primary-color;
+        color: var(--kalawala-light-cream);
         font-weight: 600;
+        text-decoration: underline;
+        text-decoration-color: $kalawala-light-green;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 4px;
       }
 
       &:hover {
-        color: $primary-color;
+        color: $kalawala-light-green;
       }
     }
   }

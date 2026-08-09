@@ -12,7 +12,6 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
-import { directionOf } from "../../../i18n/locales";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { cahuitaParkContent } from "../../../i18n/content/blog";
 
@@ -32,7 +31,6 @@ const CahuitaPark = () => {
 
         <div className={`listingContainer`}>
             <Helmet>
-                <html lang={locale} dir={directionOf(locale)} />
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta name="description" content={content.seoDescription} />

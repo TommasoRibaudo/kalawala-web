@@ -14,7 +14,6 @@ import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
-import { directionOf } from "../../../i18n/locales";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { travellingToPuertoContent } from "../../../i18n/content/blog";
 
@@ -35,7 +34,6 @@ const TravellingToPuerto = () => {
 
         <div className={`listingContainer`}>
             <Helmet>
-                <html lang={locale} dir={directionOf(locale)} />
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta name="description" content={content.seoDescription} />

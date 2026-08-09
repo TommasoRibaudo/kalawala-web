@@ -105,6 +105,17 @@
   background: transparent;
   border: none;
   color: var(--kalawala-light-cream);
+  // System stack, not the inherited 'Urbanist' — this <select>'s <option>s
+  // list every RELEASED_LOCALES nativeName (e.g. "עברית", "हिन्दी") on every
+  // page regardless of the current locale. Urbanist's Hebrew/Devanagari
+  // subsets (see public/index.html's H-B font-face comment) are declared
+  // under `font-family: 'Urbanist'` too, so inheriting that family here made
+  // every visitor's page — Latin scripts included — eagerly fetch both
+  // subsets (12 KB + 121 KB) just from this closed dropdown's option list,
+  // defeating the whole point of subsetting by script. A plain system stack
+  // still renders every script correctly via the OS's own fonts, without
+  // pulling in the site's custom webfont for a handful of small option labels.
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   font-size: 14px;
   font-weight: 600;
   padding: 0 18px 0 0;

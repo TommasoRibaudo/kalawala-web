@@ -1,0 +1,32 @@
+{
+  "routes": [
+    { "key": "home", "chunk": "route-home", "slugs": { "en": "", "es": "" } },
+    { "key": "book", "chunk": "route-book", "slugs": { "en": "book", "es": "book" }, "prerender": false, "sitemap": false },
+    { "key": "bookReturn", "chunk": "route-book", "slugs": { "en": "book/return", "es": "book/return" }, "prerender": false, "sitemap": false },
+    { "key": "bookConfirmed", "chunk": "route-book", "slugs": { "en": "book/confirmed", "es": "book/confirmed" }, "prerender": false, "sitemap": false },
+    { "key": "portal", "chunk": "route-portal", "slugs": { "en": "portal", "es": "portal" }, "prerender": false, "sitemap": false },
+    { "key": "portalDetail", "chunk": "route-portal-detail", "slugs": { "en": "portal/:reservationPublicId", "es": "portal/:reservationPublicId" }, "prerender": false, "sitemap": false },
+    { "key": "geco", "chunk": "route-geco", "slugs": { "en": "geco", "es": "geco" } },
+    { "key": "rana", "chunk": "route-rana", "slugs": { "en": "rana", "es": "rana" } },
+    { "key": "tucano", "chunk": "route-tucano", "slugs": { "en": "tucano", "es": "tucano" } },
+    { "key": "pappagallo", "chunk": "route-pappagallo", "slugs": { "en": "pappagallo", "es": "pappagallo" } },
+    { "key": "delfin", "chunk": "route-delfin", "slugs": { "en": "delfin", "es": "delfin" } },
+    { "key": "areka", "chunk": "route-areka", "slugs": { "en": "areka", "es": "areka" } },
+    { "key": "giulia", "chunk": "route-giulia", "slugs": { "en": "giulia", "es": "giulia" } },
+    { "key": "plumeria", "chunk": "route-plumeria", "slugs": { "en": "plumeria", "es": "plumeria" } },
+    { "key": "villamar", "chunk": "route-villamar", "slugs": { "en": "villamar", "es": "villamar" } },
+    { "key": "villacoral", "chunk": "route-villacoral", "slugs": { "en": "villacoral", "es": "villacoral" } },
+    { "key": "blog", "chunk": "route-blog", "slugs": { "en": "blog", "es": "blog" } },
+    { "key": "blogTwodays", "chunk": "route-twodaysinpuertoviejo", "slugs": { "en": "twodaysinpuertoviejo", "es": "twodaysinpuertoviejo" } },
+    { "key": "blogGandoca", "chunk": "route-gettingtogandoca", "slugs": { "en": "gettingtogandoca", "es": "gettingtogandoca" } },
+    { "key": "blogSanjose", "chunk": "route-travellingtopuertoviejo", "slugs": { "en": "travellingtopuertoviejo", "es": "travellingtopuertoviejo" } },
+    { "key": "blogByplane", "chunk": "route-puertoviejobyplane", "slugs": { "en": "puertoviejobyplane", "es": "puertoviejobyplane" } },
+    { "key": "blogTenhours", "chunk": "route-tenhoursinpuerto", "slugs": { "en": "tenhoursinpuerto", "es": "tenhoursinpuerto" } },
+    { "key": "blogBushours", "chunk": "route-bushours", "slugs": { "en": "bushours", "es": "bushours" } },
+    { "key": "blogCahuitapark", "chunk": "route-cahuitaparkwhattodo", "slugs": { "en": "cahuitaparkwhattodo", "es": "cahuitaparkwhattodo" } },
+    { "key": "blogIndigenous", "chunk": "route-indigenoustravelpv", "slugs": { "en": "indigenoustravelpv", "es": "indigenoustravelpv" } },
+    { "key": "blogBesttime", "chunk": "route-besttimetovisitpuerto", "slugs": { "en": "besttimetovisitpuerto", "es": "besttimetovisitpuerto" } },
+    { "key": "blogHiddengems", "chunk": "route-puertohiddengems", "slugs": { "en": "puertohiddengems", "es": "puertohiddengems" } },
+    { "key": "success", "chunk": "route-success", "slugs": { "en": "success", "es": "success" }, "prerender": false, "sitemap": false }
+  ]
+}

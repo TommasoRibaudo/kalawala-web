@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import type { ComponentType, LazyExoticComponent } from 'react';
 import { DEFAULT_LOCALE, LOCALES, isLocale, type Locale } from './i18n';
+import routesManifest from './routes.manifest.json';
 
 /*
  * Single source of truth for "what pages exist, and what is each one's URL in
@@ -28,6 +29,17 @@ import { DEFAULT_LOCALE, LOCALES, isLocale, type Locale } from './i18n';
  * legacy `/PascalCase` paths used, just lowercased, so Phase 5's redirect map
  * has one predictable rule (old path, lowercased, locale-prefixed) rather
  * than a hand-picked new slug per page.
+ *
+ * PHASE 9: the per-route data (chunk name, slugs, prerender/sitemap flags)
+ * lives in ./routes.manifest.json, not inline here, so a plain Node postbuild
+ * script can read it directly — `lazy(() => import(...))` calls React and
+ * webpack's magic comments, which a script run with plain `node` cannot
+ * parse. scripts/generate-reactsnap-include.js is the one script in the
+ * postbuild chain that actually needs this table (every other script reads
+ * its *output*, package.json's reactSnap.include, instead); before Phase 9
+ * that array was hand-typed and had silently drifted to 45 EN/ES-only
+ * entries after RELEASED_LOCALES grew to eight. `component` stays here,
+ * TS/React-only, and is zipped onto each manifest entry below.
  */
 
 const Home = lazy(() => import(/* webpackChunkName: "route-home" */ './pages/Home/Home.page'));
@@ -82,126 +94,52 @@ export interface RouteDef {
   sitemap?: boolean;
 }
 
-export const ROUTES: Record<RouteKey, RouteDef> = {
-  home: {
-    key: 'home', component: Home, chunk: 'route-home',
-    slugs: { en: '', es: '' },
-  },
-  book: {
-    key: 'book', component: BookingPage, chunk: 'route-book',
-    slugs: { en: 'book', es: 'book' },
-    prerender: false, sitemap: false,
-  },
-  bookReturn: {
-    key: 'bookReturn', component: BookingPage, chunk: 'route-book',
-    slugs: { en: 'book/return', es: 'book/return' },
-    prerender: false, sitemap: false,
-  },
-  bookConfirmed: {
-    key: 'bookConfirmed', component: BookingPage, chunk: 'route-book',
-    slugs: { en: 'book/confirmed', es: 'book/confirmed' },
-    prerender: false, sitemap: false,
-  },
-  portal: {
-    key: 'portal', component: PortalLoginPage, chunk: 'route-portal',
-    slugs: { en: 'portal', es: 'portal' },
-    prerender: false, sitemap: false,
-  },
-  portalDetail: {
-    key: 'portalDetail', component: PortalDetailPage, chunk: 'route-portal-detail',
-    slugs: { en: 'portal/:reservationPublicId', es: 'portal/:reservationPublicId' },
-    prerender: false, sitemap: false,
-  },
-  geco: {
-    key: 'geco', component: ListingGeco, chunk: 'route-geco',
-    slugs: { en: 'geco', es: 'geco' },
-  },
-  rana: {
-    key: 'rana', component: ListingRana, chunk: 'route-rana',
-    slugs: { en: 'rana', es: 'rana' },
-  },
-  tucano: {
-    key: 'tucano', component: ListingTucano, chunk: 'route-tucano',
-    slugs: { en: 'tucano', es: 'tucano' },
-  },
-  pappagallo: {
-    key: 'pappagallo', component: ListingPappagallo, chunk: 'route-pappagallo',
-    slugs: { en: 'pappagallo', es: 'pappagallo' },
-  },
-  delfin: {
-    key: 'delfin', component: ListingDelfin, chunk: 'route-delfin',
-    slugs: { en: 'delfin', es: 'delfin' },
-  },
-  areka: {
-    key: 'areka', component: ListingAreka, chunk: 'route-areka',
-    slugs: { en: 'areka', es: 'areka' },
-  },
-  giulia: {
-    key: 'giulia', component: ListingGiulia, chunk: 'route-giulia',
-    slugs: { en: 'giulia', es: 'giulia' },
-  },
-  plumeria: {
-    key: 'plumeria', component: ListingPlumeria, chunk: 'route-plumeria',
-    slugs: { en: 'plumeria', es: 'plumeria' },
-  },
-  villamar: {
-    key: 'villamar', component: ListingVillaMar, chunk: 'route-villamar',
-    slugs: { en: 'villamar', es: 'villamar' },
-  },
-  villacoral: {
-    key: 'villacoral', component: ListingVillaCoral, chunk: 'route-villacoral',
-    slugs: { en: 'villacoral', es: 'villacoral' },
-  },
-  blog: {
-    key: 'blog', component: BlogIndex, chunk: 'route-blog',
-    slugs: { en: 'blog', es: 'blog' },
-  },
-  blogTwodays: {
-    key: 'blogTwodays', component: TwoDaysInPV, chunk: 'route-twodaysinpuertoviejo',
-    slugs: { en: 'twodaysinpuertoviejo', es: 'twodaysinpuertoviejo' },
-  },
-  blogGandoca: {
-    key: 'blogGandoca', component: GettingToGandoca, chunk: 'route-gettingtogandoca',
-    slugs: { en: 'gettingtogandoca', es: 'gettingtogandoca' },
-  },
-  blogSanjose: {
-    key: 'blogSanjose', component: TravellingToPuerto, chunk: 'route-travellingtopuertoviejo',
-    slugs: { en: 'travellingtopuertoviejo', es: 'travellingtopuertoviejo' },
-  },
-  blogByplane: {
-    key: 'blogByplane', component: PuertoViejoByPlane, chunk: 'route-puertoviejobyplane',
-    slugs: { en: 'puertoviejobyplane', es: 'puertoviejobyplane' },
-  },
-  blogTenhours: {
-    key: 'blogTenhours', component: TenHoursInPuerto, chunk: 'route-tenhoursinpuerto',
-    slugs: { en: 'tenhoursinpuerto', es: 'tenhoursinpuerto' },
-  },
-  blogBushours: {
-    key: 'blogBushours', component: BusHours, chunk: 'route-bushours',
-    slugs: { en: 'bushours', es: 'bushours' },
-  },
-  blogCahuitapark: {
-    key: 'blogCahuitapark', component: CahuitaPark, chunk: 'route-cahuitaparkwhattodo',
-    slugs: { en: 'cahuitaparkwhattodo', es: 'cahuitaparkwhattodo' },
-  },
-  blogIndigenous: {
-    key: 'blogIndigenous', component: IndigenousTravel, chunk: 'route-indigenoustravelpv',
-    slugs: { en: 'indigenoustravelpv', es: 'indigenoustravelpv' },
-  },
-  blogBesttime: {
-    key: 'blogBesttime', component: BestTimeToVisitPuerto, chunk: 'route-besttimetovisitpuerto',
-    slugs: { en: 'besttimetovisitpuerto', es: 'besttimetovisitpuerto' },
-  },
-  blogHiddengems: {
-    key: 'blogHiddengems', component: PuertoHiddenGems, chunk: 'route-puertohiddengems',
-    slugs: { en: 'puertohiddengems', es: 'puertohiddengems' },
-  },
-  success: {
-    key: 'success', component: Success, chunk: 'route-success',
-    slugs: { en: 'success', es: 'success' },
-    prerender: false, sitemap: false,
-  },
+/** The one piece of each route that can't live in JSON — its lazy-loaded component. */
+const COMPONENTS: Record<RouteKey, LazyExoticComponent<ComponentType<any>>> = {
+  home: Home,
+  book: BookingPage,
+  bookReturn: BookingPage,
+  bookConfirmed: BookingPage,
+  portal: PortalLoginPage,
+  portalDetail: PortalDetailPage,
+  geco: ListingGeco,
+  rana: ListingRana,
+  tucano: ListingTucano,
+  pappagallo: ListingPappagallo,
+  delfin: ListingDelfin,
+  areka: ListingAreka,
+  giulia: ListingGiulia,
+  plumeria: ListingPlumeria,
+  villamar: ListingVillaMar,
+  villacoral: ListingVillaCoral,
+  blog: BlogIndex,
+  blogTwodays: TwoDaysInPV,
+  blogGandoca: GettingToGandoca,
+  blogSanjose: TravellingToPuerto,
+  blogByplane: PuertoViejoByPlane,
+  blogTenhours: TenHoursInPuerto,
+  blogBushours: BusHours,
+  blogCahuitapark: CahuitaPark,
+  blogIndigenous: IndigenousTravel,
+  blogBesttime: BestTimeToVisitPuerto,
+  blogHiddengems: PuertoHiddenGems,
+  success: Success,
 };
+
+interface ManifestEntry {
+  key: string;
+  chunk: string;
+  slugs: Partial<Record<Locale, string>>;
+  prerender?: boolean;
+  sitemap?: boolean;
+}
+
+export const ROUTES: Record<RouteKey, RouteDef> = Object.fromEntries(
+  (routesManifest.routes as ManifestEntry[]).map((entry) => {
+    const key = entry.key as RouteKey;
+    return [key, { ...entry, key, component: COMPONENTS[key] }];
+  })
+) as Record<RouteKey, RouteDef>;
 
 /**
  * Full path for a page in a given locale.

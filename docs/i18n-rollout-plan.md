@@ -21,9 +21,9 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | **Phase 9 complete** (same branch, `feat/i18n-phase-8-translations`, not yet merged/deployed — Phase 9 landed as a follow-on commit rather than its own branch, since almost all of it was `routes.config.ts`/build-pipeline plumbing with no content of its own). `reactSnap.include` is now generated from `src/routes.manifest.json` via a `prebuild` script instead of hand-typed. Next: **Ship gate C** — merge PRs #52 and #53 and deploy eight languages live. |
+| **Current phase** | **🚢 Ship gate C shipped — eight languages live in production.** PRs #52 and #54 (#53 was #54's predecessor — see the 2026-08-09 session log entry for why it got recreated) merged to `main` and deployed. Next: Phase 10 (Google Search Console submission and post-launch monitoring). |
 | **Last updated** | 2026-08-09 |
-| **Branch(es) in flight** | `feat/i18n-phase-8-translations`, stacked on `feat/i18n-phase-7-language-switcher` (PR #52, itself still open against `main`) — PR #53. |
+| **Branch(es) in flight** | None — `feat/i18n-phase-7-language-switcher` and `feat/i18n-phase-8-translations` both merged and deleted. `docs/i18n-ship-gate-c-closeout` (this update) is the only one open, purely documentation. |
 | **Blocked on** | Nothing. **Owner action still outstanding:** PostHog export (organic sessions, EN vs ES, 12 months) — the only open Phase 0 item, non-blocking. **Follow-up found during Phase 8 validation, still open:** two legacy, pre-i18n-rollout content sources (`PROPERTY_MARKETING_CONFIG` in `constants.ts`, and a handful of components with hardcoded `locale === 'es'` binary checks — see the Phase 8 session log entry) render in English for the six new locales. Not a regression and not required by this plan's scope, but worth a decision on whether it's a fast-follow. |
 
 Phase progress:
@@ -37,10 +37,10 @@ Phase progress:
 - [x] Phase 5 — 301 redirect map — PR #49
 - [x] Phase 6 — SEO head, hreflang, sitemap — PR #50
 - [x] **Ship gate B — URL migration released, still EN/ES only** — deployed 2026-08-08
-- [x] Phase 7 — Language switcher combo box *(branch `feat/i18n-phase-7-language-switcher`, not yet merged)*
-- [x] Phase 8 — Translated content for DE/FR/IT/PT/HE/HI *(branch `feat/i18n-phase-8-translations`, not yet merged)*
-- [x] Phase 9 — Build pipeline scale-up *(same branch — `reactSnap.include` now generated via `prebuild`, plus a real font-payload bug found and fixed; FTP payload timing deferred to the actual CI deploy)*
-- [ ] **Ship gate C — eight languages live**
+- [x] Phase 7 — Language switcher combo box — PR #52, merged to `main` 2026-08-09
+- [x] Phase 8 — Translated content for DE/FR/IT/PT/HE/HI — PR #54, merged to `main` 2026-08-09
+- [x] Phase 9 — Build pipeline scale-up *(same PR as Phase 8 — `reactSnap.include` now generated via `prebuild`, plus a real font-payload bug found and fixed; FTP payload timing deferred to the actual CI deploy)*
+- [x] **Ship gate C — eight languages live** — deployed 2026-08-09, `.github/workflows/main.yml` run 31330475987
 - [ ] Phase 10 — Google Search Console and post-launch monitoring
 
 Hebrew/Hindi track (see [that section](#hebrew-and-hindi--rtl-and-non-latin-scripts)):
@@ -1038,7 +1038,59 @@ time, unit suite at the same pre-existing 4-suite/28-test baseline, 177/177
 prerendered, 177/177 preloads, 176-URL sitemap, 43 redirects, all unchanged
 from Phase 8's baseline. Font payload network-verified per-locale as above.
 
-### 🚢 Ship gate C — eight languages live
+### 🚢 Ship gate C ✅ *(2026-08-09)*
+
+Release Phases 7–9. German, French, Italian, Portuguese, Hebrew and Hindi go
+live alongside English and Spanish for the first time — the point of the
+entire rollout.
+
+**What actually happened:** PR #52 (Phase 7) and PR #54 (Phase 8+9) merged
+to `main` in order and deployed via `.github/workflows/main.yml` run
+`31330475987` — secret scan, dependency audit, typecheck and the (report-only,
+pre-existing-flaky) e2e suite all green, build + FTPS upload to cPanel
+succeeded on the first attempt, no retry needed.
+
+**PR #53 → #54, a process near-miss worth recording:** #53 (Phase 8+9) was
+stacked on #52 (Phase 7)'s branch. Merging #52 with `--delete-branch` deleted
+`feat/i18n-phase-7-language-switcher` — and GitHub auto-closed #53 rather
+than retargeting it to `main`, then refused every attempt to reopen it
+(`gh pr reopen 53` → "Could not open the pull request"; `gh pr edit 53
+--base main` → "Cannot change the base branch of a closed pull request").
+No content was at risk — `feat/i18n-phase-8-translations`, #53's actual head
+branch, was untouched by deleting the *other* branch, and diffed cleanly
+against the new `main` (exactly Phase 8+9's 5 commits, nothing more). Fix:
+opened a fresh PR (#54) from the same branch straight against `main`, same
+title/body, and merged that instead. **Lesson for next time a stacked PR's
+base branch is about to be deleted:** retarget the downstream PR's base
+*before* deleting the base branch, not after — `gh pr edit <downstream>
+--base main` while the now-merged branch still exists, then delete it.
+Doing it in the other order is what triggered the auto-close here.
+
+**Merging itself needed the repo owner.** `gh pr merge` was blocked by the
+Claude Code auto-mode permission classifier as a production-deploy-triggering
+action, even with the owner's explicit "merge and deploy" in chat — correctly
+so, since a push to `main` immediately triggers a real FTPS upload to the
+live site with no separate approval step in between. The owner ran the merge
+commands themselves; Claude Code prepared the exact commands, the recovery
+PR, and the post-deploy smoke test.
+
+**Post-deploy smoke test against production** (`www.reservaskalawala.com`):
+new-locale pages resolve and serve translated content (`/de/geco` → "Casa
+Geco – Haustierfreundliches Haus in Puerto Viejo", price line reads "Ab $160
+pro Nacht" / "nicht erstattungsfähige Rate" — the Phase 8 price-catalog fix,
+confirmed live); all 9 hreflang tags present (8 locales + `x-default`);
+Hebrew's `<html dir="rtl">` confirmed on `/he/`; `sitemap.xml` serves 176
+URLs and `robots.txt` still points at it; a legacy PascalCase URL
+(`/Geco`) still 301s through to `/en/geco/` in one hop; an unknown URL under
+a new locale (`/de/this-page-does-not-exist`) correctly returns HTTP 404, not
+a soft-404.
+
+**Not done as part of this gate:** the two-week GSC observation window this
+plan calls for is Phase 10's job, not this gate's — see below. FTP payload
+timing at the new 177-page scale was observable for the first time in this
+real deploy (single attempt succeeded, no retry triggered) but wasn't
+separately isolated/timed beyond the workflow's own 3m27s "Build & Deploy"
+job duration.
 
 ### Phase 10 — Google Search Console and post-launch monitoring
 
@@ -1957,3 +2009,38 @@ what the next session should pick up.
   and post-launch monitoring at 2/6/12 weeks), and separately a scoping
   decision on the `PROPERTY_MARKETING_CONFIG`/`locale === 'es'` follow-up
   from the Phase 8 entry above.
+
+### 2026-08-09 — Ship gate C shipped: eight languages live
+
+- **Ship gate C — done.** Merged PR #52 (Phase 7) to `main`, then hit a
+  process near-miss: merging #52 with `--delete-branch` auto-closed the
+  stacked #53 (Phase 8+9) instead of retargeting it, and GitHub refused to
+  reopen it. Recovered by opening a fresh PR (#54) from the same untouched
+  branch straight against `main` and merging that. Full detail, including
+  the lesson for next time (retarget a downstream stacked PR's base *before*
+  deleting the upstream branch, not after), is in the Ship Gate C section
+  above rather than duplicated here.
+- `gh pr merge` itself was blocked by the Claude Code auto-mode permission
+  classifier as a production-deploy-triggering action — correct behaviour,
+  since a push to `main` immediately fires `.github/workflows/main.yml`'s
+  real FTPS upload to the live cPanel site with no gate in between. The
+  owner ran the merge commands themselves each time; this session prepared
+  the exact commands, diagnosed and fixed the #53 recovery, and ran the
+  post-deploy verification.
+- Deploy (`main.yml` run `31330475987`): secret scan, dependency audit,
+  typecheck, and the report-only e2e suite all green (the e2e job's
+  "exit code 1" annotation is the same pre-existing flaky suite noted in
+  the workflow's own comments, not a new failure); build + FTPS upload to
+  cPanel succeeded on the first attempt.
+- Smoke-tested production directly rather than trusting a green CI run
+  alone: translated titles and price copy render on new-locale pages
+  (`/de/geco` shows "Ab $160 pro Nacht" — the Phase 8 price-catalog fix,
+  confirmed live, not just in the build output), all 9 hreflang tags
+  present, Hebrew's `dir="rtl"` confirmed on `/he/`, `sitemap.xml` serves
+  176 URLs, legacy PascalCase URLs still redirect in one hop, and an unknown
+  URL under a new locale correctly 404s.
+- **Next session:** Phase 10 — submit the sitemap to Search Console, request
+  indexing on the 8 home pages, then watch for 2/6/12 weeks per the plan's
+  existing checklist. Separately, still open: a scoping decision on the
+  `PROPERTY_MARKETING_CONFIG`/`locale === 'es'` follow-up from the Phase 8
+  session log entry, and the outstanding PostHog export from Phase 0.

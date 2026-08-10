@@ -5,6 +5,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from "react-router-dom";
 import SolidBars from "../../assets/images/bars-solid.svg";
+import KalawalaLogo from "../../assets/images/logo-cream.png";
 import { LanguageSwitcher } from "../FlagComponent/Flag.component";
 import { useLocale, messagesFor } from "../../i18n";
 import type { Locale } from "../../i18n";
@@ -101,12 +102,12 @@ const FixedNavigation = ({ isBlog, locale: localeOverride }: IFixedNavigation) =
     <Navbar ref={navbarRef} className="navigation" expand="lg" sticky="top" variant="dark" data-bs-theme="dark">
       <Container>
         <Navbar.Brand href={`${homePath(locale)}#body`} className="d-flex align-items-center">
-          <img 
-            src="https://lh3.googleusercontent.com/d/1z6ekQR8hrkzw_-6rUuNeRxyakDo2pdfn=w1000" 
-            alt="Reservas Kalawala" 
+          <img
+            src={KalawalaLogo}
+            alt="Reservas Kalawala"
             className="logo"
             width="150"
-            height="52"
+            height="47"
             loading="eager"
           />
         </Navbar.Brand>

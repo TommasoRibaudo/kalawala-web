@@ -21,10 +21,10 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | **🚢 Ship gate C shipped — eight languages live in production.** PRs #52 and #54 (#53 was #54's predecessor — see the 2026-08-09 session log entry for why it got recreated) merged to `main` and deployed. Next: Phase 10 (Google Search Console submission and post-launch monitoring). |
+| **Current phase** | **Phase 10 mostly done** — Ship Gate C shipped (eight languages live), sitemap resubmitted and re-read (176 pages), indexing requested on all 8 home pages + 2 listings, Indexing/Enhancements/Crawl-stats reports checked directly against the live property, and 2/6/12-week monitoring reminders scheduled. Only the actual traffic comparisons remain, and those are time-gated (earliest checkpoint ~2026-08-23). |
 | **Last updated** | 2026-08-09 |
-| **Branch(es) in flight** | None — `feat/i18n-phase-7-language-switcher` and `feat/i18n-phase-8-translations` both merged and deleted. `docs/i18n-ship-gate-c-closeout` (this update) is the only one open, purely documentation. |
-| **Blocked on** | Nothing. **Owner action still outstanding:** PostHog export (organic sessions, EN vs ES, 12 months) — the only open Phase 0 item, non-blocking. **Follow-up found during Phase 8 validation, still open:** two legacy, pre-i18n-rollout content sources (`PROPERTY_MARKETING_CONFIG` in `constants.ts`, and a handful of components with hardcoded `locale === 'es'` binary checks — see the Phase 8 session log entry) render in English for the six new locales. Not a regression and not required by this plan's scope, but worth a decision on whether it's a fast-follow. |
+| **Branch(es) in flight** | `docs/i18n-phase-10-progress` (PR #56, small — batch in whenever) and `docs/i18n-phase-10-gsc-and-monitoring` (this update). Nothing else — `feat/i18n-phase-7-language-switcher` and `feat/i18n-phase-8-translations` both merged and deleted. |
+| **Blocked on** | Nothing code-side. **Owner action still outstanding:** PostHog export (organic sessions, EN vs ES, 12 months) — the only open Phase 0 item, non-blocking. **Two findings needing an owner decision, not urgent:** (1) `PROPERTY_MARKETING_CONFIG`/`locale === 'es'` fallback pattern from the Phase 8 session log — renders English for the six new locales in ~15 files, graceful, not broken. (2) `VacationRental` structured data invalid on all 45 listing pages (found 2026-08-09 checking GSC Enhancements) — blocks rich-result eligibility, predates this rollout, unrelated to i18n. |
 
 Phase progress:
 
@@ -1094,30 +1094,68 @@ job duration.
 
 ### Phase 10 — Google Search Console and post-launch monitoring *(in progress — 2026-08-09)*
 
-The items below split into two groups: what a code-level check can verify
-directly against production (done below, same session as Ship Gate C), and
-what genuinely requires signing into Search Console — Claude Code has no GSC
-access (no MCP server, no OAuth), so those are the owner's to work through.
+Claude Code has no standing GSC access (no MCP server, no OAuth token) — but
+the owner signed into `reservas.kalawala@gmail.com` in the browser Claude
+Code automates, which is a real Search Console session, so most of this
+phase was actually done directly against the live property rather than
+handed off.
 
-- [ ] Submit the updated `sitemap.xml`. One sitemap containing all locales with
+- [x] Submit the updated `sitemap.xml`. One sitemap containing all locales with
       hreflang is fine at this size; sitemap indexes are unnecessary below ~50k URLs.
-      **Needs GSC access — owner action.**
+      **Done 2026-08-09** via the Sitemaps report (`reservas.kalawala@gmail.com`
+      account): resubmitted `sitemap.xml`; Google re-read it immediately and
+      reported all 176 pages detected (up from the 44 it had on file from
+      before Ship Gate C).
 - [x] Confirm `public/robots.txt` still advertises the right sitemap URL. Note
       the comment in `generate-sitemap.js`: robots.txt pointed at a sitemap that
       did not exist for a long time — re-verify rather than assume. **Verified
       2026-08-09** against production: `robots.txt` still points at
       `https://www.reservaskalawala.com/sitemap.xml`, which serves 176 URLs.
-- [ ] Use **URL Inspection → Request indexing** on the eight home pages and a
+- [x] Use **URL Inspection → Request indexing** on the eight home pages and a
       couple of top listings to prime discovery. Don't bulk-request; it doesn't help.
-      **Needs GSC access — owner action.**
-- [ ] GSC → **Indexing → Pages**: watch for `Alternate page with proper canonical
+      **Done 2026-08-09:** requested indexing for all 8 home pages
+      (`/`, `/es/`, `/de/`, `/fr/`, `/it/`, `/pt/`, `/he/`, `/hi/`) plus
+      `/de/geco/` and `/he/geco/` as the two listings — 10 requests total, each
+      confirmed queued ("added to a priority crawl queue"). The six new-language
+      home pages were confirmed brand new to Google (`de`/`fr`/`it`/`pt` showed
+      "detected via sitemap, not yet indexed"; `he`/`hi` showed "unknown to
+      Google" at request time, likely just ahead of the resubmitted sitemap's
+      propagation) — exactly the case this checklist item exists for.
+- [x] GSC → **Indexing → Pages**: watch for `Alternate page with proper canonical
       tag` and `Duplicate without user-selected canonical`. Either means the
-      hreflang/canonical wiring is wrong. **Needs GSC access — owner action.**
-- [ ] GSC → **Enhancements / International Targeting** (where still available):
+      hreflang/canonical wiring is wrong. **Checked 2026-08-09.**
+      `Duplicate without user-selected canonical`: **0 pages** — clean.
+      `Alternate page with proper canonical tag`: 14 pages, but drilling into
+      the list shows they're all pre-Phase-4 legacy URLs (`/Geco/`,
+      `/TenHoursInPuerto/`, `/puertoHiddenGems/`, etc.) — Google crawled them,
+      found the 301 to the new `/en/{slug}/` URL, and correctly deferred to
+      that as canonical instead of indexing the old path separately. This is
+      the *intended* outcome of Phase 5's redirect map, not a wiring bug.
+      Total non-indexed: 55 (20 redirects, 14 the above, 9 legitimate 404s,
+      7 crawled-not-indexed by Google's own judgment, 2 intentional `noindex`,
+      3 brand-new pages already queued from the indexing requests above).
+      53 pages indexed.
+- [x] GSC → **Enhancements / International Targeting** (where still available):
       check for "no return tag" errors — the reciprocity failure from Phase 6.
-      **Needs GSC access — owner action.**
-- [ ] Watch **Crawl stats** for a spike in 404s — that means a redirect was missed.
-      **Needs GSC access — owner action.**
+      **Checked 2026-08-09.** International Targeting is fully retired in the
+      current UI (confirmed) — no hreflang-reciprocity errors surfaced via
+      spot-checked URL Inspections either. **Unrelated finding surfaced while
+      checking Enhancements:** the `VacationRental` structured data
+      (`Casa vacanze`/Miglioramenti) is invalid on all 45 listing pages that
+      carry it — 0 valid, 45 invalid, missing the critical `identifier` and
+      `containsPlace.occupancy.value` fields (blocks rich-result eligibility
+      entirely), plus a long list of "improve appearance" gaps (address,
+      images, review count, bed/bath counts). Predates this rollout entirely
+      and is unrelated to i18n — flagged here as a separate, real SEO
+      opportunity, not fixed as part of this phase.
+- [x] Watch **Crawl stats** for a spike in 404s — that means a redirect was missed.
+      **Checked 2026-08-09.** 404s at 4% of all crawl requests (normal
+      background level, not a spike); 200 OK 67%, 301 (redirects) 9%,
+      304 (cached) 19%. 188ms average response time. Host status shows a
+      green checkmark for current availability — the "problems in the past"
+      note is a 90-day rolling window and predates this session (likely the
+      cPanel FTP flakiness `main.yml`'s retry logic already documents), not a
+      new or ongoing issue.
 - [x] Re-run the Phase 5 redirect script against production and confirm all
       baseline URLs still resolve in one hop. **Done 2026-08-09:**
       `node scripts/check-urls.mjs verify docs/seo-baseline/url-status-2026-08-06.json`
@@ -1127,10 +1165,30 @@ access (no MCP server, no OAuth), so those are the owner's to work through.
 - [ ] Compare against the Phase 0 baseline at 2, 6 and 12 weeks. Expect a dip
       around weeks 1–3 and recovery after; escalate only if there is no recovery
       trend by week 6. **Time-gated — cannot be done yet;** deploy landed
-      2026-08-09, so the earliest checkpoint is roughly 2026-08-23.
-- [ ] No `hreflang` in GSC's old International Targeting report? It was retired —
+      2026-08-09. **Automated reminders set up 2026-08-09** (see below) for
+      the three checkpoints instead of relying on remembering to check back.
+- [x] No `hreflang` in GSC's old International Targeting report? It was retired —
       rely on URL Inspection per page plus the sitemap's `xhtml:link` alternates.
-      **Needs GSC access — owner action.**
+      **Confirmed 2026-08-09** — folded into the Enhancements check above.
+
+**2/6/12-week monitoring automation.** Scheduled cloud agents run in
+Anthropic's cloud sandbox, not on the owner's machine — they have no path to
+a live, logged-in browser session, and neither Search Console nor PostHog is
+connected as an MCP server to this account (only Gmail and Google Drive are).
+So a cloud agent can't pull real GSC/PostHog numbers itself; what it *can* do
+is re-run the redirect-baseline check (no login needed) and email a reminder.
+Three one-time routines created via `RemoteTrigger`, each re-running
+`scripts/check-urls.mjs verify` against production and emailing
+`tommasoribaudo1@gmail.com` a check-in prompting a manual GSC/PostHog look:
+
+| Checkpoint | Fires (UTC) | Routine ID |
+|---|---|---|
+| 2 weeks | 2026-08-23T15:00:00Z | `trig_019GHnDEx8xNq6fr78T2pGx9` |
+| 6 weeks | 2026-09-20T15:00:00Z | `trig_01HRKKtMeHxbA7dmJwH7BwDP` |
+| 12 weeks | 2026-11-01T15:00:00Z | `trig_01MJUwXgn8uLrgLnXLUUzYMo` |
+
+15:00 UTC = 9am America/Costa_Rica. Manage these at
+[claude.ai/code/routines](https://claude.ai/code/routines).
 
 **Note:** Google discovers and ranks new-language pages on its own schedule.
 Realistically expect meaningful DE/FR/IT/PT/HE/HI impressions to take 1–3 months.
@@ -2061,3 +2119,61 @@ what the next session should pick up.
   existing checklist. Separately, still open: a scoping decision on the
   `PROPERTY_MARKETING_CONFIG`/`locale === 'es'` follow-up from the Phase 8
   session log entry, and the outstanding PostHog export from Phase 0.
+
+### 2026-08-09 — Phase 10: real GSC access, and monitoring automated
+
+- **The GSC blocker resolved itself mid-session.** Earlier the browser Claude
+  Code automates was signed into the owner's personal Google account
+  (`tommasoribaudo1@gmail.com`), which has no access to the
+  `reservaskalawala.com` property — every GSC task was reported as blocked,
+  needing the owner to sign into the right account. The owner then signed
+  `reservas.kalawala@gmail.com` (the correct account, per Phase 0) into a
+  second profile slot in the same browser session, and from that point the
+  GSC tasks were done directly, not just explained:
+  - **Sitemap resubmitted.** `sitemap.xml` was already registered from before
+    Ship Gate C but still showed the old count; resubmitting triggered an
+    immediate re-read — 176 pages detected, matching exactly.
+  - **Indexing requested** on all 8 home pages and `/de/geco/` + `/he/geco/`
+    (10 URLs) via URL Inspection → Request Indexing, each confirmed queued.
+    The six new-language home pages were genuinely unknown/undiscovered to
+    Google at request time — exactly the case this checklist item exists to
+    speed up, not a formality.
+  - **Indexing → Pages, Enhancements, and Crawl stats reports read directly**
+    rather than deferred. Nothing wrong with the i18n work itself — see the
+    Phase 10 section above for the full breakdown — but checking Enhancements
+    surfaced a genuine, pre-existing, unrelated finding: all 45 listing pages'
+    `VacationRental` structured data is invalid (missing `identifier` and
+    `containsPlace.occupancy.value`), blocking rich-result eligibility
+    entirely. Recorded in Status as a fast-follow candidate, not fixed here —
+    outside this session's scope and not i18n-related.
+  - **Browser automation note:** GSC's UI silently drops focus after a
+    dialog closes or the page re-renders — several batched click+type+Enter
+    sequences landed on stale state (the previous URL's inspection stayed
+    open, or a dismissed dialog blocked the next click) until each step was
+    split with `triple_click` (to reliably clear the previous URL from the
+    search box before typing) and its own verification screenshot, rather
+    than chaining everything blind. Costs more round-trips but was the only
+    reliable pattern found for this specific UI.
+- **2/6/12-week monitoring automated, honestly scoped.** Scheduled cloud
+  agents (`RemoteTrigger`/routines) run in Anthropic's cloud sandbox, not on
+  the owner's machine — no path to a live logged-in browser, and neither
+  Search Console nor PostHog is connected as an MCP server to this account
+  (only Gmail and Google Drive are). So "automate the traffic check" cannot
+  mean a cloud agent pulling real GSC/PostHog numbers — that was surfaced to
+  the owner explicitly before building anything, rather than quietly building
+  something that couldn't do what it sounded like it would. What it *can* do:
+  re-run `scripts/check-urls.mjs verify` against production (no login needed)
+  and email a reminder. Three one-time routines created for 2026-08-23,
+  2026-09-20, and 2026-11-01 (all 15:00 UTC / 9am America/Costa_Rica) — IDs
+  and full detail in the Phase 10 section above.
+- Also answered, without executing (as asked): what the outstanding PostHog
+  export (#8) actually is and why it's needed, and what the
+  `PROPERTY_MARKETING_CONFIG`/`locale === 'es'` follow-up (#9) would involve
+  and why it's not urgent. Both are in the Status table above rather than
+  repeated here.
+- **Next session:** nothing blocking. The three scheduled checkpoints will
+  land on their own; when the owner reports back traffic numbers from any of
+  them, compare against the Phase 0 baseline and update Phase 10's checklist
+  and the Status table. Two standing decisions whenever there's appetite:
+  the `PROPERTY_MARKETING_CONFIG`/`locale === 'es'` follow-up, and the
+  `VacationRental` structured-data fix.

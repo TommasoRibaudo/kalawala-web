@@ -567,6 +567,36 @@ export interface GettingToGandocaContent {
 }
 
 const gettingToGandoca: Partial<Record<Locale, GettingToGandocaContent>> = {
+  de: {
+    seoTitle: 'So erreichen Sie das Nationale Wildschutzgebiet Gandoca-Manzanillo von Puerto Viejo, Costa Rica',
+    seoDescription:
+      'Das Nationale Wildschutzgebiet Gandoca-Manzanillo in der Provinz Limón ist eines der bestgehüteten Geheimnisse der costa-ricanischen Südkaribik. Dieses beeindruckende Schutzgebiet bietet eine vielfältige Auswahl an Ökosystemen, von Mangroven und Korallenriffen bis hin zu unberührten Stränden.',
+    heading: 'So erreichen Sie das Nationale Wildschutzgebiet Gandoca-Manzanillo von Puerto Viejo, Costa Rica',
+    heroAlt: 'Nationales Wildschutzgebiet Gandoca-Manzanillo',
+    intro:
+      <>Das <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Nationale Wildschutzgebiet Gandoca-Manzanillo</a> in der Provinz Limón ist eines der bestgehüteten Geheimnisse der costa-ricanischen Südkaribik. Dieses beeindruckende Schutzgebiet bietet eine vielfältige Auswahl an Ökosystemen, von Mangroven und Korallenriffen bis hin zu unberührten Stränden. Wenn Sie sich in Puerto Viejo de Talamanca aufhalten und einen Ausflug in die Natur suchen, ist dies eine hervorragende Option. In diesem Leitfaden zeigen wir Ihnen, wie Sie von Puerto Viejo aus einfach dorthin gelangen, um dieses Naturparadies in vollen Zügen zu erkunden.</>,
+    transportOptionsHeading: 'Transportmöglichkeiten',
+    stayRecommendationTitle: 'Wo übernachten bei einem Besuch von Gandoca-Manzanillo?',
+    busHeading: '1. Bus von Puerto Viejo nach Manzanillo',
+    busIntro:
+      <>Die einfachste und günstigste Art, das <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Nationale Wildschutzgebiet Gandoca-Manzanillo</a> zu erreichen, ist der Bus vom Zentrum von Puerto Viejo nach Manzanillo. Die <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Bushaltestelle</a> befindet sich dort, wo Sie die Tickets kaufen, in der Nähe des Basketballplatzes oder bei der Eisdiele Deleite.</>,
+    busSchedulesLabel: 'Busfahrpläne:',
+    tableRouteHeader: 'Route',
+    tableDepartureHeader: 'Abfahrtszeiten',
+    scooterHeading: '2. Einen Roller oder 4x4 mieten',
+    scooterParagraph1:
+      <>Wenn Sie lieber in Ihrem eigenen Tempo erkunden möchten, ist die Miete eines Rollers oder 4x4 eine hervorragende Option. Wenn Sie in unseren Häusern im Zentrum von Puerto Viejo wohnen, können Sie Fahrzeuge direkt gegenüber bei <a href="https://maps.app.goo.gl/uao7BMUuwFLyRL6dA" target="_blank" rel="noopener noreferrer">Mistery Jungle</a> mieten, ab 30 $. Wenn Sie in unseren Villen in Playa Chiquita wohnen, können Sie sich das Fahrzeug direkt zu Ihrer Villa liefern lassen.</>,
+    scooterParagraph2:
+      'Diese Option ist ideal für alle, die ein individuelles Abenteuer suchen, da Sie überall anhalten können, wo Sie möchten, und das charmante Dorf Manzanillo erkunden können, ohne sich um Busfahrpläne kümmern zu müssen. Genießen Sie die Freiheit, auf Ihre eigene Art zu erkunden, und entdecken Sie alle Ecken, die dieses schöne Reiseziel zu bieten hat.',
+    carHeading: '3. Mit dem Auto von Puerto Viejo aus',
+    carParagraph:
+      'Wenn Sie sich entscheiden, mit dem Auto von Puerto Viejo aus zu fahren, folgen Sie einfach der Richtung Manzanillo über die 14 km lange Strecke. Bei der Ankunft finden Sie Parkplätze außerhalb des Schutzgebiets, wo Ihnen einige Einheimische gegen eine kleine Gebühr anbieten, auf Ihr Fahrzeug aufzupassen. Aus Sicherheitsgründen empfehlen wir, keine Wertsachen im Auto zu lassen.',
+    conclusionHeading: 'Fazit',
+    conclusionParagraph1:
+      'Das Nationale Wildschutzgebiet Gandoca-Manzanillo ist ein Muss für Natur- und Abenteuerliebhaber. Ob Sie mit dem Bus fahren, ein Fahrzeug mieten oder selbst fahren — dieses Naturparadies ist einfach und bequem zu erreichen.',
+    conclusionParagraph2:
+      'Wir laden Sie ein, Ihren Besuch in diesem wunderschönen Schutzgebiet zu planen und die Gelegenheit zu nutzen, in unseren gemütlichen Häusern in Puerto Viejo de Talamanca zu übernachten. Wir bieten eine komfortable und entspannende Umgebung — perfekt, um die Natur zu genießen und alles zu erkunden, was die Region zu bieten hat. Entdecken Sie den Charme des Nationalen Wildschutzgebiets Gandoca-Manzanillo und die Herzlichkeit unserer Villen!',
+  },
   en: {
     seoTitle: 'How to Get to Gandoca-Manzanillo National Wildlife Refuge from Puerto Viejo, Costa Rica',
     seoDescription:
@@ -795,6 +825,34 @@ export interface TravellingToPuertoContent {
 }
 
 const travellingToPuerto: Partial<Record<Locale, TravellingToPuertoContent>> = {
+  de: {
+    seoTitle: 'Wie man von San José nach Puerto Viejo kommt',
+    seoDescription:
+      'Wenn Sie eine Reise nach Puerto Viejo, Costa Rica, planen, fragen Sie sich vielleicht, wie Sie mit öffentlichen Verkehrsmitteln dorthin gelangen. Zum Glück gibt es mehrere Optionen, die Sie in diese wunderschöne Karibikstadt in Talamanca bringen.',
+    heading: 'Wie man von San José nach Puerto Viejo kommt',
+    paragraphsBeforeStay: [
+      'Wenn Sie eine Reise nach Puerto Viejo, Costa Rica, planen, fragen Sie sich vielleicht, wie Sie mit öffentlichen Verkehrsmitteln dorthin gelangen. Zum Glück gibt es mehrere Optionen, die Sie in diese wunderschöne Karibikstadt in Talamanca bringen.',
+      <>Eine der beliebtesten Möglichkeiten, nach Puerto Viejo zu gelangen, ist der Bus. Das wichtigste Busunternehmen auf der Strecke von San José nach Puerto Viejo ist <a href="https://www.mepecr.com/HorarioS_S.html" target="_blank" rel="noopener noreferrer">MEPE</a>. Die Busstation befindet sich im Zentrum von San José, genau an der 9. Avenue und 12. Straße, und ist daher leicht zu finden.</>,
+      <b><i>Der <a href="https://www.mepecr.com/HorarioS_S.html" target="_blank" rel="noopener noreferrer">Busfahrplan</a> nach Puerto Viejo lautet wie folgt: 6, 8 und 10 Uhr, 14 Uhr sowie der letzte Bus um 16 Uhr.</i></b>,
+      'Zwar können Sie keine Tickets im Voraus reservieren, aber es ist immer ratsam, früh an der Busstation zu sein, um sich einen Platz im Bus zu sichern. Beachten Sie, dass die Busse in der Hauptreisezeit, etwa an Feiertagen und Wochenenden, schnell voll werden können, planen Sie also entsprechend.',
+    ],
+    stayRecommendationTitle: 'Wo übernachten auf dem Weg nach Puerto Viejo?',
+    paragraphsBetween: [
+      'Der Bus hat viele Haltestellen und hält auch an den Busstationen in Limón und Cahuita, bevor er schließlich Puerto Viejo erreicht.',
+      'Wenn Sie bei den Transportkosten sparen möchten, ist der öffentliche Bus die günstigste Option. Diese Busse sind sauber, zuverlässig und bieten eine erschwingliche Möglichkeit, nach Puerto Viejo zu gelangen. Auch wenn sie nicht so luxuriös sind wie private Shuttleservices, bringen sie Sie sicher und pünktlich an Ihr Ziel.',
+      'Dank regelmäßiger Busfahrpläne von San José und anderen nahegelegenen Orten lässt sich Ihre Reise leicht planen, damit Sie alles genießen können, was Puerto Viejo zu bieten hat.',
+      <b><i>Eine weitere Möglichkeit, von San José nach Puerto Viejo zu gelangen, ist der Bus von <a href="https://maps.app.goo.gl/a5kV7YvzybHjVae28" target="_blank" rel="noopener noreferrer">Caribeños</a>, der direkt nach Limón fährt. Von dort können Sie in einen Bus nach Puerto Viejo umsteigen.</i></b>,
+      <>Der Busfahrplan von San José nach Limón startet an der <a href="https://maps.app.goo.gl/a5kV7YvzybHjVae28" target="_blank" rel="noopener noreferrer">Caribeños-Haltestelle</a> an der Calle Central, Cinco Esquinas. Die Busse fahren stündlich von 6 bis 19 Uhr, sodass sich Ihre Reise leicht planen lässt. In Limón angekommen, können Sie zur <a href="https://maps.app.goo.gl/WV4CmLqzco2Eft7y9" target="_blank" rel="noopener noreferrer">Mepe</a>-Bushaltestelle laufen, die sich in der Nähe des zentralen Marktes befindet, und einen der stündlich abfahrenden Busse nach Puerto Viejo nehmen.</>,
+      'Beachten Sie jedoch, dass die Fahrt von San José nach Limón je nach Verkehr und Straßenverhältnissen etwa 3 bis 4 Stunden dauern kann. Planen Sie daher unbedingt im Voraus, um nicht über Nacht in Limón festzusitzen. Außerdem fährt der letzte Bus von Limón nach Puerto Viejo um 20 Uhr ab, stellen Sie also sicher, dass Sie rechtzeitig in Limón ankommen, um den Anschluss zu schaffen.',
+      <>Eine weitere Möglichkeit, nach Puerto Viejo zu gelangen, ist ein <a href="mailto:reservas.kalawala@gmail.com?subject=Organise private transportation&body= " target="_blank" rel="noopener noreferrer">privater Transport</a>. Diese Option kann mit anderen Reisenden geteilt werden oder privat für Sie und Ihre Begleitung sein, was sie zu einer bequemen und komfortablen Art macht, an Ihr Ziel zu reisen.</>,
+      'Mit privatem Transport können Sie an einem beliebigen Ort abgeholt und direkt zu Ihrer Unterkunft in Puerto Viejo gebracht werden. Diese Option ist besonders hilfreich für alle mit viel Gepäck, mehr Privatsphäre oder besonderen Reisebedürfnissen.',
+      'Je nach Anzahl der Reisenden kann privater Transport im Vergleich zu einem geteilten Shuttle sogar kostengünstiger sein.',
+      'Außerdem bietet er die Flexibilität, den eigenen Zeitplan zu bestimmen und unterwegs anzuhalten, um einige der wunderschönen Ausblicke entlang der Strecke zu genießen.',
+      'Wenn Sie an privatem Transport nach Puerto Viejo interessiert sind, gibt es mehrere renommierte Unternehmen, die diesen Service anbieten. Es lohnt sich immer, die Optionen zu recherchieren und Preise zu vergleichen, um das beste Angebot zu finden.',
+      'Auch wir bieten diesen Service an und können Ihnen Routen und Preise nennen, damit Sie die beste Entscheidung für Ihre Reise treffen können.',
+      'Ob Sie nun die Bequemlichkeit öffentlicher Verkehrsmittel oder den Komfort eines privaten Transports bevorzugen — es gibt mehrere Wege nach Puerto Viejo. Unabhängig von Ihrer Wahl werden Sie die atemberaubende Landschaft und lebendige Kultur dieser wunderschönen Karibikstadt in Talamanca, Costa Rica, garantiert genießen.',
+    ],
+  },
   en: {
     seoTitle: 'How to get to Puerto Viejo from San Jose',
     seoDescription:

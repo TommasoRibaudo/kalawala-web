@@ -1,19 +1,20 @@
 import React, { FC, useEffect, useState, useCallback, useMemo } from "react";
 import './OtherBlogs.style.scss'
-import { BlogType } from "../../../utils/types";
+import { blogs } from "../../../assets/blogs/blogs";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import { SampleNextArrow, SamplePrevArrow } from "../../../components/CustomSlick/SlickDarkArrow.Component";
 import { cdnImage } from "../../../utils/imageCdn";
-import { useMessages } from '../../../i18n';
-import { pathForLegacyId } from '../../../routes.config';
+import { useMessages, type Locale } from '../../../i18n';
+import { blogArticleHeading } from '../../../i18n/blogArticleHeadings';
+import { routeKeyForSlug, pathForKey } from '../../../routes.config';
 
 interface IOtherBlogs {
   currentBlog: string
-  blogs: BlogType[]
+  locale: Locale
 }
 
-const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
+const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, locale }) => {
   const m = useMessages();
   // Seeded null, not window.innerWidth — react-snap's puppeteer viewport at
   // prerender time and a real visitor's viewport at hydration time are
@@ -36,14 +37,22 @@ const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
     return () => window.removeEventListener("resize", handleResize)
   }, [handleResize])
 
-  // Found while merging Phase 3c: this used to compare against `blog.title`
-  // (a human-readable sentence), but every call site passes an `id`-shaped
-  // slug. The two never matched, so the "exclude the current article"
-  // filter was a no-op on all 20 pre-merge pages — every carousel included a
-  // card linking back to the page you were already on.
+  // `blogs` (assets/blogs/blogs.ts) is locale-invariant now — id and
+  // thumbnail only, no per-locale title. The card title comes from
+  // blogArticleHeading, reusing blog.tsx's own Phase-8 translations instead
+  // of maintaining a second copy. Matched by routeKeyForSlug rather than a
+  // raw string compare (blogs.ts's ids are inconsistently cased — e.g.
+  // "TenHoursInPuerto", "cahuitaParkwhattodo" — routeKeyForSlug already
+  // lowercases both sides) so "exclude the current article" keeps working
+  // regardless of casing drift between the two tables.
+  const currentRouteKey = routeKeyForSlug(currentBlog);
   const filteredBlogs = useMemo(() =>
-    blogs.filter(blog => blog.id !== currentBlog),
-    [blogs, currentBlog]
+    blogs
+      .map((blog) => ({ ...blog, routeKey: routeKeyForSlug(blog.id) }))
+      .filter((blog): blog is typeof blog & { routeKey: NonNullable<typeof blog.routeKey> } =>
+        blog.routeKey !== undefined && blog.routeKey !== currentRouteKey
+      ),
+    [currentRouteKey]
   )
 
   const sliderSettings = useMemo(() => ({
@@ -73,9 +82,10 @@ const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
     ]
   }), [windowWidth, filteredBlogs.length])
 
-  const handleBlogClick = useCallback((id: string) => {
-    navigate(pathForLegacyId(id))
-  }, [navigate])
+  const handleBlogClick = useCallback((routeKey: ReturnType<typeof routeKeyForSlug>) => {
+    if (!routeKey) return;
+    navigate(pathForKey(routeKey, locale))
+  }, [navigate, locale])
 
   if (filteredBlogs.length === 0) {
     return null
@@ -86,26 +96,29 @@ const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, blogs }) => {
       <h2 className="other-blogs-header">{m.sections.otherBlogsHeading}</h2>
       <div className="other-blogs-slider">
         <Slider {...sliderSettings}>
-          {filteredBlogs.map(({ title, thumbnail, id }) => (
-            <div key={id} className="blog-slide">
-              <div
-                className="blog-card"
-                onClick={() => handleBlogClick(id)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && handleBlogClick(id)}
-                aria-label={m.sections.readBlog(title)}
-              >
+          {filteredBlogs.map(({ thumbnail, id, routeKey }) => {
+            const title = blogArticleHeading(routeKey, locale);
+            return (
+              <div key={id} className="blog-slide">
                 <div
-                  className="blog-card-image"
-                  style={{ backgroundImage: `url(${cdnImage(thumbnail, 400)})` }}
-                />
-                <div className="blog-card-content">
-                  <h3 className="blog-card-title">{title}</h3>
+                  className="blog-card"
+                  onClick={() => handleBlogClick(routeKey)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && handleBlogClick(routeKey)}
+                  aria-label={m.sections.readBlog(title)}
+                >
+                  <div
+                    className="blog-card-image"
+                    style={{ backgroundImage: `url(${cdnImage(thumbnail, 400)})` }}
+                  />
+                  <div className="blog-card-content">
+                    <h3 className="blog-card-title">{title}</h3>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </Slider>
       </div>
     </div>

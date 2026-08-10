@@ -77,6 +77,9 @@ export const en = {
     otherListingsHeading: 'Check out our other options!',
     readBlog: (title: string) => `Read blog: ${title}`,
     weOfferEquipped: 'We offer fully equipped homes:',
+    // Portfolio.component.tsx's "Our Photos" gallery heading — was literal
+    // JSX with no locale branching at all, not even for Spanish.
+    ourPhotosHeading: 'Photos',
   },
 
   contact: {
@@ -154,6 +157,65 @@ export const en = {
     bedrooms: (count: number) => `${count} ${count === 1 ? 'bedroom' : 'bedrooms'}`,
     bathrooms: (count: number) => `${count} ${count === 1 ? 'bathroom' : 'bathrooms'}`,
     upToGuests: (count: number) => `Up to ${count} ${count === 1 ? 'guest' : 'guests'}`,
+    // Shared by HomeCard, HelpMeChoose, and both OtherHomesCard variants — was
+    // four separate hardcoded `locale === 'es' ? 'Ver casa →' : 'View home →'`
+    // ternaries that silently fell back to English for every other locale.
+    viewHomeCta: 'View home →',
+  },
+
+  cookieBanner: {
+    title: '🍪 Cookies',
+    description: 'We use cookies to improve your experience and analyze traffic.',
+    acceptAll: 'Accept',
+    rejectAll: 'Reject',
+    customize: 'Options',
+    essential: 'Essential',
+    analytics: 'Analytics',
+    marketing: 'Marketing',
+    required: '(Req.)',
+    essentialDesc: 'Required for the site to function.',
+    analyticsDesc: 'Help us understand site usage.',
+    marketingDesc: 'To show relevant ads.',
+    savePreferences: 'Save',
+    cancel: 'Cancel',
+  },
+
+  notFound: {
+    title: 'Page not found | Reservas Kalawala',
+    heading: 'We could not find that page',
+    body: 'The link may be broken, or the page may have moved.',
+    cta: 'Back to home',
+  },
+
+  whyStayWithUs: {
+    title: 'Why book with us?',
+    benefits: [
+      'Strategic locations',
+      'Fully equipped houses',
+      'Direct booking and local support',
+      'No platform commissions',
+    ],
+    ctaText: 'View all our properties',
+  },
+
+  imagesModal: {
+    close: 'Close',
+    photos: 'photos',
+    previous: 'Previous',
+    next: 'Next',
+    empty: 'No images available',
+  },
+
+  // Looked up by the exact English `stayType` string stored on each review
+  // (see reviewsData.ts / HomeReviews's own review objects) — not renamed
+  // keys, so a new stayType value falls back to the raw English string
+  // instead of silently mapping to the wrong label.
+  reviewTags: {
+    'Stayed a few nights': 'Stayed a few nights',
+    'Stayed one night': 'Stayed one night',
+    'Stayed with kids': 'Stayed with kids',
+    'Stayed with a pet': 'Stayed with a pet',
+    'Stayed about a week': 'Stayed about a week',
   },
 };
 

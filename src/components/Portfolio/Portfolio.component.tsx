@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import PortfolioImage from '../PortfolioImage/PortfolioImage.component';
+import { useMessages } from '../../i18n';
 
 const Portfolio = () => {
+  const m = useMessages();
   const [folderName, setFolderName] = useState<string>('Tucano');
 
   const [activeButton, setActiveButton] = useState<string>('Tucano');
@@ -18,7 +20,7 @@ const Portfolio = () => {
     <div id="portfolio" className="portfolio section">
       <div className="col-lg-12">
         <div className="title text-center">
-          <h2>Our <span className="color">Photos</span></h2>
+          <h2>{m.sections.ourLead} <span className="color">{m.sections.ourPhotosHeading}</span></h2>
           <div className="border2"></div>
         </div>
       </div>

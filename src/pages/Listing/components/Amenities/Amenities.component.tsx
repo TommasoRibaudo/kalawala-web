@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { AmenityType } from "../../../../utils/types";
 import AmenityIcon from "../../../../components/AmenityIcon/AmenityIcon.component";
 import { getCapacityFacts } from "../../../../utils/propertyCapacity";
+import { AMENITY_LABELS } from "../../../../i18n/amenityLabels";
 import './Amenities.style.scss'
 import type { Locale } from '../../../../i18n';
 
@@ -15,6 +16,11 @@ interface IAmenities {
 
 const Amenities: FC<IAmenities> = ({ amenities, propertyKey, locale = 'en' }) => {
     const capacityFacts = propertyKey ? getCapacityFacts(propertyKey, locale) : [];
+    // `name` here is already correctly localized for en/es (houseDataByLangCode
+    // resolves straight to the Spanish-suffixed entry) — only the six locales
+    // that fall back to the English entry need this table.
+    const translateName = (name: string) =>
+        (locale !== 'en' && locale !== 'es' ? AMENITY_LABELS[name]?.[locale] : undefined) ?? name;
 
     return (
         <div className="amenitiesCont d-flex justify-content-center">
@@ -32,7 +38,7 @@ const Amenities: FC<IAmenities> = ({ amenities, propertyKey, locale = 'en' }) =>
                     amenities.map(({ icon, name }) => {
                         return (
                             <div className="col" key={name}>
-                                <AmenityIcon icon={icon} name={name} />
+                                <AmenityIcon icon={icon} name={translateName(name)} />
                             </div>
                         );
                     })

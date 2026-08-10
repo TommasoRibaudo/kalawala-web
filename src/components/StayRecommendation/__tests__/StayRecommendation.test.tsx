@@ -7,29 +7,29 @@
 
 import { render, screen } from '@testing-library/react';
 import StayRecommendation from '../StayRecommendation.component';
-import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS } from '../../../utils/constants';
+import { puertoViejoBlogRecommendations } from '../../../utils/constants';
 
 describe('StayRecommendation Component', () => {
   const mockProps = {
-    title: '¿Dónde hospedarte si solo tienes 2 días en Puerto Viejo?',
-    properties: PUERTO_VIEJO_BLOG_RECOMMENDATIONS
+    title: 'Where to stay if you only have 2 days in Puerto Viejo?',
+    properties: puertoViejoBlogRecommendations('en')
   };
 
   test('renders the component with title and properties', () => {
     render(<StayRecommendation {...mockProps} />);
-    
+
     // Check if title is rendered
     expect(screen.getByText(mockProps.title)).toBeInTheDocument();
-    
+
     // Check if all properties are rendered
     expect(screen.getByText('Casa Geco')).toBeInTheDocument();
-    expect(screen.getByText('Plumeria')).toBeInTheDocument();
+    expect(screen.getByText('Casa Plumeria')).toBeInTheDocument();
     expect(screen.getByText('Villa Coral')).toBeInTheDocument();
-    
+
     // Check if reasons are rendered
-    expect(screen.getByText('Ideal si quieres moverte caminando')).toBeInTheDocument();
-    expect(screen.getByText('Perfecta para descansar cerca de la playa')).toBeInTheDocument();
-    expect(screen.getByText('Si buscas una escapada corta con piscina privada')).toBeInTheDocument();
+    expect(screen.getByText('Ideal for getting around on foot')).toBeInTheDocument();
+    expect(screen.getByText('Perfect for relaxing near the beach')).toBeInTheDocument();
+    expect(screen.getByText('Great for a short getaway with a private pool')).toBeInTheDocument();
   });
 
   test('renders property links correctly', () => {

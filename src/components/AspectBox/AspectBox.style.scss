@@ -1,0 +1,20 @@
+// aspect-ratio has to be set through a static per-ratio class, not inline on
+// the element, and the fill layer has to be a static class too rather than
+// an inline style object, so react-snap's prerender snapshot survives
+// hydration — see the comment in AspectBox.component.tsx.
+.aspect-box {
+  position: relative;
+  width: 100%;
+
+  &--16-9 { aspect-ratio: 16/9; }
+  &--4-3 { aspect-ratio: 4/3; }
+  &--3-2 { aspect-ratio: 3/2; }
+  &--1-1 { aspect-ratio: 1/1; }
+}
+
+.aspect-box__fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}

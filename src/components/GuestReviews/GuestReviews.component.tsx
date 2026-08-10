@@ -59,8 +59,9 @@ const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, locale }) => {
   const reviews = GUEST_REVIEWS[propertyKey];
   if (!reviews || reviews.length === 0) return null;
 
-  const heading = getMessages(locale).reviews.heading;
-  const closeLabel = getMessages(locale).reviews.closeReviews;
+  const m = getMessages(locale);
+  const heading = m.reviews.heading;
+  const closeLabel = m.reviews.closeReviews;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) closePanel();
@@ -75,7 +76,7 @@ const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, locale }) => {
 
   const renderReviewMeta = (review: Review) => {
     const text = pickLocalized(review.text, locale);
-    const stayLabel = locale === 'es' ? translateStayType(review.stayType) : review.stayType;
+    const stayLabel = m.reviewTags[review.stayType as keyof typeof m.reviewTags] ?? review.stayType;
     return { text, stayLabel };
   };
 
@@ -157,16 +158,5 @@ const GuestReviews: React.FC<GuestReviewsProps> = ({ propertyKey, locale }) => {
     </div>
   );
 };
-
-function translateStayType(stayType: string): string {
-  const map: Record<string, string> = {
-    'Stayed a few nights': 'Estadía de algunas noches',
-    'Stayed one night': 'Estadía de una noche',
-    'Stayed with kids': 'Estadía con niños',
-    'Stayed with a pet': 'Estadía con mascota',
-    'Stayed about a week': 'Estadía de aproximadamente una semana',
-  };
-  return map[stayType] ?? stayType;
-}
 
 export default GuestReviews;

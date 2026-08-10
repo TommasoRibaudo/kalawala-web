@@ -7,13 +7,12 @@ import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation
 import OtherBlogs from "../Components/OtherBlogs.Component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
-import { blogs, blogsES } from "../../../assets/blogs/blogs";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
-import { CAHUITA_AREA_RECOMMENDATIONS, CAHUITA_AREA_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import { cahuitaAreaRecommendations } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
-import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { tenHoursInPuertoContent } from "../../../i18n/content/blog";
 
@@ -24,8 +23,6 @@ const TenHoursInPuerto = () => {
     const locale = useLocale();
     const m = useMessages();
     const content = tenHoursInPuertoContent(locale);
-    const lang = bookingLanguage(locale);
-    const selfId = `TenHoursInPuerto${localeSuffix(locale)}`;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -90,8 +87,7 @@ const TenHoursInPuerto = () => {
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
                             title={content.stayRecommendationTitle}
-                            properties={locale === 'es' ? CAHUITA_AREA_RECOMMENDATIONS_ES : CAHUITA_AREA_RECOMMENDATIONS}
-                            language={lang}
+                            properties={cahuitaAreaRecommendations(locale)}
                         />
                         <br />
 
@@ -107,7 +103,7 @@ const TenHoursInPuerto = () => {
                     {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                     <div style={{ maxWidth: 1000 }}>
                         <WhyStayWithUs
-                            language={lang}
+                            locale={locale}
                             ctaLink={homePath(locale)}
                         />
                     </div>
@@ -125,7 +121,7 @@ const TenHoursInPuerto = () => {
                         </div>
                     </div>
 
-                    <OtherBlogs currentBlog={selfId} blogs={locale === 'es' ? blogsES : blogs} />
+                    <OtherBlogs currentBlog="tenhoursinpuerto" locale={locale} />
                 </Col>
             </Row>
             <ContactUs />

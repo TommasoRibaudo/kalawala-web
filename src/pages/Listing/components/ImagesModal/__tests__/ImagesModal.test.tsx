@@ -21,8 +21,8 @@ describe('ImagesModal', () => {
     document.body.style.overflow = '';
   });
 
-  const openGrid = (houseName = 'Geco') =>
-    render(<ImagesModal closeModal={closeModal} houseName={houseName} />);
+  const openGrid = (houseName = 'Geco', locale: 'en' | 'es' = 'en') =>
+    render(<ImagesModal closeModal={closeModal} houseName={houseName} locale={locale} />);
 
   const thumbs = () => screen.getAllByRole('button', { name: /./ }).filter((b) => b.querySelector('img'));
 
@@ -99,7 +99,7 @@ describe('ImagesModal', () => {
   });
 
   test('labels controls in Spanish on the ES routes', () => {
-    openGrid('DelfinES');
+    openGrid('DelfinES', 'es');
 
     expect(
       screen.getByText(`${delfinImageDescriptionsES.length} fotos`)
@@ -108,7 +108,7 @@ describe('ImagesModal', () => {
   });
 
   test('renders a message instead of an empty grid for an unknown house', () => {
-    render(<ImagesModal closeModal={closeModal} houseName="NotAHouse" />);
+    render(<ImagesModal closeModal={closeModal} houseName="NotAHouse" locale="en" />);
 
     expect(screen.getByText('No images available')).toBeInTheDocument();
     expect(thumbs()).toHaveLength(0);

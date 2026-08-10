@@ -4,15 +4,14 @@ import '../../Listing/Listing.style.scss';
 
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import OtherBlogs from "../Components/OtherBlogs.Component";
-import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import { generalPuertoViejoRecommendations } from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
-import { blogs, blogsES } from "../../../assets/blogs/blogs";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import { useLocale, useMessages } from "../../../i18n";
-import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { puertoHiddenGemsContent, HiddenGemSection } from "../../../i18n/content/blog";
 
@@ -46,8 +45,6 @@ const PuertoHiddenGems = () => {
     const locale = useLocale();
     const m = useMessages();
     const content = puertoHiddenGemsContent(locale);
-    const lang = bookingLanguage(locale);
-    const selfId = `puertoHiddenGems${localeSuffix(locale)}`;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -110,8 +107,7 @@ const PuertoHiddenGems = () => {
                         {/* Optional: Stay Recommendation Component - place near the top */}
                         <StayRecommendation
                             title={content.stayRecommendationTitle}
-                            properties={locale === 'es' ? GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES : GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
-                            language={lang}
+                            properties={generalPuertoViejoRecommendations(locale)}
                         />
                         <br />
 
@@ -121,7 +117,7 @@ const PuertoHiddenGems = () => {
 
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                         <div style={{ maxWidth: 1000 }}>
-                            <WhyStayWithUs language={lang} ctaLink={homePath(locale)} />
+                            <WhyStayWithUs locale={locale} ctaLink={homePath(locale)} />
                         </div>
 
                         <h2>{content.tipsHeading}</h2>
@@ -145,7 +141,7 @@ const PuertoHiddenGems = () => {
                         </div>
                     </div>
 
-                    <OtherBlogs currentBlog={selfId} blogs={locale === 'es' ? blogsES : blogs} />
+                    <OtherBlogs currentBlog="puertoHiddenGems" locale={locale} />
                 </Col>
             </Row>
             <ContactUs />

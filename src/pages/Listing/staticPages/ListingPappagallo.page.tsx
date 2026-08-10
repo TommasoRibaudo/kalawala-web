@@ -120,7 +120,7 @@ const ListingPappagallo = () => {
             <div className="other-listings-bottom">
                 <OtherListings listings={homesSnippet} currentListing={listing || ''} />
             </div>
-            {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+            {show && <ImagesModal closeModal={handleClose} houseName={listing!} locale={locale} />}
             <Footer locale={locale} />
 
         </div>

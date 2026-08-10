@@ -37,7 +37,7 @@ describe('Property Marketing Configuration', () => {
     expect(typeof config.descriptiveTitle.en).toBe('string');
     expect(typeof config.descriptiveTitle.es).toBe('string');
     expect(config.descriptiveTitle.en.length).toBeGreaterThan(0);
-    expect(config.descriptiveTitle.es.length).toBeGreaterThan(0);
+    expect(config.descriptiveTitle.es!.length).toBeGreaterThan(0);
     
     // Verify price structure
     expect(config.price).toBeDefined();
@@ -55,7 +55,7 @@ describe('Property Marketing Configuration', () => {
     expect(typeof config.socialStatement.en).toBe('string');
     expect(typeof config.socialStatement.es).toBe('string');
     expect(config.socialStatement.en.length).toBeGreaterThan(0);
-    expect(config.socialStatement.es.length).toBeGreaterThan(0);
+    expect(config.socialStatement.es!.length).toBeGreaterThan(0);
     
     // Verify feature highlights structure
     expect(config.featureHighlights).toBeDefined();
@@ -64,7 +64,7 @@ describe('Property Marketing Configuration', () => {
     expect(Array.isArray(config.featureHighlights.en)).toBe(true);
     expect(Array.isArray(config.featureHighlights.es)).toBe(true);
     expect(config.featureHighlights.en.length).toBeGreaterThan(0);
-    expect(config.featureHighlights.es.length).toBeGreaterThan(0);
+    expect(config.featureHighlights.es!.length).toBeGreaterThan(0);
     
     // Verify each feature highlight contains an emoji
     config.featureHighlights.en.forEach((feature, index) => {
@@ -74,7 +74,7 @@ describe('Property Marketing Configuration', () => {
       expect(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u.test(feature)).toBe(true);
     });
     
-    config.featureHighlights.es.forEach((feature, index) => {
+    config.featureHighlights.es!.forEach((feature, index) => {
       expect(typeof feature).toBe('string');
       expect(feature.length).toBeGreaterThan(0);
       // Check that feature contains at least one emoji (basic check for non-ASCII characters)

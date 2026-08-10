@@ -7,7 +7,9 @@ import FixedNavigation from '../../components/FixedNavigation/FixedNavigation.co
 import Footer from '../../components/Footer/Footer.component';
 import { BLOG_ARTICLES } from '../../utils/constants';
 import { useLocale, useMessages } from '../../i18n';
+import { blogArticleHeading } from '../../i18n/blogArticleHeadings';
 import { canonicalUrl, hreflangLinks } from '../../i18n/seo';
+import { pathForKey } from '../../routes.config';
 
 /**
  * The nav's "Blog" link used to go straight to a single article — the other
@@ -45,8 +47,8 @@ const BlogIndex = () => {
           <ul style={{ listStyle: 'none', padding: 0, marginTop: '2rem' }}>
             {BLOG_ARTICLES.map((article) => (
               <li key={article.key} style={{ marginBottom: '1.25rem', paddingBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
-                <Link to={locale === 'es' ? article.pathEs : article.pathEn} style={{ fontSize: '1.2rem', fontWeight: 600 }}>
-                  {locale === 'es' ? article.titleEs : article.titleEn}
+                <Link to={pathForKey(article.routeKey, locale)} style={{ fontSize: '1.2rem', fontWeight: 600 }}>
+                  {blogArticleHeading(article.routeKey, locale)}
                 </Link>
               </li>
             ))}

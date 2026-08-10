@@ -5,15 +5,14 @@ import '../../Listing/Listing.style.scss';
 
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import OtherBlogs from "../Components/OtherBlogs.Component";
-import { PUERTO_VIEJO_BLOG_RECOMMENDATIONS, PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import { puertoViejoBlogRecommendations } from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
-import { blogs, blogsES } from "../../../assets/blogs/blogs";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import { useLocale, useMessages } from "../../../i18n";
-import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { twoDaysInPVContent } from "../../../i18n/content/blog";
 
@@ -24,8 +23,6 @@ const TwoDaysInPV = () => {
     const locale = useLocale();
     const m = useMessages();
     const content = twoDaysInPVContent(locale);
-    const lang = bookingLanguage(locale);
-    const selfId = `twodaysinpuertoviejo${localeSuffix(locale)}`;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -85,8 +82,7 @@ const TwoDaysInPV = () => {
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
                             title={content.stayRecommendationTitle}
-                            properties={locale === 'es' ? PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES : PUERTO_VIEJO_BLOG_RECOMMENDATIONS}
-                            language={lang}
+                            properties={puertoViejoBlogRecommendations(locale)}
                         />
                         <br />
 
@@ -100,7 +96,7 @@ const TwoDaysInPV = () => {
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                         <div style={{ maxWidth: 1000 }}>
                             <WhyStayWithUs
-                                language={lang}
+                                locale={locale}
                                 ctaLink={homePath(locale)}
                             />
                         </div>
@@ -125,7 +121,7 @@ const TwoDaysInPV = () => {
                         </div>
                     </div>
 
-                    <OtherBlogs currentBlog={selfId} blogs={locale === 'es' ? blogsES : blogs} />
+                    <OtherBlogs currentBlog="twodaysinpuertoviejo" locale={locale} />
                 </Col>
             </Row>
             <ContactUs />

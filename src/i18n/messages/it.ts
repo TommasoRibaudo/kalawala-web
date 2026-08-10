@@ -58,6 +58,7 @@ export const it: Messages = {
     otherListingsHeading: 'Scopri le nostre altre proposte!',
     readBlog: (title: string) => `Leggi l’articolo: ${title}`,
     weOfferEquipped: 'Offriamo case completamente attrezzate:',
+    ourPhotosHeading: 'Foto',
   },
 
   contact: {
@@ -125,5 +126,57 @@ export const it: Messages = {
     bedrooms: (count: number) => `${count} ${count === 1 ? 'camera da letto' : 'camere da letto'}`,
     bathrooms: (count: number) => `${count} ${count === 1 ? 'bagno' : 'bagni'}`,
     upToGuests: (count: number) => `Fino a ${count} ${count === 1 ? 'ospite' : 'ospiti'}`,
+    viewHomeCta: 'Vedi la casa →',
   },
+  cookieBanner: {
+    title: '🍪 Cookies',
+    description: 'Utilizziamo i cookie per migliorare la tua esperienza e analizzare il traffico.',
+    acceptAll: 'Accetta',
+    rejectAll: 'Rifiuta',
+    customize: 'Opzioni',
+    essential: 'Essenziali',
+    analytics: 'Analisi',
+    marketing: 'Marketing',
+    required: '(Nec.)',
+    essentialDesc: 'Necessari per il funzionamento del sito.',
+    analyticsDesc: 'Ci aiutano a capire l\'utilizzo del sito.',
+    marketingDesc: 'Per mostrare annunci pertinenti.',
+    savePreferences: 'Salva',
+    cancel: 'Annulla',
+  },
+
+  notFound: {
+    title: 'Pagina non trovata | Reservas Kalawala',
+    heading: 'Non siamo riusciti a trovare questa pagina',
+    body: 'Il link potrebbe essere danneggiato oppure la pagina potrebbe essere stata spostata.',
+    cta: 'Torna alla home',
+  },
+
+  whyStayWithUs: {
+    title: 'Perché prenotare con noi?',
+    benefits: [
+      'Posizioni strategiche',
+      'Case completamente attrezzate',
+      'Prenotazione diretta e supporto locale',
+      'Nessuna commissione di piattaforma',
+    ],
+    ctaText: 'Vedi tutte le nostre proprietà',
+  },
+
+  imagesModal: {
+    close: 'Chiudi',
+    photos: 'foto',
+    previous: 'Precedente',
+    next: 'Successivo',
+    empty: 'Nessuna immagine disponibile',
+  },
+
+  reviewTags: {
+    'Stayed a few nights': 'Soggiorno di alcune notti',
+    'Stayed one night': 'Soggiorno di una notte',
+    'Stayed with kids': 'Soggiorno con bambini',
+    'Stayed with a pet': 'Soggiorno con animale domestico',
+    'Stayed about a week': 'Soggiorno di circa una settimana',
+  },
+
 };

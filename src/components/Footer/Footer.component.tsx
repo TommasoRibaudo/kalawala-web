@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { PROPERTY_DISPLAY_NAMES, BLOG_ARTICLES } from '../../utils/constants';
 import './Footer.style.scss';
 import { bookingPath, getMessages, type Locale } from '../../i18n';
+import { blogArticleHeading } from '../../i18n/blogArticleHeadings';
 import { pathForKey, routeKeyForSlug } from '../../routes.config';
 
 interface IFooter {
@@ -34,13 +35,13 @@ const Footer: React.FC<IFooter> = ({ locale }) => {
           <div className="footer-col">
             <h4>{m.footer.travelGuides}</h4>
             <ul>
-              {/* Locale-keyed DATA, not chrome: BLOG_ARTICLES stores flat
-                  titleEn/titleEs/pathEn/pathEs fields. pathEn/pathEs are
-                  computed from routes.config.ts (PHASE 4). */}
+              {/* Locale-keyed DATA, not chrome: title reuses the Phase-8-translated
+                  blog.tsx heading for this article; path comes straight from
+                  routes.config.ts. Both resolve per-locale, not just en/es. */}
               {BLOG_ARTICLES.map((article) => (
                 <li key={article.key}>
-                  <Link to={locale === 'es' ? article.pathEs : article.pathEn}>
-                    {locale === 'es' ? article.titleEs : article.titleEn}
+                  <Link to={pathForKey(article.routeKey, locale)}>
+                    {blogArticleHeading(article.routeKey, locale)}
                   </Link>
                 </li>
               ))}

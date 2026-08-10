@@ -119,7 +119,7 @@ const ListingPlumeria = () => {
             <div className="other-listings-bottom">
                 <OtherListings listings={NamSnippet} currentListing={listing || ''} />
             </div>
-            {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+            {show && <ImagesModal closeModal={handleClose} houseName={listing!} locale={locale} />}
             <Footer locale={locale} />
 
         </div>

@@ -2061,3 +2061,75 @@ what the next session should pick up.
   existing checklist. Separately, still open: a scoping decision on the
   `PROPERTY_MARKETING_CONFIG`/`locale === 'es'` follow-up from the Phase 8
   session log entry, and the outstanding PostHog export from Phase 0.
+
+### 2026-08-10 — VacationRental structured data fixed; remaining site-wide translation gap closed
+
+- **Structured data.** GSC's Rich Results check had all 45 property pages'
+  `VacationRental` markup failing validation. Root cause: `occupancy` used
+  `maxValue` instead of the spec's required `value`, and there was no
+  `identifier` anywhere — the spec requires one at the top level and,
+  per Google's guidance, one independent of listing content and consistent
+  across languages. Fixed in `public/index.html`: added a top-level
+  `identifier` (`reservas-kalawala`), a per-property `identifier` on each
+  `containsPlace` entry (matching the existing `routes.config.ts` slugs —
+  geco, rana, tucano, etc. — so it's stable across all 8 locale URLs for
+  the same listing), `additionalType: 'https://schema.org/EntirePlace'`,
+  and switched every `occupancy.maxValue` to `occupancy.value`. Both the
+  `VacationRental` and `Organization` JSON-LD blocks still parse; re-check
+  in Search Console after this deploys.
+- **Full translation audit.** The Phase 8 gap noted above
+  (`PROPERTY_MARKETING_CONFIG` and a `locale === 'es'` boolean pattern
+  rendering English-only for the six newer locales) turned out to be one
+  instance of a wider, recurring pattern: several components and data
+  sources were still typed/keyed for the original `en`/`es` pair only and
+  silently fell back to English for `de`/`fr`/`it`/`pt`/`he`/`hi`. A
+  dedicated audit agent enumerated every remaining instance site-wide.
+  Fixed: `PROPERTY_MARKETING_CONFIG` (all 10 properties, all 8 locales),
+  amenity name strings on listing pages, the cookie consent banner, the
+  404 page, `WhyStayWithUs`, guest review property labels and "stay type"
+  tags, the `StayRecommendation` widgets' reasons text (blog and
+  homepage), the blog cross-link/footer article titles, and the
+  "our photos" section heading. Content was produced by six parallel
+  translation agents (one per new locale) plus direct authoring for
+  smaller items, then spliced into the message catalogs and
+  `constants.ts` via generated scripts, each verified with a typecheck
+  pass.
+- **Bonus fix, found by spot-checking built HTML rather than by typecheck
+  or tests:** two of the ten blog articles (`travellingToPuerto`,
+  `gettingToGandoca` in `src/i18n/content/blog.tsx`) were missing their
+  entire German content block — a genuine pre-existing Phase 8 gap, not
+  something this session's routing changes introduced. Because that
+  content type is `Partial<Record<Locale, T>>`, a missing locale block
+  doesn't error at compile time — it silently falls back to `.en!`. Full
+  German translations written for both articles, JSX structure preserved.
+  Lesson for future locale work: `Partial<Record<Locale, T>>` completeness
+  has to be checked by script or by eye, not by `tsc`.
+- **Routing bug fixed at the root, not per-symptom.** Several of the
+  above call sites were routing new-locale visitors to English URLs even
+  after their *content* was translated, via `pathForLegacyId` — a
+  pre-i18n-rollout helper that only ever mapped to `'es'` or the default
+  locale (`'en'`), written before the 8-locale rollout and never updated.
+  Migrated every call site (`HomeCard`, `HelpMeChoose`, `OtherBlogs`,
+  `StayRecommendation`'s `link` field, `Footer`, `BlogIndex`) to
+  `routeKeyForSlug` + `pathForKey(locale)`, the pattern already used
+  elsewhere post-rollout, instead of patching each site individually.
+- **Deliberately left untranslated, by design, not oversight:** the
+  booking/payment flow (`bookingLanguage(locale)` in `src/i18n/paths.ts`
+  intentionally narrows to a smaller language set — a German visitor
+  gets the English booking UI rather than a missing one; this session
+  did not widen that boundary), guest review *body* text (verbatim
+  guest-authored content), image captions/alt text, and blog bus-schedule
+  table *row data* (the table headers are translated; the row content is
+  transit-agency schedule data, not prose).
+- Validation: clean `tsc --noEmit`, full Jest suite unchanged (299 passed,
+  same 4 pre-existing jsdom `matchMedia` failures, none newly introduced),
+  two full production builds (177/177 pages) both green, and manual
+  spot-checks of the built HTML across `PROPERTY_MARKETING_CONFIG`,
+  amenities, footer links, `HomeCard`/`HelpMeChoose` routing,
+  `StayRecommendation`, and both newly-fixed German blog articles.
+- **Next session:** Phase 10 (GSC submission/monitoring) is still tracked
+  separately on PR #59, open but not yet merged as of this entry — not
+  lost, just pending review. Re-run the Rich Results check once this
+  structured-data fix is live. The `PROPERTY_MARKETING_CONFIG`/
+  `locale === 'es'` follow-up referenced above is now resolved by this
+  session's work and can be considered closed.

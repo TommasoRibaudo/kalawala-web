@@ -2,8 +2,8 @@ import React from 'react';
 import { cdnSrcSet } from '../../utils/imageCdn';
 import { useNavigate } from 'react-router-dom';
 import './HelpMeChoose.style.scss';
-import type { Locale } from '../../i18n';
-import { pathForLegacyId } from '../../routes.config';
+import { getMessages, type Locale } from '../../i18n';
+import { pathForKey, routeKeyForSlug } from '../../routes.config';
 
 interface HelpMeChooseOption {
     emoji: string;
@@ -17,12 +17,13 @@ interface IHelpMeChoose {
     title: string;
     titleHighlight?: string;
     options: HelpMeChooseOption[];
+    locale: Locale;
 }
 
-const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options }) => {
+const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options, locale }) => {
     const navigate = useNavigate();
 
-    const handleClick = (event: React.MouseEvent<HTMLAnchorElement>, houseLangCode: string) => {
+    const handleClick = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
         // A real href already handles ctrl/cmd-click, middle-click and "open in
         // new tab" correctly — only take over plain left-clicks so those keep
         // working, and use the SPA transition (no full reload) for everything else.
@@ -30,7 +31,7 @@ const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options 
             return;
         }
         event.preventDefault();
-        navigate(pathForLegacyId(houseLangCode));
+        navigate(href);
         setTimeout(() => {
             window.scrollTo(0, 0);
         }, 0);
@@ -44,15 +45,16 @@ const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options 
                 </div>
                 <div className="help-me-choose-cards">
                     {options.map((option) => {
-                        // Spanish house codes contain "ES" — same convention HomeCard
-                        // uses to label its own CTA without a language prop.
-                        const cardLocale: Locale = option.houseLangCode.includes('ES') ? 'es' : 'en';
+                        // houseLangCode's "ES" suffix only ever distinguished en/es —
+                        // same fix as HomeCard: route by the real locale instead.
+                        const routeKey = routeKeyForSlug(option.houseLangCode.replace(/ES$/, ''));
+                        const href = routeKey ? pathForKey(routeKey, locale) : '#';
                         return (
                             <a
                                 key={option.houseLangCode}
                                 className="help-me-choose-card"
-                                href={pathForLegacyId(option.houseLangCode)}
-                                onClick={(event) => handleClick(event, option.houseLangCode)}
+                                href={href}
+                                onClick={(event) => handleClick(event, href)}
                             >
                                 <div className="card-image-wrapper">
                                     <img src={option.image} alt={option.houseName} width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(option.image)} sizes="(max-width: 575px) 86vw, (max-width: 991px) 320px, 250px" />
@@ -61,7 +63,7 @@ const HelpMeChoose: React.FC<IHelpMeChoose> = ({ title, titleHighlight, options 
                                     <span className="card-emoji">{option.emoji}</span>
                                     <span className="card-label">{option.label}</span>
                                     <span className="card-house-name">{option.houseName}</span>
-                                    <span className="card-cta">{cardLocale === 'es' ? 'Ver casa →' : 'View home →'}</span>
+                                    <span className="card-cta">{getMessages(locale).property.viewHomeCta}</span>
                                 </div>
                             </a>
                         );

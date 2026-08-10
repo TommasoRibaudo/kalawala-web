@@ -1774,7 +1774,7 @@ export const NamDataList: HouseDataType[] = [
         neighborhood: "",
         houseCode: 7,
         houseLangCode: "Areka",
-        parking: true,
+        parking: false,
         image: "https://lh3.googleusercontent.com/d/1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey=w1000",
         amenities: [
             {
@@ -1877,7 +1877,7 @@ export const NamDataListES: HouseDataType[] = [
         neighborhood: "",
         houseCode: 7,
         houseLangCode: "ArekaES",
-        parking: true,
+        parking: false,
         image: "https://lh3.googleusercontent.com/d/1iHyOve78WkDNdTcQcUtKkiM8rXx2iRey=w1000",
         amenities: [
             {

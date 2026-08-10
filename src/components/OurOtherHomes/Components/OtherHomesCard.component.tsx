@@ -10,11 +10,14 @@ import { detectLocaleFromPath, type Locale } from '../../../i18n';
 interface IOtherHomesCard {
     name: string;
     guestNumber: number;
+    // Only private *fenced* parking earns the icon — unfenced/outside parking
+    // doesn't count, per product decision.
+    hasFencedParking: boolean;
     image: string;
     redirectPath?: string;
 }
 
-const OtherHomesCard: FC<IOtherHomesCard> = ({ guestNumber, name, image, redirectPath }) => {
+const OtherHomesCard: FC<IOtherHomesCard> = ({ guestNumber, hasFencedParking, name, image, redirectPath }) => {
     // Spanish routes end in "ES" (e.g. /PlumeriaES), so the card labels its own
     // CTA without a language prop.
     const cardLocale: Locale = detectLocaleFromPath(redirectPath ?? '');
@@ -50,7 +53,7 @@ const OtherHomesCard: FC<IOtherHomesCard> = ({ guestNumber, name, image, redirec
                     <FontAwesomeIcon icon={faSnowflake} />
                     <FontAwesomeIcon icon={faUtensils} />
                     <FontAwesomeIcon icon={faWifi} />
-                    <FontAwesomeIcon icon={faParking} />
+                    {hasFencedParking && <FontAwesomeIcon icon={faParking} />}
                 </div>
                 <span className="card-cta">{cardLocale === 'es' ? 'Ver casa →' : 'View home →'}</span>
             </div>

@@ -10,13 +10,15 @@ import { pathForLegacyId } from '../../../routes.config';
 interface IHomeCard {
     name: string;
     guestNumber: number;
-    parking: boolean;
+    // Only private *fenced* parking earns the icon — unfenced/outside parking
+    // doesn't count, per product decision.
+    hasFencedParking: boolean;
     image: string
     houseLangCode:string;
 }
 
 
-const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangCode }) => {
+const HomeCard: FC<IHomeCard> = ({ guestNumber, hasFencedParking, name, image, houseLangCode }) => {
 
     // Spanish house codes contain "ES" (see OurHomes.component filter), so the
     // card can label its own CTA without threading a language prop from parents.
@@ -54,7 +56,7 @@ const HomeCard: FC<IHomeCard> = ({ guestNumber, parking, name, image, houseLangC
                         <FontAwesomeIcon icon={faSnowflake} />
                         <FontAwesomeIcon icon={faUtensils} />
                         <FontAwesomeIcon icon={faWifi} />
-                        <FontAwesomeIcon icon={faParking} />
+                        {hasFencedParking && <FontAwesomeIcon icon={faParking} />}
                     </div>
                     <span className="card-cta">{cardLocale === 'es' ? 'Ver casa →' : 'View home →'}</span>
                 </div>

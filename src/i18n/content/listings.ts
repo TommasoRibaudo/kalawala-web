@@ -806,7 +806,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       checkOut: "12:00 PM (noon)",
       paragraphs: [
         "New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife.",
-        "The space, completely private, has A/C, fully equipped kitchen, a private bathroom with hot water. The parking space is private, spacious and enclosed. Every house has a small porch for our guests.",
+        "The space, completely private, has A/C, fully equipped kitchen, a private bathroom with hot water. The parking space is private, spacious and outside of the property. Every house has a small porch for our guests.",
         "Close by you may find restaurants, supermarkets, and bike rentals. We trust our guests to follow common sense when leaving our house, that's why we have 0 check-out rules and no check-out list.",
         "Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.",
         "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.",
@@ -822,7 +822,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       checkOut: "12:00 PM (mediodía)",
       paragraphs: [
         "Nuevos bungalows totalmente equipados con A/C ubicados a 200mts de la hermosa playa Playa Chiquita, en uno de los barrios más seguros y tranquilos del Caribe. A pocos minutos de Puerto Viejo y Manzanillo, estamos perfectamente ubicados para visitar la playa Punta Uva y Arrecife.",
-        "El espacio, completamente privado, tiene A/C, cocina totalmente equipada, un baño privado con agua caliente. El espacio de estacionamiento es privado, espacioso y encerrado. Cada casa tiene un pequeño porche para nuestros huéspedes.",
+        "El espacio, completamente privado, tiene A/C, cocina totalmente equipada, un baño privado con agua caliente. El espacio de estacionamiento es privado, espacioso y fuera de la propiedad. Cada casa tiene un pequeño porche para nuestros huéspedes.",
         "Todos los espacios descritos aquí son privados, incluida la cocina y el baño totalmente equipado. Tendrás todo lo que necesitas para sentirte como en casa.",
         "Cerca puedes encontrar restaurantes, supermercados y alquiler de bicicletas. Confiamos en nuestros huéspedes para seguir el sentido común al salir de nuestra casa, por eso tenemos 0 reglas de salida y ninguna lista de salida.",
         "¿Tienes alguna petición especial? Estaríamos más que felices de acomodarte si podemos. Por favor, no dudes en hacérnoslo saber.",
@@ -839,7 +839,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       checkOut: "12h00 (midi)",
       paragraphs: [
         "Nouveaux bungalows entièrement équipés avec climatisation, situés à 200 mètres de la magnifique plage de Playa Chiquita, dans l'un des quartiers les plus sûrs et les plus paisibles des Caraïbes. À quelques minutes de Puerto Viejo et de Manzanillo, nous sommes idéalement situés pour visiter la plage de Punta Uva et Arrecife.",
-        "L'espace, entièrement privé, dispose de la climatisation, d'une cuisine entièrement équipée, d'une salle de bain privée avec eau chaude. Le stationnement est privé, spacieux et clos. Chaque maison dispose d'un petit porche pour nos hôtes.",
+        "L'espace, entièrement privé, dispose de la climatisation, d'une cuisine entièrement équipée, d'une salle de bain privée avec eau chaude. Le stationnement est privé, spacieux et situé à l'extérieur de la propriété. Chaque maison dispose d'un petit porche pour nos hôtes.",
         "À proximité, vous trouverez des restaurants, des supermarchés et des locations de vélos. Nous faisons confiance à nos hôtes pour faire preuve de bon sens en quittant notre maison, c'est pourquoi nous n'avons aucune règle de départ ni liste de sortie.",
         "Avez-vous une demande particulière ? Nous serions plus que ravis de vous satisfaire si cela nous est possible. N'hésitez pas à nous le faire savoir.",
         "Puerto Viejo est une destination très prisée des touristes du monde entier, grâce à son cadre naturel exceptionnel. La ville s'enorgueillit de vastes plages bordées par la forêt tropicale, ainsi que de deux parcs nationaux (Manzanillo et Cahuita). La nuit, la ville s'anime grâce à une vie nocturne dynamique et animée. En séjournant ici, vous pourrez pleinement vous immerger dans tout ce qui fait l'unicité de Puerto Viejo.",
@@ -855,7 +855,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       checkOut: "12:00 Uhr (Mittag)",
       paragraphs: [
         "Neue, voll ausgestattete Bungalows mit Klimaanlage, nur 200 m vom wunderschönen Strand Playa Chiquita entfernt, in einem der sichersten und ruhigsten Viertel der Karibik. Nur wenige Minuten von Puerto Viejo und Manzanillo entfernt, sind wir perfekt gelegen, um den Strand Punta Uva und Arrecife zu besuchen.",
-        "Der komplett private Bereich verfügt über eine Klimaanlage, eine voll ausgestattete Küche und ein privates Badezimmer mit Warmwasser. Der Parkplatz ist privat, geräumig und umzäunt. Jedes Haus verfügt über eine kleine Veranda für unsere Gäste.",
+        "Der komplett private Bereich verfügt über eine Klimaanlage, eine voll ausgestattete Küche und ein privates Badezimmer mit Warmwasser. Der Parkplatz ist privat, geräumig und befindet sich außerhalb des Grundstücks. Jedes Haus verfügt über eine kleine Veranda für unsere Gäste.",
         "In der Nähe finden Sie Restaurants, Supermärkte und Fahrradverleihe. Wir vertrauen darauf, dass unsere Gäste beim Verlassen unseres Hauses gesunden Menschenverstand walten lassen, weshalb wir keine Check-out-Regeln und keine Check-out-Liste haben.",
         "Haben Sie einen besonderen Wunsch? Wir erfüllen ihn Ihnen gerne, wenn es uns möglich ist. Zögern Sie nicht, uns davon zu berichten.",
         "Puerto Viejo ist dank seiner atemberaubenden Umgebung ein beliebtes Reiseziel für Touristen aus aller Welt. Der Ort verfügt über weitläufige Strände, die von tropischem Regenwald umgeben sind, sowie über zwei Nationalparks (Manzanillo und Cahuita). Nachts erwacht der Ort mit einem lebendigen und aktiven Nachtleben zum Leben. Während Ihres Aufenthalts hier können Sie vollständig in alles eintauchen, was Puerto Viejo einzigartig macht.",
@@ -871,7 +871,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       checkOut: "12:00 בצהריים",
       paragraphs: [
         "בונגלו חדש ומאובזר במלואו עם מיזוג אוויר, הממוקם 200 מטר מחוף פלאיה צ'יקיטה היפהפה, באחת השכונות הבטוחות והשקטות ביותר בקריביים. במרחק דקות ספורות מפוארטו ויחו ומנסניו, אנחנו ממוקמים במקום מושלם לביקור בחוף פונטה אובה ובאררסיפה.",
-        "המרחב, פרטי לחלוטין, כולל מיזוג אוויר, מטבח מאובזר במלואו וחדר רחצה פרטי עם מים חמים. חניית הרכב פרטית, מרווחת וסגורה. לכל בית יש מרפסת קטנה עבור האורחים שלנו.",
+        "המרחב, פרטי לחלוטין, כולל מיזוג אוויר, מטבח מאובזר במלואו וחדר רחצה פרטי עם מים חמים. חניית הרכב פרטית, מרווחת וממוקמת מחוץ לנכס. לכל בית יש מרפסת קטנה עבור האורחים שלנו.",
         "בקרבת מקום תוכלו למצוא מסעדות, סופרמרקטים והשכרת אופניים. אנחנו סומכים על האורחים שלנו שינהגו בשכל ישר בעת עזיבת הבית, ולכן אין לנו כללי צ'ק-אאוט ואין רשימת בדיקה ביציאה.",
         "יש לכם בקשה מיוחדת? נשמח מאוד להיענות לה אם נוכל. אל תהססו לספר לנו.",
         "פוארטו ויחו הוא יעד מבוקש לתיירים מכל רחבי העולם, בזכות הנוף המרהיב שלו. לעיירה חופים עצומים המוקפים ביער גשם טרופי, וכן שני פארקים לאומיים (מנסניו וקאוויטה). בלילה, העיירה קמה לתחייה עם חיי לילה תוססים ופעילים. כשתתארחו כאן, תוכלו לחוות באופן מלא כל מה שהופך את פוארטו ויחו למקום כה מיוחד.",
@@ -887,7 +887,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       checkOut: "12:00 (mezzogiorno)",
       paragraphs: [
         "Nuovi bungalow completamente attrezzati con aria condizionata, situati a 200 metri dalla splendida spiaggia di Playa Chiquita, in uno dei quartieri più sicuri e tranquilli dei Caraibi. A pochi minuti da Puerto Viejo e Manzanillo, siamo nella posizione perfetta per visitare la spiaggia di Punta Uva e Arrecife.",
-        "Lo spazio, completamente privato, dispone di aria condizionata, cucina completamente attrezzata e bagno privato con acqua calda. Il parcheggio è privato, ampio e recintato. Ogni casa dispone di un piccolo portico per i nostri ospiti.",
+        "Lo spazio, completamente privato, dispone di aria condizionata, cucina completamente attrezzata e bagno privato con acqua calda. Il parcheggio è privato, ampio e situato all'esterno della proprietà. Ogni casa dispone di un piccolo portico per i nostri ospiti.",
         "Nelle vicinanze troverai ristoranti, supermercati e noleggio biciclette. Ci fidiamo che i nostri ospiti usino il buon senso quando lasciano la nostra casa, per questo non abbiamo regole di check-out né una lista di controllo al check-out.",
         "Hai una richiesta speciale? Saremo più che felici di accontentarti, se possibile. Non esitare a farcelo sapere.",
         "Puerto Viejo è una destinazione molto amata dai turisti di tutto il mondo, grazie ai suoi paesaggi mozzafiato. Il paese vanta spiagge immense circondate dalla foresta pluviale tropicale, oltre a due Parchi Nazionali (Manzanillo e Cahuita). Di notte, il paese si anima con una vivace e movimentata vita notturna. Soggiornando qui, potrai immergerti completamente in tutto ciò che rende Puerto Viejo unico.",
@@ -903,7 +903,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       checkOut: "12h00 (meio-dia)",
       paragraphs: [
         "Novos bungalows totalmente equipados com A/C, situados a 200 metros da encantadora praia de Playa Chiquita, num dos bairros mais seguros e tranquilos das Caraíbas. A poucos minutos de Puerto Viejo e Manzanillo, estamos perfeitamente localizados para visitar a praia de Punta Uva e o Arrecife.",
-        "O espaço, totalmente privado, tem A/C, cozinha totalmente equipada, casa de banho privativa com água quente. O lugar de estacionamento é privado, amplo e fechado. Cada casa tem um pequeno alpendre para os nossos hóspedes.",
+        "O espaço, totalmente privado, tem A/C, cozinha totalmente equipada, casa de banho privativa com água quente. O lugar de estacionamento é privado, amplo e situado fora da propriedade. Cada casa tem um pequeno alpendre para os nossos hóspedes.",
         "Perto daqui poderá encontrar restaurantes, supermercados e aluguer de bicicletas. Confiamos que os nossos hóspedes seguirão o bom senso ao sair da nossa casa; por isso, não temos regras de saída nem lista de check-out.",
         "Tem algum pedido especial? Teremos todo o gosto em atendê-lo(a), se pudermos. Não hesite em informar-nos.",
         "Puerto Viejo é um destino popular para turistas de todo o mundo, graças à sua paisagem deslumbrante. A vila tem praias imensas rodeadas de floresta tropical, além de dois Parques Nacionais (Manzanillo e Cahuita). À noite, a vila ganha vida com uma animada e vibrante vida noturna. Ao ficar aqui, poderá mergulhar por completo em tudo o que torna Puerto Viejo único.",
@@ -919,7 +919,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       checkOut: "दोपहर 12:00 बजे (मध्याह्न)",
       paragraphs: [
         "खूबसूरत प्लाया चिकिता समुद्र तट से मात्र 200 मीटर की दूरी पर स्थित, कैरिबियन के सबसे सुरक्षित और शांत इलाकों में से एक में, ए/सी वाले नए और पूरी तरह सुसज्जित बंगले। प्वेर्तो वियेहो और मानसानियो से कुछ ही मिनटों की दूरी पर स्थित, हम पुंटा उवा समुद्र तट और अरेसिफे घूमने के लिए बिल्कुल सही जगह पर स्थित हैं।",
-        "यह पूरी तरह निजी स्थान है, जिसमें ए/सी, पूरी तरह सुसज्जित रसोई और गर्म पानी वाला निजी बाथरूम है। पार्किंग की जगह निजी, विशाल और चारदीवारी से घिरी हुई है। हर घर में हमारे मेहमानों के लिए एक छोटा बरामदा (पोर्च) भी है।",
+        "यह पूरी तरह निजी स्थान है, जिसमें ए/सी, पूरी तरह सुसज्जित रसोई और गर्म पानी वाला निजी बाथरूम है। पार्किंग की जगह निजी, विशाल और संपत्ति के बाहर स्थित है। हर घर में हमारे मेहमानों के लिए एक छोटा बरामदा (पोर्च) भी है।",
         "आस-पास आपको रेस्तरां, सुपरमार्केट और बाइक किराए पर लेने की सुविधाएं मिल जाएंगी। हमें अपने मेहमानों पर भरोसा है कि वे घर छोड़ते समय सामान्य समझ का पालन करेंगे, इसीलिए हमारे यहां चेक-आउट के लिए कोई नियम नहीं हैं और कोई चेक-आउट सूची भी नहीं है।",
         "क्या आपकी कोई विशेष अनुरोध है? यदि हम कर सकें, तो हमें आपकी मदद करके बेहद खुशी होगी। कृपया हमें बताने में संकोच न करें।",
         "प्वेर्तो वियेहो अपने शानदार प्राकृतिक परिवेश की बदौलत दुनियाभर के पर्यटकों के बीच एक लोकप्रिय गंतव्य है। इस कस्बे में विशाल समुद्र तट हैं जो उष्णकटिबंधीय वर्षावन से घिरे हुए हैं, साथ ही यहां दो राष्ट्रीय उद्यान भी हैं (मानसानियो और काहुइटा)। रात होते ही यह कस्बा जीवंत और सक्रिय नाइटलाइफ़ के साथ जाग उठता है। यहां ठहरने के दौरान आप उस हर चीज़ में पूरी तरह डूब सकेंगे, जो प्वेर्तो वियेहो को अनूठा बनाती है।",

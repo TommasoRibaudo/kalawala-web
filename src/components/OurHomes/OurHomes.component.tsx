@@ -22,12 +22,12 @@ const OurHomes: React.FC<IOurHomes> = ({ style, houseDataList }) => {
                     </div>
                     <div className={`homes-grid${houseDataList.length === 5 ? ' homes-grid--five' : ''}`}>
                         {houseDataList.map(({ name, guestNumber, parking, image, houseLangCode }) => (
-                            <HomeCard 
-                                key={houseLangCode} 
-                                guestNumber={guestNumber} 
-                                parking={parking} 
-                                name={name} 
-                                image={image} 
+                            <HomeCard
+                                key={houseLangCode}
+                                guestNumber={guestNumber}
+                                hasFencedParking={parking}
+                                name={name}
+                                image={image}
                                 houseLangCode={houseLangCode}
                             />
                         ))}

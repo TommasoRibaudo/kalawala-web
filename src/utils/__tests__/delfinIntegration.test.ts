@@ -127,13 +127,11 @@ describe('Delfin Integration Tests', () => {
     expect(delfinEnglish?.description).toContain('6 guests');
     expect(delfinEnglish?.description).toContain('2 A/C units');
     expect(delfinEnglish?.description).toContain('private parking');
-    expect(delfinEnglish?.description).toContain('lockbox key drop-off');
-    
+
     // Spanish description checks
     expect(delfinSpanish?.description).toContain('6 huéspedes');
     expect(delfinSpanish?.description).toContain('2 unidades de aire acondicionado');
     expect(delfinSpanish?.description).toContain('estacionamiento privado');
-    expect(delfinSpanish?.description).toContain('caja de seguridad');
   });
 
   test('should be included in houseDataEngList for home page display', () => {

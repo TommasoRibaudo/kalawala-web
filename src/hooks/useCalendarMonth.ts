@@ -1,6 +1,7 @@
 import React from 'react';
 import { BookingLanguage, CalendarMonthResponse } from '../services/BookingApi.service';
 import { calendarMonthKey, loadCalendarMonth, peekCalendarMonth } from '../services/calendarMonthCache';
+import { isPrerender } from '../utils/isPrerender';
 
 interface UseCalendarMonthResult {
   data: CalendarMonthResponse | undefined;
@@ -29,6 +30,18 @@ export function useCalendarMonth(
   const [errorKey, setErrorKey] = React.useState<string | null>(null);
 
   React.useEffect(() => {
+    // react-snap's crawl gives this effect time to settle before it captures
+    // the page (network-idle wait), so an unguarded fetch here bakes whatever
+    // it resolved to — including an error state once the crawl's own 404
+    // response lands — into the static HTML. A real visitor's first paint
+    // never has that: hydration then mismatches the frozen "not yet fetched"
+    // render this guard preserves instead. Same pattern as isScreenSmall in
+    // the listing pages and MessageTipContainer; see docs/i18n-rollout-plan.md
+    // Phase 11 P2.
+    if (isPrerender()) {
+      return;
+    }
+
     if (!apartmentSlug || !enabled || peekCalendarMonth(key)) {
       return;
     }

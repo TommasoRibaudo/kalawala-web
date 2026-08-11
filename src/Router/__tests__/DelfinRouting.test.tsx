@@ -154,21 +154,34 @@ describe('Delfin Routing Integration Tests', () => {
       expect(pathForKey('delfin', 'es')).toBe('/es/delfin');
     });
 
-    test('should verify proper lazy import exists in routes.config.ts', () => {
-      // routes.config.ts is where every page's lazy() import now lives
-      // (Router.tsx just consumes the resulting component references), so
-      // that's the file whose source text is meaningful to assert against.
+    test('should verify Delfin has a loader entry in routes.config.ts, and that lazy() is gone entirely', () => {
+      // routes.config.ts is where every page's dynamic import now lives
+      // (Router.tsx just renders <RouteLoader routeKey={key} />), so that's
+      // the file whose source text is meaningful to assert against.
+      //
+      // Hydration cause #3 fix (docs/i18n-rollout-plan.md, Phase 11 P2):
+      // React.lazy()/<Suspense> can't hydrate cleanly against react-snap's
+      // marker-less prerendered output, so LOADERS + routeLoader.tsx's plain
+      // promise-based loader replaced them — see routeLoader.tsx's header
+      // comment for the full account. Asserting the `lazy` import from
+      // 'react' is entirely gone (not just checking for the new pattern),
+      // so a future partial revert can't silently reintroduce a stray
+      // lazy() call with nothing here to catch it. Matching the import
+      // rather than the bare word "lazy" on purpose — this file's own
+      // comments explain the removal by name ("React.lazy()"), and without
+      // the import, lazy(...) isn't a callable identifier here regardless.
       const fs = require('fs');
       const path = require('path');
       const routesConfigPath = path.join(__dirname, '../../routes.config.ts');
       const routesConfigContent = fs.readFileSync(routesConfigPath, 'utf8');
 
       expect(routesConfigContent).toMatch(
-        /const ListingDelfin = lazy\(\(\) => import\([^)]*'\.\/pages\/Listing\/staticPages\/ListingDelfin\.page'\)\)/
+        /delfin:\s*\(\)\s*=>\s*import\([^)]*'\.\/pages\/Listing\/staticPages\/ListingDelfin\.page'\)/
       );
+      expect(routesConfigContent).not.toMatch(/import\s*\{[^}]*\blazy\b[^}]*\}\s*from\s*'react'/);
       // Phase 3b merged the Spanish page into the English one, so there is no
       // longer a separate ListingDelfinES binding — both routes render the
-      // same lazy component and the locale comes from the URL.
+      // same loaded component and the locale comes from the URL.
       expect(routesConfigContent).not.toMatch(/const ListingDelfinES\s*=/);
     });
   });

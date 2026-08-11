@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './CallToAction.style.scss'
 import Smoobu2 from '../Smoobu2/Smoobu2.component';
 import { useMessages } from '../../i18n';
+import { isPrerender } from '../../utils/isPrerender';
 
 /**
  * Replaces the former CallToAction / CallToActionES pair.
@@ -21,6 +22,13 @@ const CallToAction = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // react-snap's crawl gives this effect time to settle before it captures
+    // the page, so without this guard isMobile gets seeded from the crawl's
+    // own (mobile) viewport and bakes its inline style values into the
+    // static HTML — mismatching a real desktop client's false-seeded first
+    // render. Same pattern as OtherListings/MessageTipContainer; see
+    // docs/i18n-rollout-plan.md Phase 11 P2.
+    if (isPrerender()) return;
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768);
     };

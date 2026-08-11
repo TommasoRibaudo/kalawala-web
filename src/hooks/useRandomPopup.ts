@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useMessageTip } from '../components/MessageTip/MessageTipContainer.component';
 import { RANDOM_POPUP_CONFIG } from '../utils/constants';
 import { pickLocalized, type Locale } from '../i18n';
+import { isPrerender } from '../utils/isPrerender';
 
 interface UseRandomPopupOptions {
   locale?: Locale;
@@ -44,6 +45,13 @@ export const useRandomPopup = (options: UseRandomPopupOptions = {}) => {
   const { addMessageTip } = useMessageTip();
 
   useEffect(() => {
+    // react-snap's crawl waits for the page to settle, which is easily long
+    // enough for this effect's own timer to fire mid-crawl — baking a random
+    // popup (a real child element of MessageTipContainer) into that page's
+    // static HTML, keyed off a Math.random() roll a real visitor's own
+    // hydration never repeats. Same pattern as MessageTipContainer's other
+    // guarded state; see docs/i18n-rollout-plan.md Phase 11 P2.
+    if (isPrerender()) return;
     if (!enabled) return;
 
     // Check if popup was already shown using improved detection

@@ -6,6 +6,7 @@ import Slider from "react-slick";
 import { SampleNextArrow, SamplePrevArrow } from "../../../../components/CustomSlick/SlickDarkArrow.Component";
 import { useMessages } from '../../../../i18n';
 import { pathForLegacyId } from '../../../../routes.config';
+import { isPrerender } from '../../../../utils/isPrerender';
 
 interface IOtherListing {
     listings: ListingType[]
@@ -27,6 +28,14 @@ const ListingAd: FC<IOtherListing> = ({ listings }) => {
     const navigate = useNavigate()
 
     useEffect(() => {
+        // react-snap's crawl gives this effect time to settle before it
+        // captures the page, so without this guard windowWidth gets seeded
+        // from the crawl's own viewport and bakes a structural difference
+        // (Slider vs plain div) into the static HTML — mismatching a real
+        // client's null-seeded first render at any other viewport. Same
+        // pattern as OtherListings/MessageTipContainer; see
+        // docs/i18n-rollout-plan.md Phase 11 P2.
+        if (isPrerender()) return;
         const handleResize = () => setWindowWidth(window.innerWidth);
         handleResize(); // real width, read only after mount
         window.addEventListener("resize", handleResize);

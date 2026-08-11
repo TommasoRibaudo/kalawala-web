@@ -4,6 +4,7 @@ import { ListingType } from "../../../../utils/types";
 import { useNavigate } from "react-router-dom";
 import { useLocale, useMessages } from "../../../../i18n";
 import { pathForKey, routeKeyForSlug } from "../../../../routes.config";
+import { isPrerender } from "../../../../utils/isPrerender";
 
 interface IOtherListings {
     currentListing: string
@@ -59,6 +60,14 @@ const OtherListings: FC<IOtherListings> = ({ currentListing, listings }) => {
     }, [])
 
     useEffect(() => {
+        // react-snap's crawl gives this effect time to settle before it
+        // captures the page, so without this guard windowWidth gets seeded
+        // from the crawl's own (mobile) viewport and bakes that layoutClass
+        // into the static HTML — mismatching a real client's null-seeded
+        // first render at any other viewport. Same pattern as isScreenSmall
+        // in the listing pages and MessageTipContainer's windowWidth; see
+        // docs/i18n-rollout-plan.md Phase 11 P2.
+        if (isPrerender()) return
         handleResize() // real width, read only after mount
         window.addEventListener("resize", handleResize)
         return () => window.removeEventListener("resize", handleResize)

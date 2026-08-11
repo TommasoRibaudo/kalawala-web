@@ -8,6 +8,7 @@ import { cdnImage } from "../../../utils/imageCdn";
 import { useMessages, type Locale } from '../../../i18n';
 import { blogArticleHeading } from '../../../i18n/blogArticleHeadings';
 import { routeKeyForSlug, pathForKey } from '../../../routes.config';
+import { isPrerender } from '../../../utils/isPrerender';
 
 interface IOtherBlogs {
   currentBlog: string
@@ -32,6 +33,13 @@ const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, locale }) => {
   }, [])
 
   useEffect(() => {
+    // react-snap's crawl gives this effect time to settle before it captures
+    // the page, so without this guard windowWidth gets seeded from the
+    // crawl's own viewport and bakes that slidesToShow into the static HTML
+    // — mismatching a real client's null-seeded first render at any other
+    // viewport. Same pattern as OtherListings/MessageTipContainer; see
+    // docs/i18n-rollout-plan.md Phase 11 P2.
+    if (isPrerender()) return
     handleResize() // real width, read only after mount
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)

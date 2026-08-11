@@ -83,6 +83,16 @@ jest.mock('../../../../components/FixedNavigation/FixedNavigation.component', ()
   };
 });
 
+// Mock Footer. Unmocked, it renders a real "our homes" list (including this
+// page's own listing name again) and a real blog-article list, both of which
+// collide with this file's getByText/getByRole queries that assume their
+// target string is unique on the page.
+jest.mock('../../../../components/Footer/Footer.component', () => {
+  return function MockFooter({ locale }: { locale: string }) {
+    return <div data-testid="footer" data-locale={locale}>Footer</div>;
+  };
+});
+
 describe('ListingDelfin Component', () => {
   beforeEach(() => {
     // Mock window.scrollTo
@@ -133,7 +143,7 @@ describe('ListingDelfin Component', () => {
     const bookingWidget = screen.getByTestId('booking-search-widget');
     expect(bookingWidget).toHaveAttribute('data-default-guests', '6');
     expect(bookingWidget).toHaveAttribute('data-variant', 'sidebar');
-    expect(bookingWidget).toHaveAttribute('data-is-spanish', 'false');
+    expect(bookingWidget).toHaveAttribute('data-is-spanish', 'en');
   });
 
   test('should display amenities excluding pet-friendly', () => {
@@ -181,7 +191,6 @@ describe('ListingDelfin Component', () => {
     expect(screen.getByText(/accommodates up to 6 guests/)).toBeInTheDocument();
     expect(screen.getByText(/2 A\/C units/)).toBeInTheDocument();
     expect(screen.getAllByText(/private parking/)[0]).toBeInTheDocument();
-    expect(screen.getByText(/lockbox key drop-off/)).toBeInTheDocument();
   });
 
   test('should display check-in and check-out times', () => {

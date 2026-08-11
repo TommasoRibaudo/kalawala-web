@@ -1,5 +1,4 @@
-import { lazy } from 'react';
-import type { ComponentType, LazyExoticComponent } from 'react';
+import type { ComponentType } from 'react';
 import { DEFAULT_LOCALE, LOCALES, isLocale, type Locale } from './i18n';
 import routesManifest from './routes.manifest.json';
 
@@ -32,42 +31,24 @@ import routesManifest from './routes.manifest.json';
  *
  * PHASE 9: the per-route data (chunk name, slugs, prerender/sitemap flags)
  * lives in ./routes.manifest.json, not inline here, so a plain Node postbuild
- * script can read it directly — `lazy(() => import(...))` calls React and
- * webpack's magic comments, which a script run with plain `node` cannot
- * parse. scripts/generate-reactsnap-include.js is the one script in the
- * postbuild chain that actually needs this table (every other script reads
- * its *output*, package.json's reactSnap.include, instead); before Phase 9
- * that array was hand-typed and had silently drifted to 45 EN/ES-only
- * entries after RELEASED_LOCALES grew to eight. `component` stays here,
- * TS/React-only, and is zipped onto each manifest entry below.
+ * script can read it directly — `import(...)` calls webpack's magic
+ * comments, which a script run with plain `node` cannot parse.
+ * scripts/generate-reactsnap-include.js is the one script in the postbuild
+ * chain that actually needs this table (every other script reads its
+ * *output*, package.json's reactSnap.include, instead); before Phase 9 that
+ * array was hand-typed and had silently drifted to 45 EN/ES-only entries
+ * after RELEASED_LOCALES grew to eight.
+ *
+ * HYDRATION CAUSE #3 FIX: this table used to also hold each page's
+ * `React.lazy()`-wrapped component (a `component` field on RouteDef, zipped
+ * onto each manifest entry). That's gone — React.lazy() always throws a
+ * pending promise on first render, and the <Suspense> boundary that used to
+ * catch it can't hydrate cleanly against react-snap's marker-less
+ * prerendered output (see docs/i18n-rollout-plan.md, Phase 11 P2, and
+ * routeLoader.tsx's own header comment for the full account). LOADERS below
+ * is what replaced it: the same 26 import() call sites, not wrapped in
+ * lazy(), feeding routeLoader.tsx's plain promise-based loader instead.
  */
-
-const Home = lazy(() => import(/* webpackChunkName: "route-home" */ './pages/Home/Home.page'));
-const BookingPage = lazy(() => import(/* webpackChunkName: "route-book" */ './pages/Booking.page'));
-const PortalLoginPage = lazy(() => import(/* webpackChunkName: "route-portal" */ './pages/Portal.page'));
-const PortalDetailPage = lazy(() => import(/* webpackChunkName: "route-portal-detail" */ './pages/PortalDetail.page'));
-const ListingGeco = lazy(() => import(/* webpackChunkName: "route-geco" */ './pages/Listing/staticPages/ListingGeco.page'));
-const ListingRana = lazy(() => import(/* webpackChunkName: "route-rana" */ './pages/Listing/staticPages/ListingRana.page'));
-const ListingTucano = lazy(() => import(/* webpackChunkName: "route-tucano" */ './pages/Listing/staticPages/ListingTucano.page'));
-const ListingPappagallo = lazy(() => import(/* webpackChunkName: "route-pappagallo" */ './pages/Listing/staticPages/ListingPappagallo.page'));
-const ListingDelfin = lazy(() => import(/* webpackChunkName: "route-delfin" */ './pages/Listing/staticPages/ListingDelfin.page'));
-const ListingAreka = lazy(() => import(/* webpackChunkName: "route-areka" */ './pages/Listing/staticPages/ListingAreka.page'));
-const ListingGiulia = lazy(() => import(/* webpackChunkName: "route-giulia" */ './pages/Listing/staticPages/ListingGiulia.page'));
-const ListingPlumeria = lazy(() => import(/* webpackChunkName: "route-plumeria" */ './pages/Listing/staticPages/ListingPlumeria.page'));
-const ListingVillaMar = lazy(() => import(/* webpackChunkName: "route-villamar" */ './pages/Listing/staticPages/ListingVillaMar.page'));
-const ListingVillaCoral = lazy(() => import(/* webpackChunkName: "route-villacoral" */ './pages/Listing/staticPages/ListingVillaCoral.page'));
-const BlogIndex = lazy(() => import(/* webpackChunkName: "route-blog" */ './pages/Blog/BlogIndex.page'));
-const TwoDaysInPV = lazy(() => import(/* webpackChunkName: "route-twodaysinpuertoviejo" */ './pages/Blog/staticPages/TwoDaysInPV'));
-const GettingToGandoca = lazy(() => import(/* webpackChunkName: "route-gettingtogandoca" */ './pages/Blog/staticPages/GettingToGandoca'));
-const TravellingToPuerto = lazy(() => import(/* webpackChunkName: "route-travellingtopuertoviejo" */ './pages/Blog/staticPages/TravellingToPuerto'));
-const PuertoViejoByPlane = lazy(() => import(/* webpackChunkName: "route-puertoviejobyplane" */ './pages/Blog/staticPages/PuertoViejoByPlane'));
-const TenHoursInPuerto = lazy(() => import(/* webpackChunkName: "route-tenhoursinpuerto" */ './pages/Blog/staticPages/TenHoursInPuerto'));
-const BusHours = lazy(() => import(/* webpackChunkName: "route-bushours" */ './pages/Blog/staticPages/BusHours'));
-const CahuitaPark = lazy(() => import(/* webpackChunkName: "route-cahuitaparkwhattodo" */ './pages/Blog/staticPages/CahuitaPark'));
-const IndigenousTravel = lazy(() => import(/* webpackChunkName: "route-indigenoustravelpv" */ './pages/Blog/staticPages/IndigenousTravel'));
-const BestTimeToVisitPuerto = lazy(() => import(/* webpackChunkName: "route-besttimetovisitpuerto" */ './pages/Blog/staticPages/BestTimeToVisitPuerto'));
-const PuertoHiddenGems = lazy(() => import(/* webpackChunkName: "route-puertohiddengems" */ './pages/Blog/staticPages/PuertoHiddenGems'));
-const Success = lazy(() => import(/* webpackChunkName: "route-success" */ './pages/Home/Success.page'));
 
 export type RouteKey =
   | 'home' | 'book' | 'bookReturn' | 'bookConfirmed' | 'portal' | 'portalDetail'
@@ -78,7 +59,6 @@ export type RouteKey =
 export interface RouteDef {
   /** Stable internal id — never shown to a visitor, safe to keep even if the slug changes. */
   key: RouteKey;
-  component: LazyExoticComponent<ComponentType<any>>;
   /** webpackChunkName shared by every locale variant of this page. */
   chunk: string;
   /**
@@ -94,36 +74,41 @@ export interface RouteDef {
   sitemap?: boolean;
 }
 
-/** The one piece of each route that can't live in JSON — its lazy-loaded component. */
-const COMPONENTS: Record<RouteKey, LazyExoticComponent<ComponentType<any>>> = {
-  home: Home,
-  book: BookingPage,
-  bookReturn: BookingPage,
-  bookConfirmed: BookingPage,
-  portal: PortalLoginPage,
-  portalDetail: PortalDetailPage,
-  geco: ListingGeco,
-  rana: ListingRana,
-  tucano: ListingTucano,
-  pappagallo: ListingPappagallo,
-  delfin: ListingDelfin,
-  areka: ListingAreka,
-  giulia: ListingGiulia,
-  plumeria: ListingPlumeria,
-  villamar: ListingVillaMar,
-  villacoral: ListingVillaCoral,
-  blog: BlogIndex,
-  blogTwodays: TwoDaysInPV,
-  blogGandoca: GettingToGandoca,
-  blogSanjose: TravellingToPuerto,
-  blogByplane: PuertoViejoByPlane,
-  blogTenhours: TenHoursInPuerto,
-  blogBushours: BusHours,
-  blogCahuitapark: CahuitaPark,
-  blogIndigenous: IndigenousTravel,
-  blogBesttime: BestTimeToVisitPuerto,
-  blogHiddengems: PuertoHiddenGems,
-  success: Success,
+/**
+ * The one piece of each route that can't live in JSON — its dynamic import.
+ * Consumed by routeLoader.tsx's preloadRoute()/<RouteLoader>, not rendered
+ * directly and not wrapped in React.lazy() — see that file's header comment
+ * for why.
+ */
+export const LOADERS: Record<RouteKey, () => Promise<{ default: ComponentType<any> }>> = {
+  home: () => import(/* webpackChunkName: "route-home" */ './pages/Home/Home.page'),
+  book: () => import(/* webpackChunkName: "route-book" */ './pages/Booking.page'),
+  bookReturn: () => import(/* webpackChunkName: "route-book" */ './pages/Booking.page'),
+  bookConfirmed: () => import(/* webpackChunkName: "route-book" */ './pages/Booking.page'),
+  portal: () => import(/* webpackChunkName: "route-portal" */ './pages/Portal.page'),
+  portalDetail: () => import(/* webpackChunkName: "route-portal-detail" */ './pages/PortalDetail.page'),
+  geco: () => import(/* webpackChunkName: "route-geco" */ './pages/Listing/staticPages/ListingGeco.page'),
+  rana: () => import(/* webpackChunkName: "route-rana" */ './pages/Listing/staticPages/ListingRana.page'),
+  tucano: () => import(/* webpackChunkName: "route-tucano" */ './pages/Listing/staticPages/ListingTucano.page'),
+  pappagallo: () => import(/* webpackChunkName: "route-pappagallo" */ './pages/Listing/staticPages/ListingPappagallo.page'),
+  delfin: () => import(/* webpackChunkName: "route-delfin" */ './pages/Listing/staticPages/ListingDelfin.page'),
+  areka: () => import(/* webpackChunkName: "route-areka" */ './pages/Listing/staticPages/ListingAreka.page'),
+  giulia: () => import(/* webpackChunkName: "route-giulia" */ './pages/Listing/staticPages/ListingGiulia.page'),
+  plumeria: () => import(/* webpackChunkName: "route-plumeria" */ './pages/Listing/staticPages/ListingPlumeria.page'),
+  villamar: () => import(/* webpackChunkName: "route-villamar" */ './pages/Listing/staticPages/ListingVillaMar.page'),
+  villacoral: () => import(/* webpackChunkName: "route-villacoral" */ './pages/Listing/staticPages/ListingVillaCoral.page'),
+  blog: () => import(/* webpackChunkName: "route-blog" */ './pages/Blog/BlogIndex.page'),
+  blogTwodays: () => import(/* webpackChunkName: "route-twodaysinpuertoviejo" */ './pages/Blog/staticPages/TwoDaysInPV'),
+  blogGandoca: () => import(/* webpackChunkName: "route-gettingtogandoca" */ './pages/Blog/staticPages/GettingToGandoca'),
+  blogSanjose: () => import(/* webpackChunkName: "route-travellingtopuertoviejo" */ './pages/Blog/staticPages/TravellingToPuerto'),
+  blogByplane: () => import(/* webpackChunkName: "route-puertoviejobyplane" */ './pages/Blog/staticPages/PuertoViejoByPlane'),
+  blogTenhours: () => import(/* webpackChunkName: "route-tenhoursinpuerto" */ './pages/Blog/staticPages/TenHoursInPuerto'),
+  blogBushours: () => import(/* webpackChunkName: "route-bushours" */ './pages/Blog/staticPages/BusHours'),
+  blogCahuitapark: () => import(/* webpackChunkName: "route-cahuitaparkwhattodo" */ './pages/Blog/staticPages/CahuitaPark'),
+  blogIndigenous: () => import(/* webpackChunkName: "route-indigenoustravelpv" */ './pages/Blog/staticPages/IndigenousTravel'),
+  blogBesttime: () => import(/* webpackChunkName: "route-besttimetovisitpuerto" */ './pages/Blog/staticPages/BestTimeToVisitPuerto'),
+  blogHiddengems: () => import(/* webpackChunkName: "route-puertohiddengems" */ './pages/Blog/staticPages/PuertoHiddenGems'),
+  success: () => import(/* webpackChunkName: "route-success" */ './pages/Home/Success.page'),
 };
 
 interface ManifestEntry {
@@ -137,7 +122,7 @@ interface ManifestEntry {
 export const ROUTES: Record<RouteKey, RouteDef> = Object.fromEntries(
   (routesManifest.routes as ManifestEntry[]).map((entry) => {
     const key = entry.key as RouteKey;
-    return [key, { ...entry, key, component: COMPONENTS[key] }];
+    return [key, { ...entry, key }];
   })
 ) as Record<RouteKey, RouteDef>;
 

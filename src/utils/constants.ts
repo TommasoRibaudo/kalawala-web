@@ -5,19 +5,26 @@ import { pickLocalized, type Locale, type LocalizedValue } from "../i18n";
 // Random popup configuration
 export const RANDOM_POPUP_CONFIG = {
   // Probability of showing the popup (0-1, where 1 = 100% chance)
-  showProbability: 1, // 30% chance to show 
-  
+  showProbability: 1, // 100% chance to show
+
   // Time range in milliseconds for random delay
-  minDelay: 25000, 
-  maxDelay: 50000, 
-  
+  minDelay: 25000,
+  maxDelay: 50000,
+
   // Duration the popup stays visible
   duration: 8000, // 8 seconds
-  
+
   // Messages for different languages
   messages: {
     en: "Recent guests booked directly on our website.",
-    es: "Huéspedes recientes reservaron directamente en nuestra web."
+    es: "Huéspedes recientes reservaron directamente en nuestra web.",
+    de: "Kürzlich haben Gäste direkt auf unserer Website gebucht.",
+    fr: "Des voyageurs ont récemment réservé directement sur notre site.",
+    it: "Ospiti recenti hanno prenotato direttamente sul nostro sito.",
+    pt: "Hóspedes recentes reservaram diretamente no nosso site.",
+    he: "אורחים הזמינו לאחרונה ישירות באתר שלנו.",
+    hi: "हाल ही में मेहमानों ने हमारी वेबसाइट पर सीधे बुकिंग की।",
+    nl: "Recente gasten hebben rechtstreeks via onze website geboekt."
   }
 };
 
@@ -2029,7 +2036,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Casa familiare, pet friendly con aria condizionata',
             pt: 'Casa familiar, aceita animais de estimação, com ar condicionado',
             he: 'בית משפחתי, ידידותי לחיות מחמד עם מיזוג אוויר',
-            hi: 'पारिवारिक घर, एयर कंडीशनिंग के साथ पालतू-अनुकूल'
+            hi: 'पारिवारिक घर, एयर कंडीशनिंग के साथ पालतू-अनुकूल',
+            nl: 'Gezinswoning, huisdiervriendelijk met airconditioning'
         },
         price: { crc: 80000, usd: 160 },
         socialStatement: {
@@ -2040,7 +2048,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Scelta per il suo parcheggio interno privato e il piccolo giardino per gli animali',
             pt: 'Escolhida pelo seu estacionamento interno privado e pequeno jardim para animais de estimação',
             he: 'נבחר בזכות חניה פרטית פנימית וגינה קטנה לחיות מחמד',
-            hi: 'निजी आंतरिक पार्किंग और पालतू जानवरों के लिए छोटे बगीचे के कारण चुना गया'
+            hi: 'निजी आंतरिक पार्किंग और पालतू जानवरों के लिए छोटे बगीचे के कारण चुना गया',
+            nl: 'Gekozen vanwege de eigen inpandige parkeerplaats en de kleine tuin voor huisdieren'
         },
         featureHighlights: {
             en: [
@@ -2098,6 +2107,13 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ बेडरूम में A/C',
                 '💻 रिमोट वर्क के लिए तेज़ वाई-फाई',
                 '🐾 बाहरी स्थान के साथ पालतू-अनुकूल'
+            ],
+            nl: [
+                '📍 Op loopafstand van het centrum van Puerto Viejo',
+                '🏡 Eigen ruimte voor maximaal 5 personen',
+                '❄️ Airco in de slaapkamers',
+                '💻 Snel wifi, ideaal om op afstand te werken',
+                '🐾 Huisdiervriendelijk met buitenruimte'
             ]
         }
     },
@@ -2111,7 +2127,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Casa familiare, pet friendly con aria condizionata',
             pt: 'Casa familiar, aceita animais de estimação, com ar condicionado',
             he: 'בית משפחתי, ידידותי לחיות מחמד עם מיזוג אוויר',
-            hi: 'पारिवारिक घर, एयर कंडीशनिंग के साथ पालतू-अनुकूल'
+            hi: 'पारिवारिक घर, एयर कंडीशनिंग के साथ पालतू-अनुकूल',
+            nl: 'Gezinswoning, huisdiervriendelijk met airconditioning'
         },
         price: { crc: 80000, usd: 160 },
         socialStatement: {
@@ -2122,7 +2139,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Scelta per il suo parcheggio interno privato e il piccolo giardino per gli animali',
             pt: 'Escolhida pelo seu estacionamento interno privado e pequeno jardim para animais de estimação',
             he: 'נבחר בזכות חניה פרטית פנימית וגינה קטנה לחיות מחמד',
-            hi: 'निजी आंतरिक पार्किंग और पालतू जानवरों के लिए छोटे बगीचे के कारण चुना गया'
+            hi: 'निजी आंतरिक पार्किंग और पालतू जानवरों के लिए छोटे बगीचे के कारण चुना गया',
+            nl: 'Gekozen vanwege de eigen inpandige parkeerplaats en de kleine tuin voor huisdieren'
         },
         featureHighlights: {
             en: [
@@ -2180,6 +2198,13 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ बेडरूम में A/C',
                 '💻 रिमोट वर्क के लिए तेज़ वाई-फाई',
                 '🐾 बाहरी स्थान के साथ पालतू-अनुकूल'
+            ],
+            nl: [
+                '📍 Op loopafstand van het centrum van Puerto Viejo',
+                '🏡 Eigen ruimte voor maximaal 5 personen',
+                '❄️ Airco in de slaapkamers',
+                '💻 Snel wifi, ideaal om op afstand te werken',
+                '🐾 Huisdiervriendelijk met buitenruimte'
             ]
         }
     },
@@ -2193,7 +2218,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Appartamento centrale sopra una panetteria italiana',
             pt: 'Apartamento central por cima de uma padaria italiana',
             he: 'דירה מרכזית מעל מאפייה איטלקית',
-            hi: 'इतालवी बेकरी के ऊपर केंद्रीय अपार्टमेंट'
+            hi: 'इतालवी बेकरी के ऊपर केंद्रीय अपार्टमेंट',
+            nl: 'Centraal gelegen appartement boven een Italiaanse bakkerij'
         },
         price: { crc: 84000, usd: 169 },
         socialStatement: {
@@ -2204,7 +2230,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Scelto per la sua posizione centrale, perfetta per bar e ristoranti',
             pt: 'Escolhido pela sua localização central, perfeita para bares e restaurantes',
             he: 'נבחרה בזכות המיקום המרכזי, אידיאלי לברים ומסעדות',
-            hi: 'बार और रेस्तरां के लिए बिल्कुल सही केंद्रीय स्थान के कारण चुना गया'
+            hi: 'बार और रेस्तरां के लिए बिल्कुल सही केंद्रीय स्थान के कारण चुना गया',
+            nl: 'Gekozen vanwege de centrale ligging, perfect voor bars en restaurants'
         },
         featureHighlights: {
             en: [
@@ -2262,6 +2289,13 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ बेडरूम में A/C',
                 '💻 रिमोट वर्क के लिए तेज़ वाई-फाई',
                 '🍞 नीचे की बेकरी में 15% छूट'
+            ],
+            nl: [
+                '📍 Centrale ligging boven een Italiaanse bakkerij',
+                '🏡 Gezellig appartement voor maximaal 5 personen',
+                '❄️ Airco in de slaapkamers',
+                '💻 Snel wifi, ideaal om op afstand te werken',
+                '🍞 15% korting bij de bakkerij beneden'
             ]
         }
     },
@@ -2275,7 +2309,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Appartamento centrale sopra una panetteria italiana',
             pt: 'Apartamento central por cima de uma padaria italiana',
             he: 'דירה מרכזית מעל מאפייה איטלקית',
-            hi: 'इतालवी बेकरी के ऊपर केंद्रीय अपार्टमेंट'
+            hi: 'इतालवी बेकरी के ऊपर केंद्रीय अपार्टमेंट',
+            nl: 'Centraal gelegen appartement boven een Italiaanse bakkerij'
         },
         price: { crc: 84000, usd: 169 },
         socialStatement: {
@@ -2286,7 +2321,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Scelto per la sua posizione centrale, perfetta per bar e ristoranti',
             pt: 'Escolhido pela sua localização central, perfeita para bares e restaurantes',
             he: 'נבחרה בזכות המיקום המרכזי, אידיאלי לברים ומסעדות',
-            hi: 'बार और रेस्तरां के लिए बिल्कुल सही केंद्रीय स्थान के कारण चुना गया'
+            hi: 'बार और रेस्तरां के लिए बिल्कुल सही केंद्रीय स्थान के कारण चुना गया',
+            nl: 'Gekozen vanwege de centrale ligging, perfect voor bars en restaurants'
         },
         featureHighlights: {
             en: [
@@ -2344,6 +2380,13 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ बेडरूम में A/C',
                 '💻 रिमोट वर्क के लिए तेज़ वाई-फाई',
                 '🍞 नीचे की बेकरी में 15% छूट'
+            ],
+            nl: [
+                '📍 Centrale ligging boven een Italiaanse bakkerij',
+                '🏡 Gezellig appartement voor maximaal 5 personen',
+                '❄️ Airco in de slaapkamers',
+                '💻 Snel wifi, ideaal om op afstand te werken',
+                '🍞 15% korting bij de bakkerij beneden'
             ]
         }
     },
@@ -2357,7 +2400,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Villa privata con piscina per coppie',
             pt: 'Vivenda privada com piscina para casais',
             he: 'וילה פרטית עם בריכה לזוגות',
-            hi: 'जोड़ों के लिए स्विमिंग पूल वाला निजी विला'
+            hi: 'जोड़ों के लिए स्विमिंग पूल वाला निजी विला',
+            nl: 'Privévilla met zwembad voor stellen'
         },
         price: { crc: 99000, usd: 199 },
         socialStatement: {
@@ -2368,7 +2412,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Scelta per la sua piscina privata, perfetta per fughe romantiche',
             pt: 'Escolhida pela sua piscina privada, perfeita para escapadinhas românticas',
             he: 'נבחרה בזכות הבריכה הפרטית שלה, מושלמת לחופשות רומנטיות',
-            hi: 'रोमांटिक छुट्टियों के लिए बिल्कुल सही निजी स्विमिंग पूल के कारण चुना गया'
+            hi: 'रोमांटिक छुट्टियों के लिए बिल्कुल सही निजी स्विमिंग पूल के कारण चुना गया',
+            nl: 'Gekozen vanwege het privézwembad, perfect voor romantische uitjes'
         },
         featureHighlights: {
             en: [
@@ -2426,6 +2471,13 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ पूरे विला में पूर्ण A/C',
                 '💻 समर्पित कार्यक्षेत्र के साथ तेज़ वाई-फाई',
                 '🏖️ खूबसूरत Playa Chiquita के करीब'
+            ],
+            nl: [
+                '🏊 Privézwembad, exclusief voor gasten',
+                '💑 Perfect voor stellen die privacy zoeken',
+                '❄️ Volledige airco in de hele villa',
+                '💻 Snel wifi met eigen werkplek',
+                '🏖️ Dicht bij het prachtige Playa Chiquita'
             ]
         }
     },
@@ -2439,7 +2491,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Villa privata con piscina per coppie',
             pt: 'Vivenda privada com piscina para casais',
             he: 'וילה פרטית עם בריכה לזוגות',
-            hi: 'जोड़ों के लिए स्विमिंग पूल वाला निजी विला'
+            hi: 'जोड़ों के लिए स्विमिंग पूल वाला निजी विला',
+            nl: 'Privévilla met zwembad voor stellen'
         },
         price: { crc: 99000, usd: 199 },
         socialStatement: {
@@ -2450,7 +2503,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Scelta per la sua piscina privata, perfetta per fughe romantiche',
             pt: 'Escolhida pela sua piscina privada, perfeita para escapadinhas românticas',
             he: 'נבחרה בזכות הבריכה הפרטית שלה, מושלמת לחופשות רומנטיות',
-            hi: 'रोमांटिक छुट्टियों के लिए बिल्कुल सही निजी स्विमिंग पूल के कारण चुना गया'
+            hi: 'रोमांटिक छुट्टियों के लिए बिल्कुल सही निजी स्विमिंग पूल के कारण चुना गया',
+            nl: 'Gekozen vanwege het privézwembad, perfect voor romantische uitjes'
         },
         featureHighlights: {
             en: [
@@ -2508,6 +2562,13 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ पूरे विला में पूर्ण A/C',
                 '💻 समर्पित कार्यक्षेत्र के साथ तेज़ वाई-फाई',
                 '🏖️ खूबसूरत Playa Chiquita के करीब'
+            ],
+            nl: [
+                '🏊 Privézwembad, exclusief voor gasten',
+                '💑 Perfect voor stellen die privacy zoeken',
+                '❄️ Volledige airco in de hele villa',
+                '💻 Snel wifi met eigen werkplek',
+                '🏖️ Dicht bij het prachtige Playa Chiquita'
             ]
         }
     },
@@ -2521,7 +2582,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Rifugio accogliente perfetto per coppie che esplorano Punta Uva',
             pt: 'Retiro acolhedor, perfeito para casais que exploram Punta Uva',
             he: 'מפלט נעים ומושלם לזוגות היוצאים לגלות את פונטה אובה',
-            hi: 'Punta Uva घूमने वाले जोड़ों के लिए बिल्कुल सही आरामदायक ठिकाना'
+            hi: 'Punta Uva घूमने वाले जोड़ों के लिए बिल्कुल सही आरामदायक ठिकाना',
+            nl: 'Gezellig toevluchtsoord, perfect voor stellen die Punta Uva verkennen'
         },
         price: { crc: 49000, usd: 99 },
         socialStatement: {
@@ -2532,7 +2594,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Scelto per la sua posizione tranquilla',
             pt: 'Escolhido pela sua localização tranquila',
             he: 'נבחר בזכות מיקומו השקט',
-            hi: 'इसके शांत स्थान के कारण चुना गया'
+            hi: 'इसके शांत स्थान के कारण चुना गया',
+            nl: 'Gekozen vanwege de rustige ligging'
         },
         featureHighlights: {
             en: [
@@ -2590,6 +2653,13 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ आरामदायक रातों के लिए A/C',
                 '💻 जुड़े रहने के लिए वाई-फाई',
                 '🚗 बाहरी निजी पार्किंग उपलब्ध'
+            ],
+            nl: [
+                '🏖️ 2 minuten rijden van het strand van Punta Uva',
+                '💑 Intieme ruimte, perfect voor stellen',
+                '❄️ Airco voor comfortabele nachten',
+                '💻 Wifi om verbonden te blijven',
+                '🚗 Eigen parkeerplaats buiten beschikbaar'
             ]
         }
     },
@@ -2603,7 +2673,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Rifugio accogliente perfetto per coppie che esplorano Punta Uva',
             pt: 'Retiro acolhedor, perfeito para casais que exploram Punta Uva',
             he: 'מפלט נעים ומושלם לזוגות היוצאים לגלות את פונטה אובה',
-            hi: 'Punta Uva घूमने वाले जोड़ों के लिए बिल्कुल सही आरामदायक ठिकाना'
+            hi: 'Punta Uva घूमने वाले जोड़ों के लिए बिल्कुल सही आरामदायक ठिकाना',
+            nl: 'Gezellig toevluchtsoord, perfect voor stellen die Punta Uva verkennen'
         },
         price: { crc: 49000, usd: 99 },
         socialStatement: {
@@ -2614,7 +2685,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Scelto per la sua posizione tranquilla',
             pt: 'Escolhido pela sua localização tranquila',
             he: 'נבחר בזכות מיקומו השקט',
-            hi: 'इसके शांत स्थान के कारण चुना गया'
+            hi: 'इसके शांत स्थान के कारण चुना गया',
+            nl: 'Gekozen vanwege de rustige ligging'
         },
         featureHighlights: {
             en: [
@@ -2672,6 +2744,13 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ आरामदायक रातों के लिए A/C',
                 '💻 जुड़े रहने के लिए वाई-फाई',
                 '🚗 बाहरी निजी पार्किंग उपलब्ध'
+            ],
+            nl: [
+                '🏖️ 2 minuten rijden van het strand van Punta Uva',
+                '💑 Intieme ruimte, perfect voor stellen',
+                '❄️ Airco voor comfortabele nachten',
+                '💻 Wifi om verbonden te blijven',
+                '🚗 Eigen parkeerplaats buiten beschikbaar'
             ]
         }
     },
@@ -2685,7 +2764,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Casa adatta alle famiglie vicino a Punta Uva',
             pt: 'Casa familiar perto de Punta Uva',
             he: 'בית ידידותי למשפחות ליד פונטה אובה',
-            hi: 'Punta Uva के पास पारिवारिक-अनुकूल घर'
+            hi: 'Punta Uva के पास पारिवारिक-अनुकूल घर',
+            nl: 'Gezinsvriendelijk huis bij Punta Uva'
         },
         price: { crc: 84000, usd: 169 },
         socialStatement: {
@@ -2696,7 +2776,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Scelta per i suoi servizi adatti alle famiglie e la vicinanza alla spiaggia',
             pt: 'Escolhida pelas suas comodidades familiares e proximidade à praia',
             he: 'נבחר בזכות המתקנים הידידותיים למשפחות והקרבה לחוף',
-            hi: 'इसकी पारिवारिक-अनुकूल सुविधाओं और समुद्र तट की निकटता के कारण चुना गया'
+            hi: 'इसकी पारिवारिक-अनुकूल सुविधाओं और समुद्र तट की निकटता के कारण चुना गया',
+            nl: 'Gekozen vanwege de gezinsvriendelijke voorzieningen en de nabijheid van het strand'
         },
         featureHighlights: {
             en: [
@@ -2754,6 +2835,13 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ आराम के लिए बेडरूम में A/C',
                 '💻 रिमोट वर्क के लिए तेज़ वाई-फाई',
                 '🚗 पार्किंग स्थान उपलब्ध'
+            ],
+            nl: [
+                '👨‍👩‍👧‍👦 Perfect voor gezinnen met kinderen',
+                '🏖️ Op loopafstand van het strand Playa Chiquita',
+                '❄️ Airco in de slaapkamers voor extra comfort',
+                '💻 Snel wifi om op afstand te werken',
+                '🚗 Parkeerplaats beschikbaar'
             ]
         }
     },
@@ -2767,7 +2855,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Casa spaziosa perfetta per famiglie numerose',
             pt: 'Casa espaçosa, perfeita para famílias grandes',
             he: 'בית מרווח ומושלם למשפחות גדולות',
-            hi: 'बड़े परिवारों के लिए बिल्कुल सही विशाल घर'
+            hi: 'बड़े परिवारों के लिए बिल्कुल सही विशाल घर',
+            nl: 'Ruim huis, perfect voor grote gezinnen'
         },
         price: { crc: 99000, usd: 199 },
         socialStatement: {
@@ -2778,7 +2867,8 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             it: 'Scelta per i suoi ampi spazi che ospitano fino a 6 persone',
             pt: 'Escolhida pela sua disposição espaçosa, com capacidade para até 6 hóspedes',
             he: 'נבחר בזכות התכנון המרווח המתאים עד 6 אורחים',
-            hi: '6 मेहमानों तक की क्षमता वाले विशाल लेआउट के कारण चुना गया'
+            hi: '6 मेहमानों तक की क्षमता वाले विशाल लेआउट के कारण चुना गया',
+            nl: 'Gekozen vanwege de ruime indeling met plaats voor maximaal 6 gasten'
         },
         featureHighlights: {
             en: [
@@ -2836,6 +2926,13 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ सभी बेडरूम में A/C',
                 '💻 पूरे घर में तेज़ वाई-फाई',
                 '🚗 2 वाहनों के लिए निजी घिरी हुई पार्किंग'
+            ],
+            nl: [
+                '👨‍👩‍👧‍👦 Ruim voor maximaal 6 personen',
+                '🏡 Twee badkamers voor extra gemak',
+                '❄️ Airco in alle slaapkamers',
+                '💻 Snel wifi in het hele huis',
+                '🚗 Eigen omheinde parkeerplaats voor 2 voertuigen'
             ]
         }
     }
@@ -2862,54 +2959,63 @@ const RECOMMENDATION_REASONS: Record<string, LocalizedValue<string>> = {
     de: 'Ideal, um zu Fuß unterwegs zu sein', fr: 'Idéal pour se déplacer à pied',
     it: 'Ideale per spostarsi a piedi', pt: 'Ideal para se deslocar a pé',
     he: 'אידיאלי להתניידות ברגל', hi: 'पैदल घूमने के लिए आदर्श',
+    nl: 'Ideaal om te voet rond te komen',
   },
   'Perfect for relaxing near the beach': {
     en: 'Perfect for relaxing near the beach', es: 'Perfecta para descansar cerca de la playa',
     de: 'Perfekt zum Entspannen in Strandnähe', fr: 'Parfait pour se détendre près de la plage',
     it: 'Perfetta per rilassarsi vicino alla spiaggia', pt: 'Perfeita para relaxar perto da praia',
     he: 'מושלם למנוחה ליד החוף', hi: 'समुद्र तट के पास आराम करने के लिए एकदम सही',
+    nl: 'Perfect om te ontspannen dicht bij het strand',
   },
   'Great for a short getaway with a private pool': {
     en: 'Great for a short getaway with a private pool', es: 'Si buscas una escapada corta con piscina privada',
     de: 'Toll für einen Kurzurlaub mit Privatpool', fr: 'Idéal pour une courte escapade avec piscine privée',
     it: 'Ottima per una breve fuga con piscina privata', pt: 'Ótima para uma escapadela curta com piscina privada',
     he: 'מצוין לחופשה קצרה עם בריכה פרטית', hi: 'निजी पूल के साथ छोटी छुट्टी के लिए बढ़िया',
+    nl: 'Geweldig voor een kort uitje met een privézwembad',
   },
   'Perfect for exploring on foot': {
     en: 'Perfect for exploring on foot', es: 'Perfecta para explorar a pie',
     de: 'Perfekt, um zu Fuß zu erkunden', fr: 'Parfait pour explorer à pied',
     it: 'Perfetta per esplorare a piedi', pt: 'Perfeita para explorar a pé',
     he: 'מושלם לחקירה ברגל', hi: 'पैदल घूमने के लिए बिल्कुल सही',
+    nl: 'Perfect om te voet te verkennen',
   },
   'Ideal for beach relaxation': {
     en: 'Ideal for beach relaxation', es: 'Ideal para relajarte cerca de la playa',
     de: 'Ideal zum Entspannen am Strand', fr: 'Idéal pour se détendre à la plage',
     it: 'Ideale per rilassarsi in spiaggia', pt: 'Ideal para relaxar na praia',
     he: 'אידיאלי למנוחה בחוף הים', hi: 'समुद्र तट पर आराम के लिए आदर्श',
+    nl: 'Ideaal om te ontspannen op het strand',
   },
   'Great for short getaways with private pool': {
     en: 'Great for short getaways with private pool', es: 'Excelente para escapadas cortas con piscina privada',
     de: 'Toll für Kurzurlaube mit Privatpool', fr: "Idéal pour de courtes escapades avec piscine privée",
     it: 'Ottima per brevi fughe con piscina privata', pt: 'Ótima para escapadelas curtas com piscina privada',
     he: 'מצוין לחופשות קצרות עם בריכה פרטית', hi: 'निजी पूल के साथ छोटी छुट्टियों के लिए बढ़िया',
+    nl: 'Geweldig voor korte uitjes met een privézwembad',
   },
   'Perfect Retreat for Couples': {
     en: 'Perfect Retreat for Couples', es: 'Retiro Perfecto para Parejas',
     de: 'Perfekter Rückzugsort für Paare', fr: 'Retraite parfaite pour les couples',
     it: 'Rifugio perfetto per coppie', pt: 'Refúgio perfeito para casais',
     he: 'מפלט מושלם לזוגות', hi: 'जोड़ों के लिए बेहतरीन ठिकाना',
+    nl: 'Perfecte plek voor stellen',
   },
   'Easy access to transportation': {
     en: 'Easy access to transportation', es: 'Fácil acceso al transporte',
     de: 'Einfacher Zugang zu Transportmitteln', fr: 'Accès facile aux transports',
     it: 'Facile accesso ai trasporti', pt: 'Fácil acesso a transportes',
     he: 'גישה נוחה לתחבורה', hi: 'परिवहन तक आसान पहुंच',
+    nl: 'Gemakkelijke toegang tot vervoer',
   },
   'Perfect for relaxing after park visits': {
     en: 'Perfect for relaxing after park visits', es: 'Perfecta para relajarte después de visitar el parque',
     de: 'Perfekt zum Entspannen nach einem Parkbesuch', fr: 'Parfait pour se détendre après la visite du parc',
     it: 'Perfetta per rilassarsi dopo la visita al parco', pt: 'Perfeita para relaxar depois de visitar o parque',
     he: 'מושלם למנוחה אחרי ביקור בפארק', hi: 'पार्क घूमने के बाद आराम के लिए बिल्कुल सही',
+    nl: 'Perfect om te ontspannen na een bezoek aan het park',
   },
 };
 

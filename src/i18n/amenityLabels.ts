@@ -17,7 +17,7 @@
  * `name` is guaranteed to be the raw English string (the six new locales
  * fall back to the unsuffixed, English houseDataList entry).
  */
-export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 'pt' | 'he' | 'hi', string>>> = {
+export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 'pt' | 'he' | 'hi' | 'nl', string>>> = {
   'Private Pool, Exclusive for guests of this villa': {
     de: 'Privater Pool, exklusiv für Gäste dieser Villa',
     fr: 'Piscine privée, exclusive aux hôtes de cette villa',
@@ -25,6 +25,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Piscina privada, exclusiva para os hóspedes desta vivenda',
     he: 'בריכה פרטית, בלעדית לאורחי הווילה',
     hi: 'निजी स्विमिंग पूल, इस विला के मेहमानों के लिए विशेष',
+    nl: 'Privézwembad, exclusief voor gasten van deze villa',
   },
   'Private Equipped Bathroom': {
     de: 'Privates ausgestattetes Badezimmer',
@@ -33,6 +34,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Casa de banho privativa equipada',
     he: 'חדר אמבטיה פרטי ומאובזר',
     hi: 'निजी सुसज्जित बाथरूम',
+    nl: 'Eigen ingerichte badkamer',
   },
   'Private Equipped Kitchen': {
     de: 'Private ausgestattete Küche',
@@ -41,6 +43,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Cozinha privativa equipada',
     he: 'מטבח פרטי ומאובזר',
     hi: 'निजी सुसज्जित रसोई',
+    nl: 'Eigen ingerichte keuken',
   },
   '2 A/C Units': {
     de: '2 Klimaanlagen',
@@ -49,6 +52,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: '2 unidades de ar condicionado',
     he: '2 יחידות מיזוג אוויר',
     hi: '2 A/C यूनिट',
+    nl: '2 airco-units',
   },
   'Private unfenced Parking': {
     de: 'Privater unumzäunter Parkplatz',
@@ -57,6 +61,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Estacionamento privado não vedado',
     he: 'חניה פרטית לא גדורה',
     hi: 'निजी खुली पार्किंग',
+    nl: 'Eigen onomheinde parkeerplaats',
   },
   '100Mbps WiFi': {
     de: '100-Mbit/s-WLAN',
@@ -65,6 +70,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Wi-Fi de 100 Mbps',
     he: 'WiFi במהירות 100Mbps',
     hi: '100Mbps वाई-फाई',
+    nl: '100Mbps wifi',
   },
   'A/C': {
     de: 'Klimaanlage',
@@ -73,6 +79,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Ar condicionado',
     he: 'מיזוג אוויר',
     hi: 'A/C',
+    nl: 'Airco',
   },
   'Private Fenced Parking': {
     de: 'Privater umzäunter Parkplatz',
@@ -81,6 +88,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Estacionamento privado vedado',
     he: 'חניה פרטית גדורה',
     hi: 'निजी घिरी हुई पार्किंग',
+    nl: 'Eigen omheinde parkeerplaats',
   },
   'Pet Friendly': {
     de: 'Haustierfreundlich',
@@ -89,6 +97,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Aceita animais de estimação',
     he: 'ידידותי לחיות מחמד',
     hi: 'पालतू-अनुकूल',
+    nl: 'Huisdiervriendelijk',
   },
   'Private Outside Parking': {
     de: 'Privater Außenparkplatz',
@@ -97,6 +106,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Estacionamento privado exterior',
     he: 'חניה פרטית בחוץ',
     hi: 'निजी बाहरी पार्किंग',
+    nl: 'Eigen parkeerplaats buiten',
   },
   '2 Private Equipped Bathroom': {
     de: '2 private ausgestattete Badezimmer',
@@ -105,6 +115,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: '2 Casas de banho privativas equipadas',
     he: '2 חדרי אמבטיה פרטיים ומאובזרים',
     hi: '2 निजी सुसज्जित बाथरूम',
+    nl: '2 eigen ingerichte badkamers',
   },
   'Bedrooms with A/C': {
     de: 'Schlafzimmer mit Klimaanlage',
@@ -113,6 +124,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Quartos com ar condicionado',
     he: 'חדרי שינה עם מיזוג אוויר',
     hi: 'A/C वाले बेडरूम',
+    nl: 'Slaapkamers met airco',
   },
   'Outside Parking': {
     de: 'Außenparkplatz',
@@ -121,6 +133,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Estacionamento exterior',
     he: 'חניה בחוץ',
     hi: 'बाहरी पार्किंग',
+    nl: 'Parkeerplaats buiten',
   },
   '2 Private Equipped Bathrooms': {
     de: '2 private ausgestattete Badezimmer',
@@ -129,6 +142,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: '2 Casas de banho privativas equipadas',
     he: '2 חדרי אמבטיה פרטיים ומאובזרים',
     hi: '2 निजी सुसज्जित बाथरूम',
+    nl: '2 eigen ingerichte badkamers',
   },
   'Private Fenced Parking for 2 Vehicles': {
     de: 'Privater umzäunter Parkplatz für 2 Fahrzeuge',
@@ -137,6 +151,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Estacionamento privado vedado para 2 veículos',
     he: 'חניה פרטית גדורה ל-2 רכבים',
     hi: 'निजी घिरी हुई पार्किंग, 2 वाहनों के लिए',
+    nl: 'Eigen omheinde parkeerplaats voor 2 voertuigen',
   },
   'Private Pool': {
     de: 'Privater Pool',
@@ -145,6 +160,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Piscina privada',
     he: 'בריכה פרטית',
     hi: 'निजी स्विमिंग पूल',
+    nl: 'Privézwembad',
   },
   'WiFi': {
     de: 'WLAN',
@@ -153,6 +169,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Wi-Fi',
     he: 'WiFi',
     hi: 'वाई-फाई',
+    nl: 'Wifi',
   },
   'Unfenced Parking': {
     de: 'Unumzäunter Parkplatz',
@@ -161,6 +178,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: 'Estacionamento não vedado',
     he: 'חניה לא גדורה',
     hi: 'खुली पार्किंग',
+    nl: 'Onomheinde parkeerplaats',
   },
   '2 A/C': {
     de: '2 Klimaanlagen',
@@ -169,5 +187,6 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     pt: '2 Ar condicionado',
     he: '2 מזגנים',
     hi: '2 A/C',
+    nl: '2 airco\'s',
   },
 };

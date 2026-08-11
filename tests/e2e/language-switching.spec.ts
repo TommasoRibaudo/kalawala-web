@@ -1,5 +1,6 @@
 import { test, expect } from './fixtures/base.fixture';
 import { nav } from './helpers/selectors';
+import { RELEASED_LOCALES } from '../../src/i18n/locales';
 
 /**
  * Language Switching E2E tests.
@@ -51,7 +52,7 @@ test.describe('Language Switching', () => {
     expect(appPage.url()).toContain('/es/geco');
   });
 
-  test('the select shows the current locale and both released options', async ({ appPage }) => {
+  test('the select shows the current locale and every released option', async ({ appPage }) => {
     await appPage.goto('/en/geco');
 
     const select = nav.languageSwitcherDesktop(appPage);
@@ -60,7 +61,7 @@ test.describe('Language Switching', () => {
     const optionValues = await select.locator('option').evaluateAll(
       (options) => options.map((o) => (o as HTMLOptionElement).value),
     );
-    expect(optionValues.sort()).toEqual(['en', 'es']);
+    expect(optionValues.sort()).toEqual([...RELEASED_LOCALES].sort());
   });
 
   test('a stored preference from a previous visit is honoured on the next one', async ({ appPage }) => {

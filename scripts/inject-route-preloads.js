@@ -42,7 +42,7 @@ const MANIFEST = path.join(BUILD, 'asset-manifest.json');
 
 // Keep in sync with src/i18n/locales.ts's LOCALES. Duplicated rather than
 // imported because this script runs as plain Node against a TS source file.
-const LOCALES = ['en', 'es', 'de', 'fr', 'it', 'pt', 'he', 'hi'];
+const LOCALES = ['en', 'es', 'de', 'fr', 'it', 'pt', 'he', 'hi', 'nl'];
 
 /** Keep in sync with the `chunk` field per route in src/routes.config.ts. */
 function routeToChunk(route) {

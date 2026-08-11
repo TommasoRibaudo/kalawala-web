@@ -26,7 +26,7 @@ const ROOT = path.resolve(__dirname, '..');
 const MANIFEST = path.join(ROOT, 'src', 'routes.manifest.json');
 const PKG = path.join(ROOT, 'package.json');
 
-const RELEASED_LOCALES = ['en', 'es', 'de', 'fr', 'it', 'pt', 'he', 'hi'];
+const RELEASED_LOCALES = ['en', 'es', 'de', 'fr', 'it', 'pt', 'he', 'hi', 'nl'];
 const DEFAULT_LOCALE = 'en';
 
 /** Mirrors routes.config.ts's pathForKey. */

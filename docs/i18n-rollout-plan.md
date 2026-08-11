@@ -21,10 +21,10 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | **🚢 Ship gate C shipped — eight languages live in production.** PRs #52 and #54 (#53 was #54's predecessor — see the 2026-08-09 session log entry for why it got recreated) merged to `main` and deployed. Next: Phase 10 (Google Search Console submission and post-launch monitoring). |
-| **Last updated** | 2026-08-09 |
-| **Branch(es) in flight** | None — `feat/i18n-phase-7-language-switcher` and `feat/i18n-phase-8-translations` both merged and deleted. `docs/i18n-ship-gate-c-closeout` (this update) is the only one open, purely documentation. |
-| **Blocked on** | Nothing. **Owner action still outstanding:** PostHog export (organic sessions, EN vs ES, 12 months) — the only open Phase 0 item, non-blocking. **Follow-up found during Phase 8 validation, still open:** two legacy, pre-i18n-rollout content sources (`PROPERTY_MARKETING_CONFIG` in `constants.ts`, and a handful of components with hardcoded `locale === 'es'` binary checks — see the Phase 8 session log entry) render in English for the six new locales. Not a regression and not required by this plan's scope, but worth a decision on whether it's a fast-follow. |
+| **Current phase** | **Nine languages, one (Dutch/`nl`) not yet shipped.** Eight languages (EN/ES/DE/FR/IT/PT/HE/HI) have been live and independently verified in production since 2026-08-10 (PRs #52, #54, #60, #61). A ninth, Dutch, was then built out in full in the working tree — see [Phase 12](#phase-12--dutch-nl-ninth-language) — found uncommitted and completed 2026-08-11; both Phase 11 P0 items are now done. Next: PR and ship Phase 12, then work Phase 11's remaining P1/P2 items, then resume Phase 10 (GSC owner actions, still open on PR #59). |
+| **Last updated** | 2026-08-11 |
+| **Branch(es) in flight** | None merged-and-open. PR #59 (Phase 10 docs) still open, not yet merged. Phase 12 (Dutch) is complete but uncommitted in the working tree — no branch/PR opened yet. |
+| **Blocked on** | Nothing blocking. See [Phase 11](#phase-11--post-launch-fixes-and-hardening-found-during-2026-08-10-verification) for the remaining P1/P2 punch list — none of it is a regression from this rollout's locked scope. PostHog export (organic sessions, EN vs ES, 12 months) is still the one open Phase 0 owner action. |
 
 Phase progress:
 
@@ -42,6 +42,8 @@ Phase progress:
 - [x] Phase 9 — Build pipeline scale-up *(same PR as Phase 8 — `reactSnap.include` now generated via `prebuild`, plus a real font-payload bug found and fixed; FTP payload timing deferred to the actual CI deploy)*
 - [x] **Ship gate C — eight languages live** — deployed 2026-08-09, `.github/workflows/main.yml` run 31330475987
 - [ ] Phase 10 — Google Search Console and post-launch monitoring
+- [ ] Phase 11 — Post-launch fixes and hardening *(found during 2026-08-10 verification — see below; both P0 items done, P1/P2 open)*
+- [ ] Phase 12 — Dutch (`nl`), ninth language *(content and build plumbing complete in the working tree 2026-08-11; not yet committed/shipped — see below)*
 
 Hebrew/Hindi track (see [that section](#hebrew-and-hindi--rtl-and-non-latin-scripts)):
 
@@ -1140,6 +1142,208 @@ as speculative and judge them on a longer horizon than the European four.
 
 ---
 
+### Phase 11 — Post-launch fixes and hardening *(found during 2026-08-10 verification)*
+
+A full verification pass on 2026-08-10 (content-completeness audit, fresh
+`tsc`/Jest run, live production checks in-browser, a live GSC Rich Results
+re-test) confirmed the translated content itself is solid — no missing locale
+blocks, no English-copy-paste, the historical German-blog-articles regression
+stays fixed. It also surfaced real, previously-uncaught follow-ups. None of
+these are regressions introduced by this rollout's locked scope, and none
+block calling the eight-language launch a success, but they're what's left
+before this plan can close out clean. Grouped by priority.
+
+**P0 — cheap, high visibility, no dependencies:**
+
+- [x] Translate `RANDOM_POPUP_CONFIG.messages` in `src/utils/constants.ts`
+      (currently `en`/`es` only) to all 8 locales, same shape as
+      `tips.*` in the message catalogs. `showProbability` is `1` (100%, not
+      the "30% chance" the comment claims — fix the stale comment too), so
+      this popup fires for effectively every session; DE/FR/IT/PT/HE/HI
+      visitors currently see it in English. Read via
+      `pickLocalized(RANDOM_POPUP_CONFIG.messages, locale)` in
+      `useRandomPopup.ts`, which silently falls back to `.en` — same failure
+      shape as the blog-article gap Phase 8 already hit once. **Done**:
+      `de/fr/it/pt/he/hi` were added in the same uncommitted working-tree pass
+      that built out Dutch (see [Phase 12](#phase-12--dutch-nl-ninth-language)
+      below); that pass missed `nl` itself, filled in 2026-08-11.
+- [x] Decide on the uncommitted `nl` (Dutch) locale scaffolding sitting in the
+      working tree (`src/i18n/locales.ts`, `messages/index.ts`,
+      `amenityLabels.ts` modified; `messages/nl.ts` untracked, an empty
+      `Partial<Messages>` stub). It's inert — `nl` was added to `LOCALES` but
+      deliberately **not** to `RELEASED_LOCALES`, so nothing ships or routes
+      to it — but it shouldn't sit uncommitted indefinitely. Either commit it
+      as an intentional "Phase 12: Dutch" head start, or `git stash`/revert it
+      if it wasn't meant to be started yet. **Resolved**: superseded by events
+      — between this note being written and the 2026-08-11 session, Dutch was
+      built out in full (not left as a stub) and `nl` was added to
+      `RELEASED_LOCALES`, i.e. the "commit as an intentional head start"
+      branch was taken, then carried all the way to complete. See
+      [Phase 12](#phase-12--dutch-nl-ninth-language).
+
+**P1 — should close before treating the rollout as done:**
+
+- [ ] Add a regression test asserting all 8 `RELEASED_LOCALES` keys are
+      present for every entry in `src/i18n/content/blog.tsx`,
+      `content/listings.ts`, `constants.ts`'s `PROPERTY_MARKETING_CONFIG`, and
+      `RECOMMENDATION_REASONS`. All four are `Partial<Record<Locale, T>>`- or
+      fixed-object-shaped and silently fall back to `.en` on a missing
+      locale — `tsc` cannot catch a missing block, only a script or a test
+      can. This is the exact bug class that shipped twice already (two blog
+      articles in Phase 8, `PROPERTY_MARKETING_CONFIG` itself before the
+      2026-08-10 fix) and currently has zero CI coverage —
+      `propertyMarketingConfig.test.ts` only asserts the `en`/`es` shape.
+- [ ] Investigate the one remaining critical structured-data error on the live
+      re-test: **"Duplicate field `containsPlace`"** (down from 11 critical
+      errors after the 2026-08-10 `public/index.html` fix, confirmed via
+      Search Console's live URL Inspection test on
+      `/es/besttimetovisitpuerto/`). The raw served HTML only declares
+      `containsPlace` once — grepped and confirmed directly — so this isn't
+      visible in the page source. Check whether a separate Vacation Rentals
+      feed or Google Business Profile submission duplicates the same
+      inventory data against the on-page JSON-LD. **Needs GSC/Business
+      Profile access — likely owner action.**
+- [ ] Re-run the Rich Results / URL Inspection check on a sample of listing
+      pages across *other* locales (only `/es/besttimetovisitpuerto/` has been
+      live-re-tested so far) to confirm the `identifier`/`occupancy.value` fix
+      generalizes rather than being right on the one URL that got checked.
+      **Needs GSC access — owner action.**
+- [ ] Native-speaker check on `src/i18n/messages/it.ts`'s
+      `home.optionPetFriendly: 'Pet-friendly'` — byte-identical to `en`/`es`.
+      Spanish has a code comment justifying the English loanword; Italian
+      doesn't, so this is unconfirmed rather than a known bug.
+- [ ] Log PR #61 (`fix/prerender-hydration-mismatches`) in this document's
+      session log — it landed 2026-08-10 fixing two of three react-snap
+      hydration-mismatch root causes across every prerendered page (all
+      locales), but has no entry here yet. Cross-reference
+      [[hydration_mismatch_language_switcher]] memory for the full root-cause
+      writeup.
+
+**P2 — larger, already-scoped, needs an explicit go-ahead before starting:**
+
+- [ ] Hydration cause #3: `React.lazy()` + `<Suspense>` at the route level is
+      structurally incompatible with react-snap's live-DOM-capture prerender
+      (confirmed via `onRecoverableError` component-stack trace — see
+      [[hydration_mismatch_language_switcher]]). **Live-confirmed still firing
+      2026-08-10** on both `/he/` and `/de/`: two React #418s + one #423 on
+      every page load, identical signature to before PR #61, because this
+      cause alone reproduces it regardless of the other two fixes. Real fix
+      means replacing route-level `lazy()`/`Suspense` code-splitting with a
+      manual loader — closer in size to dropping code-splitting than a patch.
+      One approach was already tried and reverted (made it worse) — see the
+      memory for what not to retry.
+- [ ] Investigate why the Jest suite shows **27 failing tests** (300 passed /
+      327 total, 3 suites: `ListingDelfin.test.tsx`, `ListingDelfinES.test.tsx`,
+      `delfinIntegration.test.ts`) against a fresh install, versus the
+      "4 pre-existing failures" recorded in the 2026-08-10 session log below.
+      Confirmed via `git diff` that PR #60/#61 touched none of these three
+      files, so this isn't a translation-push regression — but the count grew
+      and is worth a look independent of this plan. All failures are the same
+      `window.matchMedia` root cause (`Cannot read properties of undefined
+      (reading 'matches')`) despite a global mock existing in
+      `setupTests.ts`; likely a `jest.spyOn(...).mockRestore()` /
+      `clearAllMocks()` interaction in `ListingDelfinES.test.tsx` leaking
+      across tests in the same file.
+- [ ] Revisit whether `useApplyStoredLocalePreference` (`src/i18n/localePreference.ts`)
+      should keep silently redirecting a direct locale-URL visit to a
+      returning visitor's stored preference now that 8 locales are live
+      instead of 2. Deliberate Phase 7 UX design, not a bug, and crawlers are
+      unaffected (no stored localStorage) — but the blast radius is bigger
+      with 8 possible mismatches instead of 1, and it actively misleads
+      manual QA: visiting `/he/...` directly in a browser that previously
+      picked Italian silently serves Italian, not Hebrew. At minimum, note
+      this for anyone manually spot-checking a locale — use a fresh/incognito
+      context or the in-page switcher, not a bare URL visit.
+
+---
+
+### Phase 12 — Dutch (`nl`), ninth language
+
+**Content complete 2026-08-11. Not yet committed or shipped.** Not part of
+the original eight-language scope. First appeared as an
+uncommitted, undocumented stub in the working tree, surfaced by the
+2026-08-10 verification session and filed as a Phase 11 P0 decision item:
+commit it as an intentional "Phase 12" head start, or discard it. Between
+that note being written and this session, the decision was overtaken by
+events — the working tree had already moved past "decide" to "build the
+whole thing," all the way to complete, still with no doc update and no
+commit. This session found it in that state, verified it for real rather
+than trusting the description in Phase 11's own note (which still said
+"inert stub" — stale the moment the working tree moved past it), closed the
+one gap that verification found, and ran this rollout's usual validation
+pass.
+
+- [x] `nl` added to `LOCALES`, `RELEASED_LOCALES`, and `LOCALE_META`
+      (`nativeName: 'Nederlands'`, `flag: 'NL'`, `dir: 'ltr'`) in `locales.ts`.
+- [x] `messages/nl.ts` — a complete `Messages` catalog, not the
+      `Partial<Messages>` shape unreleased locales start from (same
+      complete-on-release convention Phase 8 used). Register choice is
+      documented in the file's own header comment: standard Netherlands Dutch
+      (not Belgian/Flemish), informal "je"/"jij" — matching Booking.com
+      NL/Airbnb NL and the English original's tone — and normal
+      singular/plural inflection for `bedrooms`/`bathrooms`/`upToGuests`,
+      unlike German's invariant "Schlafzimmer"/"Badezimmer".
+- [x] `amenityLabels.ts` — `nl` added to the locale union and all 20 amenity
+      strings.
+- [x] `content/discover.tsx`, `content/listings.ts` (all 10 properties),
+      `content/blog.tsx` (all 10 articles) — full `nl` blocks, structurally
+      parallel to the other eight locales (verified: identical field/line
+      layout per locale block, e.g. Geco's `nl` sub-object in `listings.ts`
+      sits exactly 20 lines after its `en` sub-object, matching every other
+      locale's spacing).
+- [x] `constants.ts`'s `PROPERTY_MARKETING_CONFIG` and
+      `RECOMMENDATION_REASONS` — full `nl` entries.
+- [x] Build plumbing: `package.json`'s `reactSnap.include` (+22 `/nl/...`
+      routes), `generate-reactsnap-include.js` and `inject-route-preloads.js`
+      `RELEASED_LOCALES`/`LOCALES` arrays, `public/index.html`'s
+      `availableLanguage`/`knowsLanguage` structured-data lists.
+- [x] `tests/e2e/language-switching.spec.ts` generalized to assert the
+      switcher's options against `RELEASED_LOCALES` directly instead of a
+      hardcoded `['en', 'es']` — the one piece of this phase that also pays
+      down future work, since a tenth locale won't need this file touched.
+- [x] **One real gap found and fixed this session:** `RANDOM_POPUP_CONFIG.messages`
+      (`constants.ts`) — the Phase 11 P0 fix that added `de/fr/it/pt/he/hi`
+      landed in this same uncommitted pass, but missed `nl`, almost certainly
+      because `nl` didn't exist as a locale yet at the moment that fix was
+      made. Added the missing entry; every other content surface checked at
+      full parity with the eight released locales (property-by-property,
+      article-by-article — no other gaps found).
+- **Known, inherited limitation — not new, not a Phase 12 regression:**
+  listing-page image `alt` text stays English for `nl`, exactly as it already
+  does for the other six non-EN/ES locales (`amenityLabels.ts`'s own comment
+  documents this as deliberate Phase 8 scope: alt text was never localized
+  past EN/ES). Confirmed identical between `build/nl/geco/` and
+  `build/de/geco/` — same six English `alt` strings on both.
+- **Not needed:** no font subset (Dutch is Latin, already covered by
+  Urbanist's Latin/Latin-ext), no RTL work, no `react-slick`/Bootstrap-RTL
+  work — Dutch is a "free" locale the same way Hindi became one once H-B's
+  font landed.
+
+**Validation.** `npx tsc --noEmit` clean. `CI=true npx react-scripts test`:
+300 passed / 27 failed / 327 total, the same 3 pre-existing
+`window.matchMedia` Delfin suites as the documented baseline — no
+regressions. Full production build + `react-snap` crawl:
+**199/199 routes across 9 locales crawled clean, 199/199 preloads injected**
+(the exact webpack chunk-collapse hazard Phase 3b flagged for any page a
+locale shares a component with — verified it didn't recur here), sitemap
+written with 198 URLs. Spot-checked the *built* output, not the source, per
+this doc's own "diff the build" rule:
+- `build/nl/index.html` renders real Dutch text ("Beschikbaarheid
+  controleren"), not an English fallback.
+- `<html lang="nl" dir="ltr">` set correctly.
+- `build/nl/geco/index.html`'s canonical is
+  `https://www.reservaskalawala.com/nl/geco/` — correctly locale-scoped, not
+  a leftover English or bare-root URL.
+- `hreflang="nl"` appears 198 times in the built sitemap — once per route,
+  same reciprocal pattern Phase 6 verified for the original eight.
+
+**Not done yet:** no branch, no PR, not merged, not deployed. Phase 10's GSC
+submission is untouched by this — the sitemap generator is
+`RELEASED_LOCALES`-driven (Phase 6), so `nl` will appear in it automatically
+the moment this phase ships, with no separate sitemap work required.
+
+---
+
 ## Hebrew and Hindi — RTL and non-Latin scripts
 
 Added after the plan was written. These do **not** form a parallel project: the
@@ -2133,3 +2337,127 @@ what the next session should pick up.
   structured-data fix is live. The `PROPERTY_MARKETING_CONFIG`/
   `locale === 'es'` follow-up referenced above is now resolved by this
   session's work and can be considered closed.
+
+### 2026-08-10 — Full verification pass; Phase 11 opened
+
+- **Scope:** independently verify the whole rollout end to end rather than
+  trust prior session logs — content completeness, build health, and live
+  production behavior, across all 8 locales. Findings written up as
+  [Phase 11](#phase-11--post-launch-fixes-and-hardening-found-during-2026-08-10-verification)
+  above; this entry is the evidence trail behind it.
+- **Content completeness — audited via a dedicated Explore pass over every
+  translation source, not spot-checked.** Confirmed complete: `messages/*.ts`
+  (structurally immune to the silent-fallback bug — non-English catalogs are
+  typed `Messages`, not `Partial<Messages>`, so a missing key is a `tsc`
+  error), `content/blog.tsx` (all 10 articles × 8 locales, including the two
+  previously-empty German articles), `content/listings.ts` (all 10 properties
+  × 8 locales, 80/80 `seoDescription`s verified non-English-duplicate),
+  `content/discover.tsx`, `amenityLabels.ts`, `PROPERTY_MARKETING_CONFIG`
+  (all 10 × 8, including `featureHighlights` array-length parity). Confirmed
+  every `locale === 'es'`/`'en'` survivor left in the codebase is an
+  intentional exemption (booking-flow's deliberately-narrow
+  `BookingLanguage`, or a locale-agnostic data lookup), not an oversight.
+  **One real gap found, not previously documented anywhere:**
+  `RANDOM_POPUP_CONFIG.messages` (`constants.ts`) is still `en`/`es` only,
+  read through the same silent-`.en`-fallback `pickLocalized` as everything
+  else, and shown to ~100% of sessions (`showProbability: 1`) — filed as
+  Phase 11 P0.
+- **Build health, run fresh rather than trusted from prior logs:** `npm
+  install` needed two retries on this machine (Windows `ENOTEMPTY` on
+  `node_modules` — antivirus/file-lock noise, not a project issue) before it
+  completed clean. `node_modules/.bin/tsc --noEmit` — **clean, zero errors**,
+  confirming the 2026-08-10 VacationRental/translation-gap session's claim.
+  `CI=true react-scripts test` — **300 passed / 27 failed / 327 total**,
+  all 27 failures confined to 3 pre-existing `window.matchMedia`-related
+  Delfin test files untouched by PR #60 or #61 (confirmed via `git diff`),
+  so not a translation-push regression — but a bigger failure count than the
+  "4 pre-existing failures" this doc previously recorded; filed as Phase 11
+  P2 rather than chased down in this session.
+- **Live production checks, not just build output:**
+  - GSC's **live URL Inspection re-test** on `/es/besttimetovisitpuerto/`
+    (re-run after confirming both PR #60 and #61 auto-deployed successfully
+    via `gh run list`) showed the VacationRental critical-error count drop
+    from 11 to 1 — the fix works, but one critical error
+    (`Campo duplicato "containsPlace"`) remains and isn't explained by the
+    page's own HTML (grepped the live response directly: the field appears
+    exactly once). Filed as Phase 11 P1.
+  - Loaded `/he/` directly in-browser: real Hebrew glyphs render (not tofu),
+    full RTL mirroring on the search widget and trust-signal row — confirms
+    the plan's existing RTL claim still holds live, not just at the time it
+    was written.
+  - Console on both `/he/` and `/de/` still throws two React #418s + one
+    #423 on every load — confirmed this is cause #3 from
+    [[hydration_mismatch_language_switcher]] (`React.lazy`/`Suspense`,
+    deliberately deferred, needs an explicit go-ahead to fix for real), not
+    a sign PR #61 didn't work: independently verified PR #61's actual fixes
+    *did* ship (raw HTML has zero `selected="selected"` artifacts and zero
+    inline `aspect-ratio` styles, both grepped directly from the live
+    response) — the console signature is unchanged only because cause #3
+    alone was always sufficient to produce it.
+  - Incidental: this browser's `kalawala_locale_preference` localStorage
+    entry (`"it"`, from genuine prior real-world use of the site) silently
+    redirected a direct `/he/` visit to `/it/` — reproduced, root-caused to
+    `useApplyStoredLocalePreference` (`localePreference.ts`), confirmed
+    deliberate Phase 7 design rather than a bug, restored the original
+    stored value after testing. Filed as a Phase 11 P2 discussion item given
+    8 locales now share one preference slot instead of 2.
+- **Uncommitted, unrelated state found in the working tree:** `locales.ts`,
+  `messages/index.ts`, `amenityLabels.ts` modified plus a new
+  `messages/nl.ts` (Dutch) — an inert `Partial<Messages> = {}` stub, `nl`
+  added to `LOCALES` but not `RELEASED_LOCALES`, so nothing ships or routes
+  to it. Not touched this session; flagged in Phase 11 P0 as needing an
+  explicit commit-or-discard decision rather than sitting uncommitted.
+- **Next session:** work Phase 11 top-down, starting with the two P0 items
+  (both cheap). PR #59 (Phase 10 GSC actions) is still open separately from
+  this work.
+
+### 2026-08-11 — Phase 11 P0 items closed; found and finished Phase 12 (Dutch) uncommitted in the working tree
+
+Picked up from the previous session's "next session" note above, but the
+working tree didn't match what that note described. Both P0 items turned out
+to already be underway, further along than documented:
+
+- **`RANDOM_POPUP_CONFIG.messages` (P0 #1):** already fixed for
+  `de/fr/it/pt/he/hi` in the uncommitted working tree — not this session's
+  work, done in whatever session produced the rest of the Dutch build-out
+  below. One locale short: `nl`. Added it (single line); see
+  [Phase 12](#phase-12--dutch-nl-ninth-language) for why it was the one
+  missed.
+- **The `nl` decision (P0 #2):** the note above described `messages/nl.ts`
+  as "an inert `Partial<Messages> = {}` stub" with `nl` deliberately kept out
+  of `RELEASED_LOCALES`. Neither was still true. `nl.ts` was a complete,
+  polished `Messages` catalog with a documented register decision (informal
+  Netherlands Dutch), `nl` was already in `RELEASED_LOCALES`, and every
+  content module (`listings.ts`, `blog.tsx`, `discover.tsx`,
+  `PROPERTY_MARKETING_CONFIG`, `RECOMMENDATION_REASONS`) plus the build
+  plumbing (`package.json`, both `generate-*`/`inject-*` scripts,
+  `public/index.html`, the language-switcher e2e spec) had all been updated
+  to match. This was not a small head start — it was the whole phase, done,
+  just never validated end-to-end or written up. Verified it rather than
+  trusting the stale description: full parity check against the other eight
+  locales (property-by-property, article-by-article — only the
+  `RANDOM_POPUP_CONFIG` gap above), then ran the rollout's usual validation
+  pass (`tsc`, Jest, full production build + `react-snap` crawl of all 199
+  routes, spot-checked the *built* `/nl/` HTML for real Dutch text, correct
+  `lang`/`dir`, and a correctly locale-scoped canonical). All clean. Written
+  up as [Phase 12](#phase-12--dutch-nl-ninth-language).
+- **Whodunit, left unresolved:** nothing in the working tree or this doc says
+  who decided to build Dutch out or when — the 2026-08-10 session's note
+  above is the last point where it's documented as an untouched, pre-existing
+  stub "not touched this session." Somewhere between that note and now, a
+  session did the entire build-out without leaving a session-log entry. Worth
+  asking the project owner directly rather than assuming; flagged here so a
+  future session doesn't lose the thread a second time.
+- **Jest baseline (P2 item, not re-investigated):** still 300 passed / 27
+  failed / 327 total, same 3 pre-existing `window.matchMedia` Delfin suites.
+  Confirms the count is stable across sessions, not growing — but the
+  question of why it's 27 rather than the older "4 pre-existing failures"
+  this doc recorded even earlier is still open.
+- **Not done this session:** Phase 12 has no branch or PR yet — it exists
+  only in the working tree, validated but uncommitted. The remaining Phase 11
+  P1/P2 items (structured-data `containsPlace` duplicate, cross-locale Rich
+  Results re-test, `it.ts` pet-friendly wording, hydration cause #3, the
+  stored-locale-preference UX question) are untouched.
+- **Next session:** decide how to ship Phase 12 — one commit/PR for the
+  whole ninth-language addition is the natural shape, mirroring how Phase 8
+  shipped the original six. After that, resume Phase 11's P1/P2 list.

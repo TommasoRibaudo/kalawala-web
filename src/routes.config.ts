@@ -126,6 +126,49 @@ const COMPONENTS: Record<RouteKey, LazyExoticComponent<ComponentType<any>>> = {
   success: Success,
 };
 
+/**
+ * Same 26 modules as COMPONENTS above, same import() call sites (webpack
+ * chunks by module + webpackChunkName, so two import()s of one module with
+ * the same magic comment collapse into the same chunk — not a duplicate),
+ * just not wrapped in lazy(). Feeds routeLoader.tsx's plain promise-based
+ * loader instead of React.lazy()/<Suspense> — see that file for why.
+ *
+ * Stage A of the hydration-cause-#3 fix (docs/i18n-rollout-plan.md, Phase 11
+ * P2): purely additive, nothing consumes this yet. Stage B removes
+ * COMPONENTS/lazy entirely once Router.tsx and index.tsx are wired to this
+ * instead.
+ */
+export const LOADERS: Record<RouteKey, () => Promise<{ default: ComponentType<any> }>> = {
+  home: () => import(/* webpackChunkName: "route-home" */ './pages/Home/Home.page'),
+  book: () => import(/* webpackChunkName: "route-book" */ './pages/Booking.page'),
+  bookReturn: () => import(/* webpackChunkName: "route-book" */ './pages/Booking.page'),
+  bookConfirmed: () => import(/* webpackChunkName: "route-book" */ './pages/Booking.page'),
+  portal: () => import(/* webpackChunkName: "route-portal" */ './pages/Portal.page'),
+  portalDetail: () => import(/* webpackChunkName: "route-portal-detail" */ './pages/PortalDetail.page'),
+  geco: () => import(/* webpackChunkName: "route-geco" */ './pages/Listing/staticPages/ListingGeco.page'),
+  rana: () => import(/* webpackChunkName: "route-rana" */ './pages/Listing/staticPages/ListingRana.page'),
+  tucano: () => import(/* webpackChunkName: "route-tucano" */ './pages/Listing/staticPages/ListingTucano.page'),
+  pappagallo: () => import(/* webpackChunkName: "route-pappagallo" */ './pages/Listing/staticPages/ListingPappagallo.page'),
+  delfin: () => import(/* webpackChunkName: "route-delfin" */ './pages/Listing/staticPages/ListingDelfin.page'),
+  areka: () => import(/* webpackChunkName: "route-areka" */ './pages/Listing/staticPages/ListingAreka.page'),
+  giulia: () => import(/* webpackChunkName: "route-giulia" */ './pages/Listing/staticPages/ListingGiulia.page'),
+  plumeria: () => import(/* webpackChunkName: "route-plumeria" */ './pages/Listing/staticPages/ListingPlumeria.page'),
+  villamar: () => import(/* webpackChunkName: "route-villamar" */ './pages/Listing/staticPages/ListingVillaMar.page'),
+  villacoral: () => import(/* webpackChunkName: "route-villacoral" */ './pages/Listing/staticPages/ListingVillaCoral.page'),
+  blog: () => import(/* webpackChunkName: "route-blog" */ './pages/Blog/BlogIndex.page'),
+  blogTwodays: () => import(/* webpackChunkName: "route-twodaysinpuertoviejo" */ './pages/Blog/staticPages/TwoDaysInPV'),
+  blogGandoca: () => import(/* webpackChunkName: "route-gettingtogandoca" */ './pages/Blog/staticPages/GettingToGandoca'),
+  blogSanjose: () => import(/* webpackChunkName: "route-travellingtopuertoviejo" */ './pages/Blog/staticPages/TravellingToPuerto'),
+  blogByplane: () => import(/* webpackChunkName: "route-puertoviejobyplane" */ './pages/Blog/staticPages/PuertoViejoByPlane'),
+  blogTenhours: () => import(/* webpackChunkName: "route-tenhoursinpuerto" */ './pages/Blog/staticPages/TenHoursInPuerto'),
+  blogBushours: () => import(/* webpackChunkName: "route-bushours" */ './pages/Blog/staticPages/BusHours'),
+  blogCahuitapark: () => import(/* webpackChunkName: "route-cahuitaparkwhattodo" */ './pages/Blog/staticPages/CahuitaPark'),
+  blogIndigenous: () => import(/* webpackChunkName: "route-indigenoustravelpv" */ './pages/Blog/staticPages/IndigenousTravel'),
+  blogBesttime: () => import(/* webpackChunkName: "route-besttimetovisitpuerto" */ './pages/Blog/staticPages/BestTimeToVisitPuerto'),
+  blogHiddengems: () => import(/* webpackChunkName: "route-puertohiddengems" */ './pages/Blog/staticPages/PuertoHiddenGems'),
+  success: () => import(/* webpackChunkName: "route-success" */ './pages/Home/Success.page'),
+};
+
 interface ManifestEntry {
   key: string;
   chunk: string;

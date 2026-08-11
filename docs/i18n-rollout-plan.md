@@ -1344,7 +1344,9 @@ before this plan can close out clean. Grouped by priority.
       and a link, where the test assumed one) that the matchMedia crash was
       hiding behind a single generic error on every test. Not chased further
       this session — worth its own pass, separately scoped, now that the
-      false signal is gone.
+      false signal is gone. **Fixed 2026-08-11** — see the same-day session
+      log entry "14 stale Delfin test failures fixed" for the three actual
+      root causes (none were the matchMedia issue itself).
 - [x] Revisit whether `useApplyStoredLocalePreference` (`src/i18n/localePreference.ts`)
       should keep silently redirecting a direct locale-URL visit to a
       returning visitor's stored preference now that 8 locales are live
@@ -2782,3 +2784,56 @@ above). Branch `fix/hydration-cause-3-manual-loader`, stacked on
   before repeating the same technique. Otherwise resume the existing
   next-session queue: merge #62 → #63 → this branch, the 14
   content-assertion-mismatch failures, Phase 10 GSC owner actions.
+
+### 2026-08-11 — 14 stale Delfin test failures fixed
+
+Same-day continuation, picking up the "next session" note above
+immediately. None of the 14 were the matchMedia issue itself (that was
+already fixed, see the earlier same-day entry) — full investigation found
+three distinct, unrelated root causes, all pre-existing and unrelated to any
+feature work this session:
+
+- **`ListingDelfinES.test.tsx` rendered in English for its entire suite (7
+  of its 9 failures).** It wraps the shared `ListingDelfin` component in a
+  `MemoryRouter` at the Phase-1-era `/DelfinES` legacy-suffix path. `useLocale()`
+  has read the locale from the URL's first path segment since Phase 4
+  (`detectLocaleFromPath`) — `/DelfinES` doesn't match that pattern and
+  silently fell back to the default locale (English) for every test in the
+  file, which is why "Bienvenido a Reservas Kalawala" wasn't found (it
+  rendered "Welcome to..."), `data-house-name="DelfinES"` wasn't found (it
+  rendered plain `"Delfin"`, since `localeSuffix()` only appends `ES` for an
+  actual `es` locale), etc. Fixed by routing to the real `/es/delfin` URL
+  instead — verified this couldn't regress the file's other,
+  already-passing tests, none of which depend on rendered/locale-driven
+  content.
+- **`Footer` wasn't mocked in either `ListingDelfin.test.tsx` or
+  `ListingDelfinES.test.tsx` (4 failures)**, unlike every other child
+  component. It now renders a real "our homes" list (`PROPERTY_DISPLAY_NAMES`,
+  including this page's own listing name again) and a real blog-article
+  list — both collided with these files' `getByText`/`getByRole` queries
+  that assumed their target string was unique on the page (`'Casa Delfines'`
+  matching twice; two links both containing "Puerto Viejo de Talamanca").
+  Fixed by mocking `Footer`, matching the existing pattern for every other
+  child component.
+- **`data-is-spanish` used to be a boolean; the mock now passes the
+  `Locale` string straight through (2 failures).** `BookingSearchWidget`'s
+  prop was renamed from an `isSpanish: boolean` to `locale: Locale` at some
+  point; the test mocks were updated to receive the new prop but the
+  assertions still checked for the old `'true'`/`'false'` strings instead of
+  `'es'`/`'en'`.
+- **Three dead content assertions removed** (`'lockbox key drop-off'` /
+  `'caja de seguridad'`, in `ListingDelfin.test.tsx`, `ListingDelfinES.test.tsx`,
+  and `delfinIntegration.test.ts`). Traced to `houseDataEngList` — a separate,
+  apparently-unused legacy data array — which still has this phrase; neither
+  `houseDataList` (what these tests and the real page actually read) nor
+  `listingContent()` (what's actually rendered) has ever had it. Asked the
+  project owner whether to restore it as live copy or remove the stale
+  assertions; **chose to remove** — not shown to any real visitor today.
+- Validation: `tsc --noEmit` clean; full Jest **647/647 passing** (was
+  633/647).
+- **Shipped as a commit on `fix/hydration-cause-3-manual-loader`**, same
+  branch as the hydration fix above (this was a `next session` pickup on the
+  same branch, not a new one).
+- **Next session:** open the PR for this branch (after #62/#63 merge). Same
+  residual-hydration-warnings note as above still applies. Resume Phase 10
+  GSC owner actions.

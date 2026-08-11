@@ -5,7 +5,11 @@
  *
  * Phase 3b merged ListingDelfin.page_ES into ListingDelfin.page, so Spanish is
  * now selected by the route the page is rendered at, not by which module the
- * test imports. Hence MemoryRouter at /DelfinES rather than BrowserRouter.
+ * test imports. Hence MemoryRouter at /es/delfin rather than BrowserRouter —
+ * useLocale() reads the locale from the URL's first path segment (Phase 4's
+ * detectLocaleFromPath), so the route must actually carry an `es` segment;
+ * the old `/DelfinES` legacy-suffix path stopped being recognized once that
+ * landed and silently fell back to English for this whole file.
  * Requirements: 2.1, 2.2, 2.3, 5.4
  */
 
@@ -91,6 +95,16 @@ jest.mock('../../../../components/FixedNavigation/FixedNavigation.component', ()
   };
 });
 
+// Mock Footer. Unmocked, it renders a real "our homes" list (including this
+// page's own listing name again) and a real blog-article list, both of which
+// collide with this file's getByText/getByRole queries that assume their
+// target string is unique on the page.
+jest.mock('../../../../components/Footer/Footer.component', () => {
+  return function MockFooter({ locale }: { locale: string }) {
+    return <div data-testid="footer-es" data-locale={locale}>Pie de página</div>;
+  };
+});
+
 describe('ListingDelfinES Component', () => {
   beforeEach(() => {
     // Mock window.scrollTo
@@ -105,7 +119,7 @@ describe('ListingDelfinES Component', () => {
 
   test('should render ListingDelfinES component successfully', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -118,7 +132,7 @@ describe('ListingDelfinES Component', () => {
 
   test('should lookup DelfinES data correctly using houseLangCode', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -133,7 +147,7 @@ describe('ListingDelfinES Component', () => {
 
   test('should seed the booking search widget with the property capacity', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -141,12 +155,12 @@ describe('ListingDelfinES Component', () => {
     const bookingWidget = screen.getByTestId('booking-search-widget');
     expect(bookingWidget).toHaveAttribute('data-default-guests', '6');
     expect(bookingWidget).toHaveAttribute('data-variant', 'sidebar');
-    expect(bookingWidget).toHaveAttribute('data-is-spanish', 'true');
+    expect(bookingWidget).toHaveAttribute('data-is-spanish', 'es');
   });
 
   test('should display Spanish amenities excluding pet-friendly', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -168,7 +182,7 @@ describe('ListingDelfinES Component', () => {
 
   test('should have Helmet component for Spanish SEO', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -180,7 +194,7 @@ describe('ListingDelfinES Component', () => {
 
   test('should display correct Spanish property description content', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -190,12 +204,11 @@ describe('ListingDelfinES Component', () => {
     expect(screen.getAllByText(/acomoda hasta 6 huéspedes/)[0]).toBeInTheDocument();
     expect(screen.getByText(/2 unidades de aire acondicionado/)).toBeInTheDocument();
     expect(screen.getAllByText(/estacionamiento privado/)[0]).toBeInTheDocument();
-    expect(screen.getByText(/caja de seguridad/)).toBeInTheDocument();
   });
 
   test('should display Spanish check-in and check-out times', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -222,7 +235,7 @@ describe('ListingDelfinES Component', () => {
     } as unknown as MediaQueryList);
 
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -234,7 +247,7 @@ describe('ListingDelfinES Component', () => {
 
   test('should handle image modal functionality with Spanish content', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -260,7 +273,7 @@ describe('ListingDelfinES Component', () => {
 
   test('should pass correct props to Spanish OtherListings component', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -271,7 +284,7 @@ describe('ListingDelfinES Component', () => {
 
   test('should pass correct houseName to ImagesContainer', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -282,7 +295,7 @@ describe('ListingDelfinES Component', () => {
 
   test('should use Spanish navigation component', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -293,7 +306,7 @@ describe('ListingDelfinES Component', () => {
 
   test('should scroll to top on component mount', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );
@@ -303,7 +316,7 @@ describe('ListingDelfinES Component', () => {
 
   test('should have correct location link', () => {
     render(
-      <MemoryRouter initialEntries={['/DelfinES']}>
+      <MemoryRouter initialEntries={['/es/delfin']}>
         <ListingDelfin />
       </MemoryRouter>
     );

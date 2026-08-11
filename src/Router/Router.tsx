@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { CookieConsentService } from '../services/CookieConsent.service';
 import * as PostHog from '../services/PostHog.service';
@@ -7,29 +7,33 @@ import { useRandomPopup } from '../hooks/useRandomPopup';
 import PortalGuard from '../components/PortalGuard/PortalGuard.component';
 import { useLocale, RELEASED_LOCALES } from '../i18n';
 import LocaleHtmlAttrs from '../components/LocaleHtmlAttrs/LocaleHtmlAttrs.component';
-import { lazy } from 'react';
 import { ROUTES, pathForKey, RouteKey } from '../routes.config';
-
-const NotFound = lazy(() => import(/* webpackChunkName: "route-404" */ '../pages/NotFound.page'));
+import { RouteLoader } from '../routeLoader';
 
 /*
- * Every routed page is declared once in src/routes.config.ts — key, lazy
- * component, webpackChunkName, and its slug in each locale — and this file
- * turns that table into the actual <Route> tree, one element per
+ * Every routed page is declared once in src/routes.config.ts — key,
+ * loadable module, webpackChunkName, and its slug in each locale — and this
+ * file turns that table into the actual <Route> tree, one element per
  * (key, released locale) pair.
+ *
+ * No React.lazy()/<Suspense> anywhere in this file (or the rest of the
+ * app) — see routeLoader.tsx's header comment for why: react-snap's
+ * marker-less prerendered output can't hydrate cleanly against a Suspense
+ * boundary, regardless of whether its child actually suspends on a given
+ * render. <RouteLoader> is a plain promise-based loader instead;
+ * index.tsx pre-warms the current page's entry before the first render so
+ * <RouteLoader> takes its synchronous cache-hit branch on that render.
  *
  * The webpackChunkName comments living in routes.config.ts are still
  * load-bearing: scripts/inject-route-preloads.js recomputes those names
  * after build and fails if one goes missing from asset-manifest.json.
  */
 const ROUTE_ELEMENTS: React.ReactNode[] = (Object.keys(ROUTES) as RouteKey[]).flatMap((key) => {
-  const def = ROUTES[key];
-  const Component = def.component;
   return RELEASED_LOCALES.map((locale) => {
     const path = pathForKey(key, locale);
     const element = key === 'portalDetail'
-      ? <PortalGuard><Component /></PortalGuard>
-      : <Component />;
+      ? <PortalGuard><RouteLoader routeKey={key} /></PortalGuard>
+      : <RouteLoader routeKey={key} />;
     return <Route key={`${key}-${locale}`} path={path} element={element} />;
   });
 });
@@ -78,34 +82,32 @@ const AppRouter = () => {
       <LocaleHtmlAttrs />
       <PostHogPageView />
       <RandomPopupHandler />
-      <Suspense fallback={null}>
-        <Routes>
-          {ROUTE_ELEMENTS}
+      <Routes>
+        {ROUTE_ELEMENTS}
 
-          {/*
-            English keeps the bare root ('/') as its canonical home — see
-            pathForKey() in routes.config.ts. '/en' and '/en/' would otherwise
-            be a second, duplicate-content copy of the same page, so both
-            redirect client-side. Phase 5 adds the equivalent server-level
-            301 in public/.htaccess for crawlers and direct hits that never
-            load the SPA; this covers in-app navigation and dev.
-          */}
-          <Route path="/en" element={<Navigate to="/" replace />} />
-          <Route path="/en/" element={<Navigate to="/" replace />} />
+        {/*
+          English keeps the bare root ('/') as its canonical home — see
+          pathForKey() in routes.config.ts. '/en' and '/en/' would otherwise
+          be a second, duplicate-content copy of the same page, so both
+          redirect client-side. Phase 5 adds the equivalent server-level
+          301 in public/.htaccess for crawlers and direct hits that never
+          load the SPA; this covers in-app navigation and dev.
+        */}
+        <Route path="/en" element={<Navigate to="/" replace />} />
+        <Route path="/en/" element={<Navigate to="/" replace />} />
 
-          {/*
-            A dedicated route, separate from the "*" catch-all below, so
-            react-snap (which navigates to explicit paths, not wildcards — see
-            package.json's reactSnap.include) can prerender a static 404.html.
-            scripts/generate-404.js copies the resulting build/404/index.html
-            to build/404.html, and .htaccess serves it with a real HTTP 404
-            status via ErrorDocument, instead of the soft-404 (200 + blank/
-            generic page) unknown URLs used to get.
-          */}
-          <Route path="/404" element={<NotFound />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+        {/*
+          A dedicated route, separate from the "*" catch-all below, so
+          react-snap (which navigates to explicit paths, not wildcards — see
+          package.json's reactSnap.include) can prerender a static 404.html.
+          scripts/generate-404.js copies the resulting build/404/index.html
+          to build/404.html, and .htaccess serves it with a real HTTP 404
+          status via ErrorDocument, instead of the soft-404 (200 + blank/
+          generic page) unknown URLs used to get.
+        */}
+        <Route path="/404" element={<RouteLoader routeKey="notFound" />} />
+        <Route path="*" element={<RouteLoader routeKey="notFound" />} />
+      </Routes>
       <MessageTipContainer />
     </BrowserRouter>
   );

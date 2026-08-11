@@ -2946,14 +2946,14 @@ export interface PropertyRecommendation {
   houseCode?: number;
 }
 
-// Each `reason` phrase translated into all 8 locales, keyed by its exact
+// Each `reason` phrase translated into every released locale, keyed by its exact
 // English source string. Was three EN consts plus three separately
 // hand-maintained _ES consts (PHASE 3c) — that pattern has no room for six
 // more languages, so this is now three `(locale) => PropertyRecommendation[]`
 // functions sharing one translation table instead. `link` now goes through
 // `pathForKey` directly (every locale), not `pathForLegacyId` (English/Spanish
 // only, by construction — see its own doc comment in routes.config.ts).
-const RECOMMENDATION_REASONS: Record<string, LocalizedValue<string>> = {
+export const RECOMMENDATION_REASONS: Record<string, LocalizedValue<string>> = {
   'Ideal for getting around on foot': {
     en: 'Ideal for getting around on foot', es: 'Ideal si quieres moverte caminando',
     de: 'Ideal, um zu Fuß unterwegs zu sein', fr: 'Idéal pour se déplacer à pied',

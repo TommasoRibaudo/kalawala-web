@@ -7,10 +7,11 @@ import { it } from './it';
 import { pt } from './pt';
 import { he } from './he';
 import { hi } from './hi';
+import { nl } from './nl';
 
 export type { Messages } from './en';
 
-const CATALOGS: Record<Locale, Partial<Messages>> = { en, es, de, fr, it, pt, he, hi };
+const CATALOGS: Record<Locale, Partial<Messages>> = { en, es, de, fr, it, pt, he, hi, nl };
 
 /**
  * The complete message catalog for a locale, with English filling any gap.

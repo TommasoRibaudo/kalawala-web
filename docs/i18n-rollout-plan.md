@@ -1207,7 +1207,7 @@ before this plan can close out clean. Grouped by priority.
       exported. Verified the test actually has teeth, not just green: deleted
       one `nl` entry from `RECOMMENDATION_REASONS`, confirmed the test failed
       with a precise "Expected path: nl" message, reverted.
-- [ ] Investigate the one remaining critical structured-data error on the live
+- [x] Investigate the one remaining critical structured-data error on the live
       re-test: **"Duplicate field `containsPlace`"** (down from 11 critical
       errors after the 2026-08-10 `public/index.html` fix, confirmed via
       Search Console's live URL Inspection test on
@@ -1216,13 +1216,63 @@ before this plan can close out clean. Grouped by priority.
       visible in the page source. Check whether a separate Vacation Rentals
       feed or Google Business Profile submission duplicates the same
       inventory data against the on-page JSON-LD. **Needs GSC/Business
-      Profile access — likely owner action.** *(Still blocked 2026-08-11 —
-      no GSC/Business Profile access available this session.)*
-- [ ] Re-run the Rich Results / URL Inspection check on a sample of listing
+      Profile access — likely owner action.** **Root-caused 2026-08-11**,
+      given access to the `reservas.kalawala@gmail.com` Google Business
+      Profile (account `u/1`) and a live re-test on `/de/geco/`:
+      - **Business Profile is not the source.** One listing, no linked
+        multi-location group, no separate hotel/vacation-rental feed
+        configured. Ruled out.
+      - **The real cause: `containsPlace` is authored as an array of 10
+        `Accommodation` objects (one per property) under a single parent
+        `VacationRental`.** Google's own reference documentation
+        ([Vacation rental structured data](https://developers.google.com/search/docs/appearance/structured-data/vacation-rental))
+        shows `containsPlace` as **one single object, not an array** — the
+        schema models *one listing = one accommodation*, not *one host = many
+        units*. Google's parser expands the 10-item array into 10 separate
+        `containsPlace` values against a property it validates as
+        single-occurrence, which is exactly what "duplicate field" means.
+        This isn't a markup bug so much as an architecture mismatch between
+        how this business actually operates (one host, ten independently
+        bookable houses) and what Google's schema was designed to describe.
+      - **Bigger finding, not previously known: this whole rich-result
+        feature is gated.** The same documentation page states plainly that
+        it's for site owners "who have already contacted a Google Technical
+        Account Manager and have Hotel Center access," and that "this
+        feature is only available to sites that meet certain participation
+        criteria" — an invitation-only program, not something any site can
+        opt into by publishing correct markup. There is no evidence this
+        business has that relationship. **Even fully-valid `containsPlace`
+        markup may never produce a rich result without separate enrollment**
+        — worth confirming with Google (or dropping pursuit of this specific
+        rich result) before investing more effort in the markup itself.
+      - **Smaller, non-critical finding surfaced by the same live test:**
+        every accommodation's `additionalType` is set to the full URL
+        `"https://schema.org/EntirePlace"`; Google's docs specify the bare
+        string `"EntirePlace"` for `containsPlace.additionalType`. Flagged as
+        "invalid enum value" but marked optional/non-critical — doesn't block
+        anything, but is a quick, unambiguous fix whenever this block is
+        next touched.
+      - **Left open, needs an owner decision:** restructure so each listing
+        page's `<VacationRental>` markup carries its *own* single-Accommodation
+        `containsPlace` (dropping the array, one block per property page
+        instead of one company-wide block in `public/index.html`), or accept
+        that this rich result isn't attainable without a Hotel Center
+        relationship and deprioritize it. Not decided or implemented this
+        session — this is a meaningful markup restructuring on live
+        production SEO surface, not a one-line fix.
+- [x] Re-run the Rich Results / URL Inspection check on a sample of listing
       pages across *other* locales (only `/es/besttimetovisitpuerto/` has been
       live-re-tested so far) to confirm the `identifier`/`occupancy.value` fix
       generalizes rather than being right on the one URL that got checked.
-      **Needs GSC access — owner action.** *(Still blocked 2026-08-11.)*
+      **Needs GSC access — owner action.** **Done 2026-08-11**: live-tested
+      `/de/geco/` — `identifier: "geco"` and `occupancy.value: 5` both present
+      and correct, confirming the fix generalizes. Expected: the
+      `VacationRental`/`Organization` JSON-LD lives in `public/index.html`,
+      one static block shared verbatim across every prerendered page and
+      locale (only `availableLanguage`/`knowsLanguage` vary, per Phase 12's
+      diff) — it isn't per-locale content, so a single successful cross-page
+      check is sufficient evidence rather than needing all ~9 locales
+      individually re-tested.
 - [x] Native-speaker check on `src/i18n/messages/it.ts`'s
       `home.optionPetFriendly: 'Pet-friendly'` — byte-identical to `en`/`es`.
       Spanish has a code comment justifying the English loanword; Italian
@@ -1293,7 +1343,7 @@ before this plan can close out clean. Grouped by priority.
       hiding behind a single generic error on every test. Not chased further
       this session — worth its own pass, separately scoped, now that the
       false signal is gone.
-- [ ] Revisit whether `useApplyStoredLocalePreference` (`src/i18n/localePreference.ts`)
+- [x] Revisit whether `useApplyStoredLocalePreference` (`src/i18n/localePreference.ts`)
       should keep silently redirecting a direct locale-URL visit to a
       returning visitor's stored preference now that 8 locales are live
       instead of 2. Deliberate Phase 7 UX design, not a bug, and crawlers are
@@ -1302,7 +1352,21 @@ before this plan can close out clean. Grouped by priority.
       manual QA: visiting `/he/...` directly in a browser that previously
       picked Italian silently serves Italian, not Hebrew. At minimum, note
       this for anyone manually spot-checking a locale — use a fresh/incognito
-      context or the in-page switcher, not a bare URL visit.
+      context or the in-page switcher, not a bare URL visit. **Decided and
+      fixed 2026-08-11**: the redirect now only fires from a URL with no
+      explicit locale of its own — this site's URL scheme has exactly one
+      such page, the bare English root `/`. Any `/xx/...` URL is itself a
+      locale selection (typed, bookmarked, linked, or clicked from search
+      results) and always wins over a stored preference now, closing the
+      exact confusion described above. Implementation: one check in
+      `useApplyStoredLocalePreference` against `detectLocaleFromPath`'s own
+      `isLocale(firstSegment)` test, so it can't drift from what "explicit
+      locale in the URL" means elsewhere in the codebase.
+      `tests/e2e/language-switching.spec.ts` updated: the old "stored
+      preference honoured" test moved from `/en/geco` to `/` (the only URL
+      where that's still true), and a new test asserts `/en/geco` with a
+      differing stored preference stays on `/en/geco`. Both, plus the other
+      4 in the file, pass against a live dev server.
 
 ---
 

@@ -21,9 +21,9 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | **Nine languages, one (Dutch/`nl`) not yet shipped.** Eight languages (EN/ES/DE/FR/IT/PT/HE/HI) have been live and independently verified in production since 2026-08-10 (PRs #52, #54, #60, #61). A ninth, Dutch, was then built out in full in the working tree — see [Phase 12](#phase-12--dutch-nl-ninth-language) — found uncommitted and completed 2026-08-11; both Phase 11 P0 items are now done. Next: PR and ship Phase 12, then work Phase 11's remaining P1/P2 items, then resume Phase 10 (GSC owner actions, still open on PR #59). |
+| **Current phase** | **Nine languages, one (Dutch/`nl`) not yet shipped.** Eight languages (EN/ES/DE/FR/IT/PT/HE/HI) have been live and independently verified in production since 2026-08-10 (PRs #52, #54, #60, #61). A ninth, Dutch, was found built out in full but uncommitted, verified, and opened as PR #62 (branch `feat/i18n-phase-12-dutch`) — see [Phase 12](#phase-12--dutch-nl-ninth-language); both Phase 11 P0 items are now done too. Next: merge/deploy PR #62, then work Phase 11's remaining P1/P2 items, then resume Phase 10 (GSC owner actions, still open on PR #59). |
 | **Last updated** | 2026-08-11 |
-| **Branch(es) in flight** | None merged-and-open. PR #59 (Phase 10 docs) still open, not yet merged. Phase 12 (Dutch) is complete but uncommitted in the working tree — no branch/PR opened yet. |
+| **Branch(es) in flight** | PR #59 (Phase 10 docs) still open, not yet merged. PR #62 (Phase 12, Dutch) open, not yet merged — branch `feat/i18n-phase-12-dutch`. |
 | **Blocked on** | Nothing blocking. See [Phase 11](#phase-11--post-launch-fixes-and-hardening-found-during-2026-08-10-verification) for the remaining P1/P2 punch list — none of it is a regression from this rollout's locked scope. PostHog export (organic sessions, EN vs ES, 12 months) is still the one open Phase 0 owner action. |
 
 Phase progress:
@@ -43,7 +43,7 @@ Phase progress:
 - [x] **Ship gate C — eight languages live** — deployed 2026-08-09, `.github/workflows/main.yml` run 31330475987
 - [ ] Phase 10 — Google Search Console and post-launch monitoring
 - [ ] Phase 11 — Post-launch fixes and hardening *(found during 2026-08-10 verification — see below; both P0 items done, P1/P2 open)*
-- [ ] Phase 12 — Dutch (`nl`), ninth language *(content and build plumbing complete in the working tree 2026-08-11; not yet committed/shipped — see below)*
+- [ ] Phase 12 — Dutch (`nl`), ninth language *(content and build plumbing complete 2026-08-11; PR #62 open, not yet merged — see below)*
 
 Hebrew/Hindi track (see [that section](#hebrew-and-hindi--rtl-and-non-latin-scripts)):
 
@@ -1259,8 +1259,8 @@ before this plan can close out clean. Grouped by priority.
 
 ### Phase 12 — Dutch (`nl`), ninth language
 
-**Content complete 2026-08-11. Not yet committed or shipped.** Not part of
-the original eight-language scope. First appeared as an
+**Content complete 2026-08-11. PR #62 (`feat/i18n-phase-12-dutch`) open, not
+yet merged or deployed.** Not part of the original eight-language scope. First appeared as an
 uncommitted, undocumented stub in the working tree, surfaced by the
 2026-08-10 verification session and filed as a Phase 11 P0 decision item:
 commit it as an intentional "Phase 12" head start, or discard it. Between
@@ -1337,7 +1337,7 @@ this doc's own "diff the build" rule:
 - `hreflang="nl"` appears 198 times in the built sitemap — once per route,
   same reciprocal pattern Phase 6 verified for the original eight.
 
-**Not done yet:** no branch, no PR, not merged, not deployed. Phase 10's GSC
+**Not done yet:** PR #62 open, not merged, not deployed. Phase 10's GSC
 submission is untouched by this — the sitemap generator is
 `RELEASED_LOCALES`-driven (Phase 6), so `nl` will appear in it automatically
 the moment this phase ships, with no separate sitemap work required.
@@ -2453,11 +2453,10 @@ to already be underway, further along than documented:
   Confirms the count is stable across sessions, not growing — but the
   question of why it's 27 rather than the older "4 pre-existing failures"
   this doc recorded even earlier is still open.
-- **Not done this session:** Phase 12 has no branch or PR yet — it exists
-  only in the working tree, validated but uncommitted. The remaining Phase 11
+- **Shipped as PR #62** (`feat/i18n-phase-12-dutch`), one commit for the
+  whole ninth-language addition, mirroring how Phase 8 shipped the original
+  six. Not merged yet as of this entry.
+- **Next session:** merge/deploy PR #62, then resume Phase 11's remaining
   P1/P2 items (structured-data `containsPlace` duplicate, cross-locale Rich
   Results re-test, `it.ts` pet-friendly wording, hydration cause #3, the
-  stored-locale-preference UX question) are untouched.
-- **Next session:** decide how to ship Phase 12 — one commit/PR for the
-  whole ninth-language addition is the natural shape, mirroring how Phase 8
-  shipped the original six. After that, resume Phase 11's P1/P2 list.
+  stored-locale-preference UX question).

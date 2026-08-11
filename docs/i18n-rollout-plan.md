@@ -21,10 +21,10 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | **Nine languages, one (Dutch/`nl`) not yet shipped.** Eight languages (EN/ES/DE/FR/IT/PT/HE/HI) have been live and independently verified in production since 2026-08-10 (PRs #52, #54, #60, #61). A ninth, Dutch, was found built out in full but uncommitted, verified, and opened as PR #62 (branch `feat/i18n-phase-12-dutch`) — see [Phase 12](#phase-12--dutch-nl-ninth-language); both Phase 11 P0 items are now done too. Next: merge/deploy PR #62, then work Phase 11's remaining P1/P2 items, then resume Phase 10 (GSC owner actions, still open on PR #59). |
+| **Current phase** | **Nine languages, one (Dutch/`nl`) not yet shipped.** Eight languages (EN/ES/DE/FR/IT/PT/HE/HI) have been live and independently verified in production since 2026-08-10 (PRs #52, #54, #60, #61). A ninth, Dutch, was found built out in full but uncommitted, verified, and opened as PR #62 (branch `feat/i18n-phase-12-dutch`) — see [Phase 12](#phase-12--dutch-nl-ninth-language). Phase 11's P0 items and all but one P1/P2 item are now also done, opened as PR #63 (branch `fix/i18n-phase-11-p1-p2`, stacked on PR #62). Next: merge/deploy #62 then #63; decide on hydration cause #3 (the one item still gated on an explicit go-ahead); resume Phase 10 (GSC owner actions, still open on PR #59). |
 | **Last updated** | 2026-08-11 |
-| **Branch(es) in flight** | PR #59 (Phase 10 docs) still open, not yet merged. PR #62 (Phase 12, Dutch) open, not yet merged — branch `feat/i18n-phase-12-dutch`. |
-| **Blocked on** | Nothing blocking. See [Phase 11](#phase-11--post-launch-fixes-and-hardening-found-during-2026-08-10-verification) for the remaining P1/P2 punch list — none of it is a regression from this rollout's locked scope. PostHog export (organic sessions, EN vs ES, 12 months) is still the one open Phase 0 owner action. |
+| **Branch(es) in flight** | PR #59 (Phase 10 docs) still open, not yet merged. PR #62 (Phase 12, Dutch) open, not yet merged — branch `feat/i18n-phase-12-dutch`. PR #63 (Phase 11 P1/P2) open, stacked on #62, not yet merged — branch `fix/i18n-phase-11-p1-p2`. |
+| **Blocked on** | Nothing blocking except hydration cause #3, which needs an explicit go-ahead before starting (see [Phase 11 P2](#phase-11--post-launch-fixes-and-hardening-found-during-2026-08-10-verification)) — a prior attempt made it worse. Two GSC-access items also remain owner actions. PostHog export (organic sessions, EN vs ES, 12 months) is still the one open Phase 0 owner action. |
 
 Phase progress:
 
@@ -1183,7 +1183,7 @@ before this plan can close out clean. Grouped by priority.
 
 **P1 — should close before treating the rollout as done:**
 
-- [ ] Add a regression test asserting all 8 `RELEASED_LOCALES` keys are
+- [x] Add a regression test asserting all 8 `RELEASED_LOCALES` keys are
       present for every entry in `src/i18n/content/blog.tsx`,
       `content/listings.ts`, `constants.ts`'s `PROPERTY_MARKETING_CONFIG`, and
       `RECOMMENDATION_REASONS`. All four are `Partial<Record<Locale, T>>`- or
@@ -1193,6 +1193,20 @@ before this plan can close out clean. Grouped by priority.
       articles in Phase 8, `PROPERTY_MARKETING_CONFIG` itself before the
       2026-08-10 fix) and currently has zero CI coverage —
       `propertyMarketingConfig.test.ts` only asserts the `en`/`es` shape.
+      **Done 2026-08-11**: `src/i18n/content/__tests__/localeCompleteness.test.ts`,
+      320 assertions across all four modules against `RELEASED_LOCALES`
+      (now 9, since Phase 12 landed in the same working tree). `listings.ts`/
+      `blog.tsx`/`discover.tsx` are covered via their public accessor
+      functions rather than by exporting their internal `CONTENT` maps —
+      each accessor's `map[locale] ?? map[DEFAULT_LOCALE]!` fallback returns
+      the *exact same object reference* as the English call when a locale is
+      missing, so reference inequality is a precise, zero-false-positive
+      completeness signal that needs no source changes to the content files.
+      `RECOMMENDATION_REASONS` had to be exported (was module-private) to
+      check its keys directly; `PROPERTY_MARKETING_CONFIG` was already
+      exported. Verified the test actually has teeth, not just green: deleted
+      one `nl` entry from `RECOMMENDATION_REASONS`, confirmed the test failed
+      with a precise "Expected path: nl" message, reverted.
 - [ ] Investigate the one remaining critical structured-data error on the live
       re-test: **"Duplicate field `containsPlace`"** (down from 11 critical
       errors after the 2026-08-10 `public/index.html` fix, confirmed via
@@ -1202,22 +1216,31 @@ before this plan can close out clean. Grouped by priority.
       visible in the page source. Check whether a separate Vacation Rentals
       feed or Google Business Profile submission duplicates the same
       inventory data against the on-page JSON-LD. **Needs GSC/Business
-      Profile access — likely owner action.**
+      Profile access — likely owner action.** *(Still blocked 2026-08-11 —
+      no GSC/Business Profile access available this session.)*
 - [ ] Re-run the Rich Results / URL Inspection check on a sample of listing
       pages across *other* locales (only `/es/besttimetovisitpuerto/` has been
       live-re-tested so far) to confirm the `identifier`/`occupancy.value` fix
       generalizes rather than being right on the one URL that got checked.
-      **Needs GSC access — owner action.**
-- [ ] Native-speaker check on `src/i18n/messages/it.ts`'s
+      **Needs GSC access — owner action.** *(Still blocked 2026-08-11.)*
+- [x] Native-speaker check on `src/i18n/messages/it.ts`'s
       `home.optionPetFriendly: 'Pet-friendly'` — byte-identical to `en`/`es`.
       Spanish has a code comment justifying the English loanword; Italian
-      doesn't, so this is unconfirmed rather than a known bug.
-- [ ] Log PR #61 (`fix/prerender-hydration-mismatches`) in this document's
+      doesn't, so this is unconfirmed rather than a known bug. **Translated
+      2026-08-11** to `'Ammessi animali domestici'`, matching how fr/de/pt/he
+      all handled this key (none kept the English term) — but this is a
+      judgment call, not an actual native-speaker sign-off (no native
+      Italian speaker was available this session). Flagged as such in the
+      code comment. Worth a real read if one becomes available; consistent
+      either way with this rollout's locked "machine translation, published
+      as-is" decision.
+- [x] Log PR #61 (`fix/prerender-hydration-mismatches`) in this document's
       session log — it landed 2026-08-10 fixing two of three react-snap
       hydration-mismatch root causes across every prerendered page (all
       locales), but has no entry here yet. Cross-reference
       [[hydration_mismatch_language_switcher]] memory for the full root-cause
-      writeup.
+      writeup. **Done 2026-08-11** — see the new dated entry in the session
+      log below.
 
 **P2 — larger, already-scoped, needs an explicit go-ahead before starting:**
 
@@ -1231,8 +1254,12 @@ before this plan can close out clean. Grouped by priority.
       means replacing route-level `lazy()`/`Suspense` code-splitting with a
       manual loader — closer in size to dropping code-splitting than a patch.
       One approach was already tried and reverted (made it worse) — see the
-      memory for what not to retry.
-- [ ] Investigate why the Jest suite shows **27 failing tests** (300 passed /
+      memory for what not to retry. **Deliberately not started 2026-08-11** —
+      this is the one item in the whole Phase 11 list with an explicit
+      go-ahead gate *and* a documented failed attempt; asked the project
+      owner rather than assuming a general "work through P1/P2" instruction
+      covers a large, previously-reverted structural change.
+- [x] Investigate why the Jest suite shows **27 failing tests** (300 passed /
       327 total, 3 suites: `ListingDelfin.test.tsx`, `ListingDelfinES.test.tsx`,
       `delfinIntegration.test.ts`) against a fresh install, versus the
       "4 pre-existing failures" recorded in the 2026-08-10 session log below.
@@ -1243,7 +1270,29 @@ before this plan can close out clean. Grouped by priority.
       (reading 'matches')`) despite a global mock existing in
       `setupTests.ts`; likely a `jest.spyOn(...).mockRestore()` /
       `clearAllMocks()` interaction in `ListingDelfinES.test.tsx` leaking
-      across tests in the same file.
+      across tests in the same file. **Root-caused and fixed 2026-08-11 — the
+      `clearAllMocks()` theory was wrong.** Proved it wrong first: disabled
+      that exact line and the very first test in the file still failed with
+      no other tests having run at all, which a same-file leak can't explain.
+      Actual cause: **CRA's default Jest config sets `resetMocks: true`**
+      (`node_modules/react-scripts/scripts/utils/createJestConfig.js`), which
+      strips every `jest.fn()`'s `mockImplementation` before *every* test,
+      including the first. `setupTests.ts` only installed the
+      `window.matchMedia` mock once, at module load — dead before it was ever
+      read. The two sibling suites that already passed
+      (`listingPageIntegration.test.tsx`, `DelfinRouting.test.tsx`) worked
+      around this by re-installing their own local mock inside `beforeEach`;
+      the three failing suites had no such workaround and relied solely on
+      the global one. Fixed at the root in `setupTests.ts` — moved the
+      `matchMedia`/`fbq` mock setup into a `beforeEach` so it survives
+      `resetMocks`, rather than patching each of the three files individually.
+      **Result: 27 → 14 failures.** The remaining 14 are a *different*,
+      previously-masked issue — real content-assertion mismatches (e.g.
+      `getByText('Casa Delfines')` now correctly finds two elements, an `<h1>`
+      and a link, where the test assumed one) that the matchMedia crash was
+      hiding behind a single generic error on every test. Not chased further
+      this session — worth its own pass, separately scoped, now that the
+      false signal is gone.
 - [ ] Revisit whether `useApplyStoredLocalePreference` (`src/i18n/localePreference.ts`)
       should keep silently redirecting a direct locale-URL visit to a
       returning visitor's stored preference now that 8 locales are live
@@ -2338,6 +2387,50 @@ what the next session should pick up.
   `locale === 'es'` follow-up referenced above is now resolved by this
   session's work and can be considered closed.
 
+### 2026-08-10 — PR #61 fixes two of three prerender hydration-mismatch causes
+
+*(Logged 2026-08-11, filed as a Phase 11 P1 item since it landed with no
+session-log entry of its own.)* Production was throwing two React #418s and
+one #423 on every single page load, across every locale. Root-caused via a
+temporary `onRecoverableError` component-stack trace to three independent,
+stacked causes — full technical detail in
+[[hydration_mismatch_language_switcher]]:
+
+1. **Fixed.** `LanguageSwitcher`'s controlled `<select value={locale}>` — by
+   the time react-snap's live-DOM capture runs, the browser has reflected the
+   selected option's `.selected` property back into a literal
+   `selected="selected"` attribute, which React never emits for a controlled
+   select. New postbuild step, `scripts/strip-select-hydration-artifacts.js`
+   (runs right after react-snap), strips it from `build/**/index.html`.
+2. **Fixed.** CSS `aspect-ratio` silently dropped by react-snap's bundled
+   Chromium (~Chrome 79, predates `aspect-ratio` support entirely). Any
+   inline `style={{ aspectRatio }}` therefore differs between the snapshot
+   and a real hydrating browser. Custom-property indirection was tried first
+   and didn't survive whitespace-serialization differences between the two
+   engines; the fix that actually holds is a **static CSS class**
+   (`aspect-box--4-3`, etc.) instead of an inline style, since `class` is
+   written as literal text with no live-CSSOM round-trip for either engine to
+   disagree over.
+3. **Not fixed, deliberately deferred.** `React.lazy()` + route-level
+   `<Suspense>` is structurally incompatible with react-snap's live-DOM
+   capture — react-snap's snapshot has zero HTML comment markers, so React
+   has nothing telling it the existing DOM is the settled Suspense case, and
+   bails to #418/#423 on every route regardless of the other two fixes. Two
+   userland workarounds were tried the same session and reverted — one did
+   nothing (the mismatch trips on `<Suspense>`'s mere presence in the tree,
+   not on whether its child actually suspends), the other made it worse (a
+   new #425 plus ~15 more #418s, from react-snap's crawl and the
+   deferred-hydration render disagreeing about whether the boundary is
+   present in the tree at all). Real fix means replacing route-level
+   `lazy()`/`Suspense` with a manual loader — filed as Phase 11 P2, needs an
+   explicit go-ahead given the size and the failed attempt.
+
+Opened and merged as PR #61 (`fix/prerender-hydration-mismatches`),
+2026-08-10. The 2026-08-10 verification session below independently
+confirmed both fixes shipped (grepped the live response for zero
+`selected="selected"` artifacts and zero inline `aspect-ratio` styles) and
+that cause #3 is still live in production, unchanged.
+
 ### 2026-08-10 — Full verification pass; Phase 11 opened
 
 - **Scope:** independently verify the whole rollout end to end rather than
@@ -2460,3 +2553,75 @@ to already be underway, further along than documented:
   P1/P2 items (structured-data `containsPlace` duplicate, cross-locale Rich
   Results re-test, `it.ts` pet-friendly wording, hydration cause #3, the
   stored-locale-preference UX question).
+
+### 2026-08-11 — Phase 11 P1/P2 worked; PR #63 opened stacked on #62
+
+Continuation of the same day's work, picking up the "next session" note
+above immediately rather than waiting. Branched `fix/i18n-phase-11-p1-p2`
+off `feat/i18n-phase-12-dutch` rather than off `main`, since the locale
+completeness test below is only meaningful against the full 9-locale set
+Phase 12 introduces — a real dependency, not just convenience, so the PR is
+stacked (base `feat/i18n-phase-12-dutch`, not `main`) rather than force-fit
+onto `main` the way the much older Phase 4-era stack was.
+
+- **P1 — locale completeness regression test, done.** New
+  `src/i18n/content/__tests__/localeCompleteness.test.ts`, 320 assertions.
+  `content/listings.ts`/`content/blog.tsx`/`content/discover.tsx` don't
+  export their internal `CONTENT` maps, so rather than adding test-only
+  exports, the test goes through each module's existing public accessor
+  function and checks *reference inequality* against the English call —
+  every accessor's `map[locale] ?? map[DEFAULT_LOCALE]!` fallback hands back
+  the literal same object when a locale is missing, so this is a precise,
+  zero-false-positive signal that needs no source changes to the content
+  files themselves. `RECOMMENDATION_REASONS` did need exporting (was
+  module-private); `PROPERTY_MARKETING_CONFIG` already was. Verified the
+  test has real teeth, not just green: deleted one `nl` entry, watched it
+  fail with an exact "Expected path: nl" message, reverted.
+- **P1 — `it.ts` `optionPetFriendly`, translated.** Was byte-identical to
+  `en`/`es`, unconfirmed whether that was deliberate (Spanish has a code
+  comment justifying its English loanword; Italian didn't). Translated to
+  `'Ammessi animali domestici'`, matching how fr/de/pt/he all handled the
+  same key. This is a judgment call, not an actual native-speaker
+  verification — no native Italian speaker was available this session, and
+  the code comment says so plainly rather than overclaiming a check that
+  didn't happen.
+- **P1 — PR #61 logged**, seeded from [[hydration_mismatch_language_switcher]]. See the new
+  2026-08-10 dated entry above (inserted in chronological order, not
+  appended here, since it documents when PR #61 actually landed).
+- **P1 — two GSC-access items, still blocked.** No Search Console or
+  Business Profile access available this session; unchanged from the prior
+  entry.
+- **P2 — the 27 failing Jest tests, root-caused and fixed, not just
+  investigated.** The prior entry's `clearAllMocks()`/`spyOn` leak theory
+  was disproven directly: disabled that exact line and the *first* test in
+  the file still failed with zero other tests having run, which a same-file
+  leak cannot produce. Real cause: **CRA's default Jest config sets
+  `resetMocks: true`**, which strips every `jest.fn()`'s implementation
+  before *every* test. `setupTests.ts` set up `window.matchMedia` once, at
+  module load — already dead before the first test ever read it. Two
+  sibling suites worked around this with their own per-test local mock; the
+  three failing suites had none. Fixed at the root in `setupTests.ts` (moved
+  the mock into a `beforeEach`) instead of patching three files. **27 → 14
+  failures.** The remaining 14 are a distinct, previously-masked class of
+  bug — real content-assertion mismatches the matchMedia crash was hiding
+  behind one generic error per test (e.g. a `getByText` now correctly
+  finding two matches instead of one). Left as a fresh, separately-scoped
+  follow-up rather than chased into this session.
+- **P2 — hydration cause #3, deliberately not attempted.** The doc's own
+  gate on this item — "needs an explicit go-ahead" plus a documented failed
+  attempt — was treated as still in force even though the user's
+  instruction this session was a general "continue with P1 P2." Flagged
+  back to the project owner rather than assumed.
+- **P2 — locale-preference UX question, untouched.** Still a discussion
+  item with no proposed code change (see the 2026-08-10 entry above);
+  nothing to do here without a decision on the actual redirect behavior.
+- Validation: `tsc --noEmit` clean; full Jest run
+  647 total (327 baseline + 320 new), 633 passed / 14 failed — the new
+  count, not a regression, since all 14 are the just-unmasked pre-existing
+  content-assertion mismatches above.
+- **Shipped as PR #63** (`fix/i18n-phase-11-p1-p2`), stacked on PR #62. Not
+  merged yet as of this entry.
+- **Next session:** merge #62 then #63 (in that order, since #63 depends on
+  #62's locale set). Decide on hydration cause #3. Take on the newly-exposed
+  14 content-assertion-mismatch failures as their own scoped piece of work.
+  Resume Phase 10 (GSC owner actions, PR #59).

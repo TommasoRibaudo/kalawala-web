@@ -112,7 +112,13 @@ export const it: Messages = {
     helpMeChooseTitleHighlight: 'soggiorno ideale',
     optionCouples: 'Ideale per coppie',
     optionFamilies: 'Perfetto per famiglie',
-    optionPetFriendly: 'Pet-friendly',
+    // Unlike es.ts, there's no evidence this was a deliberate loanword choice
+    // for Italian — it was byte-identical to en/es, flagged as unconfirmed in
+    // Phase 11 P1. Translated to match how fr/de/pt/he all handled this key
+    // (none of them kept the English term); still worth a native-speaker
+    // read, since "pet friendly" does also see some use as an adopted term
+    // in Italian rental listings.
+    optionPetFriendly: 'Ammessi animali domestici',
     optionBestValue: 'Miglior rapporto qualità-prezzo',
   },
 

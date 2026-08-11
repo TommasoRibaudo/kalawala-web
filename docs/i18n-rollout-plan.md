@@ -21,10 +21,10 @@ resume without re-investigating the codebase.
 
 | | |
 |---|---|
-| **Current phase** | **Nine languages, one (Dutch/`nl`) not yet shipped.** Eight languages (EN/ES/DE/FR/IT/PT/HE/HI) have been live and independently verified in production since 2026-08-10 (PRs #52, #54, #60, #61). A ninth, Dutch, was found built out in full but uncommitted, verified, and opened as PR #62 (branch `feat/i18n-phase-12-dutch`) — see [Phase 12](#phase-12--dutch-nl-ninth-language). Phase 11's P0 items and all but one P1/P2 item are now also done, opened as PR #63 (branch `fix/i18n-phase-11-p1-p2`, stacked on PR #62). Next: merge/deploy #62 then #63; decide on hydration cause #3 (the one item still gated on an explicit go-ahead); resume Phase 10 (GSC owner actions, still open on PR #59). |
+| **Current phase** | **Nine languages, one (Dutch/`nl`) not yet shipped.** Eight languages (EN/ES/DE/FR/IT/PT/HE/HI) have been live and independently verified in production since 2026-08-10 (PRs #52, #54, #60, #61). A ninth, Dutch, was found built out in full but uncommitted, verified, and opened as PR #62 (branch `feat/i18n-phase-12-dutch`) — see [Phase 12](#phase-12--dutch-nl-ninth-language). Phase 11's P0 and P1/P2 items are all now done. P1/P2 minus hydration cause #3 opened as PR #63 (branch `fix/i18n-phase-11-p1-p2`, stacked on PR #62). Hydration cause #3 itself fixed and committed (not yet PR'd) on `fix/hydration-cause-3-manual-loader`, stacked on #63 — see the 2026-08-11 "Hydration cause #3 fixed" session log entry. Next: merge/deploy #62 → #63 → the hydration branch (open its PR first); resume Phase 10 (GSC owner actions, still open on PR #59). |
 | **Last updated** | 2026-08-11 |
-| **Branch(es) in flight** | PR #59 (Phase 10 docs) still open, not yet merged. PR #62 (Phase 12, Dutch) open, not yet merged — branch `feat/i18n-phase-12-dutch`. PR #63 (Phase 11 P1/P2) open, stacked on #62, not yet merged — branch `fix/i18n-phase-11-p1-p2`. |
-| **Blocked on** | Nothing blocking except hydration cause #3, which needs an explicit go-ahead before starting (see [Phase 11 P2](#phase-11--post-launch-fixes-and-hardening-found-during-2026-08-10-verification)) — a prior attempt made it worse. Two GSC-access items also remain owner actions. PostHog export (organic sessions, EN vs ES, 12 months) is still the one open Phase 0 owner action. |
+| **Branch(es) in flight** | PR #59 (Phase 10 docs) still open, not yet merged. PR #62 (Phase 12, Dutch) open, not yet merged — branch `feat/i18n-phase-12-dutch`. PR #63 (Phase 11 P1/P2) open, stacked on #62, not yet merged — branch `fix/i18n-phase-11-p1-p2`. `fix/hydration-cause-3-manual-loader`, stacked on #63, committed but no PR opened yet. |
+| **Blocked on** | Nothing blocking. Two GSC-access items remain owner actions. PostHog export (organic sessions, EN vs ES, 12 months) is still the one open Phase 0 owner action. A residual set of ~15-18 harmless-but-unexplained hydration console warnings is filed as a follow-up in the 2026-08-11 session log — needs a temporary non-minified dev build to pin down further, not blocking. |
 
 Phase progress:
 
@@ -1294,7 +1294,7 @@ before this plan can close out clean. Grouped by priority.
 
 **P2 — larger, already-scoped, needs an explicit go-ahead before starting:**
 
-- [ ] Hydration cause #3: `React.lazy()` + `<Suspense>` at the route level is
+- [x] Hydration cause #3: `React.lazy()` + `<Suspense>` at the route level is
       structurally incompatible with react-snap's live-DOM-capture prerender
       (confirmed via `onRecoverableError` component-stack trace — see
       [[hydration_mismatch_language_switcher]]). **Live-confirmed still firing
@@ -1308,7 +1308,9 @@ before this plan can close out clean. Grouped by priority.
       this is the one item in the whole Phase 11 list with an explicit
       go-ahead gate *and* a documented failed attempt; asked the project
       owner rather than assuming a general "work through P1/P2" instruction
-      covers a large, previously-reverted structural change.
+      covers a large, previously-reverted structural change. **Done
+      2026-08-11**, on explicit go-ahead — see the same-day session log entry
+      below for the fix and the bisection investigation that followed it.
 - [x] Investigate why the Jest suite shows **27 failing tests** (300 passed /
       327 total, 3 suites: `ListingDelfin.test.tsx`, `ListingDelfinES.test.tsx`,
       `delfinIntegration.test.ts`) against a fresh install, versus the
@@ -2689,3 +2691,94 @@ onto `main` the way the much older Phase 4-era stack was.
   #62's locale set). Decide on hydration cause #3. Take on the newly-exposed
   14 content-assertion-mismatch failures as their own scoped piece of work.
   Resume Phase 10 (GSC owner actions, PR #59).
+
+### 2026-08-11 — Hydration cause #3 fixed; bisection surfaced and fixed five more prerender-unsafe effects
+
+Same-day continuation, on explicit go-ahead this time (see the P2 gate note
+above). Branch `fix/hydration-cause-3-manual-loader`, stacked on
+`fix/i18n-phase-11-p1-p2`.
+
+- **The fix, per the pre-approved plan.** Route-level `lazy()`/`<Suspense>`
+  replaced with a hand-rolled promise-based loader (new `src/routeLoader.tsx`)
+  that `index.tsx` pre-warms for the current URL before the first
+  `hydrateRoot`/`createRoot` call, so `<RouteLoader>` takes its synchronous
+  cache-hit branch on that render — no Suspense boundary anywhere in the tree,
+  never conditionally reintroduced. Shipped in two commits: an additive Stage
+  A (`routeLoader.tsx` + a `LOADERS` map alongside the old `lazy()`-based one,
+  unreachable, tsc+Jest only), then Stage B (`routes.config.ts`, `Router.tsx`,
+  `index.tsx` flipped together in one commit, since removing `<Suspense>`
+  without the pre-warm gate would flash `null` over prerendered content on
+  every load).
+- **Fixing it unmasked, not created, three further prerender-unsafe effects**
+  — removing the Suspense boundary let hydration reconcile deep enough into
+  the tree to reach them for the first time. Two were found and fixed inline
+  with the plan's own verification pass: `MessageTipContainer`'s
+  `stickyCTAHeight`/`isCookieBannerVisible`/`windowWidth` state, and an
+  identical `isScreenSmall` pattern duplicated across all 10
+  `Listing*.page.tsx` files. Root mechanism for both: react-snap's actual
+  default crawl viewport is **480×850, "mobile first"**
+  (`node_modules/react-snap/index.js`), not desktop-width as several existing
+  code comments wrongly assumed — the crawl's settle-time wait gives an
+  unguarded resize/media-query effect time to fire and bake a mobile-viewport
+  state into the static HTML that a real client's null-seeded first render
+  never matches.
+- **User chose to keep digging (bisection) rather than ship-and-defer** once
+  a residual error cascade remained after those two fixes. Temporarily
+  disabling half of `ListingDelfin`'s render tree and rebuilding narrowed the
+  cascade to the untouched sidebar column, surfacing three more real bugs,
+  same root pattern, different mechanisms:
+  - **`useCalendarMonth`** reads a shared cross-component cache
+    (`peekCalendarMonth`) synchronously on every render rather than local
+    state; its fetch-triggering effect had no prerender guard, so the crawl's
+    real (404, no backend running at build time) response settled into
+    `hasError`/`isLoading` before the snapshot was taken. One hook, four call
+    sites (`PriceConfirmationSection` once, `CalendarWithPriceDots` three
+    times for the visible/anchor/anchor-next month) — fixed once at the hook.
+  - **`OtherListings`, `OtherBlogs`, `ListingAd`, `CallToAction`** — four
+    components whose own doc comments already *described* the
+    null/false-seed-then-guard-the-effect pattern (clearly copied from
+    `MessageTipContainer`'s fix) but never actually added the
+    `isPrerender()` check to the effect body. Comment and code had drifted
+    apart. Same fix applied to all four.
+  - **`useRandomPopup`** had no guard at all — a `Math.random()` roll plus a
+    multi-second `setTimeout` that, if it won the roll and fired inside
+    react-snap's settle window, baked a random marketing popup element into
+    that specific crawled page's snapshot. Non-deterministic per crawl run,
+    which is why it hadn't been pinned down by inspection alone.
+  - Confirmed each fix by diffing the *exact* DOM state at the earlier
+    diagnostic step against the static build before moving to the next lead,
+    not just by re-running the full suite and eyeballing the error count.
+- **A residual set of ~15-18 console-level hydration warnings remains,
+  verified harmless.** Two independent checks — a full structural DOM
+  tree-walk (tags/child-counts/text, prerendered vs. hydrated) and a snapshot
+  taken at the exact instant of the first `onRecoverableError` call — both
+  found **zero** surviving differences in final rendered output, across `/`,
+  `/he/`, `/de/` (default and `--cpu=4` throttled), `/en/delfin`,
+  `/es/delfin`, `/en/blog`, `/en/besttimetovisitpuerto`, and `/404`.
+  Production React's minified error messages carry no embedded diff details
+  for these specific calls, so isolating their exact cause would need a
+  temporary non-minified dev bundle hydrated against the same static HTML —
+  a materially bigger investment than the diagnostics used so far. Asked the
+  project owner: ship now vs. build the dev bundle. **Chose to ship now**,
+  given verified harmlessness. Filed here as the follow-up.
+- **`/en/book` (and the other client-only routes) intentionally still show
+  hydration errors** — there is no prerendered snapshot for them at all
+  (server sends the root shell per `public/.htaccess`, matching the plan's
+  own documented caveat), so the "prerendered" and "wanted" trees are
+  necessarily different on purpose. Confirmed the page still becomes fully
+  functional (correct title, non-empty `#root`) despite the transient
+  errors — not a regression, nothing to fix here.
+- Validation: `tsc --noEmit` clean; full Jest 647 total, 633 passed / 14
+  failed (the same pre-existing content-assertion mismatches from the prior
+  entry, confirmed via `git diff` on the failing files — no new regression);
+  full production build + react-snap crawl 199/199 clean;
+  `inject-route-preloads.js` exit 0; `hydration-diff.mjs` across the sample
+  route set above, `structure: IDENTICAL` on every one.
+- **Shipped as a commit on `fix/hydration-cause-3-manual-loader`**, stacked
+  on `fix/i18n-phase-11-p1-p2`. PR not yet opened as of this entry.
+- **Next session:** open the PR for this branch (after #62/#63 merge, since
+  it stacks on top). If the residual ~15-18 warnings are worth chasing later,
+  that needs a temporary non-minified dev build, not more DOM-diffing — flag
+  before repeating the same technique. Otherwise resume the existing
+  next-session queue: merge #62 → #63 → this branch, the 14
+  content-assertion-mismatch failures, Phase 10 GSC owner actions.

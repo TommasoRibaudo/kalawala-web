@@ -17,18 +17,30 @@ import { Page, Locator } from '@playwright/test';
 // Navigation bar
 // ---------------------------------------------------------------------------
 
-/** Navigation bar selectors */
+/**
+ * Navigation bar selectors.
+ *
+ * Scoped to `nav.bar(page)` rather than the whole page: Footer
+ * (added 2026-07-28) renders its own "our homes" property list and a
+ * "Check availability" CTA link, both of which collide with an unscoped
+ * `getByRole('link', { name: 'Home' | 'Availability' })` — e.g. "Home"
+ * alone matched 14 elements page-wide (homepage property cards whose
+ * accessible name happens to contain "home"). The current nav bar itself
+ * only has four links — Home, Blog, My Booking, WhatsApp — "Availability",
+ * "Photos" and "Contact" were removed from it at some point before Footer
+ * landed; see navigation.spec.ts for the replacement coverage of those
+ * removed items' underlying sections/CTAs.
+ */
 export const nav = {
   bar: (page: Page): Locator => page.getByRole('navigation'),
-  homeLink: (page: Page): Locator => page.getByRole('link', { name: 'Home' }),
-  availabilityLink: (page: Page): Locator =>
-    page.getByRole('link', { name: 'Availability' }),
-  photosLink: (page: Page): Locator =>
-    page.getByRole('link', { name: 'Photos' }),
-  contactLink: (page: Page): Locator =>
-    page.getByRole('link', { name: 'Contact' }),
+  homeLink: (page: Page): Locator =>
+    nav.bar(page).getByRole('link', { name: 'Home', exact: true }),
   blogLink: (page: Page): Locator =>
-    page.getByRole('link', { name: 'Blog' }),
+    nav.bar(page).getByRole('link', { name: 'Blog', exact: true }),
+  myBookingLink: (page: Page): Locator =>
+    nav.bar(page).getByRole('link', { name: /my booking|mi reserva/i }),
+  whatsAppLink: (page: Page): Locator =>
+    nav.bar(page).getByRole('link', { name: 'WhatsApp', exact: true }),
   hamburgerToggle: (page: Page): Locator =>
     page.getByRole('button', { name: /Toggle navigation/i }),
   // Phase 7's combo box renders twice in the DOM — a desktop copy inside
@@ -39,6 +51,19 @@ export const nav = {
     page.locator('.navbar-flag .language-switcher-select'),
   languageSwitcherMobile: (page: Page): Locator =>
     page.locator('.mobile-flag .language-switcher-select'),
+};
+
+/**
+ * "Check availability" appears in three places on the homepage — the hero
+ * search widget's own submit button (not this), a repeated mid-page CTA
+ * banner (BookingCtaBanner), and the Footer's CTA column. Scoped to
+ * `.booking-cta-banner` specifically so tests target one deliberate,
+ * predictable instance rather than whichever one `getByRole` happens to
+ * match `.first()`.
+ */
+export const bookingCtaBanner = {
+  link: (page: Page): Locator =>
+    page.locator('.booking-cta-banner').getByRole('link'),
 };
 
 // ---------------------------------------------------------------------------
@@ -65,7 +90,15 @@ export const cookieBanner = {
 // Booking search widget
 // ---------------------------------------------------------------------------
 
-/** Booking search widget selectors */
+/**
+ * Booking search widget selectors.
+ *
+ * checkInInput/checkOutInput target the standalone `/en/book` search page,
+ * which still has real labeled date inputs. The listing-page sidebar widget
+ * (BookingSearchWidget, e.g. on `/en/geco`) does not — it picks dates via
+ * CalendarWithPriceDots, a clickable day-cell grid with no `<input>` at
+ * all. Use `calendar` below for that variant instead of these two.
+ */
 export const bookingWidget = {
   checkInInput: (page: Page): Locator =>
     page.getByLabel(/check-in|llegada/i),
@@ -79,6 +112,27 @@ export const bookingWidget = {
     page.getByRole('button', {
       name: /search availability|buscar disponibilidad/i,
     }),
+};
+
+/**
+ * CalendarWithPriceDots — the day-cell grid picker used by the listing-page
+ * sidebar BookingSearchWidget in place of a plain date input. Opens on the
+ * month containing "today", one month per screen; navigate forward with
+ * `nextMonthButton` before clicking a day in a later month. Each visible
+ * month renders every day number 0-31 at most once, so `dayCell` doesn't
+ * need to disambiguate beyond scoping to the grid.
+ */
+export const calendar = {
+  nextMonthButton: (page: Page): Locator =>
+    page.getByRole('button', { name: /next month|mes siguiente/i }),
+  dayCell: (page: Page, day: number): Locator =>
+    page
+      .locator('.calendar-with-price-dots__grid .calendar-date-cell')
+      .filter({
+        has: page.locator('.calendar-date-cell__number', {
+          hasText: new RegExp(`^${day}$`),
+        }),
+      }),
 };
 
 // ---------------------------------------------------------------------------

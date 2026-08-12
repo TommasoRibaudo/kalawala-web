@@ -1,0 +1,111 @@
+key,en_text,es,de,fr,it,pt,he,hi,nl
+common.checkAvailability,Check availability,translated,translated,translated,translated,translated,translated,translated,translated
+common.readyToBook,Ready to book?,translated,translated,translated,translated,translated,translated,translated,translated
+common.instantConfirmation,Instant confirmation,translated,translated,translated,translated,translated,translated,translated,translated
+nav.home,Home,translated,translated,translated,identical-to-english,translated,translated,translated,identical-to-english
+nav.blog,Blog,identical-to-english,identical-to-english,identical-to-english,identical-to-english,identical-to-english,translated,translated,identical-to-english
+nav.myBooking,My Booking,translated,translated,translated,translated,translated,translated,translated,translated
+nav.bookNow,Book now,translated,translated,translated,translated,translated,translated,translated,translated
+footer.ourHomes,Our Homes,translated,translated,translated,translated,translated,translated,translated,translated
+footer.travelGuides,Travel Guides,translated,translated,translated,translated,translated,translated,translated,translated
+footer.contact,Contact,translated,translated,identical-to-english,translated,translated,translated,translated,identical-to-english
+footer.chatOnWhatsApp,Chat on WhatsApp,translated,translated,translated,translated,translated,translated,translated,translated
+callToAction.exploreAvailability,Explore Availability and Prices Across All Our Properties in Puerto Viejo and Playa Chiquita.,translated,translated,translated,translated,translated,translated,translated,translated
+callToAction.nonRefundableLead,Select the,translated,translated,translated,translated,translated,translated,translated,translated
+callToAction.nonRefundableBold,non-refundable rate,translated,translated,translated,translated,translated,translated,translated,translated
+callToAction.nonRefundableTail,in the booking tool to enjoy a 10% discount.,translated,translated,translated,translated,translated,translated,translated,translated
+callToAction.availabilityDisclaimer,"*Showing availability for all available properties in the puerto viejo area, including properties advertised on other pages, make sure you check the name of the house and its photo before booking!",translated,translated,translated,translated,translated,translated,translated,translated
+callToAction.bankTransferLead,Prefer to pay via bank transfer or SINPE? Book securely with us and send your deposit confirmation to,translated,translated,translated,translated,translated,translated,translated,translated
+callToAction.bankTransferMid,or via WhatsApp at,translated,translated,translated,translated,translated,translated,translated,translated
+callToAction.bankTransferTail,within 6 hours of making your reservation.,translated,translated,translated,translated,translated,translated,translated,translated
+hero.tagline,Fully equipped vacation homes in the heart of Puerto Viejo and Playa Chiquita.,translated,translated,translated,translated,translated,translated,translated,translated
+hero.trust,✓ Instant confirmation · ✓ Secure booking · ✓ No platform fees,translated,translated,translated,translated,translated,translated,translated,translated
+hero.rating,⭐⭐⭐⭐⭐ 4.9/5 from thousands of stays since 2015,translated,translated,translated,translated,translated,translated,translated,translated
+sections.ourLead,Our,translated,translated,translated,translated,translated,translated,translated,translated
+sections.homesHighlight,Homes,translated,translated,translated,translated,translated,translated,translated,translated
+sections.homeHighlight,Home,translated,translated,translated,translated,translated,translated,translated,translated
+sections.villasHighlight,Villas,identical-to-english,translated,identical-to-english,translated,translated,translated,translated,translated
+sections.exploreOtherStays,Explore Other Unique Stays in Puerto Viejo & Playa Chiquita.,translated,translated,translated,translated,translated,translated,translated,translated
+sections.villasWithPool,"Private Pool Luxury Villas in Playa Chiquita, Puerto Viejo.",translated,translated,translated,translated,translated,translated,translated,translated
+sections.privateRetreat,"Private Retreat in Playa Chiquita, Puerto Viejo",translated,translated,translated,translated,translated,translated,translated,translated
+sections.otherBlogsHeading,Check out our other blogs!,translated,translated,translated,translated,translated,translated,translated,translated
+sections.otherListingsHeading,Check out our other options!,translated,translated,translated,translated,translated,translated,translated,translated
+sections.readBlog,Read blog: ⟦title⟧,translated,translated,translated,translated,translated,translated,translated,translated
+sections.weOfferEquipped,We offer fully equipped homes:,translated,translated,translated,translated,translated,translated,translated,translated
+sections.ourPhotosHeading,Photos,translated,translated,identical-to-english,translated,translated,translated,translated,translated
+contact.headingMain,Get In,translated,translated,translated,translated,translated,translated,translated,translated
+contact.headingHighlight,Touch,translated,translated,translated,translated,translated,translated,translated,translated
+contact.askUsAnything,Ask us anything,translated,translated,translated,translated,translated,translated,translated,translated
+contact.replyTime,We usually reply within an hour on WhatsApp.,translated,translated,translated,translated,translated,translated,translated,translated
+contact.phoneLabel,"Phone, Whatsapp:",translated,translated,translated,translated,translated,translated,translated,translated
+contact.chatOnWhatsApp,chat on WhatsApp,translated,translated,translated,translated,translated,translated,translated,translated
+contact.emailLabel,Email:,translated,translated,translated,identical-to-english,translated,translated,translated,translated
+reviews.headingMain,What our guests are,translated,translated,translated,translated,translated,translated,translated,translated
+reviews.headingHighlight,saying,translated,translated,translated,translated,translated,translated,translated,translated
+reviews.heading,What our guests are saying,translated,translated,translated,translated,translated,translated,translated,translated
+reviews.closeReview,Close review,translated,translated,translated,translated,translated,translated,translated,translated
+reviews.closeReviews,Close reviews,translated,translated,translated,translated,translated,translated,translated,translated
+price.tooltip,Lowest available rate this month. Rates vary by season and by the dates you choose.,translated,translated,translated,translated,translated,translated,translated,translated
+price.fromPerNight,From ⟦price⟧ per night,translated,translated,translated,translated,translated,translated,translated,translated
+price.discountLead,Choose the,translated,translated,translated,translated,translated,translated,translated,translated
+price.discountBold,non-refundable rate,translated,translated,translated,translated,translated,translated,translated,translated
+price.discountTail,for an extra 10% discount,translated,translated,translated,translated,translated,translated,translated,translated
+tips.instantConfirmation,✔ Instant confirmation guaranteed for ⟦propertyName⟧. Book now and secure your stay!,translated,translated,translated,translated,translated,translated,translated,translated
+tips.nonRefundableDiscount,Select the non-refundable rate in the booking tool to enjoy a 10% discount.,translated,translated,translated,translated,translated,translated,translated,translated
+tips.mobileScroll,"After selecting dates and pressing search, scroll down to see the price and book.",translated,translated,translated,translated,translated,translated,translated,translated
+blog.bookYourStay,Book Your Stay,translated,translated,translated,translated,translated,translated,translated,translated
+blog.indexTitle,Puerto Viejo Travel Guides | Reservas Kalawala,translated,translated,translated,translated,translated,translated,translated,translated
+blog.indexDescription,"Ten local guides to Puerto Viejo de Talamanca: getting there, getting around, and what to do once you're here.",translated,translated,translated,translated,translated,translated,translated,translated
+blog.indexHeading,Puerto Viejo Travel Guides,translated,translated,translated,translated,translated,translated,translated,translated
+home.pageTitle,Reservas Kalawala | Puerto Viejo House Rental,translated,translated,translated,translated,translated,translated,translated,translated
+home.pageDescription,"Discover our homes, cheaper than any other platform! Welcome to Kalawala, we offer fully equipped vacation homes nestled in the heart of Puerto Viejo de Talamanca, Costa Rica. Our houses offer space for up to 5 people, 2 A/C units, fully equipped private bathroom and kitchen and free Wi-Fi internet connection.",translated,translated,translated,translated,translated,translated,translated,translated
+home.helpMeChooseTitle,Find your,translated,translated,translated,translated,translated,translated,translated,translated
+home.helpMeChooseTitleHighlight,Ideal Stay,translated,translated,translated,translated,translated,translated,translated,translated
+home.optionCouples,Ideal for couples,translated,translated,translated,translated,translated,translated,translated,translated
+home.optionFamilies,Perfect for families,translated,translated,translated,translated,translated,translated,translated,translated
+home.optionPetFriendly,Pet-friendly,identical-to-english,translated,translated,translated,translated,translated,translated,translated
+home.optionBestValue,Best value,translated,translated,translated,translated,translated,translated,translated,translated
+property.capacityAriaLabel,Property capacity,translated,translated,translated,translated,translated,translated,translated,translated
+property.viewListing,View listing: ⟦name⟧,translated,translated,translated,translated,translated,translated,translated,translated
+property.checkInLabel,Check-in:,translated,identical-to-english,translated,identical-to-english,identical-to-english,translated,translated,identical-to-english
+property.checkOutLabel,Check-out:,translated,identical-to-english,translated,identical-to-english,identical-to-english,translated,translated,identical-to-english
+property.stickyCta,Check Availability,translated,translated,translated,translated,translated,translated,translated,translated
+property.whyGuestsChoose,Why guests choose ⟦propertyName⟧,translated,translated,translated,translated,translated,translated,translated,translated
+property.bedrooms,⟦count⟧ ⟦count === 1 ? 'bedroom' : 'bedrooms'⟧,translated,translated,translated,translated,translated,translated,translated,translated
+property.bathrooms,⟦count⟧ ⟦count === 1 ? 'bathroom' : 'bathrooms'⟧,translated,translated,translated,translated,translated,translated,translated,translated
+property.upToGuests,Up to ⟦count⟧ ⟦count === 1 ? 'guest' : 'guests'⟧,translated,translated,translated,translated,translated,translated,translated,translated
+property.viewHomeCta,View home →,translated,translated,translated,translated,translated,translated,translated,translated
+cookieBanner.title,🍪 Cookies,identical-to-english,identical-to-english,identical-to-english,identical-to-english,identical-to-english,translated,translated,identical-to-english
+cookieBanner.description,We use cookies to improve your experience and analyze traffic.,translated,translated,translated,translated,translated,translated,translated,translated
+cookieBanner.acceptAll,Accept,translated,translated,translated,translated,translated,translated,translated,translated
+cookieBanner.rejectAll,Reject,translated,translated,translated,translated,translated,translated,translated,translated
+cookieBanner.customize,Options,translated,translated,identical-to-english,translated,translated,translated,translated,translated
+cookieBanner.essential,Essential,translated,translated,translated,translated,translated,translated,translated,translated
+cookieBanner.analytics,Analytics,translated,translated,translated,translated,translated,translated,translated,translated
+cookieBanner.marketing,Marketing,identical-to-english,identical-to-english,identical-to-english,identical-to-english,identical-to-english,translated,translated,identical-to-english
+cookieBanner.required,(Req.),identical-to-english,translated,identical-to-english,translated,translated,translated,translated,translated
+cookieBanner.essentialDesc,Required for the site to function.,translated,translated,translated,translated,translated,translated,translated,translated
+cookieBanner.analyticsDesc,Help us understand site usage.,translated,translated,translated,translated,translated,translated,translated,translated
+cookieBanner.marketingDesc,To show relevant ads.,translated,translated,translated,translated,translated,translated,translated,translated
+cookieBanner.savePreferences,Save,translated,translated,translated,translated,translated,translated,translated,translated
+cookieBanner.cancel,Cancel,translated,translated,translated,translated,translated,translated,translated,translated
+notFound.title,Page not found | Reservas Kalawala,translated,translated,translated,translated,translated,translated,translated,translated
+notFound.heading,We could not find that page,translated,translated,translated,translated,translated,translated,translated,translated
+notFound.body,"The link may be broken, or the page may have moved.",translated,translated,translated,translated,translated,translated,translated,translated
+notFound.cta,Back to home,translated,translated,translated,translated,translated,translated,translated,translated
+whyStayWithUs.title,Why book with us?,translated,translated,translated,translated,translated,translated,translated,translated
+whyStayWithUs.benefits[0],Strategic locations,translated,translated,translated,translated,translated,translated,translated,translated
+whyStayWithUs.benefits[1],Fully equipped houses,translated,translated,translated,translated,translated,translated,translated,translated
+whyStayWithUs.benefits[2],Direct booking and local support,translated,translated,translated,translated,translated,translated,translated,translated
+whyStayWithUs.benefits[3],No platform commissions,translated,translated,translated,translated,translated,translated,translated,translated
+whyStayWithUs.ctaText,View all our properties,translated,translated,translated,translated,translated,translated,translated,translated
+imagesModal.close,Close,translated,translated,translated,translated,translated,translated,translated,translated
+imagesModal.photos,photos,translated,translated,identical-to-english,translated,translated,translated,translated,translated
+imagesModal.previous,Previous,translated,translated,translated,translated,translated,translated,translated,translated
+imagesModal.next,Next,translated,translated,translated,translated,translated,translated,translated,translated
+imagesModal.empty,No images available,translated,translated,translated,translated,translated,translated,translated,translated
+reviewTags.Stayed a few nights,Stayed a few nights,translated,translated,translated,translated,translated,translated,translated,translated
+reviewTags.Stayed one night,Stayed one night,translated,translated,translated,translated,translated,translated,translated,translated
+reviewTags.Stayed with kids,Stayed with kids,translated,translated,translated,translated,translated,translated,translated,translated
+reviewTags.Stayed with a pet,Stayed with a pet,translated,translated,translated,translated,translated,translated,translated,translated
+reviewTags.Stayed about a week,Stayed about a week,translated,translated,translated,translated,translated,translated,translated,translated

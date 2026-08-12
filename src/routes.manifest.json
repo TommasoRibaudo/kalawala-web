@@ -41,6 +41,8 @@
     { "key": "blogWeatherNov", "chunk": "route-weather-puerto-viejo-november", "slugs": { "en": "weather-puerto-viejo-november", "es": "weather-puerto-viejo-november" } },
     { "key": "blogWeatherDec", "chunk": "route-weather-puerto-viejo-december", "slugs": { "en": "weather-puerto-viejo-december", "es": "weather-puerto-viejo-december" } },
     { "key": "blogSanjoseOptions", "chunk": "route-san-jose-to-puerto-viejo", "slugs": { "en": "san-jose-to-puerto-viejo", "es": "san-jose-to-puerto-viejo" } },
+    { "key": "blogGandocaRefuge", "chunk": "route-gandoca-manzanillo-refuge", "slugs": { "en": "gandoca-manzanillo-refuge", "es": "gandoca-manzanillo-refuge" } },
+    { "key": "blogBeaches", "chunk": "route-puerto-viejo-beaches", "slugs": { "en": "puerto-viejo-beaches", "es": "puerto-viejo-beaches" } },
     { "key": "success", "chunk": "route-success", "slugs": { "en": "success", "es": "success" }, "prerender": false, "sitemap": false }
   ]
 }

@@ -223,13 +223,13 @@ export interface PuertoViejoByPlaneContent {
 
 const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
   en: {
-    seoTitle: 'Getting to Puerto Viejo By Plane',
+    seoTitle: 'Flights to Puerto Viejo, Costa Rica: How to Fly to the Caribbean Coast',
     seoDescription:
-      "Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón.",
-    heading: 'Getting to Puerto Viejo By Plane',
+      "Looking for flights to Puerto Viejo? There's no airport in town, but a short domestic flight from San José (SJO) to Limón plus a quick transfer gets you to Costa Rica's Caribbean coast fast. Here's how.",
+    heading: 'Flights to Puerto Viejo, Costa Rica',
     heroAlt: 'Flying to Puerto Viejo Costa Rica',
     intro:
-      "Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón.",
+      "Looking for flights to Puerto Viejo? There is no airport in Puerto Viejo itself, but you can fly most of the way: a short domestic flight from San José (SJO) to Limón, then a quick transfer down the coast. It is the fastest way to reach the Caribbean coast, and this guide walks through exactly how to do it.",
     stayRecommendationTitle: 'Where to stay when flying to Puerto Viejo?',
     bodyParagraphs: [
       <>To book your flight, simply visit <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> and select your travel dates and times. You will then be prompted to enter your personal and payment details to complete your booking. It's important to note that Sansa Airlines offers several flight options throughout the day, making it easy to find a flight that fits your schedule.</>,
@@ -243,15 +243,15 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     ],
   },
   es: {
-    seoTitle: 'Llegar a Puerto Viejo en Avión',
+    seoTitle: 'Vuelos a Puerto Viejo, Costa Rica: Cómo Llegar en Avión al Caribe',
     seoDescription:
-      'Llegar a Puerto Viejo en avión es más fácil de lo que piensas. En este artículo, te mostraremos cómo viajar desde cualquier destino a Puerto Viejo tomando un vuelo doméstico desde San José a Limón.',
-    heading: 'Llegar a Puerto Viejo en Avión',
+      '¿Buscas vuelos a Puerto Viejo? No hay aeropuerto en el pueblo, pero un corto vuelo doméstico de San José (SJO) a Limón más un rápido traslado te llevan al Caribe de Costa Rica. Aquí te explicamos cómo.',
+    heading: 'Vuelos a Puerto Viejo, Costa Rica',
     // The pre-merge ES page's alt text ("Kayaking in Punta Uva") described a
     // different photo entirely; EN's alt was correct for this image.
     heroAlt: 'Flying to Puerto Viejo Costa Rica',
     intro:
-      'Llegar a Puerto Viejo en avión es más fácil de lo que piensas. En este artículo, te mostraremos cómo viajar desde cualquier destino a Puerto Viejo tomando un vuelo doméstico desde San José a Limón.',
+      '¿Buscas vuelos a Puerto Viejo? En Puerto Viejo no hay aeropuerto, pero puedes volar casi todo el camino: un corto vuelo doméstico de San José (SJO) a Limón y luego un rápido traslado por la costa. Es la forma más rápida de llegar al Caribe, y esta guía te explica exactamente cómo hacerlo.',
     stayRecommendationTitle: '¿Dónde hospedarte cuando vueles a Puerto Viejo?',
     bodyParagraphs: [
       <>Para reservar tu vuelo, simplemente visita <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> y selecciona tus fechas y horarios de viaje. Luego se te pedirá que ingreses tus datos personales y de pago para completar tu reserva. Es importante tener en cuenta que Sansa Airlines ofrece varias opciones de vuelo durante el día, lo que facilita encontrar un vuelo que se ajuste a tu horario.</>,
@@ -265,13 +265,13 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     ],
   },
   de: {
-    seoTitle: 'Mit dem Flugzeug nach Puerto Viejo',
+    seoTitle: 'Flüge nach Puerto Viejo, Costa Rica: So gelangen Sie an die Karibikküste',
     seoDescription:
-      "Mit dem Flugzeug nach Puerto Viejo zu gelangen ist einfacher, als Sie vielleicht denken. In diesem Artikel zeigen wir Ihnen, wie Sie von jedem beliebigen Ausgangspunkt aus mit einem Inlandsflug von San José nach Limón nach Puerto Viejo reisen können.",
-    heading: 'Mit dem Flugzeug nach Puerto Viejo',
+      "Sie suchen Flüge nach Puerto Viejo? Der Ort selbst hat keinen Flughafen, aber ein kurzer Inlandsflug von San José (SJO) nach Limón plus ein schneller Transfer bringt Sie schnell an Costa Ricas Karibikküste. So geht's.",
+    heading: 'Flüge nach Puerto Viejo, Costa Rica',
     heroAlt: 'Flug nach Puerto Viejo, Costa Rica',
     intro:
-      "Mit dem Flugzeug nach Puerto Viejo zu gelangen ist einfacher, als Sie vielleicht denken. In diesem Artikel zeigen wir Ihnen, wie Sie von jedem beliebigen Ausgangspunkt aus mit einem Inlandsflug von San José nach Limón nach Puerto Viejo reisen können.",
+      "Sie suchen Flüge nach Puerto Viejo? In Puerto Viejo selbst gibt es keinen Flughafen, aber Sie können den größten Teil der Strecke fliegen: ein kurzer Inlandsflug von San José (SJO) nach Limón und anschließend ein schneller Transfer die Küste hinunter. Es ist der schnellste Weg an die Karibikküste, und dieser Leitfaden zeigt Ihnen genau, wie es geht.",
     stayRecommendationTitle: 'Wo übernachten, wenn Sie nach Puerto Viejo fliegen?',
     bodyParagraphs: [
       <>Um Ihren Flug zu buchen, besuchen Sie einfach <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> und wählen Sie Ihre Reisedaten und -zeiten aus. Anschließend werden Sie aufgefordert, Ihre persönlichen Daten und Zahlungsinformationen einzugeben, um die Buchung abzuschließen. Wichtig zu wissen ist, dass Sansa Airlines mehrere Flugoptionen über den Tag verteilt anbietet, sodass es leicht ist, einen zu Ihrem Zeitplan passenden Flug zu finden.</>,
@@ -285,13 +285,13 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     ],
   },
   fr: {
-    seoTitle: 'Se rendre à Puerto Viejo en avion',
+    seoTitle: 'Vols pour Puerto Viejo, Costa Rica : comment rejoindre la côte caraïbe en avion',
     seoDescription:
-      "Se rendre à Puerto Viejo en avion est plus simple qu'on ne le pense. Dans cet article, nous vous montrons comment voyager depuis n'importe quelle destination jusqu'à Puerto Viejo en prenant un vol intérieur de San José à Limón.",
-    heading: 'Se rendre à Puerto Viejo en avion',
+      "Vous cherchez des vols pour Puerto Viejo ? Il n'y a pas d'aéroport dans la ville, mais un court vol intérieur de San José (SJO) à Limón, suivi d'un transfert rapide, vous conduit vite jusqu'à la côte caraïbe du Costa Rica. Voici comment.",
+    heading: 'Vols pour Puerto Viejo, Costa Rica',
     heroAlt: 'Vol vers Puerto Viejo, Costa Rica',
     intro:
-      "Se rendre à Puerto Viejo en avion est plus simple qu'on ne le pense. Dans cet article, nous vous montrons comment voyager depuis n'importe quelle destination jusqu'à Puerto Viejo en prenant un vol intérieur de San José à Limón.",
+      "Vous cherchez des vols pour Puerto Viejo ? Il n'y a pas d'aéroport à Puerto Viejo même, mais vous pouvez faire l'essentiel du trajet en avion : un court vol intérieur de San José (SJO) à Limón, puis un transfert rapide le long de la côte. C'est le moyen le plus rapide de rejoindre la côte caraïbe, et ce guide vous explique exactement comment procéder.",
     stayRecommendationTitle: "Où loger quand on prend l'avion pour Puerto Viejo ?",
     bodyParagraphs: [
       <>Pour réserver votre vol, il vous suffit de vous rendre sur <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> et de sélectionner vos dates et horaires de voyage. Il vous sera ensuite demandé de saisir vos informations personnelles et de paiement pour finaliser votre réservation. Il est important de noter que Sansa Airlines propose plusieurs options de vol tout au long de la journée, ce qui facilite la recherche d'un vol adapté à votre emploi du temps.</>,
@@ -305,13 +305,13 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     ],
   },
   he: {
-    seoTitle: 'הגעה לפוארטו ויחו במטוס',
+    seoTitle: 'טיסות לפוארטו ויחו, קוסטה ריקה: איך טסים לחוף הקריבי',
     seoDescription:
-      'ההגעה לפוארטו ויחו במטוס קלה יותר משנדמה לכם. במאמר זה נראה לכם כיצד לנסוע מכל יעד לפוארטו ויחו באמצעות טיסה פנימית מסן חוזה ללימון.',
-    heading: 'הגעה לפוארטו ויחו במטוס',
+      'מחפשים טיסות לפוארטו ויחו? בעיירה עצמה אין שדה תעופה, אך טיסה פנימית קצרה מסן חוזה (SJO) ללימון בתוספת הסעה מהירה מביאה אתכם במהירות אל החוף הקריבי של קוסטה ריקה. הנה איך.',
+    heading: 'טיסות לפוארטו ויחו, קוסטה ריקה',
     heroAlt: 'טיסה לפוארטו ויחו, קוסטה ריקה',
     intro:
-      'ההגעה לפוארטו ויחו במטוס קלה יותר משנדמה לכם. במאמר זה נראה לכם כיצד לנסוע מכל יעד לפוארטו ויחו באמצעות טיסה פנימית מסן חוזה ללימון.',
+      'מחפשים טיסות לפוארטו ויחו? בפוארטו ויחו עצמה אין שדה תעופה, אך אפשר לטוס את רוב הדרך: טיסה פנימית קצרה מסן חוזה (SJO) ללימון, ואז הסעה מהירה לאורך החוף. זו הדרך המהירה ביותר להגיע אל החוף הקריבי, והמדריך הזה מסביר לכם בדיוק כיצד לעשות זאת.',
     stayRecommendationTitle: 'היכן להתארח כשטסים לפוארטו ויחו?',
     bodyParagraphs: [
       <>כדי להזמין את הטיסה שלכם, פשוט בקרו באתר <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> ובחרו את תאריכי ושעות הנסיעה שלכם. לאחר מכן תתבקשו להזין את הפרטים האישיים ופרטי התשלום שלכם כדי להשלים את ההזמנה. חשוב לציין ש-Sansa Airlines מציעה מספר אפשרויות טיסה במהלך היום, כך שקל למצוא טיסה שמתאימה ללוח הזמנים שלכם.</>,
@@ -325,13 +325,13 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     ],
   },
   it: {
-    seoTitle: 'Come Arrivare a Puerto Viejo in Aereo',
+    seoTitle: 'Voli per Puerto Viejo, Costa Rica: come raggiungere la costa caraibica in aereo',
     seoDescription:
-      "Arrivare a Puerto Viejo in aereo è più facile di quanto si possa pensare. In questo articolo ti mostreremo come raggiungere Puerto Viejo da qualsiasi destinazione prendendo un volo nazionale da San José a Limón.",
-    heading: 'Come Arrivare a Puerto Viejo in Aereo',
+      "Cerchi voli per Puerto Viejo? In città non c'è un aeroporto, ma un breve volo nazionale da San José (SJO) a Limón più un rapido trasferimento ti portano velocemente sulla costa caraibica della Costa Rica. Ecco come.",
+    heading: 'Voli per Puerto Viejo, Costa Rica',
     heroAlt: 'Volo verso Puerto Viejo, Costa Rica',
     intro:
-      "Arrivare a Puerto Viejo in aereo è più facile di quanto si possa pensare. In questo articolo ti mostreremo come raggiungere Puerto Viejo da qualsiasi destinazione prendendo un volo nazionale da San José a Limón.",
+      "Cerchi voli per Puerto Viejo? A Puerto Viejo stessa non c'è un aeroporto, ma puoi percorrere in aereo gran parte del tragitto: un breve volo nazionale da San José (SJO) a Limón, poi un rapido trasferimento lungo la costa. È il modo più veloce per raggiungere la costa caraibica, e questa guida ti spiega esattamente come fare.",
     stayRecommendationTitle: 'Dove alloggiare quando si vola verso Puerto Viejo?',
     bodyParagraphs: [
       <>Per prenotare il tuo volo, visita semplicemente <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> e seleziona le date e gli orari del tuo viaggio. Ti verrà quindi chiesto di inserire i tuoi dati personali e di pagamento per completare la prenotazione. È importante sapere che Sansa Airlines offre diverse opzioni di volo durante la giornata, rendendo facile trovare un volo adatto ai tuoi orari.</>,
@@ -345,13 +345,13 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     ],
   },
   pt: {
-    seoTitle: 'Chegar a Puerto Viejo de Avião',
+    seoTitle: 'Voos para Puerto Viejo, Costa Rica: como chegar à costa caribenha de avião',
     seoDescription:
-      "Chegar a Puerto Viejo de avião é mais fácil do que possa pensar. Neste artigo, mostramos-lhe como viajar de qualquer destino até Puerto Viejo apanhando um voo doméstico de San José para Limón.",
-    heading: 'Chegar a Puerto Viejo de Avião',
+      "À procura de voos para Puerto Viejo? A vila em si não tem aeroporto, mas um curto voo doméstico de San José (SJO) para Limón mais um transfer rápido levam-no depressa até à costa caribenha da Costa Rica. Veja como.",
+    heading: 'Voos para Puerto Viejo, Costa Rica',
     heroAlt: 'Voo para Puerto Viejo, Costa Rica',
     intro:
-      "Chegar a Puerto Viejo de avião é mais fácil do que possa pensar. Neste artigo, mostramos-lhe como viajar de qualquer destino até Puerto Viejo apanhando um voo doméstico de San José para Limón.",
+      "À procura de voos para Puerto Viejo? Em Puerto Viejo não existe aeroporto, mas pode fazer a maior parte do percurso de avião: um curto voo doméstico de San José (SJO) para Limón e depois um transfer rápido ao longo da costa. É a forma mais rápida de chegar à costa caribenha, e este guia mostra-lhe exatamente como fazê-lo.",
     stayRecommendationTitle: 'Onde ficar hospedado ao voar para Puerto Viejo?',
     bodyParagraphs: [
       <>Para reservar o seu voo, basta visitar <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> e selecionar as suas datas e horários de viagem. De seguida, ser-lhe-á pedido que introduza os seus dados pessoais e de pagamento para concluir a reserva. É importante notar que a Sansa Airlines oferece várias opções de voo ao longo do dia, o que facilita encontrar um voo que se ajuste ao seu horário.</>,
@@ -365,13 +365,13 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     ],
   },
   hi: {
-    seoTitle: 'हवाई जहाज़ से प्वेर्तो वियेहो कैसे पहुंचें',
+    seoTitle: 'प्वेर्तो वियेहो, कोस्टा रिका के लिए उड़ानें: कैरिबियन तट तक हवाई जहाज़ से कैसे पहुंचें',
     seoDescription:
-      "हवाई जहाज़ से प्वेर्तो वियेहो पहुंचना उतना मुश्किल नहीं जितना आप सोच सकते हैं। इस लेख में, हम आपको दिखाएंगे कि सान होज़े से लिमोन तक की घरेलू उड़ान लेकर किसी भी गंतव्य से प्वेर्तो वियेहो तक कैसे यात्रा करें।",
-    heading: 'हवाई जहाज़ से प्वेर्तो वियेहो कैसे पहुंचें',
+      "प्वेर्तो वियेहो के लिए उड़ानें ढूंढ रहे हैं? शहर में कोई हवाई अड्डा नहीं है, लेकिन सान होज़े (SJO) से लिमोन तक की एक छोटी घरेलू उड़ान और उसके बाद एक त्वरित ट्रांसफर आपको तेज़ी से कोस्टा रिका के कैरिबियन तट तक पहुंचा देता है। यहां जानिए कैसे।",
+    heading: 'प्वेर्तो वियेहो, कोस्टा रिका के लिए उड़ानें',
     heroAlt: 'कोस्टा रिका के प्वेर्तो वियेहो के लिए उड़ान',
     intro:
-      "हवाई जहाज़ से प्वेर्तो वियेहो पहुंचना उतना मुश्किल नहीं जितना आप सोच सकते हैं। इस लेख में, हम आपको दिखाएंगे कि सान होज़े से लिमोन तक की घरेलू उड़ान लेकर किसी भी गंतव्य से प्वेर्तो वियेहो तक कैसे यात्रा करें।",
+      "प्वेर्तो वियेहो के लिए उड़ानें ढूंढ रहे हैं? प्वेर्तो वियेहो में खुद कोई हवाई अड्डा नहीं है, लेकिन आप अधिकांश रास्ता हवाई जहाज़ से तय कर सकते हैं: सान होज़े (SJO) से लिमोन तक की एक छोटी घरेलू उड़ान, और फिर तट के किनारे एक त्वरित ट्रांसफर। कैरिबियन तट तक पहुंचने का यह सबसे तेज़ तरीका है, और यह गाइड आपको बिल्कुल यही बताती है कि इसे कैसे करना है।",
     stayRecommendationTitle: 'प्वेर्तो वियेहो के लिए उड़ान भरते समय कहां ठहरें?',
     bodyParagraphs: [
       <>अपनी फ्लाइट बुक करने के लिए, बस <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> पर जाएं और अपनी यात्रा की तारीखें और समय चुनें। इसके बाद आपको अपनी बुकिंग पूरी करने के लिए अपनी व्यक्तिगत और भुगतान जानकारी दर्ज करने के लिए कहा जाएगा। यह ध्यान रखना ज़रूरी है कि Sansa Airlines दिनभर में कई फ्लाइट विकल्प देती है, जिससे अपने कार्यक्रम के अनुसार फ्लाइट ढूंढना आसान हो जाता है।</>,
@@ -385,13 +385,13 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     ],
   },
   nl: {
-    seoTitle: 'Naar Puerto Viejo met het vliegtuig',
+    seoTitle: 'Vluchten naar Puerto Viejo, Costa Rica: zo vlieg je naar de Caribische kust',
     seoDescription:
-      'Naar Puerto Viejo reizen met het vliegtuig is makkelijker dan je misschien denkt. In dit artikel laten we je zien hoe je vanaf elke bestemming naar Puerto Viejo kunt reizen door een binnenlandse vlucht van San José naar Limón te nemen.',
-    heading: 'Naar Puerto Viejo met het vliegtuig',
+      'Op zoek naar vluchten naar Puerto Viejo? In het dorp zelf is geen luchthaven, maar een korte binnenlandse vlucht van San José (SJO) naar Limón plus een snelle transfer brengt je snel naar de Caribische kust van Costa Rica. Zo doe je dat.',
+    heading: 'Vluchten naar Puerto Viejo, Costa Rica',
     heroAlt: 'Vliegen naar Puerto Viejo, Costa Rica',
     intro:
-      'Naar Puerto Viejo reizen met het vliegtuig is makkelijker dan je misschien denkt. In dit artikel laten we je zien hoe je vanaf elke bestemming naar Puerto Viejo kunt reizen door een binnenlandse vlucht van San José naar Limón te nemen.',
+      'Op zoek naar vluchten naar Puerto Viejo? In Puerto Viejo zelf is geen luchthaven, maar je kunt het grootste deel van de reis vliegen: een korte binnenlandse vlucht van San José (SJO) naar Limón en daarna een snelle transfer langs de kust. Het is de snelste manier om de Caribische kust te bereiken, en deze gids legt precies uit hoe je dat doet.',
     stayRecommendationTitle: 'Waar overnachten als je naar Puerto Viejo vliegt?',
     bodyParagraphs: [
       <>Om je vlucht te boeken, ga je gewoon naar <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> en kies je je reisdata en -tijden. Vervolgens word je gevraagd je persoonlijke gegevens en betaalgegevens in te voeren om je boeking af te ronden. Het is goed om te weten dat Sansa Airlines meerdere vluchtopties per dag aanbiedt, waardoor het gemakkelijk is een vlucht te vinden die in je schema past.</>,
@@ -9655,4 +9655,841 @@ const sanJoseOptions: Partial<Record<Locale, SanJoseOptionsContent>> = {
 
 export function sanJoseOptionsContent(locale: Locale): SanJoseOptionsContent {
   return sanJoseOptions[locale] ?? sanJoseOptions.en!;
+}
+
+/* ------------------------------------------------------------------ *
+ * Gandoca-Manzanillo Wildlife Refuge — what-to-do guide
+ *
+ * SEO gap: "gandoca manzanillo", "refugio nacional gandoca-manzanillo",
+ * "manzanillo national park" get impressions with ~0 clicks. Distinct from
+ * the existing gettingToGandoca article (which is transport-only) — this is
+ * the wildlife / beaches / snorkel / practical guide, linking to that one
+ * for the how-to-get-there detail.
+ * ------------------------------------------------------------------ */
+
+export interface GandocaRefugeContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: [string, string];
+  stayRecommendationTitle: string;
+  wildlifeHeading: string;
+  wildlifeIntro: string;
+  wildlifeItems: string[];
+  beachesHeading: string;
+  beachesParagraphs: [string, string];
+  thingsHeading: string;
+  thingsIntro: string;
+  thingsItems: string[];
+  practicalHeading: string;
+  practicalItems: string[];
+  gettingThereHeading: string;
+  gettingThereParagraph: string;
+  gettingThereLinkText: string;
+  takeawaysHeading: string;
+  takeawaysParagraph: string;
+}
+
+const gandocaRefuge: Partial<Record<Locale, GandocaRefugeContent>> = {
+  en: {
+    seoTitle: 'Gandoca-Manzanillo Wildlife Refuge: Wildlife, Beaches & What to Do',
+    seoDescription:
+      'A guide to the Gandoca-Manzanillo National Wildlife Refuge near Puerto Viejo: coral reef snorkelling, the Manzanillo–Punta Mona coastal trail, wildlife, sea turtles and practical tips.',
+    heading: 'Gandoca-Manzanillo Wildlife Refuge: What to Do',
+    heroAlt: 'Coral-fringed Caribbean coast at the Gandoca-Manzanillo Wildlife Refuge, Costa Rica',
+    photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Refugio_Nacional_de_Vida_Silvestre_Gandoca-Manzanillo" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'The Gandoca-Manzanillo National Wildlife Refuge (Refugio Nacional de Vida Silvestre Gandoca-Manzanillo) protects the stretch of Costa Rica’s southern Caribbean coast from the village of Manzanillo down to the Panama border. It is one of the wildest, least-developed corners of the region — and one of the easiest to reach from Puerto Viejo.',
+      'It combines rainforest, mangroves, one of Costa Rica’s few living coral reefs, and quiet beaches where sea turtles nest. You do not need a tour to enjoy it, but a local guide makes the wildlife come alive.',
+    ],
+    stayRecommendationTitle: 'Where to stay near Gandoca-Manzanillo',
+    wildlifeHeading: 'Wildlife You Might See',
+    wildlifeIntro: 'The refuge packs a lot of the Caribbean’s wildlife into a small, accessible area:',
+    wildlifeItems: [
+      'Sloths, howler and white-faced monkeys in the coastal forest',
+      'Poison dart frogs, toucans and countless birds',
+      'A living coral reef with tropical fish, rays and the occasional nurse shark',
+      'Dolphins in the Gandoca lagoon (including the rare tucuxi)',
+      'Nesting sea turtles on the beaches, roughly March to July — ask locally, as timing varies',
+    ],
+    beachesHeading: 'Beaches and the Coastal Trail',
+    beachesParagraphs: [
+      'Manzanillo beach, at the refuge entrance, is calm and good for swimming and snorkelling. From there, a beautiful coastal trail runs about 5.5 km through the jungle to Punta Mona, passing hidden coves and reef-fringed points along the way.',
+      'It is a flat but sometimes muddy walk; allow a few hours if you want to swim and watch wildlife. A guide is worth it both for spotting animals and for keeping to the right paths.',
+    ],
+    thingsHeading: 'Best Things to Do',
+    thingsIntro: 'A few ways to make the most of a visit:',
+    thingsItems: [
+      'Snorkel or dive the reef — one of the healthiest on Costa Rica’s Caribbean side, best on calm, clear days',
+      'Hike the Manzanillo–Punta Mona coastal trail with a local guide',
+      'Take a kayak or boat tour of the Gandoca lagoon to look for dolphins and manatees',
+      'Eat fresh Caribbean food at one of the small sodas in Manzanillo village',
+    ],
+    practicalHeading: 'Practical Tips',
+    practicalItems: [
+      'Hire a local community guide at Manzanillo — it supports the community and hugely improves what you see',
+      'Bring cash (colones) for guides, parking and food; there are no big facilities',
+      'Reef-safe sunscreen, insect repellent, water shoes and plenty of water are essentials',
+      'For snorkelling, aim for the calmer, clearer windows (February–March and September–October) — but the sea here changes day to day',
+    ],
+    gettingThereHeading: 'How to Get There',
+    gettingThereParagraph:
+      'The refuge starts at Manzanillo, at the end of the coast road about 14 km southeast of Puerto Viejo. You can take the local bus, drive, or rent a scooter or bike.',
+    gettingThereLinkText: 'See our full guide to getting to Gandoca-Manzanillo →',
+    takeawaysHeading: 'Key Takeaways',
+    takeawaysParagraph:
+      'Gandoca-Manzanillo is the wild, reef-and-rainforest end of the southern Caribbean — great for snorkelling, a coastal jungle hike and wildlife, and easy to reach from Puerto Viejo. Go with a local guide, bring cash and reef-safe gear, and pick a calm day for the water.',
+  },
+  es: {
+    seoTitle: 'Refugio Gandoca-Manzanillo: Fauna, Playas y Qué Hacer',
+    seoDescription:
+      'Guía del Refugio Nacional de Vida Silvestre Gandoca-Manzanillo cerca de Puerto Viejo: snorkel en el arrecife, el sendero costero Manzanillo–Punta Mona, fauna, tortugas y consejos prácticos.',
+    heading: 'Refugio Gandoca-Manzanillo: Qué Hacer',
+    heroAlt: 'Costa caribeña con arrecife en el Refugio Gandoca-Manzanillo, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Refugio_Nacional_de_Vida_Silvestre_Gandoca-Manzanillo" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'El Refugio Nacional de Vida Silvestre Gandoca-Manzanillo protege el tramo del Caribe Sur de Costa Rica que va desde el pueblo de Manzanillo hasta la frontera con Panamá. Es uno de los rincones más salvajes y menos desarrollados de la región, y uno de los más fáciles de alcanzar desde Puerto Viejo.',
+      'Combina selva, manglares, uno de los pocos arrecifes de coral vivos de Costa Rica y playas tranquilas donde anidan tortugas marinas. No necesitas un tour para disfrutarlo, pero un guía local hace que la fauna cobre vida.',
+    ],
+    stayRecommendationTitle: 'Dónde hospedarte cerca de Gandoca-Manzanillo',
+    wildlifeHeading: 'Fauna que Podrías Ver',
+    wildlifeIntro: 'El refugio concentra buena parte de la fauna del Caribe en un área pequeña y accesible:',
+    wildlifeItems: [
+      'Perezosos, monos aulladores y carablanca en el bosque costero',
+      'Ranas venenosas, tucanes e incontables aves',
+      'Un arrecife de coral vivo con peces tropicales, rayas y algún tiburón nodriza',
+      'Delfines en la laguna de Gandoca (incluido el raro tucuxi)',
+      'Tortugas marinas anidando en las playas, aproximadamente de marzo a julio — pregunta localmente, porque las fechas varían',
+    ],
+    beachesHeading: 'Playas y el Sendero Costero',
+    beachesParagraphs: [
+      'La playa de Manzanillo, en la entrada del refugio, es tranquila y buena para nadar y hacer snorkel. Desde allí, un hermoso sendero costero recorre unos 5.5 km por la selva hasta Punta Mona, pasando por calas escondidas y puntas con arrecife.',
+      'Es una caminata plana pero a veces embarrada; calcula unas horas si quieres nadar y ver fauna. Vale la pena un guía tanto para avistar animales como para seguir los senderos correctos.',
+    ],
+    thingsHeading: 'Mejores Cosas que Hacer',
+    thingsIntro: 'Algunas formas de aprovechar la visita al máximo:',
+    thingsItems: [
+      'Haz snorkel o buceo en el arrecife — uno de los más sanos del Caribe de Costa Rica, mejor en días tranquilos y claros',
+      'Recorre el sendero costero Manzanillo–Punta Mona con un guía local',
+      'Toma un tour en kayak o en bote por la laguna de Gandoca para buscar delfines y manatíes',
+      'Come comida caribeña fresca en una de las pequeñas sodas del pueblo de Manzanillo',
+    ],
+    practicalHeading: 'Consejos Prácticos',
+    practicalItems: [
+      'Contrata un guía comunitario local en Manzanillo — apoya a la comunidad y mejora muchísimo lo que ves',
+      'Lleva efectivo (colones) para guías, parqueo y comida; no hay grandes instalaciones',
+      'Protector solar respetuoso con el arrecife, repelente, zapatos de agua y mucha agua son esenciales',
+      'Para el snorkel, apunta a las ventanas más tranquilas y claras (febrero–marzo y septiembre–octubre) — pero el mar aquí cambia de un día a otro',
+    ],
+    gettingThereHeading: 'Cómo Llegar',
+    gettingThereParagraph:
+      'El refugio comienza en Manzanillo, al final de la carretera costera, a unos 14 km al sureste de Puerto Viejo. Puedes tomar el bus local, ir en carro o rentar un scooter o una bici.',
+    gettingThereLinkText: 'Ver nuestra guía completa para llegar a Gandoca-Manzanillo →',
+    takeawaysHeading: 'Puntos Clave',
+    takeawaysParagraph:
+      'Gandoca-Manzanillo es el extremo salvaje, de arrecife y selva, del Caribe Sur — ideal para snorkel, una caminata costera por la jungla y fauna, y fácil de alcanzar desde Puerto Viejo. Ve con un guía local, lleva efectivo y equipo respetuoso con el arrecife, y elige un día tranquilo para el agua.',
+  },
+  de: {
+    seoTitle: 'Schutzgebiet Gandoca-Manzanillo: Tierwelt, Strände & Aktivitäten',
+    seoDescription:
+      'Ein Führer zum Nationalen Wildschutzgebiet Gandoca-Manzanillo bei Puerto Viejo: Schnorcheln am Korallenriff, der Küstenpfad Manzanillo–Punta Mona, Tierwelt, Meeresschildkröten und praktische Tipps.',
+    heading: 'Schutzgebiet Gandoca-Manzanillo: Was man unternehmen kann',
+    heroAlt: 'Von Riffen gesäumte Karibikküste im Schutzgebiet Gandoca-Manzanillo, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Refugio_Nacional_de_Vida_Silvestre_Gandoca-Manzanillo" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Das Nationale Wildschutzgebiet Gandoca-Manzanillo (Refugio Nacional de Vida Silvestre Gandoca-Manzanillo) schützt den Abschnitt der südlichen Karibikküste Costa Ricas vom Dorf Manzanillo bis zur Grenze zu Panama. Es ist einer der wildesten, am wenigsten erschlossenen Winkel der Region — und einer der am einfachsten von Puerto Viejo aus zu erreichenden.',
+      'Es vereint Regenwald, Mangroven, eines der wenigen lebenden Korallenriffe Costa Ricas und ruhige Strände, an denen Meeresschildkröten nisten. Man braucht keine Tour, um es zu genießen, aber ein einheimischer Guide erweckt die Tierwelt zum Leben.',
+    ],
+    stayRecommendationTitle: 'Wo man in der Nähe von Gandoca-Manzanillo übernachtet',
+    wildlifeHeading: 'Tiere, die Sie sehen könnten',
+    wildlifeIntro: 'Das Schutzgebiet vereint viel von der karibischen Tierwelt auf kleinem, gut zugänglichem Raum:',
+    wildlifeItems: [
+      'Faultiere, Brüll- und Kapuzineraffen im Küstenwald',
+      'Pfeilgiftfrösche, Tukane und unzählige Vögel',
+      'Ein lebendes Korallenriff mit tropischen Fischen, Rochen und gelegentlich einem Ammenhai',
+      'Delfine in der Lagune von Gandoca (darunter der seltene Tucuxi)',
+      'Nistende Meeresschildkröten an den Stränden, etwa von März bis Juli — fragen Sie vor Ort, da die Zeiten variieren',
+    ],
+    beachesHeading: 'Strände und der Küstenpfad',
+    beachesParagraphs: [
+      'Der Strand von Manzanillo am Eingang des Schutzgebiets ist ruhig und eignet sich gut zum Schwimmen und Schnorcheln. Von dort führt ein wunderschöner Küstenpfad etwa 5,5 km durch den Dschungel bis nach Punta Mona, vorbei an versteckten Buchten und von Riffen gesäumten Landspitzen.',
+      'Es ist ein flacher, aber mitunter matschiger Weg; planen Sie ein paar Stunden ein, wenn Sie schwimmen und Tiere beobachten möchten. Ein Guide lohnt sich, um Tiere zu entdecken und auf den richtigen Wegen zu bleiben.',
+    ],
+    thingsHeading: 'Die besten Aktivitäten',
+    thingsIntro: 'Ein paar Möglichkeiten, einen Besuch optimal zu nutzen:',
+    thingsItems: [
+      'Schnorcheln oder Tauchen am Riff — eines der gesündesten an Costa Ricas Karibikseite, am besten an ruhigen, klaren Tagen',
+      'Wandern Sie den Küstenpfad Manzanillo–Punta Mona mit einem einheimischen Guide',
+      'Machen Sie eine Kajak- oder Bootstour durch die Lagune von Gandoca, um nach Delfinen und Seekühen Ausschau zu halten',
+      'Essen Sie frische karibische Küche in einer der kleinen Sodas im Dorf Manzanillo',
+    ],
+    practicalHeading: 'Praktische Tipps',
+    practicalItems: [
+      'Engagieren Sie in Manzanillo einen einheimischen Guide aus der Gemeinde — das unterstützt die Gemeinschaft und verbessert enorm, was Sie sehen',
+      'Bringen Sie Bargeld (Colones) für Guides, Parken und Essen mit; es gibt keine großen Einrichtungen',
+      'Riffschonende Sonnencreme, Insektenschutz, Wasserschuhe und viel Wasser sind unverzichtbar',
+      'Zum Schnorcheln zielen Sie auf die ruhigeren, klareren Fenster (Februar–März und September–Oktober) — aber das Meer wechselt hier von Tag zu Tag',
+    ],
+    gettingThereHeading: 'Wie man hinkommt',
+    gettingThereParagraph:
+      'Das Schutzgebiet beginnt in Manzanillo, am Ende der Küstenstraße, etwa 14 km südöstlich von Puerto Viejo. Sie können den örtlichen Bus nehmen, fahren oder einen Roller oder ein Fahrrad mieten.',
+    gettingThereLinkText: 'Zu unserem ausführlichen Führer, wie man nach Gandoca-Manzanillo kommt →',
+    takeawaysHeading: 'Das Wichtigste in Kürze',
+    takeawaysParagraph:
+      'Gandoca-Manzanillo ist das wilde Ende der südlichen Karibik aus Riff und Regenwald — ideal zum Schnorcheln, für eine Küstenwanderung durch den Dschungel und für Tierbeobachtungen, und leicht von Puerto Viejo aus zu erreichen. Gehen Sie mit einem einheimischen Guide, bringen Sie Bargeld und riffschonende Ausrüstung mit und wählen Sie einen ruhigen Tag fürs Wasser.',
+  },
+  fr: {
+    seoTitle: 'Refuge Gandoca-Manzanillo : faune, plages et activités',
+    seoDescription:
+      'Un guide du refuge national de faune sauvage Gandoca-Manzanillo près de Puerto Viejo : snorkeling sur le récif corallien, sentier côtier Manzanillo–Punta Mona, faune, tortues marines et conseils pratiques.',
+    heading: 'Refuge Gandoca-Manzanillo : que faire',
+    heroAlt: 'Côte caraïbe bordée de récifs au refuge Gandoca-Manzanillo, Costa Rica',
+    photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Refugio_Nacional_de_Vida_Silvestre_Gandoca-Manzanillo" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Le refuge national de faune sauvage Gandoca-Manzanillo (Refugio Nacional de Vida Silvestre Gandoca-Manzanillo) protège la portion de la côte caraïbe sud du Costa Rica, du village de Manzanillo jusqu’à la frontière avec le Panama. C’est l’un des recoins les plus sauvages et les moins aménagés de la région — et l’un des plus faciles d’accès depuis Puerto Viejo.',
+      'Il réunit forêt tropicale, mangroves, l’un des rares récifs coralliens vivants du Costa Rica et des plages tranquilles où nichent les tortues marines. Pas besoin d’une excursion pour en profiter, mais un guide local fait vraiment vivre la faune.',
+    ],
+    stayRecommendationTitle: 'Où loger près de Gandoca-Manzanillo',
+    wildlifeHeading: 'La faune que vous pourriez voir',
+    wildlifeIntro: 'Le refuge concentre une grande partie de la faune caraïbe dans un espace réduit et accessible :',
+    wildlifeItems: [
+      'Paresseux, singes hurleurs et capucins dans la forêt côtière',
+      'Grenouilles venimeuses, toucans et d’innombrables oiseaux',
+      'Un récif corallien vivant avec poissons tropicaux, raies et, à l’occasion, un requin-nourrice',
+      'Des dauphins dans la lagune de Gandoca (dont le rare tucuxi)',
+      'Des tortues marines qui nichent sur les plages, environ de mars à juillet — renseignez-vous sur place, car les dates varient',
+    ],
+    beachesHeading: 'Les plages et le sentier côtier',
+    beachesParagraphs: [
+      'La plage de Manzanillo, à l’entrée du refuge, est calme et propice à la baignade et au snorkeling. De là, un magnifique sentier côtier serpente sur environ 5,5 km à travers la jungle jusqu’à Punta Mona, en passant par des criques cachées et des pointes bordées de récifs.',
+      'C’est une marche plate mais parfois boueuse ; comptez quelques heures si vous voulez vous baigner et observer la faune. Un guide en vaut la peine, tant pour repérer les animaux que pour rester sur les bons chemins.',
+    ],
+    thingsHeading: 'Les meilleures activités',
+    thingsIntro: 'Quelques façons de profiter au mieux de la visite :',
+    thingsItems: [
+      'Faites du snorkeling ou de la plongée sur le récif — l’un des plus sains du côté caraïbe du Costa Rica, au mieux par temps calme et clair',
+      'Parcourez le sentier côtier Manzanillo–Punta Mona avec un guide local',
+      'Faites une sortie en kayak ou en bateau dans la lagune de Gandoca pour chercher dauphins et lamantins',
+      'Mangez une cuisine caraïbe fraîche dans l’une des petites sodas du village de Manzanillo',
+    ],
+    practicalHeading: 'Conseils pratiques',
+    practicalItems: [
+      'Engagez un guide communautaire local à Manzanillo — cela soutient la communauté et améliore énormément ce que vous voyez',
+      'Apportez des espèces (colones) pour les guides, le parking et la nourriture ; il n’y a pas de grandes infrastructures',
+      'Crème solaire respectueuse des récifs, répulsif anti-insectes, chaussures d’eau et beaucoup d’eau sont indispensables',
+      'Pour le snorkeling, visez les fenêtres plus calmes et plus claires (février–mars et septembre–octobre) — mais la mer change ici d’un jour à l’autre',
+    ],
+    gettingThereHeading: 'Comment s’y rendre',
+    gettingThereParagraph:
+      'Le refuge commence à Manzanillo, au bout de la route côtière, à environ 14 km au sud-est de Puerto Viejo. Vous pouvez prendre le bus local, conduire, ou louer un scooter ou un vélo.',
+    gettingThereLinkText: 'Voir notre guide complet pour se rendre à Gandoca-Manzanillo →',
+    takeawaysHeading: 'À retenir',
+    takeawaysParagraph:
+      'Gandoca-Manzanillo est l’extrémité sauvage, de récif et de forêt, des Caraïbes du Sud — parfaite pour le snorkeling, une randonnée côtière dans la jungle et l’observation de la faune, et facile d’accès depuis Puerto Viejo. Partez avec un guide local, emportez des espèces et un équipement respectueux des récifs, et choisissez un jour calme pour l’eau.',
+  },
+  it: {
+    seoTitle: 'Rifugio Gandoca-Manzanillo: fauna, spiagge e cosa fare',
+    seoDescription:
+      'Una guida al Rifugio Nazionale di Fauna Selvatica Gandoca-Manzanillo vicino a Puerto Viejo: snorkeling sulla barriera corallina, il sentiero costiero Manzanillo–Punta Mona, fauna, tartarughe marine e consigli pratici.',
+    heading: 'Rifugio Gandoca-Manzanillo: cosa fare',
+    heroAlt: 'Costa caraibica orlata di barriera corallina nel Rifugio Gandoca-Manzanillo, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Refugio_Nacional_de_Vida_Silvestre_Gandoca-Manzanillo" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Il Rifugio Nazionale di Fauna Selvatica Gandoca-Manzanillo (Refugio Nacional de Vida Silvestre Gandoca-Manzanillo) protegge il tratto della costa caraibica meridionale della Costa Rica, dal villaggio di Manzanillo fino al confine con Panama. È uno degli angoli più selvaggi e meno sviluppati della regione — e uno dei più facili da raggiungere da Puerto Viejo.',
+      'Unisce foresta pluviale, mangrovie, una delle poche barriere coralline vive della Costa Rica e spiagge tranquille dove nidificano le tartarughe marine. Non serve un tour per goderselo, ma una guida locale fa davvero vivere la fauna.',
+    ],
+    stayRecommendationTitle: 'Dove alloggiare vicino a Gandoca-Manzanillo',
+    wildlifeHeading: 'La fauna che potresti vedere',
+    wildlifeIntro: 'Il rifugio concentra buona parte della fauna caraibica in un’area piccola e accessibile:',
+    wildlifeItems: [
+      'Bradipi, scimmie urlatrici e cappuccine nella foresta costiera',
+      'Rane velenose, tucani e innumerevoli uccelli',
+      'Una barriera corallina viva con pesci tropicali, razze e, di tanto in tanto, uno squalo nutrice',
+      'Delfini nella laguna di Gandoca (compreso il raro tucuxi)',
+      'Tartarughe marine che nidificano sulle spiagge, all’incirca da marzo a luglio — informati sul posto, perché i periodi variano',
+    ],
+    beachesHeading: 'Le spiagge e il sentiero costiero',
+    beachesParagraphs: [
+      'La spiaggia di Manzanillo, all’ingresso del rifugio, è calma e adatta a nuotare e fare snorkeling. Da lì, un bellissimo sentiero costiero si snoda per circa 5,5 km nella giungla fino a Punta Mona, passando per cale nascoste e punte orlate di barriera.',
+      'È una camminata pianeggiante ma a volte fangosa; metti in conto qualche ora se vuoi nuotare e osservare la fauna. Una guida vale la pena sia per avvistare gli animali sia per restare sui sentieri giusti.',
+    ],
+    thingsHeading: 'Le cose migliori da fare',
+    thingsIntro: 'Alcuni modi per sfruttare al meglio la visita:',
+    thingsItems: [
+      'Fai snorkeling o immersioni sulla barriera — una delle più sane del versante caraibico della Costa Rica, meglio nelle giornate calme e limpide',
+      'Percorri il sentiero costiero Manzanillo–Punta Mona con una guida locale',
+      'Fai un tour in kayak o in barca nella laguna di Gandoca per cercare delfini e lamantini',
+      'Mangia cucina caraibica fresca in una delle piccole sodas del villaggio di Manzanillo',
+    ],
+    practicalHeading: 'Consigli pratici',
+    practicalItems: [
+      'Assumi una guida locale della comunità a Manzanillo — sostiene la comunità e migliora tantissimo ciò che vedi',
+      'Porta contanti (colones) per guide, parcheggio e cibo; non ci sono grandi strutture',
+      'Crema solare rispettosa della barriera, repellente per insetti, scarpe da scoglio e molta acqua sono essenziali',
+      'Per lo snorkeling, punta alle finestre più calme e limpide (febbraio–marzo e settembre–ottobre) — ma qui il mare cambia di giorno in giorno',
+    ],
+    gettingThereHeading: 'Come arrivare',
+    gettingThereParagraph:
+      'Il rifugio inizia a Manzanillo, alla fine della strada costiera, a circa 14 km a sud-est di Puerto Viejo. Puoi prendere il bus locale, andare in auto o noleggiare uno scooter o una bici.',
+    gettingThereLinkText: 'Vedi la nostra guida completa per arrivare a Gandoca-Manzanillo →',
+    takeawaysHeading: 'Punti chiave',
+    takeawaysParagraph:
+      'Gandoca-Manzanillo è l’estremità selvaggia, di barriera e foresta, dei Caraibi meridionali — perfetta per lo snorkeling, una camminata costiera nella giungla e la fauna, e facile da raggiungere da Puerto Viejo. Vai con una guida locale, porta contanti e attrezzatura rispettosa della barriera e scegli una giornata calma per l’acqua.',
+  },
+  pt: {
+    seoTitle: 'Refúgio Gandoca-Manzanillo: fauna, praias e o que fazer',
+    seoDescription:
+      'Um guia do Refúgio Nacional de Vida Silvestre Gandoca-Manzanillo perto de Puerto Viejo: snorkel no recife de coral, a trilha costeira Manzanillo–Punta Mona, fauna, tartarugas marinhas e dicas práticas.',
+    heading: 'Refúgio Gandoca-Manzanillo: o que fazer',
+    heroAlt: 'Costa caribenha com recife no Refúgio Gandoca-Manzanillo, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Refugio_Nacional_de_Vida_Silvestre_Gandoca-Manzanillo" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'O Refúgio Nacional de Vida Silvestre Gandoca-Manzanillo (Refugio Nacional de Vida Silvestre Gandoca-Manzanillo) protege o trecho do Caribe Sul da Costa Rica, do vilarejo de Manzanillo até a fronteira com o Panamá. É um dos cantos mais selvagens e menos desenvolvidos da região — e um dos mais fáceis de alcançar a partir de Puerto Viejo.',
+      'Reúne floresta tropical, mangais, um dos poucos recifes de coral vivos da Costa Rica e praias tranquilas onde as tartarugas marinhas desovam. Você não precisa de um tour para aproveitá-lo, mas um guia local faz a fauna ganhar vida.',
+    ],
+    stayRecommendationTitle: 'Onde se hospedar perto de Gandoca-Manzanillo',
+    wildlifeHeading: 'Fauna que você pode ver',
+    wildlifeIntro: 'O refúgio concentra boa parte da fauna do Caribe numa área pequena e acessível:',
+    wildlifeItems: [
+      'Preguiças, macacos-uivadores e macacos-prego na mata costeira',
+      'Rãs venenosas, tucanos e incontáveis aves',
+      'Um recife de coral vivo com peixes tropicais, arraias e, de vez em quando, um tubarão-lixa',
+      'Golfinhos na lagoa de Gandoca (incluindo o raro tucuxi)',
+      'Tartarugas marinhas desovando nas praias, aproximadamente de março a julho — pergunte no local, pois as datas variam',
+    ],
+    beachesHeading: 'As praias e a trilha costeira',
+    beachesParagraphs: [
+      'A praia de Manzanillo, na entrada do refúgio, é calma e boa para nadar e fazer snorkel. Dali, uma linda trilha costeira segue por cerca de 5,5 km pela selva até Punta Mona, passando por enseadas escondidas e pontas cercadas de recife.',
+      'É uma caminhada plana, mas às vezes enlameada; reserve algumas horas se quiser nadar e observar a fauna. Vale a pena um guia, tanto para avistar animais quanto para seguir as trilhas certas.',
+    ],
+    thingsHeading: 'Melhores coisas para fazer',
+    thingsIntro: 'Algumas formas de aproveitar ao máximo a visita:',
+    thingsItems: [
+      'Faça snorkel ou mergulho no recife — um dos mais saudáveis do lado caribenho da Costa Rica, melhor em dias calmos e claros',
+      'Percorra a trilha costeira Manzanillo–Punta Mona com um guia local',
+      'Faça um passeio de caiaque ou de barco pela lagoa de Gandoca para procurar golfinhos e peixes-boi',
+      'Coma comida caribenha fresca numa das pequenas sodas do vilarejo de Manzanillo',
+    ],
+    practicalHeading: 'Dicas práticas',
+    practicalItems: [
+      'Contrate um guia comunitário local em Manzanillo — apoia a comunidade e melhora muito o que você vê',
+      'Leve dinheiro (colones) para guias, estacionamento e comida; não há grandes estruturas',
+      'Protetor solar que respeite os recifes, repelente, sapatilhas de água e bastante água são essenciais',
+      'Para o snorkel, mire nas janelas mais calmas e claras (fevereiro–março e setembro–outubro) — mas o mar aqui muda de um dia para o outro',
+    ],
+    gettingThereHeading: 'Como chegar',
+    gettingThereParagraph:
+      'O refúgio começa em Manzanillo, no fim da estrada costeira, a cerca de 14 km a sudeste de Puerto Viejo. Você pode pegar o ônibus local, ir de carro ou alugar uma scooter ou bicicleta.',
+    gettingThereLinkText: 'Veja nosso guia completo para chegar a Gandoca-Manzanillo →',
+    takeawaysHeading: 'Pontos principais',
+    takeawaysParagraph:
+      'Gandoca-Manzanillo é o extremo selvagem, de recife e floresta, do Caribe Sul — ótimo para snorkel, uma caminhada costeira pela selva e fauna, e fácil de alcançar a partir de Puerto Viejo. Vá com um guia local, leve dinheiro e equipamento que respeite o recife, e escolha um dia calmo para a água.',
+  },
+  he: {
+    seoTitle: 'שמורת גנדוקה-מנזנייו: חיות בר, חופים ומה לעשות',
+    seoDescription:
+      'מדריך לשמורת חיות הבר הלאומית גנדוקה-מנזנייו ליד פוארטו ויאחו: שנורקלינג בשונית האלמוגים, שביל החוף מנזנייו–פונטה מונה, חיות בר, צבי ים וטיפים מעשיים.',
+    heading: 'שמורת גנדוקה-מנזנייו: מה לעשות',
+    heroAlt: 'חוף קריבי עטור שונית בשמורת גנדוקה-מנזנייו, קוסטה ריקה',
+    photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Refugio_Nacional_de_Vida_Silvestre_Gandoca-Manzanillo" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'שמורת חיות הבר הלאומית גנדוקה-מנזנייו (Refugio Nacional de Vida Silvestre Gandoca-Manzanillo) מגִנה על רצועת חוף הקריביים הדרומי של קוסטה ריקה, מהכפר מנזנייו ועד הגבול עם פנמה. זהו אחד הפינות הפראיות והפחות מפותחות באזור — ואחד הקלים ביותר להגעה מפוארטו ויאחו.',
+      'הוא משלב יער גשם, יערות מנגרוב, אחת מהשוניות החיות המעטות בקוסטה ריקה וחופים שקטים שבהם מקננים צבי ים. לא צריך טיור מאורגן כדי ליהנות ממנו, אבל מדריך מקומי באמת מחיה את עולם החי.',
+    ],
+    stayRecommendationTitle: 'היכן להתארח ליד גנדוקה-מנזנייו',
+    wildlifeHeading: 'חיות שאולי תראו',
+    wildlifeIntro: 'השמורה מרכזת חלק גדול מעולם החי הקריבי בשטח קטן ונגיש:',
+    wildlifeItems: [
+      'עצלנים, קופי שאגן וקופי קפוצ\'ין ביער החוף',
+      'צפרדעי רעל, טוקנים ואינספור ציפורים',
+      'שונית אלמוגים חיה עם דגים טרופיים, טריגונים ומדי פעם כריש אומן',
+      'דולפינים בלגונה של גנדוקה (כולל הטוקוקסי הנדיר)',
+      'צבי ים המקננים על החופים, בערך ממרץ עד יולי — בררו במקום, כי המועדים משתנים',
+    ],
+    beachesHeading: 'החופים ושביל החוף',
+    beachesParagraphs: [
+      'חוף מנזנייו, בכניסה לשמורה, שקט ומתאים לשחייה ולשנורקלינג. משם, שביל חוף יפהפה נמשך כ-5.5 ק"מ דרך הג\'ונגל עד פונטה מונה, וחולף על פני מפרצונים נסתרים ולשונות יבשה עטורות שונית.',
+      'זו הליכה מישורית אך לעיתים בוצית; הקצו כמה שעות אם אתם רוצים לשחות ולצפות בחיות. שווה לקחת מדריך גם לאיתור בעלי החיים וגם כדי להישאר בשבילים הנכונים.',
+    ],
+    thingsHeading: 'הדברים הכי כדאיים לעשות',
+    thingsIntro: 'כמה דרכים להפיק את המרב מהביקור:',
+    thingsItems: [
+      'שנרקלו או צללו בשונית — אחת הבריאות ביותר בצד הקריבי של קוסטה ריקה, הכי טוב בימים רגועים וצלולים',
+      'צעדו בשביל החוף מנזנייו–פונטה מונה עם מדריך מקומי',
+      'צאו לסיור קיאקים או סירה בלגונה של גנדוקה לחיפוש דולפינים ופרות ים',
+      'אכלו אוכל קריבי טרי באחת מה-sodas הקטנות בכפר מנזנייו',
+    ],
+    practicalHeading: 'טיפים מעשיים',
+    practicalItems: [
+      'שכרו מדריך קהילתי מקומי במנזנייו — זה תומך בקהילה ומשפר מאוד את מה שתראו',
+      'הביאו מזומן (קולונס) למדריכים, חניה ואוכל; אין מתקנים גדולים',
+      'קרם הגנה ידידותי לשונית, דוחה חרקים, נעלי מים והרבה מים הם הכרחיים',
+      'לשנורקלינג, כוונו לחלונות הרגועים והצלולים יותר (פברואר–מרץ וספטמבר–אוקטובר) — אבל הים כאן משתנה מיום ליום',
+    ],
+    gettingThereHeading: 'איך מגיעים',
+    gettingThereParagraph:
+      'השמורה מתחילה במנזנייו, בקצה כביש החוף, כ-14 ק"מ דרומית-מזרחית לפוארטו ויאחו. אפשר לנסוע באוטובוס המקומי, ברכב, או לשכור קטנוע או אופניים.',
+    gettingThereLinkText: 'למדריך המלא שלנו להגעה לגנדוקה-מנזנייו →',
+    takeawaysHeading: 'עיקרי הדברים',
+    takeawaysParagraph:
+      'גנדוקה-מנזנייו היא הקצה הפראי, של שונית ויער גשם, של הקריביים הדרומיים — מצוינת לשנורקלינג, להליכת חוף בג\'ונגל ולצפייה בחיות בר, וקלה להגעה מפוארטו ויאחו. צאו עם מדריך מקומי, הביאו מזומן וציוד ידידותי לשונית, ובחרו יום רגוע למים.',
+  },
+  hi: {
+    seoTitle: 'गंदोका-मंज़ानियो वन्यजीव शरण: वन्यजीव, समुद्र तट और क्या करें',
+    seoDescription:
+      'प्वेर्तो विएखो के पास गंदोका-मंज़ानियो राष्ट्रीय वन्यजीव शरण का मार्गदर्शक: कोरल रीफ़ में स्नॉर्कलिंग, मंज़ानियो–पुंता मोना तटीय पगडंडी, वन्यजीव, समुद्री कछुए और व्यावहारिक सुझाव।',
+    heading: 'गंदोका-मंज़ानियो वन्यजीव शरण: क्या करें',
+    heroAlt: 'गंदोका-मंज़ानियो वन्यजीव शरण, कोस्टा रिका में रीफ़ से घिरा कैरिबियन तट',
+    photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Refugio_Nacional_de_Vida_Silvestre_Gandoca-Manzanillo" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'गंदोका-मंज़ानियो राष्ट्रीय वन्यजीव शरण (Refugio Nacional de Vida Silvestre Gandoca-Manzanillo) कोस्टा रिका के दक्षिणी कैरिबियन तट के उस हिस्से की रक्षा करती है जो मंज़ानियो गाँव से पनामा की सीमा तक फैला है। यह इस क्षेत्र के सबसे जंगली और सबसे कम विकसित कोनों में से एक है — और प्वेर्तो विएखो से पहुँचने में सबसे आसान में से एक।',
+      'इसमें वर्षावन, मैंग्रोव, कोस्टा रिका की कुछ जीवित कोरल रीफ़ों में से एक, और शांत समुद्र तट हैं जहाँ समुद्री कछुए घोंसले बनाते हैं। इसका आनंद लेने के लिए किसी टूर की ज़रूरत नहीं, पर एक स्थानीय गाइड वन्यजीवन को सचमुच जीवंत कर देता है।',
+    ],
+    stayRecommendationTitle: 'गंदोका-मंज़ानियो के पास कहाँ ठहरें',
+    wildlifeHeading: 'जो वन्यजीव आप देख सकते हैं',
+    wildlifeIntro: 'यह शरण कैरिबियन के अधिकांश वन्यजीवन को एक छोटे, सुलभ क्षेत्र में समेट देती है:',
+    wildlifeItems: [
+      'तटीय जंगल में स्लॉथ, हाउलर और सफ़ेद-मुँह वाले बंदर',
+      'ज़हरीले मेंढक, टूकन और अनगिनत पक्षी',
+      'उष्णकटिबंधीय मछलियों, रे और कभी-कभार नर्स शार्क वाली एक जीवित कोरल रीफ़',
+      'गंदोका लैगून में डॉल्फ़िन (दुर्लभ तुकुक्सी सहित)',
+      'समुद्र तटों पर घोंसला बनाते समुद्री कछुए, लगभग मार्च से जुलाई तक — स्थानीय लोगों से पूछें, क्योंकि समय बदलता रहता है',
+    ],
+    beachesHeading: 'समुद्र तट और तटीय पगडंडी',
+    beachesParagraphs: [
+      'शरण के प्रवेश पर मंज़ानियो समुद्र तट शांत है और तैरने तथा स्नॉर्कलिंग के लिए अच्छा है। वहाँ से एक सुंदर तटीय पगडंडी लगभग 5.5 किमी जंगल के बीच से होकर पुंता मोना तक जाती है, रास्ते में छिपी हुई खाड़ियों और रीफ़ से घिरी नोकों से गुज़रती है।',
+      'यह समतल पर कभी-कभी कीचड़ भरी पैदल यात्रा है; अगर आप तैरना और वन्यजीव देखना चाहते हैं तो कुछ घंटे रखें। जानवरों को खोजने और सही रास्तों पर बने रहने, दोनों के लिए एक गाइड फ़ायदेमंद है।',
+    ],
+    thingsHeading: 'करने के लिए सबसे अच्छी चीज़ें',
+    thingsIntro: 'यात्रा का पूरा लाभ उठाने के कुछ तरीके:',
+    thingsItems: [
+      'रीफ़ में स्नॉर्कल या डाइव करें — कोस्टा रिका के कैरिबियन ओर की सबसे स्वस्थ रीफ़ों में से एक, शांत और साफ़ दिनों में सबसे अच्छी',
+      'स्थानीय गाइड के साथ मंज़ानियो–पुंता मोना तटीय पगडंडी पर चलें',
+      'डॉल्फ़िन और मैनाटी खोजने के लिए गंदोका लैगून में कयाक या नाव का टूर लें',
+      'मंज़ानियो गाँव की किसी छोटी soda में ताज़ा कैरिबियन खाना खाएँ',
+    ],
+    practicalHeading: 'व्यावहारिक सुझाव',
+    practicalItems: [
+      'मंज़ानियो में एक स्थानीय सामुदायिक गाइड रखें — यह समुदाय को सहारा देता है और जो आप देखते हैं उसे बहुत बेहतर बनाता है',
+      'गाइड, पार्किंग और खाने के लिए नकद (कोलोनेस) साथ रखें; यहाँ बड़ी सुविधाएँ नहीं हैं',
+      'रीफ़-सुरक्षित सनस्क्रीन, कीट प्रतिरोधक, वॉटर शूज़ और भरपूर पानी ज़रूरी हैं',
+      'स्नॉर्कलिंग के लिए अधिक शांत और साफ़ अवधियों (फ़रवरी–मार्च और सितंबर–अक्टूबर) को चुनें — पर यहाँ समुद्र दिन-प्रतिदिन बदलता है',
+    ],
+    gettingThereHeading: 'कैसे पहुँचें',
+    gettingThereParagraph:
+      'शरण मंज़ानियो से शुरू होती है, तटीय सड़क के अंत में, प्वेर्तो विएखो से लगभग 14 किमी दक्षिण-पूर्व में। आप स्थानीय बस ले सकते हैं, गाड़ी चला सकते हैं, या स्कूटर या साइकिल किराए पर ले सकते हैं।',
+    gettingThereLinkText: 'गंदोका-मंज़ानियो तक पहुँचने की हमारी पूरी गाइड देखें →',
+    takeawaysHeading: 'मुख्य बातें',
+    takeawaysParagraph:
+      'गंदोका-मंज़ानियो दक्षिणी कैरिबियन का जंगली, रीफ़-और-वर्षावन वाला छोर है — स्नॉर्कलिंग, जंगल में तटीय पैदल यात्रा और वन्यजीवों के लिए बढ़िया, और प्वेर्तो विएखो से पहुँचने में आसान। स्थानीय गाइड के साथ जाएँ, नकद और रीफ़-सुरक्षित सामान लाएँ, और पानी के लिए एक शांत दिन चुनें।',
+  },
+  nl: {
+    seoTitle: 'Reservaat Gandoca-Manzanillo: dieren, stranden & wat te doen',
+    seoDescription:
+      'Een gids voor het Nationaal Wildreservaat Gandoca-Manzanillo bij Puerto Viejo: snorkelen op het koraalrif, het kustpad Manzanillo–Punta Mona, dieren, zeeschildpadden en praktische tips.',
+    heading: 'Reservaat Gandoca-Manzanillo: wat te doen',
+    heroAlt: 'Met rif omzoomde Caribische kust in het reservaat Gandoca-Manzanillo, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Refugio_Nacional_de_Vida_Silvestre_Gandoca-Manzanillo" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Het Nationaal Wildreservaat Gandoca-Manzanillo (Refugio Nacional de Vida Silvestre Gandoca-Manzanillo) beschermt het stuk van Costa Rica’s zuidelijke Caribische kust, van het dorp Manzanillo tot de grens met Panama. Het is een van de wildste, minst ontwikkelde hoekjes van de regio — en een van de makkelijkst te bereiken vanuit Puerto Viejo.',
+      'Het combineert regenwoud, mangroven, een van Costa Rica’s weinige levende koraalriffen en rustige stranden waar zeeschildpadden nestelen. Je hebt geen tour nodig om ervan te genieten, maar een lokale gids laat de dieren echt tot leven komen.',
+    ],
+    stayRecommendationTitle: 'Waar te verblijven nabij Gandoca-Manzanillo',
+    wildlifeHeading: 'Dieren die je zou kunnen zien',
+    wildlifeIntro: 'Het reservaat bundelt veel van het Caribische dierenleven in een klein, toegankelijk gebied:',
+    wildlifeItems: [
+      'Luiaards, brulapen en kapucijnapen in het kustbos',
+      'Gifkikkers, toekans en talloze vogels',
+      'Een levend koraalrif met tropische vissen, roggen en af en toe een verpleegstershaai',
+      'Dolfijnen in de lagune van Gandoca (waaronder de zeldzame tucuxi)',
+      'Nestelende zeeschildpadden op de stranden, ongeveer van maart tot juli — vraag het ter plaatse na, want de timing wisselt',
+    ],
+    beachesHeading: 'De stranden en het kustpad',
+    beachesParagraphs: [
+      'Het strand van Manzanillo, bij de ingang van het reservaat, is kalm en goed om te zwemmen en te snorkelen. Vandaar loopt een prachtig kustpad zo’n 5,5 km door de jungle naar Punta Mona, langs verborgen baaien en met rif omzoomde landpunten.',
+      'Het is een vlakke maar soms modderige wandeling; reken op een paar uur als je wilt zwemmen en dieren spotten. Een gids is de moeite waard, zowel om dieren te spotten als om op de juiste paden te blijven.',
+    ],
+    thingsHeading: 'De leukste dingen om te doen',
+    thingsIntro: 'Een paar manieren om het meeste uit een bezoek te halen:',
+    thingsItems: [
+      'Snorkel of duik op het rif — een van de gezondste aan Costa Rica’s Caribische kant, het best op kalme, heldere dagen',
+      'Wandel het kustpad Manzanillo–Punta Mona met een lokale gids',
+      'Maak een kajak- of boottocht op de lagune van Gandoca om te zoeken naar dolfijnen en zeekoeien',
+      'Eet vers Caribisch eten in een van de kleine sodas in het dorp Manzanillo',
+    ],
+    practicalHeading: 'Praktische tips',
+    practicalItems: [
+      'Huur een lokale gemeenschapsgids in Manzanillo — het steunt de gemeenschap en verbetert enorm wat je ziet',
+      'Neem contant geld (colones) mee voor gidsen, parkeren en eten; er zijn geen grote voorzieningen',
+      'Rifvriendelijke zonnebrand, insectenwerend middel, waterschoenen en veel water zijn essentieel',
+      'Voor het snorkelen mik je op de kalmere, heldere periodes (februari–maart en september–oktober) — maar de zee verandert hier van dag tot dag',
+    ],
+    gettingThereHeading: 'Hoe kom je er',
+    gettingThereParagraph:
+      'Het reservaat begint in Manzanillo, aan het eind van de kustweg, zo’n 14 km ten zuidoosten van Puerto Viejo. Je kunt de lokale bus nemen, rijden, of een scooter of fiets huren.',
+    gettingThereLinkText: 'Bekijk onze volledige gids om in Gandoca-Manzanillo te komen →',
+    takeawaysHeading: 'Belangrijkste punten',
+    takeawaysParagraph:
+      'Gandoca-Manzanillo is het wilde uiteinde van rif en regenwoud van het zuidelijke Caribisch gebied — geweldig om te snorkelen, een kustwandeling door de jungle en dieren, en makkelijk te bereiken vanuit Puerto Viejo. Ga met een lokale gids, neem contant geld en rifvriendelijke spullen mee, en kies een kalme dag voor het water.',
+  },
+};
+
+export function gandocaRefugeContent(locale: Locale): GandocaRefugeContent {
+  return gandocaRefuge[locale] ?? gandocaRefuge.en!;
+}
+
+/* ------------------------------------------------------------------ *
+ * Puerto Viejo beaches guide
+ *
+ * High booking-intent gap: the beaches are the reason most guests come,
+ * and several Kalawala villas sit right on the Playa Chiquita / Punta Uva
+ * stretch. Beach-by-beach guide with swim/surf/snorkel guidance + safety.
+ * ------------------------------------------------------------------ */
+
+export interface BeachEntry {
+  name: string;
+  description: string;
+}
+
+export interface BeachesContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: [string, string];
+  stayRecommendationTitle: string;
+  beachesHeading: string;
+  beaches: BeachEntry[];
+  bestForHeading: string;
+  bestForIntro: string;
+  bestForItems: string[];
+  safetyHeading: string;
+  safetyParagraph: string;
+  takeawaysHeading: string;
+  takeawaysParagraph: string;
+}
+
+const beaches: Partial<Record<Locale, BeachesContent>> = {
+  en: {
+    seoTitle: 'The Best Beaches in Puerto Viejo, Costa Rica (Local Guide)',
+    seoDescription:
+      'A beach-by-beach guide to Puerto Viejo de Talamanca: Playa Cocles, Playa Chiquita, Punta Uva, Playa Negra and Manzanillo — where to swim, surf, snorkel, and how to stay safe.',
+    heading: 'The Best Beaches in Puerto Viejo',
+    heroAlt: 'Turquoise Caribbean beach with palms at Punta Uva, Puerto Viejo, Costa Rica',
+    photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'The beaches are the reason most people fall for Puerto Viejo. Along a single stretch of coast you get everything from world-class surf breaks to glassy, palm-fringed coves perfect for a lazy swim.',
+      'Here is a beach-by-beach guide, running south from town, with honest notes on which are best for swimming, surfing and snorkelling — and a word on staying safe in the water.',
+    ],
+    stayRecommendationTitle: 'Where to stay near the best beaches',
+    beachesHeading: 'The Beaches, One by One',
+    beaches: [
+      { name: 'Playa Negra', description: 'Just north of town, an easy black-sand beach that is great for a stroll and a sunset, with calmer water than the surf beaches.' },
+      { name: 'Playa Cocles', description: 'The big, beautiful surf beach a couple of kilometres south of town. Popular and lively, with seasonal lifeguards — but strong currents, so it is more for surfing and sunbathing than easy swimming.' },
+      { name: 'Playa Chiquita', description: 'Not one beach but a string of small, calm, reef-sheltered coves tucked behind the jungle. Beautiful, quiet and good for swimming and snorkelling — and where several of our villas sit.' },
+      { name: 'Punta Uva', description: 'The postcard beach: turquoise water, a jungle-covered point and some of the calmest, clearest swimming and snorkelling on the coast. A local favourite.' },
+      { name: 'Manzanillo', description: 'At the end of the road, the gateway to the Gandoca-Manzanillo refuge. Calm, clear water, a living reef offshore, and a laid-back village with a couple of great sodas.' },
+    ],
+    bestForHeading: 'Which Beach for What',
+    bestForIntro: 'A quick way to choose:',
+    bestForItems: [
+      'Calm swimming and families → Punta Uva, the Playa Chiquita coves, Manzanillo',
+      'Snorkelling → Punta Uva and Manzanillo, on calm, clear days',
+      'Surfing → Playa Cocles, and the famous Salsa Brava reef break for experts only',
+      'A sunset stroll near town → Playa Negra',
+    ],
+    safetyHeading: 'Staying Safe in the Water',
+    safetyParagraph:
+      'Rip currents are real on the more exposed beaches, especially Playa Cocles. Swim where the water is calm and other people are in, keep an eye on children, and when in doubt choose the sheltered coves at Punta Uva or Playa Chiquita. The sea here changes from day to day, so check conditions before you dive in.',
+    takeawaysHeading: 'Key Takeaways',
+    takeawaysParagraph:
+      'Puerto Viejo’s beaches run from the surf of Playa Cocles to the calm, clear water of Punta Uva and Manzanillo, with the sheltered Playa Chiquita coves in between. Match the beach to what you want — swim, surf or snorkel — respect the currents, and you have one of the best stretches of coast in Costa Rica on your doorstep.',
+  },
+  es: {
+    seoTitle: 'Las Mejores Playas de Puerto Viejo, Costa Rica (Guía Local)',
+    seoDescription:
+      'Guía playa por playa de Puerto Viejo de Talamanca: Playa Cocles, Playa Chiquita, Punta Uva, Playa Negra y Manzanillo — dónde nadar, surfear, hacer snorkel y cómo cuidarte en el agua.',
+    heading: 'Las Mejores Playas de Puerto Viejo',
+    heroAlt: 'Playa caribeña turquesa con palmeras en Punta Uva, Puerto Viejo, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Las playas son la razón por la que la mayoría se enamora de Puerto Viejo. A lo largo de un mismo tramo de costa encuentras de todo, desde olas de clase mundial hasta calas tranquilas rodeadas de palmeras, perfectas para un baño relajado.',
+      'Aquí tienes una guía playa por playa, de norte a sur desde el pueblo, con notas honestas sobre cuáles son mejores para nadar, surfear y hacer snorkel — y una palabra sobre cómo cuidarte en el agua.',
+    ],
+    stayRecommendationTitle: 'Dónde hospedarte cerca de las mejores playas',
+    beachesHeading: 'Las Playas, Una por Una',
+    beaches: [
+      { name: 'Playa Negra', description: 'Justo al norte del pueblo, una playa de arena negra fácil de disfrutar, ideal para caminar y ver el atardecer, con agua más tranquila que las playas de surf.' },
+      { name: 'Playa Cocles', description: 'La gran playa de surf, a un par de kilómetros al sur del pueblo. Popular y animada, con salvavidas por temporadas, pero con corrientes fuertes, así que es más para surfear y tomar el sol que para nadar tranquilo.' },
+      { name: 'Playa Chiquita', description: 'No es una sola playa, sino una serie de pequeñas calas tranquilas y protegidas por el arrecife, escondidas tras la selva. Hermosas, tranquilas y buenas para nadar y hacer snorkel — y donde se ubican varias de nuestras villas.' },
+      { name: 'Punta Uva', description: 'La playa de postal: agua turquesa, una punta cubierta de selva y de los baños y snorkel más tranquilos y claros de la costa. Una favorita local.' },
+      { name: 'Manzanillo', description: 'Al final de la carretera, la entrada al refugio Gandoca-Manzanillo. Agua tranquila y clara, un arrecife vivo mar adentro y un pueblo relajado con un par de sodas estupendas.' },
+    ],
+    bestForHeading: 'Qué Playa para Qué',
+    bestForIntro: 'Una forma rápida de elegir:',
+    bestForItems: [
+      'Baño tranquilo y familias → Punta Uva, las calas de Playa Chiquita, Manzanillo',
+      'Snorkel → Punta Uva y Manzanillo, en días tranquilos y claros',
+      'Surf → Playa Cocles, y el famoso arrecife de Salsa Brava solo para expertos',
+      'Un paseo al atardecer cerca del pueblo → Playa Negra',
+    ],
+    safetyHeading: 'Cuidarte en el Agua',
+    safetyParagraph:
+      'Las corrientes de resaca son reales en las playas más expuestas, sobre todo en Playa Cocles. Nada donde el agua esté tranquila y haya más gente, vigila a los niños y, ante la duda, elige las calas protegidas de Punta Uva o Playa Chiquita. El mar aquí cambia de un día a otro, así que revisa las condiciones antes de entrar.',
+    takeawaysHeading: 'Puntos Clave',
+    takeawaysParagraph:
+      'Las playas de Puerto Viejo van del surf de Playa Cocles al agua tranquila y clara de Punta Uva y Manzanillo, con las calas protegidas de Playa Chiquita en medio. Elige la playa según lo que busques —nadar, surfear o snorkel—, respeta las corrientes y tendrás uno de los mejores tramos de costa de Costa Rica a un paso.',
+  },
+  de: {
+    seoTitle: 'Die schönsten Strände von Puerto Viejo, Costa Rica (Insider-Guide)',
+    seoDescription:
+      'Ein Strand-für-Strand-Führer für Puerto Viejo de Talamanca: Playa Cocles, Playa Chiquita, Punta Uva, Playa Negra und Manzanillo — wo man schwimmt, surft, schnorchelt und sicher bleibt.',
+    heading: 'Die schönsten Strände von Puerto Viejo',
+    heroAlt: 'Türkisfarbener Karibikstrand mit Palmen in Punta Uva, Puerto Viejo, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Die Strände sind der Grund, warum die meisten sich in Puerto Viejo verlieben. Entlang eines einzigen Küstenabschnitts gibt es alles, von Weltklasse-Surfbreaks bis zu glasklaren, von Palmen gesäumten Buchten, perfekt für ein gemütliches Bad.',
+      'Hier ein Strand-für-Strand-Führer, von Norden nach Süden ab dem Ort, mit ehrlichen Hinweisen, welche am besten zum Schwimmen, Surfen und Schnorcheln sind — und ein Wort zur Sicherheit im Wasser.',
+    ],
+    stayRecommendationTitle: 'Wo man in der Nähe der schönsten Strände übernachtet',
+    beachesHeading: 'Die Strände, einer nach dem anderen',
+    beaches: [
+      { name: 'Playa Negra', description: 'Direkt nördlich des Ortes, ein unkomplizierter Strand mit schwarzem Sand, ideal für einen Spaziergang und den Sonnenuntergang, mit ruhigerem Wasser als die Surfstrände.' },
+      { name: 'Playa Cocles', description: 'Der große, schöne Surfstrand ein paar Kilometer südlich des Ortes. Beliebt und lebhaft, mit saisonalen Rettungsschwimmern — aber starken Strömungen, also eher zum Surfen und Sonnen als zum entspannten Schwimmen.' },
+      { name: 'Playa Chiquita', description: 'Nicht ein Strand, sondern eine Reihe kleiner, ruhiger, vom Riff geschützter Buchten, versteckt hinter dem Dschungel. Schön, ruhig und gut zum Schwimmen und Schnorcheln — und hier liegen mehrere unserer Villen.' },
+      { name: 'Punta Uva', description: 'Der Postkartenstrand: türkisfarbenes Wasser, eine dschungelbewachsene Landspitze und das ruhigste, klarste Schwimmen und Schnorcheln der Küste. Ein Favorit der Einheimischen.' },
+      { name: 'Manzanillo', description: 'Am Ende der Straße, das Tor zum Schutzgebiet Gandoca-Manzanillo. Ruhiges, klares Wasser, ein lebendes Riff vor der Küste und ein entspanntes Dorf mit ein paar tollen Sodas.' },
+    ],
+    bestForHeading: 'Welcher Strand wofür',
+    bestForIntro: 'Eine schnelle Entscheidungshilfe:',
+    bestForItems: [
+      'Ruhiges Schwimmen und Familien → Punta Uva, die Buchten von Playa Chiquita, Manzanillo',
+      'Schnorcheln → Punta Uva und Manzanillo, an ruhigen, klaren Tagen',
+      'Surfen → Playa Cocles und der berühmte Riffbreak Salsa Brava, nur für Profis',
+      'Ein Sonnenuntergangsspaziergang nahe dem Ort → Playa Negra',
+    ],
+    safetyHeading: 'Sicherheit im Wasser',
+    safetyParagraph:
+      'Brandungsrückströmungen sind an den offeneren Stränden real, besonders an Playa Cocles. Schwimmen Sie dort, wo das Wasser ruhig ist und andere im Wasser sind, behalten Sie Kinder im Auge, und wählen Sie im Zweifel die geschützten Buchten von Punta Uva oder Playa Chiquita. Das Meer wechselt hier von Tag zu Tag, prüfen Sie also die Bedingungen, bevor Sie hineingehen.',
+    takeawaysHeading: 'Das Wichtigste in Kürze',
+    takeawaysParagraph:
+      'Puerto Viejos Strände reichen vom Surf von Playa Cocles bis zum ruhigen, klaren Wasser von Punta Uva und Manzanillo, mit den geschützten Buchten von Playa Chiquita dazwischen. Passen Sie den Strand an das an, was Sie wollen — Schwimmen, Surfen oder Schnorcheln —, respektieren Sie die Strömungen, und Sie haben einen der schönsten Küstenabschnitte Costa Ricas vor der Tür.',
+  },
+  fr: {
+    seoTitle: 'Les plus belles plages de Puerto Viejo, Costa Rica (guide local)',
+    seoDescription:
+      'Un guide plage par plage de Puerto Viejo de Talamanca : Playa Cocles, Playa Chiquita, Punta Uva, Playa Negra et Manzanillo — où nager, surfer, faire du snorkeling et rester en sécurité.',
+    heading: 'Les plus belles plages de Puerto Viejo',
+    heroAlt: 'Plage caraïbe turquoise bordée de palmiers à Punta Uva, Puerto Viejo, Costa Rica',
+    photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Les plages sont la raison pour laquelle la plupart des gens tombent sous le charme de Puerto Viejo. Sur un seul tronçon de côte, on trouve de tout, des spots de surf de classe mondiale aux criques limpides bordées de palmiers, parfaites pour une baignade paisible.',
+      'Voici un guide plage par plage, du nord au sud à partir du village, avec des notes honnêtes sur celles qui conviennent le mieux à la baignade, au surf et au snorkeling — et un mot sur la sécurité dans l’eau.',
+    ],
+    stayRecommendationTitle: 'Où loger près des plus belles plages',
+    beachesHeading: 'Les plages, une par une',
+    beaches: [
+      { name: 'Playa Negra', description: 'Juste au nord du village, une plage de sable noir facile d’accès, idéale pour une promenade et un coucher de soleil, avec une eau plus calme que les plages de surf.' },
+      { name: 'Playa Cocles', description: 'La grande et belle plage de surf, à quelques kilomètres au sud du village. Populaire et animée, avec des sauveteurs en saison — mais des courants forts, donc plutôt pour surfer et bronzer que pour nager tranquillement.' },
+      { name: 'Playa Chiquita', description: 'Pas une plage, mais une série de petites criques calmes abritées par le récif, cachées derrière la jungle. Belles, tranquilles et bonnes pour la baignade et le snorkeling — et c’est là que se trouvent plusieurs de nos villas.' },
+      { name: 'Punta Uva', description: 'La plage de carte postale : eau turquoise, une pointe couverte de jungle et parmi les baignades et le snorkeling les plus calmes et clairs de la côte. Une préférée des locaux.' },
+      { name: 'Manzanillo', description: 'Au bout de la route, la porte d’entrée du refuge Gandoca-Manzanillo. Eau calme et claire, un récif vivant au large et un village décontracté avec quelques excellentes sodas.' },
+    ],
+    bestForHeading: 'Quelle plage pour quoi',
+    bestForIntro: 'Pour choisir rapidement :',
+    bestForItems: [
+      'Baignade calme et familles → Punta Uva, les criques de Playa Chiquita, Manzanillo',
+      'Snorkeling → Punta Uva et Manzanillo, par temps calme et clair',
+      'Surf → Playa Cocles, et le célèbre récif de Salsa Brava réservé aux experts',
+      'Une balade au coucher du soleil près du village → Playa Negra',
+    ],
+    safetyHeading: 'Rester en sécurité dans l’eau',
+    safetyParagraph:
+      'Les courants d’arrachement sont bien réels sur les plages les plus exposées, surtout Playa Cocles. Nagez là où l’eau est calme et où d’autres se baignent, gardez un œil sur les enfants et, en cas de doute, choisissez les criques abritées de Punta Uva ou Playa Chiquita. La mer change ici d’un jour à l’autre, vérifiez donc les conditions avant de vous baigner.',
+    takeawaysHeading: 'À retenir',
+    takeawaysParagraph:
+      'Les plages de Puerto Viejo vont du surf de Playa Cocles à l’eau calme et claire de Punta Uva et Manzanillo, avec les criques abritées de Playa Chiquita entre les deux. Choisissez la plage selon vos envies — nager, surfer ou faire du snorkeling —, respectez les courants, et vous aurez l’un des plus beaux tronçons de côte du Costa Rica à votre porte.',
+  },
+  it: {
+    seoTitle: 'Le spiagge più belle di Puerto Viejo, Costa Rica (guida locale)',
+    seoDescription:
+      'Una guida spiaggia per spiaggia di Puerto Viejo de Talamanca: Playa Cocles, Playa Chiquita, Punta Uva, Playa Negra e Manzanillo — dove nuotare, surfare, fare snorkeling e come stare al sicuro.',
+    heading: 'Le spiagge più belle di Puerto Viejo',
+    heroAlt: 'Spiaggia caraibica turchese con palme a Punta Uva, Puerto Viejo, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Le spiagge sono il motivo per cui la maggior parte delle persone si innamora di Puerto Viejo. Lungo un unico tratto di costa trovi di tutto, dai break da surf di livello mondiale alle cale cristalline orlate di palme, perfette per un bagno rilassato.',
+      'Ecco una guida spiaggia per spiaggia, da nord a sud partendo dal paese, con note oneste su quali sono le migliori per nuotare, surfare e fare snorkeling — e una parola sulla sicurezza in acqua.',
+    ],
+    stayRecommendationTitle: 'Dove alloggiare vicino alle spiagge più belle',
+    beachesHeading: 'Le spiagge, una per una',
+    beaches: [
+      { name: 'Playa Negra', description: 'Appena a nord del paese, una comoda spiaggia di sabbia nera, ottima per una passeggiata e per il tramonto, con acqua più calma rispetto alle spiagge da surf.' },
+      { name: 'Playa Cocles', description: 'La grande, bella spiaggia da surf, un paio di chilometri a sud del paese. Popolare e vivace, con bagnini stagionali — ma correnti forti, quindi più per surfare e prendere il sole che per nuotare tranquilli.' },
+      { name: 'Playa Chiquita', description: 'Non una spiaggia sola, ma una serie di piccole cale tranquille protette dalla barriera, nascoste dietro la giungla. Belle, tranquille e adatte a nuotare e fare snorkeling — e dove si trovano diverse delle nostre ville.' },
+      { name: 'Punta Uva', description: 'La spiaggia da cartolina: acqua turchese, una punta coperta di giungla e alcuni dei bagni e degli snorkeling più calmi e limpidi della costa. Una preferita dai local.' },
+      { name: 'Manzanillo', description: 'Alla fine della strada, la porta d’accesso al rifugio Gandoca-Manzanillo. Acqua calma e limpida, una barriera viva al largo e un paese rilassato con un paio di ottime sodas.' },
+    ],
+    bestForHeading: 'Quale spiaggia per cosa',
+    bestForIntro: 'Un modo rapido per scegliere:',
+    bestForItems: [
+      'Nuoto tranquillo e famiglie → Punta Uva, le cale di Playa Chiquita, Manzanillo',
+      'Snorkeling → Punta Uva e Manzanillo, nelle giornate calme e limpide',
+      'Surf → Playa Cocles e il famoso reef break di Salsa Brava, solo per esperti',
+      'Una passeggiata al tramonto vicino al paese → Playa Negra',
+    ],
+    safetyHeading: 'Sicurezza in acqua',
+    safetyParagraph:
+      'Le correnti di risacca sono reali sulle spiagge più esposte, soprattutto a Playa Cocles. Nuota dove l’acqua è calma e ci sono altre persone in acqua, tieni d’occhio i bambini e, nel dubbio, scegli le cale riparate di Punta Uva o Playa Chiquita. Qui il mare cambia di giorno in giorno, quindi controlla le condizioni prima di tuffarti.',
+    takeawaysHeading: 'Punti chiave',
+    takeawaysParagraph:
+      'Le spiagge di Puerto Viejo vanno dal surf di Playa Cocles all’acqua calma e limpida di Punta Uva e Manzanillo, con le cale riparate di Playa Chiquita nel mezzo. Scegli la spiaggia in base a ciò che cerchi — nuoto, surf o snorkeling —, rispetta le correnti, e avrai uno dei tratti di costa più belli della Costa Rica a due passi.',
+  },
+  pt: {
+    seoTitle: 'As melhores praias de Puerto Viejo, Costa Rica (guia local)',
+    seoDescription:
+      'Um guia praia a praia de Puerto Viejo de Talamanca: Playa Cocles, Playa Chiquita, Punta Uva, Playa Negra e Manzanillo — onde nadar, surfar, fazer snorkel e como se manter seguro.',
+    heading: 'As melhores praias de Puerto Viejo',
+    heroAlt: 'Praia caribenha turquesa com palmeiras em Punta Uva, Puerto Viejo, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'As praias são o motivo pelo qual a maioria das pessoas se apaixona por Puerto Viejo. Ao longo de um único trecho de costa você encontra de tudo, de picos de surfe de classe mundial a enseadas cristalinas orladas de palmeiras, perfeitas para um banho tranquilo.',
+      'Aqui vai um guia praia a praia, de norte a sul a partir da vila, com notas honestas sobre quais são melhores para nadar, surfar e fazer snorkel — e uma palavra sobre segurança na água.',
+    ],
+    stayRecommendationTitle: 'Onde se hospedar perto das melhores praias',
+    beachesHeading: 'As praias, uma a uma',
+    beaches: [
+      { name: 'Playa Negra', description: 'Logo ao norte da vila, uma praia de areia preta fácil de curtir, ótima para um passeio e para o pôr do sol, com água mais calma que as praias de surfe.' },
+      { name: 'Playa Cocles', description: 'A grande e bela praia de surfe, a alguns quilômetros ao sul da vila. Popular e animada, com salva-vidas por temporada — mas correntes fortes, então mais para surfar e tomar sol do que para nadar tranquilo.' },
+      { name: 'Playa Chiquita', description: 'Não é uma praia só, mas uma sequência de pequenas enseadas calmas protegidas pelo recife, escondidas atrás da selva. Bonitas, tranquilas e boas para nadar e fazer snorkel — e onde ficam várias das nossas villas.' },
+      { name: 'Punta Uva', description: 'A praia de cartão-postal: água turquesa, uma ponta coberta de selva e alguns dos banhos e snorkel mais calmos e claros da costa. Uma favorita dos locais.' },
+      { name: 'Manzanillo', description: 'No fim da estrada, a porta de entrada do refúgio Gandoca-Manzanillo. Água calma e clara, um recife vivo mar adentro e uma vila tranquila com um par de ótimas sodas.' },
+    ],
+    bestForHeading: 'Qual praia para quê',
+    bestForIntro: 'Uma forma rápida de escolher:',
+    bestForItems: [
+      'Banho tranquilo e famílias → Punta Uva, as enseadas de Playa Chiquita, Manzanillo',
+      'Snorkel → Punta Uva e Manzanillo, em dias calmos e claros',
+      'Surfe → Playa Cocles e o famoso recife de Salsa Brava, só para experientes',
+      'Um passeio ao pôr do sol perto da vila → Playa Negra',
+    ],
+    safetyHeading: 'Segurança na água',
+    safetyParagraph:
+      'As correntes de retorno são reais nas praias mais expostas, especialmente Playa Cocles. Nade onde a água está calma e há outras pessoas, fique de olho nas crianças e, na dúvida, escolha as enseadas protegidas de Punta Uva ou Playa Chiquita. O mar aqui muda de um dia para o outro, então confira as condições antes de entrar.',
+    takeawaysHeading: 'Pontos principais',
+    takeawaysParagraph:
+      'As praias de Puerto Viejo vão do surfe de Playa Cocles à água calma e clara de Punta Uva e Manzanillo, com as enseadas protegidas de Playa Chiquita no meio. Escolha a praia conforme o que você quer — nadar, surfar ou fazer snorkel —, respeite as correntes, e terá um dos melhores trechos de costa da Costa Rica à sua porta.',
+  },
+  he: {
+    seoTitle: 'החופים הטובים ביותר בפוארטו ויאחו, קוסטה ריקה (מדריך מקומי)',
+    seoDescription:
+      'מדריך חוף אחר חוף לפוארטו ויאחו דה טלמנקה: פלאיה קוקלס, פלאיה צ\'יקיטה, פונטה אובה, פלאיה נגרה ומנזנייו — היכן לשחות, לגלוש, לעשות שנורקלינג ואיך להישאר בטוחים.',
+    heading: 'החופים הטובים ביותר בפוארטו ויאחו',
+    heroAlt: 'חוף קריבי טורקיז עם דקלים בפונטה אובה, פוארטו ויאחו, קוסטה ריקה',
+    photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'החופים הם הסיבה שרוב האנשים מתאהבים בפוארטו ויאחו. לאורך רצועת חוף אחת יש הכול, משוברי גלים ברמה עולמית ועד מפרצונים צלולים עטורי דקלים, מושלמים לשחייה נינוחה.',
+      'הנה מדריך חוף אחר חוף, מצפון לדרום החל מהעיירה, עם הערות כנות על אילו הכי טובים לשחייה, לגלישה ולשנורקלינג — ומילה על בטיחות במים.',
+    ],
+    stayRecommendationTitle: 'היכן להתארח ליד החופים הטובים ביותר',
+    beachesHeading: 'החופים, אחד אחד',
+    beaches: [
+      { name: 'Playa Negra', description: 'ממש מצפון לעיירה, חוף חול שחור נוח, מצוין לטיול ולשקיעה, עם מים רגועים יותר מחופי הגלישה.' },
+      { name: 'Playa Cocles', description: 'חוף הגלישה הגדול והיפה, כמה קילומטרים מדרום לעיירה. פופולרי ותוסס, עם מצילים בעונה — אך זרמים חזקים, ולכן יותר לגלישה ולשיזוף מאשר לשחייה נינוחה.' },
+      { name: 'Playa Chiquita', description: 'לא חוף אחד אלא שרשרת של מפרצונים קטנים ורגועים מוגני שונית, חבויים מאחורי הג\'ונגל. יפים, שקטים וטובים לשחייה ולשנורקלינג — וכאן ממוקמות כמה מהווילות שלנו.' },
+      { name: 'Punta Uva', description: 'חוף הגלויה: מים טורקיז, לשון יבשה מכוסת ג\'ונגל וכמה מהשחייה והשנורקלינג הרגועים והצלולים ביותר בחוף. אהוב על המקומיים.' },
+      { name: 'Manzanillo', description: 'בקצה הכביש, השער לשמורת גנדוקה-מנזנייו. מים רגועים וצלולים, שונית חיה מול החוף וכפר נינוח עם כמה sodas מצוינות.' },
+    ],
+    bestForHeading: 'איזה חוף למה',
+    bestForIntro: 'דרך מהירה לבחור:',
+    bestForItems: [
+      'שחייה רגועה ומשפחות → פונטה אובה, מפרצוני פלאיה צ\'יקיטה, מנזנייו',
+      'שנורקלינג → פונטה אובה ומנזנייו, בימים רגועים וצלולים',
+      'גלישה → פלאיה קוקלס, ושובר השונית המפורסם סלסה בראבה למנוסים בלבד',
+      'טיול שקיעה ליד העיירה → פלאיה נגרה',
+    ],
+    safetyHeading: 'בטיחות במים',
+    safetyParagraph:
+      'זרמי חתירה הם דבר אמיתי בחופים החשופים יותר, במיוחד בפלאיה קוקלס. שחו במקום שבו המים רגועים ויש עוד אנשים במים, השגיחו על הילדים, ובמקרה של ספק בחרו את המפרצונים המוגנים של פונטה אובה או פלאיה צ\'יקיטה. הים כאן משתנה מיום ליום, אז בדקו את התנאים לפני שאתם נכנסים.',
+    takeawaysHeading: 'עיקרי הדברים',
+    takeawaysParagraph:
+      'חופי פוארטו ויאחו נעים מהגלישה של פלאיה קוקלס אל המים הרגועים והצלולים של פונטה אובה ומנזנייו, עם המפרצונים המוגנים של פלאיה צ\'יקיטה באמצע. התאימו את החוף למה שאתם רוצים — שחייה, גלישה או שנורקלינג — כבדו את הזרמים, ותהיה לכם אחת מרצועות החוף היפות בקוסטה ריקה ממש מעבר לפינה.',
+  },
+  hi: {
+    seoTitle: 'प्वेर्तो विएखो, कोस्टा रिका के सबसे अच्छे समुद्र तट (स्थानीय गाइड)',
+    seoDescription:
+      'प्वेर्तो विएखो दे तालामांका के समुद्र तटों का तट-दर-तट मार्गदर्शक: प्लाया कोकलेस, प्लाया चिकीता, पुंता उवा, प्लाया नेग्रा और मंज़ानियो — कहाँ तैरें, सर्फ़ करें, स्नॉर्कल करें और सुरक्षित कैसे रहें।',
+    heading: 'प्वेर्तो विएखो के सबसे अच्छे समुद्र तट',
+    heroAlt: 'पुंता उवा, प्वेर्तो विएखो, कोस्टा रिका में ताड़ के पेड़ों वाला फ़िरोज़ी कैरिबियन समुद्र तट',
+    photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'समुद्र तट ही वह वजह हैं जिनसे ज़्यादातर लोग प्वेर्तो विएखो पर मोहित हो जाते हैं। तट के एक ही हिस्से में आपको सब कुछ मिलता है — विश्वस्तरीय सर्फ़ ब्रेक से लेकर ताड़ के पेड़ों से घिरी शीशे-सी शांत खाड़ियों तक, जो आराम से तैरने के लिए बेहतरीन हैं।',
+      'यहाँ एक तट-दर-तट गाइड है, कस्बे से दक्षिण की ओर बढ़ते हुए, इस बारे में ईमानदार टिप्पणियों के साथ कि कौन-सा तैरने, सर्फ़ करने और स्नॉर्कलिंग के लिए सबसे अच्छा है — और पानी में सुरक्षित रहने पर एक बात।',
+    ],
+    stayRecommendationTitle: 'सबसे अच्छे समुद्र तटों के पास कहाँ ठहरें',
+    beachesHeading: 'समुद्र तट, एक-एक करके',
+    beaches: [
+      { name: 'Playa Negra', description: 'कस्बे के ठीक उत्तर में, काली रेत वाला एक सहज समुद्र तट, टहलने और सूर्यास्त के लिए बढ़िया, सर्फ़ तटों की तुलना में शांत पानी के साथ।' },
+      { name: 'Playa Cocles', description: 'कस्बे से कुछ किलोमीटर दक्षिण में बड़ा, सुंदर सर्फ़ तट। लोकप्रिय और जीवंत, मौसमी लाइफ़गार्ड के साथ — पर तेज़ धाराएँ, इसलिए आराम से तैरने के बजाय सर्फ़िंग और धूप सेंकने के लिए अधिक।' },
+      { name: 'Playa Chiquita', description: 'एक तट नहीं, बल्कि जंगल के पीछे छिपी रीफ़-सुरक्षित छोटी, शांत खाड़ियों की एक शृंखला। सुंदर, शांत और तैरने तथा स्नॉर्कलिंग के लिए अच्छी — और यहीं हमारी कई villas स्थित हैं।' },
+      { name: 'Punta Uva', description: 'पोस्टकार्ड वाला तट: फ़िरोज़ी पानी, जंगल से ढकी एक नोक और तट के सबसे शांत, साफ़ तैराकी और स्नॉर्कलिंग में से कुछ। स्थानीय लोगों की पसंदीदा।' },
+      { name: 'Manzanillo', description: 'सड़क के अंत में, गंदोका-मंज़ानियो शरण का प्रवेश द्वार। शांत, साफ़ पानी, तट से दूर एक जीवित रीफ़ और कुछ बेहतरीन sodas वाला एक इत्मीनान भरा गाँव।' },
+    ],
+    bestForHeading: 'किस चीज़ के लिए कौन-सा तट',
+    bestForIntro: 'जल्दी चुनने का एक तरीका:',
+    bestForItems: [
+      'शांत तैराकी और परिवार → पुंता उवा, प्लाया चिकीता की खाड़ियाँ, मंज़ानियो',
+      'स्नॉर्कलिंग → पुंता उवा और मंज़ानियो, शांत और साफ़ दिनों में',
+      'सर्फ़िंग → प्लाया कोकलेस, और केवल विशेषज्ञों के लिए मशहूर साल्सा ब्रावा रीफ़ ब्रेक',
+      'कस्बे के पास सूर्यास्त की सैर → प्लाया नेग्रा',
+    ],
+    safetyHeading: 'पानी में सुरक्षित रहना',
+    safetyParagraph:
+      'अधिक खुले तटों पर, खासकर प्लाया कोकलेस में, रिप करंट सचमुच होते हैं। वहाँ तैरें जहाँ पानी शांत हो और अन्य लोग मौजूद हों, बच्चों पर नज़र रखें, और संदेह होने पर पुंता उवा या प्लाया चिकीता की सुरक्षित खाड़ियाँ चुनें। यहाँ समुद्र दिन-प्रतिदिन बदलता है, इसलिए पानी में उतरने से पहले स्थिति जाँच लें।',
+    takeawaysHeading: 'मुख्य बातें',
+    takeawaysParagraph:
+      'प्वेर्तो विएखो के समुद्र तट प्लाया कोकलेस के सर्फ़ से लेकर पुंता उवा और मंज़ानियो के शांत, साफ़ पानी तक फैले हैं, बीच में प्लाया चिकीता की सुरक्षित खाड़ियों के साथ। जो आप चाहते हैं उसके अनुसार तट चुनें — तैरना, सर्फ़ करना या स्नॉर्कल करना — धाराओं का सम्मान करें, और कोस्टा रिका के सबसे अच्छे तटीय हिस्सों में से एक आपके दरवाज़े पर होगा।',
+  },
+  nl: {
+    seoTitle: 'De mooiste stranden van Puerto Viejo, Costa Rica (lokale gids)',
+    seoDescription:
+      'Een strand-voor-strand gids voor Puerto Viejo de Talamanca: Playa Cocles, Playa Chiquita, Punta Uva, Playa Negra en Manzanillo — waar je kunt zwemmen, surfen, snorkelen en veilig blijft.',
+    heading: 'De mooiste stranden van Puerto Viejo',
+    heroAlt: 'Turquoise Caribisch strand met palmen in Punta Uva, Puerto Viejo, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'De stranden zijn de reden dat de meeste mensen voor Puerto Viejo vallen. Langs één stuk kust vind je alles, van surfbreaks van wereldklasse tot glasheldere, met palmen omzoomde baaien, perfect voor een luie duik.',
+      'Hier is een strand-voor-strand gids, van noord naar zuid vanaf het dorp, met eerlijke aantekeningen over welke het best zijn om te zwemmen, surfen en snorkelen — en een woord over veiligheid in het water.',
+    ],
+    stayRecommendationTitle: 'Waar te verblijven nabij de mooiste stranden',
+    beachesHeading: 'De stranden, een voor een',
+    beaches: [
+      { name: 'Playa Negra', description: 'Net ten noorden van het dorp, een ontspannen zwartzandstrand, ideaal voor een wandeling en de zonsondergang, met rustiger water dan de surfstranden.' },
+      { name: 'Playa Cocles', description: 'Het grote, mooie surfstrand een paar kilometer ten zuiden van het dorp. Populair en levendig, met seizoensgebonden strandwachten — maar sterke stromingen, dus meer voor surfen en zonnen dan voor rustig zwemmen.' },
+      { name: 'Playa Chiquita', description: 'Niet één strand, maar een reeks kleine, kalme, door het rif beschutte baaien, verscholen achter de jungle. Mooi, rustig en goed om te zwemmen en snorkelen — en waar meerdere van onze villa’s liggen.' },
+      { name: 'Punta Uva', description: 'Het ansichtkaartstrand: turquoise water, een met jungle bedekte landpunt en enkele van de rustigste, helderste zwem- en snorkelplekken van de kust. Een favoriet onder de locals.' },
+      { name: 'Manzanillo', description: 'Aan het eind van de weg, de toegangspoort tot het reservaat Gandoca-Manzanillo. Kalm, helder water, een levend rif voor de kust en een relaxed dorp met een paar geweldige sodas.' },
+    ],
+    bestForHeading: 'Welk strand waarvoor',
+    bestForIntro: 'Snel kiezen:',
+    bestForItems: [
+      'Rustig zwemmen en gezinnen → Punta Uva, de baaien van Playa Chiquita, Manzanillo',
+      'Snorkelen → Punta Uva en Manzanillo, op kalme, heldere dagen',
+      'Surfen → Playa Cocles, en de beroemde rifbreak Salsa Brava alleen voor experts',
+      'Een wandeling bij zonsondergang nabij het dorp → Playa Negra',
+    ],
+    safetyHeading: 'Veilig blijven in het water',
+    safetyParagraph:
+      'Muistromen zijn reëel op de meer open stranden, vooral Playa Cocles. Zwem waar het water kalm is en anderen in het water zijn, houd kinderen in de gaten en kies bij twijfel de beschutte baaien van Punta Uva of Playa Chiquita. De zee verandert hier van dag tot dag, dus check de omstandigheden voordat je erin gaat.',
+    takeawaysHeading: 'Belangrijkste punten',
+    takeawaysParagraph:
+      'De stranden van Puerto Viejo lopen van de surf van Playa Cocles tot het kalme, heldere water van Punta Uva en Manzanillo, met de beschutte baaien van Playa Chiquita ertussen. Stem het strand af op wat je wilt — zwemmen, surfen of snorkelen — respecteer de stromingen, en je hebt een van de mooiste stukken kust van Costa Rica voor de deur.',
+  },
+};
+
+export function beachesContent(locale: Locale): BeachesContent {
+  return beaches[locale] ?? beaches.en!;
 }

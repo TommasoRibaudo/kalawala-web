@@ -1,0 +1,48 @@
+section,item_type,item,es,de,fr,it,pt,he,hi,nl
+listing,property,Areka,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+listing,property,Delfin,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+listing,property,Geco,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+listing,property,Giulia,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+listing,property,Pappagallo,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+listing,property,Plumeria,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+listing,property,Rana,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+listing,property,Tucano,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+listing,property,VillaCoral,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+listing,property,VillaMar,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+blog,article,tenHoursInPuerto,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+blog,article,puertoViejoByPlane,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+blog,article,twoDaysInPV,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+blog,article,gettingToGandoca,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+blog,article,travellingToPuerto,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+blog,article,cahuitaPark,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+blog,article,bestTimeToVisit,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+blog,article,indigenousTravel,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+blog,article,puertoHiddenGems,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+blog,article,busHours,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+discover,section,homepage,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated,dedicated
+amenities,property,Geco,dedicated,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+amenities,property,Rana,dedicated,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+amenities,property,Tucano,dedicated,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+amenities,property,Pappagallo,dedicated,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+amenities,property,Delfin,dedicated,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+amenities,property,Areka,dedicated,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+amenities,property,Plumeria,dedicated,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+amenities,property,Giulia,dedicated,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+amenities,property,VillaMar,dedicated,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+amenities,property,VillaCoral,dedicated,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+amenities,amenity_name,Private Equipped Bathroom,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,Private Equipped Kitchen,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,A/C,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,Private Fenced Parking,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,100Mbps WiFi,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,Pet Friendly,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,Outside Parking,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,2 Private Equipped Bathrooms,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,Bedrooms with A/C,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,Private Fenced Parking for 2 Vehicles,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,WiFi,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,Unfenced Parking,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,2 A/C,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,Private Pool,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,2 A/C Units,n/a,covered,covered,covered,covered,covered,covered,covered
+amenities,amenity_name,Private unfenced Parking,n/a,covered,covered,covered,covered,covered,covered,covered

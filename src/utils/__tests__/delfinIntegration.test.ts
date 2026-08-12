@@ -57,7 +57,7 @@ describe('Delfin Integration Tests', () => {
     // Check Spanish amenities
     expect(delfinSpanish?.amenities).toBeDefined();
     const spanishAmenityNames = delfinSpanish?.amenities.map(a => a.name) || [];
-    expect(spanishAmenityNames).toContain('2 Baños Privado Equipado');
+    expect(spanishAmenityNames).toContain('2 Baños Privados Equipados');
     expect(spanishAmenityNames).toContain('Cocina Privada Equipada');
     expect(spanishAmenityNames).toContain('Cuartos con A/C');
     expect(spanishAmenityNames).toContain('Parqueo Privado Encerrado');

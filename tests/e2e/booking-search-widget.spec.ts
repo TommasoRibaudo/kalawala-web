@@ -1,5 +1,6 @@
+import type { Page } from '@playwright/test';
 import { test, expect } from './fixtures/base.fixture';
-import { bookingWidget } from './helpers/selectors';
+import { bookingWidget, calendar } from './helpers/selectors';
 
 /**
  * Booking Search Widget E2E tests.
@@ -9,14 +10,65 @@ import { bookingWidget } from './helpers/selectors';
  *
  * The BookingSearchWidget appears on listing pages (e.g. `/en/geco`) and
  * contains:
- *   - Check-in date input (native `<input type="date">`)
- *   - Check-out date input (native `<input type="date">`)
+ *   - A CalendarWithPriceDots day-cell grid for picking check-in/check-out
+ *     (no `<input>` — the two-tap picker replaced the original date-input
+ *     design; see selectDateRange below for how to drive it)
  *   - Guest count with increment / decrement buttons (minimum 1)
  *   - A submit button that navigates to `/en/book` (or `/es/book`) with
  *     query params: arrivalDate, departureDate, guests, autoSearch
  *
  * Validates: Requirements 7.1, 7.2, 7.3, 7.4
  */
+
+/**
+ * Today in Costa Rica time, computed the same way the app itself does
+ * (src/utils/dates.ts's getCostaRicaToday) so the month-navigation math
+ * below always agrees with which month the calendar actually opens on.
+ */
+function costaRicaToday(): { year: number; month: number; day: number } {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Costa_Rica',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date());
+  const byType = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+  return { year: Number(byType.year), month: Number(byType.month), day: Number(byType.day) };
+}
+
+/** Days from today, as a YYYY-MM-DD string — always computed fresh so the
+ *  test never goes stale the way a hardcoded date eventually does. */
+function daysFromToday(days: number): string {
+  const today = costaRicaToday();
+  const date = new Date(Date.UTC(today.year, today.month - 1, today.day));
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+/**
+ * Drives the two-tap CalendarWithPriceDots picker to select a check-in and
+ * check-out date. The calendar opens on the current month and shows one
+ * month per screen, so this clicks "next month" however many times are
+ * needed to reach each date's month before clicking its day cell.
+ */
+async function selectDateRange(page: Page, checkIn: string, checkOut: string): Promise<void> {
+  const today = costaRicaToday();
+  const [ciYear, ciMonth, ciDay] = checkIn.split('-').map(Number);
+  const [coYear, coMonth, coDay] = checkOut.split('-').map(Number);
+
+  const monthsToCheckIn = (ciYear - today.year) * 12 + (ciMonth - today.month);
+  for (let i = 0; i < monthsToCheckIn; i++) {
+    await calendar.nextMonthButton(page).click();
+  }
+  await calendar.dayCell(page, ciDay).click();
+
+  const monthsCheckInToCheckOut = (coYear - ciYear) * 12 + (coMonth - ciMonth);
+  for (let i = 0; i < monthsCheckInToCheckOut; i++) {
+    await calendar.nextMonthButton(page).click();
+  }
+  await calendar.dayCell(page, coDay).click();
+}
+
 test.describe('Booking Search Widget', () => {
   test.beforeEach(async ({ appPage }) => {
     // Mock the calendar API endpoint used by CalendarWithPriceDots
@@ -40,12 +92,12 @@ test.describe('Booking Search Widget', () => {
     // Requirement 7.1 — Filling in check-in, check-out, and guest count
     // then submitting navigates to the booking page with correct query params.
 
-    // Pick dates far enough in the future to avoid "min" validation issues
-    const checkIn = '2026-03-15';
-    const checkOut = '2026-03-20';
+    // Comfortably in the future relative to whenever this test actually
+    // runs, rather than a hardcoded date that eventually becomes past-dated.
+    const checkIn = daysFromToday(30);
+    const checkOut = daysFromToday(35);
 
-    await bookingWidget.checkInInput(appPage).fill(checkIn);
-    await bookingWidget.checkOutInput(appPage).fill(checkOut);
+    await selectDateRange(appPage, checkIn, checkOut);
 
     // Increase guests from default (5 for Geco) to 6
     await bookingWidget.increaseGuests(appPage).click();
@@ -66,9 +118,12 @@ test.describe('Booking Search Widget', () => {
     // Requirement 7.2 — Submitting the widget without a check-in date
     // displays a validation error message.
 
-    // Leave check-in empty, fill check-out only
-    await bookingWidget.checkOutInput(appPage).fill('2026-03-20');
-
+    // The two-tap calendar always assigns the first click to check-in
+    // (handleCalendarSelect in BookingSearchWidget.component.tsx starts a
+    // new range whenever arrivalDate is empty), so there is no way to pick
+    // a check-out date without one — leaving the calendar untouched and
+    // submitting straight away is the only way to reach this validation
+    // state now.
     await bookingWidget.submitButton(appPage).click();
 
     // The component renders a Form.Control.Feedback with the error text

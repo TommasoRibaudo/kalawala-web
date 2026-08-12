@@ -1,0 +1,551 @@
+section,item,field,en_text
+amenities,Geco,displayName,Casa Geco
+amenities,Geco,amenities[0].name,Private Equipped Bathroom
+amenities,Geco,amenities[0].icon,bath
+amenities,Geco,amenities[1].name,Private Equipped Kitchen
+amenities,Geco,amenities[1].icon,kitchen
+amenities,Geco,amenities[2].name,A/C
+amenities,Geco,amenities[2].icon,ac
+amenities,Geco,amenities[3].name,Private Fenced Parking
+amenities,Geco,amenities[3].icon,parking
+amenities,Geco,amenities[4].name,100Mbps WiFi
+amenities,Geco,amenities[4].icon,wifi
+amenities,Geco,amenities[5].name,Pet Friendly
+amenities,Geco,amenities[5].icon,pet
+amenities,Rana,displayName,Casa Rana
+amenities,Rana,amenities[0].name,Private Equipped Bathroom
+amenities,Rana,amenities[0].icon,bath
+amenities,Rana,amenities[1].name,Private Equipped Kitchen
+amenities,Rana,amenities[1].icon,kitchen
+amenities,Rana,amenities[2].name,A/C
+amenities,Rana,amenities[2].icon,ac
+amenities,Rana,amenities[3].name,Private Fenced Parking
+amenities,Rana,amenities[3].icon,parking
+amenities,Rana,amenities[4].name,100Mbps WiFi
+amenities,Rana,amenities[4].icon,wifi
+amenities,Rana,amenities[5].name,Pet Friendly
+amenities,Rana,amenities[5].icon,pet
+amenities,Tucano,displayName,Casa Tucano
+amenities,Tucano,amenities[0].name,Private Equipped Bathroom
+amenities,Tucano,amenities[0].icon,bath
+amenities,Tucano,amenities[1].name,Private Equipped Kitchen
+amenities,Tucano,amenities[1].icon,kitchen
+amenities,Tucano,amenities[2].name,A/C
+amenities,Tucano,amenities[2].icon,ac
+amenities,Tucano,amenities[3].name,100Mbps WiFi
+amenities,Tucano,amenities[3].icon,wifi
+amenities,Tucano,amenities[4].name,Outside Parking
+amenities,Tucano,amenities[4].icon,parking
+amenities,Tucano,amenities[5].name,Pet Friendly
+amenities,Tucano,amenities[5].icon,pet
+amenities,Pappagallo,displayName,Casa Pappagallo
+amenities,Pappagallo,amenities[0].name,Private Equipped Bathroom
+amenities,Pappagallo,amenities[0].icon,bath
+amenities,Pappagallo,amenities[1].name,Private Equipped Kitchen
+amenities,Pappagallo,amenities[1].icon,kitchen
+amenities,Pappagallo,amenities[2].name,A/C
+amenities,Pappagallo,amenities[2].icon,ac
+amenities,Pappagallo,amenities[3].name,100Mbps WiFi
+amenities,Pappagallo,amenities[3].icon,wifi
+amenities,Pappagallo,amenities[4].name,Outside Parking
+amenities,Pappagallo,amenities[4].icon,parking
+amenities,Pappagallo,amenities[5].name,Pet Friendly
+amenities,Pappagallo,amenities[5].icon,pet
+amenities,Delfin,displayName,Casa Delfines
+amenities,Delfin,amenities[0].name,2 Private Equipped Bathrooms
+amenities,Delfin,amenities[0].icon,bath
+amenities,Delfin,amenities[1].name,Private Equipped Kitchen
+amenities,Delfin,amenities[1].icon,kitchen
+amenities,Delfin,amenities[2].name,Bedrooms with A/C
+amenities,Delfin,amenities[2].icon,ac
+amenities,Delfin,amenities[3].name,Private Fenced Parking for 2 Vehicles
+amenities,Delfin,amenities[3].icon,parking
+amenities,Delfin,amenities[4].name,100Mbps WiFi
+amenities,Delfin,amenities[4].icon,wifi
+amenities,Areka,displayName,Casa Areka
+amenities,Areka,amenities[0].name,Private Equipped Bathroom
+amenities,Areka,amenities[0].icon,bath
+amenities,Areka,amenities[1].name,Private Equipped Kitchen
+amenities,Areka,amenities[1].icon,kitchen
+amenities,Areka,amenities[2].name,A/C
+amenities,Areka,amenities[2].icon,ac
+amenities,Areka,amenities[3].name,WiFi
+amenities,Areka,amenities[3].icon,wifi
+amenities,Areka,amenities[4].name,Unfenced Parking
+amenities,Areka,amenities[4].icon,parking
+amenities,Plumeria,displayName,Casa Plumeria
+amenities,Plumeria,amenities[0].name,Private Equipped Bathroom
+amenities,Plumeria,amenities[0].icon,bath
+amenities,Plumeria,amenities[1].name,Private Equipped Kitchen
+amenities,Plumeria,amenities[1].icon,kitchen
+amenities,Plumeria,amenities[2].name,A/C
+amenities,Plumeria,amenities[2].icon,ac
+amenities,Plumeria,amenities[3].name,WiFi
+amenities,Plumeria,amenities[3].icon,wifi
+amenities,Plumeria,amenities[4].name,Unfenced Parking
+amenities,Plumeria,amenities[4].icon,parking
+amenities,Giulia,displayName,Casa Giulia
+amenities,Giulia,amenities[0].name,Private Equipped Bathroom
+amenities,Giulia,amenities[0].icon,bath
+amenities,Giulia,amenities[1].name,Private Equipped Kitchen
+amenities,Giulia,amenities[1].icon,kitchen
+amenities,Giulia,amenities[2].name,2 A/C
+amenities,Giulia,amenities[2].icon,ac
+amenities,Giulia,amenities[3].name,WiFi
+amenities,Giulia,amenities[3].icon,wifi
+amenities,Giulia,amenities[4].name,Unfenced Parking
+amenities,Giulia,amenities[4].icon,parking
+amenities,VillaMar,displayName,Villa Mar
+amenities,VillaMar,amenities[0].name,Private Pool
+amenities,VillaMar,amenities[0].icon,pool
+amenities,VillaMar,amenities[1].name,Private Equipped Bathroom
+amenities,VillaMar,amenities[1].icon,bath
+amenities,VillaMar,amenities[2].name,Private Equipped Kitchen
+amenities,VillaMar,amenities[2].icon,kitchen
+amenities,VillaMar,amenities[3].name,2 A/C Units
+amenities,VillaMar,amenities[3].icon,ac
+amenities,VillaMar,amenities[4].name,Private unfenced Parking
+amenities,VillaMar,amenities[4].icon,parking
+amenities,VillaMar,amenities[5].name,100Mbps WiFi
+amenities,VillaMar,amenities[5].icon,wifi
+amenities,VillaCoral,displayName,Villa Coral
+amenities,VillaCoral,amenities[0].name,Private Pool
+amenities,VillaCoral,amenities[0].icon,pool
+amenities,VillaCoral,amenities[1].name,Private Equipped Bathroom
+amenities,VillaCoral,amenities[1].icon,bath
+amenities,VillaCoral,amenities[2].name,Private Equipped Kitchen
+amenities,VillaCoral,amenities[2].icon,kitchen
+amenities,VillaCoral,amenities[3].name,2 A/C Units
+amenities,VillaCoral,amenities[3].icon,ac
+amenities,VillaCoral,amenities[4].name,Private unfenced Parking
+amenities,VillaCoral,amenities[4].icon,parking
+amenities,VillaCoral,amenities[5].name,100Mbps WiFi
+amenities,VillaCoral,amenities[5].icon,wifi
+listing,Areka,seoTitle,Casa Areka - Couples Retreat with A/C
+listing,Areka,seoDescription,"New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife."
+listing,Areka,heading,Casa Areka
+listing,Areka,featureName,House Areka
+listing,Areka,checkIn,3:00 PM
+listing,Areka,checkOut,12:00 PM (noon)
+listing,Areka,paragraphs[0],"New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife."
+listing,Areka,paragraphs[1],"The space, completely private, has A/C, fully equipped kitchen and a private bathroom with hot water. The parking space is private, spacious and outside of the property. Every house has a small porch for our guests."
+listing,Areka,paragraphs[2],"All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home."
+listing,Areka,paragraphs[3],"Close by you may find restaurants, supermarkets, and bike rentals. We trust our guests to follow common sense when leaving our house, that's why we have 0 check-out rules and no check-out list."
+listing,Areka,paragraphs[4],Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
+listing,Areka,paragraphs[5],"Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique."
+listing,Delfin,seoTitle,Casa Delfines - Puerto Viejo Vacation Home Rental
+listing,Delfin,seoDescription,"Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, 2 bathrooms, 2 A/C units, and private parking for 2 cars."
+listing,Delfin,heading,Casa Delfines
+listing,Delfin,featureName,House Delfin
+listing,Delfin,checkIn,3:00 PM
+listing,Delfin,checkOut,12:00 PM (noon)
+listing,Delfin,paragraphs[0],"Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, 2 bathrooms, 2 A/C units (not in kitchen or living room), and private parking. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer."
+listing,Delfin,paragraphs[1],"All of the spaces described here are private, including the fully equipped kitchen and bathrooms. You'll have everything you need to make yourself at home."
+listing,Delfin,paragraphs[2],Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
+listing,Delfin,paragraphs[3],"Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique."
+listing,Delfin,paragraphs[4],"The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!"
+listing,Delfin,paragraphs[5],"Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space."
+listing,Geco,seoTitle,Casa Geco - Pet Friendly Home in Puerto Viejo
+listing,Geco,seoDescription,"Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot."
+listing,Geco,heading,Casa Geco
+listing,Geco,featureName,House Geco
+listing,Geco,checkIn,2:00 PM
+listing,Geco,checkOut,11:00 AM
+listing,Geco,paragraphs[0],"Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer."
+listing,Geco,paragraphs[1],"Most shops and restaurants are just a short walk away, and there is a nearby jungle path that runs along the ocean and leads to natural pools in the coral and to Cocles."
+listing,Geco,paragraphs[2],"All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home."
+listing,Geco,paragraphs[3],We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.
+listing,Geco,paragraphs[4],Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
+listing,Geco,paragraphs[5],"If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process."
+listing,Geco,paragraphs[6],"Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique."
+listing,Geco,paragraphs[7],"The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!"
+listing,Geco,paragraphs[8],"Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space."
+listing,Giulia,seoTitle,Casa Giulia - Family Retreat
+listing,Giulia,seoDescription,"New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. Perfect for families up to 4 people."
+listing,Giulia,heading,Casa Giulia
+listing,Giulia,featureName,House Giulia
+listing,Giulia,checkIn,3:00 PM
+listing,Giulia,checkOut,12:00 PM (noon)
+listing,Giulia,paragraphs[0],"Escape to Puerto Viejo in our home with A/C, gas kitchen, and a spacious closet. Relax on your private covered patio. Our home is located just 200 meters from the stunning Playa Chiquita beach, in one of the safest and calmest neighborhoods in the Caribbean. Explore nearby attractions like Puerto Viejo, Manzanillo, Punta Uva beach, and Arrecife from our perfect location."
+listing,Giulia,paragraphs[1],"The space, completely private, has 2 A/C units, fully equipped kitchen and 2 private bathrooms with hot water. The parking space is private, for one car, and outside of the property. The house has a porch for our guests. ✓ A/C ✓ kitchen ✓ wifi ✓ private porch ✓ private parking."
+listing,Giulia,paragraphs[2],"All of the spaces described here are private, including the fully equipped kitchen and bathrooms. You'll have everything you need to make yourself at home."
+listing,Giulia,paragraphs[3],"Close by you may find restaurants, supermarkets, and bike rentals. We trust our guests to follow common sense when leaving our house, that's why we have 0 check-out rules and no check-out list."
+listing,Giulia,paragraphs[4],Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
+listing,Giulia,paragraphs[5],"Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique."
+listing,Pappagallo,seoTitle,Casa Pappagallo - Fully equipped Home in Puerto Viejo
+listing,Pappagallo,seoDescription,"Welcome to Kalawala, a charming complex of two apartments located in the heart of Puerto Viejo. Each apartment is built entirely of wood and is situated above a delightful Italian bakery and are equipped with everything you need for a comfortable stay."
+listing,Pappagallo,heading,Casa Pappagallo
+listing,Pappagallo,featureName,House Pappagallo
+listing,Pappagallo,checkIn,2:00 PM
+listing,Pappagallo,checkOut,11:00 AM
+listing,Pappagallo,paragraphs[0],"Welcome to Kalawala, a charming complex of two apartments located in the heart of Puerto Viejo. Each apartment is built entirely of wood and is situated above a delightful Italian bakery. The apartments are equipped with everything you need for a comfortable stay, including a fully equipped kitchen, two cozy bedrooms, a lovely terrace, two A/C units, and one well equipped bathroom."
+listing,Pappagallo,paragraphs[1],"All of the spaces described here are private, including the fully equipped kitchen and bathroom. You'll have everything you need to make yourself at home."
+listing,Pappagallo,paragraphs[2],We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.
+listing,Pappagallo,paragraphs[3],Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
+listing,Pappagallo,paragraphs[4],"If you require a pack - and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process."
+listing,Pappagallo,paragraphs[5],"Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique."
+listing,Pappagallo,paragraphs[6],"The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!"
+listing,Pappagallo,paragraphs[7],"Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space."
+listing,Plumeria,seoTitle,Casa Plumeria - Couples Retreat
+listing,Plumeria,seoDescription,"New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife."
+listing,Plumeria,heading,Casa Plumeria
+listing,Plumeria,featureName,House Plumeria
+listing,Plumeria,checkIn,3:00 PM
+listing,Plumeria,checkOut,12:00 PM (noon)
+listing,Plumeria,paragraphs[0],"New fully equipped Bungalows with A/C located 200mts from the beautiful Playa Chiquita beach, in one of the safest and calm neighborhoods in the Caribbean. A few minutes from Puerto Viejo and Manzanillo, we are perfectly located to visit Punta Uva beach and Arrecife."
+listing,Plumeria,paragraphs[1],"The space, completely private, has A/C, fully equipped kitchen, a private bathroom with hot water. The parking space is private, spacious and outside of the property. Every house has a small porch for our guests."
+listing,Plumeria,paragraphs[2],"Close by you may find restaurants, supermarkets, and bike rentals. We trust our guests to follow common sense when leaving our house, that's why we have 0 check-out rules and no check-out list."
+listing,Plumeria,paragraphs[3],Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
+listing,Plumeria,paragraphs[4],"Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique."
+listing,Rana,seoTitle,Casa Rana - Puerto Viejo Vacation Home Rental
+listing,Rana,seoDescription,"Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space."
+listing,Rana,heading,Casa Rana
+listing,Rana,featureName,House Rana
+listing,Rana,checkIn,2:00 PM
+listing,Rana,checkOut,11:00 AM
+listing,Rana,paragraphs[0],"Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space. Our prime location ensures easy access to both the town center and the beaches of Puerto Viejo."
+listing,Rana,paragraphs[1],"The house offers complete privacy, with all described spaces, including the kitchen and bathroom, exclusively for your use. You'll have all the amenities needed to feel at home."
+listing,Rana,paragraphs[2],"You'll find most shops and restaurants within a short walking distance. Additionally, a nearby jungle path along the ocean leads to natural coral pools and Cocles."
+listing,Rana,paragraphs[3],Have a special request? We are happy to accommodate if possible. Please don't hesitate to let us know.
+listing,Rana,paragraphs[4],"Puerto Viejo is a well known destination for tourists from around the globe. The town features beautiful beaches bordered by lush tropical rainforest and is home to two National Parks, Manzanillo and Cahuita. At night, Puerto Viejo transforms with a vibrant nightlife scene. Staying here allows you to fully experience everything that makes Puerto Viejo special."
+listing,Rana,paragraphs[5],"The house is conveniently situated near a beach path that eventually leads to Cocles. Along the path, you'll have the chance to observe diverse wildlife and enjoy natural coral pools. There's even a hidden sightseeing spot to discover!"
+listing,Rana,paragraphs[6],"Getting around Puerto Viejo and its vicinity is best done by renting a bike or an electric bike. Additionally, the public bus service is available, connecting you to Cahuita, Manzanillo, and Sixaola. If you prefer driving, we can accommodate cars and provide private parking. Please inform us if you have a larger pickup truck that requires extra space."
+listing,Rana,paragraphs[7],"The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!"
+listing,Rana,paragraphs[8],"Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space."
+listing,Tucano,seoTitle,Casa Tucano - Like Nothing Else in Puerto Viejo
+listing,Tucano,seoDescription,"This house offers a delightful experience in the heart of Puerto Viejo with a charming wooden apartment located above an Italian bakery. The apartment features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and two A/C units."
+listing,Tucano,heading,Casa Tucano
+listing,Tucano,featureName,House Tucano
+listing,Tucano,checkIn,2:00 PM
+listing,Tucano,checkOut,11:00 AM
+listing,Tucano,paragraphs[0],"This house offers a delightful experience in the heart of Puerto Viejo with a charming wooden apartment located above an Italian bakery. The apartment features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and two A/C units, ensuring a cozy stay."
+listing,Tucano,paragraphs[1],"These apartments provide private spaces, including the kitchen and bathroom, offering everything you need to feel at home. For stays of 5 nights or more, we provide complimentary cleaning services, and our team will coordinate a suitable time with you during your visit."
+listing,Tucano,paragraphs[2],"If you have any special requests, we're happy to accommodate them whenever possible, so don't hesitate to let us know. Should you need a pack-and-play crib for your stay, please inform us in advance, and we'll ensure it's set up in your room during the cleaning process."
+listing,Tucano,paragraphs[3],"Puerto Viejo attracts visitors from all over the globe with its breathtaking landscapes. The town is renowned for its expansive beaches bordered by tropical rainforests and features two National Parks, Manzanillo and Cahuita. The nightlife here is vibrant and lively, offering a unique experience after dark. Staying in Puerto Viejo allows you to fully immerse yourself in its unique charm."
+listing,Tucano,paragraphs[4],"Our house is conveniently located near a beach path that leads eventually to Cocles. On your way, you can observe a variety of wildlife and enjoy the natural coral pools. A hidden sightseeing spot is also waiting to be explored!."
+listing,Tucano,paragraphs[5],"Exploring Puerto Viejo and its surroundings is most convenient by renting a bike or a scooter. Additionally, there is a good public bus service available that connects you to Cahuita, Manzanillo, and Sixaola. If you prefer driving, we provide private parking. Please inform us if you have a larger pickup truck that needs extra space."
+listing,VillaCoral,seoTitle,Villa Coral - Home with private pool in Playa Chiquita
+listing,VillaCoral,seoDescription,"Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting."
+listing,VillaCoral,heading,Villa Coral
+listing,VillaCoral,featureName,Villa Coral
+listing,VillaCoral,checkIn,3:00 PM
+listing,VillaCoral,checkOut,12:00 PM (noon)
+listing,VillaCoral,paragraphs[0],"Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting."
+listing,VillaCoral,paragraphs[1],Stay connected with high-speed internet up to 100Mbps and take advantage of the dedicated workspace if you need to attend to tasks during your visit.
+listing,VillaCoral,paragraphs[2],"The villa, boasting a private pool, kitchen and bathroom, has been decorated by Puerto Rican Interior designer Lourdes Menéndez"
+listing,VillaCoral,paragraphs[3],"Relax and unwind in your own private paradise with a pristine pool just for you. The villa features a spacious main bedroom and living room, both equipped with air conditioning to escape the heat."
+listing,VillaCoral,paragraphs[4],Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
+listing,VillaCoral,paragraphs[5],"If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process."
+listing,VillaCoral,paragraphs[6],"Explore the beauty of Playa Chiquita, Punta Uva and the vibrant culture of Puerto Viejo, all while having a comfortable home base to return to. Make the most of your Costa Rican getaway with this inviting villa as your accommodation."
+listing,VillaCoral,paragraphs[7],"Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space."
+listing,VillaMar,seoTitle,Villa Mar - Home with private pool in Playa Chiquita
+listing,VillaMar,seoDescription,"Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting."
+listing,VillaMar,heading,Villa Mar
+listing,VillaMar,featureName,Villa Mar
+listing,VillaMar,checkIn,3:00 PM
+listing,VillaMar,checkOut,12:00 PM (noon)
+listing,VillaMar,paragraphs[0],"Discover the perfect retreat in Playa Chiquita, Puerto Viejo. Our newly built luxury villa offers an ideal vacation experience, combining comfort and convenience in a serene tropical setting."
+listing,VillaMar,paragraphs[1],Stay connected with high-speed internet up to 100Mbps and take advantage of the dedicated workspace if you need to attend to tasks during your visit.
+listing,VillaMar,paragraphs[2],"The villa, boasting a private pool, kitchen and bathroom, has been decorated by Puerto Rican Interior designer Lourdes Menéndez"
+listing,VillaMar,paragraphs[3],"Relax and unwind in your own private paradise with a pristine pool just for you. The villa features a spacious main bedroom and living room, both equipped with air conditioning to escape the heat."
+listing,VillaMar,paragraphs[4],Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.
+listing,VillaMar,paragraphs[5],"If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process."
+listing,VillaMar,paragraphs[6],"Explore the beauty of Playa Chiquita, Punta Uva and the vibrant culture of Puerto Viejo, all while having a comfortable home base to return to. Make the most of your Costa Rican getaway with this inviting villa as your accommodation."
+listing,VillaMar,paragraphs[7],"Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space."
+blog,tenHoursInPuerto,seoTitle,Ten hours to explore Cahuita
+blog,tenHoursInPuerto,seoDescription,"If you only have ten hours to explore Cahuita, let's make the most of our time! We start our adventure early, waking up at 7 am. The first thing is to have a coffee and enjoy a delicious ham and cheese croissant fresh out of the oven at Degustibus Bakery."
+blog,tenHoursInPuerto,heading,Ten hours to explore Cahuita
+blog,tenHoursInPuerto,paragraphsBeforeStay[0],"If you only have ten hours to explore Cahuita, let's make the most of our time! We start our adventure early, waking up at 7 am. The first thing is to have a coffee and enjoy a delicious ham and cheese croissant fresh out of the oven at Degustibus Bakery."
+blog,tenHoursInPuerto,paragraphsBeforeStay[1],"After the delicious breakfast, we walked to the bus stop located near the town's basketball court, in front of the Deelite ice cream shop. It's important to know that there are two bus stops in the area: the larger one is for the MEPE buses going to San José, and the smaller one is for the buses going to Limón. We'll take the latter. You can buy the ticket on the same day or pay directly when boarding the bus. The ticket office is a small booth next to the shuttle."
+blog,tenHoursInPuerto,paragraphsBeforeStay[2],"We take the bus that passes by our stop at 8:20 am. The journey takes approximately 30 minutes, and we get off at the main terminal in Cahuita, which is very close to our first destination: Cahuita National Park. With the help of Google Maps and the locals, we head in the direction, observing the hustle of the town as they prepare to welcome tourists."
+blog,tenHoursInPuerto,paragraphsBeforeStay[3],"Cahuita National Park is open from 8 am to 4 pm in both sectors: Playa Blanca and Puerto Vargas. Today we will visit Playa Blanca, where the entrance is free, although a voluntary contribution is accepted. Remember that, being a national park, the entry of domestic animals and alcoholic beverages is not allowed."
+blog,tenHoursInPuerto,stayRecommendationTitle,Where to stay when exploring Cahuita?
+blog,tenHoursInPuerto,paragraphsAfterStay[0],"We arrive at the park at 9:15 am, just when the sun starts to warm up. We hire a guide for our hike since we want to learn about the park's biodiversity and observe species that are sometimes hard to see on our own. We manage to see different animals like bird species, as well as hear and see howler monkeys, sloths, and many species of flora. The hike took approximately two hours."
+blog,tenHoursInPuerto,paragraphsAfterStay[1],"After the hike, we went straight to have lunch at a typical soda called Kawe, where we enjoyed a delicious rice and beans that gave us the energy to continue exploring this calm and beautiful town. Then, we took a stroll through the town's shops, where we bought some souvenirs."
+blog,tenHoursInPuerto,paragraphsAfterStay[2],"Our next stop was some beautiful natural pools we had heard about and were eager to see. We were amazed by this place! Natural pools in a less crowded area, perfect for relaxing."
+blog,tenHoursInPuerto,paragraphsAfterStay[3],"We still have a few hours left, and at 4 pm we head back to the center of Cahuita to enjoy a delicious Pati at Delrita, whose reputation is well-deserved—it's delicious! Thus, we are wrapping up our day. We head to the bus terminal to catch the 5:15 pm bus to Puerto Viejo, leaving with a desire to return to this beautiful Caribbean town."
+blog,puertoViejoByPlane,seoTitle,Getting to Puerto Viejo By Plane
+blog,puertoViejoByPlane,seoDescription,"Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón."
+blog,puertoViejoByPlane,heading,Getting to Puerto Viejo By Plane
+blog,puertoViejoByPlane,heroAlt,Flying to Puerto Viejo Costa Rica
+blog,puertoViejoByPlane,intro,"Getting to Puerto Viejo by plane is easier than you might think. In this article, we'll show you how to travel from any destination to Puerto Viejo by taking a domestic flight from San Jose to Limón."
+blog,puertoViejoByPlane,stayRecommendationTitle,Where to stay when flying to Puerto Viejo?
+blog,puertoViejoByPlane,bodyParagraphs[0],"To book your flight, simply visit flysansa.com and select your travel dates and times. You will then be prompted to enter your personal and payment details to complete your booking. It's important to note that Sansa Airlines offers several flight options throughout the day, making it easy to find a flight that fits your schedule."
+blog,puertoViejoByPlane,bodyParagraphs[1],"The first leg of the journey is to fly to San Jose International Airport, also known as Juan Santamaría (SJO), the largest airport in Costa Rica. SJO is well-connected to many international destinations, making it a convenient starting point for your journey to Puerto Viejo. Once you land in SJO, you will have to pass customs and head to the Domestic Gate: there is a big old airplane outside, so it's easy to spot."
+blog,puertoViejoByPlane,bodyParagraphs[2],"The flight takes approximately 40 minutes on a small but safe Cessna, giving you a bird's eye view of Braulio Carrillo National Park."
+blog,puertoViejoByPlane,bodyParagraphs[3],"Once you arrive in Limón, a private transfer will drive you to Puerto Viejo for approximately $75 USD. A chauffeur will be waiting for you at the airport and will drive you directly to your accommodation, ensuring a stress-free and comfortable journey. Alternatively, you can take a bus or taxi from Limón to Puerto Viejo, but we recommend arranging a private transfer beforehand to save time and avoid any potential scam."
+blog,puertoViejoByPlane,closingParagraphs[0],"At this point, all that's left is for you to kick back and enjoy the laid-back vibes of Puerto Viejo. Whether you're looking to relax on the beach, explore the jungle, or indulge in some delicious Caribbean cuisine, Puerto Viejo has something for everyone."
+blog,puertoViejoByPlane,closingParagraphs[1],"In conclusion, traveling to Puerto Viejo from any destination is easy and convenient thanks to the domestic flight from San Jose to Limón. With a quick and comfortable flight and the option of arranging a private transfer, you'll be sipping on a tropical cocktail in no time. So what are you waiting for? Book your trip to Puerto Viejo today and experience the magic of this charming beach town for yourself! And don't hesitate to contact us for help organizing your trip or scheduling a private transfer from Limón."
+blog,twoDaysInPV,seoTitle,2 Days One Night in Puerto Viejo
+blog,twoDaysInPV,seoDescription,Do you only have a couple of days to visit Puerto Viejo? So did we! We only had 1 night coming from Tortuguero and wanted to make the best out of the time we had in this charming beach town located on the southern Caribbean coast of Costa Rica.
+blog,twoDaysInPV,heading,2 Days One Night in Puerto Viejo
+blog,twoDaysInPV,intro,"Do you only have a couple of days to visit Puerto Viejo? So did we! We only had 1 night coming from Tortuguero and wanted to make the best out of the time we had in this charming beach town located on the southern Caribbean coast of Costa Rica. With its laid-back atmosphere, pristine beaches, and lush tropical jungle, Puerto Viejo is the perfect destination for a quick weekend escape. In this article, we'll share our experience of spending two days in Puerto Viejo, and give you tips on how to make the most out of your trip."
+blog,twoDaysInPV,stayRecommendationTitle,Where to stay if you only have 2 days in Puerto Viejo?
+blog,twoDaysInPV,day1Paragraphs[0],"We arrived in Puerto Viejo early on a Saturday morning, excited to start our adventure. Our Airbnb wasn't ready yet, so we decided to rent a quad nearby and head to Punta Uva to soak up some sun. The beach was stunning, with turquoise and calm waters. We rented Kayaks and explored the coast. For lunch, we stopped by Selvin's, a local Caribbean restaurant, and tried some delicious Caribbean chicken with Rice and Beans."
+blog,twoDaysInPV,day1Paragraphs[1],"Afterward, we checked into our Airbnb, took a refreshing shower, and rested for a while. For dinner, we decided to try Cafe Viejo, an Italian restaurant located in the center of town. The food was fantastic, we tried the ""Fritto Misto"", a mix of fried fish and seafood. Later that night, we headed to Salsa Brava, a beachside bar that's known for its reggae nights and chill vibe."
+blog,twoDaysInPV,day2Paragraphs[0],"The next day, we got up later than we would've liked to, we got coffee and croissants at the Degustibus Bakery and headed off to Cocles. There is a nice and well kept path closeby the bakery that leads to Cocles, where we discovered a nice viewpoint before getting to the beach."
+blog,twoDaysInPV,day2Paragraphs[1],"After our hike, we headed back to the house to pack up and check out. We were lucky to leave on a Sunday as we were told that no big trucks on the road are allowed, making our journey back to San José smoother than expected."
+blog,twoDaysInPV,closing,"Puerto Viejo is an excellent destination for a quick weekend getaway. With its stunning beaches, vibrant nightlife, and natural beauty, you'll never run out of things to do. Whether you're looking for adventure or relaxation, Puerto Viejo has something to offer everyone. So what are you waiting for? Book your trip today and experience the magic of Puerto Viejo for yourself!"
+blog,gettingToGandoca,seoTitle,"How to Get to Gandoca-Manzanillo National Wildlife Refuge from Puerto Viejo, Costa Rica"
+blog,gettingToGandoca,seoDescription,"The Gandoca-Manzanillo National Wildlife Refuge, located in the province of Limón, is one of the best-kept secrets of Costa Rica's Southern Caribbean. This impressive wildlife refuge offers a rich variety of ecosystems, from mangroves and coral reefs to pristine beaches."
+blog,gettingToGandoca,heading,"How to Get to Gandoca-Manzanillo National Wildlife Refuge from Puerto Viejo, Costa Rica"
+blog,gettingToGandoca,heroAlt,Gandoca-Manzanillo National Wildlife Refuge
+blog,gettingToGandoca,intro,"The Gandoca-Manzanillo National Wildlife Refuge, located in the province of Limón, is one of the best-kept secrets of Costa Rica's Southern Caribbean. This impressive wildlife refuge offers a rich variety of ecosystems, from mangroves and coral reefs to pristine beaches. If you're in Puerto Viejo de Talamanca and looking for a nature getaway, this is an excellent option. In this guide, we show you how to easily get there from Puerto Viejo so you can fully explore this natural paradise."
+blog,gettingToGandoca,transportOptionsHeading,Transportation Options
+blog,gettingToGandoca,stayRecommendationTitle,Where to stay when visiting Gandoca-Manzanillo?
+blog,gettingToGandoca,busHeading,1. Bus from Puerto Viejo to Manzanillo
+blog,gettingToGandoca,busIntro,"The simplest and most economical way to reach Gandoca-Manzanillo National Wildlife Refuge is by taking a bus from downtown Puerto Viejo to Manzanillo. The bus stop is located where you buy the tickets, near the basketball court or by the Deleite Ice Cream Shop."
+blog,gettingToGandoca,busSchedulesLabel,Bus schedules:
+blog,gettingToGandoca,tableRouteHeader,Route
+blog,gettingToGandoca,tableDepartureHeader,Departure Times
+blog,gettingToGandoca,scooterHeading,2. Rent a Scooter or a 4x4
+blog,gettingToGandoca,scooterParagraph1,"If you prefer to explore at your own pace, renting a scooter or a 4x4 is an excellent option. If you're staying in our houses in downtown Puerto Viejo, you can rent vehicles at Mistery Jungle, right in front, with prices starting at $30. If you're staying in our villas in Playa Chiquita, you can request to have the vehicle delivered directly to your villa."
+blog,gettingToGandoca,scooterParagraph2,"This option is ideal for those seeking a personalized adventure, as it allows you to make stops wherever you like and explore the charming town of Manzanillo without worrying about bus schedules. Enjoy the freedom to explore your way and discover all the corners this beautiful destination has to offer."
+blog,gettingToGandoca,carHeading,3. Travel by Car from Puerto Viejo
+blog,gettingToGandoca,carParagraph,"If you decide to travel by car from Puerto Viejo, simply head towards Manzanillo and cover the 14 km distance. Upon arrival, you'll find parking available outside the reserve, where some locals offer to watch your vehicle for a small fee. We recommend not leaving valuables inside the car as a safety measure."
+blog,gettingToGandoca,conclusionHeading,Conclusion
+blog,gettingToGandoca,conclusionParagraph1,"Gandoca-Manzanillo National Wildlife Refuge is a must-visit destination for nature and adventure lovers. Whether you choose to travel by bus, rent a vehicle, or drive, getting to this natural paradise is easy and accessible."
+blog,gettingToGandoca,conclusionParagraph2,"We invite you to plan your visit to this beautiful refuge and take the opportunity to stay in our cozy houses in Puerto Viejo de Talamanca. We offer a comfortable and relaxing environment, perfect for enjoying nature and exploring all that the region has to offer. Discover the charm of Gandoca-Manzanillo National Wildlife Refuge and the warmth of our villas!"
+blog,travellingToPuerto,seoTitle,How to get to Puerto Viejo from San Jose
+blog,travellingToPuerto,seoDescription,"If you're planning a trip to Puerto Viejo, Costa Rica, you may be wondering how to get there using public transportation. Fortunately, there are several options available that can take you to this beautiful Caribbean town in Talamanca."
+blog,travellingToPuerto,heading,How to get to Puerto Viejo from San Jose
+blog,travellingToPuerto,paragraphsBeforeStay[0],"If you're planning a trip to Puerto Viejo, Costa Rica, you may be wondering how to get there using public transportation. Fortunately, there are several options available that can take you to this beautiful Caribbean town in Talamanca."
+blog,travellingToPuerto,paragraphsBeforeStay[1],"One of the most popular ways to get to Puerto Viejo is by bus. The primary bus company that services the route from San José to Puerto Viejo is MEPE. The bus station is located in the center of San José, exactly on 9th avenue and 12th street, making it easy to find."
+blog,travellingToPuerto,paragraphsBeforeStay[2],"The bus schedule to Puerto Viejo is as follows: 6am, 8am, 10am, 2pm, and the last one at 4pm."
+blog,travellingToPuerto,paragraphsBeforeStay[3],"While you cannot reserve tickets in advance, it's always a good idea to arrive at the bus station early to secure your spot on the bus. Keep in mind that during peak travel seasons, such as holidays and weekends, the buses can get crowded quickly, so plan accordingly."
+blog,travellingToPuerto,stayRecommendationTitle,Where to stay when traveling to Puerto Viejo?
+blog,travellingToPuerto,paragraphsBetween[0],"The bus has many stops, and will also stop at the bus station in limón, Cahuita and finally, Puerto Viejo."
+blog,travellingToPuerto,paragraphsBetween[1],"If you're looking to save some money on transportation costs, the cheapest option is to take the public bus. These buses are clean, reliable, and offer an affordable way to get to Puerto Viejo. While they may not be as luxurious as some of the private shuttle services, they will get you to your destination safely and on time."
+blog,travellingToPuerto,paragraphsBetween[2],"With regular bus schedules from San José and other nearby towns, it's easy to plan your trip and enjoy all that Puerto Viejo has to offer."
+blog,travellingToPuerto,paragraphsBetween[3],"Another option to get to Puerto Viejo from San Jose is to take the bus from Caribeños, which goes directly to Limón. From there, you can transfer to a bus that goes to Puerto Viejo."
+blog,travellingToPuerto,paragraphsBetween[4],"The bus schedule from San Jose to Limón leaves from the Caribeños stop located in Calle Central, Cinco Esquinas. Buses leave every hour from 6am until 7pm, so it's easy to plan your trip accordingly. Once you arrive in Limón, you can walk to the Mepe Bus stop, which is located near the central market, and take a bus that leaves every hour to Puerto Viejo."
+blog,travellingToPuerto,paragraphsBetween[5],"However, it's important to note that the journey from San Jose to Limón can take around 3 to 4 hours, depending on traffic and road conditions. So, it's crucial to plan ahead to avoid being stuck in Limón overnight. Also, the last bus from Limón to Puerto Viejo leaves at 8pm, so make sure to arrive in Limón with enough time to make the transfer."
+blog,travellingToPuerto,paragraphsBetween[6],"Another way to get to Puerto Viejo is by using private transportation. This option can be shared with other travelers or private for you and your companions, making it a convenient and comfortable way to travel to your destination."
+blog,travellingToPuerto,paragraphsBetween[7],"With private transportation, you can be picked up from wherever you prefer and be dropped off directly at your accommodation in Puerto Viejo. This option can be especially helpful for those who have heavy luggage, prefer more privacy, or have specific travel needs."
+blog,travellingToPuerto,paragraphsBetween[8],"Depending on the number of travelers, private transportation can be a more cost-effective option compared to taking a shared shuttle."
+blog,travellingToPuerto,paragraphsBetween[9],"Additionally, it offers the flexibility to set your own schedule and stop along the way to enjoy some of the beautiful sights along the route."
+blog,travellingToPuerto,paragraphsBetween[10],"If you're interested in booking private transportation to Puerto Viejo, there are several reputable companies that offer this service. It's always a good idea to research your options and compare prices to find the best deal."
+blog,travellingToPuerto,paragraphsBetween[11],We also offer this service and can provide you with the routes and prices to help you make the most informed decision for your travels.
+blog,travellingToPuerto,paragraphsBetween[12],"Overall, whether you prefer the convenience of public transportation or the comfort of private transportation, there are several ways to get to Puerto Viejo. Regardless of your choice, you're sure to enjoy the stunning scenery and vibrant culture of this beautiful Caribbean town in Talamanca, Costa Rica."
+blog,cahuitaPark,seoTitle,Visiting Cahuita National Park: What to Know Before You Go
+blog,cahuitaPark,seoDescription,"Cahuita National Park is one of the easiest and most relaxed national parks to visit on Costa Rica's Caribbean coast. It combines jungle trails, white-sand beaches, wildlife, and coral reefs in one place."
+blog,cahuitaPark,heading,Visiting Cahuita National Park: What to Know Before You Go
+blog,cahuitaPark,photoCredit,Photo by Haakon S. Krohn
+blog,cahuitaPark,introParagraphs[0],"Cahuita National Park is one of the easiest and most relaxed national parks to visit on Costa Rica's Caribbean coast. It combines jungle trails, white-sand beaches, wildlife, and coral reefs in one place."
+blog,cahuitaPark,introParagraphs[1],"If you are staying near Cahuita town or Puerto Viejo, this is a great half-day or full-day trip. Below is a clear guide to help you plan your visit."
+blog,cahuitaPark,enterHeading,Enter from Cahuita Town
+blog,cahuitaPark,enterParagraphs[0],"The most common entrance is in Cahuita town, near Playa Blanca."
+blog,cahuitaPark,enterParagraphs[1],"This entrance works on a donation basis, which makes it cheaper than other park entrances. The donation helps support park maintenance and local guides."
+blog,cahuitaPark,enterParagraphs[2],"Arrive early in the morning if you can. It is cooler, quieter, and better for wildlife spotting."
+blog,cahuitaPark,stayRecommendationTitle,Where to stay near Cahuita National Park?
+blog,cahuitaPark,snorkelHeading,Snorkeling Inside the Park
+blog,cahuitaPark,snorkelParagraphs[0],Snorkeling is one of the main reasons people visit Cahuita National Park.
+blog,cahuitaPark,snorkelParagraphs[1],"The coral reef here is one of the largest on Costa Rica's Caribbean coast. You can see colorful fish, coral formations, and sometimes rays."
+blog,cahuitaPark,snorkelParagraphs[2],"Most visitors book a guided snorkeling tour, which includes:"
+blog,cahuitaPark,snorkelListItems[0],A local guide
+blog,cahuitaPark,snorkelListItems[1],Snorkeling gear
+blog,cahuitaPark,snorkelListItems[2],A boat ride to the reef
+blog,cahuitaPark,snorkelClosing,"Conditions depend on the weather, so visibility can change from day to day."
+blog,cahuitaPark,wildlifeHeading,Watch Your Food Around Wildlife
+blog,cahuitaPark,wildlifeParagraphs[0],"Cahuita is full of animals. You may see monkeys, raccoons, iguanas, coatis, and sloths."
+blog,cahuitaPark,wildlifeParagraphs[1],Some animals are very used to visitors and may try to steal food. Keep snacks in a closed bag and never leave food unattended.
+blog,cahuitaPark,wildlifeParagraphs[2],Feeding animals is not allowed and can harm them.
+blog,cahuitaPark,scheduleHeading,Know the Park Schedule
+blog,cahuitaPark,scheduleParagraphs[0],The park closes at 4:00 p.m. Visitors must exit before that time.
+blog,cahuitaPark,scheduleParagraphs[1],"This is another reason to enter early. You will have more time to walk, swim, and relax without rushing."
+blog,cahuitaPark,boatHeading,Boat Ride Back Instead of Walking
+blog,cahuitaPark,boatParagraphs[0],The main trail runs along the coast and can be long if you walk the full route.
+blog,cahuitaPark,boatParagraphs[1],Many visitors choose to walk one way and return by boat. Local boat operators offer rides back toward Cahuita town.
+blog,cahuitaPark,boatParagraphs[2],This is a good option if you want to enjoy the trail without walking the entire distance.
+blog,cahuitaPark,plasticHeading,Plastic Is Not Allowed
+blog,cahuitaPark,plasticParagraphs[0],Single-use plastics are not allowed inside the park.
+blog,cahuitaPark,plasticParagraphs[1],"This includes plastic bags, disposable bottles, and plastic food packaging. Bring reusable bottles and containers."
+blog,cahuitaPark,plasticParagraphs[2],Park staff may check bags at the entrance.
+blog,cahuitaPark,tipsHeading,Final Tips Before You Go
+blog,cahuitaPark,tipsListItems[0],Wear comfortable walking shoes or sandals
+blog,cahuitaPark,tipsListItems[1],Bring water in a reusable bottle
+blog,cahuitaPark,tipsListItems[2],Use reef-safe sunscreen
+blog,cahuitaPark,tipsListItems[3],Start early to avoid heat and crowds
+blog,cahuitaPark,closing,"Cahuita National Park is calm, beautiful, and easy to visit. With a little planning, it is one of the best nature experiences on the Caribbean coast of Costa Rica."
+blog,bestTimeToVisit,seoTitle,"Best Time to Visit Puerto Viejo de Limón, Costa Rica"
+blog,bestTimeToVisit,seoDescription,"Find the best time to visit Puerto Viejo de Limón. Learn why September and October are the most reliable months for clear skies and calm ocean, plus what to expect in other seasons."
+blog,bestTimeToVisit,heading,"The Best Time of the Year to Visit Puerto Viejo de Limón, Costa Rica"
+blog,bestTimeToVisit,heroAlt,"Beach in Puerto Viejo de Limón, Costa Rica"
+blog,bestTimeToVisit,photoCredit,Photo by hh oldman
+blog,bestTimeToVisit,introParagraphs[0],Choosing when to visit Puerto Viejo is not as simple as checking a weather chart. The South Caribbean coast can change from week to week.
+blog,bestTimeToVisit,introParagraphs[1],"Multi-year cycles also affect it. Some years are drier. Some years are wetter. That is why ""average"" weather can feel wrong when you arrive."
+blog,bestTimeToVisit,stayRecommendationTitle,Looking to stay in Puerto Viejo?
+blog,bestTimeToVisit,hardToPredictHeading,Why Puerto Viejo Weather Is Hard to Predict
+blog,bestTimeToVisit,hardToPredictParagraphs[0],Puerto Viejo does not follow the same seasons as the Pacific side of Costa Rica: rain and ocean conditions depend on wider Caribbean systems.
+blog,bestTimeToVisit,hardToPredictParagraphs[1],This means you can get surprises in any month:
+blog,bestTimeToVisit,surprisesListItems[0],"Weeks that stay sunny during ""rainy season"""
+blog,bestTimeToVisit,surprisesListItems[1],"Heavy rain during months labeled ""dry season"""
+blog,bestTimeToVisit,surprisesListItems[2],Ocean conditions that shift fast
+blog,bestTimeToVisit,bestTimeHeading,The True Best Time to Visit: September and October
+blog,bestTimeToVisit,bestTimeParagraphs[0],"Contrary to what many websites mention, the most reliable time to visit is September and October."
+blog,bestTimeToVisit,bestTimeParagraphs[1],It is often called the Caribbean summer. It is the one period that consistently brings the mix most travelers want.
+blog,bestTimeToVisit,bestTimeListItems[0],Clear skies for many days in a row
+blog,bestTimeToVisit,bestTimeListItems[1],Calm ocean conditions
+blog,bestTimeToVisit,bestTimeListItems[2],Great beach days without the peak-season crowds
+blog,bestTimeToVisit,febAprHeading,February to April: Not as Reliable as Advertised
+blog,bestTimeToVisit,febAprParagraphs[0],"Many guides list February to April as the dry season. In my experience, this time can be as varied and unpredictable as any other month."
+blog,bestTimeToVisit,febAprParagraphs[1],"You might get perfect beach days. You might also get rain, clouds, and changing sea conditions. It can be a good time to visit, but it is not a sure thing."
+blog,bestTimeToVisit,wetMonthsHeading,Months That Tend to Be Wetter
+blog,bestTimeToVisit,wetMonthsParagraphs[0],Some months are more likely to bring heavy rain and greyer skies.
+blog,bestTimeToVisit,wetMonthsParagraphs[1],December tends to be very rainy. The ocean can also feel rougher.
+blog,bestTimeToVisit,wetMonthsParagraphs[2],"May and June also tend to be wet, with more frequent showers and higher humidity."
+blog,bestTimeToVisit,wetMonthsParagraphs[3],"These months can still be beautiful, especially if you like a greener landscape and do not mind getting caught in rain."
+blog,bestTimeToVisit,tipsHeading,Quick Planning Tips
+blog,bestTimeToVisit,tipsListItems[0],"If you want the best odds of sun and calm sea, plan for September or October."
+blog,bestTimeToVisit,tipsListItems[1],"If you travel in other months, pack for mixed weather and stay flexible."
+blog,bestTimeToVisit,tipsListItems[2],"For snorkeling and swimming, calm ocean matters as much as rain."
+blog,bestTimeToVisit,tipsListItems[3],MSN is my go to app for predicting the weather.
+blog,bestTimeToVisit,conclusionHeading,Key Takeaways
+blog,bestTimeToVisit,conclusionParagraph,"Puerto Viejo weather can change a lot from year to year, so charts do not tell the full story. If you want the most reliable mix of clear skies and a calm ocean, September and October are the best choice."
+blog,indigenousTravel,seoTitle,Indigenous Culture Near Puerto Viejo de Talamanca
+blog,indigenousTravel,seoDescription,"Discover Indigenous Bribri culture near Puerto Viejo de Talamanca. Learn about ancestral cacao, traditional medicine, and authentic cultural experiences in Indigenous communities of Costa Rica's South Caribbean."
+blog,indigenousTravel,heading,Indigenous Culture Near Puerto Viejo de Talamanca
+blog,indigenousTravel,heroAlt,Bribri Indigenous culture near Puerto Viejo
+blog,indigenousTravel,introParagraph,"Puerto Viejo de Talamanca is known for its beaches, relaxed atmosphere, and incredible jungle. But just inland, there is another side of the region that many travelers never see."
+blog,indigenousTravel,stayRecommendationTitle,Looking to stay in Puerto Viejo?
+blog,indigenousTravel,afterStayParagraph,"Close to town, Indigenous territories offer a deeper look into life on Costa Rica's South Caribbean coast. Here, culture is part of everyday life."
+blog,indigenousTravel,territoriesHeading,Indigenous Territories Near Puerto Viejo
+blog,indigenousTravel,territoriesParagraphs[0],"Puerto Viejo is located near the Bribri Indigenous Territory of Talamanca and the Keköldi Indigenous Reserve. These lands belong to the Bribri people, one of Costa Rica's most important Indigenous groups."
+blog,indigenousTravel,territoriesParagraphs[1],"Many families still speak the Bribri language, grow their own food, and use traditional knowledge in their daily routines."
+blog,indigenousTravel,experiencesHeading,What Cultural Experiences Are Like
+blog,indigenousTravel,experiencesIntro,"Most visits are led by members of the community. Groups are small, and the focus is on learning, respect, and personal connection."
+blog,indigenousTravel,dailyLifeHeading,Daily life and community visits
+blog,indigenousTravel,dailyLifeParagraph,"Visitors walk through family land, see traditional homes, and learn how Bribri families organize daily life, work, and social roles."
+blog,indigenousTravel,cacaoHeading,Cacao and tradition
+blog,indigenousTravel,cacaoParagraphs[0],"Cacao plays a central role in Bribri culture. Many tours show the ancestral preparation process, from the cacao pod to the final drink."
+blog,indigenousTravel,cacaoParagraphs[1],"Guides explain why cacao is important in ceremonies and everyday life, and visitors usually taste it prepared in the traditional way."
+blog,indigenousTravel,medicinalHeading,Medicinal plants and nature
+blog,indigenousTravel,medicinalParagraphs[0],Some experiences include forest walks focused on medicinal plants and their traditional uses for health and daily care.
+blog,indigenousTravel,medicinalParagraphs[1],"Many tours end with a visit to a waterfall inside Indigenous territory, valued for both its natural beauty and cultural meaning."
+blog,indigenousTravel,operatorsHeading,Local Tour Operators in Puerto Viejo
+blog,indigenousTravel,operatorsIntro,Several local agencies work directly with Indigenous communities to offer these experiences in a responsible way.
+blog,indigenousTravel,operators[0].name,Life Culture Travel Costa Rica
+blog,indigenousTravel,operators[0].href,https://lifeculturetravelcostarica.com/
+blog,indigenousTravel,operators[0].description,"Offers cultural experiences including Bribri shaman and chocolate tours, medicinal plant walks, and local community immersion."
+blog,indigenousTravel,operators[1].name,Exploradores Outdoors
+blog,indigenousTravel,operators[1].href,https://exploradoresoutdoors.com/tours/indigenous-experience-chocolate-tour/
+blog,indigenousTravel,operators[1].description,"Provides an Indigenous experience and chocolate tour that covers Bribri traditions, medicinal plants, and a visit to a waterfall."
+blog,indigenousTravel,operators[2].name,Bribri Magic Chocolate & Waterfall Experience
+blog,indigenousTravel,operators[2].href,https://www.viator.com/tours/Limon/Chocolate-taste-true/d4513-238841P2
+blog,indigenousTravel,operators[2].description,"Small-group tour from Puerto Viejo to learn Bribri culture, make cacao, and swim in a waterfall."
+blog,indigenousTravel,askAboutTourParagraph,"When booking, ask if the tour is guided by community members and how the visit supports local families."
+blog,indigenousTravel,tipsHeading,Practical Tips for Visitors
+blog,indigenousTravel,tipsParagraphs[0],Tours operate year-round and usually start in the morning.
+blog,indigenousTravel,tipsParagraphs[1],"Bring closed shoes, water, sun protection, and insect repellent. Always follow your guide's instructions and ask before taking photos."
+blog,indigenousTravel,tipsParagraphs[2],Buying crafts or food directly from families is one of the best ways to support the community.
+blog,indigenousTravel,differentWayHeading,A Different Way to Experience the South Caribbean
+blog,indigenousTravel,differentWayParagraphs[0],"Visiting Indigenous communities near Puerto Viejo adds depth and meaning to your trip. It is about learning, not rushing."
+blog,indigenousTravel,differentWayParagraphs[1],"This experience suits travelers who want a calmer, more authentic connection with the place they are visiting."
+blog,puertoHiddenGems,seoTitle,Hidden Gems in Puerto Viejo: Quiet Spots Locals Love
+blog,puertoHiddenGems,seoDescription,"Puerto Viejo has famous beaches, music, and nightlife. But some of its best places stay off the main list. These spots feel calmer, closer to nature, and more personal. If you want fewer crowds and real local flavor, start here. These hidden gems are easy to reach and worth the effort."
+blog,puertoHiddenGems,heading,Hidden Gems in Puerto Viejo: Quiet Spots Locals Love
+blog,puertoHiddenGems,heroAlt,"Puerto Viejo de Talamanca, Costa Rica"
+blog,puertoHiddenGems,photoCredit,Photo by Letartean
+blog,puertoHiddenGems,introParagraphs[0],"Puerto Viejo is easy to love. Most visitors hit the famous beaches, grab a cocktail in town, and call it a day. But the best moments often happen in quieter places: small coves, hidden stretches of sand, and simple local meals that taste like the Caribbean."
+blog,puertoHiddenGems,introParagraphs[1],"Below are a few hidden gems around Puerto Viejo that feel calmer and more personal. None of them require a complicated plan. You just need a bit of time, sun protection, and a slow pace."
+blog,puertoHiddenGems,stayRecommendationTitle,Where to stay in Puerto Viejo for easy access to these hidden gems
+blog,puertoHiddenGems,sections[0].headingText,Playa Chiquita
+blog,puertoHiddenGems,sections[0].headingHref,https://maps.app.goo.gl/tTS4h2KYududsyh8A
+blog,puertoHiddenGems,sections[0].paragraphs[0],"Playa Chiquita is a more secluded stretch of sand that many people skip. It feels tucked away, with fewer crowds and a calmer mood."
+blog,puertoHiddenGems,sections[0].paragraphs[1],"The water is not always calm, but the vibes there definitely are. It's the perfect spot for a slow morning."
+blog,puertoHiddenGems,sections[0].list.label,Perfect for:
+blog,puertoHiddenGems,sections[0].list.items[0],Relaxing under the trees
+blog,puertoHiddenGems,sections[0].list.items[1],Exploring on foot
+blog,puertoHiddenGems,sections[0].list.items[2],A simple picnic
+blog,puertoHiddenGems,sections[1].headingText,Playa Grande
+blog,puertoHiddenGems,sections[1].headingHref,https://maps.app.goo.gl/zpRcsq96dC9MnVRU7
+blog,puertoHiddenGems,sections[1].paragraphs[0],"Playa Grande is known by surfers, but it's also one of the most striking beaches in the area. It feels wide, open, and less traveled than other spots."
+blog,puertoHiddenGems,sections[1].paragraphs[1],"Even if you don't surf, it's worth a visit for the scenery and long walks. Just keep in mind the waves can be strong."
+blog,puertoHiddenGems,sections[1].list.label,Good to know:
+blog,puertoHiddenGems,sections[1].list.items[0],Better for experienced surfers than swimmers
+blog,puertoHiddenGems,sections[1].list.items[1],Great for photos and walks
+blog,puertoHiddenGems,sections[1].list.items[2],Usually quieter than Cocles
+blog,puertoHiddenGems,sections[2].headingText,Punta Cocles Coves & Jaguar Rescue Center
+blog,puertoHiddenGems,sections[2].headingHref,https://www.jaguarrescue.foundation
+blog,puertoHiddenGems,sections[2].paragraphs[0],"In front of the Jaguar Rescue Center, you'll find small coves and quieter beach corners. The rocky points break up the coastline, so it's easy to find a spot that feels private."
+blog,puertoHiddenGems,sections[2].paragraphs[1],This area is also one of the best places to spot wildlife. You might see monkeys in the trees or a sloth high up near the road.
+blog,puertoHiddenGems,sections[2].tipLine,Tip: Go early in the morning for fewer people and more animal activity.
+blog,puertoHiddenGems,sections[3].headingText,Punta Uva Kayaking Without a Tour
+blog,puertoHiddenGems,sections[3].paragraphs[0],"Punta Uva is famous for its beach, but the river is the real secret. You don't need a tour to enjoy it. Just rent a kayak and explore at your own pace."
+blog,puertoHiddenGems,sections[3].paragraphs[1],"The water is usually smooth, and the jungle feels close on both sides. It's peaceful and easy, even if you're not an expert paddler."
+blog,puertoHiddenGems,sections[3].list.label,Bring:
+blog,puertoHiddenGems,sections[3].list.items[0],Sun protection
+blog,puertoHiddenGems,sections[3].list.items[1],Water and a dry bag
+blog,puertoHiddenGems,sections[3].list.items[2],Respectful distance for wildlife
+blog,puertoHiddenGems,sections[4].headingText,Restaurante Caribeño 1872 for Rice and Beans
+blog,puertoHiddenGems,sections[4].paragraphs[0],"If you want one meal that feels truly local, check out Restaurante Caribeño 1872 for rich, flavorful Caribbean food."
+blog,puertoHiddenGems,sections[4].paragraphs[1],"The flavor is rich, the portions feel generous, and the vibe is relaxed. It's the kind of place you'll want to return to."
+blog,puertoHiddenGems,sections[5].headingText,Punta Mona & Gandoca-Manzanillo Wildlife Refuge
+blog,puertoHiddenGems,sections[5].headingHref,https://maps.app.goo.gl/8dDzcZiUrhuuPmCy8
+blog,puertoHiddenGems,sections[5].paragraphs[0],"Punta Mona feels far, in the best way. You can rent a boat and ask the driver to take you along the coast to the pristine beaches and quiet shores inside the Gandoca-Manzanillo National Wildlife Refuge."
+blog,puertoHiddenGems,sections[5].paragraphs[1],"The reward is clear water, quiet shoreline, and a sense that you've left the busy world behind."
+blog,puertoHiddenGems,sections[5].list.label,Good to know:
+blog,puertoHiddenGems,sections[5].list.items[0],Bring snacks and water (there are no shops)
+blog,puertoHiddenGems,sections[5].list.items[1],Go with calm weather and sea conditions
+blog,puertoHiddenGems,sections[5].list.items[2],Pack out everything you bring in
+blog,puertoHiddenGems,tipsHeading,Quick Tips to Enjoy These Spots
+blog,puertoHiddenGems,tipsIntro,A few small choices make a big difference in Puerto Viejo—both for your day and for the places you visit.
+blog,puertoHiddenGems,tipsListItems[0],Start early to get calm beaches and cooler weather
+blog,puertoHiddenGems,tipsListItems[1],Use reef-safe sunscreen when you swim or snorkel
+blog,puertoHiddenGems,tipsListItems[2],Keep a respectful distance from wildlife
+blog,puertoHiddenGems,tipsListItems[3],Don't leave valuables on the beach
+blog,puertoHiddenGems,closingParagraph,"These hidden gems are what make the trip feel special—quiet water, wild coastlines, and food that tastes like home in the Caribbean. Pick two or three from this list and leave space for slow moments. That's when Puerto Viejo shows its best side."
+blog,busHours,seoTitle,"Complete Bus Schedule from Puerto Viejo, Costa Rica - MEPE Bus Routes & Timetables"
+blog,busHours,seoDescription,"Find the complete bus schedule from Puerto Viejo to San Jose, Limón, Cahuita, Manzanillo, and Sixaola. MEPE bus timetables, routes, and transportation information for Costa Rica's Caribbean coast."
+blog,busHours,heading,"Complete Bus Schedule from Puerto Viejo, Costa Rica - MEPE Bus Routes & Timetables"
+blog,busHours,photoCredit,Photo by hh oldman
+blog,busHours,introParagraph,"Planning your transportation in Costa Rica's Caribbean coast? Look no further! This comprehensive guide provides you with all the bus schedules you need to travel from Puerto Viejo to major destinations including San Jose, Limón, Cahuita, Manzanillo, and Sixaola. Whether you're searching for ""bus San Jose Puerto Viejo"", ""bus Cahuita Puerto Viejo"", or ""bus from Puerto Viejo to San Jose"", we've got you covered with the most up-to-date MEPE bus timetables."
+blog,busHours,aboutHeading,About MEPE Bus Service
+blog,busHours,aboutParagraph1,"MEPE (Empresa de Transportes Públicos de Limón) is the primary bus company operating throughout Costa Rica's Caribbean coast. Known for their reliable service and extensive network, MEPE buses connect Puerto Viejo with major cities and tourist destinations across the region. Their modern fleet provides comfortable transportation for both locals and visitors, making it the preferred choice for budget-conscious travelers exploring Costa Rica's stunning Caribbean coastline."
+blog,busHours,aboutParagraph2,"MEPE buses are easily recognizable by their distinctive blue and white colors, and they operate on fixed schedules that are generally punctual. The company has been serving the Caribbean region for decades, building a reputation for safety, affordability, and comprehensive coverage of the area's most important routes."
+blog,busHours,stayRecommendationTitle,Where to stay while using Puerto Viejo bus services?
+blog,busHours,routesHeading,Bus Routes from Puerto Viejo
+blog,busHours,routesIntro,"Puerto Viejo serves as a major transportation hub for the Southern Caribbean region. From here, you can easily reach:"
+blog,busHours,destinations[0],San Jose - Costa Rica's capital city (approximately 4-5 hours)
+blog,busHours,destinations[1],Limón - The Caribbean port city (approximately 1 hour)
+blog,busHours,destinations[2],Cahuita - Famous for its national park and beaches (approximately 30 minutes)
+blog,busHours,destinations[3],Manzanillo - Gateway to Gandoca-Manzanillo Wildlife Refuge (approximately 20 minutes)
+blog,busHours,destinations[4],Sixaola - Border town with Panama (approximately 1.5 hours)
+blog,busHours,schedulesHeading,Complete Bus Schedules
+blog,busHours,sanJoseHeading,San José ↔ Puerto Viejo (stops in Cahuita)
+blog,busHours,sanJoseIntro,This is the main route connecting Puerto Viejo with Costa Rica's capital city. Perfect for travelers arriving from or heading to San José International Airport.
+blog,busHours,limonHeading,Limón ↔ Puerto Viejo (stops in Cahuita)
+blog,busHours,limonIntro,"This is one of the most frequent routes, connecting Puerto Viejo with the port city of Limón. Perfect for travelers heading to or from San Jose, as Limón serves as a major connection point."
+blog,busHours,manzanilloHeading,Puerto Viejo ↔ Manzanillo
+blog,busHours,manzanilloIntro,This route takes you to the beautiful beaches of Manzanillo and provides access to the Gandoca-Manzanillo National Wildlife Refuge.
+blog,busHours,sixaolaHeading,Sixaola ↔ Puerto Viejo (stops in Bri Bri)
+blog,busHours,sixaolaIntro,"This route connects Puerto Viejo with the border town of Sixaola, perfect for travelers heading to Panama. The route also stops in Bri Bri, providing access to indigenous communities and cultural experiences."
+blog,busHours,tableRouteHeader,Route
+blog,busHours,tableDepartureHeader,Departure Times
+blog,busHours,tableWeekdayHeader,Monday - Saturday
+blog,busHours,tableSundayHeader,Sunday & Holidays
+blog,busHours,tipsHeading,Tips for Bus Travel in Puerto Viejo
+blog,busHours,tipsListItems[0],"Arrive Early: Buses can fill up quickly, especially during peak tourist season"
+blog,busHours,tipsListItems[1],Cash Only: MEPE buses accept cash payments only - have colones ready
+blog,busHours,tipsListItems[2],"Baggage: Small bags can be stored overhead, larger luggage goes in the cargo area"
+blog,busHours,tipsListItems[3],Comfort: Bring water and snacks for longer journeys
+blog,busHours,tipsListItems[4],"Connections: while Limón is the main hub for connections to San Jose and other destinations, you can also get to Puerto Viejo from San Jose."
+blog,busHours,ticketsHeading,Where to Buy Tickets
+blog,busHours,ticketsParagraph,"Bus tickets can be purchased at the main bus stops in Puerto Viejo. The primary bus stop is located near the basketball court in downtown Puerto Viejo, close to the Deleite Ice Cream Shop."
+blog,busHours,contactHeading,Contact for Bus Information
+blog,busHours,contactIntro,Need updated information about schedules or routes? You can contact the bus company via WhatsApp for the most current information about bus services:
+blog,busHours,closingParagraph,"For the most comfortable stay while exploring the Caribbean coast, consider booking one of our fully equipped homes in Puerto Viejo or Playa Chiquita. We offer convenient locations near bus stops and provide all the amenities you need for a perfect Costa Rican getaway!"
+discover,homepage,heading,Discover Puerto Viejo from the comfort of our homes.
+discover,homepage,paragraphs[0],"Reservas Kalawala offers ⟦PORTFOLIO_PROPERTY_COUNT⟧ remodeled homes and villas, each with a fully equipped private kitchen and bathroom. Houses sleep ⟦PORTFOLIO_GUEST_RANGE.min⟧ to ⟦PORTFOLIO_GUEST_RANGE.max⟧ guests, with ⟦PORTFOLIO_BEDROOM_RANGE.min⟧ to ⟦PORTFOLIO_BEDROOM_RANGE.max⟧ bedrooms and air conditioning throughout."
+discover,homepage,paragraphs[1],"Our homes in the center of Puerto Viejo put you right in the heart of town, with bars, restaurants and shops within walking distance. Cocles beach is a 2-minute drive, and nearby bike and motorbike rentals bring Punta Uva, Cahuita and Manzanillo within reach, even without a car!"
+discover,homepage,paragraphs[2],"Our homes in Playa Chiquita sit a short ride southeast of town, in a quieter, greener setting wrapped in jungle and just minutes from some of the coast's most beautiful beaches, like Punta Uva. It's an ideal base if you're after nature and calm, with the buzz of Puerto Viejo close by whenever you want it."
+discover,homepage,paragraphs[3],"Working from home? We offer free WIFI, with a maximum speed of 100Mbps. We stipulated two different contracts with our internet provider, so your internet connection will be shared between fewer devices, achieving less latency during meetings."
+discover,homepage,paragraphs[4],"Pet friendly: Casa Rana, Casa Geco, Casa Tucano and Casa Pappagallo welcome pets. Rana and Geco are the best fit, as they have their own garden."
+discover,homepage,features.selfCheckIn.heading,Self Check-in
+discover,homepage,features.selfCheckIn.text,"Easy to follow, contactless check-in process."
+discover,homepage,features.cheapestPrices.heading,Cheapest Prices
+discover,homepage,features.cheapestPrices.text,And extra discounts when booking directly on the website.
+discover,homepage,features.nonRefundable.heading,Non Refundable Discount
+discover,homepage,features.nonRefundable.text,"Choose the non-refundable rate when you book to get an extra 10% discount, but you won't be eligible for a cancellation refund."
+discover,homepage,features.flexibleCancellation.heading,Flexible Cancellation Policy
+discover,homepage,features.flexibleCancellation.text,Full refund up to one day before check-in on any reservation booked at the standard rate.

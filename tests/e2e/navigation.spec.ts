@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures/base.fixture';
 import { test as mobileTest } from './fixtures/mobile.fixture';
-import { nav } from './helpers/selectors';
+import { nav, bookingCtaBanner } from './helpers/selectors';
 
 /**
  * Navigation E2E tests.
@@ -9,8 +9,12 @@ import { nav } from './helpers/selectors';
  * mocks active). The mobile hamburger test uses the `mobilePage` fixture
  * which additionally sets the viewport to 375×667.
  *
- * Navigation links are anchor links that scroll to sections on the homepage
- * (Home, Availability, Photos, Contact) or navigate to a separate page (Blog).
+ * The nav bar itself is now just Home / Blog / My Booking / WhatsApp —
+ * "Availability", "Photos" and "Contact" were removed from it before
+ * Footer (2026-07-28) landed. Their underlying sections/CTAs still exist
+ * on the homepage, just reached by scrolling or a different CTA rather
+ * than a nav-bar anchor link, so they're covered below by testing those
+ * directly instead of a nav click that no longer exists.
  *
  * Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5, 4.6
  */
@@ -27,59 +31,48 @@ test.describe('Navigation', () => {
     await expect(bodySection).toBeVisible();
   });
 
-  test('clicking "Availability" link navigates to the call-to-action section', async ({ appPage }) => {
+  test('clicking the "Check availability" CTA banner navigates to the booking page', async ({ appPage }) => {
     await appPage.goto('/');
 
-    // Requirement 4.2 — Clicking "Availability" navigates to the
-    // call-to-action section. The Availability link has href="/#body"
-    // and an onClick that calls navigate('/#callToAction'). Both target
-    // the homepage — verify we remain on the homepage after clicking.
-    await nav.availabilityLink(appPage).click();
+    // Requirement 4.2 (superseded) — the nav bar no longer has a dedicated
+    // "Availability" link; BookingCtaBanner is the closest current
+    // equivalent, a repeated mid-page conversion CTA that now navigates
+    // straight to the booking page instead of scrolling to an on-page
+    // section.
+    await bookingCtaBanner.link(appPage).click();
 
-    // Wait for any navigation to settle
-    await appPage.waitForLoadState('domcontentloaded');
-
-    // Verify we're still on the homepage with a hash fragment
-    expect(appPage.url()).toContain('localhost:3000');
-
-    // The #body section should be visible (homepage wrapper)
-    const bodySection = appPage.locator('#body');
-    await expect(bodySection).toBeVisible();
+    await appPage.waitForURL('**/en/book');
+    expect(new URL(appPage.url()).pathname).toBe('/en/book');
   });
 
-  test('clicking "Photos" link navigates to the portfolio section', async ({ appPage }) => {
+  test('the portfolio section is present on the homepage', async ({ appPage }) => {
     await appPage.goto('/');
 
-    // Requirement 4.3 — Clicking "Photos" navigates to the portfolio
-    // section (#portfolio).
-    await nav.photosLink(appPage).click();
-
+    // Requirement 4.3 (superseded) — "Photos" is no longer a nav link, but
+    // the section it used to jump to still renders on the homepage.
     const portfolioSection = appPage.locator('#portfolio');
+    await portfolioSection.scrollIntoViewIfNeeded();
     await expect(portfolioSection).toBeVisible();
-    await expect(portfolioSection).toBeInViewport();
   });
 
-  test('clicking "Contact" link navigates to the contact section', async ({ appPage }) => {
+  test('the contact section is present on the homepage', async ({ appPage }) => {
     await appPage.goto('/');
 
-    // Requirement 4.4 — Clicking "Contact" navigates to the contact
-    // section (#contact-us).
-    await nav.contactLink(appPage).click();
-
+    // Requirement 4.4 (superseded) — same as Photos above: "Contact" is no
+    // longer a nav link, but ContactUs still renders on the homepage.
     const contactSection = appPage.locator('#contact-us');
+    await contactSection.scrollIntoViewIfNeeded();
     await expect(contactSection).toBeVisible();
-    await expect(contactSection).toBeInViewport();
   });
 
-  test('clicking "Blog" link navigates to a blog page', async ({ appPage }) => {
+  test('clicking "Blog" link navigates to the blog index', async ({ appPage }) => {
     await appPage.goto('/');
 
-    // Requirement 4.5 — Clicking "Blog" navigates to a blog page.
-    // The Blog link href is /en/twodaysinpuertoviejo.
+    // Requirement 4.5 — Clicking "Blog" navigates to the blog index page.
     await nav.blogLink(appPage).click();
 
-    await appPage.waitForURL('**/en/twodaysinpuertoviejo');
-    expect(appPage.url()).toContain('/en/twodaysinpuertoviejo');
+    await appPage.waitForURL('**/en/blog');
+    expect(new URL(appPage.url()).pathname).toBe('/en/blog');
   });
 });
 
@@ -107,9 +100,8 @@ mobileTest.describe('Navigation — Mobile', () => {
     // After clicking, the nav collapse should be visible with nav links
     await expect(navCollapse).toBeVisible();
     await expect(nav.homeLink(mobilePage)).toBeVisible();
-    await expect(nav.availabilityLink(mobilePage)).toBeVisible();
-    await expect(nav.photosLink(mobilePage)).toBeVisible();
-    await expect(nav.contactLink(mobilePage)).toBeVisible();
     await expect(nav.blogLink(mobilePage)).toBeVisible();
+    await expect(nav.myBookingLink(mobilePage)).toBeVisible();
+    await expect(nav.whatsAppLink(mobilePage)).toBeVisible();
   });
 });

@@ -169,7 +169,7 @@ describe('ListingDelfinES Component', () => {
     const amenityNames = delfinESData?.amenities.map(a => a.name) || [];
     
     // Check that expected Spanish amenities are present
-    expect(amenityNames).toContain('2 Baños Privado Equipado');
+    expect(amenityNames).toContain('2 Baños Privados Equipados');
     expect(amenityNames).toContain('Cocina Privada Equipada');
     expect(amenityNames).toContain('Cuartos con A/C');
     expect(amenityNames).toContain('Parqueo Privado Encerrado');

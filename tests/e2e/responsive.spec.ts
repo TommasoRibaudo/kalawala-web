@@ -33,10 +33,9 @@ test.describe('Responsive Behavior', () => {
 
     // Individual desktop nav links should not be visible
     await expect(nav.homeLink(mobilePage)).not.toBeVisible();
-    await expect(nav.availabilityLink(mobilePage)).not.toBeVisible();
-    await expect(nav.photosLink(mobilePage)).not.toBeVisible();
-    await expect(nav.contactLink(mobilePage)).not.toBeVisible();
     await expect(nav.blogLink(mobilePage)).not.toBeVisible();
+    await expect(nav.myBookingLink(mobilePage)).not.toBeVisible();
+    await expect(nav.whatsAppLink(mobilePage)).not.toBeVisible();
   });
 
   test('listing page at mobile viewport adapts without horizontal overflow', async ({
@@ -61,7 +60,7 @@ test.describe('Responsive Behavior', () => {
 
     // Wait for the page content to render
     await expect(
-      mobilePage.getByRole('heading', { name: 'House Geco', level: 1 }),
+      mobilePage.getByRole('heading', { name: 'Casa Geco', level: 1 }),
     ).toBeVisible();
 
     // Verify no horizontal overflow: scrollWidth should not exceed clientWidth

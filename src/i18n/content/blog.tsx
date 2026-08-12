@@ -152,7 +152,7 @@ const tenHoursInPuerto: Partial<Record<Locale, TenHoursInPuertoContent>> = {
     heading: 'Dez horas para explorar Cahuita',
     paragraphsBeforeStay: [
       "Se só tiver dez horas para explorar Cahuita, vamos aproveitar bem o nosso tempo! Começamos a nossa aventura cedo, acordando às 7h. A primeira coisa é tomar um café e desfrutar de um delicioso croissant de fiambre e queijo, acabado de sair do forno, na Degustibus Bakery.",
-      "Depois do delicioso pequeno-almoço, caminhámos até à paragem de autocarro situada perto do campo de basquetebol da vila, em frente à gelataria Deelite. É importante saber que há duas paragens de autocarro na zona: a maior é para os autocarros da MEPE que vão para São José, e a mais pequena é para os autocarros que vão para Limón. Vamos apanhar esta última. Pode comprar o bilhete no próprio dia ou pagar diretamente ao entrar no autocarro. A bilheteira é uma pequena cabina junto ao shuttle.",
+      "Depois do delicioso pequeno-almoço, caminhámos até à paragem de autocarro situada perto do campo de basquetebol da vila, em frente à gelataria Deelite. É importante saber que há duas paragens de autocarro na zona: a maior é para os autocarros da MEPE que vão para São José, e a mais pequena é para os autocarros que vão para Limón. Vamos apanhar esta última. Pode comprar o bilhete no próprio dia ou pagar diretamente ao entrar no autocarro. A bilheteira é uma pequena cabina junto ao autocarro.",
       "Apanhamos o autocarro que passa na nossa paragem às 8h20. A viagem demora cerca de 30 minutos, e saímos no terminal principal de Cahuita, muito perto do nosso primeiro destino: o Parque Nacional de Cahuita. Com a ajuda do Google Maps e dos habitantes locais, seguimos em direção ao parque, observando a azáfama da vila enquanto se prepara para receber os turistas.",
       "O Parque Nacional de Cahuita está aberto das 8h às 16h em ambos os setores: Playa Blanca e Puerto Vargas. Hoje vamos visitar Playa Blanca, onde a entrada é gratuita, embora se aceite um contributo voluntário. Lembre-se de que, por se tratar de um parque nacional, não é permitida a entrada de animais domésticos nem de bebidas alcoólicas.",
     ],
@@ -191,7 +191,7 @@ const tenHoursInPuerto: Partial<Record<Locale, TenHoursInPuertoContent>> = {
     paragraphsBeforeStay: [
       "Als je maar tien uur hebt om Cahuita te verkennen, laten we onze tijd dan optimaal benutten! We beginnen ons avontuur vroeg en staan om 7 uur 's ochtends op. Als eerste drinken we een kop koffie en genieten we van een heerlijke ham-en-kaascroissant, vers uit de oven van Degustibus Bakery.",
       'Na het heerlijke ontbijt liepen we naar de bushalte bij het basketbalveld van het dorp, tegenover ijssalon Deelite. Het is belangrijk om te weten dat er twee bushaltes in de buurt zijn: de grotere is voor de MEPE-bussen naar San José, en de kleinere voor de bussen naar Limón. Wij nemen de laatste. Je kunt het kaartje dezelfde dag kopen of direct betalen bij het instappen. Het loket is een klein kraampje naast de shuttle.',
-      'We nemen de bus die om 8:20 uur langs onze halte komt. De rit duurt ongeveer 30 minuten, en we stappen uit bij het hoofdterminal van Cahuita, vlak bij onze eerste bestemming: Nationaal Park Cahuita. Met behulp van Google Maps en de plaatselijke bewoners lopen we de goede kant op, terwijl we de drukte van het dorp gadeslaan dat zich opmaakt om toeristen te ontvangen.',
+      'We nemen de bus die om 8:20 uur langs onze halte komt. De rit duurt ongeveer 30 minuten, en we stappen uit bij de hoofdterminal van Cahuita, vlak bij onze eerste bestemming: Nationaal Park Cahuita. Met behulp van Google Maps en de plaatselijke bewoners lopen we de goede kant op, terwijl we de drukte van het dorp gadeslaan dat zich opmaakt om toeristen te ontvangen.',
       'Nationaal Park Cahuita is geopend van 8 tot 16 uur in beide sectoren: Playa Blanca en Puerto Vargas. Vandaag bezoeken we Playa Blanca, waar de toegang gratis is, hoewel een vrijwillige bijdrage wordt geaccepteerd. Vergeet niet dat het, omdat het een nationaal park is, niet is toegestaan huisdieren of alcoholische dranken mee naar binnen te nemen.',
     ],
     stayRecommendationTitle: 'Waar overnachten tijdens het verkennen van Cahuita?',
@@ -199,7 +199,7 @@ const tenHoursInPuerto: Partial<Record<Locale, TenHoursInPuertoContent>> = {
       <b key="hike"><i>We komen om 9:15 uur aan bij het park, precies op het moment dat de zon warmer begint te worden. We huren een gids in voor onze wandeltocht, omdat we meer willen leren over de biodiversiteit van het park en soorten willen zien die je in je eentje soms lastig te spotten zijn. Het lukt ons om verschillende dieren te zien, zoals diverse vogelsoorten, en we horen en zien brulapen, luiaards en talloze plantensoorten. De wandeling duurde ongeveer twee uur.</i></b>,
       'Na de wandeling gingen we direct lunchen bij een typische soda genaamd Kawe, waar we genoten van heerlijke rice and beans die ons de energie gaven om dit rustige en prachtige dorp verder te verkennen. Daarna maakten we een wandeling langs de winkels van het dorp, waar we wat souvenirs kochten.',
       'Onze volgende stop waren enkele prachtige natuurlijke zwembadjes waarover we hadden gehoord en die we graag wilden zien. We waren onder de indruk van deze plek! Natuurlijke zwembadjes op een rustige plek, perfect om te ontspannen.',
-      'We hebben nog een paar uur over, en om 16 uur gaan we terug naar het centrum van Cahuita om te genieten van een heerlijke Pati bij Delrita, waarvan de reputatie volledig verdiend is - het is heerlijk! Zo ronden we onze dag af. We lopen naar het busterminal om de bus van 17:15 uur naar Puerto Viejo te halen, en vertrekken met de wens om terug te keren naar dit prachtige Caribische dorpje.',
+      'We hebben nog een paar uur over, en om 16 uur gaan we terug naar het centrum van Cahuita om te genieten van een heerlijke Pati bij Delrita, waarvan de reputatie volledig verdiend is - het is heerlijk! Zo ronden we onze dag af. We lopen naar de busterminal om de bus van 17:15 uur naar Puerto Viejo te halen, en vertrekken met de wens om terug te keren naar dit prachtige Caribische dorpje.',
     ],
   },
 };
@@ -506,7 +506,7 @@ const twoDaysInPV: Partial<Record<Locale, TwoDaysInPVContent>> = {
       'יש לכם רק כמה ימים לבקר בפוארטו ויחו? גם לנו! היה לנו רק לילה אחד בהגיענו מטורטוגרו, ורצינו לנצל את הזמן שהיה לנו בעיירת החוף המקסימה הזו, הממוקמת בחוף הקריבי הדרומי של קוסטה ריקה, עד תום.',
     heading: '2 ימים ולילה אחד בפוארטו ויחו',
     intro:
-      "יש לכם רק כמה ימים לבקר בפוארטו ויחו? גם לנו! היה לנו רק לילה אחד בהגיענו מטורטוגרו, ורצינו לנצל את הזמן שהיה לנו בעיירת החוף המקסימה הזו, הממוקמת בחוף הקריבי הדרומי של קוסטה ריקה, עד תום. עם האווירה הרגועה, החופים הבתוליים והג'ונגל הטרופי העבות שלה, פוארטו ויחו היא היעד המושלם לבריחה מהירה בסוף שבוע. במאמר זה נשתף אתכם בחוויה שלנו מבילוי יומיים בפוארטו ויחו, וניתן לכם טיפים כיצד לנצל את הטיול שלכם עד תום.",
+      "יש לכם רק כמה ימים לבקר בפוארטו ויחו? גם לנו! היה לנו רק לילה אחד בהגיענו מטורטוגרו, ורצינו לנצל את הזמן שהיה לנו בעיירת החוף המקסימה הזו, הממוקמת בחוף הקריבי הדרומי של קוסטה ריקה, עד תום. עם האווירה הרגועה, החופים הבתוליים והג'ונגל הטרופי העבה שלה, פוארטו ויחו היא היעד המושלם לבריחה מהירה בסוף שבוע. במאמר זה נשתף אתכם בחוויה שלנו מבילוי יומיים בפוארטו ויחו, וניתן לכם טיפים כיצד לנצל את הטיול שלכם עד תום.",
     stayRecommendationTitle: 'היכן להתארח אם יש לכם רק יומיים בפוארטו ויחו?',
     day1Paragraphs: [
       <>הגענו לפוארטו ויחו מוקדם בבוקר יום שבת, נרגשים להתחיל את ההרפתקה שלנו. ה-<a href="https://www.reservaskalawala.com/en/tucano/" target="_blank" rel="noopener noreferrer">Airbnb</a> שלנו עדיין לא היה מוכן, אז החלטנו לשכור קוואד בקרבת מקום ולנסוע לפונטה אובה כדי ליהנות מהשמש. החוף היה מדהים, עם מים טורקיזים ורגועים. שכרנו קיאקים וחקרנו את החוף. לארוחת הצהריים, עצרנו ב-<a href="https://maps.app.goo.gl/TnyD131GeLKYeARSA" target="_blank" rel="noopener noreferrer">Selvin's</a>, מסעדה קריבית מקומית, וטעמנו עוף קריבי טעים עם רייס אנד בינס.</>,
@@ -778,11 +778,11 @@ const gettingToGandoca: Partial<Record<Locale, GettingToGandocaContent>> = {
   it: {
     seoTitle: 'Come Arrivare al Rifugio Nazionale di Fauna Selvatica Gandoca-Manzanillo da Puerto Viejo, Costa Rica',
     seoDescription:
-      "Il Rifugio Nazionale di Fauna Selvatica Gandoca-Manzanillo, situato nella provincia di Limón, è uno dei segreti meglio custoditi del Caribe Sud della Costa Rica. Questo straordinario rifugio offre una ricca varietà di ecosistemi, dalle mangrovie alle barriere coralline fino alle spiagge incontaminate.",
+      "Il Rifugio Nazionale di Fauna Selvatica Gandoca-Manzanillo, situato nella provincia di Limón, è uno dei segreti meglio custoditi della costa caraibica meridionale della Costa Rica. Questo straordinario rifugio offre una ricca varietà di ecosistemi, dalle mangrovie alle barriere coralline fino alle spiagge incontaminate.",
     heading: 'Come Arrivare al Rifugio Nazionale di Fauna Selvatica Gandoca-Manzanillo da Puerto Viejo, Costa Rica',
     heroAlt: 'Rifugio Nazionale di Fauna Selvatica Gandoca-Manzanillo',
     intro:
-      <>Il <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Rifugio Nazionale di Fauna Selvatica Gandoca-Manzanillo</a>, situato nella provincia di Limón, è uno dei segreti meglio custoditi del Caribe Sud della Costa Rica. Questo straordinario rifugio offre una ricca varietà di ecosistemi, dalle mangrovie alle barriere coralline fino alle spiagge incontaminate. Se ti trovi a Puerto Viejo de Talamanca e sei alla ricerca di una fuga nella natura, questa è un'ottima opzione. In questa guida ti mostriamo come arrivarci facilmente da Puerto Viejo, così potrai esplorare appieno questo paradiso naturale.</>,
+      <>Il <a href="https://maps.app.goo.gl/orUHFbrZvpJH1fnb9" target="_blank" rel="noopener noreferrer">Rifugio Nazionale di Fauna Selvatica Gandoca-Manzanillo</a>, situato nella provincia di Limón, è uno dei segreti meglio custoditi della costa caraibica meridionale della Costa Rica. Questo straordinario rifugio offre una ricca varietà di ecosistemi, dalle mangrovie alle barriere coralline fino alle spiagge incontaminate. Se ti trovi a Puerto Viejo de Talamanca e sei alla ricerca di una fuga nella natura, questa è un'ottima opzione. In questa guida ti mostriamo come arrivarci facilmente da Puerto Viejo, così potrai esplorare appieno questo paradiso naturale.</>,
     transportOptionsHeading: 'Opzioni di Trasporto',
     stayRecommendationTitle: 'Dove alloggiare per visitare Gandoca-Manzanillo?',
     busHeading: '1. Autobus da Puerto Viejo a Manzanillo',
@@ -1106,7 +1106,7 @@ const travellingToPuerto: Partial<Record<Locale, TravellingToPuertoContent>> = {
       "No entanto, é importante notar que a viagem de San José a Limón pode demorar entre 3 a 4 horas, dependendo do trânsito e das condições da estrada. Por isso, é fundamental planear com antecedência para evitar ficar preso em Limón durante a noite. Além disso, o último autocarro de Limón para Puerto Viejo parte às 20h, por isso certifique-se de que chega a Limón com tempo suficiente para fazer a ligação.",
       <>Outra forma de chegar a Puerto Viejo é utilizando <a href="mailto:reservas.kalawala@gmail.com?subject=Organise private transportation&body= " target="_blank" rel="noopener noreferrer">transporte privado</a>. Esta opção pode ser partilhada com outros viajantes ou privada para si e para os seus acompanhantes, tornando-a numa forma conveniente e confortável de viajar até ao seu destino.</>,
       "Com o transporte privado, pode ser recolhido onde preferir e deixado diretamente no seu alojamento em Puerto Viejo. Esta opção pode ser especialmente útil para quem tem bagagem pesada, prefere mais privacidade ou tem necessidades de viagem específicas.",
-      "Dependendo do número de viajantes, o transporte privado pode ser uma opção mais económica em comparação com um shuttle partilhado.",
+      "Dependendo do número de viajantes, o transporte privado pode ser uma opção mais económica em comparação com um transporte partilhado.",
       "Além disso, oferece a flexibilidade de definir o seu próprio horário e parar pelo caminho para desfrutar de algumas das belas paisagens ao longo da rota.",
       "Se estiver interessado em reservar transporte privado para Puerto Viejo, existem várias empresas de boa reputação que oferecem este serviço. É sempre boa ideia pesquisar as suas opções e comparar preços para encontrar a melhor oferta.",
       "Também oferecemos este serviço e podemos fornecer-lhe as rotas e os preços para o ajudar a tomar a decisão mais informada para a sua viagem.",
@@ -1161,7 +1161,7 @@ const travellingToPuerto: Partial<Record<Locale, TravellingToPuertoContent>> = {
       <>De busdienstregeling van San José naar Limón vertrekt vanaf de <a href="https://maps.app.goo.gl/a5kV7YvzybHjVae28" target="_blank" rel="noopener noreferrer">Caribeños-halte</a> aan de Calle Central, Cinco Esquinas. Er vertrekt elk uur een bus, van 6.00 tot 19.00 uur, waardoor je je reis eenvoudig kunt plannen. Eenmaal in Limón kun je te voet naar de <a href="https://maps.app.goo.gl/WV4CmLqzco2Eft7y9" target="_blank" rel="noopener noreferrer">Mepe</a>-bushalte lopen, die zich bij de centrale markt bevindt, en een bus nemen die elk uur naar Puerto Viejo vertrekt.</>,
       'Houd er echter rekening mee dat de reis van San José naar Limón, afhankelijk van het verkeer en de wegomstandigheden, ongeveer 3 tot 4 uur kan duren. Het is dus cruciaal om vooruit te plannen, zodat je niet \'s nachts in Limón vastzit. Bovendien vertrekt de laatste bus van Limón naar Puerto Viejo om 20.00 uur, zorg er dus voor dat je op tijd in Limón aankomt om de overstap te halen.',
       <>Een andere manier om naar Puerto Viejo te komen is via <a href="mailto:reservas.kalawala@gmail.com?subject=Organise private transportation&body= " target="_blank" rel="noopener noreferrer">privévervoer</a>. Deze optie kan gedeeld worden met andere reizigers of privé zijn voor jou en je reisgenoten, waardoor het een handige en comfortabele manier is om naar je bestemming te reizen.</>,
-      'Met privévervoer kun je worden opgehaald waar je maar wilt en rechtstreeks worden afgezet bij je accommodatie in Puerto Viejo. Deze optie kan vooral handig zijn voor mensen met zwaar bagage, die meer privacy willen of specifieke reisbehoeften hebben.',
+      'Met privévervoer kun je worden opgehaald waar je maar wilt en rechtstreeks worden afgezet bij je accommodatie in Puerto Viejo. Deze optie kan vooral handig zijn voor mensen met zware bagage, die meer privacy willen of specifieke reisbehoeften hebben.',
       'Afhankelijk van het aantal reizigers kan privévervoer zelfs voordeliger zijn dan een gedeelde shuttle.',
       'Daarnaast biedt het de flexibiliteit om je eigen schema te bepalen en onderweg te stoppen om van enkele prachtige uitzichten langs de route te genieten.',
       'Als je geïnteresseerd bent in het boeken van privévervoer naar Puerto Viejo, zijn er verschillende betrouwbare bedrijven die deze dienst aanbieden. Het is altijd verstandig om je opties te onderzoeken en prijzen te vergelijken om de beste deal te vinden.',
@@ -1666,7 +1666,7 @@ const cahuitaPark: Partial<Record<Locale, CahuitaParkContent>> = {
   nl: {
     seoTitle: 'Nationaal Park Cahuita bezoeken: wat je vooraf moet weten',
     seoDescription:
-      'Nationaal Park Cahuita is een van de makkelijkst te bezoeken en meest ontspannen nationale parken aan de Caribische kust van Costa Rica. Het combineert jungle­paden, witte zandstranden, wilde dieren en koraalriffen op één plek.',
+      'Nationaal Park Cahuita is een van de makkelijkst te bezoeken en meest ontspannen nationale parken aan de Caribische kust van Costa Rica. Het combineert junglepaden, witte zandstranden, wilde dieren en koraalriffen op één plek.',
     heading: 'Nationaal Park Cahuita bezoeken: wat je vooraf moet weten',
     photoCredit: <>Foto door <a href="https://haakonkrohn.com/" target="_blank" rel="noopener noreferrer">Haakon S. Krohn</a></>,
     introParagraphs: [
@@ -2040,7 +2040,7 @@ const bestTimeToVisit: Partial<Record<Locale, BestTimeToVisitContent>> = {
     heroAlt: 'Spiaggia a Puerto Viejo de Limón, Costa Rica',
     photoCredit: <>Foto di <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a></>,
     introParagraphs: [
-      "Scegliere quando visitare Puerto Viejo non è semplice come consultare una tabella meteo. La costa del Caribe Sud può cambiare da una settimana all'altra.",
+      "Scegliere quando visitare Puerto Viejo non è semplice come consultare una tabella meteo. La costa caraibica meridionale può cambiare da una settimana all'altra.",
       'Influiscono anche cicli pluriennali. Alcuni anni sono più secchi, altri più piovosi. Per questo il clima "medio" può risultare fuorviante quando arrivi.',
     ],
     stayRecommendationTitle: 'Cerchi un alloggio a Puerto Viejo?',
@@ -2558,14 +2558,14 @@ const indigenousTravel: Partial<Record<Locale, IndigenousTravelContent>> = {
   it: {
     seoTitle: 'Cultura Indigena Vicino a Puerto Viejo de Talamanca',
     seoDescription:
-      "Scopri la cultura indigena Bribri vicino a Puerto Viejo de Talamanca. Conosci il cacao ancestrale, la medicina tradizionale e le esperienze culturali autentiche nelle comunità indigene del Caribe Sud della Costa Rica.",
+      "Scopri la cultura indigena Bribri vicino a Puerto Viejo de Talamanca. Conosci il cacao ancestrale, la medicina tradizionale e le esperienze culturali autentiche nelle comunità indigene della costa caraibica meridionale della Costa Rica.",
     heading: 'Cultura Indigena Vicino a Puerto Viejo de Talamanca',
     heroAlt: 'Cultura indigena Bribri vicino a Puerto Viejo',
     introParagraph:
       "Puerto Viejo de Talamanca è conosciuta per le sue spiagge, l'atmosfera rilassata e l'incredibile giungla. Ma appena nell'entroterra si trova un altro volto della regione che molti viaggiatori non arrivano mai a vedere.",
     stayRecommendationTitle: 'Cerchi un alloggio a Puerto Viejo?',
     afterStayParagraph:
-      "Vicino al paese, i territori indigeni offrono uno sguardo più profondo sulla vita nel Caribe Sud della Costa Rica. Qui, la cultura fa parte della vita quotidiana.",
+      "Vicino al paese, i territori indigeni offrono uno sguardo più profondo sulla vita nella costa caraibica meridionale della Costa Rica. Qui, la cultura fa parte della vita quotidiana.",
     territoriesHeading: 'Territori Indigeni Vicino a Puerto Viejo',
     territoriesParagraphs: [
       "Puerto Viejo si trova vicino al Territorio Indigeno Bribri di Talamanca e alla Riserva Indigena Keköldi. Queste terre appartengono al popolo Bribri, uno dei gruppi indigeni più importanti della Costa Rica.",
@@ -2600,7 +2600,7 @@ const indigenousTravel: Partial<Record<Locale, IndigenousTravelContent>> = {
       "Porta scarpe chiuse, acqua, protezione solare e repellente per insetti. Segui sempre le indicazioni della guida e chiedi il permesso prima di scattare foto.",
       "Acquistare artigianato o cibo direttamente dalle famiglie è uno dei modi migliori per sostenere la comunità.",
     ],
-    differentWayHeading: 'Un Modo Diverso di Vivere il Caribe Sud',
+    differentWayHeading: 'Un Modo Diverso di Vivere la Costa Caraibica Meridionale',
     differentWayParagraphs: [
       "Visitare le comunità indigene vicino a Puerto Viejo aggiunge profondità e significato al tuo viaggio. Si tratta di imparare, non di correre.",
       "Questa esperienza è adatta ai viaggiatori che desiderano una connessione più calma e autentica con il luogo che stanno visitando.",
@@ -3405,10 +3405,10 @@ const puertoHiddenGems: Partial<Record<Locale, PuertoHiddenGemsContent>> = {
       "ये छुपी हुई जगहें ही यात्रा को खास बनाती हैं - शांत पानी, जंगली तटरेखाएं, और ऐसा खाना जिसका स्वाद कैरिबियन में घर जैसा लगता है। इस सूची में से दो या तीन चुनें और धीमे पलों के लिए जगह छोड़ें। तभी प्वेर्तो वियेहो अपना सबसे अच्छा रूप दिखाता है।",
   },
   nl: {
-    seoTitle: 'Verborgen parels in Puerto Viejo: rustige plekken waar locals van houden',
+    seoTitle: 'Verborgen parels in Puerto Viejo: rustige plekken waar plaatselijke bewoners van houden',
     seoDescription:
       'Puerto Viejo heeft beroemde stranden, muziek en nachtleven. Maar sommige van de beste plekken staan niet op de gebruikelijke lijstjes. Deze plekken voelen rustiger, dichter bij de natuur en persoonlijker aan. Wil je minder drukte en echte lokale sfeer, begin dan hier. Deze verborgen parels zijn makkelijk te bereiken en de moeite waard.',
-    heading: 'Verborgen parels in Puerto Viejo: rustige plekken waar locals van houden',
+    heading: 'Verborgen parels in Puerto Viejo: rustige plekken waar plaatselijke bewoners van houden',
     heroAlt: 'Puerto Viejo de Talamanca, Costa Rica',
     photoCredit: <>Foto door <a href="https://commons.wikimedia.org/wiki/User:Letartean" target="_blank" rel="noopener noreferrer">Letartean</a></>,
     introParagraphs: [
@@ -3799,7 +3799,7 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
       "Gli autobus MEPE sono facilmente riconoscibili per i loro caratteristici colori blu e bianco, e operano secondo orari fissi generalmente puntuali. L'azienda serve la regione caraibica da decenni, costruendosi una reputazione di sicurezza, convenienza e copertura completa delle tratte più importanti della zona.",
     stayRecommendationTitle: 'Dove alloggiare mentre usi i servizi di autobus di Puerto Viejo?',
     routesHeading: 'Tratte degli Autobus da Puerto Viejo',
-    routesIntro: 'Puerto Viejo funge da importante snodo dei trasporti per la regione del Caribe Sud. Da qui puoi raggiungere facilmente:',
+    routesIntro: 'Puerto Viejo funge da importante snodo dei trasporti per la regione caraibica meridionale. Da qui puoi raggiungere facilmente:',
     destinations: [
       "San José - la capitale della Costa Rica (circa 4-5 ore)",
       'Limón - la città portuale caraibica (circa 1 ora)',
@@ -3875,7 +3875,7 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
       'Chegue Cedo: os autocarros podem encher rapidamente, especialmente durante a época alta turística',
       'Só Dinheiro: os autocarros da MEPE só aceitam pagamento em dinheiro - tenha colones prontos',
       'Bagagem: as malas pequenas podem ser guardadas em cima, a bagagem maior vai na zona de carga',
-      'Conforto: leve água e snacks para viagens mais longas',
+      'Conforto: leve água e lanches para viagens mais longas',
       'Ligações: embora Limón seja o principal centro de ligações para San José e outros destinos, também pode chegar a Puerto Viejo a partir de San José.',
     ],
     ticketsHeading: 'Onde Comprar Bilhetes',
@@ -3941,7 +3941,7 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
     heading: 'Volledige busdienstregeling vanuit Puerto Viejo, Costa Rica - MEPE-busroutes en dienstregelingen',
     photoCredit: <>Foto door <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a></>,
     introParagraph:
-      <>Ben je je vervoer aan de Caribische kust van Costa Rica aan het plannen? Zoek niet verder! Deze uitgebreide gids geeft je alle busdienstregelingen die je nodig hebt om vanuit Puerto Viejo naar belangrijke bestemmingen te reizen, waaronder <strong>San José</strong>, <strong>Limón</strong>, <strong>Cahuita</strong>, <strong>Manzanillo</strong> en <strong>Sixaola</strong>. Of je nu zoekt naar "bus San José Puerto Viejo", "bus Cahuita Puerto Viejo" of "bus van Puerto Viejo naar San José", wij hebben je gedekt met de meest actuele MEPE-dienstregelingen.</>,
+      <>Ben je je vervoer aan de Caribische kust van Costa Rica aan het plannen? Zoek niet verder! Deze uitgebreide gids geeft je alle busdienstregelingen die je nodig hebt om vanuit Puerto Viejo naar belangrijke bestemmingen te reizen, waaronder <strong>San José</strong>, <strong>Limón</strong>, <strong>Cahuita</strong>, <strong>Manzanillo</strong> en <strong>Sixaola</strong>. Of je nu zoekt naar "bus San José Puerto Viejo", "bus Cahuita Puerto Viejo" of "bus van Puerto Viejo naar San José", wij helpen je verder met de meest actuele MEPE-dienstregelingen.</>,
     aboutHeading: 'Over de MEPE-busdienst',
     aboutParagraph1:
       <><strong><a href="https://www.mepe.co.cr/Ingles/index.html" target="_blank" rel="noopener noreferrer">MEPE</a> (Empresa de Transportes Públicos de Limón)</strong> is het belangrijkste busbedrijf dat actief is langs de hele Caribische kust van Costa Rica. Bekend om hun betrouwbare service en uitgebreide netwerk, verbinden MEPE-bussen Puerto Viejo met de belangrijkste steden en toeristische bestemmingen in de regio. Hun moderne vloot biedt comfortabel vervoer voor zowel lokale bewoners als bezoekers, waardoor het de voorkeurskeuze is voor budgetbewuste reizigers die de prachtige Caribische kustlijn van Costa Rica verkennen.</>,

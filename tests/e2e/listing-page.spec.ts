@@ -39,7 +39,7 @@ test.describe('Listing Page', () => {
     await appPage.goto('/en/geco');
 
     // Property name heading
-    await expect(appPage.getByRole('heading', { name: 'House Geco', level: 1 })).toBeVisible();
+    await expect(appPage.getByRole('heading', { name: 'Casa Geco', level: 1 })).toBeVisible();
 
     // Image grid container
     const imagesContainer = appPage.locator('.imagesContainer');
@@ -116,7 +116,12 @@ test.describe('Listing Page', () => {
       appPage.locator('.guest-reviews').getByRole('heading', { name: 'Lo que dicen nuestros huéspedes' }),
     ).toBeVisible();
 
-    // Spanish booking widget title
-    await expect(appPage.getByText('Ver Disponibilidad')).toBeVisible();
+    // Spanish booking widget title. Scoped to the widget itself — Footer's
+    // own "Ver disponibilidad" CTA link is a case-insensitive substring
+    // match for the same text and would otherwise throw a strict-mode
+    // violation (getByText is case-insensitive by default).
+    await expect(
+      appPage.locator('.booking-search-widget__title', { hasText: 'Ver Disponibilidad' }),
+    ).toBeVisible();
   });
 });

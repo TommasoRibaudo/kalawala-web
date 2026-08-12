@@ -97,6 +97,7 @@ export const it: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'Il meteo a Puerto Viejo è notoriamente mutevole — queste sono medie approssimative di lungo periodo e le condizioni possono cambiare più volte nello stesso giorno. Consideralle una guida, non una garanzia.',
     bookYourStay: 'Prenota il tuo soggiorno',
     indexTitle: 'Guide di viaggio a Puerto Viejo | Reservas Kalawala',
     indexDescription:

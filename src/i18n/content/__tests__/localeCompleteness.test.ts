@@ -33,6 +33,20 @@ import {
   indigenousTravelContent,
   puertoHiddenGemsContent,
   busHoursContent,
+  weatherHubContent,
+  weatherJanuaryContent,
+  weatherFebruaryContent,
+  weatherMarchContent,
+  weatherAprilContent,
+  weatherMayContent,
+  weatherJuneContent,
+  weatherJulyContent,
+  weatherAugustContent,
+  weatherSeptemberContent,
+  weatherOctoberContent,
+  weatherNovemberContent,
+  weatherDecemberContent,
+  sanJoseOptionsContent,
 } from '../blog';
 import { PROPERTY_MARKETING_CONFIG, RECOMMENDATION_REASONS } from '../../../utils/constants';
 
@@ -54,6 +68,20 @@ const BLOG_ACCESSORS: Record<string, (locale: Locale) => unknown> = {
   indigenousTravel: indigenousTravelContent,
   puertoHiddenGems: puertoHiddenGemsContent,
   busHours: busHoursContent,
+  weatherHub: weatherHubContent,
+  weatherJanuary: weatherJanuaryContent,
+  weatherFebruary: weatherFebruaryContent,
+  weatherMarch: weatherMarchContent,
+  weatherApril: weatherAprilContent,
+  weatherMay: weatherMayContent,
+  weatherJune: weatherJuneContent,
+  weatherJuly: weatherJulyContent,
+  weatherAugust: weatherAugustContent,
+  weatherSeptember: weatherSeptemberContent,
+  weatherOctober: weatherOctoberContent,
+  weatherNovember: weatherNovemberContent,
+  weatherDecember: weatherDecemberContent,
+  sanJoseOptions: sanJoseOptionsContent,
 };
 
 describe('Locale completeness — content modules never silently fall back to English', () => {

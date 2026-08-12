@@ -100,6 +100,7 @@ export const hi: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'प्वेर्तो विएखो का मौसम बेहद परिवर्तनशील है — ये दीर्घकालिक अनुमानित औसत हैं, और स्थिति एक ही दिन में कई बार बदल सकती है। इन्हें एक मार्गदर्शन मानें, गारंटी नहीं।',
     bookYourStay: 'अपना ठहराव बुक करें',
     indexTitle: 'पुएर्तो वियेहो यात्रा गाइड | Reservas Kalawala',
     indexDescription:

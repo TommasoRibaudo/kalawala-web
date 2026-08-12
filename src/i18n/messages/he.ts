@@ -106,6 +106,7 @@ export const he: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'מזג האוויר בפוארטו ויאחו ידוע כהפכפך — אלה ממוצעים משוערים לטווח ארוך, והתנאים עשויים להשתנות כמה פעמים באותו יום. התייחסו אליהם כאל כיוון כללי, לא כהבטחה.',
     bookYourStay: 'הזמינו את השהות שלכם',
     indexTitle: 'מדריכי טיולים לפוארטו וייחו | Reservas Kalawala',
     indexDescription:

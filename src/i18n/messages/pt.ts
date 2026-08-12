@@ -98,6 +98,7 @@ export const pt: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'O clima em Puerto Viejo é famoso por ser mutável — estas são médias aproximadas de longo prazo, e as condições podem mudar várias vezes num mesmo dia. Use-as como orientação, não como garantia.',
     bookYourStay: 'Reserve a sua estadia',
     indexTitle: 'Guias de viagem de Puerto Viejo | Reservas Kalawala',
     indexDescription:

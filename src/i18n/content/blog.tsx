@@ -3989,3 +3989,5670 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
 export function busHoursContent(locale: Locale): BusHoursContent {
   return busHours[locale] ?? busHours.en!;
 }
+
+/* ------------------------------------------------------------------ *
+ * Weather cluster — hub article
+ *
+ * SEO gap (see docs / GSC review): ~10k+ impressions on "clima puerto
+ * viejo (limón)" queries with almost no clicks. This hub owns the
+ * "what is the weather actually like, month by month" intent, distinct
+ * from bestTimeToVisit (which owns "which month should I book"). The
+ * 12-row table is the cluster hub; the page component links each row to
+ * its monthly article once that article ships.
+ * ------------------------------------------------------------------ */
+
+/** One row of the month-by-month table. `temp`/`rain` carry units inline
+ * so they read the same across locales; `verdict` is the short "in short"
+ * cell. Ordered January…December; the page component pairs each row with
+ * its monthly-article RouteKey by index. */
+export interface WeatherMonthRow {
+  month: string;
+  temp: string;
+  rain: string;
+  verdict: string;
+}
+
+export interface WeatherHubContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: [string, string];
+  stayRecommendationTitle: string;
+  tableHeading: string;
+  tableIntro: string;
+  colMonth: string;
+  colTemp: string;
+  colRain: string;
+  colVerdict: string;
+  monthRows: WeatherMonthRow[];
+  windowsHeading: string;
+  windowsParagraphs: [string, string, string];
+  liveHeading: string;
+  liveParagraphs: [React.ReactNode, string];
+  rainyHeading: string;
+  rainyIntro: string;
+  rainyListItems: string[];
+  packHeading: string;
+  packListItems: string[];
+  takeawaysHeading: string;
+  takeawaysParagraph: string;
+}
+
+const weatherHub: Partial<Record<Locale, WeatherHubContent>> = {
+  en: {
+    seoTitle: 'Weather in Puerto Viejo de Limón — Month-by-Month Climate Guide',
+    seoDescription:
+      "What's the weather really like in Puerto Viejo de Limón? A month-by-month breakdown of rain, sun, heat and sea conditions — plus the best things to do on rainy days.",
+    heading: 'Weather in Puerto Viejo de Limón: A Month-by-Month Guide',
+    heroAlt: 'Caribbean beach and jungle in Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca sits on Costa Rica’s southern Caribbean coast, in a tropical rainforest climate that stays warm all year: daytime highs of 27–29°C and a sea around 28–29°C in every month.',
+      'What changes is the rain and the state of the ocean — and, crucially, the Caribbean coast does not follow the same calendar as the Pacific side. There is no true dry season here, but there are drier, sunnier windows. This guide walks through the whole year so you know what to expect whenever you come.',
+    ],
+    stayRecommendationTitle: 'Looking to stay in Puerto Viejo?',
+    tableHeading: 'Puerto Viejo Weather, Month by Month',
+    tableIntro: 'Figures are approximate averages — rain here usually means an afternoon or overnight downpour, not an all-day grey-out. Tap a month for the full breakdown.',
+    colMonth: 'Month',
+    colTemp: 'Temp (high / low)',
+    colRain: 'Rain',
+    colVerdict: 'In short',
+    monthRows: [
+      { month: 'January', temp: '27 / 22°C', rain: '~200 mm', verdict: 'Warm and breezy; some showers, good surf' },
+      { month: 'February', temp: '28 / 22°C', rain: '~110 mm', verdict: 'Driest window — best beach and snorkelling' },
+      { month: 'March', temp: '28 / 22°C', rain: '~170 mm', verdict: 'Warm and fairly dry; great for hikes' },
+      { month: 'April', temp: '29 / 23°C', rain: '~210 mm', verdict: 'Greening up; crowds thin after Easter' },
+      { month: 'May', temp: '28 / 23°C', rain: '~300 mm', verdict: 'Afternoon showers; lush and quiet' },
+      { month: 'June', temp: '28 / 23°C', rain: '~340 mm', verdict: 'Wet; turtle season; lively jungle' },
+      { month: 'July', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Mixed sun and heavy showers; good surf' },
+      { month: 'August', temp: '28 / 23°C', rain: '~320 mm', verdict: 'Rainy spells; dramatic green jungle' },
+      { month: 'September', temp: '28 / 22°C', rain: '~165 mm', verdict: 'Veranillo — calm sea, clear water, few crowds' },
+      { month: 'October', temp: '28 / 22°C', rain: '~200 mm', verdict: 'Best value — calm sea, low prices' },
+      { month: 'November', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Among the wettest; waterfalls and deep green' },
+      { month: 'December', temp: '27 / 21°C', rain: '~350 mm', verdict: 'Festive; surf swells; busy and rainy' },
+    ],
+    windowsHeading: 'The Two Drier Windows (and Two Wet Peaks)',
+    windowsParagraphs: [
+      'Unlike the Pacific coast, the Caribbean side gets two calmer spells. The first is February to March, the classic dry window with generally the lowest rainfall of the year.',
+      'The second is the veranillo, the "little summer" of September and October. While much of Costa Rica is in its wettest stretch, the Talamanca mountains wring the rain out of the trade winds and the southern Caribbean stays comparatively clear — calm seas, clear water, and the year’s best value.',
+      'There are really two rainy peaks: roughly June–July, and again from November into January. Sources genuinely disagree on which is wettest and it swings from year to year, so expect heavier showers and a rougher sea in both stretches. It stays green and beautiful, just wetter.',
+    ],
+    liveHeading: 'Checking the Weather Before You Come',
+    liveParagraphs: [
+      <>Because conditions shift week to week, a live forecast beats any average. <a href="https://www.msn.com/en-us/weather/forecast/in-Puerto-Viejo,Lim%C3%B3n" target="_blank" rel="noopener noreferrer">MSN Weather</a> and Windy are both reliable for the Puerto Viejo area.</>,
+      'For beach days, watch the sea as much as the rain: a calm ocean matters more for swimming and snorkelling than a few afternoon showers do.',
+    ],
+    rainyHeading: 'What to Do When It Rains',
+    rainyIntro: 'A wet afternoon is no reason to lose a day. Some of the best things here are even better in the rain:',
+    rainyListItems: [
+      'Take a chocolate (cacao) farm tour — mostly under cover and wonderful when it pours',
+      'Visit a Bribri Indigenous community and learn about cacao and traditional medicine',
+      'Explore Cahuita National Park — the wildlife stays active and the crowds thin out',
+      'Settle into a Caribbean café or chocolate shop in town',
+      'Book a cooking class or a spa treatment and let the storm pass',
+    ],
+    packHeading: 'What to Pack for Caribbean Weather',
+    packListItems: [
+      'Light, quick-dry clothing — it is humid year-round',
+      'A compact rain jacket or poncho, in any month',
+      'Reef-safe sunscreen and insect repellent',
+      'Water shoes or sandals for wet trails and rocky beaches',
+      'A dry bag for phone and camera',
+      'A light layer for cooler, breezier evenings in December and January',
+    ],
+    takeawaysHeading: 'Key Takeaways',
+    takeawaysParagraph:
+      'Puerto Viejo is warm and green all year, with no true dry season but two reliably calmer windows: February–March and the September–October veranillo. November–December is the wettest. Whenever you visit, pack for a shower or two, watch the sea for beach days, and remember that rain here rarely lasts all day.',
+  },
+  es: {
+    seoTitle: 'El Clima en Puerto Viejo de Limón — Guía del Tiempo Mes a Mes',
+    seoDescription:
+      '¿Cómo es realmente el clima en Puerto Viejo de Limón? Un desglose mes a mes de lluvia, sol, calor y estado del mar, además de qué hacer los días lluviosos.',
+    heading: 'El Clima en Puerto Viejo de Limón: Guía Mes a Mes',
+    heroAlt: 'Playa y selva caribeña en Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca está en el Caribe Sur de Costa Rica, con un clima de selva tropical que se mantiene cálido todo el año: máximas de 27–29°C durante el día y un mar de unos 28–29°C en cualquier mes.',
+      'Lo que cambia es la lluvia y el estado del mar — y, muy importante, el Caribe no sigue el mismo calendario que el Pacífico. Aquí no hay una verdadera estación seca, pero sí ventanas más secas y soleadas. Esta guía recorre todo el año para que sepas qué esperar cuando vengas.',
+    ],
+    stayRecommendationTitle: '¿Buscas dónde hospedarte en Puerto Viejo?',
+    tableHeading: 'El Clima de Puerto Viejo, Mes a Mes',
+    tableIntro: 'Las cifras son promedios aproximados — aquí la lluvia suele ser un aguacero de la tarde o de la noche, no un día gris entero. Toca un mes para ver el detalle.',
+    colMonth: 'Mes',
+    colTemp: 'Temp (máx / mín)',
+    colRain: 'Lluvia',
+    colVerdict: 'En resumen',
+    monthRows: [
+      { month: 'Enero', temp: '27 / 22°C', rain: '~200 mm', verdict: 'Cálido y ventoso; algunos aguaceros, buen surf' },
+      { month: 'Febrero', temp: '28 / 22°C', rain: '~110 mm', verdict: 'La ventana más seca — mejor playa y snorkel' },
+      { month: 'Marzo', temp: '28 / 22°C', rain: '~170 mm', verdict: 'Cálido y bastante seco; ideal para caminatas' },
+      { month: 'Abril', temp: '29 / 23°C', rain: '~210 mm', verdict: 'Reverdece; menos gente después de Semana Santa' },
+      { month: 'Mayo', temp: '28 / 23°C', rain: '~300 mm', verdict: 'Aguaceros de tarde; verde y tranquilo' },
+      { month: 'Junio', temp: '28 / 23°C', rain: '~340 mm', verdict: 'Lluvioso; temporada de tortugas; selva viva' },
+      { month: 'Julio', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Sol y aguaceros fuertes; buen surf' },
+      { month: 'Agosto', temp: '28 / 23°C', rain: '~320 mm', verdict: 'Períodos de lluvia; selva de un verde intenso' },
+      { month: 'Septiembre', temp: '28 / 22°C', rain: '~165 mm', verdict: 'Veranillo — mar en calma, agua clara, poca gente' },
+      { month: 'Octubre', temp: '28 / 22°C', rain: '~200 mm', verdict: 'La mejor relación calidad-precio — mar en calma' },
+      { month: 'Noviembre', temp: '27 / 22°C', rain: '~400 mm', verdict: 'De los más lluviosos; cascadas y verde intenso' },
+      { month: 'Diciembre', temp: '27 / 21°C', rain: '~350 mm', verdict: 'Festivo; oleaje de surf; concurrido y lluvioso' },
+    ],
+    windowsHeading: 'Las Dos Ventanas Secas (y los Dos Picos de Lluvia)',
+    windowsParagraphs: [
+      'A diferencia del Pacífico, el Caribe tiene dos períodos más tranquilos. El primero es de febrero a marzo, la ventana seca clásica, con generalmente la menor lluvia del año.',
+      'El segundo es el veranillo, el "pequeño verano" de septiembre y octubre. Mientras gran parte de Costa Rica vive su época más lluviosa, las montañas de Talamanca frenan la humedad de los vientos alisios y el Caribe Sur se mantiene más despejado — mar en calma, agua clara y los mejores precios del año.',
+      'En realidad hay dos picos de lluvia: aproximadamente junio–julio y de nuevo de noviembre a enero. Las fuentes no coinciden en cuál es el más lluvioso y varía de un año a otro, así que espera aguaceros más fuertes y un mar más bravo en ambos períodos. Se mantiene verde y hermoso, solo que más húmedo.',
+    ],
+    liveHeading: 'Consultar el Clima Antes de Venir',
+    liveParagraphs: [
+      <>Como el tiempo cambia de una semana a otra, un pronóstico en vivo vale más que cualquier promedio. <a href="https://www.msn.com/es-xl/el-tiempo/pronostico/in-Puerto-Viejo,Limon" target="_blank" rel="noopener noreferrer">MSN Tiempo</a> y Windy son fiables para la zona de Puerto Viejo.</>,
+      'Para los días de playa, fíjate en el mar tanto como en la lluvia: un océano en calma importa más para nadar y hacer snorkel que un par de aguaceros de la tarde.',
+    ],
+    rainyHeading: 'Qué Hacer Cuando Llueve',
+    rainyIntro: 'Una tarde de lluvia no es motivo para perder el día. Algunas de las mejores experiencias aquí son aún mejores bajo la lluvia:',
+    rainyListItems: [
+      'Haz un tour de cacao (chocolate) — casi todo bajo techo y encantador cuando llueve',
+      'Visita una comunidad indígena Bribri y aprende sobre el cacao y la medicina tradicional',
+      'Recorre el Parque Nacional Cahuita — la fauna sigue activa y hay menos gente',
+      'Relájate en un café caribeño o una chocolatería del pueblo',
+      'Reserva una clase de cocina o un masaje y deja pasar la tormenta',
+    ],
+    packHeading: 'Qué Llevar para el Clima Caribeño',
+    packListItems: [
+      'Ropa ligera y de secado rápido — hay humedad todo el año',
+      'Una chaqueta impermeable o poncho compacto, en cualquier mes',
+      'Protector solar respetuoso con el arrecife y repelente de insectos',
+      'Zapatos de agua o sandalias para senderos mojados y playas con roca',
+      'Una bolsa seca para el teléfono y la cámara',
+      'Una capa ligera para las noches más frescas y ventosas de diciembre y enero',
+    ],
+    takeawaysHeading: 'Puntos Clave',
+    takeawaysParagraph:
+      'Puerto Viejo es cálido y verde todo el año, sin una verdadera estación seca pero con dos ventanas más tranquilas: febrero–marzo y el veranillo de septiembre–octubre. Noviembre–diciembre es lo más lluvioso. Vengas cuando vengas, lleva algo para la lluvia, mira el mar para los días de playa y recuerda que aquí la lluvia rara vez dura todo el día.',
+  },
+  de: {
+    seoTitle: 'Wetter in Puerto Viejo de Limón — Klima-Ratgeber Monat für Monat',
+    seoDescription:
+      'Wie ist das Wetter in Puerto Viejo de Limón wirklich? Eine Übersicht Monat für Monat über Regen, Sonne, Hitze und Meeresbedingungen — dazu die besten Aktivitäten für Regentage.',
+    heading: 'Wetter in Puerto Viejo de Limón: Ein Ratgeber Monat für Monat',
+    heroAlt: 'Karibischer Strand und Dschungel in Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca liegt an der südlichen Karibikküste Costa Ricas, in einem tropischen Regenwaldklima, das ganzjährig warm bleibt: Tageshöchstwerte von 27–29°C und ein Meer von rund 28–29°C in jedem Monat.',
+      'Was sich ändert, sind der Regen und der Zustand des Meeres — und ganz entscheidend folgt die Karibikküste nicht demselben Kalender wie die Pazifikseite. Eine echte Trockenzeit gibt es hier nicht, aber es gibt trockenere, sonnigere Fenster. Dieser Ratgeber führt durch das ganze Jahr, damit du weißt, was dich erwartet, wann immer du kommst.',
+    ],
+    stayRecommendationTitle: 'Suchst du eine Unterkunft in Puerto Viejo?',
+    tableHeading: 'Das Wetter in Puerto Viejo, Monat für Monat',
+    tableIntro: 'Die Zahlen sind ungefähre Durchschnittswerte — Regen bedeutet hier meist einen Guss am Nachmittag oder in der Nacht, nicht einen grauen Tag von früh bis spät. Tippe auf einen Monat für alle Details.',
+    colMonth: 'Monat',
+    colTemp: 'Temp (max / min)',
+    colRain: 'Regen',
+    colVerdict: 'Kurz gesagt',
+    monthRows: [
+      { month: 'Januar', temp: '27 / 22°C', rain: '~200 mm', verdict: 'Warm und windig; einige Schauer, gute Wellen' },
+      { month: 'Februar', temp: '28 / 22°C', rain: '~110 mm', verdict: 'Trockenstes Fenster — bester Strand und Schnorcheln' },
+      { month: 'März', temp: '28 / 22°C', rain: '~170 mm', verdict: 'Warm und recht trocken; ideal zum Wandern' },
+      { month: 'April', temp: '29 / 23°C', rain: '~210 mm', verdict: 'Es ergrünt; weniger Andrang nach Ostern' },
+      { month: 'Mai', temp: '28 / 23°C', rain: '~300 mm', verdict: 'Nachmittagsschauer; üppig und ruhig' },
+      { month: 'Juni', temp: '28 / 23°C', rain: '~340 mm', verdict: 'Nass; Schildkrötensaison; lebendiger Dschungel' },
+      { month: 'Juli', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Sonne und heftige Schauer im Wechsel; gute Wellen' },
+      { month: 'August', temp: '28 / 23°C', rain: '~320 mm', verdict: 'Regenphasen; sattgrüner Dschungel' },
+      { month: 'September', temp: '28 / 22°C', rain: '~165 mm', verdict: 'Veranillo — ruhige See, klares Wasser, wenig Andrang' },
+      { month: 'Oktober', temp: '28 / 22°C', rain: '~200 mm', verdict: 'Bestes Preis-Leistungs-Verhältnis — ruhige See, niedrige Preise' },
+      { month: 'November', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Zu den nassesten; Wasserfälle und tiefes Grün' },
+      { month: 'Dezember', temp: '27 / 21°C', rain: '~350 mm', verdict: 'Festlich; Surf-Wellen; voll und regnerisch' },
+    ],
+    windowsHeading: 'Die zwei trockeneren Fenster (und die zwei Regengipfel)',
+    windowsParagraphs: [
+      'Anders als die Pazifikküste hat die Karibikseite zwei ruhigere Phasen. Die erste reicht von Februar bis März, das klassische Trockenfenster mit dem geringsten Niederschlag des Jahres.',
+      'Die zweite ist der Veranillo, der „kleine Sommer" im September und Oktober. Während weite Teile Costa Ricas ihre nasseste Zeit erleben, ringen die Talamanca-Berge den Passatwinden den Regen ab, und die südliche Karibik bleibt vergleichsweise klar — ruhige See, klares Wasser und das beste Preis-Leistungs-Verhältnis des Jahres.',
+      'Eigentlich gibt es zwei Regengipfel: etwa Juni–Juli und dann wieder von November bis in den Januar. Die Quellen sind sich wirklich uneinig, welcher der nasseste ist, und es schwankt von Jahr zu Jahr, also rechne in beiden Phasen mit heftigeren Schauern und einem raueren Meer. Es bleibt grün und wunderschön, nur nasser.',
+    ],
+    liveHeading: 'Das Wetter vor deiner Anreise prüfen',
+    liveParagraphs: [
+      <>Da sich die Bedingungen von Woche zu Woche ändern, schlägt eine Live-Vorhersage jeden Durchschnittswert. <a href="https://www.msn.com/en-us/weather/forecast/in-Puerto-Viejo,Lim%C3%B3n" target="_blank" rel="noopener noreferrer">MSN Wetter</a> und Windy sind beide zuverlässig für die Region Puerto Viejo.</>,
+      'Für Strandtage achte ebenso auf das Meer wie auf den Regen: Ein ruhiger Ozean zählt fürs Schwimmen und Schnorcheln mehr als ein paar Nachmittagsschauer.',
+    ],
+    rainyHeading: 'Was tun, wenn es regnet',
+    rainyIntro: 'Ein nasser Nachmittag ist kein Grund, einen Tag zu verlieren. Manches vom Besten hier ist im Regen sogar noch schöner:',
+    rainyListItems: [
+      'Mach eine Kakao- (Schokoladen-) Farmtour — meist überdacht und herrlich, wenn es schüttet',
+      'Besuche eine indigene Bribri-Gemeinschaft und lerne etwas über Kakao und traditionelle Medizin',
+      'Erkunde den Cahuita-Nationalpark — die Tierwelt bleibt aktiv und die Menschenmengen lichten sich',
+      'Mach es dir in einem karibischen Café oder einer Schokoladenmanufaktur im Ort gemütlich',
+      'Buche einen Kochkurs oder eine Spa-Behandlung und lass das Unwetter vorüberziehen',
+    ],
+    packHeading: 'Was du für das karibische Wetter einpacken solltest',
+    packListItems: [
+      'Leichte, schnell trocknende Kleidung — es ist ganzjährig feucht',
+      'Eine kompakte Regenjacke oder ein Poncho, in jedem Monat',
+      'Riffschonende Sonnencreme und Insektenschutz',
+      'Wasserschuhe oder Sandalen für nasse Wege und felsige Strände',
+      'Einen wasserdichten Beutel für Handy und Kamera',
+      'Eine leichte Schicht für kühlere, windigere Abende im Dezember und Januar',
+    ],
+    takeawaysHeading: 'Das Wichtigste in Kürze',
+    takeawaysParagraph:
+      'Puerto Viejo ist ganzjährig warm und grün, ohne echte Trockenzeit, aber mit zwei zuverlässig ruhigeren Fenstern: Februar–März und dem Veranillo im September–Oktober. November–Dezember ist am nassesten. Wann immer du kommst, packe für den einen oder anderen Schauer, achte an Strandtagen auf das Meer und denk daran, dass der Regen hier selten den ganzen Tag anhält.',
+  },
+  fr: {
+    seoTitle: 'Météo à Puerto Viejo de Limón — Guide du climat mois par mois',
+    seoDescription:
+      'Quel temps fait-il vraiment à Puerto Viejo de Limón ? Un récapitulatif mois par mois de la pluie, du soleil, de la chaleur et de l\'état de la mer — avec les meilleures activités pour les jours de pluie.',
+    heading: 'Météo à Puerto Viejo de Limón : un guide mois par mois',
+    heroAlt: 'Plage des Caraïbes et jungle à Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca se trouve sur la côte caraïbe sud du Costa Rica, dans un climat de forêt tropicale humide qui reste chaud toute l\'année : des maximales de 27–29°C en journée et une mer autour de 28–29°C chaque mois.',
+      'Ce qui change, c\'est la pluie et l\'état de l\'océan — et, point essentiel, la côte caraïbe ne suit pas le même calendrier que le versant pacifique. Il n\'y a pas ici de véritable saison sèche, mais il existe des fenêtres plus sèches et plus ensoleillées. Ce guide parcourt toute l\'année pour que vous sachiez à quoi vous attendre, quelle que soit la période où vous venez.',
+    ],
+    stayRecommendationTitle: 'Vous cherchez où loger à Puerto Viejo ?',
+    tableHeading: 'La météo de Puerto Viejo, mois par mois',
+    tableIntro: 'Les chiffres sont des moyennes approximatives — ici, la pluie prend généralement la forme d\'une averse l\'après-midi ou la nuit, pas d\'une grisaille qui dure toute la journée. Touchez un mois pour tout le détail.',
+    colMonth: 'Mois',
+    colTemp: 'Temp (max / min)',
+    colRain: 'Pluie',
+    colVerdict: 'En bref',
+    monthRows: [
+      { month: 'Janvier', temp: '27 / 22°C', rain: '~200 mm', verdict: 'Chaud et venteux ; quelques averses, bonnes vagues' },
+      { month: 'Février', temp: '28 / 22°C', rain: '~110 mm', verdict: 'La fenêtre la plus sèche — meilleure plage et snorkeling' },
+      { month: 'Mars', temp: '28 / 22°C', rain: '~170 mm', verdict: 'Chaud et assez sec ; idéal pour les randonnées' },
+      { month: 'Avril', temp: '29 / 23°C', rain: '~210 mm', verdict: 'La nature reverdit ; moins de monde après Pâques' },
+      { month: 'Mai', temp: '28 / 23°C', rain: '~300 mm', verdict: 'Averses l\'après-midi ; luxuriant et tranquille' },
+      { month: 'Juin', temp: '28 / 23°C', rain: '~340 mm', verdict: 'Pluvieux ; saison des tortues ; jungle animée' },
+      { month: 'Juillet', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Soleil et fortes averses en alternance ; bonnes vagues' },
+      { month: 'Août', temp: '28 / 23°C', rain: '~320 mm', verdict: 'Épisodes pluvieux ; jungle d\'un vert spectaculaire' },
+      { month: 'Septembre', temp: '28 / 22°C', rain: '~165 mm', verdict: 'Veranillo — mer calme, eau claire, peu de monde' },
+      { month: 'Octobre', temp: '28 / 22°C', rain: '~200 mm', verdict: 'Meilleur rapport qualité-prix — mer calme, prix bas' },
+      { month: 'Novembre', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Parmi les plus pluvieux ; cascades et vert profond' },
+      { month: 'Décembre', temp: '27 / 21°C', rain: '~350 mm', verdict: 'Festif ; houle de surf ; animé et pluvieux' },
+    ],
+    windowsHeading: 'Les deux fenêtres plus sèches (et les deux pics de pluie)',
+    windowsParagraphs: [
+      'Contrairement à la côte pacifique, le versant caraïbe connaît deux périodes plus calmes. La première va de février à mars, la fenêtre sèche classique, avec les précipitations les plus faibles de l\'année.',
+      'La seconde est le veranillo, le « petit été » de septembre et octobre. Alors qu\'une grande partie du Costa Rica traverse sa période la plus humide, les montagnes de Talamanca essorent la pluie des alizés et le sud des Caraïbes reste relativement dégagé — mer calme, eau claire et le meilleur rapport qualité-prix de l\'année.',
+      'Il y a en réalité deux pics de pluie : environ juin–juillet, puis de nouveau de novembre jusqu\'en janvier. Les sources divergent réellement sur celui qui est le plus humide et cela varie d\'une année à l\'autre, alors attendez-vous à des averses plus fortes et à une mer plus agitée pendant les deux périodes. Tout reste vert et magnifique, simplement plus mouillé.',
+    ],
+    liveHeading: 'Vérifier la météo avant de venir',
+    liveParagraphs: [
+      <>Comme les conditions changent d\'une semaine à l\'autre, une prévision en direct vaut mieux que n\'importe quelle moyenne. <a href="https://www.msn.com/en-us/weather/forecast/in-Puerto-Viejo,Lim%C3%B3n" target="_blank" rel="noopener noreferrer">MSN Météo</a> et Windy sont tous deux fiables pour la région de Puerto Viejo.</>,
+      'Pour les journées à la plage, surveillez la mer autant que la pluie : un océan calme compte davantage pour la baignade et le snorkeling que quelques averses en fin de journée.',
+    ],
+    rainyHeading: 'Que faire quand il pleut',
+    rainyIntro: 'Un après-midi pluvieux n\'est pas une raison de perdre une journée. Certaines des meilleures activités ici sont encore plus belles sous la pluie :',
+    rainyListItems: [
+      'Faites une visite de plantation de cacao (chocolat) — surtout à l\'abri et merveilleuse quand il pleut à verse',
+      'Visitez une communauté autochtone Bribri et découvrez le cacao et la médecine traditionnelle',
+      'Explorez le parc national de Cahuita — la faune reste active et il y a moins de monde',
+      'Installez-vous dans un café caribéen ou une chocolaterie du village',
+      'Réservez un cours de cuisine ou un soin au spa et laissez passer l\'orage',
+    ],
+    packHeading: 'Que mettre dans sa valise pour le climat caribéen',
+    packListItems: [
+      'Des vêtements légers à séchage rapide — il fait humide toute l\'année',
+      'Une veste de pluie compacte ou un poncho, quel que soit le mois',
+      'Une crème solaire respectueuse des récifs et un répulsif anti-insectes',
+      'Des chaussures d\'eau ou des sandales pour les sentiers mouillés et les plages rocheuses',
+      'Un sac étanche pour le téléphone et l\'appareil photo',
+      'Une couche légère pour les soirées plus fraîches et venteuses de décembre et janvier',
+    ],
+    takeawaysHeading: 'À retenir',
+    takeawaysParagraph:
+      'Puerto Viejo est chaud et vert toute l\'année, sans véritable saison sèche mais avec deux fenêtres nettement plus calmes : février–mars et le veranillo de septembre–octobre. Novembre–décembre est la période la plus humide. Quelle que soit votre période de visite, prévoyez de quoi affronter une averse ou deux, surveillez la mer pour les journées de plage et rappelez-vous qu\'ici la pluie dure rarement toute la journée.',
+  },
+  it: {
+    seoTitle: 'Meteo a Puerto Viejo de Limón — Guida al clima mese per mese',
+    seoDescription:
+      'Com\'è davvero il meteo a Puerto Viejo de Limón? Un\'analisi mese per mese di pioggia, sole, caldo e condizioni del mare — con le cose migliori da fare nei giorni di pioggia.',
+    heading: 'Meteo a Puerto Viejo de Limón: una guida mese per mese',
+    heroAlt: 'Spiaggia caraibica e giungla a Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca si trova sulla costa caraibica meridionale del Costa Rica, in un clima di foresta pluviale tropicale che resta caldo tutto l\'anno: massime diurne di 27–29°C e un mare intorno ai 28–29°C in ogni mese.',
+      'Ciò che cambia è la pioggia e lo stato dell\'oceano — e, punto fondamentale, la costa caraibica non segue lo stesso calendario del versante pacifico. Qui non c\'è una vera stagione secca, ma esistono finestre più asciutte e soleggiate. Questa guida percorre l\'intero anno perché tu sappia cosa aspettarti in qualunque periodo tu venga.',
+    ],
+    stayRecommendationTitle: 'Cerchi dove alloggiare a Puerto Viejo?',
+    tableHeading: 'Il meteo di Puerto Viejo, mese per mese',
+    tableIntro: 'I dati sono medie approssimative — qui la pioggia di solito è un acquazzone pomeridiano o notturno, non un\'intera giornata grigia. Tocca un mese per tutti i dettagli.',
+    colMonth: 'Mese',
+    colTemp: 'Temp (max / min)',
+    colRain: 'Pioggia',
+    colVerdict: 'In breve',
+    monthRows: [
+      { month: 'Gennaio', temp: '27 / 22°C', rain: '~200 mm', verdict: 'Caldo e ventilato; qualche rovescio, buone onde' },
+      { month: 'Febbraio', temp: '28 / 22°C', rain: '~110 mm', verdict: 'La finestra più asciutta — spiaggia e snorkeling al meglio' },
+      { month: 'Marzo', temp: '28 / 22°C', rain: '~170 mm', verdict: 'Caldo e piuttosto secco; ottimo per le escursioni' },
+      { month: 'Aprile', temp: '29 / 23°C', rain: '~210 mm', verdict: 'Rinverdisce; meno gente dopo Pasqua' },
+      { month: 'Maggio', temp: '28 / 23°C', rain: '~300 mm', verdict: 'Rovesci pomeridiani; rigoglioso e tranquillo' },
+      { month: 'Giugno', temp: '28 / 23°C', rain: '~340 mm', verdict: 'Piovoso; stagione delle tartarughe; giungla vivace' },
+      { month: 'Luglio', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Sole e forti rovesci alternati; buone onde' },
+      { month: 'Agosto', temp: '28 / 23°C', rain: '~320 mm', verdict: 'Fasi piovose; giungla di un verde spettacolare' },
+      { month: 'Settembre', temp: '28 / 22°C', rain: '~165 mm', verdict: 'Veranillo — mare calmo, acqua limpida, poca gente' },
+      { month: 'Ottobre', temp: '28 / 22°C', rain: '~200 mm', verdict: 'Miglior rapporto qualità-prezzo — mare calmo, prezzi bassi' },
+      { month: 'Novembre', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Tra i più piovosi; cascate e verde intenso' },
+      { month: 'Dicembre', temp: '27 / 21°C', rain: '~350 mm', verdict: 'Festivo; mareggiate da surf; affollato e piovoso' },
+    ],
+    windowsHeading: 'Le due finestre più asciutte (e i due picchi di pioggia)',
+    windowsParagraphs: [
+      'A differenza della costa pacifica, il versante caraibico ha due periodi più tranquilli. Il primo va da febbraio a marzo, la classica finestra secca, con le precipitazioni più basse dell\'anno.',
+      'Il secondo è il veranillo, la "piccola estate" di settembre e ottobre. Mentre gran parte del Costa Rica vive il suo periodo più piovoso, le montagne di Talamanca spremono la pioggia dagli alisei e i Caraibi meridionali restano relativamente limpidi — mare calmo, acqua trasparente e il miglior rapporto qualità-prezzo dell\'anno.',
+      'In realtà ci sono due picchi di pioggia: all\'incirca giugno–luglio e poi di nuovo da novembre fino a gennaio. Le fonti sono davvero in disaccordo su quale sia il più piovoso e varia di anno in anno, quindi aspettati rovesci più intensi e un mare più mosso in entrambi i periodi. Resta verde e stupendo, solo più bagnato.',
+    ],
+    liveHeading: 'Controllare il meteo prima di partire',
+    liveParagraphs: [
+      <>Poiché le condizioni cambiano di settimana in settimana, una previsione in tempo reale batte qualsiasi media. <a href="https://www.msn.com/en-us/weather/forecast/in-Puerto-Viejo,Lim%C3%B3n" target="_blank" rel="noopener noreferrer">MSN Meteo</a> e Windy sono entrambi affidabili per la zona di Puerto Viejo.</>,
+      'Per le giornate in spiaggia, tieni d\'occhio il mare tanto quanto la pioggia: un oceano calmo conta di più per nuotare e fare snorkeling di quanto contino un paio di rovesci pomeridiani.',
+    ],
+    rainyHeading: 'Cosa fare quando piove',
+    rainyIntro: 'Un pomeriggio di pioggia non è un motivo per perdere una giornata. Alcune delle esperienze migliori qui sono ancora più belle sotto la pioggia:',
+    rainyListItems: [
+      'Fai un tour in una piantagione di cacao (cioccolato) — quasi tutto al coperto e meraviglioso quando diluvia',
+      'Visita una comunità indigena Bribri e scopri il cacao e la medicina tradizionale',
+      'Esplora il Parco Nazionale di Cahuita — la fauna resta attiva e c\'è meno gente',
+      'Rilassati in un caffè caraibico o in una cioccolateria del paese',
+      'Prenota un corso di cucina o un trattamento alla spa e lascia passare il temporale',
+    ],
+    packHeading: 'Cosa mettere in valigia per il clima caraibico',
+    packListItems: [
+      'Abbigliamento leggero ad asciugatura rapida — c\'è umidità tutto l\'anno',
+      'Una giacca antipioggia compatta o un poncho, in qualsiasi mese',
+      'Crema solare rispettosa della barriera corallina e repellente per insetti',
+      'Scarpe da scoglio o sandali per sentieri bagnati e spiagge rocciose',
+      'Una sacca stagna per telefono e macchina fotografica',
+      'Uno strato leggero per le serate più fresche e ventilate di dicembre e gennaio',
+    ],
+    takeawaysHeading: 'Punti chiave',
+    takeawaysParagraph:
+      'Puerto Viejo è caldo e verde tutto l\'anno, senza una vera stagione secca ma con due finestre decisamente più tranquille: febbraio–marzo e il veranillo di settembre–ottobre. Novembre–dicembre è il periodo più piovoso. In qualunque momento tu venga, metti in valigia qualcosa per un rovescio o due, guarda il mare per le giornate in spiaggia e ricorda che qui la pioggia raramente dura tutto il giorno.',
+  },
+  pt: {
+    seoTitle: 'Clima em Puerto Viejo de Limón — Guia do tempo mês a mês',
+    seoDescription:
+      'Como é realmente o clima em Puerto Viejo de Limón? Uma análise mês a mês de chuva, sol, calor e condições do mar — além das melhores coisas para fazer em dias de chuva.',
+    heading: 'Clima em Puerto Viejo de Limón: um guia mês a mês',
+    heroAlt: 'Praia caribenha e selva em Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca fica na costa caribenha sul da Costa Rica, num clima de floresta tropical úmida que se mantém quente o ano todo: máximas diurnas de 27–29°C e um mar em torno de 28–29°C em qualquer mês.',
+      'O que muda é a chuva e o estado do oceano — e, ponto crucial, a costa caribenha não segue o mesmo calendário do lado do Pacífico. Aqui não há uma verdadeira estação seca, mas existem janelas mais secas e ensolaradas. Este guia percorre o ano inteiro para que você saiba o que esperar sempre que vier.',
+    ],
+    stayRecommendationTitle: 'Procurando onde se hospedar em Puerto Viejo?',
+    tableHeading: 'O clima de Puerto Viejo, mês a mês',
+    tableIntro: 'Os números são médias aproximadas — aqui a chuva costuma ser um aguaceiro da tarde ou da noite, não um dia cinzento inteiro. Toque num mês para ver todos os detalhes.',
+    colMonth: 'Mês',
+    colTemp: 'Temp (máx / mín)',
+    colRain: 'Chuva',
+    colVerdict: 'Em resumo',
+    monthRows: [
+      { month: 'Janeiro', temp: '27 / 22°C', rain: '~200 mm', verdict: 'Quente e ventoso; algumas pancadas, bom surf' },
+      { month: 'Fevereiro', temp: '28 / 22°C', rain: '~110 mm', verdict: 'A janela mais seca — melhor praia e mergulho' },
+      { month: 'Março', temp: '28 / 22°C', rain: '~170 mm', verdict: 'Quente e bastante seco; ótimo para caminhadas' },
+      { month: 'Abril', temp: '29 / 23°C', rain: '~210 mm', verdict: 'A vegetação reverdece; menos gente após a Páscoa' },
+      { month: 'Maio', temp: '28 / 23°C', rain: '~300 mm', verdict: 'Pancadas à tarde; exuberante e tranquilo' },
+      { month: 'Junho', temp: '28 / 23°C', rain: '~340 mm', verdict: 'Chuvoso; temporada das tartarugas; selva viva' },
+      { month: 'Julho', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Sol e fortes pancadas alternados; bom surf' },
+      { month: 'Agosto', temp: '28 / 23°C', rain: '~320 mm', verdict: 'Períodos de chuva; selva de um verde espetacular' },
+      { month: 'Setembro', temp: '28 / 22°C', rain: '~165 mm', verdict: 'Veranillo — mar calmo, água clara, pouca gente' },
+      { month: 'Outubro', temp: '28 / 22°C', rain: '~200 mm', verdict: 'Melhor custo-benefício — mar calmo, preços baixos' },
+      { month: 'Novembro', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Entre os mais chuvosos; cachoeiras e verde profundo' },
+      { month: 'Dezembro', temp: '27 / 21°C', rain: '~350 mm', verdict: 'Festivo; ondas de surf; movimentado e chuvoso' },
+    ],
+    windowsHeading: 'As duas janelas mais secas (e os dois picos de chuva)',
+    windowsParagraphs: [
+      'Ao contrário da costa do Pacífico, o lado caribenho tem dois períodos mais calmos. O primeiro vai de fevereiro a março, a clássica janela seca, com a menor precipitação do ano.',
+      'O segundo é o veranillo, o "pequeno verão" de setembro e outubro. Enquanto boa parte da Costa Rica vive sua época mais chuvosa, as montanhas de Talamanca espremem a chuva dos ventos alísios e o sul do Caribe permanece relativamente limpo — mar calmo, água clara e o melhor custo-benefício do ano.',
+      'Na verdade há dois picos de chuva: aproximadamente junho–julho e novamente de novembro até janeiro. As fontes realmente divergem sobre qual é o mais chuvoso e isso varia de ano para ano, então espere pancadas mais fortes e um mar mais agitado em ambos os períodos. Continua verde e lindo, apenas mais molhado.',
+    ],
+    liveHeading: 'Consultar o clima antes de vir',
+    liveParagraphs: [
+      <>Como as condições mudam de semana para semana, uma previsão ao vivo vale mais do que qualquer média. O <a href="https://www.msn.com/en-us/weather/forecast/in-Puerto-Viejo,Lim%C3%B3n" target="_blank" rel="noopener noreferrer">MSN Clima</a> e o Windy são ambos confiáveis para a região de Puerto Viejo.</>,
+      'Para dias de praia, observe o mar tanto quanto a chuva: um oceano calmo importa mais para nadar e mergulhar do que algumas pancadas à tarde.',
+    ],
+    rainyHeading: 'O que fazer quando chove',
+    rainyIntro: 'Uma tarde chuvosa não é motivo para perder o dia. Algumas das melhores experiências aqui ficam ainda melhores na chuva:',
+    rainyListItems: [
+      'Faça um tour por uma fazenda de cacau (chocolate) — quase todo coberto e maravilhoso quando cai um toró',
+      'Visite uma comunidade indígena Bribri e aprenda sobre o cacau e a medicina tradicional',
+      'Explore o Parque Nacional Cahuita — a fauna continua ativa e há menos gente',
+      'Instale-se num café caribenho ou numa chocolateria da vila',
+      'Reserve uma aula de culinária ou um tratamento de spa e deixe a tempestade passar',
+    ],
+    packHeading: 'O que levar para o clima caribenho',
+    packListItems: [
+      'Roupas leves e de secagem rápida — há umidade o ano todo',
+      'Uma capa de chuva compacta ou poncho, em qualquer mês',
+      'Protetor solar que respeite os recifes e repelente de insetos',
+      'Sapatilhas de água ou sandálias para trilhas molhadas e praias com pedras',
+      'Uma bolsa estanque para o celular e a câmera',
+      'Uma camada leve para as noites mais frescas e ventosas de dezembro e janeiro',
+    ],
+    takeawaysHeading: 'Pontos principais',
+    takeawaysParagraph:
+      'Puerto Viejo é quente e verde o ano todo, sem uma verdadeira estação seca, mas com duas janelas comprovadamente mais calmas: fevereiro–março e o veranillo de setembro–outubro. Novembro–dezembro é o mais chuvoso. Venha quando vier, leve algo para uma pancada ou duas, observe o mar nos dias de praia e lembre-se de que aqui a chuva raramente dura o dia inteiro.',
+  },
+  he: {
+    seoTitle: 'מזג האוויר בפוארטו ויאחו דה לימון — מדריך אקלים חודש אחר חודש',
+    seoDescription:
+      'איך באמת מזג האוויר בפוארטו ויאחו דה לימון? פירוט חודש אחר חודש של גשם, שמש, חום ומצב הים — יחד עם הדברים הטובים ביותר לעשות בימים גשומים.',
+    heading: 'מזג האוויר בפוארטו ויאחו דה לימון: מדריך חודש אחר חודש',
+    heroAlt: 'חוף קריבי וג\'ונגל בפוארטו ויאחו דה טלמנקה, קוסטה ריקה',
+    photoCredit: <>תמונה: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'פוארטו ויאחו דה טלמנקה שוכנת בחוף הקריבי הדרומי של קוסטה ריקה, באקלים של יער גשם טרופי שנשאר חמים כל השנה: מקסימום יומי של 27–29°C וים סביב 28–29°C בכל חודש.',
+      'מה שמשתנה הוא הגשם ומצב האוקיינוס — וחשוב מכול, החוף הקריבי אינו הולך לפי אותו לוח שנה כמו צד האוקיינוס השקט. אין כאן עונה יבשה אמיתית, אך יש חלונות יבשים ושטופי שמש יותר. המדריך הזה עובר על כל השנה כדי שתדעו למה לצפות מתי שלא תגיעו.',
+    ],
+    stayRecommendationTitle: 'מחפשים היכן להתארח בפוארטו ויאחו?',
+    tableHeading: 'מזג האוויר בפוארטו ויאחו, חודש אחר חודש',
+    tableIntro: 'המספרים הם ממוצעים משוערים — גשם כאן פירושו בדרך כלל ממטר של אחר צהריים או לילה, לא יום אפור שלם. הקישו על חודש לפירוט המלא.',
+    colMonth: 'חודש',
+    colTemp: 'טמפ׳ (מקס\' / מינ\')',
+    colRain: 'גשם',
+    colVerdict: 'בקצרה',
+    monthRows: [
+      { month: 'ינואר', temp: '27 / 22°C', rain: '~200 mm', verdict: 'חמים ורוחני; מעט ממטרים, גלישה טובה' },
+      { month: 'פברואר', temp: '28 / 22°C', rain: '~110 mm', verdict: 'החלון היבש ביותר — החוף והשנרקול הטובים ביותר' },
+      { month: 'מרץ', temp: '28 / 22°C', rain: '~170 mm', verdict: 'חמים ויבש למדי; מצוין לטיולים רגליים' },
+      { month: 'אפריל', temp: '29 / 23°C', rain: '~210 mm', verdict: 'הכול מוריק; פחות תיירים אחרי הפסחא' },
+      { month: 'מאי', temp: '28 / 23°C', rain: '~300 mm', verdict: 'ממטרי אחר צהריים; שופע וירוק ושקט' },
+      { month: 'יוני', temp: '28 / 23°C', rain: '~340 mm', verdict: 'גשום; עונת הצבים; ג\'ונגל תוסס' },
+      { month: 'יולי', temp: '27 / 22°C', rain: '~400 mm', verdict: 'שמש וממטרים כבדים לסירוגין; גלישה טובה' },
+      { month: 'אוגוסט', temp: '28 / 23°C', rain: '~320 mm', verdict: 'תקופות גשם; ג\'ונגל בירוק דרמטי' },
+      { month: 'ספטמבר', temp: '28 / 22°C', rain: '~165 mm', verdict: 'ורניז\'ו — ים רגוע, מים צלולים, מעט תיירים' },
+      { month: 'אוקטובר', temp: '28 / 22°C', rain: '~200 mm', verdict: 'התמורה הטובה ביותר — ים רגוע, מחירים נמוכים' },
+      { month: 'נובמבר', temp: '27 / 22°C', rain: '~400 mm', verdict: 'מהגשומים ביותר; מפלים וירוק עמוק' },
+      { month: 'דצמבר', temp: '27 / 21°C', rain: '~350 mm', verdict: 'חגיגי; גלי גלישה; עמוס וגשום' },
+    ],
+    windowsHeading: 'שני החלונות היבשים יותר (ושני שיאי הגשמים)',
+    windowsParagraphs: [
+      'בניגוד לחוף האוקיינוס השקט, בצד הקריבי יש שתי תקופות רגועות יותר. הראשונה היא מפברואר עד מרץ, החלון היבש הקלאסי, עם כמות המשקעים הנמוכה ביותר בשנה.',
+      'השנייה היא הוורניז\'ו, "הקיץ הקטן" של ספטמבר ואוקטובר. בעוד חלק גדול מקוסטה ריקה נמצא בתקופה הגשומה ביותר שלו, הרי טלמנקה סוחטים את הגשם מרוחות הסחר, והקריביים הדרומיים נשארים בהירים יחסית — ים רגוע, מים צלולים והתמורה הטובה ביותר של השנה.',
+      'למעשה יש שני שיאי גשמים: בערך יוני–יולי, ושוב מנובמבר אל תוך ינואר. המקורות באמת חלוקים בשאלה איזה מהם הגשום ביותר, וזה משתנה משנה לשנה, אז צפו לממטרים חזקים יותר ולים סוער יותר בשתי התקופות. עדיין ירוק ומרהיב, פשוט רטוב יותר.',
+    ],
+    liveHeading: 'בדיקת מזג האוויר לפני שמגיעים',
+    liveParagraphs: [
+      <>מכיוון שהתנאים משתנים משבוע לשבוע, תחזית בזמן אמת עדיפה על כל ממוצע. <a href="https://www.msn.com/en-us/weather/forecast/in-Puerto-Viejo,Lim%C3%B3n" target="_blank" rel="noopener noreferrer">MSN מזג אוויר</a> ו-Windy אמינים שניהם עבור אזור פוארטו ויאחו.</>,
+      'לימי חוף, שימו לב לים לא פחות מאשר לגשם: אוקיינוס רגוע חשוב יותר לשחייה ולשנרקול מאשר כמה ממטרי אחר צהריים.',
+    ],
+    rainyHeading: 'מה לעשות כשיורד גשם',
+    rainyIntro: 'אחר צהריים גשום אינו סיבה לאבד יום. חלק מהחוויות הטובות ביותר כאן אף טובות יותר בגשם:',
+    rainyListItems: [
+      'צאו לסיור בחוות קקאו (שוקולד) — רובו תחת קורת גג ונפלא כשיורד גשם זלעפות',
+      'בקרו בקהילת הילידים בריברי ולמדו על הקקאו והרפואה המסורתית',
+      'טיילו בפארק הלאומי קאוויטה — חיות הבר נשארות פעילות והקהל מתדלדל',
+      'התיישבו בבית קפה קריבי או בחנות שוקולד בעיירה',
+      'הזמינו סדנת בישול או טיפול ספא ותנו לסערה לחלוף',
+    ],
+    packHeading: 'מה לארוז למזג האוויר הקריבי',
+    packListItems: [
+      'בגדים קלים ומתייבשים במהירות — לחות שוררת כל השנה',
+      'מעיל גשם קומפקטי או פונצ\'ו, בכל חודש',
+      'קרם הגנה ידידותי לשוניות ודוחה חרקים',
+      'נעלי מים או סנדלים לשבילים רטובים ולחופים סלעיים',
+      'תיק אטום למים לטלפון ולמצלמה',
+      'שכבה קלה לערבים הקרירים והרוחניים יותר בדצמבר ובינואר',
+    ],
+    takeawaysHeading: 'עיקרי הדברים',
+    takeawaysParagraph:
+      'פוארטו ויאחו חמימה וירוקה כל השנה, ללא עונה יבשה אמיתית אך עם שני חלונות רגועים יותר באופן עקבי: פברואר–מרץ והוורניז\'ו של ספטמבר–אוקטובר. נובמבר–דצמבר הם הגשומים ביותר. מתי שלא תבקרו, ארזו לקראת ממטר או שניים, שימו עין על הים לימי החוף, וזכרו שהגשם כאן כמעט אף פעם לא נמשך יום שלם.',
+  },
+  hi: {
+    seoTitle: 'प्वेर्तो विएखो दे लिमोन में मौसम — महीने-दर-महीने जलवायु गाइड',
+    seoDescription:
+      'प्वेर्तो विएखो दे लिमोन में मौसम वास्तव में कैसा रहता है? बारिश, धूप, गर्मी और समुद्र की स्थिति का महीने-दर-महीने ब्यौरा — साथ ही बरसात के दिनों में करने के लिए सबसे बढ़िया चीज़ें।',
+    heading: 'प्वेर्तो विएखो दे लिमोन में मौसम: एक महीने-दर-महीने गाइड',
+    heroAlt: 'प्वेर्तो विएखो दे तालामांका, कोस्टा रिका में कैरिबियन समुद्र तट और जंगल',
+    photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'प्वेर्तो विएखो दे तालामांका कोस्टा रिका के दक्षिणी कैरिबियन तट पर बसा है, एक उष्णकटिबंधीय वर्षावन जलवायु में जो साल भर गर्म रहती है: दिन का अधिकतम तापमान 27–29°C और हर महीने समुद्र का तापमान लगभग 28–29°C।',
+      'जो बदलता है वह है बारिश और समुद्र की स्थिति — और, सबसे अहम बात, कैरिबियन तट प्रशांत तट जैसा कैलेंडर नहीं मानता। यहाँ कोई सच्चा शुष्क मौसम नहीं है, पर अपेक्षाकृत सूखे और धूप वाले दौर ज़रूर हैं। यह गाइड पूरे साल पर नज़र डालती है ताकि आप जब भी आएँ, जान सकें कि क्या उम्मीद करनी है।',
+    ],
+    stayRecommendationTitle: 'प्वेर्तो विएखो में ठहरने की जगह ढूँढ रहे हैं?',
+    tableHeading: 'प्वेर्तो विएखो का मौसम, महीने-दर-महीने',
+    tableIntro: 'आँकड़े अनुमानित औसत हैं — यहाँ बारिश का मतलब आमतौर पर दोपहर या रात की मूसलाधार बौछार है, न कि पूरे दिन का धूसर आसमान। पूरे ब्यौरे के लिए किसी महीने पर टैप करें।',
+    colMonth: 'महीना',
+    colTemp: 'तापमान (अधिकतम / न्यूनतम)',
+    colRain: 'बारिश',
+    colVerdict: 'संक्षेप में',
+    monthRows: [
+      { month: 'जनवरी', temp: '27 / 22°C', rain: '~200 mm', verdict: 'गर्म और हवादार; कुछ बौछारें, अच्छी सर्फिंग' },
+      { month: 'फ़रवरी', temp: '28 / 22°C', rain: '~110 mm', verdict: 'सबसे सूखा दौर — समुद्र तट और स्नॉर्कलिंग के लिए बेहतरीन' },
+      { month: 'मार्च', temp: '28 / 22°C', rain: '~170 mm', verdict: 'गर्म और काफ़ी सूखा; पैदल यात्राओं के लिए शानदार' },
+      { month: 'अप्रैल', temp: '29 / 23°C', rain: '~210 mm', verdict: 'हरियाली लौटती है; ईस्टर के बाद भीड़ कम होती है' },
+      { month: 'मई', temp: '28 / 23°C', rain: '~300 mm', verdict: 'दोपहर की बौछारें; हरा-भरा और शांत' },
+      { month: 'जून', temp: '28 / 23°C', rain: '~340 mm', verdict: 'गीला; कछुओं का मौसम; जीवंत जंगल' },
+      { month: 'जुलाई', temp: '27 / 22°C', rain: '~400 mm', verdict: 'धूप और तेज़ बौछारें मिली-जुली; अच्छी सर्फिंग' },
+      { month: 'अगस्त', temp: '28 / 23°C', rain: '~320 mm', verdict: 'बारिश के दौर; गहरे हरे रंग का जंगल' },
+      { month: 'सितंबर', temp: '28 / 22°C', rain: '~165 mm', verdict: 'वेरानिय्यो — शांत समुद्र, साफ़ पानी, कम भीड़' },
+      { month: 'अक्टूबर', temp: '28 / 22°C', rain: '~200 mm', verdict: 'सबसे किफ़ायती — शांत समुद्र, कम दाम' },
+      { month: 'नवंबर', temp: '27 / 22°C', rain: '~400 mm', verdict: 'सबसे बरसाती महीनों में से; झरने और गहरी हरियाली' },
+      { month: 'दिसंबर', temp: '27 / 21°C', rain: '~350 mm', verdict: 'उत्सवमय; सर्फ लहरें; भीड़भाड़ और बारिश' },
+    ],
+    windowsHeading: 'दो अपेक्षाकृत सूखे दौर (और बारिश के दो चरम)',
+    windowsParagraphs: [
+      'प्रशांत तट के विपरीत, कैरिबियन ओर दो शांत दौर मिलते हैं। पहला फ़रवरी से मार्च तक है, वह क्लासिक सूखा दौर जिसमें साल की सबसे कम बारिश होती है।',
+      'दूसरा है वेरानिय्यो, सितंबर और अक्टूबर की "छोटी गर्मी"। जब अधिकांश कोस्टा रिका अपने सबसे गीले दौर में होता है, तालामांका के पहाड़ व्यापारिक हवाओं से बारिश निचोड़ लेते हैं और दक्षिणी कैरिबियन तुलनात्मक रूप से साफ़ रहता है — शांत समुद्र, साफ़ पानी, और साल का सबसे बढ़िया मोल-भाव।',
+      'दरअसल बारिश के दो चरम होते हैं: मोटे तौर पर जून–जुलाई, और फिर नवंबर से जनवरी तक। स्रोत वाकई इस बात पर एकमत नहीं हैं कि सबसे गीला कौन-सा है और यह साल-दर-साल बदलता रहता है, इसलिए दोनों दौरों में तेज़ बौछारों और अधिक उथल-पुथल भरे समुद्र की उम्मीद रखें। तब भी यह हरा-भरा और सुंदर रहता है, बस अधिक गीला।',
+    ],
+    liveHeading: 'आने से पहले मौसम की जाँच',
+    liveParagraphs: [
+      <>चूँकि हालात हफ़्ते-दर-हफ़्ते बदलते रहते हैं, कोई भी औसत की तुलना में लाइव पूर्वानुमान बेहतर होता है। प्वेर्तो विएखो क्षेत्र के लिए <a href="https://www.msn.com/en-us/weather/forecast/in-Puerto-Viejo,Lim%C3%B3n" target="_blank" rel="noopener noreferrer">MSN Weather</a> और Windy दोनों भरोसेमंद हैं।</>,
+      'समुद्र तट के दिनों के लिए, बारिश जितना ही समुद्र पर भी नज़र रखें: तैरने और स्नॉर्कलिंग के लिए शांत समुद्र दोपहर की कुछ बौछारों से कहीं ज़्यादा मायने रखता है।',
+    ],
+    rainyHeading: 'बारिश हो तो क्या करें',
+    rainyIntro: 'गीली दोपहर पूरे दिन को गँवाने की कोई वजह नहीं है। यहाँ की कुछ बेहतरीन चीज़ें बारिश में और भी बढ़िया लगती हैं:',
+    rainyListItems: [
+      'कोको (चॉकलेट) फ़ार्म का दौरा करें — ज़्यादातर छत के नीचे और मूसलाधार बारिश में बेहद सुखद',
+      'किसी ब्रिब्री आदिवासी समुदाय में जाएँ और कोको तथा पारंपरिक औषधि के बारे में जानें',
+      'काउइता राष्ट्रीय उद्यान घूमें — वन्यजीव सक्रिय रहते हैं और भीड़ छँट जाती है',
+      'कस्बे के किसी कैरिबियन कैफ़े या चॉकलेट की दुकान में आराम से बैठें',
+      'कुकिंग क्लास या स्पा ट्रीटमेंट बुक करें और तूफ़ान को बीतने दें',
+    ],
+    packHeading: 'कैरिबियन मौसम के लिए क्या साथ लाएँ',
+    packListItems: [
+      'हल्के, जल्दी सूखने वाले कपड़े — साल भर उमस रहती है',
+      'एक कॉम्पैक्ट रेन जैकेट या पॉन्चो, किसी भी महीने में',
+      'रीफ़-सुरक्षित सनस्क्रीन और कीट प्रतिरोधक',
+      'गीली पगडंडियों और चट्टानी तटों के लिए वॉटर शूज़ या सैंडल',
+      'फ़ोन और कैमरे के लिए एक वॉटरप्रूफ़ बैग',
+      'दिसंबर और जनवरी की ठंडी, हवादार शामों के लिए एक हल्की परत',
+    ],
+    takeawaysHeading: 'मुख्य बातें',
+    takeawaysParagraph:
+      'प्वेर्तो विएखो साल भर गर्म और हरा-भरा रहता है, बिना किसी सच्चे शुष्क मौसम के पर दो भरोसेमंद शांत दौरों के साथ: फ़रवरी–मार्च और सितंबर–अक्टूबर का वेरानिय्यो। नवंबर–दिसंबर सबसे बरसाती है। आप जब भी आएँ, एक-दो बौछार के लिए तैयारी रखें, समुद्र तट के दिनों के लिए समुद्र पर नज़र रखें, और याद रखें कि यहाँ बारिश शायद ही कभी पूरे दिन चलती है।',
+  },
+  nl: {
+    seoTitle: 'Weer in Puerto Viejo de Limón — Klimaatgids maand voor maand',
+    seoDescription:
+      'Hoe is het weer in Puerto Viejo de Limón nu echt? Een overzicht per maand van regen, zon, hitte en zeecondities — plus de leukste dingen om te doen op regenachtige dagen.',
+    heading: 'Weer in Puerto Viejo de Limón: een gids maand voor maand',
+    heroAlt: 'Caribisch strand en jungle in Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca ligt aan de zuidelijke Caribische kust van Costa Rica, in een tropisch regenwoudklimaat dat het hele jaar warm blijft: overdag maxima van 27–29°C en een zee van rond de 28–29°C in elke maand.',
+      'Wat verandert, is de regen en de toestand van de oceaan — en, cruciaal, de Caribische kust volgt niet dezelfde kalender als de Pacifische kant. Een echt droog seizoen is er hier niet, maar er zijn wel drogere, zonnigere periodes. Deze gids loopt het hele jaar door, zodat je weet wat je kunt verwachten wanneer je ook komt.',
+    ],
+    stayRecommendationTitle: 'Op zoek naar een verblijf in Puerto Viejo?',
+    tableHeading: 'Het weer in Puerto Viejo, maand voor maand',
+    tableIntro: 'De cijfers zijn benaderende gemiddelden — regen betekent hier meestal een middag- of nachtelijke stortbui, geen hele dag grijs. Tik op een maand voor alle details.',
+    colMonth: 'Maand',
+    colTemp: 'Temp (max / min)',
+    colRain: 'Regen',
+    colVerdict: 'Kort gezegd',
+    monthRows: [
+      { month: 'Januari', temp: '27 / 22°C', rain: '~200 mm', verdict: 'Warm en winderig; wat buien, goede golven' },
+      { month: 'Februari', temp: '28 / 22°C', rain: '~110 mm', verdict: 'Droogste periode — beste strand en snorkelen' },
+      { month: 'Maart', temp: '28 / 22°C', rain: '~170 mm', verdict: 'Warm en vrij droog; ideaal voor wandelingen' },
+      { month: 'April', temp: '29 / 23°C', rain: '~210 mm', verdict: 'Alles wordt groen; minder drukte na Pasen' },
+      { month: 'Mei', temp: '28 / 23°C', rain: '~300 mm', verdict: 'Middagbuien; weelderig en rustig' },
+      { month: 'Juni', temp: '28 / 23°C', rain: '~340 mm', verdict: 'Nat; schildpaddenseizoen; levendige jungle' },
+      { month: 'Juli', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Zon en zware buien afgewisseld; goede golven' },
+      { month: 'Augustus', temp: '28 / 23°C', rain: '~320 mm', verdict: 'Regenachtige periodes; jungle in spectaculair groen' },
+      { month: 'September', temp: '28 / 22°C', rain: '~165 mm', verdict: 'Veranillo — kalme zee, helder water, weinig drukte' },
+      { month: 'Oktober', temp: '28 / 22°C', rain: '~200 mm', verdict: 'Beste prijs-kwaliteit — kalme zee, lage prijzen' },
+      { month: 'November', temp: '27 / 22°C', rain: '~400 mm', verdict: 'Tot de natste; watervallen en diep groen' },
+      { month: 'December', temp: '27 / 21°C', rain: '~350 mm', verdict: 'Feestelijk; surfdeining; druk en nat' },
+    ],
+    windowsHeading: 'De twee drogere periodes (en de twee natte pieken)',
+    windowsParagraphs: [
+      'Anders dan de Pacifische kust kent de Caribische kant twee kalmere periodes. De eerste loopt van februari tot maart, de klassieke droge periode met de laagste neerslag van het jaar.',
+      'De tweede is de veranillo, de "kleine zomer" van september en oktober. Terwijl een groot deel van Costa Rica in zijn natste periode zit, wringen de bergen van Talamanca de regen uit de passaatwinden en blijft het zuidelijke Caribisch gebied relatief helder — kalme zee, helder water en de beste prijs-kwaliteitverhouding van het jaar.',
+      'Er zijn eigenlijk twee natte pieken: ongeveer juni–juli, en opnieuw van november tot in januari. Bronnen zijn het echt oneens over welke het natst is en het verschilt van jaar tot jaar, dus verwacht in beide periodes zwaardere buien en een ruwere zee. Het blijft groen en prachtig, alleen natter.',
+    ],
+    liveHeading: 'Het weer checken voordat je komt',
+    liveParagraphs: [
+      <>Omdat de omstandigheden van week tot week veranderen, is een live voorspelling beter dan welk gemiddelde dan ook. <a href="https://www.msn.com/en-us/weather/forecast/in-Puerto-Viejo,Lim%C3%B3n" target="_blank" rel="noopener noreferrer">MSN Weer</a> en Windy zijn allebei betrouwbaar voor de omgeving van Puerto Viejo.</>,
+      'Let voor stranddagen net zo goed op de zee als op de regen: een kalme oceaan telt voor zwemmen en snorkelen zwaarder dan een paar middagbuien.',
+    ],
+    rainyHeading: 'Wat te doen als het regent',
+    rainyIntro: 'Een natte middag is geen reden om een dag te verliezen. Sommige van de beste dingen hier zijn in de regen zelfs nog mooier:',
+    rainyListItems: [
+      'Doe een tour over een cacao- (chocolade-) boerderij — grotendeels overdekt en heerlijk als het giet',
+      'Bezoek een inheemse Bribri-gemeenschap en leer over cacao en traditionele geneeskunde',
+      'Verken Nationaal Park Cahuita — de dieren blijven actief en de drukte neemt af',
+      'Strijk neer in een Caribisch café of chocoladewinkel in het dorp',
+      'Boek een kookles of een spabehandeling en laat de bui overtrekken',
+    ],
+    packHeading: 'Wat mee te nemen voor het Caribische weer',
+    packListItems: [
+      'Lichte, sneldrogende kleding — het is het hele jaar vochtig',
+      'Een compacte regenjas of poncho, in elke maand',
+      'Rifvriendelijke zonnebrand en insectenwerend middel',
+      'Waterschoenen of sandalen voor natte paden en rotsige stranden',
+      'Een waterdichte tas voor telefoon en camera',
+      'Een lichte extra laag voor de koelere, winderigere avonden in december en januari',
+    ],
+    takeawaysHeading: 'Kernpunten',
+    takeawaysParagraph:
+      'Puerto Viejo is het hele jaar warm en groen, zonder echt droog seizoen maar met twee betrouwbaar kalmere periodes: februari–maart en de veranillo van september–oktober. November–december is het natst. Wanneer je ook komt, pak iets in voor een bui of twee, houd de zee in de gaten voor stranddagen en onthoud dat regen hier zelden de hele dag aanhoudt.',
+  },
+};
+
+export function weatherHubContent(locale: Locale): WeatherHubContent {
+  return weatherHub[locale] ?? weatherHub.en!;
+}
+
+/* ------------------------------------------------------------------ *
+ * Weather cluster — monthly spokes
+ *
+ * One shared shape for all twelve months; the page component
+ * (MonthlyWeatherArticle) is likewise shared, driven by the month key.
+ * Each spoke links back up to the hub (weatherHubContent) and sideways to
+ * sibling months via OtherBlogs. Phase 1 ships September–December.
+ * ------------------------------------------------------------------ */
+
+export type MonthKey =
+  | 'january' | 'february' | 'march' | 'april' | 'may' | 'june'
+  | 'july' | 'august' | 'september' | 'october' | 'november' | 'december';
+
+export interface WeatherSnapshotRow {
+  label: string;
+  value: string;
+}
+
+export interface MonthlyWeatherContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  snapshotHeading: string;
+  snapshot: WeatherSnapshotRow[];
+  whatItsLikeHeading: string;
+  whatItsLikeParagraphs: string[];
+  rainHeading: string;
+  rainParagraph: string;
+  rainyDayIntro: string;
+  rainyDayItems: string[];
+  crowdsHeading: string;
+  crowdsParagraph: string;
+  stayRecommendationTitle: string;
+  verdictHeading: string;
+  verdictParagraph: string;
+  hubLinkText: string;
+  takeawaysHeading: string;
+  takeawaysParagraph: string;
+}
+
+const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWeatherContent>>>> = {
+  january: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in January — Climate, Rain & Sea',
+      seoDescription:
+        'January in Puerto Viejo de Talamanca is warm and breezy, with post-holiday calm, some showers and good surf. Here is what to expect and how to plan your trip.',
+      heading: 'Weather in Puerto Viejo in January',
+      heroAlt: 'Breezy Caribbean beach in Puerto Viejo de Talamanca in January',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'January at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '27°C / 22°C' },
+        { label: 'Rain', value: '~200 mm — easing after the December peak' },
+        { label: 'Sea', value: 'Breezy, some surf, ~28°C' },
+        { label: 'Crowds', value: 'Busy early, calmer after mid-month' },
+      ],
+      whatItsLikeHeading: 'What January Is Really Like',
+      whatItsLikeParagraphs: [
+        'January opens the year warm and green. The heaviest rains of December are usually easing, and while showers still come through, you get more bright, breezy days as the month goes on.',
+        'The trade winds keep things fresh and feed a lively surf scene. Once the New Year crowds thin out after the first week or two, it becomes a relaxed, pleasant time to be on the Caribbean coast.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'January averages around 200 mm, generally trending drier than December. Expect warm days broken by passing showers rather than long grey stretches, with the odd windy, wetter spell.',
+      rainyDayIntro: 'If a shower rolls in, there is plenty to do:',
+      rainyDayItems: [
+        'Take a cacao farm and chocolate tour',
+        'Watch the surfers at Salsa Brava on a breezy day',
+        'Explore Cahuita National Park between showers',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'The first week or two still carries holiday crowds and higher prices. After that, both ease noticeably, so late January can be a sweet spot for warm weather without the peak-season rush.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in January',
+      verdictHeading: 'Is January a Good Time to Visit?',
+      verdictParagraph:
+        'Yes — especially from mid-month on. You get warm, green, breezy days and a good surf scene, with crowds and prices easing after the New Year rush.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'January is warm, green and breezy, drying out after December with a lively surf scene. Come after the first couple of weeks for the best mix of good weather and fewer crowds, and pack for the odd passing shower.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Enero — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Enero en Puerto Viejo de Talamanca es cálido y ventoso, con calma tras las fiestas, algunos aguaceros y buen surf. Esto es lo que puedes esperar y cómo planificar.',
+      heading: 'El Clima en Puerto Viejo en Enero',
+      heroAlt: 'Playa caribeña ventosa en Puerto Viejo de Talamanca en enero',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Enero de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 22°C' },
+        { label: 'Lluvia', value: '~200 mm — cediendo tras el pico de diciembre' },
+        { label: 'Mar', value: 'Ventoso, algo de surf, ~28°C' },
+        { label: 'Afluencia', value: 'Alta al inicio, más tranquila tras mediados de mes' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Enero',
+      whatItsLikeParagraphs: [
+        'Enero abre el año cálido y verde. Las lluvias más fuertes de diciembre suelen estar cediendo y, aunque todavía pasan aguaceros, hay más días luminosos y ventosos a medida que avanza el mes.',
+        'Los vientos alisios mantienen el ambiente fresco y alimentan una animada escena de surf. Cuando la gente de Año Nuevo se dispersa tras la primera semana o dos, se vuelve un momento relajado y agradable para estar en el Caribe.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Enero promedia unos 200 mm, en general más seco que diciembre. Espera días cálidos interrumpidos por aguaceros pasajeros y no por largos períodos grises, con algún episodio ventoso y más húmedo.',
+      rainyDayIntro: 'Si llega un aguacero, hay mucho por hacer:',
+      rainyDayItems: [
+        'Haz un tour de cacao y chocolate',
+        'Observa a los surfistas en Salsa Brava en un día ventoso',
+        'Recorre el Parque Nacional Cahuita entre aguaceros',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'La primera semana o dos todavía traen multitudes de temporada y precios más altos. Después, ambos bajan notablemente, así que finales de enero puede ser un momento ideal para clima cálido sin el ajetreo de temporada alta.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en enero',
+      verdictHeading: '¿Es Enero una Buena Época para Visitar?',
+      verdictParagraph:
+        'Sí — sobre todo desde mediados de mes. Tienes días cálidos, verdes y ventosos y buena escena de surf, con la gente y los precios cediendo tras el ajetreo de Año Nuevo.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Enero es cálido, verde y ventoso, secándose tras diciembre y con una animada escena de surf. Ven después de las primeras dos semanas para la mejor combinación de buen clima y menos gente, y lleva algo para algún aguacero pasajero.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im Januar — Klima, Regen & Meer',
+      seoDescription:
+        'Der Januar in Puerto Viejo de Talamanca ist warm und windig, mit Ruhe nach den Feiertagen, einigen Schauern und guten Wellen. Das erwartet Sie und so planen Sie Ihre Reise.',
+      heading: 'Wetter in Puerto Viejo im Januar',
+      heroAlt: 'Windiger Karibikstrand in Puerto Viejo de Talamanca im Januar',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Der Januar auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '27°C / 22°C' },
+        { label: 'Regen', value: '~200 mm — lässt nach dem Dezember-Höhepunkt nach' },
+        { label: 'Meer', value: 'Windig, etwas Wellengang, ~28°C' },
+        { label: 'Andrang', value: 'Früh voll, ruhiger nach Monatsmitte' },
+      ],
+      whatItsLikeHeading: 'Wie der Januar wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der Januar eröffnet das Jahr warm und grün. Die stärksten Regenfälle des Dezembers lassen meist nach, und obwohl noch Schauer durchziehen, bekommen Sie im Laufe des Monats mehr helle, windige Tage.',
+        'Die Passatwinde halten die Luft frisch und sorgen für eine lebendige Surfszene. Sobald sich die Neujahrsmenge nach der ersten oder zweiten Woche verläuft, wird es eine entspannte, angenehme Zeit an der Karibikküste.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Der Januar bringt im Schnitt rund 200 mm und ist meist trockener als der Dezember. Erwarten Sie warme Tage, unterbrochen von vorüberziehenden Schauern statt langer grauer Phasen, mit dem einen oder anderen windigen, nasseren Abschnitt.',
+      rainyDayIntro: 'Wenn ein Schauer aufzieht, gibt es viel zu tun:',
+      rainyDayItems: [
+        'Eine Kakaofarm- und Schokoladentour machen',
+        'An einem windigen Tag den Surfern an der Salsa Brava zusehen',
+        'Zwischen den Schauern den Cahuita-Nationalpark erkunden',
+      ],
+      crowdsHeading: 'Andrang, Preise und Veranstaltungen',
+      crowdsParagraph:
+        'In der ersten oder zweiten Woche herrschen noch Feiertagsandrang und höhere Preise. Danach lassen beide spürbar nach, sodass der späte Januar ein Glücksfall für warmes Wetter ohne den Hochsaison-Trubel sein kann.',
+      stayRecommendationTitle: 'Wo man im Januar in Puerto Viejo übernachtet',
+      verdictHeading: 'Ist der Januar eine gute Reisezeit?',
+      verdictParagraph:
+        'Ja — besonders ab Monatsmitte. Sie bekommen warme, grüne, windige Tage und eine gute Surfszene, während Andrang und Preise nach dem Neujahrstrubel nachlassen.',
+      hubLinkText: 'Zum vollständigen Monat-für-Monat-Wetterführer →',
+      takeawaysHeading: 'Das Wichtigste in Kürze',
+      takeawaysParagraph:
+        'Der Januar ist warm, grün und windig, trocknet nach dem Dezember ab und bietet eine lebendige Surfszene. Kommen Sie nach den ersten paar Wochen für die beste Mischung aus gutem Wetter und weniger Andrang und packen Sie etwas für den gelegentlichen Schauer ein.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en janvier — Climat, pluie & mer',
+      seoDescription:
+        'En janvier, Puerto Viejo de Talamanca est chaud et venteux, avec un calme d\'après-fêtes, quelques averses et de bonnes vagues. Voici à quoi vous attendre et comment planifier votre voyage.',
+      heading: 'Météo à Puerto Viejo en janvier',
+      heroAlt: 'Plage caraïbe venteuse à Puerto Viejo de Talamanca en janvier',
+      photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Janvier en un coup d\'œil',
+      snapshot: [
+        { label: 'Température', value: '27°C / 22°C' },
+        { label: 'Pluie', value: '~200 mm — en baisse après le pic de décembre' },
+        { label: 'Mer', value: 'Venteuse, quelques vagues, ~28°C' },
+        { label: 'Affluence', value: 'Chargée au début, plus calme après la mi-mois' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment janvier',
+      whatItsLikeParagraphs: [
+        'Janvier ouvre l\'année, chaud et verdoyant. Les pluies les plus fortes de décembre s\'atténuent généralement et, même si des averses passent encore, les journées lumineuses et venteuses se multiplient au fil du mois.',
+        'Les alizés gardent l\'air frais et alimentent une scène de surf animée. Une fois que la foule du Nouvel An se dissipe après la première ou la deuxième semaine, la côte caraïbe devient un endroit détendu et agréable.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Janvier reçoit en moyenne environ 200 mm, généralement plus sec que décembre. Attendez-vous à des journées chaudes entrecoupées d\'averses passagères plutôt que de longues périodes grises, avec parfois un épisode venteux et plus humide.',
+      rainyDayIntro: 'Si une averse s\'invite, il y a de quoi faire :',
+      rainyDayItems: [
+        'Faire un tour de ferme de cacao et de chocolat',
+        'Observer les surfeurs à Salsa Brava par temps venteux',
+        'Explorer le parc national de Cahuita entre deux averses',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'La première ou la deuxième semaine conserve encore la foule des fêtes et des prix plus élevés. Ensuite, les deux baissent nettement, si bien que la fin janvier peut être idéale pour profiter de la chaleur sans la cohue de la haute saison.',
+      stayRecommendationTitle: 'Où loger à Puerto Viejo en janvier',
+      verdictHeading: 'Janvier est-il un bon moment pour venir ?',
+      verdictParagraph:
+        'Oui — surtout à partir de la mi-mois. Vous profitez de journées chaudes, verdoyantes et venteuses et d\'une belle scène de surf, avec une affluence et des prix en baisse après la cohue du Nouvel An.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'À retenir',
+      takeawaysParagraph:
+        'Janvier est chaud, verdoyant et venteux, il s\'assèche après décembre avec une scène de surf animée. Venez après les deux premières semaines pour le meilleur mélange de beau temps et de tranquillité, et prévoyez de quoi affronter une averse passagère.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo a gennaio — Clima, pioggia & mare',
+      seoDescription:
+        'A gennaio Puerto Viejo de Talamanca è calda e ventilata, con la calma dopo le feste, qualche acquazzone e buone onde. Ecco cosa aspettarti e come pianificare il viaggio.',
+      heading: 'Meteo a Puerto Viejo a gennaio',
+      heroAlt: 'Spiaggia caraibica ventilata a Puerto Viejo de Talamanca a gennaio',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Gennaio in breve',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 22°C' },
+        { label: 'Pioggia', value: '~200 mm — in calo dopo il picco di dicembre' },
+        { label: 'Mare', value: 'Ventilato, un po\' di onde, ~28°C' },
+        { label: 'Affluenza', value: 'Affollato all\'inizio, più tranquillo dopo metà mese' },
+      ],
+      whatItsLikeHeading: 'Com\'è davvero gennaio',
+      whatItsLikeParagraphs: [
+        'Gennaio apre l\'anno caldo e verde. Le piogge più intense di dicembre di solito si attenuano e, anche se qualche acquazzone passa ancora, con l\'avanzare del mese arrivano più giornate luminose e ventilate.',
+        'Gli alisei mantengono l\'aria fresca e alimentano una vivace scena del surf. Quando la folla di Capodanno si dirada dopo la prima o la seconda settimana, la costa caraibica diventa un luogo rilassato e piacevole.',
+      ],
+      rainHeading: 'Quanto piove?',
+      rainParagraph:
+        'Gennaio registra in media circa 200 mm, in genere più asciutto di dicembre. Aspettati giornate calde interrotte da acquazzoni di passaggio più che da lunghi periodi grigi, con qualche fase ventosa e più umida.',
+      rainyDayIntro: 'Se arriva un acquazzone, c\'è molto da fare:',
+      rainyDayItems: [
+        'Fare un tour di una piantagione di cacao e del cioccolato',
+        'Guardare i surfisti a Salsa Brava in una giornata ventosa',
+        'Esplorare il Parco Nazionale Cahuita tra un acquazzone e l\'altro',
+      ],
+      crowdsHeading: 'Affluenza, prezzi ed eventi',
+      crowdsParagraph:
+        'La prima o la seconda settimana porta ancora la folla delle feste e prezzi più alti. Dopo, entrambi calano nettamente, così la fine di gennaio può essere il momento ideale per il caldo senza la ressa dell\'alta stagione.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo a gennaio',
+      verdictHeading: 'Gennaio è un buon momento per visitare?',
+      verdictParagraph:
+        'Sì — soprattutto da metà mese. Trovi giornate calde, verdi e ventilate e una buona scena del surf, con affluenza e prezzi in calo dopo la ressa di Capodanno.',
+      hubLinkText: 'Guarda la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti chiave',
+      takeawaysParagraph:
+        'Gennaio è caldo, verde e ventilato, si asciuga dopo dicembre con una vivace scena del surf. Vieni dopo le prime due settimane per il miglior mix di bel tempo e meno folla, e porta qualcosa per l\'acquazzone di passaggio.',
+    },
+    pt: {
+      seoTitle: 'Clima em Puerto Viejo em Janeiro — Tempo, Chuva & Mar',
+      seoDescription:
+        'Janeiro em Puerto Viejo de Talamanca é quente e ventoso, com a calma pós-festas, alguns aguaceiros e boas ondas. Veja o que esperar e como planejar sua viagem.',
+      heading: 'Clima em Puerto Viejo em Janeiro',
+      heroAlt: 'Praia caribenha ventosa em Puerto Viejo de Talamanca em janeiro',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Janeiro num Relance',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 22°C' },
+        { label: 'Chuva', value: '~200 mm — diminuindo após o pico de dezembro' },
+        { label: 'Mar', value: 'Ventoso, algumas ondas, ~28°C' },
+        { label: 'Movimento', value: 'Cheio no início, mais calmo após meados do mês' },
+      ],
+      whatItsLikeHeading: 'Como Janeiro Realmente É',
+      whatItsLikeParagraphs: [
+        'Janeiro abre o ano quente e verde. As chuvas mais fortes de dezembro costumam estar diminuindo e, embora ainda passem aguaceiros, você tem mais dias claros e ventosos conforme o mês avança.',
+        'Os ventos alísios mantêm o ar fresco e alimentam uma cena de surfe animada. Quando a multidão de Ano Novo se dispersa após a primeira ou segunda semana, torna-se um momento tranquilo e agradável para estar na costa caribenha.',
+      ],
+      rainHeading: 'Quanto Chove?',
+      rainParagraph:
+        'Janeiro tem em média cerca de 200 mm, geralmente mais seco que dezembro. Espere dias quentes intercalados por aguaceiros passageiros em vez de longos períodos cinzentos, com algum episódio ventoso e mais úmido.',
+      rainyDayIntro: 'Se chegar um aguaceiro, há muito o que fazer:',
+      rainyDayItems: [
+        'Fazer um tour de fazenda de cacau e chocolate',
+        'Observar os surfistas em Salsa Brava num dia ventoso',
+        'Explorar o Parque Nacional Cahuita entre aguaceiros',
+      ],
+      crowdsHeading: 'Movimento, Preços e Eventos',
+      crowdsParagraph:
+        'A primeira ou segunda semana ainda traz as multidões das festas e preços mais altos. Depois disso, ambos caem visivelmente, então o fim de janeiro pode ser o momento ideal para clima quente sem a correria da alta temporada.',
+      stayRecommendationTitle: 'Onde ficar em Puerto Viejo em janeiro',
+      verdictHeading: 'Janeiro é uma Boa Época para Visitar?',
+      verdictParagraph:
+        'Sim — especialmente a partir de meados do mês. Você tem dias quentes, verdes e ventosos e uma boa cena de surfe, com o movimento e os preços diminuindo após a correria de Ano Novo.',
+      hubLinkText: 'Ver o guia completo de clima mês a mês →',
+      takeawaysHeading: 'Principais Conclusões',
+      takeawaysParagraph:
+        'Janeiro é quente, verde e ventoso, secando após dezembro com uma cena de surfe animada. Venha depois das primeiras duas semanas para a melhor combinação de bom tempo e menos gente, e leve algo para o aguaceiro passageiro.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בPuerto Viejo בינואר — אקלים, גשם וים',
+      seoDescription:
+        'ינואר בPuerto Viejo de Talamanca חם ורוחני, עם שקט אחרי החגים, כמה ממטרים וגלישה טובה. הנה למה לצפות ואיך לתכנן את הטיול שלכם.',
+      heading: 'מזג האוויר בPuerto Viejo בינואר',
+      heroAlt: 'חוף קריבי רוחני בPuerto Viejo de Talamanca בינואר',
+      photoCredit: <>תמונה: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'ינואר במבט חטוף',
+      snapshot: [
+        { label: 'טמפרטורה', value: '27°C / 22°C' },
+        { label: 'גשם', value: '~200 מ"מ — נחלש אחרי שיא דצמבר' },
+        { label: 'ים', value: 'רוחני, מעט גלישה, ~28°C' },
+        { label: 'עומס', value: 'עמוס בהתחלה, רגוע יותר אחרי אמצע החודש' },
+      ],
+      whatItsLikeHeading: 'איך ינואר באמת נראה',
+      whatItsLikeParagraphs: [
+        'ינואר פותח את השנה חם וירוק. הגשמים הכבדים של דצמבר בדרך כלל נחלשים, ולמרות שעדיין עוברים ממטרים, מקבלים יותר ימים בהירים ורוחניים ככל שהחודש מתקדם.',
+        'רוחות הסחר שומרות על אוויר רענן ומזינות סצנת גלישה תוססת. ברגע שקהל השנה החדשה מתפזר אחרי השבוע הראשון או השני, זה הופך לזמן רגוע ונעים לשהות בחוף הקריבי.',
+      ],
+      rainHeading: 'כמה יורד גשם?',
+      rainParagraph:
+        'בינואר יורדים בממוצע כ-200 מ"מ, בדרך כלל יבש יותר מדצמבר. צפו לימים חמים הנשברים על ידי ממטרים חולפים ולא לרצפים אפורים ארוכים, עם פרק רוחני וגשום יותר פה ושם.',
+      rainyDayIntro: 'אם מגיע ממטר, יש הרבה מה לעשות:',
+      rainyDayItems: [
+        'לצאת לסיור בחוות קקאו ושוקולד',
+        'לצפות בגולשים ב-Salsa Brava ביום רוחני',
+        'לחקור את הפארק הלאומי Cahuita בין הממטרים',
+      ],
+      crowdsHeading: 'עומס, מחירים ואירועים',
+      crowdsParagraph:
+        'השבוע הראשון או השני עדיין נושא את קהל החגים ומחירים גבוהים יותר. אחרי כן, שניהם יורדים במידה ניכרת, כך שסוף ינואר יכול להיות זמן מושלם למזג אוויר חם בלי העומס של שיא העונה.',
+      stayRecommendationTitle: 'איפה להתארח בPuerto Viejo בינואר',
+      verdictHeading: 'האם ינואר הוא זמן טוב לביקור?',
+      verdictParagraph:
+        'כן — במיוחד מאמצע החודש. מקבלים ימים חמים, ירוקים ורוחניים וסצנת גלישה טובה, עם עומס ומחירים שיורדים אחרי העומס של השנה החדשה.',
+      hubLinkText: 'למדריך מזג האוויר המלא חודש אחר חודש ←',
+      takeawaysHeading: 'נקודות מפתח',
+      takeawaysParagraph:
+        'ינואר חם, ירוק ורוחני, מתייבש אחרי דצמבר עם סצנת גלישה תוססת. בואו אחרי השבועיים הראשונים לשילוב הטוב ביותר של מזג אוויר טוב ופחות עומס, וארזו משהו לממטר חולף.',
+    },
+    hi: {
+      seoTitle: 'जनवरी में Puerto Viejo का मौसम — जलवायु, बारिश और समुद्र',
+      seoDescription:
+        'Puerto Viejo de Talamanca में जनवरी गर्म और हवादार होता है, त्योहारों के बाद की शांति, कुछ बौछारें और अच्छी सर्फिंग के साथ। जानिए क्या उम्मीद करें और अपनी यात्रा की योजना कैसे बनाएं।',
+      heading: 'जनवरी में Puerto Viejo का मौसम',
+      heroAlt: 'जनवरी में Puerto Viejo de Talamanca का हवादार कैरिबियन समुद्र तट',
+      photoCredit: <>तस्वीर: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में जनवरी',
+      snapshot: [
+        { label: 'तापमान', value: '27°C / 22°C' },
+        { label: 'बारिश', value: '~200 मिमी — दिसंबर के चरम के बाद कम होती हुई' },
+        { label: 'समुद्र', value: 'हवादार, कुछ लहरें, ~28°C' },
+        { label: 'भीड़', value: 'शुरू में व्यस्त, महीने के मध्य के बाद शांत' },
+      ],
+      whatItsLikeHeading: 'जनवरी वास्तव में कैसा होता है',
+      whatItsLikeParagraphs: [
+        'जनवरी साल की शुरुआत गर्म और हरे-भरे रूप में करता है। दिसंबर की सबसे तेज़ बारिशें आमतौर पर कम हो रही होती हैं, और भले ही बौछारें अब भी आती हैं, महीने के आगे बढ़ने के साथ आपको अधिक उजले, हवादार दिन मिलते हैं।',
+        'व्यापारिक हवाएं वातावरण को ताज़ा रखती हैं और एक जीवंत सर्फिंग दृश्य को बढ़ावा देती हैं। पहले या दूसरे सप्ताह के बाद जब नए साल की भीड़ छंट जाती है, तो कैरिबियन तट पर रहना एक आरामदायक और सुखद समय बन जाता है।',
+      ],
+      rainHeading: 'कितनी बारिश होती है?',
+      rainParagraph:
+        'जनवरी में औसतन लगभग 200 मिमी बारिश होती है, आमतौर पर दिसंबर से अधिक शुष्क। लंबे भूरे दौर के बजाय गुज़रती बौछारों से बाधित गर्म दिनों की उम्मीद करें, बीच-बीच में किसी हवादार, अधिक गीले दौर के साथ।',
+      rainyDayIntro: 'अगर बौछार आ जाए, तो करने के लिए बहुत कुछ है:',
+      rainyDayItems: [
+        'कोको फार्म और चॉकलेट टूर करें',
+        'हवादार दिन में Salsa Brava पर सर्फ़रों को देखें',
+        'बौछारों के बीच Cahuita राष्ट्रीय उद्यान की सैर करें',
+      ],
+      crowdsHeading: 'भीड़, कीमतें और आयोजन',
+      crowdsParagraph:
+        'पहला या दूसरा सप्ताह अब भी त्योहारों की भीड़ और ऊंची कीमतें लेकर आता है। उसके बाद, दोनों उल्लेखनीय रूप से कम हो जाते हैं, इसलिए जनवरी का अंत चरम मौसम की भागदौड़ के बिना गर्म मौसम के लिए एक बेहतरीन समय हो सकता है।',
+      stayRecommendationTitle: 'जनवरी में Puerto Viejo में कहाँ ठहरें',
+      verdictHeading: 'क्या जनवरी घूमने का अच्छा समय है?',
+      verdictParagraph:
+        'हां — खासकर महीने के मध्य से। आपको गर्म, हरे-भरे, हवादार दिन और अच्छा सर्फिंग दृश्य मिलता है, नए साल की भागदौड़ के बाद भीड़ और कीमतें कम होती हुई।',
+      hubLinkText: 'महीने-दर-महीने की पूरी मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'जनवरी गर्म, हरा-भरा और हवादार होता है, दिसंबर के बाद सूखता हुआ और एक जीवंत सर्फिंग दृश्य के साथ। अच्छे मौसम और कम भीड़ के सबसे अच्छे मेल के लिए पहले कुछ हफ्तों के बाद आएं, और किसी गुज़रती बौछार के लिए कुछ साथ रखें।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in januari — Klimaat, regen & zee',
+      seoDescription:
+        'Januari in Puerto Viejo de Talamanca is warm en winderig, met rust na de feestdagen, wat buien en goede golven. Dit kunt u verwachten en zo plant u uw reis.',
+      heading: 'Weer in Puerto Viejo in januari',
+      heroAlt: 'Winderig Caribisch strand in Puerto Viejo de Talamanca in januari',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Januari in een oogopslag',
+      snapshot: [
+        { label: 'Temperatuur', value: '27°C / 22°C' },
+        { label: 'Regen', value: '~200 mm — neemt af na de piek van december' },
+        { label: 'Zee', value: 'Winderig, wat golven, ~28°C' },
+        { label: 'Drukte', value: 'Vroeg druk, rustiger na half januari' },
+      ],
+      whatItsLikeHeading: 'Hoe januari echt is',
+      whatItsLikeParagraphs: [
+        'Januari opent het jaar warm en groen. De zwaarste regens van december nemen doorgaans af en hoewel er nog buien doortrekken, krijgt u naarmate de maand vordert meer heldere, winderige dagen.',
+        'De passaatwinden houden de lucht fris en voeden een levendige surfscene. Zodra de nieuwjaarsdrukte na de eerste of tweede week wegtrekt, wordt het een ontspannen, aangename tijd aan de Caribische kust.',
+      ],
+      rainHeading: 'Hoeveel regent het?',
+      rainParagraph:
+        'Januari kent gemiddeld zo\'n 200 mm en is doorgaans droger dan december. Verwacht warme dagen onderbroken door voorbijtrekkende buien in plaats van lange grijze perioden, met af en toe een winderige, nattere periode.',
+      rainyDayIntro: 'Als er een bui opsteekt, is er genoeg te doen:',
+      rainyDayItems: [
+        'Een cacaoboerderij- en chocoladetour maken',
+        'Op een winderige dag de surfers bij Salsa Brava bekijken',
+        'Tussen de buien door Nationaal Park Cahuita verkennen',
+      ],
+      crowdsHeading: 'Drukte, prijzen en evenementen',
+      crowdsParagraph:
+        'De eerste of tweede week kent nog de feestdagendrukte en hogere prijzen. Daarna nemen beide merkbaar af, dus eind januari kan een ideale tijd zijn voor warm weer zonder de hoogseizoendrukte.',
+      stayRecommendationTitle: 'Waar te verblijven in Puerto Viejo in januari',
+      verdictHeading: 'Is januari een goede tijd om te bezoeken?',
+      verdictParagraph:
+        'Ja — vooral vanaf half januari. U krijgt warme, groene, winderige dagen en een goede surfscene, met drukte en prijzen die afnemen na de nieuwjaarsdrukte.',
+      hubLinkText: 'Bekijk de volledige maand-voor-maand weergids →',
+      takeawaysHeading: 'Belangrijkste punten',
+      takeawaysParagraph:
+        'Januari is warm, groen en winderig, droogt op na december met een levendige surfscene. Kom na de eerste paar weken voor de beste mix van goed weer en minder drukte, en pak iets in voor de incidentele voorbijtrekkende bui.',
+    },
+  },
+  february: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in February — Climate, Rain & Sea',
+      seoDescription:
+        'February is the driest month in Puerto Viejo de Talamanca — the classic dry window with warm sun and the best beach and snorkelling conditions. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in February',
+      heroAlt: 'Sunny dry-season beach in Puerto Viejo de Talamanca in February',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'February at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '28°C / 22°C' },
+        { label: 'Rain', value: '~110 mm — the driest month' },
+        { label: 'Sea', value: 'Often calm and clear, ~28°C' },
+        { label: 'Crowds', value: 'Moderate — popular dry-season month' },
+      ],
+      whatItsLikeHeading: 'What February Is Really Like',
+      whatItsLikeParagraphs: [
+        'February is the classic dry window on the southern Caribbean. It is typically the driest month of the year, with the most reliable stretches of warm sun and blue sky.',
+        'The sea is often at its calmest and clearest, making it one of the best months for the beach, swimming and snorkelling. It is not a guarantee — the Caribbean can still surprise you — but the odds of great beach weather are as good as they get here.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'February averages only around 110 mm, the lowest of the year. You will still see the occasional shower, but long sunny spells are the norm rather than the exception.',
+      rainyDayIntro: 'On the rare wet afternoon, you have plenty of options:',
+      rainyDayItems: [
+        'Snorkel the reef while the water is clear and calm',
+        'Take a cacao and chocolate tour',
+        'Visit a Bribri Indigenous community',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'As the most reliable dry-season month, February is popular, so expect moderate crowds and higher prices than the green season. Book accommodation ahead if you want the best options.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in February',
+      verdictHeading: 'Is February a Good Time to Visit?',
+      verdictParagraph:
+        'Yes — for classic dry, sunny beach weather it is one of the best months of the year. If your trip is all about the sea and the sand, February is a strong choice.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'February is the driest month in Puerto Viejo, with the most reliable sun and often the calmest, clearest sea — prime beach and snorkelling weather. Expect moderate crowds and book ahead, but pack for the odd Caribbean surprise shower.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Febrero — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Febrero es el mes más seco en Puerto Viejo de Talamanca — la clásica ventana seca con sol cálido y las mejores condiciones de playa y snorkel. Esto es lo que puedes esperar.',
+      heading: 'El Clima en Puerto Viejo en Febrero',
+      heroAlt: 'Playa soleada de temporada seca en Puerto Viejo de Talamanca en febrero',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Febrero de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Lluvia', value: '~110 mm — el mes más seco' },
+        { label: 'Mar', value: 'A menudo en calma y claro, ~28°C' },
+        { label: 'Afluencia', value: 'Moderada — mes popular de temporada seca' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Febrero',
+      whatItsLikeParagraphs: [
+        'Febrero es la clásica ventana seca del Caribe Sur. Suele ser el mes más seco del año, con los períodos más fiables de sol cálido y cielo azul.',
+        'El mar suele estar en su punto más tranquilo y claro, lo que lo convierte en uno de los mejores meses para la playa, nadar y hacer snorkel. No es garantía —el Caribe aún puede sorprender— pero las probabilidades de buen clima de playa son de las mejores del año.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Febrero promedia solo unos 110 mm, lo más bajo del año. Todavía verás algún aguacero, pero los largos períodos soleados son la norma y no la excepción.',
+      rainyDayIntro: 'En la rara tarde lluviosa, tienes muchas opciones:',
+      rainyDayItems: [
+        'Haz snorkel en el arrecife mientras el agua está clara y en calma',
+        'Haz un tour de cacao y chocolate',
+        'Visita una comunidad indígena Bribri',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'Al ser el mes de temporada seca más fiable, febrero es popular, así que espera afluencia moderada y precios más altos que en la temporada verde. Reserva alojamiento con antelación si quieres las mejores opciones.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en febrero',
+      verdictHeading: '¿Es Febrero una Buena Época para Visitar?',
+      verdictParagraph:
+        'Sí — para el clásico clima seco y soleado de playa es uno de los mejores meses del año. Si tu viaje gira en torno al mar y la arena, febrero es una gran elección.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Febrero es el mes más seco de Puerto Viejo, con el sol más fiable y a menudo el mar más tranquilo y claro — clima ideal de playa y snorkel. Espera afluencia moderada y reserva con antelación, pero lleva algo por si el Caribe sorprende con un aguacero.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im Februar — Klima, Regen & Meer',
+      seoDescription:
+        'Februar ist der trockenste Monat in Puerto Viejo de Talamanca — das klassische Trockenfenster mit warmer Sonne und den besten Bedingungen für Strand und Schnorcheln. Das erwartet Sie.',
+      heading: 'Wetter in Puerto Viejo im Februar',
+      heroAlt: 'Sonniger Strand der Trockenzeit in Puerto Viejo de Talamanca im Februar',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Februar auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '28°C / 22°C' },
+        { label: 'Regen', value: '~110 mm — der trockenste Monat' },
+        { label: 'Meer', value: 'Oft ruhig und klar, ~28°C' },
+        { label: 'Andrang', value: 'Mäßig — beliebter Monat der Trockenzeit' },
+      ],
+      whatItsLikeHeading: 'Wie der Februar wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der Februar ist das klassische Trockenfenster an der südlichen Karibikküste. Er ist meist der trockenste Monat des Jahres, mit den verlässlichsten Phasen warmer Sonne und blauen Himmels.',
+        'Das Meer ist oft am ruhigsten und klarsten, was ihn zu einem der besten Monate für Strand, Schwimmen und Schnorcheln macht. Eine Garantie ist das nicht — die Karibik kann einen immer noch überraschen — aber die Chancen auf herrliches Strandwetter sind hier so gut wie nie.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Im Februar fallen im Schnitt nur etwa 110 mm, der niedrigste Wert des Jahres. Sie werden noch den einen oder anderen Schauer erleben, doch lange sonnige Phasen sind die Regel und nicht die Ausnahme.',
+      rainyDayIntro: 'An dem seltenen verregneten Nachmittag haben Sie viele Möglichkeiten:',
+      rainyDayItems: [
+        'Schnorcheln Sie am Riff, solange das Wasser klar und ruhig ist',
+        'Machen Sie eine Kakao- und Schokoladentour',
+        'Besuchen Sie eine indigene Bribri-Gemeinschaft',
+      ],
+      crowdsHeading: 'Andrang, Preise und Veranstaltungen',
+      crowdsParagraph:
+        'Als verlässlichster Monat der Trockenzeit ist der Februar beliebt, rechnen Sie also mit mäßigem Andrang und höheren Preisen als in der grünen Saison. Buchen Sie Ihre Unterkunft im Voraus, wenn Sie die besten Optionen wollen.',
+      stayRecommendationTitle: 'Wo man im Februar in Puerto Viejo übernachtet',
+      verdictHeading: 'Ist der Februar eine gute Reisezeit?',
+      verdictParagraph:
+        'Ja — für klassisches trockenes, sonniges Strandwetter ist er einer der besten Monate des Jahres. Wenn sich Ihre Reise ganz um Meer und Sand dreht, ist der Februar eine starke Wahl.',
+      hubLinkText: 'Zum vollständigen Monat-für-Monat-Wetterführer →',
+      takeawaysHeading: 'Wichtigste Erkenntnisse',
+      takeawaysParagraph:
+        'Der Februar ist der trockenste Monat in Puerto Viejo, mit der verlässlichsten Sonne und oft dem ruhigsten, klarsten Meer — ideales Wetter für Strand und Schnorcheln. Rechnen Sie mit mäßigem Andrang und buchen Sie im Voraus, aber packen Sie für den gelegentlichen karibischen Überraschungsschauer.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en février — Climat, pluie et mer',
+      seoDescription:
+        'Février est le mois le plus sec à Puerto Viejo de Talamanca — la classique fenêtre sèche avec un soleil chaud et les meilleures conditions pour la plage et le snorkeling. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en février',
+      heroAlt: 'Plage ensoleillée de saison sèche à Puerto Viejo de Talamanca en février',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Février en un coup d\'œil',
+      snapshot: [
+        { label: 'Température', value: '28°C / 22°C' },
+        { label: 'Pluie', value: '~110 mm — le mois le plus sec' },
+        { label: 'Mer', value: 'Souvent calme et claire, ~28°C' },
+        { label: 'Affluence', value: 'Modérée — mois prisé de la saison sèche' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment février',
+      whatItsLikeParagraphs: [
+        'Février est la classique fenêtre sèche du sud des Caraïbes. C\'est généralement le mois le plus sec de l\'année, avec les périodes les plus fiables de soleil chaud et de ciel bleu.',
+        'La mer est souvent à son plus calme et à son plus clair, ce qui en fait l\'un des meilleurs mois pour la plage, la baignade et le snorkeling. Ce n\'est pas une garantie — les Caraïbes peuvent encore vous surprendre — mais les chances de profiter d\'un beau temps de plage sont ici parmi les meilleures.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Février ne totalise en moyenne qu\'environ 110 mm, le plus faible de l\'année. Vous verrez encore quelques averses, mais les longues périodes ensoleillées sont la norme plutôt que l\'exception.',
+      rainyDayIntro: 'Lors du rare après-midi pluvieux, vous avez de nombreuses options :',
+      rainyDayItems: [
+        'Faites du snorkeling sur le récif pendant que l\'eau est claire et calme',
+        'Faites un tour du cacao et du chocolat',
+        'Visitez une communauté autochtone Bribri',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'En tant que mois le plus fiable de la saison sèche, février est prisé, alors attendez-vous à une affluence modérée et à des prix plus élevés qu\'en saison verte. Réservez votre hébergement à l\'avance si vous voulez les meilleures options.',
+      stayRecommendationTitle: 'Où loger à Puerto Viejo en février',
+      verdictHeading: 'Février est-il une bonne période pour visiter ?',
+      verdictParagraph:
+        'Oui — pour un temps de plage classique, sec et ensoleillé, c\'est l\'un des meilleurs mois de l\'année. Si votre voyage tourne autour de la mer et du sable, février est un excellent choix.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'Points clés',
+      takeawaysParagraph:
+        'Février est le mois le plus sec à Puerto Viejo, avec le soleil le plus fiable et souvent la mer la plus calme et la plus claire — un temps idéal pour la plage et le snorkeling. Attendez-vous à une affluence modérée et réservez à l\'avance, mais prévoyez de quoi faire face à une averse surprise des Caraïbes.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo a febbraio — Clima, pioggia e mare',
+      seoDescription:
+        'Febbraio è il mese più secco a Puerto Viejo de Talamanca — la classica finestra secca con sole caldo e le migliori condizioni per spiaggia e snorkeling. Ecco cosa aspettarti.',
+      heading: 'Meteo a Puerto Viejo a febbraio',
+      heroAlt: 'Spiaggia soleggiata della stagione secca a Puerto Viejo de Talamanca a febbraio',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Febbraio in Breve',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Pioggia', value: '~110 mm — il mese più secco' },
+        { label: 'Mare', value: 'Spesso calmo e limpido, ~28°C' },
+        { label: 'Affluenza', value: 'Moderata — mese popolare della stagione secca' },
+      ],
+      whatItsLikeHeading: 'Com\'è Davvero Febbraio',
+      whatItsLikeParagraphs: [
+        'Febbraio è la classica finestra secca dei Caraibi meridionali. È di solito il mese più secco dell\'anno, con i periodi più affidabili di sole caldo e cielo azzurro.',
+        'Il mare è spesso al suo massimo di calma e limpidezza, il che lo rende uno dei mesi migliori per la spiaggia, il nuoto e lo snorkeling. Non è una garanzia — i Caraibi possono ancora sorprenderti — ma le probabilità di un ottimo tempo da spiaggia sono tra le migliori dell\'anno.',
+      ],
+      rainHeading: 'Quanto Piove?',
+      rainParagraph:
+        'A febbraio cadono in media solo circa 110 mm, il valore più basso dell\'anno. Vedrai ancora qualche acquazzone occasionale, ma le lunghe schiarite soleggiate sono la norma più che l\'eccezione.',
+      rainyDayIntro: 'Nel raro pomeriggio piovoso, hai molte opzioni:',
+      rainyDayItems: [
+        'Fai snorkeling sulla barriera corallina mentre l\'acqua è limpida e calma',
+        'Fai un tour del cacao e del cioccolato',
+        'Visita una comunità indigena Bribri',
+      ],
+      crowdsHeading: 'Affluenza, Prezzi ed Eventi',
+      crowdsParagraph:
+        'Essendo il mese più affidabile della stagione secca, febbraio è popolare, quindi aspettati un\'affluenza moderata e prezzi più alti rispetto alla stagione verde. Prenota l\'alloggio in anticipo se vuoi le opzioni migliori.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo a febbraio',
+      verdictHeading: 'Febbraio è un Buon Periodo per Visitare?',
+      verdictParagraph:
+        'Sì — per il classico tempo da spiaggia secco e soleggiato è uno dei mesi migliori dell\'anno. Se il tuo viaggio ruota tutto intorno al mare e alla sabbia, febbraio è un\'ottima scelta.',
+      hubLinkText: 'Vedi la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti Chiave',
+      takeawaysParagraph:
+        'Febbraio è il mese più secco di Puerto Viejo, con il sole più affidabile e spesso il mare più calmo e limpido — tempo ideale per spiaggia e snorkeling. Aspettati un\'affluenza moderata e prenota in anticipo, ma metti in valigia qualcosa per l\'occasionale acquazzone a sorpresa dei Caraibi.',
+    },
+    pt: {
+      seoTitle: 'Clima em Puerto Viejo em fevereiro — Tempo, chuva e mar',
+      seoDescription:
+        'Fevereiro é o mês mais seco em Puerto Viejo de Talamanca — a clássica janela seca com sol quente e as melhores condições para praia e snorkeling. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em fevereiro',
+      heroAlt: 'Praia ensolarada da estação seca em Puerto Viejo de Talamanca em fevereiro',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Fevereiro num Relance',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Chuva', value: '~110 mm — o mês mais seco' },
+        { label: 'Mar', value: 'Muitas vezes calmo e claro, ~28°C' },
+        { label: 'Movimento', value: 'Moderado — mês popular da estação seca' },
+      ],
+      whatItsLikeHeading: 'Como Fevereiro Realmente É',
+      whatItsLikeParagraphs: [
+        'Fevereiro é a clássica janela seca do Caribe Sul. Costuma ser o mês mais seco do ano, com os períodos mais confiáveis de sol quente e céu azul.',
+        'O mar costuma estar no seu ponto mais calmo e claro, o que o torna um dos melhores meses para a praia, nadar e fazer snorkeling. Não é garantia — o Caribe ainda pode surpreender — mas as chances de um ótimo tempo de praia estão entre as melhores do ano.',
+      ],
+      rainHeading: 'Quanto Chove?',
+      rainParagraph:
+        'Fevereiro tem em média apenas cerca de 110 mm, o menor do ano. Você ainda verá uma pancada de chuva ocasional, mas os longos períodos de sol são a regra, não a exceção.',
+      rainyDayIntro: 'Na rara tarde chuvosa, você tem muitas opções:',
+      rainyDayItems: [
+        'Faça snorkeling no recife enquanto a água está clara e calma',
+        'Faça um tour de cacau e chocolate',
+        'Visite uma comunidade indígena Bribri',
+      ],
+      crowdsHeading: 'Movimento, Preços e Eventos',
+      crowdsParagraph:
+        'Por ser o mês mais confiável da estação seca, fevereiro é popular, então espere movimento moderado e preços mais altos do que na estação verde. Reserve a hospedagem com antecedência se quiser as melhores opções.',
+      stayRecommendationTitle: 'Onde se hospedar em Puerto Viejo em fevereiro',
+      verdictHeading: 'Fevereiro é uma Boa Época para Visitar?',
+      verdictParagraph:
+        'Sim — para o clássico tempo de praia seco e ensolarado é um dos melhores meses do ano. Se a sua viagem gira em torno do mar e da areia, fevereiro é uma excelente escolha.',
+      hubLinkText: 'Veja o guia de clima completo mês a mês →',
+      takeawaysHeading: 'Pontos Principais',
+      takeawaysParagraph:
+        'Fevereiro é o mês mais seco de Puerto Viejo, com o sol mais confiável e muitas vezes o mar mais calmo e claro — tempo ideal para praia e snorkeling. Espere movimento moderado e reserve com antecedência, mas leve algo para a eventual pancada de chuva surpresa do Caribe.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בפוארטו ויאחו בפברואר — אקלים, גשם וים',
+      seoDescription:
+        'פברואר הוא החודש היבש ביותר בפוארטו ויאחו דה טלמנקה — חלון היובש הקלאסי עם שמש חמה והתנאים הטובים ביותר לחוף ולשנורקלינג. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו בפברואר',
+      heroAlt: 'חוף שטוף שמש בעונה היבשה בפוארטו ויאחו דה טלמנקה בפברואר',
+      photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'פברואר במבט חטוף',
+      snapshot: [
+        { label: 'טמפרטורה', value: '28°C / 22°C' },
+        { label: 'גשם', value: '~110 מ"מ — החודש היבש ביותר' },
+        { label: 'ים', value: 'לרוב רגוע וצלול, ~28°C' },
+        { label: 'עומס', value: 'בינוני — חודש פופולרי בעונה היבשה' },
+      ],
+      whatItsLikeHeading: 'איך פברואר באמת נראה',
+      whatItsLikeParagraphs: [
+        'פברואר הוא חלון היובש הקלאסי בקריביים הדרומיים. זהו בדרך כלל החודש היבש ביותר בשנה, עם התקופות האמינות ביותר של שמש חמה ושמיים כחולים.',
+        'הים לרוב במיטבו מבחינת רוגע וצלילות, מה שהופך אותו לאחד החודשים הטובים ביותר לחוף, לשחייה ולשנורקלינג. זו אינה ערובה — הקריביים עדיין יכולים להפתיע — אך הסיכויים למזג אוויר חופי מצוין טובים כמעט כפי שהם יכולים להיות כאן.',
+      ],
+      rainHeading: 'כמה גשם יורד?',
+      rainParagraph:
+        'בפברואר יורדים בממוצע רק כ-110 מ"מ, הנמוך ביותר בשנה. עדיין תראו ממטר מזדמן, אך מקטעי שמש ארוכים הם הכלל ולא היוצא מן הכלל.',
+      rainyDayIntro: 'באחר צהריים גשום ונדיר, יש לכם שלל אפשרויות:',
+      rainyDayItems: [
+        'עשו שנורקלינג בשונית בזמן שהמים צלולים ורגועים',
+        'צאו לסיור קקאו ושוקולד',
+        'בקרו בקהילה הילידית Bribri',
+      ],
+      crowdsHeading: 'עומס, מחירים ואירועים',
+      crowdsParagraph:
+        'בהיותו החודש האמין ביותר בעונה היבשה, פברואר פופולרי, אז צפו לעומס בינוני ולמחירים גבוהים יותר מאשר בעונה הירוקה. הזמינו לינה מראש אם אתם רוצים את האפשרויות הטובות ביותר.',
+      stayRecommendationTitle: 'איפה להתארח בפוארטו ויאחו בפברואר',
+      verdictHeading: 'האם פברואר הוא זמן טוב לביקור?',
+      verdictParagraph:
+        'כן — למזג אוויר חופי קלאסי, יבש ושטוף שמש זהו אחד החודשים הטובים ביותר בשנה. אם הטיול שלכם כולו סביב הים והחול, פברואר הוא בחירה מצוינת.',
+      hubLinkText: 'צפו במדריך מזג האוויר המלא חודש אחר חודש →',
+      takeawaysHeading: 'נקודות עיקריות',
+      takeawaysParagraph:
+        'פברואר הוא החודש היבש ביותר בפוארטו ויאחו, עם השמש האמינה ביותר ולרוב הים הרגוע והצלול ביותר — מזג אוויר אידיאלי לחוף ולשנורקלינג. צפו לעומס בינוני והזמינו מראש, אך ארזו גם למקרה של ממטר הפתעה קריבי.',
+    },
+    hi: {
+      seoTitle: 'फ़रवरी में पुएर्तो विएखो का मौसम — जलवायु, बारिश और समुद्र',
+      seoDescription:
+        'फ़रवरी पुएर्तो विएखो दे तालामांका का सबसे शुष्क महीना है — गर्म धूप और समुद्र तट तथा स्नॉर्कलिंग की बेहतरीन परिस्थितियों वाली क्लासिक शुष्क अवधि। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'फ़रवरी में पुएर्तो विएखो का मौसम',
+      heroAlt: 'फ़रवरी में पुएर्तो विएखो दे तालामांका में शुष्क मौसम का धूप भरा समुद्र तट',
+      photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में फ़रवरी',
+      snapshot: [
+        { label: 'तापमान', value: '28°C / 22°C' },
+        { label: 'बारिश', value: '~110 मिमी — सबसे शुष्क महीना' },
+        { label: 'समुद्र', value: 'अक्सर शांत और साफ़, ~28°C' },
+        { label: 'भीड़', value: 'मध्यम — शुष्क मौसम का लोकप्रिय महीना' },
+      ],
+      whatItsLikeHeading: 'फ़रवरी वास्तव में कैसा होता है',
+      whatItsLikeParagraphs: [
+        'फ़रवरी दक्षिणी कैरिबियन की क्लासिक शुष्क अवधि है। यह आमतौर पर साल का सबसे शुष्क महीना होता है, जिसमें गर्म धूप और नीले आसमान के सबसे भरोसेमंद दौर आते हैं।',
+        'समुद्र अक्सर सबसे शांत और साफ़ होता है, जिससे यह समुद्र तट, तैराकी और स्नॉर्कलिंग के लिए सबसे अच्छे महीनों में से एक बन जाता है। यह कोई गारंटी नहीं है — कैरिबियन अब भी आपको चौंका सकता है — लेकिन शानदार समुद्र तट के मौसम की संभावनाएँ यहाँ जितनी अच्छी हो सकती हैं उतनी ही हैं।',
+      ],
+      rainHeading: 'कितनी बारिश होती है?',
+      rainParagraph:
+        'फ़रवरी में औसतन केवल लगभग 110 मिमी बारिश होती है, जो साल में सबसे कम है। आपको अब भी कभी-कभार बौछार दिखेगी, लेकिन लंबे धूप भरे दौर अपवाद नहीं बल्कि आम बात हैं।',
+      rainyDayIntro: 'किसी दुर्लभ बरसाती दोपहर में, आपके पास ढेरों विकल्प हैं:',
+      rainyDayItems: [
+        'जब पानी साफ़ और शांत हो तब चट्टान पर स्नॉर्कलिंग करें',
+        'कोको और चॉकलेट टूर पर जाएँ',
+        'किसी Bribri स्वदेशी समुदाय का दौरा करें',
+      ],
+      crowdsHeading: 'भीड़, कीमतें और आयोजन',
+      crowdsParagraph:
+        'शुष्क मौसम के सबसे भरोसेमंद महीने के रूप में, फ़रवरी लोकप्रिय है, इसलिए मध्यम भीड़ और हरित मौसम की तुलना में ऊँची कीमतों की उम्मीद करें। बेहतरीन विकल्प चाहिए तो आवास पहले से बुक करें।',
+      stayRecommendationTitle: 'फ़रवरी में पुएर्तो विएखो में कहाँ ठहरें',
+      verdictHeading: 'क्या फ़रवरी घूमने के लिए अच्छा समय है?',
+      verdictParagraph:
+        'हाँ — क्लासिक शुष्क, धूप भरे समुद्र तट के मौसम के लिए यह साल के सबसे अच्छे महीनों में से एक है। अगर आपकी यात्रा पूरी तरह समुद्र और रेत के बारे में है, तो फ़रवरी एक बढ़िया विकल्प है।',
+      hubLinkText: 'महीने-दर-महीने की पूरी मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'फ़रवरी पुएर्तो विएखो का सबसे शुष्क महीना है, जिसमें सबसे भरोसेमंद धूप और अक्सर सबसे शांत, साफ़ समुद्र होता है — समुद्र तट और स्नॉर्कलिंग के लिए बेहतरीन मौसम। मध्यम भीड़ की उम्मीद करें और पहले से बुक करें, लेकिन कभी-कभार कैरिबियन की अचानक बौछार के लिए भी सामान रखें।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in februari — Klimaat, regen & zee',
+      seoDescription:
+        'Februari is de droogste maand in Puerto Viejo de Talamanca — het klassieke droge venster met warme zon en de beste omstandigheden voor strand en snorkelen. Dit is wat je kunt verwachten.',
+      heading: 'Weer in Puerto Viejo in februari',
+      heroAlt: 'Zonnig strand in het droge seizoen in Puerto Viejo de Talamanca in februari',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Februari in het Kort',
+      snapshot: [
+        { label: 'Temperatuur', value: '28°C / 22°C' },
+        { label: 'Regen', value: '~110 mm — de droogste maand' },
+        { label: 'Zee', value: 'Vaak kalm en helder, ~28°C' },
+        { label: 'Drukte', value: 'Matig — populaire maand in het droge seizoen' },
+      ],
+      whatItsLikeHeading: 'Hoe Februari Echt Is',
+      whatItsLikeParagraphs: [
+        'Februari is het klassieke droge venster aan de zuidelijke Caribische kust. Het is doorgaans de droogste maand van het jaar, met de meest betrouwbare periodes van warme zon en blauwe lucht.',
+        'De zee is vaak op zijn kalmst en helderst, waardoor het een van de beste maanden is voor het strand, zwemmen en snorkelen. Het is geen garantie — de Caraïben kunnen je nog altijd verrassen — maar de kans op prachtig strandweer is hier zo goed als het maar kan.',
+      ],
+      rainHeading: 'Hoeveel Regent Het?',
+      rainParagraph:
+        'Februari kent gemiddeld slechts zo\'n 110 mm, het laagste van het jaar. Je krijgt nog wel een enkele bui, maar lange zonnige periodes zijn eerder regel dan uitzondering.',
+      rainyDayIntro: 'Op de zeldzame natte middag heb je volop opties:',
+      rainyDayItems: [
+        'Snorkel bij het rif terwijl het water helder en kalm is',
+        'Doe een cacao- en chocoladetour',
+        'Bezoek een inheemse Bribri-gemeenschap',
+      ],
+      crowdsHeading: 'Drukte, Prijzen en Evenementen',
+      crowdsParagraph:
+        'Als meest betrouwbare maand van het droge seizoen is februari populair, dus reken op matige drukte en hogere prijzen dan in het groene seizoen. Boek je accommodatie op tijd als je de beste opties wilt.',
+      stayRecommendationTitle: 'Waar te verblijven in Puerto Viejo in februari',
+      verdictHeading: 'Is Februari een Goede Tijd om te Bezoeken?',
+      verdictParagraph:
+        'Ja — voor klassiek droog, zonnig strandweer is het een van de beste maanden van het jaar. Als je reis helemaal draait om de zee en het zand, is februari een sterke keuze.',
+      hubLinkText: 'Bekijk de volledige maand-voor-maand weergids →',
+      takeawaysHeading: 'Belangrijkste Punten',
+      takeawaysParagraph:
+        'Februari is de droogste maand in Puerto Viejo, met de meest betrouwbare zon en vaak de kalmste, helderste zee — ideaal strand- en snorkelweer. Reken op matige drukte en boek op tijd, maar pak ook iets in voor de incidentele Caribische verrassingsbui.',
+    },
+  },
+  march: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in March — Climate, Rain & Sea',
+      seoDescription:
+        'March in Puerto Viejo de Talamanca stays warm and fairly dry as the dry window continues — great for beaches, hikes and jungle. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in March',
+      heroAlt: 'Warm sunny day on the Caribbean coast of Puerto Viejo de Talamanca in March',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'March at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '28°C / 22°C' },
+        { label: 'Rain', value: '~170 mm — still on the drier side' },
+        { label: 'Sea', value: 'Warm, generally pleasant, ~28°C' },
+        { label: 'Crowds', value: 'Moderate — dry-season demand' },
+      ],
+      whatItsLikeHeading: 'What March Is Really Like',
+      whatItsLikeParagraphs: [
+        'March continues the dry window, staying warm and fairly bright. It is one of the warmer months of the year, with plenty of sun and comfortable beach days.',
+        'It is a great all-rounder: good for the beach, ideal for jungle hikes and wildlife before the wetter months arrive, and generally reliable weather for planning day trips.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'March averages around 170 mm — still on the drier side for this coast. Expect mostly warm, bright days with the occasional short shower, especially later in the day.',
+      rainyDayIntro: 'If a shower passes through, there is plenty to do:',
+      rainyDayItems: [
+        'Hike the flat coastal trail in Cahuita National Park',
+        'Take a chocolate (cacao) tour',
+        'Snorkel or swim on a calm afternoon',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'March still sees dry-season demand, so crowds and prices are moderate — a little quieter than February but busier than the green season. Easter can fall in late March some years and brings a local surge.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in March',
+      verdictHeading: 'Is March a Good Time to Visit?',
+      verdictParagraph:
+        'Yes — warm, fairly dry and versatile, March suits beach lovers and hikers alike. It is one of the more dependable months for a bit of everything.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'March keeps the dry window going: warm, fairly dry and great for both beaches and jungle. Crowds are moderate; watch for Easter if it falls late in the month, and pack for the occasional afternoon shower.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Marzo — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Marzo en Puerto Viejo de Talamanca se mantiene cálido y bastante seco mientras continúa la ventana seca — ideal para playas, caminatas y selva. Esto es lo que puedes esperar.',
+      heading: 'El Clima en Puerto Viejo en Marzo',
+      heroAlt: 'Día cálido y soleado en el Caribe de Puerto Viejo de Talamanca en marzo',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Marzo de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Lluvia', value: '~170 mm — todavía del lado más seco' },
+        { label: 'Mar', value: 'Cálido, en general agradable, ~28°C' },
+        { label: 'Afluencia', value: 'Moderada — demanda de temporada seca' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Marzo',
+      whatItsLikeParagraphs: [
+        'Marzo continúa la ventana seca, manteniéndose cálido y bastante luminoso. Es uno de los meses más cálidos del año, con mucho sol y cómodos días de playa.',
+        'Es un gran todoterreno: bueno para la playa, ideal para caminatas por la selva y ver fauna antes de que lleguen los meses más húmedos, y con un clima en general fiable para planear excursiones.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Marzo promedia unos 170 mm — todavía del lado más seco para esta costa. Espera días mayormente cálidos y luminosos con algún aguacero corto, sobre todo al final del día.',
+      rainyDayIntro: 'Si pasa un aguacero, hay mucho por hacer:',
+      rainyDayItems: [
+        'Recorre el sendero costero plano del Parque Nacional Cahuita',
+        'Haz un tour de chocolate (cacao)',
+        'Haz snorkel o nada en una tarde tranquila',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'Marzo aún tiene demanda de temporada seca, así que la afluencia y los precios son moderados — algo más tranquilo que febrero pero más concurrido que la temporada verde. Algunos años la Semana Santa cae a finales de marzo y trae un repunte local.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en marzo',
+      verdictHeading: '¿Es Marzo una Buena Época para Visitar?',
+      verdictParagraph:
+        'Sí — cálido, bastante seco y versátil, marzo va bien tanto para amantes de la playa como para senderistas. Es uno de los meses más fiables para un poco de todo.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Marzo mantiene la ventana seca: cálido, bastante seco y genial tanto para playas como para selva. La afluencia es moderada; ojo con la Semana Santa si cae a fin de mes, y lleva algo para algún aguacero de la tarde.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im März — Klima, Regen & Meer',
+      seoDescription:
+        'Der März in Puerto Viejo de Talamanca bleibt warm und recht trocken, während das Trockenfenster anhält — ideal für Strände, Wanderungen und Dschungel. Das erwartet dich.',
+      heading: 'Wetter in Puerto Viejo im März',
+      heroAlt: 'Warmer, sonniger Tag an der Karibikküste von Puerto Viejo de Talamanca im März',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'März auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '28°C / 22°C' },
+        { label: 'Regen', value: '~170 mm — noch auf der trockeneren Seite' },
+        { label: 'Meer', value: 'Warm, allgemein angenehm, ~28°C' },
+        { label: 'Andrang', value: 'Moderat — Nachfrage der Trockenzeit' },
+      ],
+      whatItsLikeHeading: 'Wie der März wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der März setzt das Trockenfenster fort und bleibt warm und recht hell. Er ist einer der wärmeren Monate des Jahres, mit viel Sonne und angenehmen Strandtagen.',
+        'Er ist ein toller Allrounder: gut für den Strand, ideal für Dschungelwanderungen und Tierbeobachtungen, bevor die feuchteren Monate kommen, und mit allgemein verlässlichem Wetter zum Planen von Tagesausflügen.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Der März erreicht im Schnitt rund 170 mm — für diese Küste noch auf der trockeneren Seite. Erwarte überwiegend warme, helle Tage mit gelegentlichen kurzen Schauern, vor allem im späteren Tagesverlauf.',
+      rainyDayIntro: 'Wenn ein Schauer durchzieht, gibt es viel zu tun:',
+      rainyDayItems: [
+        'Wandere den flachen Küstenpfad im Cahuita-Nationalpark',
+        'Mache eine Schokoladen- (Kakao-)Tour',
+        'Schnorchle oder schwimme an einem ruhigen Nachmittag',
+      ],
+      crowdsHeading: 'Andrang, Preise und Veranstaltungen',
+      crowdsParagraph:
+        'Im März herrscht noch die Nachfrage der Trockenzeit, sodass Andrang und Preise moderat sind — etwas ruhiger als im Februar, aber belebter als in der grünen Saison. Ostern kann in manchen Jahren auf Ende März fallen und bringt einen lokalen Ansturm.',
+      stayRecommendationTitle: 'Wo man im März in Puerto Viejo übernachtet',
+      verdictHeading: 'Ist der März eine gute Reisezeit?',
+      verdictParagraph:
+        'Ja — warm, recht trocken und vielseitig, passt der März Strandliebhabern wie Wanderern gleichermaßen. Er ist einer der verlässlichsten Monate für ein bisschen von allem.',
+      hubLinkText: 'Zum vollständigen Wetterführer Monat für Monat →',
+      takeawaysHeading: 'Das Wichtigste in Kürze',
+      takeawaysParagraph:
+        'Der März hält das Trockenfenster offen: warm, recht trocken und großartig für Strände wie Dschungel. Der Andrang ist moderat; achte auf Ostern, falls es spät im Monat liegt, und packe für den gelegentlichen Nachmittagsschauer.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en mars — climat, pluie et mer',
+      seoDescription:
+        'En mars, Puerto Viejo de Talamanca reste chaud et plutôt sec tandis que la fenêtre sèche se poursuit — parfait pour les plages, les randonnées et la jungle. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en mars',
+      heroAlt: 'Journée chaude et ensoleillée sur la côte caraïbe de Puerto Viejo de Talamanca en mars',
+      photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Mars en un coup d\'œil',
+      snapshot: [
+        { label: 'Température', value: '28°C / 22°C' },
+        { label: 'Pluie', value: '~170 mm — encore du côté le plus sec' },
+        { label: 'Mer', value: 'Chaude, généralement agréable, ~28°C' },
+        { label: 'Affluence', value: 'Modérée — demande de saison sèche' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment le mois de mars',
+      whatItsLikeParagraphs: [
+        'Mars prolonge la fenêtre sèche, restant chaud et plutôt lumineux. C\'est l\'un des mois les plus chauds de l\'année, avec beaucoup de soleil et d\'agréables journées de plage.',
+        'C\'est un excellent choix polyvalent : bon pour la plage, idéal pour les randonnées en jungle et l\'observation de la faune avant l\'arrivée des mois plus humides, et un temps généralement fiable pour planifier des excursions.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Mars affiche en moyenne environ 170 mm — encore du côté le plus sec pour cette côte. Attendez-vous à des journées majoritairement chaudes et lumineuses, avec une averse courte de temps en temps, surtout en fin de journée.',
+      rainyDayIntro: 'Si une averse passe, il y a de quoi s\'occuper :',
+      rainyDayItems: [
+        'Parcourez le sentier côtier plat du parc national de Cahuita',
+        'Faites un tour du chocolat (cacao)',
+        'Faites du snorkeling ou nagez lors d\'un après-midi calme',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'Mars connaît encore la demande de la saison sèche, si bien que l\'affluence et les prix restent modérés — un peu plus calme que février mais plus animé que la saison verte. La Semana Santa peut tomber fin mars certaines années et provoque un afflux local.',
+      stayRecommendationTitle: 'Où loger à Puerto Viejo en mars',
+      verdictHeading: 'Mars est-il une bonne période pour visiter ?',
+      verdictParagraph:
+        'Oui — chaud, plutôt sec et polyvalent, mars convient aussi bien aux amateurs de plage qu\'aux randonneurs. C\'est l\'un des mois les plus fiables pour un peu de tout.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'À retenir',
+      takeawaysParagraph:
+        'Mars maintient la fenêtre sèche : chaud, plutôt sec et parfait pour les plages comme pour la jungle. L\'affluence est modérée ; surveillez Pâques s\'il tombe tard dans le mois, et prévoyez de quoi affronter l\'averse occasionnelle de l\'après-midi.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo a marzo — clima, pioggia e mare',
+      seoDescription:
+        'A marzo Puerto Viejo de Talamanca resta caldo e piuttosto secco mentre prosegue la finestra secca — ottimo per spiagge, escursioni e giungla. Ecco cosa aspettarti.',
+      heading: 'Meteo a Puerto Viejo a marzo',
+      heroAlt: 'Giornata calda e soleggiata sulla costa caraibica di Puerto Viejo de Talamanca a marzo',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Marzo in breve',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Pioggia', value: '~170 mm — ancora sul versante più secco' },
+        { label: 'Mare', value: 'Caldo, generalmente piacevole, ~28°C' },
+        { label: 'Affluenza', value: 'Moderata — domanda della stagione secca' },
+      ],
+      whatItsLikeHeading: 'Com\'è davvero marzo',
+      whatItsLikeParagraphs: [
+        'Marzo prosegue la finestra secca, restando caldo e piuttosto luminoso. È uno dei mesi più caldi dell\'anno, con tanto sole e comode giornate di mare.',
+        'È un ottimo tuttofare: buono per la spiaggia, ideale per escursioni nella giungla e avvistamenti di fauna prima dell\'arrivo dei mesi più umidi, e con un tempo generalmente affidabile per organizzare gite in giornata.',
+      ],
+      rainHeading: 'Quanto piove?',
+      rainParagraph:
+        'Marzo registra in media circa 170 mm — ancora sul versante più secco per questa costa. Aspettati giornate perlopiù calde e luminose con qualche breve rovescio, soprattutto nel tardo pomeriggio.',
+      rainyDayIntro: 'Se passa un rovescio, c\'è molto da fare:',
+      rainyDayItems: [
+        'Percorri il sentiero costiero pianeggiante del Parco Nazionale di Cahuita',
+        'Fai un tour del cioccolato (cacao)',
+        'Fai snorkeling o nuota in un pomeriggio tranquillo',
+      ],
+      crowdsHeading: 'Affluenza, prezzi ed eventi',
+      crowdsParagraph:
+        'Marzo vede ancora la domanda della stagione secca, quindi affluenza e prezzi sono moderati — un po\' più tranquillo di febbraio ma più affollato della stagione verde. La Semana Santa può cadere a fine marzo in alcuni anni e porta un picco locale.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo a marzo',
+      verdictHeading: 'Marzo è un buon periodo per visitare?',
+      verdictParagraph:
+        'Sì — caldo, piuttosto secco e versatile, marzo va bene sia per gli amanti della spiaggia sia per gli escursionisti. È uno dei mesi più affidabili per un po\' di tutto.',
+      hubLinkText: 'Vedi la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti chiave',
+      takeawaysParagraph:
+        'Marzo mantiene aperta la finestra secca: caldo, piuttosto secco e perfetto sia per le spiagge sia per la giungla. L\'affluenza è moderata; attenzione alla Pasqua se cade a fine mese, e metti in valigia qualcosa per il rovescio pomeridiano occasionale.',
+    },
+    pt: {
+      seoTitle: 'Clima em Puerto Viejo em março — tempo, chuva e mar',
+      seoDescription:
+        'Março em Puerto Viejo de Talamanca continua quente e bastante seco enquanto a janela seca prossegue — ótimo para praias, caminhadas e selva. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em março',
+      heroAlt: 'Dia quente e ensolarado no litoral caribenho de Puerto Viejo de Talamanca em março',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Março num relance',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Chuva', value: '~170 mm — ainda do lado mais seco' },
+        { label: 'Mar', value: 'Quente, geralmente agradável, ~28°C' },
+        { label: 'Movimento', value: 'Moderado — demanda da estação seca' },
+      ],
+      whatItsLikeHeading: 'Como março realmente é',
+      whatItsLikeParagraphs: [
+        'Março dá continuidade à janela seca, mantendo-se quente e bastante luminoso. É um dos meses mais quentes do ano, com muito sol e dias de praia agradáveis.',
+        'É um ótimo faz-tudo: bom para a praia, ideal para caminhadas na selva e observação de fauna antes da chegada dos meses mais úmidos, e com um clima geralmente confiável para planejar passeios de um dia.',
+      ],
+      rainHeading: 'Quanto chove?',
+      rainParagraph:
+        'Março tem uma média de cerca de 170 mm — ainda do lado mais seco para este litoral. Espere dias em geral quentes e luminosos, com alguma pancada rápida de chuva, sobretudo no fim do dia.',
+      rainyDayIntro: 'Se passar uma pancada de chuva, há muito o que fazer:',
+      rainyDayItems: [
+        'Percorra a trilha costeira plana do Parque Nacional Cahuita',
+        'Faça um tour de chocolate (cacau)',
+        'Faça snorkel ou nade numa tarde tranquila',
+      ],
+      crowdsHeading: 'Movimento, preços e eventos',
+      crowdsParagraph:
+        'Março ainda registra a demanda da estação seca, então movimento e preços são moderados — um pouco mais tranquilo que fevereiro, mas mais movimentado que a estação verde. A Semana Santa pode cair no fim de março em alguns anos e traz um pico local.',
+      stayRecommendationTitle: 'Onde se hospedar em Puerto Viejo em março',
+      verdictHeading: 'Março é uma boa época para visitar?',
+      verdictParagraph:
+        'Sim — quente, bastante seco e versátil, março agrada tanto aos amantes de praia quanto aos caminhantes. É um dos meses mais confiáveis para um pouco de tudo.',
+      hubLinkText: 'Ver o guia completo de clima mês a mês →',
+      takeawaysHeading: 'Pontos principais',
+      takeawaysParagraph:
+        'Março mantém a janela seca: quente, bastante seco e ótimo tanto para praias quanto para a selva. O movimento é moderado; fique atento à Páscoa se ela cair no fim do mês, e leve algo para a eventual pancada de chuva da tarde.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בפוארטו ויאחו במרץ — אקלים, גשם וים',
+      seoDescription:
+        'מרץ בפוארטו ויאחו דה טלמנקה נשאר חמים ויבש למדי בעוד חלון היובש נמשך — מצוין לחופים, לטיולים רגליים ולג\'ונגל. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו במרץ',
+      heroAlt: 'יום חמים ושטוף שמש בחוף הקריבי של פוארטו ויאחו דה טלמנקה במרץ',
+      photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'מרץ במבט חטוף',
+      snapshot: [
+        { label: 'טמפרטורה', value: '28°C / 22°C' },
+        { label: 'גשם', value: '~170 mm — עדיין בצד היבש יותר' },
+        { label: 'ים', value: 'חמים, נעים בדרך כלל, ~28°C' },
+        { label: 'עומס מבקרים', value: 'בינוני — ביקוש של עונת היובש' },
+      ],
+      whatItsLikeHeading: 'איך מרץ באמת',
+      whatItsLikeParagraphs: [
+        'מרץ ממשיך את חלון היובש, ונשאר חמים ובהיר למדי. זהו אחד החודשים החמים יותר בשנה, עם שפע שמש וימי חוף נעימים.',
+        'הוא רב-תכליתי מצוין: טוב לחוף, אידיאלי לטיולים בג\'ונגל ולצפייה בחיות בר לפני שמגיעים החודשים הגשומים יותר, ועם מזג אוויר אמין בדרך כלל לתכנון טיולי יום.',
+      ],
+      rainHeading: 'כמה יורד גשם?',
+      rainParagraph:
+        'במרץ יורדים בממוצע כ-170 mm — עדיין בצד היבש יותר עבור החוף הזה. צפו לימים חמימים ובהירים ברובם עם ממטר קצר מדי פעם, בעיקר בשעות אחר הצהריים המאוחרות.',
+      rainyDayIntro: 'אם עובר ממטר, יש הרבה מה לעשות:',
+      rainyDayItems: [
+        'טיילו בשביל החוף המישורי בפארק הלאומי קאוויטה',
+        'צאו לסיור שוקולד (קקאו)',
+        'צללו עם שנורקל או שחו בשעת אחר צהריים רגועה',
+      ],
+      crowdsHeading: 'עומס מבקרים, מחירים ואירועים',
+      crowdsParagraph:
+        'במרץ עדיין קיים ביקוש של עונת היובש, ולכן עומס המבקרים והמחירים בינוניים — קצת שקט יותר מפברואר אך עמוס יותר מהעונה הירוקה. בחלק מהשנים חג הפסחא חל בסוף מרץ ומביא גל מקומי.',
+      stayRecommendationTitle: 'היכן להתאכסן בפוארטו ויאחו במרץ',
+      verdictHeading: 'האם מרץ הוא זמן טוב לבקר?',
+      verdictParagraph:
+        'כן — חמים, יבש למדי ורב-תכליתי, מרץ מתאים גם לחובבי חוף וגם למטיילים. זהו אחד החודשים האמינים יותר לטעימה מכל דבר.',
+      hubLinkText: 'צפו במדריך מזג האוויר המלא חודש אחר חודש →',
+      takeawaysHeading: 'נקודות עיקריות',
+      takeawaysParagraph:
+        'מרץ שומר על חלון היובש פתוח: חמים, יבש למדי ומצוין גם לחופים וגם לג\'ונגל. עומס המבקרים בינוני; שימו לב לחג הפסחא אם הוא חל בסוף החודש, וארזו לקראת ממטר אחר צהריים מזדמן.',
+    },
+    hi: {
+      seoTitle: 'मार्च में प्यूर्टो विएहो का मौसम — जलवायु, बारिश और समुद्र',
+      seoDescription:
+        'मार्च में प्यूर्टो विएहो डे तालामांका गर्म और काफ़ी शुष्क रहता है क्योंकि शुष्क दौर जारी रहता है — समुद्र तटों, ट्रेक और जंगल के लिए बढ़िया। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'मार्च में प्यूर्टो विएहो का मौसम',
+      heroAlt: 'मार्च में प्यूर्टो विएहो डे तालामांका के कैरिबियन तट पर गर्म धूप वाला दिन',
+      photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में मार्च',
+      snapshot: [
+        { label: 'तापमान', value: '28°C / 22°C' },
+        { label: 'बारिश', value: '~170 mm — अब भी अपेक्षाकृत शुष्क' },
+        { label: 'समुद्र', value: 'गर्म, आम तौर पर सुखद, ~28°C' },
+        { label: 'भीड़', value: 'मध्यम — शुष्क मौसम की माँग' },
+      ],
+      whatItsLikeHeading: 'मार्च वास्तव में कैसा होता है',
+      whatItsLikeParagraphs: [
+        'मार्च शुष्क दौर को जारी रखता है, गर्म और काफ़ी उजला बना रहता है। यह साल के गर्म महीनों में से एक है, भरपूर धूप और आरामदायक समुद्र तट वाले दिनों के साथ।',
+        'यह हर लिहाज़ से बढ़िया है: समुद्र तट के लिए अच्छा, अधिक नम महीनों के आने से पहले जंगल की ट्रेकिंग और वन्यजीव देखने के लिए आदर्श, और दिन-भर की सैर की योजना बनाने के लिए आम तौर पर भरोसेमंद मौसम।',
+      ],
+      rainHeading: 'कितनी बारिश होती है?',
+      rainParagraph:
+        'मार्च में औसतन लगभग 170 mm बारिश होती है — इस तट के लिहाज़ से अब भी अपेक्षाकृत शुष्क। ज़्यादातर गर्म, उजले दिनों की उम्मीद करें, बीच-बीच में छोटी बौछारों के साथ, ख़ासकर दिन के बाद के हिस्से में।',
+      rainyDayIntro: 'अगर कोई बौछार आ जाए, तो करने को बहुत कुछ है:',
+      rainyDayItems: [
+        'काहुइता नेशनल पार्क में समतल तटीय पगडंडी पर ट्रेक करें',
+        'चॉकलेट (कोको) टूर लें',
+        'किसी शांत दोपहर में स्नॉर्कलिंग करें या तैरें',
+      ],
+      crowdsHeading: 'भीड़, दाम और आयोजन',
+      crowdsParagraph:
+        'मार्च में अब भी शुष्क मौसम की माँग रहती है, इसलिए भीड़ और दाम मध्यम रहते हैं — फ़रवरी से थोड़ा शांत पर हरित मौसम से अधिक व्यस्त। कुछ वर्षों में ईस्टर मार्च के अंत में पड़ सकता है और स्थानीय भीड़ बढ़ा देता है।',
+      stayRecommendationTitle: 'मार्च में प्यूर्टो विएहो में कहाँ ठहरें',
+      verdictHeading: 'क्या मार्च घूमने के लिए अच्छा समय है?',
+      verdictParagraph:
+        'हाँ — गर्म, काफ़ी शुष्क और बहुउद्देश्यीय, मार्च समुद्र तट प्रेमियों और ट्रेकर्स दोनों के लिए उपयुक्त है। थोड़ा-थोड़ा सब कुछ करने के लिए यह अधिक भरोसेमंद महीनों में से एक है।',
+      hubLinkText: 'महीने-दर-महीने पूरी मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'मार्च शुष्क दौर को बनाए रखता है: गर्म, काफ़ी शुष्क और समुद्र तटों तथा जंगल दोनों के लिए बढ़िया। भीड़ मध्यम रहती है; अगर ईस्टर महीने के अंत में पड़े तो ध्यान रखें, और कभी-कभार की दोपहर की बौछार के लिए सामान रखें।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in maart — klimaat, regen & zee',
+      seoDescription:
+        'Maart in Puerto Viejo de Talamanca blijft warm en vrij droog terwijl het droge venster aanhoudt — ideaal voor stranden, wandelingen en jungle. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in maart',
+      heroAlt: 'Warme, zonnige dag aan de Caribische kust van Puerto Viejo de Talamanca in maart',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Maart in het kort',
+      snapshot: [
+        { label: 'Temperatuur', value: '28°C / 22°C' },
+        { label: 'Regen', value: '~170 mm — nog aan de drogere kant' },
+        { label: 'Zee', value: 'Warm, over het algemeen aangenaam, ~28°C' },
+        { label: 'Drukte', value: 'Matig — vraag in het droge seizoen' },
+      ],
+      whatItsLikeHeading: 'Hoe maart echt is',
+      whatItsLikeParagraphs: [
+        'Maart zet het droge venster voort en blijft warm en vrij helder. Het is een van de warmere maanden van het jaar, met volop zon en aangename stranddagen.',
+        'Het is een uitstekende allrounder: goed voor het strand, ideaal voor junglewandelingen en het spotten van dieren voordat de nattere maanden aanbreken, en over het algemeen betrouwbaar weer om dagtochten te plannen.',
+      ],
+      rainHeading: 'Hoeveel regent het?',
+      rainParagraph:
+        'Maart telt gemiddeld zo\'n 170 mm — voor deze kust nog aan de drogere kant. Verwacht overwegend warme, heldere dagen met af en toe een korte bui, vooral later op de dag.',
+      rainyDayIntro: 'Als er een bui overtrekt, is er genoeg te doen:',
+      rainyDayItems: [
+        'Wandel het vlakke kustpad in Nationaal Park Cahuita',
+        'Doe een chocolade- (cacao)tour',
+        'Snorkel of zwem op een rustige middag',
+      ],
+      crowdsHeading: 'Drukte, prijzen en evenementen',
+      crowdsParagraph:
+        'Maart kent nog de vraag van het droge seizoen, dus drukte en prijzen zijn matig — iets rustiger dan februari maar drukker dan het groene seizoen. Pasen kan sommige jaren eind maart vallen en zorgt voor een lokale piek.',
+      stayRecommendationTitle: 'Waar te overnachten in Puerto Viejo in maart',
+      verdictHeading: 'Is maart een goede tijd om te bezoeken?',
+      verdictParagraph:
+        'Ja — warm, vrij droog en veelzijdig, maart bevalt zowel strandliefhebbers als wandelaars. Het is een van de betrouwbaardere maanden voor van alles wat.',
+      hubLinkText: 'Bekijk de volledige weergids maand voor maand →',
+      takeawaysHeading: 'Belangrijkste punten',
+      takeawaysParagraph:
+        'Maart houdt het droge venster open: warm, vrij droog en geweldig voor zowel stranden als jungle. De drukte is matig; let op Pasen als het laat in de maand valt, en pak in voor de incidentele middagbui.',
+    },
+  },
+  april: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in April — Climate, Rain & Sea',
+      seoDescription:
+        'April in Puerto Viejo de Talamanca is warm and lush as the dry window fades into greener days, with crowds thinning after Easter. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in April',
+      heroAlt: 'Lush warm Caribbean coast in Puerto Viejo de Talamanca in April',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'April at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '29°C / 23°C' },
+        { label: 'Rain', value: '~210 mm — rising into the green season' },
+        { label: 'Sea', value: 'Warm, usually pleasant, ~28°C' },
+        { label: 'Crowds', value: 'Busy over Easter, quieter after' },
+      ],
+      whatItsLikeHeading: 'What April Is Really Like',
+      whatItsLikeParagraphs: [
+        'April is a transition month — often the warmest of the year, with the dry window fading and the landscape turning lush and green. You still get plenty of sun, but showers become a little more frequent.',
+        'After Easter (which usually falls in April), the local crowds drop off and prices ease, making the second half of the month a relaxed, warm time on the coast.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'April averages around 210 mm as rainfall starts to build toward the green season. Expect warm, bright mornings with a rising chance of afternoon or evening showers.',
+      rainyDayIntro: 'When a shower comes through, you are well covered:',
+      rainyDayItems: [
+        'Take a cacao and chocolate tour',
+        'Explore Cahuita National Park as the jungle greens up',
+        'Relax in a Caribbean café in town',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'Easter (Semana Santa) is one of the busiest local travel weeks of the year, so early April can be crowded and pricier. After Easter, both crowds and rates drop noticeably.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in April',
+      verdictHeading: 'Is April a Good Time to Visit?',
+      verdictParagraph:
+        'Yes — especially after Easter. You get warm, lush, still-fairly-bright weather with thinning crowds and easing prices, a nice balance before the wetter months.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'April is warm and lush, a transition from dry to green season with rising showers. Avoid the Easter crowds if you can, aim for the second half of the month, and pack for warm days with the odd afternoon downpour.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Abril — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Abril en Puerto Viejo de Talamanca es cálido y frondoso mientras la ventana seca da paso a días más verdes, con menos gente tras la Semana Santa. Esto es lo que puedes esperar.',
+      heading: 'El Clima en Puerto Viejo en Abril',
+      heroAlt: 'Costa caribeña cálida y frondosa en Puerto Viejo de Talamanca en abril',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Abril de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '29°C / 23°C' },
+        { label: 'Lluvia', value: '~210 mm — subiendo hacia la temporada verde' },
+        { label: 'Mar', value: 'Cálido, normalmente agradable, ~28°C' },
+        { label: 'Afluencia', value: 'Alta en Semana Santa, más tranquila después' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Abril',
+      whatItsLikeParagraphs: [
+        'Abril es un mes de transición — a menudo el más cálido del año, con la ventana seca desvaneciéndose y el paisaje volviéndose frondoso y verde. Todavía hay mucho sol, pero los aguaceros se vuelven algo más frecuentes.',
+        'Tras la Semana Santa (que suele caer en abril), la afluencia local baja y los precios ceden, haciendo de la segunda mitad del mes un momento relajado y cálido en la costa.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Abril promedia unos 210 mm a medida que la lluvia empieza a aumentar hacia la temporada verde. Espera mañanas cálidas y luminosas con una probabilidad creciente de aguaceros por la tarde o la noche.',
+      rainyDayIntro: 'Cuando llega un aguacero, tienes muchas opciones:',
+      rainyDayItems: [
+        'Haz un tour de cacao y chocolate',
+        'Recorre el Parque Nacional Cahuita mientras reverdece la selva',
+        'Relájate en un café caribeño del pueblo',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'La Semana Santa es una de las semanas de viaje local más concurridas del año, así que principios de abril puede estar lleno y más caro. Después de Semana Santa, tanto la afluencia como las tarifas bajan notablemente.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en abril',
+      verdictHeading: '¿Es Abril una Buena Época para Visitar?',
+      verdictParagraph:
+        'Sí — sobre todo tras la Semana Santa. Tienes clima cálido, frondoso y todavía bastante luminoso, con menos gente y precios cediendo, un buen equilibrio antes de los meses más húmedos.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Abril es cálido y frondoso, una transición de la temporada seca a la verde con aguaceros en aumento. Evita la multitud de Semana Santa si puedes, apunta a la segunda mitad del mes y lleva algo para días cálidos con algún aguacero de tarde.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im April — Klima, Regen & Meer',
+      seoDescription:
+        'Der April in Puerto Viejo de Talamanca ist warm und üppig, wenn das trockene Fenster in grünere Tage übergeht und die Besucherzahlen nach Ostern zurückgehen. Das können Sie erwarten.',
+      heading: 'Wetter in Puerto Viejo im April',
+      heroAlt: 'Üppige, warme Karibikküste in Puerto Viejo de Talamanca im April',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Der April auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '29°C / 23°C' },
+        { label: 'Regen', value: '~210 mm — steigend zur grünen Saison' },
+        { label: 'Meer', value: 'Warm, meist angenehm, ~28°C' },
+        { label: 'Andrang', value: 'Voll über Ostern, ruhiger danach' },
+      ],
+      whatItsLikeHeading: 'Wie der April wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der April ist ein Übergangsmonat — oft der wärmste des Jahres, wenn das trockene Fenster ausklingt und die Landschaft üppig und grün wird. Es gibt weiterhin viel Sonne, aber Schauer werden etwas häufiger.',
+        'Nach Ostern (das meist in den April fällt) lässt der lokale Andrang nach und die Preise geben nach, was die zweite Monatshälfte zu einer entspannten, warmen Zeit an der Küste macht.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Im April fallen durchschnittlich rund 210 mm, da der Regen zur grünen Saison hin zunimmt. Rechnen Sie mit warmen, hellen Morgenstunden und einer steigenden Wahrscheinlichkeit von Schauern am Nachmittag oder Abend.',
+      rainyDayIntro: 'Wenn ein Schauer durchzieht, sind Sie bestens versorgt:',
+      rainyDayItems: [
+        'Machen Sie eine Kakao- und Schokoladentour',
+        'Erkunden Sie den Cahuita-Nationalpark, während der Dschungel ergrünt',
+        'Entspannen Sie in einem karibischen Café im Ort',
+      ],
+      crowdsHeading: 'Andrang, Preise und Veranstaltungen',
+      crowdsParagraph:
+        'Ostern (Semana Santa) ist eine der geschäftigsten lokalen Reisewochen des Jahres, daher kann es Anfang April voll und teurer sein. Nach Ostern sinken sowohl der Andrang als auch die Preise deutlich.',
+      stayRecommendationTitle: 'Wo Sie im April in Puerto Viejo übernachten',
+      verdictHeading: 'Ist der April eine gute Reisezeit?',
+      verdictParagraph:
+        'Ja — besonders nach Ostern. Sie bekommen warmes, üppiges und noch recht helles Wetter mit weniger Andrang und nachgebenden Preisen, eine schöne Balance vor den feuchteren Monaten.',
+      hubLinkText: 'Zum vollständigen Monat-für-Monat-Wetterführer →',
+      takeawaysHeading: 'Das Wichtigste in Kürze',
+      takeawaysParagraph:
+        'Der April ist warm und üppig, ein Übergang von der Trocken- zur grünen Saison mit zunehmenden Schauern. Meiden Sie nach Möglichkeit den Oster-Andrang, zielen Sie auf die zweite Monatshälfte und packen Sie für warme Tage mit gelegentlichem Nachmittagsguss.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en avril — Climat, pluie et mer',
+      seoDescription:
+        'En avril, Puerto Viejo de Talamanca est chaud et luxuriant, tandis que la fenêtre sèche cède la place à des jours plus verts et que l\'affluence diminue après Pâques. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en avril',
+      heroAlt: 'Côte caribéenne chaude et luxuriante à Puerto Viejo de Talamanca en avril',
+      photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Aperçu du mois d\'avril',
+      snapshot: [
+        { label: 'Température', value: '29°C / 23°C' },
+        { label: 'Pluie', value: '~210 mm — en hausse vers la saison verte' },
+        { label: 'Mer', value: 'Chaude, généralement agréable, ~28°C' },
+        { label: 'Affluence', value: 'Forte pendant Pâques, plus calme ensuite' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment avril',
+      whatItsLikeParagraphs: [
+        'Avril est un mois de transition — souvent le plus chaud de l\'année, la fenêtre sèche s\'estompant et le paysage devenant luxuriant et vert. Vous profitez encore de beaucoup de soleil, mais les averses deviennent un peu plus fréquentes.',
+        'Après Pâques (qui tombe généralement en avril), l\'affluence locale diminue et les prix se détendent, faisant de la seconde moitié du mois un moment détendu et chaud sur la côte.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Avril reçoit en moyenne environ 210 mm, à mesure que les pluies commencent à s\'intensifier vers la saison verte. Attendez-vous à des matinées chaudes et lumineuses, avec une probabilité croissante d\'averses l\'après-midi ou le soir.',
+      rainyDayIntro: 'Quand une averse passe, vous avez de quoi faire :',
+      rainyDayItems: [
+        'Faites un tour du cacao et du chocolat',
+        'Explorez le parc national Cahuita tandis que la jungle reverdit',
+        'Détendez-vous dans un café caribéen en ville',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'Pâques (Semana Santa) est l\'une des semaines de voyage locales les plus fréquentées de l\'année, donc le début avril peut être bondé et plus cher. Après Pâques, l\'affluence comme les tarifs baissent nettement.',
+      stayRecommendationTitle: 'Où loger à Puerto Viejo en avril',
+      verdictHeading: 'Avril est-il une bonne période pour visiter ?',
+      verdictParagraph:
+        'Oui — surtout après Pâques. Vous bénéficiez d\'un temps chaud, luxuriant et encore assez lumineux, avec une affluence en baisse et des prix qui se détendent, un bel équilibre avant les mois plus humides.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'À retenir',
+      takeawaysParagraph:
+        'Avril est chaud et luxuriant, une transition de la saison sèche à la saison verte avec des averses en hausse. Évitez la foule de Pâques si vous le pouvez, visez la seconde moitié du mois et prévoyez des tenues pour des journées chaudes avec quelques averses l\'après-midi.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo ad aprile — Clima, pioggia e mare',
+      seoDescription:
+        'Ad aprile Puerto Viejo de Talamanca è caldo e rigoglioso, mentre la finestra secca lascia spazio a giornate più verdi e l\'affluenza cala dopo Pasqua. Ecco cosa aspettarti.',
+      heading: 'Meteo a Puerto Viejo ad aprile',
+      heroAlt: 'Costa caraibica calda e rigogliosa a Puerto Viejo de Talamanca ad aprile',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Aprile in breve',
+      snapshot: [
+        { label: 'Temperatura', value: '29°C / 23°C' },
+        { label: 'Pioggia', value: '~210 mm — in aumento verso la stagione verde' },
+        { label: 'Mare', value: 'Caldo, di solito piacevole, ~28°C' },
+        { label: 'Affluenza', value: 'Alta durante Pasqua, più tranquilla dopo' },
+      ],
+      whatItsLikeHeading: 'Com\'è davvero aprile',
+      whatItsLikeParagraphs: [
+        'Aprile è un mese di transizione — spesso il più caldo dell\'anno, con la finestra secca che sfuma e il paesaggio che si fa rigoglioso e verde. C\'è ancora molto sole, ma gli acquazzoni diventano un po\' più frequenti.',
+        'Dopo Pasqua (che di solito cade ad aprile), l\'affluenza locale diminuisce e i prezzi si allentano, rendendo la seconda metà del mese un periodo rilassato e caldo sulla costa.',
+      ],
+      rainHeading: 'Quanto piove?',
+      rainParagraph:
+        'Ad aprile cadono in media circa 210 mm, mentre la pioggia inizia a crescere verso la stagione verde. Aspettati mattine calde e luminose con una probabilità crescente di acquazzoni nel pomeriggio o alla sera.',
+      rainyDayIntro: 'Quando arriva un acquazzone, hai molte opzioni:',
+      rainyDayItems: [
+        'Fai un tour del cacao e del cioccolato',
+        'Esplora il Parco Nazionale Cahuita mentre la giungla rinverdisce',
+        'Rilassati in un caffè caraibico in paese',
+      ],
+      crowdsHeading: 'Affluenza, prezzi ed eventi',
+      crowdsParagraph:
+        'La Pasqua (Semana Santa) è una delle settimane di viaggio locali più affollate dell\'anno, quindi l\'inizio di aprile può essere affollato e più caro. Dopo Pasqua, sia l\'affluenza sia le tariffe calano sensibilmente.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo ad aprile',
+      verdictHeading: 'Aprile è un buon periodo per visitare?',
+      verdictParagraph:
+        'Sì — soprattutto dopo Pasqua. Trovi un clima caldo, rigoglioso e ancora piuttosto luminoso, con meno affluenza e prezzi in calo, un bell\'equilibrio prima dei mesi più piovosi.',
+      hubLinkText: 'Guarda la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti chiave',
+      takeawaysParagraph:
+        'Aprile è caldo e rigoglioso, una transizione dalla stagione secca a quella verde con acquazzoni in aumento. Evita la folla di Pasqua se puoi, punta alla seconda metà del mese e prepara l\'abbigliamento per giornate calde con qualche acquazzone pomeridiano.',
+    },
+    pt: {
+      seoTitle: 'Clima em Puerto Viejo em abril — Tempo, chuva e mar',
+      seoDescription:
+        'Abril em Puerto Viejo de Talamanca é quente e exuberante, à medida que a janela seca dá lugar a dias mais verdes e o movimento diminui depois da Páscoa. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em abril',
+      heroAlt: 'Costa caribenha quente e exuberante em Puerto Viejo de Talamanca em abril',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Abril num relance',
+      snapshot: [
+        { label: 'Temperatura', value: '29°C / 23°C' },
+        { label: 'Chuva', value: '~210 mm — subindo rumo à estação verde' },
+        { label: 'Mar', value: 'Quente, geralmente agradável, ~28°C' },
+        { label: 'Movimento', value: 'Cheio na Páscoa, mais calmo depois' },
+      ],
+      whatItsLikeHeading: 'Como abril é de verdade',
+      whatItsLikeParagraphs: [
+        'Abril é um mês de transição — muitas vezes o mais quente do ano, com a janela seca se dissipando e a paisagem ficando exuberante e verde. Ainda há bastante sol, mas as pancadas de chuva ficam um pouco mais frequentes.',
+        'Depois da Páscoa (que costuma cair em abril), o movimento local cai e os preços aliviam, tornando a segunda metade do mês um período tranquilo e quente na costa.',
+      ],
+      rainHeading: 'Quanto chove?',
+      rainParagraph:
+        'Abril tem em média cerca de 210 mm, à medida que a chuva começa a aumentar rumo à estação verde. Espere manhãs quentes e claras, com uma chance crescente de pancadas de chuva à tarde ou à noite.',
+      rainyDayIntro: 'Quando cai uma pancada de chuva, você tem muitas opções:',
+      rainyDayItems: [
+        'Faça um tour de cacau e chocolate',
+        'Explore o Parque Nacional Cahuita enquanto a selva reverdece',
+        'Relaxe num café caribenho na vila',
+      ],
+      crowdsHeading: 'Movimento, preços e eventos',
+      crowdsParagraph:
+        'A Páscoa (Semana Santa) é uma das semanas de viagem local mais movimentadas do ano, então o início de abril pode ficar cheio e mais caro. Depois da Páscoa, tanto o movimento quanto as tarifas caem visivelmente.',
+      stayRecommendationTitle: 'Onde ficar em Puerto Viejo em abril',
+      verdictHeading: 'Abril é uma boa época para visitar?',
+      verdictParagraph:
+        'Sim — especialmente depois da Páscoa. Você tem clima quente, exuberante e ainda bastante claro, com menos movimento e preços aliviando, um bom equilíbrio antes dos meses mais chuvosos.',
+      hubLinkText: 'Veja o guia completo de clima mês a mês →',
+      takeawaysHeading: 'Pontos principais',
+      takeawaysParagraph:
+        'Abril é quente e exuberante, uma transição da estação seca para a verde com pancadas de chuva em alta. Evite a multidão da Páscoa se puder, mire na segunda metade do mês e leve roupas para dias quentes com uma ou outra pancada à tarde.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בפוארטו ויאחו באפריל — אקלים, גשם וים',
+      seoDescription:
+        'אפריל בפוארטו ויאחו דה טלמנקה חם ושופע ירק, כשחלון היובש מפנה מקום לימים ירוקים יותר והצפיפות פוחתת אחרי חג הפסחא. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו באפריל',
+      heroAlt: 'חוף קריבי חם ושופע ירק בפוארטו ויאחו דה טלמנקה באפריל',
+      photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'אפריל במבט מהיר',
+      snapshot: [
+        { label: 'טמפרטורה', value: '29°C / 23°C' },
+        { label: 'גשם', value: '~210 מ"מ — בעלייה לקראת העונה הירוקה' },
+        { label: 'ים', value: 'חם, בדרך כלל נעים, ~28°C' },
+        { label: 'צפיפות', value: 'עמוס בחג הפסחא, רגוע יותר אחריו' },
+      ],
+      whatItsLikeHeading: 'איך אפריל נראה באמת',
+      whatItsLikeParagraphs: [
+        'אפריל הוא חודש מעבר — לרוב החם ביותר בשנה, כשחלון היובש דועך והנוף הופך שופע וירוק. עדיין יש שמש רבה, אבל ממטרים נעשים מעט תכופים יותר.',
+        'אחרי חג הפסחא (שנופל בדרך כלל באפריל), הצפיפות המקומית יורדת והמחירים מתמתנים, מה שהופך את המחצית השנייה של החודש לזמן רגוע וחם על החוף.',
+      ],
+      rainHeading: 'כמה יורד גשם?',
+      rainParagraph:
+        'באפריל יורדים בממוצע כ-210 מ"מ, כשהגשם מתחיל להתגבר לקראת העונה הירוקה. צפו לבקרים חמים ובהירים עם סיכוי הולך וגובר לממטרים אחר הצהריים או בערב.',
+      rainyDayIntro: 'כשממטר עובר, יש לכם שפע אפשרויות:',
+      rainyDayItems: [
+        'צאו לסיור קקאו ושוקולד',
+        'טיילו בפארק הלאומי Cahuita בזמן שיער הגשם מוריק',
+        'הירגעו בבית קפה קריבי בכפר',
+      ],
+      crowdsHeading: 'צפיפות, מחירים ואירועים',
+      crowdsParagraph:
+        'חג הפסחא (Semana Santa) הוא אחד משבועות הנסיעה המקומיים העמוסים ביותר בשנה, ולכן תחילת אפריל עשויה להיות עמוסה ויקרה יותר. אחרי חג הפסחא, גם הצפיפות וגם המחירים יורדים במידה ניכרת.',
+      stayRecommendationTitle: 'היכן להתארח בפוארטו ויאחו באפריל',
+      verdictHeading: 'האם אפריל הוא זמן טוב לביקור?',
+      verdictParagraph:
+        'כן — במיוחד אחרי חג הפסחא. תיהנו ממזג אוויר חם, שופע ירק ועדיין בהיר למדי, עם פחות צפיפות ומחירים מתמתנים, איזון נעים לפני החודשים הגשומים יותר.',
+      hubLinkText: 'צפו במדריך מזג האוויר המלא חודש אחר חודש →',
+      takeawaysHeading: 'נקודות עיקריות',
+      takeawaysParagraph:
+        'אפריל חם ושופע ירק, מעבר מהעונה היבשה לירוקה עם ממטרים הולכים וגוברים. הימנעו מעומס חג הפסחא אם אפשר, כוונו למחצית השנייה של החודש וארזו לימים חמים עם ממטר מזדמן אחר הצהריים.',
+    },
+    hi: {
+      seoTitle: 'अप्रैल में प्वेर्तो विएखो का मौसम — जलवायु, वर्षा और समुद्र',
+      seoDescription:
+        'अप्रैल में प्वेर्तो विएखो दे तालामांका गर्म और हरा-भरा रहता है, जब शुष्क मौसम हरियाली भरे दिनों में बदलता है और ईस्टर के बाद भीड़ कम हो जाती है। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'अप्रैल में प्वेर्तो विएखो का मौसम',
+      heroAlt: 'अप्रैल में प्वेर्तो विएखो दे तालामांका में हरा-भरा, गर्म कैरिबियन तट',
+      photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में अप्रैल',
+      snapshot: [
+        { label: 'तापमान', value: '29°C / 23°C' },
+        { label: 'वर्षा', value: '~210 mm — हरे मौसम की ओर बढ़ती हुई' },
+        { label: 'समुद्र', value: 'गर्म, आमतौर पर सुखद, ~28°C' },
+        { label: 'भीड़', value: 'ईस्टर पर अधिक, बाद में शांत' },
+      ],
+      whatItsLikeHeading: 'अप्रैल असल में कैसा होता है',
+      whatItsLikeParagraphs: [
+        'अप्रैल एक संक्रमण का महीना है — अक्सर साल का सबसे गर्म, जब शुष्क मौसम फीका पड़ता है और परिदृश्य हरा-भरा और हरियाली से भर जाता है। धूप अब भी भरपूर रहती है, पर बौछारें थोड़ी अधिक बार आने लगती हैं।',
+        'ईस्टर (जो आमतौर पर अप्रैल में पड़ता है) के बाद स्थानीय भीड़ घट जाती है और दाम कम हो जाते हैं, जिससे महीने का दूसरा भाग तट पर एक आरामदेह, गर्म समय बन जाता है।',
+      ],
+      rainHeading: 'कितनी वर्षा होती है?',
+      rainParagraph:
+        'अप्रैल में औसतन लगभग 210 mm वर्षा होती है, क्योंकि हरे मौसम की ओर बारिश बढ़ने लगती है। गर्म, चमकीली सुबहों की उम्मीद करें, जिनमें दोपहर या शाम को बौछारों की संभावना बढ़ती जाती है।',
+      rainyDayIntro: 'जब बौछार आती है, तब भी आपके पास भरपूर विकल्प हैं:',
+      rainyDayItems: [
+        'कोको और चॉकलेट टूर करें',
+        'Cahuita राष्ट्रीय उद्यान घूमें, जब जंगल हरा-भरा हो रहा हो',
+        'गाँव के किसी कैरिबियन कैफ़े में आराम करें',
+      ],
+      crowdsHeading: 'भीड़, दाम और आयोजन',
+      crowdsParagraph:
+        'ईस्टर (Semana Santa) साल के सबसे व्यस्त स्थानीय यात्रा सप्ताहों में से एक है, इसलिए अप्रैल की शुरुआत में भीड़ और दाम अधिक हो सकते हैं। ईस्टर के बाद भीड़ और दरें दोनों काफ़ी घट जाती हैं।',
+      stayRecommendationTitle: 'अप्रैल में प्वेर्तो विएखो में कहाँ ठहरें',
+      verdictHeading: 'क्या अप्रैल घूमने का अच्छा समय है?',
+      verdictParagraph:
+        'हाँ — खासकर ईस्टर के बाद। आपको गर्म, हरा-भरा और अब भी काफ़ी चमकीला मौसम मिलता है, कम भीड़ और घटते दामों के साथ, अधिक नम महीनों से पहले एक सुखद संतुलन।',
+      hubLinkText: 'महीने-दर-महीने पूरा मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'अप्रैल गर्म और हरा-भरा होता है, शुष्क से हरे मौसम की ओर एक संक्रमण, जिसमें बौछारें बढ़ती जाती हैं। हो सके तो ईस्टर की भीड़ से बचें, महीने के दूसरे भाग को चुनें और गर्म दिनों के लिए सामान रखें, जिनमें कभी-कभी दोपहर की तेज़ बौछार आ सकती है।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in april — Klimaat, regen & zee',
+      seoDescription:
+        'April in Puerto Viejo de Talamanca is warm en weelderig, terwijl het droge venster overgaat in groenere dagen en de drukte na Pasen afneemt. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in april',
+      heroAlt: 'Weelderige, warme Caribische kust in Puerto Viejo de Talamanca in april',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'April in een oogopslag',
+      snapshot: [
+        { label: 'Temperatuur', value: '29°C / 23°C' },
+        { label: 'Regen', value: '~210 mm — stijgend richting het groene seizoen' },
+        { label: 'Zee', value: 'Warm, meestal aangenaam, ~28°C' },
+        { label: 'Drukte', value: 'Druk rond Pasen, rustiger daarna' },
+      ],
+      whatItsLikeHeading: 'Hoe april echt is',
+      whatItsLikeParagraphs: [
+        'April is een overgangsmaand — vaak de warmste van het jaar, terwijl het droge venster vervaagt en het landschap weelderig en groen wordt. Er is nog volop zon, maar buien worden iets frequenter.',
+        'Na Pasen (dat meestal in april valt) neemt de lokale drukte af en dalen de prijzen, waardoor de tweede helft van de maand een ontspannen, warme tijd aan de kust is.',
+      ],
+      rainHeading: 'Hoeveel regent het?',
+      rainParagraph:
+        'April kent gemiddeld zo\'n 210 mm, terwijl de regen begint toe te nemen richting het groene seizoen. Reken op warme, heldere ochtenden met een groeiende kans op buien in de middag of avond.',
+      rainyDayIntro: 'Als er een bui overtrekt, zit je goed:',
+      rainyDayItems: [
+        'Doe een cacao- en chocoladetour',
+        'Verken Nationaal Park Cahuita terwijl de jungle opgroent',
+        'Ontspan in een Caribisch café in het dorp',
+      ],
+      crowdsHeading: 'Drukte, prijzen en evenementen',
+      crowdsParagraph:
+        'Pasen (Semana Santa) is een van de drukste lokale reisweken van het jaar, dus begin april kan druk en duurder zijn. Na Pasen dalen zowel de drukte als de tarieven merkbaar.',
+      stayRecommendationTitle: 'Waar te verblijven in Puerto Viejo in april',
+      verdictHeading: 'Is april een goede tijd om te bezoeken?',
+      verdictParagraph:
+        'Ja — vooral na Pasen. Je krijgt warm, weelderig en nog vrij helder weer met afnemende drukte en dalende prijzen, een mooie balans vóór de nattere maanden.',
+      hubLinkText: 'Bekijk de volledige weergids maand voor maand →',
+      takeawaysHeading: 'Belangrijkste punten',
+      takeawaysParagraph:
+        'April is warm en weelderig, een overgang van het droge naar het groene seizoen met toenemende buien. Vermijd de Pasen-drukte als je kunt, mik op de tweede helft van de maand en pak in voor warme dagen met af en toe een middagbui.',
+    },
+  },
+  may: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in May — Climate, Rain & Sea',
+      seoDescription:
+        'May in Puerto Viejo de Talamanca opens the green season: intensely lush jungle, afternoon showers, great wildlife and low prices. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in May',
+      heroAlt: 'Green rainy-season jungle in Puerto Viejo de Talamanca in May',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'May at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '28°C / 23°C' },
+        { label: 'Rain', value: '~300 mm — green season begins' },
+        { label: 'Sea', value: 'Variable, warm, ~28°C' },
+        { label: 'Crowds', value: 'Low — good value' },
+      ],
+      whatItsLikeHeading: 'What May Is Really Like',
+      whatItsLikeParagraphs: [
+        'May opens the green season on the Caribbean coast. Rain picks up, usually as warm afternoon showers, and the jungle turns intensely green and alive.',
+        'Mornings are often bright and good for the beach, with the wetter weather arriving later in the day. With crowds thin and prices low, it is a rewarding month for nature lovers who do not mind some rain.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'May averages around 300 mm. Rain typically comes as afternoon or evening downpours rather than all-day rain, so you can still plan bright mornings around it.',
+      rainyDayIntro: 'The rain makes the jungle experiences shine:',
+      rainyDayItems: [
+        'Take a cacao and chocolate tour, wonderful in the rain',
+        'Look for active wildlife in a lush Cahuita National Park',
+        'Visit a Bribri Indigenous community',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'May is low season, so crowds are thin and prices are among the lowest of the year. It is a great-value time if you are happy to work around afternoon showers.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in May',
+      verdictHeading: 'Is May a Good Time to Visit?',
+      verdictParagraph:
+        'Yes, if you like green, quiet and good value. You trade some guaranteed beach time for a lush landscape, active wildlife and low prices, with bright mornings still on the table.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'May starts the green season: lush jungle, warm afternoon showers, active wildlife and low prices. Plan around bright mornings, pack a rain jacket, and enjoy one of the best-value, greenest times to visit.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Mayo — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Mayo en Puerto Viejo de Talamanca abre la temporada verde: selva intensamente frondosa, aguaceros de tarde, buena fauna y precios bajos. Esto es lo que puedes esperar.',
+      heading: 'El Clima en Puerto Viejo en Mayo',
+      heroAlt: 'Selva verde de temporada lluviosa en Puerto Viejo de Talamanca en mayo',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Mayo de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 23°C' },
+        { label: 'Lluvia', value: '~300 mm — comienza la temporada verde' },
+        { label: 'Mar', value: 'Variable, cálido, ~28°C' },
+        { label: 'Afluencia', value: 'Baja — buena relación calidad-precio' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Mayo',
+      whatItsLikeParagraphs: [
+        'Mayo abre la temporada verde en el Caribe. La lluvia aumenta, normalmente como aguaceros cálidos de tarde, y la selva se vuelve intensamente verde y llena de vida.',
+        'Las mañanas suelen ser luminosas y buenas para la playa, y el clima más húmedo llega más tarde en el día. Con poca gente y precios bajos, es un mes gratificante para amantes de la naturaleza a quienes no les importa algo de lluvia.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Mayo promedia unos 300 mm. La lluvia suele caer como aguaceros de tarde o noche y no como lluvia de todo el día, así que aún puedes planear en torno a mañanas luminosas.',
+      rainyDayIntro: 'La lluvia realza las experiencias de selva:',
+      rainyDayItems: [
+        'Haz un tour de cacao y chocolate, maravilloso bajo la lluvia',
+        'Busca fauna activa en un frondoso Parque Nacional Cahuita',
+        'Visita una comunidad indígena Bribri',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'Mayo es temporada baja, así que hay poca gente y los precios están entre los más bajos del año. Es un momento de gran valor si te va bien organizarte en torno a los aguaceros de tarde.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en mayo',
+      verdictHeading: '¿Es Mayo una Buena Época para Visitar?',
+      verdictParagraph:
+        'Sí, si te gusta lo verde, lo tranquilo y el buen precio. Cambias algo de playa garantizada por un paisaje frondoso, fauna activa y precios bajos, con mañanas luminosas todavía disponibles.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Mayo inicia la temporada verde: selva frondosa, aguaceros cálidos de tarde, fauna activa y precios bajos. Planea en torno a mañanas luminosas, lleva chaqueta impermeable y disfruta de una de las épocas más verdes y de mejor precio para visitar.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im Mai — Klima, Regen & Meer',
+      seoDescription:
+        'Der Mai in Puerto Viejo de Talamanca eröffnet die grüne Saison: intensiv üppiger Dschungel, nachmittägliche Schauer, tolle Tierwelt und niedrige Preise. Das erwartet dich.',
+      heading: 'Wetter in Puerto Viejo im Mai',
+      heroAlt: 'Grüner Regenzeit-Dschungel in Puerto Viejo de Talamanca im Mai',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Der Mai auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '28°C / 23°C' },
+        { label: 'Regen', value: '~300 mm — die grüne Saison beginnt' },
+        { label: 'Meer', value: 'Wechselhaft, warm, ~28°C' },
+        { label: 'Andrang', value: 'Niedrig — gutes Preis-Leistungs-Verhältnis' },
+      ],
+      whatItsLikeHeading: 'Wie der Mai wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der Mai eröffnet die grüne Saison an der Karibikküste. Der Regen nimmt zu, meist als warme Nachmittagsschauer, und der Dschungel wird intensiv grün und voller Leben.',
+        'Die Morgen sind oft hell und gut für den Strand, während das feuchtere Wetter erst später am Tag kommt. Mit wenig Andrang und niedrigen Preisen ist es ein lohnender Monat für Naturliebhaber, denen etwas Regen nichts ausmacht.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Der Mai bringt im Schnitt rund 300 mm. Der Regen fällt meist als nachmittäglicher oder abendlicher Guss statt als Dauerregen, sodass du weiterhin um helle Morgen herum planen kannst.',
+      rainyDayIntro: 'Der Regen lässt die Dschungel-Erlebnisse erst richtig strahlen:',
+      rainyDayItems: [
+        'Mach eine Kakao- und Schokoladentour, herrlich im Regen',
+        'Halte im üppigen Cahuita-Nationalpark nach aktiver Tierwelt Ausschau',
+        'Besuche eine indigene Bribri-Gemeinschaft',
+      ],
+      crowdsHeading: 'Andrang, Preise und Events',
+      crowdsParagraph:
+        'Der Mai ist Nebensaison, daher gibt es wenig Andrang und die Preise gehören zu den niedrigsten des Jahres. Es ist eine Zeit mit hervorragendem Preis-Leistungs-Verhältnis, wenn du dich gern um die Nachmittagsschauer herum organisierst.',
+      stayRecommendationTitle: 'Wo du im Mai in Puerto Viejo übernachtest',
+      verdictHeading: 'Ist der Mai eine gute Reisezeit?',
+      verdictParagraph:
+        'Ja, wenn du Grün, Ruhe und ein gutes Preis-Leistungs-Verhältnis magst. Du tauschst etwas garantierte Strandzeit gegen eine üppige Landschaft, aktive Tierwelt und niedrige Preise — helle Morgen bleiben trotzdem drin.',
+      hubLinkText: 'Zum vollständigen Monat-für-Monat-Wetterguide →',
+      takeawaysHeading: 'Das Wichtigste in Kürze',
+      takeawaysParagraph:
+        'Der Mai startet die grüne Saison: üppiger Dschungel, warme Nachmittagsschauer, aktive Tierwelt und niedrige Preise. Plane rund um helle Morgen, pack eine Regenjacke und genieße eine der grünsten und preiswertesten Reisezeiten.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en mai — Climat, pluie & mer',
+      seoDescription:
+        'En mai, Puerto Viejo de Talamanca ouvre la saison verte : jungle intensément luxuriante, averses de l\'après-midi, faune remarquable et prix bas. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en mai',
+      heroAlt: 'Jungle verdoyante de saison des pluies à Puerto Viejo de Talamanca en mai',
+      photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Mai en un coup d\'œil',
+      snapshot: [
+        { label: 'Température', value: '28°C / 23°C' },
+        { label: 'Pluie', value: '~300 mm — la saison verte commence' },
+        { label: 'Mer', value: 'Variable, chaude, ~28°C' },
+        { label: 'Affluence', value: 'Faible — bon rapport qualité-prix' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment le mois de mai',
+      whatItsLikeParagraphs: [
+        'Mai ouvre la saison verte sur la côte caraïbe. La pluie s\'intensifie, généralement sous forme d\'averses chaudes en après-midi, et la jungle devient intensément verte et pleine de vie.',
+        'Les matinées sont souvent lumineuses et propices à la plage, le temps plus humide arrivant plus tard dans la journée. Avec peu de monde et des prix bas, c\'est un mois gratifiant pour les amoureux de la nature que la pluie ne rebute pas.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Mai enregistre en moyenne environ 300 mm. La pluie tombe généralement sous forme d\'averses d\'après-midi ou de soirée plutôt que toute la journée, ce qui vous permet de planifier autour des matinées lumineuses.',
+      rainyDayIntro: 'La pluie sublime les expériences en pleine jungle :',
+      rainyDayItems: [
+        'Faites un tour du cacao et du chocolat, merveilleux sous la pluie',
+        'Cherchez une faune active dans un parc national de Cahuita luxuriant',
+        'Visitez une communauté autochtone Bribri',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'Mai est en basse saison : il y a donc peu de monde et les prix comptent parmi les plus bas de l\'année. C\'est une période au très bon rapport qualité-prix si vous acceptez de vous organiser autour des averses de l\'après-midi.',
+      stayRecommendationTitle: 'Où loger à Puerto Viejo en mai',
+      verdictHeading: 'Mai est-il une bonne période pour visiter ?',
+      verdictParagraph:
+        'Oui, si vous aimez la verdure, le calme et le bon rapport qualité-prix. Vous échangez un peu de plage garantie contre un paysage luxuriant, une faune active et des prix bas, avec des matinées lumineuses toujours au rendez-vous.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'À retenir',
+      takeawaysParagraph:
+        'Mai lance la saison verte : jungle luxuriante, averses chaudes en après-midi, faune active et prix bas. Planifiez autour des matinées lumineuses, emportez une veste de pluie et profitez de l\'une des périodes les plus vertes et les plus avantageuses pour visiter.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo a maggio — Clima, pioggia e mare',
+      seoDescription:
+        'Maggio a Puerto Viejo de Talamanca apre la stagione verde: giungla intensamente rigogliosa, acquazzoni pomeridiani, ottima fauna e prezzi bassi. Ecco cosa aspettarti.',
+      heading: 'Meteo a Puerto Viejo a maggio',
+      heroAlt: 'Giungla verde della stagione delle piogge a Puerto Viejo de Talamanca a maggio',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Maggio in breve',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 23°C' },
+        { label: 'Pioggia', value: '~300 mm — inizia la stagione verde' },
+        { label: 'Mare', value: 'Variabile, caldo, ~28°C' },
+        { label: 'Affluenza', value: 'Bassa — ottimo rapporto qualità-prezzo' },
+      ],
+      whatItsLikeHeading: 'Com\'è davvero maggio',
+      whatItsLikeParagraphs: [
+        'Maggio apre la stagione verde sulla costa caraibica. La pioggia aumenta, di solito sotto forma di caldi acquazzoni pomeridiani, e la giungla diventa intensamente verde e piena di vita.',
+        'Le mattine sono spesso luminose e adatte alla spiaggia, mentre il tempo più umido arriva più tardi nella giornata. Con poca gente e prezzi bassi, è un mese gratificante per gli amanti della natura a cui non dispiace un po\' di pioggia.',
+      ],
+      rainHeading: 'Quanto piove?',
+      rainParagraph:
+        'Maggio registra in media circa 300 mm. La pioggia cade in genere come acquazzoni pomeridiani o serali anziché per tutto il giorno, così puoi comunque pianificare intorno alle mattine luminose.',
+      rainyDayIntro: 'La pioggia esalta le esperienze nella giungla:',
+      rainyDayItems: [
+        'Fai un tour del cacao e del cioccolato, meraviglioso sotto la pioggia',
+        'Cerca la fauna attiva in un rigoglioso Parco Nazionale di Cahuita',
+        'Visita una comunità indigena Bribri',
+      ],
+      crowdsHeading: 'Affluenza, prezzi ed eventi',
+      crowdsParagraph:
+        'Maggio è bassa stagione, quindi c\'è poca gente e i prezzi sono tra i più bassi dell\'anno. È un periodo dall\'ottimo rapporto qualità-prezzo se non ti dispiace organizzarti intorno agli acquazzoni pomeridiani.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo a maggio',
+      verdictHeading: 'Maggio è un buon periodo per visitare?',
+      verdictParagraph:
+        'Sì, se ti piacciono il verde, la tranquillità e il buon rapporto qualità-prezzo. Rinunci a un po\' di spiaggia garantita in cambio di un paesaggio rigoglioso, fauna attiva e prezzi bassi, con le mattine luminose ancora a disposizione.',
+      hubLinkText: 'Vedi la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti chiave',
+      takeawaysParagraph:
+        'Maggio dà il via alla stagione verde: giungla rigogliosa, caldi acquazzoni pomeridiani, fauna attiva e prezzi bassi. Pianifica intorno alle mattine luminose, porta una giacca antipioggia e goditi uno dei periodi più verdi e convenienti per visitare.',
+    },
+    pt: {
+      seoTitle: 'Tempo em Puerto Viejo em maio — Clima, chuva e mar',
+      seoDescription:
+        'Maio em Puerto Viejo de Talamanca abre a estação verde: selva intensamente exuberante, aguaceiros à tarde, ótima fauna e preços baixos. Veja o que esperar.',
+      heading: 'Tempo em Puerto Viejo em maio',
+      heroAlt: 'Selva verde da estação chuvosa em Puerto Viejo de Talamanca em maio',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Maio num relance',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 23°C' },
+        { label: 'Chuva', value: '~300 mm — começa a estação verde' },
+        { label: 'Mar', value: 'Variável, quente, ~28°C' },
+        { label: 'Movimento', value: 'Baixo — boa relação custo-benefício' },
+      ],
+      whatItsLikeHeading: 'Como é maio de verdade',
+      whatItsLikeParagraphs: [
+        'Maio abre a estação verde na costa caribenha. A chuva aumenta, normalmente na forma de aguaceiros quentes à tarde, e a selva fica intensamente verde e cheia de vida.',
+        'As manhãs costumam ser luminosas e boas para a praia, com o tempo mais úmido chegando mais tarde no dia. Com pouca gente e preços baixos, é um mês gratificante para os amantes da natureza que não se importam com um pouco de chuva.',
+      ],
+      rainHeading: 'Quanto chove?',
+      rainParagraph:
+        'Maio tem média de cerca de 300 mm. A chuva costuma vir como aguaceiros à tarde ou à noite, e não como chuva o dia todo, então dá para planejar em torno de manhãs luminosas.',
+      rainyDayIntro: 'A chuva faz as experiências na selva brilharem:',
+      rainyDayItems: [
+        'Faça um tour de cacau e chocolate, maravilhoso na chuva',
+        'Procure fauna ativa no exuberante Parque Nacional Cahuita',
+        'Visite uma comunidade indígena Bribri',
+      ],
+      crowdsHeading: 'Movimento, preços e eventos',
+      crowdsParagraph:
+        'Maio é baixa temporada, então há pouca gente e os preços estão entre os mais baixos do ano. É uma época de ótimo custo-benefício se você não se incomodar de se organizar em torno dos aguaceiros da tarde.',
+      stayRecommendationTitle: 'Onde ficar em Puerto Viejo em maio',
+      verdictHeading: 'Maio é uma boa época para visitar?',
+      verdictParagraph:
+        'Sim, se você gosta de verde, tranquilidade e bom custo-benefício. Você troca um pouco de praia garantida por uma paisagem exuberante, fauna ativa e preços baixos, com manhãs luminosas ainda à disposição.',
+      hubLinkText: 'Veja o guia completo de clima mês a mês →',
+      takeawaysHeading: 'Pontos principais',
+      takeawaysParagraph:
+        'Maio inicia a estação verde: selva exuberante, aguaceiros quentes à tarde, fauna ativa e preços baixos. Planeje em torno de manhãs luminosas, leve uma capa de chuva e aproveite uma das épocas mais verdes e de melhor custo-benefício para visitar.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בפוארטו ויאחו במאי — אקלים, גשם וים',
+      seoDescription:
+        'מאי בפוארטו ויאחו דה טלמנקה פותח את העונה הירוקה: יער טרופי ירוק ושופע במיוחד, ממטרים אחר הצהריים, חיות בר מרהיבות ומחירים נמוכים. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו במאי',
+      heroAlt: 'יער טרופי ירוק של עונת הגשמים בפוארטו ויאחו דה טלמנקה במאי',
+      photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'מאי במבט מהיר',
+      snapshot: [
+        { label: 'טמפרטורה', value: '28°C / 23°C' },
+        { label: 'גשם', value: '~300 mm — העונה הירוקה מתחילה' },
+        { label: 'ים', value: 'משתנה, חמים, ~28°C' },
+        { label: 'עומס', value: 'נמוך — תמורה טובה למחיר' },
+      ],
+      whatItsLikeHeading: 'איך מאי באמת מרגיש',
+      whatItsLikeParagraphs: [
+        'מאי פותח את העונה הירוקה בחוף הקריבי. הגשם מתגבר, בדרך כלל כממטרים חמימים אחר הצהריים, והיער הטרופי הופך לירוק עז ומלא חיים.',
+        'הבקרים לרוב בהירים ומתאימים לחוף, ומזג האוויר הלח יותר מגיע מאוחר יותר ביום. עם מעט מבקרים ומחירים נמוכים, זהו חודש מתגמל לאוהבי טבע שלא אכפת להם מעט גשם.',
+      ],
+      rainHeading: 'כמה יורד גשם?',
+      rainParagraph:
+        'במאי יורדים בממוצע כ־300 מ"מ. הגשם בדרך כלל מגיע כממטרים אחר הצהריים או בערב ולא כגשם לאורך כל היום, כך שעדיין אפשר לתכנן סביב בקרים בהירים.',
+      rainyDayIntro: 'הגשם גורם לחוויות היער לזהור:',
+      rainyDayItems: [
+        'צאו לסיור קקאו ושוקולד, נפלא בגשם',
+        'חפשו חיות בר פעילות בפארק הלאומי Cahuita השופע',
+        'בקרו בקהילת הילידים Bribri',
+      ],
+      crowdsHeading: 'עומס, מחירים ואירועים',
+      crowdsParagraph:
+        'מאי הוא עונה שקטה, ולכן יש מעט מבקרים והמחירים מהנמוכים של השנה. זהו זמן בעל תמורה מצוינת למחיר אם נוח לכם להתארגן סביב ממטרי אחר הצהריים.',
+      stayRecommendationTitle: 'איפה להתארח בפוארטו ויאחו במאי',
+      verdictHeading: 'האם מאי הוא זמן טוב לביקור?',
+      verdictParagraph:
+        'כן, אם אתם אוהבים ירוק, שקט ותמורה טובה למחיר. אתם מוותרים על מעט זמן חוף מובטח בתמורה לנוף שופע, חיות בר פעילות ומחירים נמוכים, כשבקרים בהירים עדיין על הפרק.',
+      hubLinkText: 'צפו במדריך מזג האוויר המלא חודש אחר חודש →',
+      takeawaysHeading: 'נקודות עיקריות',
+      takeawaysParagraph:
+        'מאי פותח את העונה הירוקה: יער טרופי שופע, ממטרים חמימים אחר הצהריים, חיות בר פעילות ומחירים נמוכים. תכננו סביב בקרים בהירים, ארזו מעיל גשם ותיהנו מאחד הזמנים הירוקים ובעלי התמורה הטובה ביותר לביקור.',
+    },
+    hi: {
+      seoTitle: 'मई में प्यूर्टो विएजो का मौसम — जलवायु, बारिश और समुद्र',
+      seoDescription:
+        'मई में प्यूर्टो विएजो दे तालामांका हरित मौसम की शुरुआत करता है: बेहद हरा-भरा जंगल, दोपहर की बौछारें, शानदार वन्यजीव और कम कीमतें। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'मई में प्यूर्टो विएजो का मौसम',
+      heroAlt: 'मई में प्यूर्टो विएजो दे तालामांका में बरसात के मौसम का हरा-भरा जंगल',
+      photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में मई',
+      snapshot: [
+        { label: 'तापमान', value: '28°C / 23°C' },
+        { label: 'बारिश', value: '~300 mm — हरित मौसम शुरू होता है' },
+        { label: 'समुद्र', value: 'परिवर्तनशील, गर्म, ~28°C' },
+        { label: 'भीड़', value: 'कम — बढ़िया मूल्य' },
+      ],
+      whatItsLikeHeading: 'मई वास्तव में कैसा होता है',
+      whatItsLikeParagraphs: [
+        'मई कैरिबियन तट पर हरित मौसम की शुरुआत करता है। बारिश बढ़ जाती है, आमतौर पर दोपहर की गर्म बौछारों के रूप में, और जंगल गहरा हरा और जीवंत हो जाता है।',
+        'सुबहें अक्सर उजली और समुद्र तट के लिए अच्छी होती हैं, जबकि अधिक नमी वाला मौसम दिन में बाद में आता है। कम भीड़ और कम कीमतों के साथ, यह प्रकृति प्रेमियों के लिए एक फायदेमंद महीना है जिन्हें थोड़ी बारिश से कोई परेशानी नहीं होती।',
+      ],
+      rainHeading: 'कितनी बारिश होती है?',
+      rainParagraph:
+        'मई में औसतन लगभग 300 mm बारिश होती है। बारिश आमतौर पर पूरे दिन की जगह दोपहर या शाम की मूसलधार बौछारों के रूप में आती है, इसलिए आप उजली सुबहों के आसपास योजना बना सकते हैं।',
+      rainyDayIntro: 'बारिश जंगल के अनुभवों को और निखार देती है:',
+      rainyDayItems: [
+        'कोको और चॉकलेट टूर करें, बारिश में शानदार',
+        'हरे-भरे Cahuita राष्ट्रीय उद्यान में सक्रिय वन्यजीव खोजें',
+        'किसी Bribri आदिवासी समुदाय में जाएँ',
+      ],
+      crowdsHeading: 'भीड़, कीमतें और आयोजन',
+      crowdsParagraph:
+        'मई कम मौसम है, इसलिए भीड़ कम रहती है और कीमतें साल की सबसे कम कीमतों में से हैं। यदि आप दोपहर की बौछारों के आसपास खुद को व्यवस्थित करने में सहज हैं तो यह बेहतरीन मूल्य वाला समय है।',
+      stayRecommendationTitle: 'मई में प्यूर्टो विएजो में कहाँ ठहरें',
+      verdictHeading: 'क्या मई घूमने का अच्छा समय है?',
+      verdictParagraph:
+        'हाँ, अगर आपको हरियाली, शांति और बढ़िया मूल्य पसंद है। आप कुछ पक्के समुद्र तट समय के बदले हरा-भरा परिदृश्य, सक्रिय वन्यजीव और कम कीमतें पाते हैं, और उजली सुबहें फिर भी मिलती रहती हैं।',
+      hubLinkText: 'महीने-दर-महीने का पूरा मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'मई हरित मौसम की शुरुआत करता है: हरा-भरा जंगल, दोपहर की गर्म बौछारें, सक्रिय वन्यजीव और कम कीमतें। उजली सुबहों के आसपास योजना बनाएँ, रेन जैकेट रखें और घूमने के सबसे हरे-भरे और किफ़ायती समयों में से एक का आनंद लें।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in mei — Klimaat, regen & zee',
+      seoDescription:
+        'Mei opent in Puerto Viejo de Talamanca het groene seizoen: intens weelderige jungle, middagbuien, prachtige dieren en lage prijzen. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in mei',
+      heroAlt: 'Groene regenseizoen-jungle in Puerto Viejo de Talamanca in mei',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Mei in een oogopslag',
+      snapshot: [
+        { label: 'Temperatuur', value: '28°C / 23°C' },
+        { label: 'Regen', value: '~300 mm — het groene seizoen begint' },
+        { label: 'Zee', value: 'Wisselend, warm, ~28°C' },
+        { label: 'Drukte', value: 'Laag — goede prijs-kwaliteit' },
+      ],
+      whatItsLikeHeading: 'Hoe mei echt is',
+      whatItsLikeParagraphs: [
+        'Mei opent het groene seizoen aan de Caribische kust. De regen neemt toe, meestal als warme middagbuien, en de jungle wordt intens groen en vol leven.',
+        'De ochtenden zijn vaak helder en goed voor het strand, terwijl het nattere weer later op de dag komt. Met weinig drukte en lage prijzen is het een lonende maand voor natuurliefhebbers die niet vies zijn van wat regen.',
+      ],
+      rainHeading: 'Hoeveel regent het?',
+      rainParagraph:
+        'Mei kent gemiddeld zo\'n 300 mm. De regen valt doorgaans als middag- of avondbuien in plaats van de hele dag, zodat je nog steeds rond heldere ochtenden kunt plannen.',
+      rainyDayIntro: 'De regen laat de jungle-ervaringen stralen:',
+      rainyDayItems: [
+        'Doe een cacao- en chocoladetour, heerlijk in de regen',
+        'Zoek naar actieve dieren in een weelderig Cahuita National Park',
+        'Bezoek een inheemse Bribri-gemeenschap',
+      ],
+      crowdsHeading: 'Drukte, prijzen en evenementen',
+      crowdsParagraph:
+        'Mei is laagseizoen, dus het is rustig en de prijzen behoren tot de laagste van het jaar. Het is een periode met uitstekende prijs-kwaliteit als je het niet erg vindt om je rond de middagbuien te organiseren.',
+      stayRecommendationTitle: 'Waar te verblijven in Puerto Viejo in mei',
+      verdictHeading: 'Is mei een goede tijd om te bezoeken?',
+      verdictParagraph:
+        'Ja, als je van groen, rust en goede prijs-kwaliteit houdt. Je ruilt wat gegarandeerde strandtijd in voor een weelderig landschap, actieve dieren en lage prijzen, met heldere ochtenden die er nog steeds bij zitten.',
+      hubLinkText: 'Bekijk de volledige maand-voor-maand weergids →',
+      takeawaysHeading: 'Belangrijkste punten',
+      takeawaysParagraph:
+        'Mei start het groene seizoen: weelderige jungle, warme middagbuien, actieve dieren en lage prijzen. Plan rond heldere ochtenden, neem een regenjas mee en geniet van een van de groenste en voordeligste periodes om te bezoeken.',
+    },
+  },
+  june: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in June — Climate, Rain & Sea',
+      seoDescription:
+        'June in Puerto Viejo de Talamanca is wet and green, with turtle-nesting season nearby, lively jungle and low prices. Here is what to expect and how to plan.',
+      heading: 'Weather in Puerto Viejo in June',
+      heroAlt: 'Wet green rainforest in Puerto Viejo de Talamanca in June',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'June at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '28°C / 23°C' },
+        { label: 'Rain', value: '~340 mm — a wet month' },
+        { label: 'Sea', value: 'Often rougher, warm, ~28°C' },
+        { label: 'Crowds', value: 'Low — green-season value' },
+      ],
+      whatItsLikeHeading: 'What June Is Really Like',
+      whatItsLikeParagraphs: [
+        'June is firmly in the green season — wet, warm and vividly green. Showers are frequent and the sea can be rougher, but you will still find bright breaks, especially in the mornings.',
+        'It is a rewarding month for nature: the jungle is at its liveliest, and the wider Gandoca-Manzanillo area falls within the sea-turtle nesting season. If you love a wild, green, atmospheric coast, June delivers.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'June averages around 340 mm. Expect regular showers and some heavier downpours, usually interspersed with warm, bright spells rather than raining nonstop.',
+      rainyDayIntro: 'The rain suits the best indoor and nature outings:',
+      rainyDayItems: [
+        'Take a cacao and chocolate tour',
+        'Ask locally about guided sea-turtle nesting tours in the Gandoca-Manzanillo area',
+        'Explore a lush, lively Cahuita National Park',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'June is low season, so crowds are thin and prices are low. It is a strong-value month if you are prepared for wet weather and want the coast largely to yourself.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in June',
+      verdictHeading: 'Is June a Good Time to Visit?',
+      verdictParagraph:
+        'It depends on your priorities. For lush nature, wildlife, quiet beaches and low prices, yes. If you need reliable dry beach days, one of the drier months will suit you better.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'June is wet, warm and green, with lively wildlife, turtle-nesting season nearby and low prices. Plan around brighter mornings, pack a good rain jacket, and come for nature rather than guaranteed beach weather.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Junio — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Junio en Puerto Viejo de Talamanca es húmedo y verde, con temporada de anidación de tortugas cerca, selva viva y precios bajos. Esto es lo que puedes esperar y cómo planificar.',
+      heading: 'El Clima en Puerto Viejo en Junio',
+      heroAlt: 'Selva verde y húmeda en Puerto Viejo de Talamanca en junio',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Junio de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 23°C' },
+        { label: 'Lluvia', value: '~340 mm — un mes húmedo' },
+        { label: 'Mar', value: 'A menudo más bravo, cálido, ~28°C' },
+        { label: 'Afluencia', value: 'Baja — valor de temporada verde' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Junio',
+      whatItsLikeParagraphs: [
+        'Junio está de lleno en la temporada verde — húmedo, cálido y de un verde intenso. Los aguaceros son frecuentes y el mar puede estar más bravo, pero aún encontrarás claros luminosos, sobre todo por la mañana.',
+        'Es un mes gratificante para la naturaleza: la selva está en su punto más vivo, y la zona de Gandoca-Manzanillo entra dentro de la temporada de anidación de tortugas marinas. Si amas una costa salvaje, verde y con atmósfera, junio cumple.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Junio promedia unos 340 mm. Espera aguaceros regulares y algunos más fuertes, normalmente intercalados con ratos cálidos y luminosos y no lloviendo sin parar.',
+      rainyDayIntro: 'La lluvia va bien con las mejores salidas bajo techo y de naturaleza:',
+      rainyDayItems: [
+        'Haz un tour de cacao y chocolate',
+        'Pregunta localmente por tours guiados de anidación de tortugas en la zona de Gandoca-Manzanillo',
+        'Recorre un frondoso y vivo Parque Nacional Cahuita',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'Junio es temporada baja, así que hay poca gente y precios bajos. Es un mes de gran valor si vienes preparado para el clima húmedo y quieres la costa casi para ti.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en junio',
+      verdictHeading: '¿Es Junio una Buena Época para Visitar?',
+      verdictParagraph:
+        'Depende de tus prioridades. Para naturaleza frondosa, fauna, playas tranquilas y precios bajos, sí. Si necesitas días de playa secos y fiables, uno de los meses más secos te vendrá mejor.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Junio es húmedo, cálido y verde, con fauna activa, temporada de anidación de tortugas cerca y precios bajos. Planea en torno a mañanas más luminosas, lleva una buena chaqueta impermeable y ven por la naturaleza más que por playa garantizada.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im Juni — Klima, Regen & Meer',
+      seoDescription:
+        'Der Juni in Puerto Viejo de Talamanca ist nass und grün, mit der nahen Nistsaison der Meeresschildkröten, lebendigem Dschungel und niedrigen Preisen. Das erwartet dich und so planst du.',
+      heading: 'Wetter in Puerto Viejo im Juni',
+      heroAlt: 'Nasser grüner Regenwald in Puerto Viejo de Talamanca im Juni',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Der Juni auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '28°C / 23°C' },
+        { label: 'Regen', value: '~340 mm — ein nasser Monat' },
+        { label: 'Meer', value: 'Oft rauer, warm, ~28°C' },
+        { label: 'Andrang', value: 'Gering — Wert der grünen Saison' },
+      ],
+      whatItsLikeHeading: 'Wie der Juni wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der Juni liegt mitten in der grünen Saison — nass, warm und leuchtend grün. Schauer sind häufig und das Meer kann rauer sein, doch du wirst weiterhin helle Aufheiterungen erleben, besonders am Morgen.',
+        'Es ist ein lohnender Monat für die Natur: Der Dschungel ist am lebendigsten, und das weitere Gebiet um Gandoca-Manzanillo fällt in die Nistsaison der Meeresschildkröten. Wenn du eine wilde, grüne, stimmungsvolle Küste liebst, dann liefert der Juni.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Der Juni bringt im Schnitt rund 340 mm. Rechne mit regelmäßigen Schauern und einigen kräftigeren Güssen, die sich meist mit warmen, hellen Phasen abwechseln, statt ununterbrochen zu regnen.',
+      rainyDayIntro: 'Der Regen passt gut zu den besten Ausflügen drinnen und in der Natur:',
+      rainyDayItems: [
+        'Mach eine Kakao- und Schokoladentour',
+        'Frage vor Ort nach geführten Touren zur Schildkröten-Nistsaison im Gebiet Gandoca-Manzanillo',
+        'Erkunde einen üppigen, lebendigen Cahuita-Nationalpark',
+      ],
+      crowdsHeading: 'Andrang, Preise und Veranstaltungen',
+      crowdsParagraph:
+        'Der Juni ist Nebensaison, daher ist der Andrang gering und die Preise sind niedrig. Es ist ein preiswerter Monat, wenn du auf nasses Wetter eingestellt bist und die Küste weitgehend für dich allein haben möchtest.',
+      stayRecommendationTitle: 'Wo man im Juni in Puerto Viejo übernachtet',
+      verdictHeading: 'Ist der Juni eine gute Reisezeit?',
+      verdictParagraph:
+        'Das hängt von deinen Prioritäten ab. Für üppige Natur, Tierwelt, ruhige Strände und niedrige Preise: ja. Wenn du verlässlich trockene Strandtage brauchst, passt einer der trockeneren Monate besser zu dir.',
+      hubLinkText: 'Zum vollständigen Wetterführer Monat für Monat →',
+      takeawaysHeading: 'Wichtigste Punkte',
+      takeawaysParagraph:
+        'Der Juni ist nass, warm und grün, mit lebendiger Tierwelt, naher Schildkröten-Nistsaison und niedrigen Preisen. Plane rund um die helleren Morgenstunden, pack eine gute Regenjacke ein und komm für die Natur statt für garantiertes Strandwetter.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en juin — climat, pluie et mer',
+      seoDescription:
+        'En juin, Puerto Viejo de Talamanca est humide et verdoyant, avec la saison de nidification des tortues tout près, une jungle animée et des prix bas. Voici à quoi vous attendre et comment vous organiser.',
+      heading: 'Météo à Puerto Viejo en juin',
+      heroAlt: 'Forêt tropicale verte et humide à Puerto Viejo de Talamanca en juin',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Juin en un coup d\'œil',
+      snapshot: [
+        { label: 'Température', value: '28°C / 23°C' },
+        { label: 'Pluie', value: '~340 mm — un mois humide' },
+        { label: 'Mer', value: 'Souvent plus agitée, chaude, ~28°C' },
+        { label: 'Affluence', value: 'Faible — l\'atout de la saison verte' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment juin',
+      whatItsLikeParagraphs: [
+        'Juin est en pleine saison verte — humide, chaud et d\'un vert éclatant. Les averses sont fréquentes et la mer peut être plus agitée, mais vous trouverez tout de même de belles éclaircies, surtout le matin.',
+        'C\'est un mois gratifiant pour la nature : la jungle est à son apogée, et la région élargie de Gandoca-Manzanillo entre dans la saison de nidification des tortues marines. Si vous aimez une côte sauvage, verte et pleine d\'atmosphère, juin tient ses promesses.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Juin affiche en moyenne environ 340 mm. Attendez-vous à des averses régulières et à quelques pluies plus intenses, généralement entrecoupées de moments chauds et lumineux plutôt qu\'une pluie continue.',
+      rainyDayIntro: 'La pluie se prête aux meilleures sorties en intérieur et en pleine nature :',
+      rainyDayItems: [
+        'Faites un tour du cacao et du chocolat',
+        'Renseignez-vous sur place sur les tours guidés de nidification des tortues dans la région de Gandoca-Manzanillo',
+        'Explorez un parc national de Cahuita luxuriant et vivant',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'Juin est en basse saison, l\'affluence est donc faible et les prix bas. C\'est un mois au bon rapport qualité-prix si vous êtes prêt à affronter le temps humide et souhaitez avoir la côte presque pour vous seul.',
+      stayRecommendationTitle: 'Où loger à Puerto Viejo en juin',
+      verdictHeading: 'Juin est-il une bonne période pour visiter ?',
+      verdictParagraph:
+        'Cela dépend de vos priorités. Pour une nature luxuriante, la faune, des plages tranquilles et des prix bas, oui. Si vous avez besoin de journées de plage sèches et fiables, l\'un des mois plus secs vous conviendra mieux.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'Points clés',
+      takeawaysParagraph:
+        'Juin est humide, chaud et verdoyant, avec une faune animée, la saison de nidification des tortues tout près et des prix bas. Planifiez autour des matinées plus lumineuses, emportez un bon imperméable et venez pour la nature plutôt que pour un temps de plage garanti.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo a giugno — clima, pioggia e mare',
+      seoDescription:
+        'A giugno Puerto Viejo de Talamanca è umido e verde, con la stagione di nidificazione delle tartarughe lì vicino, giungla vivace e prezzi bassi. Ecco cosa aspettarti e come organizzarti.',
+      heading: 'Meteo a Puerto Viejo a giugno',
+      heroAlt: 'Foresta pluviale verde e umida a Puerto Viejo de Talamanca a giugno',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Giugno in breve',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 23°C' },
+        { label: 'Pioggia', value: '~340 mm — un mese umido' },
+        { label: 'Mare', value: 'Spesso più mosso, caldo, ~28°C' },
+        { label: 'Affluenza', value: 'Bassa — convenienza della stagione verde' },
+      ],
+      whatItsLikeHeading: 'Com\'è davvero giugno',
+      whatItsLikeParagraphs: [
+        'Giugno è pienamente nella stagione verde — umido, caldo e di un verde brillante. Gli acquazzoni sono frequenti e il mare può essere più mosso, ma troverai comunque schiarite luminose, soprattutto al mattino.',
+        'È un mese gratificante per la natura: la giungla è al massimo della sua vitalità, e l\'ampia zona di Gandoca-Manzanillo rientra nella stagione di nidificazione delle tartarughe marine. Se ami una costa selvaggia, verde e suggestiva, giugno non delude.',
+      ],
+      rainHeading: 'Quanto piove?',
+      rainParagraph:
+        'A giugno cadono in media circa 340 mm. Aspettati acquazzoni regolari e qualche rovescio più intenso, di solito alternati a momenti caldi e luminosi piuttosto che pioggia ininterrotta.',
+      rainyDayIntro: 'La pioggia si sposa bene con le migliori uscite al coperto e nella natura:',
+      rainyDayItems: [
+        'Fai un tour del cacao e del cioccolato',
+        'Chiedi sul posto dei tour guidati sulla nidificazione delle tartarughe nella zona di Gandoca-Manzanillo',
+        'Esplora un Parco Nazionale di Cahuita rigoglioso e vivace',
+      ],
+      crowdsHeading: 'Affluenza, prezzi ed eventi',
+      crowdsParagraph:
+        'Giugno è bassa stagione, quindi c\'è poca gente e i prezzi sono bassi. È un mese di ottimo valore se sei pronto al tempo umido e vuoi la costa quasi tutta per te.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo a giugno',
+      verdictHeading: 'Giugno è un buon periodo per visitare?',
+      verdictParagraph:
+        'Dipende dalle tue priorità. Per natura rigogliosa, fauna, spiagge tranquille e prezzi bassi, sì. Se hai bisogno di giornate di mare asciutte e affidabili, uno dei mesi più secchi farà più al caso tuo.',
+      hubLinkText: 'Consulta la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti chiave',
+      takeawaysParagraph:
+        'Giugno è umido, caldo e verde, con fauna vivace, stagione di nidificazione delle tartarughe lì vicino e prezzi bassi. Organizzati intorno alle mattine più luminose, porta una buona giacca impermeabile e vieni per la natura più che per un mare garantito.',
+    },
+    pt: {
+      seoTitle: 'Clima em Puerto Viejo em junho — tempo, chuva e mar',
+      seoDescription:
+        'Junho em Puerto Viejo de Talamanca é úmido e verde, com a época de desova das tartarugas ali perto, selva animada e preços baixos. Veja o que esperar e como planejar.',
+      heading: 'Clima em Puerto Viejo em junho',
+      heroAlt: 'Floresta tropical verde e úmida em Puerto Viejo de Talamanca em junho',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Junho num relance',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 23°C' },
+        { label: 'Chuva', value: '~340 mm — um mês úmido' },
+        { label: 'Mar', value: 'Muitas vezes mais agitado, quente, ~28°C' },
+        { label: 'Movimento', value: 'Baixo — vantagem da estação verde' },
+      ],
+      whatItsLikeHeading: 'Como junho realmente é',
+      whatItsLikeParagraphs: [
+        'Junho está em plena estação verde — úmido, quente e de um verde vívido. As pancadas de chuva são frequentes e o mar pode ficar mais agitado, mas você ainda encontrará boas aberturas de sol, sobretudo pela manhã.',
+        'É um mês gratificante para a natureza: a selva está no seu auge, e a área mais ampla de Gandoca-Manzanillo entra na época de desova das tartarugas marinhas. Se você ama uma costa selvagem, verde e cheia de atmosfera, junho cumpre.',
+      ],
+      rainHeading: 'Quanto chove?',
+      rainParagraph:
+        'Junho tem média em torno de 340 mm. Espere pancadas de chuva regulares e alguns aguaceiros mais fortes, normalmente intercalados com períodos quentes e ensolarados em vez de chover sem parar.',
+      rainyDayIntro: 'A chuva combina com os melhores passeios cobertos e na natureza:',
+      rainyDayItems: [
+        'Faça um tour de cacau e chocolate',
+        'Pergunte no local sobre tours guiados de desova de tartarugas na área de Gandoca-Manzanillo',
+        'Explore um exuberante e animado Parque Nacional de Cahuita',
+      ],
+      crowdsHeading: 'Movimento, preços e eventos',
+      crowdsParagraph:
+        'Junho é baixa temporada, então há pouca gente e os preços são baixos. É um mês de ótimo custo-benefício se você estiver preparado para o tempo úmido e quiser a costa quase só para você.',
+      stayRecommendationTitle: 'Onde se hospedar em Puerto Viejo em junho',
+      verdictHeading: 'Junho é uma boa época para visitar?',
+      verdictParagraph:
+        'Depende das suas prioridades. Para natureza exuberante, vida selvagem, praias tranquilas e preços baixos, sim. Se você precisa de dias de praia secos e confiáveis, um dos meses mais secos vai lhe servir melhor.',
+      hubLinkText: 'Veja o guia completo de clima mês a mês →',
+      takeawaysHeading: 'Pontos principais',
+      takeawaysParagraph:
+        'Junho é úmido, quente e verde, com vida selvagem animada, época de desova das tartarugas ali perto e preços baixos. Planeje em torno das manhãs mais claras, leve uma boa capa de chuva e venha pela natureza, não por tempo de praia garantido.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בפוארטו ויאחו ביוני — אקלים, גשם וים',
+      seoDescription:
+        'יוני בפוארטו ויאחו דה טלמנקה הוא לח וירוק, עם עונת קינון הצבים בקרבת מקום, ג\'ונגל שוקק ומחירים נמוכים. הנה למה לצפות ואיך לתכנן.',
+      heading: 'מזג האוויר בפוארטו ויאחו ביוני',
+      heroAlt: 'יער גשם ירוק ולח בפוארטו ויאחו דה טלמנקה ביוני',
+      photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'יוני במבט חטוף',
+      snapshot: [
+        { label: 'טמפרטורה', value: '28°C / 23°C' },
+        { label: 'גשם', value: '~340 מ"מ — חודש לח' },
+        { label: 'ים', value: 'לרוב סוער יותר, חמים, ~28°C' },
+        { label: 'עומס מבקרים', value: 'נמוך — היתרון של העונה הירוקה' },
+      ],
+      whatItsLikeHeading: 'איך יוני באמת',
+      whatItsLikeParagraphs: [
+        'יוני נמצא במלוא העונה הירוקה — לח, חמים וירוק עז. ממטרים תכופים והים עשוי להיות סוער יותר, אך עדיין תמצאו הפוגות בהירות, במיוחד בבקרים.',
+        'זהו חודש מתגמל לטבע: הג\'ונגל בשיא חיוניותו, ואזור Gandoca-Manzanillo הרחב נכנס לעונת קינון צבי הים. אם אתם אוהבים חוף פראי, ירוק ואטמוספרי, יוני מספק את הסחורה.',
+      ],
+      rainHeading: 'כמה גשם יורד?',
+      rainParagraph:
+        'ביוני יורדים בממוצע כ-340 מ"מ. צפו לממטרים סדירים ולכמה מטחי גשם חזקים יותר, בדרך כלל משולבים עם פרקי זמן חמימים ובהירים ולא גשם רצוף.',
+      rainyDayIntro: 'הגשם מתאים לטיולים המקורים והטבעיים הטובים ביותר:',
+      rainyDayItems: [
+        'צאו לסיור קקאו ושוקולד',
+        'שאלו מקומית על סיורים מודרכים לצפייה בקינון צבי ים באזור Gandoca-Manzanillo',
+        'טיילו בפארק הלאומי Cahuita השופע והתוסס',
+      ],
+      crowdsHeading: 'עומס מבקרים, מחירים ואירועים',
+      crowdsParagraph:
+        'יוני הוא עונה שקטה, ולכן יש מעט מבקרים והמחירים נמוכים. זהו חודש משתלם במיוחד אם אתם ערוכים למזג אוויר לח ורוצים את החוף כמעט כולו לעצמכם.',
+      stayRecommendationTitle: 'היכן להתארח בפוארטו ויאחו ביוני',
+      verdictHeading: 'האם יוני הוא זמן טוב לבקר?',
+      verdictParagraph:
+        'זה תלוי בסדרי העדיפויות שלכם. לטבע שופע, חיות בר, חופים שקטים ומחירים נמוכים — כן. אם אתם זקוקים לימי חוף יבשים ואמינים, אחד החודשים היבשים יותר יתאים לכם יותר.',
+      hubLinkText: 'צפו במדריך מזג האוויר המלא חודש אחר חודש ←',
+      takeawaysHeading: 'נקודות עיקריות',
+      takeawaysParagraph:
+        'יוני לח, חמים וירוק, עם חיות בר תוססות, עונת קינון צבים בקרבת מקום ומחירים נמוכים. תכננו סביב הבקרים הבהירים יותר, ארזו מעיל גשם טוב ובואו בשביל הטבע ולא בשביל מזג חוף מובטח.',
+    },
+    hi: {
+      seoTitle: 'जून में पुएर्तो विएखो का मौसम — जलवायु, बारिश और समुद्र',
+      seoDescription:
+        'जून में पुएर्तो विएखो दे तालामांका नम और हरा-भरा रहता है, पास ही कछुओं के घोंसले बनाने का मौसम, जीवंत जंगल और कम दाम। यहाँ जानिए क्या उम्मीद करें और कैसे योजना बनाएँ।',
+      heading: 'जून में पुएर्तो विएखो का मौसम',
+      heroAlt: 'जून में पुएर्तो विएखो दे तालामांका में नम हरा वर्षावन',
+      photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में जून',
+      snapshot: [
+        { label: 'तापमान', value: '28°C / 23°C' },
+        { label: 'बारिश', value: '~340 mm — एक नम महीना' },
+        { label: 'समुद्र', value: 'अक्सर अधिक उथल-पुथल भरा, गर्म, ~28°C' },
+        { label: 'भीड़', value: 'कम — हरित मौसम का लाभ' },
+      ],
+      whatItsLikeHeading: 'जून वास्तव में कैसा होता है',
+      whatItsLikeParagraphs: [
+        'जून पूरी तरह हरित मौसम में होता है — नम, गर्म और चटख हरा। बौछारें बार-बार पड़ती हैं और समुद्र अधिक उथल-पुथल भरा हो सकता है, फिर भी आपको उजली धूप के अंतराल मिलेंगे, खासकर सुबह के समय।',
+        'यह प्रकृति के लिए फलदायी महीना है: जंगल अपने सबसे जीवंत रूप में होता है, और व्यापक Gandoca-Manzanillo क्षेत्र समुद्री कछुओं के घोंसले बनाने के मौसम में आता है। अगर आपको जंगली, हरा-भरा और माहौल से भरा तट पसंद है, तो जून निराश नहीं करता।',
+      ],
+      rainHeading: 'कितनी बारिश होती है?',
+      rainParagraph:
+        'जून में औसतन लगभग 340 mm बारिश होती है। नियमित बौछारों और कुछ तेज़ मूसलधार बारिश की उम्मीद रखें, जो आमतौर पर लगातार बारिश के बजाय गर्म, उजले अंतरालों के साथ बीच-बीच में आती हैं।',
+      rainyDayIntro: 'बारिश सबसे बढ़िया इनडोर और प्रकृति सैर के लिए उपयुक्त है:',
+      rainyDayItems: [
+        'कोको और चॉकलेट टूर करें',
+        'Gandoca-Manzanillo क्षेत्र में कछुओं के घोंसले देखने के गाइडेड टूर के बारे में स्थानीय स्तर पर पूछें',
+        'हरे-भरे, जीवंत Cahuita राष्ट्रीय उद्यान की सैर करें',
+      ],
+      crowdsHeading: 'भीड़, दाम और आयोजन',
+      crowdsParagraph:
+        'जून कम सीज़न है, इसलिए भीड़ कम रहती है और दाम कम होते हैं। अगर आप नम मौसम के लिए तैयार हैं और तट को लगभग अपने लिए चाहते हैं, तो यह बेहतरीन मूल्य वाला महीना है।',
+      stayRecommendationTitle: 'जून में पुएर्तो विएखो में कहाँ ठहरें',
+      verdictHeading: 'क्या जून घूमने के लिए अच्छा समय है?',
+      verdictParagraph:
+        'यह आपकी प्राथमिकताओं पर निर्भर करता है। हरी-भरी प्रकृति, वन्यजीव, शांत समुद्र तटों और कम दामों के लिए, हाँ। अगर आपको भरोसेमंद सूखे समुद्र तट वाले दिन चाहिए, तो कोई सूखा महीना आपके लिए बेहतर रहेगा।',
+      hubLinkText: 'महीने-दर-महीने पूरी मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'जून नम, गर्म और हरा-भरा होता है, जीवंत वन्यजीवन, पास ही कछुओं के घोंसले का मौसम और कम दामों के साथ। उजली सुबहों के आसपास योजना बनाएँ, एक अच्छी बरसाती जैकेट रखें, और गारंटीशुदा समुद्र तट मौसम के बजाय प्रकृति के लिए आएँ।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in juni — klimaat, regen & zee',
+      seoDescription:
+        'Juni in Puerto Viejo de Talamanca is nat en groen, met vlakbij het nestseizoen van zeeschildpadden, een levendige jungle en lage prijzen. Dit kun je verwachten en zo plan je.',
+      heading: 'Weer in Puerto Viejo in juni',
+      heroAlt: 'Nat groen regenwoud in Puerto Viejo de Talamanca in juni',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Juni in een oogopslag',
+      snapshot: [
+        { label: 'Temperatuur', value: '28°C / 23°C' },
+        { label: 'Regen', value: '~340 mm — een natte maand' },
+        { label: 'Zee', value: 'Vaak ruwer, warm, ~28°C' },
+        { label: 'Drukte', value: 'Laag — voordeel van het groene seizoen' },
+      ],
+      whatItsLikeHeading: 'Hoe juni echt is',
+      whatItsLikeParagraphs: [
+        'Juni zit volop in het groene seizoen — nat, warm en felgroen. Buien komen vaak voor en de zee kan ruwer zijn, maar je vindt nog steeds heldere opklaringen, vooral in de ochtend.',
+        'Het is een lonende maand voor de natuur: de jungle is op zijn levendigst, en het bredere gebied rond Gandoca-Manzanillo valt binnen het nestseizoen van zeeschildpadden. Houd je van een wilde, groene, sfeervolle kust, dan levert juni.',
+      ],
+      rainHeading: 'Hoeveel regent het?',
+      rainParagraph:
+        'Juni komt gemiddeld uit op zo\'n 340 mm. Reken op regelmatige buien en enkele stevigere hoosbuien, meestal afgewisseld met warme, heldere periodes in plaats van onafgebroken regen.',
+      rainyDayIntro: 'De regen past goed bij de beste uitstapjes binnen en in de natuur:',
+      rainyDayItems: [
+        'Doe een cacao- en chocoladetour',
+        'Vraag ter plaatse naar begeleide tours rond het nestseizoen van zeeschildpadden in het gebied Gandoca-Manzanillo',
+        'Verken een weelderig, levendig Nationaal Park Cahuita',
+      ],
+      crowdsHeading: 'Drukte, prijzen en evenementen',
+      crowdsParagraph:
+        'Juni is laagseizoen, dus het is rustig en de prijzen zijn laag. Het is een maand met veel waarde voor je geld als je op nat weer bent voorbereid en de kust grotendeels voor jezelf wilt.',
+      stayRecommendationTitle: 'Waar te verblijven in Puerto Viejo in juni',
+      verdictHeading: 'Is juni een goede tijd voor een bezoek?',
+      verdictParagraph:
+        'Dat hangt af van je prioriteiten. Voor weelderige natuur, dieren, rustige stranden en lage prijzen: ja. Heb je betrouwbare droge stranddagen nodig, dan past een van de drogere maanden beter bij je.',
+      hubLinkText: 'Bekijk de volledige weergids maand voor maand →',
+      takeawaysHeading: 'Belangrijkste punten',
+      takeawaysParagraph:
+        'Juni is nat, warm en groen, met een levendige dierenwereld, vlakbij het nestseizoen van schildpadden en lage prijzen. Plan rond de helderdere ochtenden, neem een goede regenjas mee en kom voor de natuur in plaats van gegarandeerd strandweer.',
+    },
+  },
+  july: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in July — Climate, Rain & Sea',
+      seoDescription:
+        'July in Puerto Viejo de Talamanca is mixed — warm sun and heavy showers, sometimes a short drier spell, with good surf and lively jungle. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in July',
+      heroAlt: 'Green Caribbean coast with surf in Puerto Viejo de Talamanca in July',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'July at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '27°C / 22°C' },
+        { label: 'Rain', value: '~400 mm — wet and variable' },
+        { label: 'Sea', value: 'Good surf, warm, ~28°C' },
+        { label: 'Crowds', value: 'Moderate — summer holiday travel' },
+      ],
+      whatItsLikeHeading: 'What July Is Really Like',
+      whatItsLikeParagraphs: [
+        'July is one of the more variable months. It can be quite wet, with heavy showers, but the Caribbean coast sometimes gets a short drier spell mid-season, giving you bright, warm days between the rain.',
+        'The jungle is lush and the surf is often good, so it is a lively month. It also coincides with northern-hemisphere summer holidays, so you will see more visitors than in the quieter green-season months.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'July can average around 400 mm and is quite variable year to year. Expect a mix of heavy downpours and warm bright spells; some years bring a welcome short dry stretch.',
+      rainyDayIntro: 'Rain or shine, there is plenty to do:',
+      rainyDayItems: [
+        'Watch or try the surf on a good swell',
+        'Take a cacao and chocolate tour',
+        'Explore Cahuita National Park between showers',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'July brings a bump in visitors thanks to summer holidays abroad, so crowds and prices are a little higher than the surrounding green-season months, though still well short of the December-February peak.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in July',
+      verdictHeading: 'Is July a Good Time to Visit?',
+      verdictParagraph:
+        'Yes, if you are flexible. You may catch a bright, surf-filled stretch or a wet one, but the jungle is at its liveliest and the atmosphere is good. Pack for both and stay adaptable.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'July is warm, green and variable — heavy showers, good surf and sometimes a short drier spell. Expect a summer-holiday bump in visitors, plan flexibly around the weather, and pack for both sun and rain.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Julio — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Julio en Puerto Viejo de Talamanca es variable — sol cálido y aguaceros fuertes, a veces un breve período más seco, con buen surf y selva viva. Esto es lo que puedes esperar.',
+      heading: 'El Clima en Puerto Viejo en Julio',
+      heroAlt: 'Costa caribeña verde con surf en Puerto Viejo de Talamanca en julio',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Julio de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 22°C' },
+        { label: 'Lluvia', value: '~400 mm — húmedo y variable' },
+        { label: 'Mar', value: 'Buen surf, cálido, ~28°C' },
+        { label: 'Afluencia', value: 'Moderada — viajes de vacaciones de verano' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Julio',
+      whatItsLikeParagraphs: [
+        'Julio es uno de los meses más variables. Puede ser bastante húmedo, con aguaceros fuertes, pero el Caribe a veces recibe un breve período más seco a media temporada, dándote días cálidos y luminosos entre la lluvia.',
+        'La selva está frondosa y el surf suele ser bueno, así que es un mes animado. También coincide con las vacaciones de verano del hemisferio norte, así que verás más visitantes que en los meses más tranquilos de la temporada verde.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Julio puede promediar unos 400 mm y es bastante variable de un año a otro. Espera una mezcla de aguaceros fuertes y ratos cálidos y luminosos; algunos años traen un bienvenido período seco corto.',
+      rainyDayIntro: 'Con lluvia o sol, hay mucho por hacer:',
+      rainyDayItems: [
+        'Observa o prueba el surf con un buen oleaje',
+        'Haz un tour de cacao y chocolate',
+        'Recorre el Parque Nacional Cahuita entre aguaceros',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'Julio trae un repunte de visitantes por las vacaciones de verano en el extranjero, así que la afluencia y los precios son algo más altos que en los meses de temporada verde de alrededor, aunque todavía lejos del pico de diciembre a febrero.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en julio',
+      verdictHeading: '¿Es Julio una Buena Época para Visitar?',
+      verdictParagraph:
+        'Sí, si eres flexible. Puedes pillar un período luminoso y con surf o uno húmedo, pero la selva está en su punto más vivo y el ambiente es bueno. Lleva para ambos y mantente adaptable.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Julio es cálido, verde y variable — aguaceros fuertes, buen surf y a veces un breve período más seco. Espera un repunte de visitantes por las vacaciones de verano, planea con flexibilidad y lleva para sol y lluvia.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im Juli — Klima, Regen & Meer',
+      seoDescription:
+        'Der Juli in Puerto Viejo de Talamanca ist wechselhaft — warme Sonne und heftige Schauer, manchmal eine kurze trockenere Phase, mit gutem Surf und lebendigem Dschungel. Das erwartet dich hier.',
+      heading: 'Wetter in Puerto Viejo im Juli',
+      heroAlt: 'Grüne Karibikküste mit Surf in Puerto Viejo de Talamanca im Juli',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Der Juli auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '27°C / 22°C' },
+        { label: 'Regen', value: '~400 mm — nass und wechselhaft' },
+        { label: 'Meer', value: 'Guter Surf, warm, ~28°C' },
+        { label: 'Andrang', value: 'Mäßig — Sommerferienreisen' },
+      ],
+      whatItsLikeHeading: 'Wie der Juli wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der Juli ist einer der wechselhafteren Monate. Er kann recht nass sein, mit heftigen Schauern, aber die Karibikküste bekommt zur Saisonmitte manchmal eine kurze trockenere Phase, die dir zwischen dem Regen helle, warme Tage beschert.',
+        'Der Dschungel ist üppig und der Surf oft gut, daher ist es ein lebendiger Monat. Er fällt zudem mit den Sommerferien der Nordhalbkugel zusammen, sodass du mehr Besucher siehst als in den ruhigeren Monaten der grünen Saison.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Der Juli kann im Durchschnitt bei etwa 400 mm liegen und schwankt von Jahr zu Jahr stark. Erwarte eine Mischung aus heftigen Güssen und warmen, hellen Phasen; manche Jahre bringen eine willkommene kurze Trockenperiode.',
+      rainyDayIntro: 'Ob Regen oder Sonnenschein, es gibt viel zu tun:',
+      rainyDayItems: [
+        'Beobachte oder probiere den Surf bei gutem Wellengang',
+        'Mach eine Kakao- und Schokoladentour',
+        'Erkunde den Cahuita-Nationalpark zwischen den Schauern',
+      ],
+      crowdsHeading: 'Andrang, Preise und Veranstaltungen',
+      crowdsParagraph:
+        'Der Juli bringt wegen der Sommerferien im Ausland einen Anstieg der Besucherzahlen, sodass Andrang und Preise etwas höher sind als in den umliegenden Monaten der grünen Saison, aber noch weit unter dem Höhepunkt von Dezember bis Februar liegen.',
+      stayRecommendationTitle: 'Wo man im Juli in Puerto Viejo übernachtet',
+      verdictHeading: 'Ist der Juli eine gute Reisezeit?',
+      verdictParagraph:
+        'Ja, wenn du flexibel bist. Du erwischst vielleicht eine helle, surfreiche Phase oder eine nasse, aber der Dschungel ist am lebendigsten und die Stimmung ist gut. Pack für beides und bleib anpassungsfähig.',
+      hubLinkText: 'Zum vollständigen Wetterführer Monat für Monat →',
+      takeawaysHeading: 'Das Wichtigste in Kürze',
+      takeawaysParagraph:
+        'Der Juli ist warm, grün und wechselhaft — heftige Schauer, guter Surf und manchmal eine kurze trockenere Phase. Erwarte einen Anstieg der Besucher durch die Sommerferien, plane flexibel um das Wetter herum und pack für Sonne und Regen.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en juillet — Climat, pluie & mer',
+      seoDescription:
+        'Juillet à Puerto Viejo de Talamanca est changeant — soleil chaud et fortes averses, parfois une courte période plus sèche, avec du bon surf et une jungle vivante. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en juillet',
+      heroAlt: 'Côte caraïbe verdoyante avec du surf à Puerto Viejo de Talamanca en juillet',
+      photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Juillet en un coup d\'œil',
+      snapshot: [
+        { label: 'Température', value: '27°C / 22°C' },
+        { label: 'Pluie', value: '~400 mm — humide et variable' },
+        { label: 'Mer', value: 'Bon surf, chaude, ~28°C' },
+        { label: 'Affluence', value: 'Modérée — voyages des vacances d\'été' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment juillet',
+      whatItsLikeParagraphs: [
+        'Juillet est l\'un des mois les plus changeants. Il peut être assez humide, avec de fortes averses, mais la côte caraïbe connaît parfois une courte période plus sèche en milieu de saison, vous offrant des journées lumineuses et chaudes entre les pluies.',
+        'La jungle est luxuriante et le surf souvent bon, c\'est donc un mois animé. Il coïncide aussi avec les vacances d\'été de l\'hémisphère nord, vous verrez donc plus de visiteurs que pendant les mois plus calmes de la saison verte.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Juillet peut atteindre en moyenne environ 400 mm et varie beaucoup d\'une année à l\'autre. Attendez-vous à un mélange de fortes averses et de moments chauds et lumineux ; certaines années apportent une courte période sèche bienvenue.',
+      rainyDayIntro: 'Qu\'il pleuve ou qu\'il fasse beau, il y a beaucoup à faire :',
+      rainyDayItems: [
+        'Regardez ou essayez le surf avec une bonne houle',
+        'Faites un tour du cacao et du chocolat',
+        'Explorez le parc national de Cahuita entre les averses',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'Juillet connaît une hausse des visiteurs grâce aux vacances d\'été à l\'étranger, l\'affluence et les prix sont donc un peu plus élevés que les mois voisins de la saison verte, tout en restant bien en deçà du pic de décembre à février.',
+      stayRecommendationTitle: 'Où loger à Puerto Viejo en juillet',
+      verdictHeading: 'Juillet est-il une bonne période pour visiter ?',
+      verdictParagraph:
+        'Oui, si vous êtes flexible. Vous pourriez tomber sur une période lumineuse et pleine de surf ou sur une période humide, mais la jungle est à son comble et l\'ambiance est bonne. Préparez-vous aux deux et restez adaptable.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'À retenir',
+      takeawaysParagraph:
+        'Juillet est chaud, vert et changeant — fortes averses, bon surf et parfois une courte période plus sèche. Attendez-vous à une hausse de visiteurs due aux vacances d\'été, planifiez avec souplesse en fonction de la météo et préparez-vous au soleil comme à la pluie.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo a luglio — Clima, pioggia & mare',
+      seoDescription:
+        'Luglio a Puerto Viejo de Talamanca è variabile — sole caldo e forti acquazzoni, a volte un breve periodo più asciutto, con buon surf e giungla vivace. Ecco cosa aspettarsi.',
+      heading: 'Meteo a Puerto Viejo a luglio',
+      heroAlt: 'Costa caraibica verde con surf a Puerto Viejo de Talamanca a luglio',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Luglio in breve',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 22°C' },
+        { label: 'Pioggia', value: '~400 mm — umido e variabile' },
+        { label: 'Mare', value: 'Buon surf, caldo, ~28°C' },
+        { label: 'Affluenza', value: 'Moderata — viaggi delle vacanze estive' },
+      ],
+      whatItsLikeHeading: 'Com\'è davvero luglio',
+      whatItsLikeParagraphs: [
+        'Luglio è uno dei mesi più variabili. Può essere piuttosto piovoso, con forti acquazzoni, ma la costa caraibica a volte riceve un breve periodo più asciutto a metà stagione, regalandoti giornate luminose e calde tra la pioggia.',
+        'La giungla è rigogliosa e il surf spesso buono, quindi è un mese vivace. Coincide anche con le vacanze estive dell\'emisfero nord, quindi vedrai più visitatori rispetto ai mesi più tranquilli della stagione verde.',
+      ],
+      rainHeading: 'Quanto piove?',
+      rainParagraph:
+        'Luglio può registrare una media di circa 400 mm ed è piuttosto variabile di anno in anno. Aspettati un mix di forti acquazzoni e momenti caldi e luminosi; alcuni anni portano un gradito breve periodo asciutto.',
+      rainyDayIntro: 'Con pioggia o sole, c\'è molto da fare:',
+      rainyDayItems: [
+        'Guarda o prova il surf con una buona onda',
+        'Fai un tour del cacao e del cioccolato',
+        'Esplora il Parco Nazionale di Cahuita tra un acquazzone e l\'altro',
+      ],
+      crowdsHeading: 'Affluenza, prezzi ed eventi',
+      crowdsParagraph:
+        'Luglio porta un aumento di visitatori grazie alle vacanze estive all\'estero, quindi affluenza e prezzi sono un po\' più alti rispetto ai mesi circostanti della stagione verde, pur restando ben al di sotto del picco di dicembre-febbraio.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo a luglio',
+      verdictHeading: 'Luglio è un buon periodo per visitare?',
+      verdictParagraph:
+        'Sì, se sei flessibile. Potresti trovare un periodo luminoso e pieno di surf o uno piovoso, ma la giungla è al massimo della sua vitalità e l\'atmosfera è bella. Prepara per entrambi e resta adattabile.',
+      hubLinkText: 'Guarda la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti chiave',
+      takeawaysParagraph:
+        'Luglio è caldo, verde e variabile — forti acquazzoni, buon surf e a volte un breve periodo più asciutto. Aspettati un aumento di visitatori per le vacanze estive, pianifica con flessibilità in base al meteo e prepara sia per il sole sia per la pioggia.',
+    },
+    pt: {
+      seoTitle: 'Clima em Puerto Viejo em Julho — Tempo, Chuva & Mar',
+      seoDescription:
+        'Julho em Puerto Viejo de Talamanca é variável — sol quente e aguaceiros fortes, às vezes um breve período mais seco, com bom surf e selva viva. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em Julho',
+      heroAlt: 'Costa caribenha verde com surf em Puerto Viejo de Talamanca em julho',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Julho num Relance',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 22°C' },
+        { label: 'Chuva', value: '~400 mm — úmido e variável' },
+        { label: 'Mar', value: 'Bom surf, quente, ~28°C' },
+        { label: 'Movimento', value: 'Moderado — viagens de férias de verão' },
+      ],
+      whatItsLikeHeading: 'Como Julho Realmente É',
+      whatItsLikeParagraphs: [
+        'Julho é um dos meses mais variáveis. Pode ser bastante chuvoso, com aguaceiros fortes, mas a costa caribenha às vezes recebe um breve período mais seco no meio da temporada, oferecendo dias claros e quentes entre as chuvas.',
+        'A selva está exuberante e o surf costuma ser bom, então é um mês animado. Também coincide com as férias de verão do hemisfério norte, então você verá mais visitantes do que nos meses mais tranquilos da temporada verde.',
+      ],
+      rainHeading: 'Quanto Chove?',
+      rainParagraph:
+        'Julho pode ter uma média de cerca de 400 mm e varia bastante de ano para ano. Espere uma mistura de aguaceiros fortes e momentos quentes e claros; alguns anos trazem um bem-vindo período seco curto.',
+      rainyDayIntro: 'Com chuva ou sol, há muito para fazer:',
+      rainyDayItems: [
+        'Observe ou experimente o surf com uma boa ondulação',
+        'Faça um tour de cacau e chocolate',
+        'Explore o Parque Nacional Cahuita entre os aguaceiros',
+      ],
+      crowdsHeading: 'Movimento, Preços e Eventos',
+      crowdsParagraph:
+        'Julho traz um aumento de visitantes graças às férias de verão no exterior, então o movimento e os preços são um pouco mais altos do que nos meses vizinhos da temporada verde, embora ainda bem abaixo do pico de dezembro a fevereiro.',
+      stayRecommendationTitle: 'Onde ficar em Puerto Viejo em julho',
+      verdictHeading: 'Julho é uma Boa Época para Visitar?',
+      verdictParagraph:
+        'Sim, se você for flexível. Você pode pegar um período claro e cheio de surf ou um chuvoso, mas a selva está no seu auge e o clima é bom. Leve para os dois e mantenha-se adaptável.',
+      hubLinkText: 'Ver o guia completo de clima mês a mês →',
+      takeawaysHeading: 'Pontos-Chave',
+      takeawaysParagraph:
+        'Julho é quente, verde e variável — aguaceiros fortes, bom surf e às vezes um breve período mais seco. Espere um aumento de visitantes pelas férias de verão, planeje com flexibilidade em torno do clima e leve tanto para sol quanto para chuva.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בפוארטו ויאחו ביולי — אקלים, גשם וים',
+      seoDescription:
+        'יולי בפוארטו ויאחו דה טלמנקה הוא הפכפך — שמש חמה וממטרים כבדים, לעיתים תקופה יבשה קצרה, עם גלישה טובה וג\'ונגל תוסס. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו ביולי',
+      heroAlt: 'חוף קריבי ירוק עם גלישה בפוארטו ויאחו דה טלמנקה ביולי',
+      photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'יולי במבט חטוף',
+      snapshot: [
+        { label: 'טמפרטורה', value: '27°C / 22°C' },
+        { label: 'גשם', value: '~400 מ"מ — לח והפכפך' },
+        { label: 'ים', value: 'גלישה טובה, חמים, ~28°C' },
+        { label: 'עומס', value: 'בינוני — נסיעות חופשת הקיץ' },
+      ],
+      whatItsLikeHeading: 'איך יולי באמת',
+      whatItsLikeParagraphs: [
+        'יולי הוא אחד החודשים ההפכפכים יותר. הוא יכול להיות גשום למדי, עם ממטרים כבדים, אך החוף הקריבי מקבל לעיתים תקופה יבשה קצרה באמצע העונה, שמעניקה לך ימים בהירים וחמים בין הגשמים.',
+        'הג\'ונגל שופע והגלישה לרוב טובה, אז זה חודש תוסס. הוא גם חופף לחופשת הקיץ של חצי הכדור הצפוני, כך שתראה יותר מבקרים מאשר בחודשים השקטים יותר של העונה הירוקה.',
+      ],
+      rainHeading: 'כמה גשם יורד?',
+      rainParagraph:
+        'יולי יכול לרדת בממוצע סביב 400 מ"מ והוא הפכפך למדי משנה לשנה. צפה לתערובת של ממטרים כבדים וקטעים חמים ובהירים; בחלק מהשנים מגיעה תקופה יבשה קצרה ומבורכת.',
+      rainyDayIntro: 'בגשם או בשמש, יש הרבה מה לעשות:',
+      rainyDayItems: [
+        'צפה או נסה את הגלישה בגלים טובים',
+        'צא לסיור קקאו ושוקולד',
+        'סייר בפארק הלאומי Cahuita בין הממטרים',
+      ],
+      crowdsHeading: 'עומס, מחירים ואירועים',
+      crowdsParagraph:
+        'יולי מביא עלייה במספר המבקרים בזכות חופשות הקיץ בחו"ל, כך שהעומס והמחירים מעט גבוהים יותר מאשר בחודשי העונה הירוקה שסביבו, אם כי עדיין הרבה מתחת לשיא של דצמבר-פברואר.',
+      stayRecommendationTitle: 'היכן להתארח בפוארטו ויאחו ביולי',
+      verdictHeading: 'האם יולי הוא זמן טוב לבקר?',
+      verdictParagraph:
+        'כן, אם אתה גמיש. אתה עשוי לתפוס תקופה בהירה ומלאת גלישה או תקופה גשומה, אך הג\'ונגל בשיא חיוניותו והאווירה טובה. ארוז לשניהם והישאר גמיש.',
+      hubLinkText: 'צפה במדריך מזג האוויר המלא חודש אחר חודש ←',
+      takeawaysHeading: 'נקודות עיקריות',
+      takeawaysParagraph:
+        'יולי חם, ירוק והפכפך — ממטרים כבדים, גלישה טובה ולעיתים תקופה יבשה קצרה. צפה לעלייה במבקרים בשל חופשת הקיץ, תכנן בגמישות סביב מזג האוויר וארוז גם לשמש וגם לגשם.',
+    },
+    hi: {
+      seoTitle: 'जुलाई में पुएर्तो विएजो का मौसम — जलवायु, बारिश और समुद्र',
+      seoDescription:
+        'पुएर्तो विएजो दे तालामांका में जुलाई मिला-जुला रहता है — गर्म धूप और तेज़ बौछारें, कभी-कभी एक छोटी सूखी अवधि, अच्छे सर्फ़ और जीवंत जंगल के साथ। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'जुलाई में पुएर्तो विएजो का मौसम',
+      heroAlt: 'जुलाई में पुएर्तो विएजो दे तालामांका में सर्फ़ के साथ हरा कैरिबियन तट',
+      photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में जुलाई',
+      snapshot: [
+        { label: 'तापमान', value: '27°C / 22°C' },
+        { label: 'बारिश', value: '~400 mm — नम और परिवर्तनशील' },
+        { label: 'समुद्र', value: 'अच्छा सर्फ़, गर्म, ~28°C' },
+        { label: 'भीड़', value: 'मध्यम — गर्मी की छुट्टियों की यात्रा' },
+      ],
+      whatItsLikeHeading: 'जुलाई वास्तव में कैसा होता है',
+      whatItsLikeParagraphs: [
+        'जुलाई अधिक परिवर्तनशील महीनों में से एक है। यह काफ़ी नम हो सकता है, तेज़ बौछारों के साथ, लेकिन कैरिबियन तट पर कभी-कभी मौसम के बीच एक छोटी सूखी अवधि आ जाती है, जो आपको बारिश के बीच उजले, गर्म दिन देती है।',
+        'जंगल हरा-भरा है और सर्फ़ अक्सर अच्छा रहता है, इसलिए यह एक जीवंत महीना है। यह उत्तरी गोलार्ध की गर्मी की छुट्टियों के साथ भी मेल खाता है, इसलिए आपको हरित मौसम के शांत महीनों की तुलना में अधिक पर्यटक दिखेंगे।',
+      ],
+      rainHeading: 'कितनी बारिश होती है?',
+      rainParagraph:
+        'जुलाई में औसतन लगभग 400 mm बारिश हो सकती है और यह साल-दर-साल काफ़ी परिवर्तनशील रहता है। तेज़ बौछारों और गर्म, उजले समय के मिश्रण की उम्मीद करें; कुछ वर्षों में एक स्वागतयोग्य छोटी सूखी अवधि आती है।',
+      rainyDayIntro: 'बारिश हो या धूप, करने को बहुत कुछ है:',
+      rainyDayItems: [
+        'अच्छी लहरों पर सर्फ़ देखें या आज़माएँ',
+        'कोको और चॉकलेट टूर लें',
+        'बौछारों के बीच Cahuita राष्ट्रीय उद्यान का पता लगाएँ',
+      ],
+      crowdsHeading: 'भीड़, कीमतें और आयोजन',
+      crowdsParagraph:
+        'विदेश में गर्मी की छुट्टियों के कारण जुलाई में पर्यटकों की संख्या बढ़ जाती है, इसलिए आसपास के हरित मौसम के महीनों की तुलना में भीड़ और कीमतें थोड़ी अधिक होती हैं, हालाँकि दिसंबर-फ़रवरी के चरम से अभी भी काफ़ी कम रहती हैं।',
+      stayRecommendationTitle: 'जुलाई में पुएर्तो विएजो में कहाँ ठहरें',
+      verdictHeading: 'क्या जुलाई घूमने का अच्छा समय है?',
+      verdictParagraph:
+        'हाँ, अगर आप लचीले हैं। आपको एक उजली, सर्फ़ से भरी अवधि मिल सकती है या एक नम अवधि, लेकिन जंगल अपने सबसे जीवंत रूप में होता है और माहौल अच्छा रहता है। दोनों के लिए सामान पैक करें और अनुकूल बने रहें।',
+      hubLinkText: 'महीने-दर-महीने पूरा मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'जुलाई गर्म, हरा-भरा और परिवर्तनशील होता है — तेज़ बौछारें, अच्छा सर्फ़ और कभी-कभी एक छोटी सूखी अवधि। गर्मी की छुट्टियों के कारण पर्यटकों में वृद्धि की उम्मीद करें, मौसम के अनुसार लचीली योजना बनाएँ, और धूप व बारिश दोनों के लिए सामान पैक करें।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in juli — Klimaat, regen & zee',
+      seoDescription:
+        'Juli in Puerto Viejo de Talamanca is wisselvallig — warme zon en zware buien, soms een korte drogere periode, met goede surf en een levendige jungle. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in juli',
+      heroAlt: 'Groene Caribische kust met surf in Puerto Viejo de Talamanca in juli',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Juli in het kort',
+      snapshot: [
+        { label: 'Temperatuur', value: '27°C / 22°C' },
+        { label: 'Regen', value: '~400 mm — nat en wisselvallig' },
+        { label: 'Zee', value: 'Goede surf, warm, ~28°C' },
+        { label: 'Drukte', value: 'Matig — zomervakantiereizen' },
+      ],
+      whatItsLikeHeading: 'Hoe juli echt is',
+      whatItsLikeParagraphs: [
+        'Juli is een van de wisselvalligere maanden. Het kan behoorlijk nat zijn, met zware buien, maar de Caribische kust krijgt halverwege het seizoen soms een korte drogere periode, die je heldere, warme dagen tussen de regen door geeft.',
+        'De jungle is weelderig en de surf is vaak goed, dus het is een levendige maand. Het valt ook samen met de zomervakantie op het noordelijk halfrond, dus je ziet meer bezoekers dan in de rustigere maanden van het groene seizoen.',
+      ],
+      rainHeading: 'Hoeveel regent het?',
+      rainParagraph:
+        'Juli komt gemiddeld uit op zo\'n 400 mm en varieert sterk van jaar tot jaar. Verwacht een mix van zware buien en warme, heldere momenten; sommige jaren brengen een welkome korte droge periode.',
+      rainyDayIntro: 'Of het nu regent of de zon schijnt, er is genoeg te doen:',
+      rainyDayItems: [
+        'Kijk naar of probeer de surf bij een goede deining',
+        'Doe een cacao- en chocoladetour',
+        'Verken het Nationaal Park Cahuita tussen de buien door',
+      ],
+      crowdsHeading: 'Drukte, prijzen en evenementen',
+      crowdsParagraph:
+        'Juli brengt door de zomervakantie in het buitenland een toename van bezoekers, dus de drukte en de prijzen liggen iets hoger dan in de omliggende maanden van het groene seizoen, al blijven ze ruim onder de piek van december tot februari.',
+      stayRecommendationTitle: 'Waar te verblijven in Puerto Viejo in juli',
+      verdictHeading: 'Is juli een goede tijd om te bezoeken?',
+      verdictParagraph:
+        'Ja, als je flexibel bent. Je treft misschien een heldere, surfrijke periode of een natte, maar de jungle is op zijn levendigst en de sfeer is goed. Pak voor beide in en blijf flexibel.',
+      hubLinkText: 'Bekijk de volledige weergids maand voor maand →',
+      takeawaysHeading: 'Belangrijkste punten',
+      takeawaysParagraph:
+        'Juli is warm, groen en wisselvallig — zware buien, goede surf en soms een korte drogere periode. Verwacht een toename van bezoekers door de zomervakantie, plan flexibel rond het weer en pak in voor zowel zon als regen.',
+    },
+  },
+  august: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in August — Climate, Rain & Sea',
+      seoDescription:
+        'August in Puerto Viejo de Talamanca is warm and green with rainy spells, a dramatic jungle and good surf. Here is what to expect and how to plan your trip.',
+      heading: 'Weather in Puerto Viejo in August',
+      heroAlt: 'Dramatic green jungle and beach in Puerto Viejo de Talamanca in August',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'August at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '28°C / 23°C' },
+        { label: 'Rain', value: '~320 mm — rainy spells, warm' },
+        { label: 'Sea', value: 'Some surf, warm, ~28°C' },
+        { label: 'Crowds', value: 'Moderate — tapering off late month' },
+      ],
+      whatItsLikeHeading: 'What August Is Really Like',
+      whatItsLikeParagraphs: [
+        'August stays warm and green, with rainy spells rolling through and a jungle that looks its most dramatic. You still get bright breaks, often in the mornings, between the showers.',
+        'The surf can be good and the landscape is lush and alive. It sits just before the calm September veranillo, so late August sometimes begins to hint at the clearer weather to come.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'August averages around 320 mm. Expect warm days with regular showers and occasional heavier bursts, usually broken up by bright spells rather than raining all day.',
+      rainyDayIntro: 'When the rain comes, you have great options:',
+      rainyDayItems: [
+        'Take a cacao and chocolate tour',
+        'Explore a lush, dramatic Cahuita National Park',
+        'Visit a Bribri Indigenous community',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'Early August still sees some summer-holiday travellers, tapering off later in the month toward quieter, lower-priced green-season conditions.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in August',
+      verdictHeading: 'Is August a Good Time to Visit?',
+      verdictParagraph:
+        'Yes, for green-season travellers. You get warm, lush, atmospheric weather and good value, with bright mornings and the calmer veranillo just around the corner. Pack for showers.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'August is warm, green and atmospheric, with rainy spells and good surf, just before the September veranillo. Plan around bright mornings, pack a rain jacket, and enjoy a lush, good-value month on the coast.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Agosto — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Agosto en Puerto Viejo de Talamanca es cálido y verde con períodos de lluvia, una selva dramática y buen surf. Esto es lo que puedes esperar y cómo planificar.',
+      heading: 'El Clima en Puerto Viejo en Agosto',
+      heroAlt: 'Selva verde dramática y playa en Puerto Viejo de Talamanca en agosto',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Agosto de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 23°C' },
+        { label: 'Lluvia', value: '~320 mm — períodos de lluvia, cálido' },
+        { label: 'Mar', value: 'Algo de surf, cálido, ~28°C' },
+        { label: 'Afluencia', value: 'Moderada — bajando a fin de mes' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Agosto',
+      whatItsLikeParagraphs: [
+        'Agosto se mantiene cálido y verde, con períodos de lluvia pasando y una selva que luce en su punto más dramático. Aún tienes claros luminosos, a menudo por la mañana, entre los aguaceros.',
+        'El surf puede ser bueno y el paisaje está frondoso y lleno de vida. Está justo antes del tranquilo veranillo de septiembre, así que a finales de agosto a veces empieza a insinuarse el clima más despejado que viene.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Agosto promedia unos 320 mm. Espera días cálidos con aguaceros regulares y algunos episodios más fuertes, normalmente interrumpidos por ratos luminosos y no lloviendo todo el día.',
+      rainyDayIntro: 'Cuando llega la lluvia, tienes buenas opciones:',
+      rainyDayItems: [
+        'Haz un tour de cacao y chocolate',
+        'Recorre un frondoso y dramático Parque Nacional Cahuita',
+        'Visita una comunidad indígena Bribri',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'Principios de agosto todavía ve algunos viajeros de vacaciones de verano, bajando más adelante en el mes hacia condiciones de temporada verde más tranquilas y económicas.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en agosto',
+      verdictHeading: '¿Es Agosto una Buena Época para Visitar?',
+      verdictParagraph:
+        'Sí, para viajeros de temporada verde. Tienes clima cálido, frondoso y con atmósfera y buen valor, con mañanas luminosas y el tranquilo veranillo a la vuelta de la esquina. Lleva para aguaceros.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Agosto es cálido, verde y con atmósfera, con períodos de lluvia y buen surf, justo antes del veranillo de septiembre. Planea en torno a mañanas luminosas, lleva chaqueta impermeable y disfruta de un mes frondoso y de buen valor en la costa.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im August — Klima, Regen & Meer',
+      seoDescription:
+        'Der August in Puerto Viejo de Talamanca ist warm und grün mit Regenphasen, einem eindrucksvollen Dschungel und gutem Surf. Das erwartet dich und so planst du deine Reise.',
+      heading: 'Wetter in Puerto Viejo im August',
+      heroAlt: 'Eindrucksvoller grüner Dschungel und Strand in Puerto Viejo de Talamanca im August',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'August auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '28°C / 23°C' },
+        { label: 'Regen', value: '~320 mm — Regenphasen, warm' },
+        { label: 'Meer', value: 'Etwas Surf, warm, ~28°C' },
+        { label: 'Andrang', value: 'Mäßig — lässt gegen Monatsende nach' },
+      ],
+      whatItsLikeHeading: 'Wie der August wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der August bleibt warm und grün, mit durchziehenden Regenphasen und einem Dschungel, der am eindrucksvollsten aussieht. Zwischen den Schauern gibt es weiterhin helle Aufheiterungen, oft am Morgen.',
+        'Der Surf kann gut sein und die Landschaft ist üppig und voller Leben. Er liegt kurz vor dem ruhigen veranillo im September, sodass sich Ende August manchmal schon das klarere Wetter andeutet, das noch kommt.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Der August bringt im Schnitt rund 320 mm. Erwarte warme Tage mit regelmäßigen Schauern und gelegentlich kräftigeren Güssen, die meist von hellen Phasen unterbrochen werden, statt den ganzen Tag zu regnen.',
+      rainyDayIntro: 'Wenn der Regen kommt, hast du gute Möglichkeiten:',
+      rainyDayItems: [
+        'Mach eine Kakao- und Schokoladentour',
+        'Erkunde den üppigen, eindrucksvollen Cahuita-Nationalpark',
+        'Besuche eine indigene Bribri-Gemeinschaft',
+      ],
+      crowdsHeading: 'Andrang, Preise und Events',
+      crowdsParagraph:
+        'Anfang August sind noch einige Sommerurlauber unterwegs, deren Zahl im Laufe des Monats hin zu ruhigeren, günstigeren Bedingungen der grünen Saison abnimmt.',
+      stayRecommendationTitle: 'Wo du im August in Puerto Viejo übernachtest',
+      verdictHeading: 'Ist der August eine gute Reisezeit?',
+      verdictParagraph:
+        'Ja, für Reisende der grünen Saison. Du bekommst warmes, üppiges, stimmungsvolles Wetter und ein gutes Preis-Leistungs-Verhältnis, mit hellen Morgen und dem ruhigeren veranillo gleich um die Ecke. Pack für Schauer.',
+      hubLinkText: 'Zum vollständigen Monat-für-Monat-Wetterguide →',
+      takeawaysHeading: 'Das Wichtigste in Kürze',
+      takeawaysParagraph:
+        'Der August ist warm, grün und stimmungsvoll, mit Regenphasen und gutem Surf, kurz vor dem veranillo im September. Plane rund um helle Morgen, pack eine Regenjacke und genieße einen üppigen Monat mit gutem Preis-Leistungs-Verhältnis an der Küste.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en août — Climat, pluie & mer',
+      seoDescription:
+        'En août, Puerto Viejo de Talamanca est chaud et vert, avec des épisodes de pluie, une jungle spectaculaire et de bonnes vagues. Voici à quoi vous attendre et comment planifier votre voyage.',
+      heading: 'Météo à Puerto Viejo en août',
+      heroAlt: 'Jungle verte spectaculaire et plage à Puerto Viejo de Talamanca en août',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Août en un coup d\'œil',
+      snapshot: [
+        { label: 'Température', value: '28°C / 23°C' },
+        { label: 'Pluie', value: '~320 mm — épisodes de pluie, chaud' },
+        { label: 'Mer', value: 'Un peu de surf, chaude, ~28°C' },
+        { label: 'Affluence', value: 'Modérée — en baisse en fin de mois' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment le mois d\'août',
+      whatItsLikeParagraphs: [
+        'Août reste chaud et vert, avec des épisodes de pluie qui défilent et une jungle à son aspect le plus spectaculaire. Vous avez encore de belles éclaircies, souvent le matin, entre les averses.',
+        'Le surf peut être bon et le paysage est luxuriant et plein de vie. Ce mois précède le calme veranillo de septembre, si bien que la fin août laisse parfois entrevoir le temps plus clair à venir.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Août affiche en moyenne environ 320 mm. Attendez-vous à des journées chaudes avec des averses régulières et quelques épisodes plus intenses, généralement entrecoupés d\'éclaircies plutôt qu\'une pluie continue toute la journée.',
+      rainyDayIntro: 'Quand la pluie arrive, vous avez de belles options :',
+      rainyDayItems: [
+        'Faites un tour du cacao et du chocolat',
+        'Explorez un parc national Cahuita luxuriant et spectaculaire',
+        'Visitez une communauté autochtone Bribri',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'Début août voit encore quelques voyageurs des vacances d\'été, en baisse plus tard dans le mois vers des conditions de saison verte plus calmes et plus abordables.',
+      stayRecommendationTitle: 'Où loger à Puerto Viejo en août',
+      verdictHeading: 'Août est-il une bonne période pour visiter ?',
+      verdictParagraph:
+        'Oui, pour les voyageurs de la saison verte. Vous profitez d\'un temps chaud, luxuriant et plein d\'atmosphère et d\'un bon rapport qualité-prix, avec des matinées lumineuses et le calme veranillo juste au coin. Prévoyez pour les averses.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'À retenir',
+      takeawaysParagraph:
+        'Août est chaud, vert et plein d\'atmosphère, avec des épisodes de pluie et de bonnes vagues, juste avant le veranillo de septembre. Planifiez autour des matinées lumineuses, emportez une veste de pluie et profitez d\'un mois luxuriant et avantageux sur la côte.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo ad agosto — Clima, pioggia & mare',
+      seoDescription:
+        'Ad agosto Puerto Viejo de Talamanca è caldo e verde, con fasi di pioggia, una giungla spettacolare e buone onde. Ecco cosa aspettarti e come organizzare il viaggio.',
+      heading: 'Meteo a Puerto Viejo ad agosto',
+      heroAlt: 'Giungla verde spettacolare e spiaggia a Puerto Viejo de Talamanca ad agosto',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Agosto in breve',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 23°C' },
+        { label: 'Pioggia', value: '~320 mm — fasi di pioggia, caldo' },
+        { label: 'Mare', value: 'Un po\' di surf, caldo, ~28°C' },
+        { label: 'Affluenza', value: 'Moderata — in calo a fine mese' },
+      ],
+      whatItsLikeHeading: 'Com\'è davvero agosto',
+      whatItsLikeParagraphs: [
+        'Agosto resta caldo e verde, con fasi di pioggia che si susseguono e una giungla nel suo aspetto più spettacolare. Ci sono ancora schiarite luminose, spesso al mattino, tra un acquazzone e l\'altro.',
+        'Il surf può essere buono e il paesaggio è rigoglioso e pieno di vita. Si colloca appena prima del tranquillo veranillo di settembre, così la fine di agosto a volte inizia a far intravedere il tempo più limpido in arrivo.',
+      ],
+      rainHeading: 'Quanto piove?',
+      rainParagraph:
+        'Agosto registra in media circa 320 mm. Aspettati giornate calde con acquazzoni regolari e qualche rovescio più intenso, di solito intervallati da schiarite anziché una pioggia continua per tutto il giorno.',
+      rainyDayIntro: 'Quando arriva la pioggia, hai ottime opzioni:',
+      rainyDayItems: [
+        'Fai un tour del cacao e del cioccolato',
+        'Esplora un rigoglioso e spettacolare Parco Nazionale di Cahuita',
+        'Visita una comunità indigena Bribri',
+      ],
+      crowdsHeading: 'Affluenza, prezzi ed eventi',
+      crowdsParagraph:
+        'A inizio agosto ci sono ancora alcuni viaggiatori delle vacanze estive, in calo con l\'avanzare del mese verso condizioni di stagione verde più tranquille ed economiche.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo ad agosto',
+      verdictHeading: 'Agosto è un buon periodo per visitare?',
+      verdictParagraph:
+        'Sì, per i viaggiatori della stagione verde. Trovi un clima caldo, rigoglioso e suggestivo e un buon rapporto qualità-prezzo, con mattine luminose e il tranquillo veranillo dietro l\'angolo. Metti in valigia per gli acquazzoni.',
+      hubLinkText: 'Guarda la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti chiave',
+      takeawaysParagraph:
+        'Agosto è caldo, verde e suggestivo, con fasi di pioggia e buone onde, appena prima del veranillo di settembre. Pianifica intorno alle mattine luminose, porta una giacca impermeabile e goditi un mese rigoglioso e conveniente sulla costa.',
+    },
+    pt: {
+      seoTitle: 'Clima em Puerto Viejo em agosto — Tempo, chuva & mar',
+      seoDescription:
+        'Agosto em Puerto Viejo de Talamanca é quente e verde, com períodos de chuva, uma selva dramática e boas ondas. Veja o que esperar e como planejar sua viagem.',
+      heading: 'Clima em Puerto Viejo em agosto',
+      heroAlt: 'Selva verde dramática e praia em Puerto Viejo de Talamanca em agosto',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Agosto num relance',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 23°C' },
+        { label: 'Chuva', value: '~320 mm — períodos de chuva, quente' },
+        { label: 'Mar', value: 'Um pouco de surfe, quente, ~28°C' },
+        { label: 'Movimento', value: 'Moderado — diminuindo no fim do mês' },
+      ],
+      whatItsLikeHeading: 'Como é agosto de verdade',
+      whatItsLikeParagraphs: [
+        'Agosto continua quente e verde, com períodos de chuva passando e uma selva no seu visual mais dramático. Você ainda tem aberturas de sol, muitas vezes de manhã, entre as pancadas de chuva.',
+        'O surfe pode ser bom e a paisagem está exuberante e cheia de vida. Fica logo antes do tranquilo veranillo de setembro, então o fim de agosto às vezes começa a insinuar o tempo mais aberto que está por vir.',
+      ],
+      rainHeading: 'Quanto chove?',
+      rainParagraph:
+        'Agosto tem em média cerca de 320 mm. Espere dias quentes com pancadas regulares e alguns aguaceiros mais fortes, geralmente intercalados por períodos de sol em vez de chuva o dia inteiro.',
+      rainyDayIntro: 'Quando a chuva chega, você tem ótimas opções:',
+      rainyDayItems: [
+        'Faça um tour de cacau e chocolate',
+        'Explore um exuberante e dramático Parque Nacional Cahuita',
+        'Visite uma comunidade indígena Bribri',
+      ],
+      crowdsHeading: 'Movimento, preços e eventos',
+      crowdsParagraph:
+        'O início de agosto ainda recebe alguns viajantes das férias de verão, diminuindo mais para o fim do mês rumo a condições de estação verde mais tranquilas e baratas.',
+      stayRecommendationTitle: 'Onde se hospedar em Puerto Viejo em agosto',
+      verdictHeading: 'Agosto é uma boa época para visitar?',
+      verdictParagraph:
+        'Sim, para viajantes da estação verde. Você tem um tempo quente, exuberante e cheio de atmosfera e bom custo-benefício, com manhãs ensolaradas e o tranquilo veranillo logo ali. Leve roupa para pancadas de chuva.',
+      hubLinkText: 'Veja o guia de clima completo mês a mês →',
+      takeawaysHeading: 'Pontos principais',
+      takeawaysParagraph:
+        'Agosto é quente, verde e cheio de atmosfera, com períodos de chuva e boas ondas, logo antes do veranillo de setembro. Planeje em torno das manhãs ensolaradas, leve uma capa de chuva e aproveite um mês exuberante e de bom custo-benefício no litoral.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בפוארטו ויאחו באוגוסט — אקלים, גשם וים',
+      seoDescription:
+        'אוגוסט בפוארטו ויאחו דה טלמנקה חם וירוק, עם ממטרים, ג\'ונגל דרמטי וגלישה טובה. הנה למה לצפות ואיך לתכנן את הטיול.',
+      heading: 'מזג האוויר בפוארטו ויאחו באוגוסט',
+      heroAlt: 'ג\'ונגל ירוק דרמטי וחוף בפוארטו ויאחו דה טלמנקה באוגוסט',
+      photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'אוגוסט במבט מהיר',
+      snapshot: [
+        { label: 'טמפרטורה', value: '28°C / 23°C' },
+        { label: 'גשם', value: '~320 mm — ממטרים, חם' },
+        { label: 'ים', value: 'מעט גלישה, חמים, ~28°C' },
+        { label: 'עומס מבקרים', value: 'בינוני — פוחת לקראת סוף החודש' },
+      ],
+      whatItsLikeHeading: 'איך אוגוסט באמת מרגיש',
+      whatItsLikeParagraphs: [
+        'אוגוסט נשאר חם וירוק, עם ממטרים שחולפים וג\'ונגל שנראה במיטבו הדרמטי. עדיין מקבלים הפוגות בהירות, לרוב בבקרים, בין הממטרים.',
+        'הגלישה יכולה להיות טובה והנוף שופע וחי. זה ממש לפני ה-veranillo הרגוע של ספטמבר, כך שסוף אוגוסט לפעמים מתחיל לרמז על מזג האוויר הבהיר יותר שמגיע.',
+      ],
+      rainHeading: 'כמה יורד גשם?',
+      rainParagraph:
+        'באוגוסט יורדים בממוצע כ-320 מ"מ. צפו לימים חמים עם ממטרים סדירים ומדי פעם מטחים חזקים יותר, שלרוב נקטעים בהפוגות בהירות ולא גשם לאורך כל היום.',
+      rainyDayIntro: 'כשהגשם מגיע, יש לכם אפשרויות מצוינות:',
+      rainyDayItems: [
+        'צאו לסיור קקאו ושוקולד',
+        'טיילו בפארק הלאומי Cahuita השופע והדרמטי',
+        'בקרו בקהילת הילידים Bribri',
+      ],
+      crowdsHeading: 'עומס מבקרים, מחירים ואירועים',
+      crowdsParagraph:
+        'בתחילת אוגוסט עדיין מגיעים כמה מטיילים של חופשת הקיץ, ומספרם פוחת בהמשך החודש לעבר תנאי עונה ירוקה רגועים וזולים יותר.',
+      stayRecommendationTitle: 'איפה להתארח בפוארטו ויאחו באוגוסט',
+      verdictHeading: 'האם אוגוסט הוא זמן טוב לביקור?',
+      verdictParagraph:
+        'כן, למטיילי העונה הירוקה. תקבלו מזג אוויר חם, שופע ואטמוספרי ותמורה טובה למחיר, עם בקרים בהירים וה-veranillo הרגוע ממש מעבר לפינה. ארזו לקראת ממטרים.',
+      hubLinkText: 'למדריך מזג האוויר המלא חודש אחר חודש →',
+      takeawaysHeading: 'נקודות עיקריות',
+      takeawaysParagraph:
+        'אוגוסט חם, ירוק ואטמוספרי, עם ממטרים וגלישה טובה, ממש לפני ה-veranillo של ספטמבר. תכננו סביב בקרים בהירים, ארזו מעיל גשם ותיהנו מחודש שופע ומשתלם לאורך החוף.',
+    },
+    hi: {
+      seoTitle: 'अगस्त में प्यूर्तो विएखो का मौसम — जलवायु, बारिश और समुद्र',
+      seoDescription:
+        'अगस्त में प्यूर्तो विएखो दे तालामांका गर्म और हरा-भरा रहता है, बारिश के दौर, नाटकीय जंगल और अच्छी सर्फिंग के साथ। जानिए क्या उम्मीद करें और अपनी यात्रा की योजना कैसे बनाएं।',
+      heading: 'अगस्त में प्यूर्तो विएखो का मौसम',
+      heroAlt: 'अगस्त में प्यूर्तो विएखो दे तालामांका में नाटकीय हरा-भरा जंगल और समुद्र तट',
+      photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में अगस्त',
+      snapshot: [
+        { label: 'तापमान', value: '28°C / 23°C' },
+        { label: 'बारिश', value: '~320 mm — बारिश के दौर, गर्म' },
+        { label: 'समुद्र', value: 'थोड़ी सर्फिंग, गर्म, ~28°C' },
+        { label: 'भीड़', value: 'मध्यम — महीने के अंत तक घटती हुई' },
+      ],
+      whatItsLikeHeading: 'अगस्त सचमुच कैसा होता है',
+      whatItsLikeParagraphs: [
+        'अगस्त गर्म और हरा-भरा बना रहता है, बारिश के दौर गुज़रते हैं और जंगल अपने सबसे नाटकीय रूप में दिखता है। बौछारों के बीच, अक्सर सुबह के समय, आपको उजली धूप के पल भी मिलते हैं।',
+        'सर्फिंग अच्छी हो सकती है और नज़ारा हरा-भरा और जीवंत रहता है। यह सितंबर के शांत veranillo से ठीक पहले आता है, इसलिए अगस्त के आखिर में कभी-कभी आगे आने वाले साफ़ मौसम की झलक मिलने लगती है।',
+      ],
+      rainHeading: 'कितनी बारिश होती है?',
+      rainParagraph:
+        'अगस्त में औसतन लगभग 320 mm बारिश होती है। गर्म दिनों के साथ नियमित बौछारों और कभी-कभी तेज़ झड़ियों की उम्मीद करें, जो आमतौर पर पूरे दिन बरसने के बजाय उजले अंतरालों से बंटी रहती हैं।',
+      rainyDayIntro: 'जब बारिश आती है, तो आपके पास बढ़िया विकल्प होते हैं:',
+      rainyDayItems: [
+        'कोको और चॉकलेट टूर करें',
+        'हरे-भरे और नाटकीय Cahuita राष्ट्रीय उद्यान की सैर करें',
+        'किसी Bribri आदिवासी समुदाय में जाएं',
+      ],
+      crowdsHeading: 'भीड़, कीमतें और आयोजन',
+      crowdsParagraph:
+        'अगस्त की शुरुआत में गर्मियों की छुट्टियों के कुछ यात्री अब भी आते हैं, जो महीने के आगे बढ़ने के साथ घटकर अधिक शांत और सस्ती हरित-ऋतु की स्थितियों की ओर जाते हैं।',
+      stayRecommendationTitle: 'अगस्त में प्यूर्तो विएखो में कहाँ ठहरें',
+      verdictHeading: 'क्या अगस्त घूमने के लिए अच्छा समय है?',
+      verdictParagraph:
+        'हाँ, हरित-ऋतु के यात्रियों के लिए। आपको गर्म, हरा-भरा और खुशनुमा मौसम और अच्छा मूल्य मिलता है, उजली सुबहों और ठीक कोने पर मौजूद शांत veranillo के साथ। बौछारों के लिए सामान बांधें।',
+      hubLinkText: 'महीने-दर-महीने की पूरी मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'अगस्त गर्म, हरा-भरा और खुशनुमा होता है, बारिश के दौर और अच्छी सर्फिंग के साथ, सितंबर के veranillo से ठीक पहले। उजली सुबहों के इर्द-गिर्द योजना बनाएं, रेनकोट साथ रखें और तट पर एक हरे-भरे, किफ़ायती महीने का आनंद लें।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in augustus — Klimaat, regen & zee',
+      seoDescription:
+        'Augustus in Puerto Viejo de Talamanca is warm en groen, met regenbuien, een indrukwekkende jungle en goede surf. Dit kun je verwachten en zo plan je je reis.',
+      heading: 'Weer in Puerto Viejo in augustus',
+      heroAlt: 'Indrukwekkende groene jungle en strand in Puerto Viejo de Talamanca in augustus',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Augustus in het kort',
+      snapshot: [
+        { label: 'Temperatuur', value: '28°C / 23°C' },
+        { label: 'Regen', value: '~320 mm — regenbuien, warm' },
+        { label: 'Zee', value: 'Wat surf, warm, ~28°C' },
+        { label: 'Drukte', value: 'Matig — neemt af tegen het eind van de maand' },
+      ],
+      whatItsLikeHeading: 'Hoe augustus echt is',
+      whatItsLikeParagraphs: [
+        'Augustus blijft warm en groen, met overtrekkende regenbuien en een jungle op zijn indrukwekkendst. Tussen de buien door krijg je nog steeds heldere opklaringen, vaak in de ochtend.',
+        'De surf kan goed zijn en het landschap is weelderig en vol leven. Het valt net voor de rustige veranillo van september, dus eind augustus geeft soms al een hint van het helderder weer dat eraan komt.',
+      ],
+      rainHeading: 'Hoeveel regent het?',
+      rainParagraph:
+        'Augustus komt gemiddeld uit op zo\'n 320 mm. Verwacht warme dagen met regelmatige buien en af en toe een fellere plens, meestal afgewisseld met heldere periodes in plaats van de hele dag regen.',
+      rainyDayIntro: 'Als de regen komt, heb je prima opties:',
+      rainyDayItems: [
+        'Doe een cacao- en chocoladetour',
+        'Verken het weelderige, indrukwekkende nationaal park Cahuita',
+        'Bezoek een inheemse Bribri-gemeenschap',
+      ],
+      crowdsHeading: 'Drukte, prijzen en evenementen',
+      crowdsParagraph:
+        'Begin augustus zijn er nog wat zomervakantiegangers, die later in de maand afnemen richting rustigere, voordeligere omstandigheden van het groene seizoen.',
+      stayRecommendationTitle: 'Waar te overnachten in Puerto Viejo in augustus',
+      verdictHeading: 'Is augustus een goede tijd om te bezoeken?',
+      verdictParagraph:
+        'Ja, voor reizigers in het groene seizoen. Je krijgt warm, weelderig, sfeervol weer en goede prijzen, met heldere ochtenden en de rustige veranillo net om de hoek. Pak in voor buien.',
+      hubLinkText: 'Bekijk de volledige weergids maand voor maand →',
+      takeawaysHeading: 'Belangrijkste punten',
+      takeawaysParagraph:
+        'Augustus is warm, groen en sfeervol, met regenbuien en goede surf, net voor de veranillo van september. Plan rond heldere ochtenden, neem een regenjas mee en geniet van een weelderige, voordelige maand aan de kust.',
+    },
+  },
+  september: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in September — Climate, Rain & Sea',
+      seoDescription:
+        'September in Puerto Viejo de Talamanca is the start of the veranillo: calmer seas, clear water and some of the fewest crowds of the year. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in September',
+      heroAlt: 'Calm Caribbean sea in Puerto Viejo de Talamanca in September',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'September at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '28°C / 22°C' },
+        { label: 'Rain', value: '~165 mm — one of the drier months' },
+        { label: 'Sea', value: 'Calm and clear, ~29°C' },
+        { label: 'Crowds', value: 'Low — great value' },
+      ],
+      whatItsLikeHeading: 'What September Is Really Like',
+      whatItsLikeParagraphs: [
+        'September is the quiet secret of the southern Caribbean. While much of Costa Rica is in its rainiest stretch, Puerto Viejo enters the veranillo — the "little summer" — when the Talamanca mountains keep the heaviest rain away and the coast stays comparatively bright.',
+        'The sea is at its calmest and clearest, which makes this one of the best months of the year for snorkelling and swimming. Days are warm and often sunny, with any rain tending to arrive as a short afternoon or overnight shower.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'September is one of the driest months here, averaging around 165 mm. That is far from dry in absolute terms, but rain usually comes in brief bursts rather than all-day grey — you will still get plenty of beach time.',
+      rainyDayIntro: 'If a shower does roll through, you are spoiled for choice:',
+      rainyDayItems: [
+        'Snorkel between showers — visibility is excellent this month',
+        'Take a cacao farm and chocolate tour',
+        'Explore Cahuita National Park with fewer people on the trails',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'This is one of the best-value windows of the year. Crowds are thin, room rates are low, and most of the town stays open — you get calm, clear conditions without the peak-season prices.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in September',
+      verdictHeading: 'Is September a Good Time to Visit?',
+      verdictParagraph:
+        'Yes — for many travellers it is the sweet spot. If you want calm, clear sea, warm sunny days and low prices, September is hard to beat on the Caribbean coast.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'September brings the veranillo to Puerto Viejo: calm, clear seas, some of the drier weather of the year, thin crowds and low prices. Pack for the odd shower, but expect one of the best months for the beach and the reef.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Septiembre — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Septiembre en Puerto Viejo de Talamanca marca el inicio del veranillo: mar más tranquilo, agua clara y de la menor afluencia del año. Esto es lo que puedes esperar.',
+      heading: 'El Clima en Puerto Viejo en Septiembre',
+      heroAlt: 'Mar caribeño en calma en Puerto Viejo de Talamanca en septiembre',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Septiembre de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Lluvia', value: '~165 mm — de los meses más secos' },
+        { label: 'Mar', value: 'En calma y claro, ~29°C' },
+        { label: 'Afluencia', value: 'Baja — excelente relación calidad-precio' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Septiembre',
+      whatItsLikeParagraphs: [
+        'Septiembre es el secreto tranquilo del Caribe Sur. Mientras gran parte de Costa Rica vive su época más lluviosa, Puerto Viejo entra en el veranillo — el "pequeño verano" — cuando las montañas de Talamanca frenan la lluvia más fuerte y la costa se mantiene comparativamente despejada.',
+        'El mar está en su punto más tranquilo y claro, lo que convierte a este en uno de los mejores meses del año para hacer snorkel y nadar. Los días son cálidos y a menudo soleados, y la lluvia suele llegar como un aguacero corto por la tarde o la noche.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Septiembre es uno de los meses más secos aquí, con unos 165 mm de promedio. No es seco en términos absolutos, pero la lluvia suele caer en ráfagas breves y no en días grises enteros — tendrás mucho tiempo de playa.',
+      rainyDayIntro: 'Si pasa un aguacero, tienes muchísimas opciones:',
+      rainyDayItems: [
+        'Haz snorkel entre aguaceros — la visibilidad es excelente este mes',
+        'Haz un tour de cacao y chocolate',
+        'Recorre el Parque Nacional Cahuita con menos gente en los senderos',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'Es una de las mejores ventanas del año en cuanto a precio. Hay poca gente, las tarifas son bajas y casi todo el pueblo sigue abierto — disfrutas de condiciones tranquilas y claras sin los precios de temporada alta.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en septiembre',
+      verdictHeading: '¿Es Septiembre una Buena Época para Visitar?',
+      verdictParagraph:
+        'Sí — para muchos viajeros es el momento ideal. Si buscas mar en calma y claro, días cálidos y soleados y precios bajos, septiembre es difícil de superar en el Caribe.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Septiembre trae el veranillo a Puerto Viejo: mar en calma y claro, un clima de los más secos del año, poca gente y precios bajos. Lleva algo para algún aguacero, pero espera uno de los mejores meses para la playa y el arrecife.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im September — Klima, Regen & Meer',
+      seoDescription:
+        'Der September in Puerto Viejo de Talamanca läutet den Veranillo ein: ruhigere See, klares Wasser und einer der ruhigsten Monate des Jahres. Das erwartet Sie.',
+      heading: 'Wetter in Puerto Viejo im September',
+      heroAlt: 'Ruhige Karibiksee in Puerto Viejo de Talamanca im September',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Der September auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '28°C / 22°C' },
+        { label: 'Regen', value: '~165 mm — einer der trockeneren Monate' },
+        { label: 'Meer', value: 'Ruhig und klar, ~29°C' },
+        { label: 'Andrang', value: 'Gering — hervorragendes Preis-Leistungs-Verhältnis' },
+      ],
+      whatItsLikeHeading: 'Wie der September wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der September ist das stille Geheimnis der südlichen Karibik. Während weite Teile Costa Ricas ihre regenreichste Zeit erleben, tritt Puerto Viejo in den Veranillo ein — den "kleinen Sommer" —, wenn die Talamanca-Berge den stärksten Regen fernhalten und die Küste vergleichsweise hell bleibt.',
+        'Das Meer ist so ruhig und klar wie selten, was diesen Monat zu einem der besten des Jahres zum Schnorcheln und Schwimmen macht. Die Tage sind warm und oft sonnig, und Regen kommt meist als kurzer Schauer am Nachmittag oder in der Nacht.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Der September ist hier einer der trockensten Monate, mit durchschnittlich rund 165 mm. Absolut gesehen ist das keineswegs trocken, doch der Regen kommt meist in kurzen Schüben statt als tagelanges Grau — für Strandzeit bleibt reichlich Raum.',
+      rainyDayIntro: 'Sollte doch ein Schauer durchziehen, haben Sie die Qual der Wahl:',
+      rainyDayItems: [
+        'Schnorcheln zwischen den Schauern — die Sicht ist in diesem Monat ausgezeichnet',
+        'Eine Kakaofarm- und Schokoladentour unternehmen',
+        'Den Cahuita-Nationalpark mit weniger Menschen auf den Wegen erkunden',
+      ],
+      crowdsHeading: 'Andrang, Preise und Veranstaltungen',
+      crowdsParagraph:
+        'Dies ist eines der preislich attraktivsten Zeitfenster des Jahres. Der Andrang ist gering, die Zimmerpreise sind niedrig und der Großteil des Ortes bleibt geöffnet — Sie genießen ruhige, klare Bedingungen ohne die Preise der Hauptsaison.',
+      stayRecommendationTitle: 'Wo Sie im September in Puerto Viejo übernachten',
+      verdictHeading: 'Ist der September eine gute Reisezeit?',
+      verdictParagraph:
+        'Ja — für viele Reisende ist er der ideale Zeitpunkt. Wenn Sie sich ruhige, klare See, warme Sonnentage und niedrige Preise wünschen, ist der September an der Karibikküste kaum zu schlagen.',
+      hubLinkText: 'Zum vollständigen Monat-für-Monat-Wetterguide →',
+      takeawaysHeading: 'Das Wichtigste in Kürze',
+      takeawaysParagraph:
+        'Der September bringt den Veranillo nach Puerto Viejo: ruhige, klare See, eines der trockeneren Wetter des Jahres, wenig Andrang und niedrige Preise. Packen Sie etwas für den gelegentlichen Schauer ein, freuen Sie sich aber auf einen der besten Monate für Strand und Riff.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en septembre — climat, pluie et mer',
+      seoDescription:
+        'Septembre à Puerto Viejo de Talamanca marque le début du veranillo : mer plus calme, eau claire et l\'une des périodes les moins fréquentées de l\'année. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en septembre',
+      heroAlt: 'Mer des Caraïbes calme à Puerto Viejo de Talamanca en septembre',
+      photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Septembre en un coup d\'œil',
+      snapshot: [
+        { label: 'Température', value: '28°C / 22°C' },
+        { label: 'Pluie', value: '~165 mm — l\'un des mois les plus secs' },
+        { label: 'Mer', value: 'Calme et claire, ~29°C' },
+        { label: 'Affluence', value: 'Faible — excellent rapport qualité-prix' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment septembre',
+      whatItsLikeParagraphs: [
+        'Septembre est le secret bien gardé des Caraïbes du Sud. Alors qu\'une grande partie du Costa Rica connaît sa période la plus pluvieuse, Puerto Viejo entre dans le veranillo — le "petit été" — lorsque les montagnes de Talamanca tiennent à distance les pluies les plus fortes et que la côte reste comparativement lumineuse.',
+        'La mer est à son plus calme et à son plus limpide, ce qui fait de ce mois l\'un des meilleurs de l\'année pour le snorkeling et la baignade. Les journées sont chaudes et souvent ensoleillées, la pluie tombant plutôt sous forme d\'une brève averse l\'après-midi ou la nuit.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Septembre est ici l\'un des mois les plus secs, avec environ 165 mm en moyenne. Ce n\'est pas sec dans l\'absolu, mais la pluie tombe généralement par courtes averses plutôt qu\'en journées grises entières — vous profiterez de belles heures à la plage.',
+      rainyDayIntro: 'Si une averse passe, vous n\'avez que l\'embarras du choix :',
+      rainyDayItems: [
+        'Faire du snorkeling entre les averses — la visibilité est excellente ce mois-ci',
+        'Suivre une visite d\'une plantation de cacao et une dégustation de chocolat',
+        'Explorer le parc national de Cahuita avec moins de monde sur les sentiers',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'C\'est l\'une des meilleures périodes de l\'année côté prix. L\'affluence est réduite, les tarifs des chambres sont bas et la plupart du village reste ouvert — vous profitez de conditions calmes et limpides sans les prix de la haute saison.',
+      stayRecommendationTitle: 'Où séjourner à Puerto Viejo en septembre',
+      verdictHeading: 'Septembre est-il une bonne période pour venir ?',
+      verdictParagraph:
+        'Oui — pour de nombreux voyageurs, c\'est le moment idéal. Si vous recherchez une mer calme et claire, des journées chaudes et ensoleillées et des prix bas, septembre est difficile à battre sur la côte caraïbe.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'À retenir',
+      takeawaysParagraph:
+        'Septembre apporte le veranillo à Puerto Viejo : mer calme et claire, l\'un des temps les plus secs de l\'année, peu de monde et prix bas. Prévoyez de quoi affronter une averse occasionnelle, mais attendez-vous à l\'un des meilleurs mois pour la plage et le récif.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo a settembre — clima, pioggia e mare',
+      seoDescription:
+        'Settembre a Puerto Viejo de Talamanca segna l\'inizio del veranillo: mare più calmo, acqua limpida e uno dei periodi meno affollati dell\'anno. Ecco cosa aspettarsi.',
+      heading: 'Meteo a Puerto Viejo a settembre',
+      heroAlt: 'Mare caraibico calmo a Puerto Viejo de Talamanca a settembre',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Settembre in breve',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Pioggia', value: '~165 mm — uno dei mesi più asciutti' },
+        { label: 'Mare', value: 'Calmo e limpido, ~29°C' },
+        { label: 'Affluenza', value: 'Bassa — ottimo rapporto qualità-prezzo' },
+      ],
+      whatItsLikeHeading: 'Com\'è davvero settembre',
+      whatItsLikeParagraphs: [
+        'Settembre è il segreto tranquillo dei Caraibi meridionali. Mentre gran parte del Costa Rica vive il suo periodo più piovoso, Puerto Viejo entra nel veranillo — la "piccola estate" — quando le montagne di Talamanca tengono lontane le piogge più intense e la costa resta relativamente luminosa.',
+        'Il mare è al suo punto più calmo e limpido, il che rende questo uno dei mesi migliori dell\'anno per lo snorkeling e il nuoto. Le giornate sono calde e spesso soleggiate, e la pioggia tende ad arrivare come un breve acquazzone nel pomeriggio o durante la notte.',
+      ],
+      rainHeading: 'Quanto piove?',
+      rainParagraph:
+        'Settembre è qui uno dei mesi più asciutti, con una media di circa 165 mm. Non è certo asciutto in termini assoluti, ma la pioggia di solito arriva in brevi rovesci anziché in intere giornate grigie — avrai comunque molto tempo per la spiaggia.',
+      rainyDayIntro: 'Se passa un acquazzone, hai davvero l\'imbarazzo della scelta:',
+      rainyDayItems: [
+        'Fai snorkeling tra un acquazzone e l\'altro — la visibilità questo mese è eccellente',
+        'Partecipa a un tour di una piantagione di cacao e di degustazione del cioccolato',
+        'Esplora il Parco Nazionale di Cahuita con meno persone sui sentieri',
+      ],
+      crowdsHeading: 'Affluenza, prezzi ed eventi',
+      crowdsParagraph:
+        'È uno dei periodi con il miglior rapporto qualità-prezzo dell\'anno. C\'è poca gente, le tariffe delle camere sono basse e gran parte del paese resta aperto — godi di condizioni calme e limpide senza i prezzi dell\'alta stagione.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo a settembre',
+      verdictHeading: 'Settembre è un buon momento per visitare?',
+      verdictParagraph:
+        'Sì — per molti viaggiatori è il momento perfetto. Se cerchi un mare calmo e limpido, giornate calde e soleggiate e prezzi bassi, settembre è difficile da battere sulla costa caraibica.',
+      hubLinkText: 'Vedi la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti chiave',
+      takeawaysParagraph:
+        'Settembre porta il veranillo a Puerto Viejo: mare calmo e limpido, uno dei climi più asciutti dell\'anno, poca gente e prezzi bassi. Metti in valigia qualcosa per il rovescio occasionale, ma aspettati uno dei mesi migliori per la spiaggia e la barriera corallina.',
+    },
+    pt: {
+      seoTitle: 'Clima em Puerto Viejo em setembro — clima, chuva e mar',
+      seoDescription:
+        'Setembro em Puerto Viejo de Talamanca marca o início do veranillo: mar mais calmo, água clara e uma das épocas menos movimentadas do ano. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em setembro',
+      heroAlt: 'Mar do Caribe calmo em Puerto Viejo de Talamanca em setembro',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Setembro num relance',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Chuva', value: '~165 mm — um dos meses mais secos' },
+        { label: 'Mar', value: 'Calmo e claro, ~29°C' },
+        { label: 'Movimento', value: 'Baixo — ótimo custo-benefício' },
+      ],
+      whatItsLikeHeading: 'Como setembro é de verdade',
+      whatItsLikeParagraphs: [
+        'Setembro é o segredo tranquilo do Caribe Sul. Enquanto grande parte da Costa Rica vive sua época mais chuvosa, Puerto Viejo entra no veranillo — o "pequeno verão" — quando as montanhas de Talamanca afastam as chuvas mais fortes e a costa se mantém comparativamente luminosa.',
+        'O mar está no seu ponto mais calmo e claro, o que torna este um dos melhores meses do ano para mergulho de snorkel e para nadar. Os dias são quentes e muitas vezes ensolarados, e a chuva costuma chegar como um aguaceiro curto à tarde ou durante a noite.',
+      ],
+      rainHeading: 'Quanto chove?',
+      rainParagraph:
+        'Setembro é aqui um dos meses mais secos, com média de cerca de 165 mm. Está longe de ser seco em termos absolutos, mas a chuva geralmente vem em rajadas breves, e não em dias inteiros de céu cinzento — você ainda terá bastante tempo de praia.',
+      rainyDayIntro: 'Se passar um aguaceiro, você tem muitas opções:',
+      rainyDayItems: [
+        'Faça snorkel entre os aguaceiros — a visibilidade neste mês é excelente',
+        'Faça um tour de cacau e degustação de chocolate',
+        'Explore o Parque Nacional Cahuita com menos gente nas trilhas',
+      ],
+      crowdsHeading: 'Movimento, preços e eventos',
+      crowdsParagraph:
+        'Esta é uma das melhores janelas do ano em relação a preço. Há pouca gente, as diárias são baixas e a maior parte da vila continua aberta — você aproveita condições calmas e claras sem os preços da alta temporada.',
+      stayRecommendationTitle: 'Onde se hospedar em Puerto Viejo em setembro',
+      verdictHeading: 'Setembro é uma boa época para visitar?',
+      verdictParagraph:
+        'Sim — para muitos viajantes é o momento ideal. Se você busca mar calmo e claro, dias quentes e ensolarados e preços baixos, setembro é difícil de superar na costa do Caribe.',
+      hubLinkText: 'Ver o guia completo de clima mês a mês →',
+      takeawaysHeading: 'Pontos principais',
+      takeawaysParagraph:
+        'Setembro traz o veranillo a Puerto Viejo: mar calmo e claro, um dos climas mais secos do ano, pouca gente e preços baixos. Leve algo para um aguaceiro ocasional, mas espere um dos melhores meses para a praia e o recife.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בפוארטו ויאחו בספטמבר — אקלים, גשם וים',
+      seoDescription:
+        'ספטמבר בפוארטו ויאחו דה טלמנקה מסמן את תחילת ה-veranillo: ים רגוע יותר, מים צלולים ואחת התקופות הכי פחות עמוסות בשנה. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו בספטמבר',
+      heroAlt: 'ים קריבי רגוע בפוארטו ויאחו דה טלמנקה בספטמבר',
+      photoCredit: <>תמונה: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'ספטמבר במבט חטוף',
+      snapshot: [
+        { label: 'טמפרטורה', value: '28°C / 22°C' },
+        { label: 'גשם', value: '~165 mm — מהחודשים היבשים יותר' },
+        { label: 'ים', value: 'רגוע וצלול, ~29°C' },
+        { label: 'עומס', value: 'נמוך — תמורה מצוינת למחיר' },
+      ],
+      whatItsLikeHeading: 'איך ספטמבר באמת מרגיש',
+      whatItsLikeParagraphs: [
+        'ספטמבר הוא הסוד השקט של דרום הקריביים. בעוד חלק גדול מקוסטה ריקה נמצא בעונה הגשומה ביותר, פוארטו ויאחו נכנס ל-veranillo — ה"קיץ הקטן" — כשהרי טלמנקה מרחיקים את הגשמים הכבדים ביותר והחוף נשאר בהיר יחסית.',
+        'הים במיטבו — רגוע וצלול, מה שהופך את החודש הזה לאחד הטובים בשנה לשנורקלינג ולשחייה. הימים חמים ולרוב שטופי שמש, והגשם נוטה להגיע כממטר קצר אחר הצהריים או בלילה.',
+      ],
+      rainHeading: 'כמה יורד גשם?',
+      rainParagraph:
+        'ספטמבר הוא אחד החודשים היבשים ביותר כאן, עם ממוצע של כ-165 mm. זה רחוק מלהיות יבש במונחים מוחלטים, אבל הגשם בדרך כלל מגיע במטחים קצרים ולא כיום אפור שלם — עדיין יישאר לכם המון זמן לחוף.',
+      rainyDayIntro: 'אם בכל זאת עובר ממטר, יש לכם שפע של אפשרויות:',
+      rainyDayItems: [
+        'עשו שנורקלינג בין הממטרים — הראות מצוינת החודש',
+        'צאו לסיור בחוות קקאו וטעימת שוקולד',
+        'טיילו בפארק הלאומי קאואיטה עם פחות אנשים בשבילים',
+      ],
+      crowdsHeading: 'עומס, מחירים ואירועים',
+      crowdsParagraph:
+        'זהו אחד החלונות המשתלמים ביותר בשנה. יש מעט מבקרים, מחירי החדרים נמוכים ורוב העיירה נשאר פתוח — אתם נהנים מתנאים רגועים וצלולים בלי מחירי עונת השיא.',
+      stayRecommendationTitle: 'היכן להתארח בפוארטו ויאחו בספטמבר',
+      verdictHeading: 'האם ספטמבר הוא זמן טוב לבקר?',
+      verdictParagraph:
+        'כן — עבור מטיילים רבים זו נקודת המתיקות. אם אתם רוצים ים רגוע וצלול, ימים חמים ושטופי שמש ומחירים נמוכים, קשה לנצח את ספטמבר בחוף הקריבי.',
+      hubLinkText: 'צפו במדריך מזג האוויר המלא חודש אחר חודש →',
+      takeawaysHeading: 'עיקרי הדברים',
+      takeawaysParagraph:
+        'ספטמבר מביא את ה-veranillo לפוארטו ויאחו: ים רגוע וצלול, מזג אוויר מהיבשים בשנה, מעט מבקרים ומחירים נמוכים. ארזו משהו לממטר מזדמן, אבל צפו לאחד החודשים הטובים ביותר לחוף ולשונית האלמוגים.',
+    },
+    hi: {
+      seoTitle: 'सितंबर में पुएर्तो विएखो का मौसम — जलवायु, बारिश और समुद्र',
+      seoDescription:
+        'पुएर्तो विएखो दे तालामांका में सितंबर veranillo की शुरुआत है: शांत समुद्र, साफ़ पानी और साल की सबसे कम भीड़ वाली अवधियों में से एक। जानिए क्या उम्मीद करें।',
+      heading: 'सितंबर में पुएर्तो विएखो का मौसम',
+      heroAlt: 'सितंबर में पुएर्तो विएखो दे तालामांका में शांत कैरेबियाई समुद्र',
+      photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में सितंबर',
+      snapshot: [
+        { label: 'तापमान', value: '28°C / 22°C' },
+        { label: 'बारिश', value: '~165 mm — सबसे सूखे महीनों में से एक' },
+        { label: 'समुद्र', value: 'शांत और साफ़, ~29°C' },
+        { label: 'भीड़', value: 'कम — बेहतरीन मूल्य' },
+      ],
+      whatItsLikeHeading: 'सितंबर सचमुच कैसा होता है',
+      whatItsLikeParagraphs: [
+        'सितंबर दक्षिणी कैरेबियन का शांत रहस्य है। जहाँ कोस्टा रिका का बड़ा हिस्सा अपने सबसे बारिश वाले दौर में होता है, वहीं पुएर्तो विएखो veranillo में प्रवेश करता है — "छोटी गर्मी" — जब तालामांका के पहाड़ सबसे भारी बारिश को दूर रखते हैं और तट तुलनात्मक रूप से उजला बना रहता है।',
+        'समुद्र अपने सबसे शांत और साफ़ रूप में होता है, जो इसे स्नॉर्कलिंग और तैराकी के लिए साल के सबसे अच्छे महीनों में से एक बना देता है। दिन गर्म और अक्सर धूप वाले होते हैं, और बारिश आमतौर पर दोपहर या रात के छोटे-से बौछार के रूप में आती है।',
+      ],
+      rainHeading: 'कितनी बारिश होती है?',
+      rainParagraph:
+        'सितंबर यहाँ के सबसे सूखे महीनों में से एक है, जिसमें औसतन लगभग 165 mm बारिश होती है। पूर्ण रूप से यह सूखा तो नहीं है, लेकिन बारिश आमतौर पर दिन भर के धुंधलेपन के बजाय छोटी-छोटी बौछारों में आती है — आपको समुद्र तट पर बिताने के लिए भरपूर समय मिलेगा।',
+      rainyDayIntro: 'अगर कोई बौछार आ भी जाए, तो आपके पास ढेरों विकल्प हैं:',
+      rainyDayItems: [
+        'बौछारों के बीच स्नॉर्कलिंग करें — इस महीने दृश्यता बेहतरीन रहती है',
+        'कोको फ़ार्म और चॉकलेट टूर लें',
+        'कम भीड़ वाले रास्तों के साथ काउइता राष्ट्रीय उद्यान की सैर करें',
+      ],
+      crowdsHeading: 'भीड़, कीमतें और आयोजन',
+      crowdsParagraph:
+        'यह साल की सबसे किफ़ायती अवधियों में से एक है। भीड़ कम रहती है, कमरों के दाम कम होते हैं और अधिकांश कस्बा खुला रहता है — आपको पीक-सीज़न की कीमतों के बिना शांत, साफ़ हालात मिलते हैं।',
+      stayRecommendationTitle: 'सितंबर में पुएर्तो विएखो में कहाँ ठहरें',
+      verdictHeading: 'क्या सितंबर घूमने के लिए अच्छा समय है?',
+      verdictParagraph:
+        'हाँ — कई यात्रियों के लिए यह आदर्श समय है। अगर आप शांत, साफ़ समुद्र, गर्म धूप वाले दिन और कम कीमतें चाहते हैं, तो कैरेबियाई तट पर सितंबर को मात देना मुश्किल है।',
+      hubLinkText: 'महीने-दर-महीने पूरा मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'सितंबर पुएर्तो विएखो में veranillo लाता है: शांत, साफ़ समुद्र, साल के सबसे सूखे मौसमों में से एक, कम भीड़ और कम कीमतें। कभी-कभार की बौछार के लिए सामान रखें, पर समुद्र तट और रीफ़ के सबसे बेहतरीन महीनों में से एक की उम्मीद करें।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in september — klimaat, regen & zee',
+      seoDescription:
+        'September in Puerto Viejo de Talamanca luidt de veranillo in: kalmere zee, helder water en een van de rustigste periodes van het jaar. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in september',
+      heroAlt: 'Kalme Caribische zee in Puerto Viejo de Talamanca in september',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'September in een oogopslag',
+      snapshot: [
+        { label: 'Temperatuur', value: '28°C / 22°C' },
+        { label: 'Regen', value: '~165 mm — een van de drogere maanden' },
+        { label: 'Zee', value: 'Kalm en helder, ~29°C' },
+        { label: 'Drukte', value: 'Laag — uitstekende prijs-kwaliteitverhouding' },
+      ],
+      whatItsLikeHeading: 'Hoe september echt is',
+      whatItsLikeParagraphs: [
+        'September is het stille geheim van de zuidelijke Caraïben. Terwijl een groot deel van Costa Rica in zijn natste periode zit, gaat Puerto Viejo de veranillo in — de "kleine zomer" — wanneer de bergen van Talamanca de zwaarste regen op afstand houden en de kust vergelijkbaar helder blijft.',
+        'De zee is op haar kalmst en helderst, wat dit een van de beste maanden van het jaar maakt om te snorkelen en te zwemmen. De dagen zijn warm en vaak zonnig, en regen komt meestal als een korte bui in de namiddag of \'s nachts.',
+      ],
+      rainHeading: 'Hoeveel regent het?',
+      rainParagraph:
+        'September is hier een van de droogste maanden, met gemiddeld zo\'n 165 mm. Absoluut gezien is dat verre van droog, maar de regen komt meestal in korte buien in plaats van als een grijze dag zonder eind — je houdt volop stranddagen over.',
+      rainyDayIntro: 'Trekt er toch een bui over, dan heb je keuze te over:',
+      rainyDayItems: [
+        'Snorkel tussen de buien door — het zicht is deze maand uitstekend',
+        'Doe een cacaoplantage- en chocoladetour',
+        'Verken Nationaal Park Cahuita met minder mensen op de paden',
+      ],
+      crowdsHeading: 'Drukte, prijzen en evenementen',
+      crowdsParagraph:
+        'Dit is een van de voordeligste periodes van het jaar. Het is rustig, de kamerprijzen zijn laag en het grootste deel van het dorp blijft open — je geniet van kalme, heldere omstandigheden zonder de prijzen van het hoogseizoen.',
+      stayRecommendationTitle: 'Waar te verblijven in Puerto Viejo in september',
+      verdictHeading: 'Is september een goede tijd om te bezoeken?',
+      verdictParagraph:
+        'Ja — voor veel reizigers is het de ideale periode. Wil je een kalme, heldere zee, warme zonnige dagen en lage prijzen, dan is september aan de Caribische kust moeilijk te verslaan.',
+      hubLinkText: 'Bekijk de volledige weergids maand voor maand →',
+      takeawaysHeading: 'Belangrijkste punten',
+      takeawaysParagraph:
+        'September brengt de veranillo naar Puerto Viejo: kalme, heldere zee, een van de drogere periodes van het jaar, weinig drukte en lage prijzen. Pak iets in voor de incidentele bui, maar reken op een van de beste maanden voor het strand en het rif.',
+    },
+  },
+  october: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in October — Climate, Rain & Sea',
+      seoDescription:
+        'October in Puerto Viejo de Talamanca continues the veranillo: calm seas, thin crowds and the best value of the year on the Caribbean coast. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in October',
+      heroAlt: 'Sunny Caribbean beach in Puerto Viejo de Talamanca in October',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'October at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '28°C / 22°C' },
+        { label: 'Rain', value: '~200 mm — still relatively dry' },
+        { label: 'Sea', value: 'Calm and clear, ~29°C' },
+        { label: 'Crowds', value: 'Low — the best value of the year' },
+      ],
+      whatItsLikeHeading: 'What October Is Really Like',
+      whatItsLikeParagraphs: [
+        'October keeps the veranillo going. While the rest of the country is often at its wettest, the southern Caribbean stays comparatively bright, with calm seas and warm, frequently sunny days.',
+        'It is a favourite of divers and snorkellers because the water stays clear and flat. With the crowds thin and prices low, October is arguably the best all-round value month to visit Puerto Viejo.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'October averages around 200 mm — still on the drier side for this coast. Expect warm, bright spells broken by the occasional short shower rather than long grey days.',
+      rainyDayIntro: 'When a shower passes, there is plenty to do:',
+      rainyDayItems: [
+        'Dive or snorkel the reef while visibility is at its best',
+        'Visit a Bribri Indigenous community and learn about cacao',
+        'Relax in a Caribbean café or chocolate shop in town',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'October is the quietest, best-value stretch of the year. Rates are low and the beaches feel empty — ideal if you want calm conditions without the crowds or the peak-season prices.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in October',
+      verdictHeading: 'Is October a Good Time to Visit?',
+      verdictParagraph:
+        'Absolutely. For calm, clear sea, warm days, thin crowds and the lowest prices, October is one of the smartest months to choose on the Caribbean coast.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'October continues the veranillo: calm, clear seas, relatively dry weather, thin crowds and the best value of the year. Pack for the odd shower and enjoy some of the best beach and reef conditions Puerto Viejo offers.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Octubre — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Octubre en Puerto Viejo de Talamanca continúa el veranillo: mar en calma, poca gente y la mejor relación calidad-precio del año en el Caribe. Esto es lo que puedes esperar.',
+      heading: 'El Clima en Puerto Viejo en Octubre',
+      heroAlt: 'Playa caribeña soleada en Puerto Viejo de Talamanca en octubre',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Octubre de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Lluvia', value: '~200 mm — todavía relativamente seco' },
+        { label: 'Mar', value: 'En calma y claro, ~29°C' },
+        { label: 'Afluencia', value: 'Baja — la mejor relación calidad-precio del año' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Octubre',
+      whatItsLikeParagraphs: [
+        'Octubre mantiene el veranillo. Mientras el resto del país suele estar en su época más lluviosa, el Caribe Sur se conserva comparativamente despejado, con mar en calma y días cálidos y con frecuencia soleados.',
+        'Es uno de los favoritos de buceadores y aficionados al snorkel porque el agua permanece clara y plana. Con poca gente y precios bajos, octubre es posiblemente el mes con mejor relación calidad-precio para visitar Puerto Viejo.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Octubre promedia unos 200 mm — todavía del lado más seco para esta costa. Espera ratos cálidos y despejados interrumpidos por algún aguacero corto, y no días grises largos.',
+      rainyDayIntro: 'Cuando pasa un aguacero, hay mucho por hacer:',
+      rainyDayItems: [
+        'Bucea o haz snorkel en el arrecife mientras la visibilidad está en su mejor momento',
+        'Visita una comunidad indígena Bribri y aprende sobre el cacao',
+        'Relájate en un café caribeño o una chocolatería del pueblo',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'Octubre es el período más tranquilo y con mejor precio del año. Las tarifas son bajas y las playas se sienten vacías — ideal si quieres condiciones tranquilas sin multitudes ni precios de temporada alta.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en octubre',
+      verdictHeading: '¿Es Octubre una Buena Época para Visitar?',
+      verdictParagraph:
+        'Por supuesto. Para mar en calma y claro, días cálidos, poca gente y los precios más bajos, octubre es uno de los meses más inteligentes para elegir en el Caribe.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Octubre continúa el veranillo: mar en calma y claro, clima relativamente seco, poca gente y la mejor relación calidad-precio del año. Lleva algo para algún aguacero y disfruta de algunas de las mejores condiciones de playa y arrecife de Puerto Viejo.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im Oktober — Klima, Regen & Meer',
+      seoDescription:
+        'Der Oktober in Puerto Viejo de Talamanca setzt den veranillo fort: ruhige See, wenig Andrang und das beste Preis-Leistungs-Verhältnis des Jahres an der Karibikküste. Das erwartet dich.',
+      heading: 'Wetter in Puerto Viejo im Oktober',
+      heroAlt: 'Sonniger Karibikstrand in Puerto Viejo de Talamanca im Oktober',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Der Oktober auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '28°C / 22°C' },
+        { label: 'Regen', value: '~200 mm — noch relativ trocken' },
+        { label: 'Meer', value: 'Ruhig und klar, ~29°C' },
+        { label: 'Andrang', value: 'Gering — das beste Preis-Leistungs-Verhältnis des Jahres' },
+      ],
+      whatItsLikeHeading: 'Wie der Oktober wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der Oktober hält den veranillo aufrecht. Während der Rest des Landes oft am nassesten ist, bleibt die südliche Karibik vergleichsweise hell, mit ruhiger See und warmen, häufig sonnigen Tagen.',
+        'Er ist ein Favorit von Tauchern und Schnorchlern, weil das Wasser klar und glatt bleibt. Bei wenig Andrang und niedrigen Preisen ist der Oktober wohl der Monat mit dem besten Gesamtpreis-Leistungs-Verhältnis für einen Besuch in Puerto Viejo.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Der Oktober bringt im Schnitt rund 200 mm — für diese Küste noch eher trocken. Erwarte warme, helle Phasen, die von einem gelegentlichen kurzen Schauer unterbrochen werden, statt langer grauer Tage.',
+      rainyDayIntro: 'Wenn ein Schauer durchzieht, gibt es viel zu tun:',
+      rainyDayItems: [
+        'Tauche oder schnorchle am Riff, solange die Sicht am besten ist',
+        'Besuche eine indigene Bribri-Gemeinschaft und lerne etwas über Kakao',
+        'Entspanne dich in einem karibischen Café oder einer Schokoladenmanufaktur im Ort',
+      ],
+      crowdsHeading: 'Andrang, Preise und Veranstaltungen',
+      crowdsParagraph:
+        'Der Oktober ist der ruhigste und günstigste Abschnitt des Jahres. Die Preise sind niedrig und die Strände wirken leer — ideal, wenn du ruhige Bedingungen ohne Menschenmassen und ohne Hauptsaisonpreise möchtest.',
+      stayRecommendationTitle: 'Wo man im Oktober in Puerto Viejo übernachtet',
+      verdictHeading: 'Ist der Oktober eine gute Reisezeit?',
+      verdictParagraph:
+        'Auf jeden Fall. Für ruhige, klare See, warme Tage, wenig Andrang und die niedrigsten Preise ist der Oktober einer der klügsten Monate für die Karibikküste.',
+      hubLinkText: 'Zum vollständigen Wetterführer Monat für Monat →',
+      takeawaysHeading: 'Das Wichtigste in Kürze',
+      takeawaysParagraph:
+        'Der Oktober setzt den veranillo fort: ruhige, klare See, relativ trockenes Wetter, wenig Andrang und das beste Preis-Leistungs-Verhältnis des Jahres. Pack etwas für den gelegentlichen Schauer ein und genieße einige der besten Strand- und Riffbedingungen, die Puerto Viejo zu bieten hat.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en octobre — Climat, pluie & mer',
+      seoDescription:
+        'En octobre, Puerto Viejo de Talamanca poursuit le veranillo : mer calme, peu de monde et le meilleur rapport qualité-prix de l\'année sur la côte caraïbe. Voici à quoi s\'attendre.',
+      heading: 'Météo à Puerto Viejo en octobre',
+      heroAlt: 'Plage caraïbe ensoleillée à Puerto Viejo de Talamanca en octobre',
+      photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Octobre en un coup d\'œil',
+      snapshot: [
+        { label: 'Température', value: '28°C / 22°C' },
+        { label: 'Pluie', value: '~200 mm — encore relativement sec' },
+        { label: 'Mer', value: 'Calme et claire, ~29°C' },
+        { label: 'Affluence', value: 'Faible — le meilleur rapport qualité-prix de l\'année' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment octobre',
+      whatItsLikeParagraphs: [
+        'Octobre maintient le veranillo. Alors que le reste du pays connaît souvent sa période la plus humide, le sud des Caraïbes reste comparativement lumineux, avec une mer calme et des journées chaudes et souvent ensoleillées.',
+        'C\'est un mois favori des plongeurs et des amateurs de snorkeling car l\'eau reste claire et plane. Avec peu de monde et des prix bas, octobre est sans doute le mois offrant le meilleur rapport qualité-prix global pour visiter Puerto Viejo.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Octobre affiche en moyenne environ 200 mm — encore du côté sec pour cette côte. Attendez-vous à des éclaircies chaudes et lumineuses ponctuées d\'une averse courte occasionnelle plutôt qu\'à de longues journées grises.',
+      rainyDayIntro: 'Quand une averse passe, il y a de quoi faire :',
+      rainyDayItems: [
+        'Plongez ou faites du snorkeling sur le récif tant que la visibilité est optimale',
+        'Visitez une communauté autochtone Bribri et découvrez le cacao',
+        'Détendez-vous dans un café caraïbe ou une chocolaterie du village',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'Octobre est la période la plus calme et la plus avantageuse de l\'année. Les tarifs sont bas et les plages semblent désertes — idéal si vous voulez des conditions paisibles sans la foule ni les prix de haute saison.',
+      stayRecommendationTitle: 'Où loger à Puerto Viejo en octobre',
+      verdictHeading: 'Octobre est-il une bonne période pour visiter ?',
+      verdictParagraph:
+        'Absolument. Pour une mer calme et claire, des journées chaudes, peu de monde et les prix les plus bas, octobre est l\'un des mois les plus judicieux à choisir sur la côte caraïbe.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'À retenir',
+      takeawaysParagraph:
+        'Octobre poursuit le veranillo : mer calme et claire, temps relativement sec, peu de monde et le meilleur rapport qualité-prix de l\'année. Prévoyez de quoi affronter l\'averse occasionnelle et profitez de certaines des meilleures conditions de plage et de récif qu\'offre Puerto Viejo.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo a ottobre — Clima, pioggia e mare',
+      seoDescription:
+        'A ottobre Puerto Viejo de Talamanca prosegue il veranillo: mare calmo, poca gente e il miglior rapporto qualità-prezzo dell\'anno sulla costa caraibica. Ecco cosa aspettarsi.',
+      heading: 'Meteo a Puerto Viejo a ottobre',
+      heroAlt: 'Spiaggia caraibica soleggiata a Puerto Viejo de Talamanca a ottobre',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Ottobre in breve',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Pioggia', value: '~200 mm — ancora relativamente asciutto' },
+        { label: 'Mare', value: 'Calmo e limpido, ~29°C' },
+        { label: 'Affluenza', value: 'Bassa — il miglior rapporto qualità-prezzo dell\'anno' },
+      ],
+      whatItsLikeHeading: 'Com\'è davvero ottobre',
+      whatItsLikeParagraphs: [
+        'Ottobre mantiene vivo il veranillo. Mentre il resto del paese è spesso nel periodo più piovoso, i Caraibi meridionali restano relativamente luminosi, con mare calmo e giornate calde e spesso soleggiate.',
+        'È uno dei mesi preferiti da sub e appassionati di snorkeling perché l\'acqua resta limpida e piatta. Con poca gente e prezzi bassi, ottobre è probabilmente il mese con il miglior rapporto qualità-prezzo complessivo per visitare Puerto Viejo.',
+      ],
+      rainHeading: 'Quanto piove?',
+      rainParagraph:
+        'Ottobre registra in media circa 200 mm — ancora sul versante più asciutto per questa costa. Aspettati momenti caldi e luminosi interrotti da qualche breve rovescio occasionale, anziché lunghe giornate grigie.',
+      rainyDayIntro: 'Quando passa un rovescio, c\'è molto da fare:',
+      rainyDayItems: [
+        'Fai immersioni o snorkeling sulla barriera mentre la visibilità è al massimo',
+        'Visita una comunità indigena Bribri e scopri il cacao',
+        'Rilassati in un caffè caraibico o in una cioccolateria del paese',
+      ],
+      crowdsHeading: 'Affluenza, prezzi ed eventi',
+      crowdsParagraph:
+        'Ottobre è il periodo più tranquillo e conveniente dell\'anno. Le tariffe sono basse e le spiagge sembrano vuote — ideale se cerchi condizioni tranquille senza folla né prezzi dell\'alta stagione.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo a ottobre',
+      verdictHeading: 'Ottobre è un buon periodo per visitare?',
+      verdictParagraph:
+        'Assolutamente sì. Per mare calmo e limpido, giornate calde, poca gente e i prezzi più bassi, ottobre è uno dei mesi più azzeccati da scegliere sulla costa caraibica.',
+      hubLinkText: 'Guarda la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti chiave',
+      takeawaysParagraph:
+        'Ottobre prosegue il veranillo: mare calmo e limpido, tempo relativamente asciutto, poca gente e il miglior rapporto qualità-prezzo dell\'anno. Metti in valigia qualcosa per il rovescio occasionale e goditi alcune delle migliori condizioni di spiaggia e barriera che Puerto Viejo offre.',
+    },
+    pt: {
+      seoTitle: 'Clima em Puerto Viejo em outubro — Tempo, chuva e mar',
+      seoDescription:
+        'Outubro em Puerto Viejo de Talamanca dá continuidade ao veranillo: mar calmo, pouca gente e o melhor custo-benefício do ano na costa caribenha. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em outubro',
+      heroAlt: 'Praia caribenha ensolarada em Puerto Viejo de Talamanca em outubro',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Outubro num relance',
+      snapshot: [
+        { label: 'Temperatura', value: '28°C / 22°C' },
+        { label: 'Chuva', value: '~200 mm — ainda relativamente seco' },
+        { label: 'Mar', value: 'Calmo e claro, ~29°C' },
+        { label: 'Movimento', value: 'Baixo — o melhor custo-benefício do ano' },
+      ],
+      whatItsLikeHeading: 'Como é outubro de verdade',
+      whatItsLikeParagraphs: [
+        'Outubro mantém o veranillo. Enquanto o resto do país costuma estar na época mais chuvosa, o Caribe Sul permanece comparativamente claro, com mar calmo e dias quentes e frequentemente ensolarados.',
+        'É um dos favoritos de mergulhadores e adeptos de snorkel porque a água continua clara e plana. Com pouca gente e preços baixos, outubro é possivelmente o mês com o melhor custo-benefício geral para visitar Puerto Viejo.',
+      ],
+      rainHeading: 'Quanto chove?',
+      rainParagraph:
+        'Outubro tem em média cerca de 200 mm — ainda no lado mais seco para esta costa. Espere períodos quentes e claros interrompidos por uma pancada curta ocasional, e não longos dias cinzentos.',
+      rainyDayIntro: 'Quando passa uma pancada de chuva, há muito para fazer:',
+      rainyDayItems: [
+        'Mergulhe ou faça snorkel no recife enquanto a visibilidade está no auge',
+        'Visite uma comunidade indígena Bribri e aprenda sobre o cacau',
+        'Relaxe num café caribenho ou numa chocolataria da vila',
+      ],
+      crowdsHeading: 'Movimento, preços e eventos',
+      crowdsParagraph:
+        'Outubro é o período mais tranquilo e de melhor preço do ano. As tarifas são baixas e as praias parecem vazias — ideal se você quer condições calmas sem multidões nem preços de alta temporada.',
+      stayRecommendationTitle: 'Onde se hospedar em Puerto Viejo em outubro',
+      verdictHeading: 'Outubro é uma boa época para visitar?',
+      verdictParagraph:
+        'Com certeza. Para mar calmo e claro, dias quentes, pouca gente e os preços mais baixos, outubro é um dos meses mais inteligentes de se escolher na costa caribenha.',
+      hubLinkText: 'Ver o guia completo de clima mês a mês →',
+      takeawaysHeading: 'Pontos-chave',
+      takeawaysParagraph:
+        'Outubro dá continuidade ao veranillo: mar calmo e claro, tempo relativamente seco, pouca gente e o melhor custo-benefício do ano. Leve algo para a pancada ocasional e aproveite algumas das melhores condições de praia e recife que Puerto Viejo oferece.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בפוארטו ויאחו באוקטובר — אקלים, גשם וים',
+      seoDescription:
+        'אוקטובר בפוארטו ויאחו דה טלמנקה ממשיך את ה-veranillo: ים רגוע, מעט מבקרים והתמורה הטובה ביותר לכסף בשנה בחוף הקריבי. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו באוקטובר',
+      heroAlt: 'חוף קריבי שטוף שמש בפוארטו ויאחו דה טלמנקה באוקטובר',
+      photoCredit: <>תמונה: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'אוקטובר במבט חטוף',
+      snapshot: [
+        { label: 'טמפרטורה', value: '28°C / 22°C' },
+        { label: 'גשם', value: '~200 mm — עדיין יבש יחסית' },
+        { label: 'ים', value: 'רגוע וצלול, ~29°C' },
+        { label: 'עומס מבקרים', value: 'נמוך — התמורה הטובה ביותר לכסף בשנה' },
+      ],
+      whatItsLikeHeading: 'איך אוקטובר באמת נראה',
+      whatItsLikeParagraphs: [
+        'אוקטובר משמר את ה-veranillo. בעוד שרוב חלקי המדינה נמצאים לרוב בשיא העונה הגשומה, הקריביים הדרומיים נשארים בהירים יחסית, עם ים רגוע וימים חמים ולעיתים קרובות שטופי שמש.',
+        'זהו חודש מועדף על צוללנים ושנורקלרים משום שהמים נשארים צלולים וחלקים. עם מעט מבקרים ומחירים נמוכים, אוקטובר הוא ככל הנראה החודש עם התמורה הכוללת הטובה ביותר לכסף לביקור בפוארטו ויאחו.',
+      ],
+      rainHeading: 'כמה יורד גשם?',
+      rainParagraph:
+        'באוקטובר יורדים בממוצע כ-200 מ"מ — עדיין בצד היבש יותר עבור חוף זה. צפו לפרקי זמן חמים ובהירים הנקטעים בממטר קצר מזדמן, ולא לימים אפורים וארוכים.',
+      rainyDayIntro: 'כשממטר חולף, יש הרבה מה לעשות:',
+      rainyDayItems: [
+        'צללו או שנורקלו בשונית בזמן שהראות במיטבה',
+        'בקרו בקהילה ילידית של בני בריברי ולמדו על קקאו',
+        'הירגעו בבית קפה קריבי או בחנות שוקולד בעיירה',
+      ],
+      crowdsHeading: 'עומס מבקרים, מחירים ואירועים',
+      crowdsParagraph:
+        'אוקטובר הוא התקופה השקטה ביותר והמשתלמת ביותר בשנה. המחירים נמוכים והחופים מרגישים ריקים — אידיאלי אם אתם רוצים תנאים רגועים בלי המונים ובלי מחירי עונת השיא.',
+      stayRecommendationTitle: 'היכן להתארח בפוארטו ויאחו באוקטובר',
+      verdictHeading: 'האם אוקטובר הוא זמן טוב לביקור?',
+      verdictParagraph:
+        'בהחלט. עבור ים רגוע וצלול, ימים חמים, מעט מבקרים והמחירים הנמוכים ביותר, אוקטובר הוא אחד החודשים החכמים ביותר לבחירה בחוף הקריבי.',
+      hubLinkText: 'צפו במדריך מזג האוויר המלא חודש אחר חודש →',
+      takeawaysHeading: 'נקודות עיקריות',
+      takeawaysParagraph:
+        'אוקטובר ממשיך את ה-veranillo: ים רגוע וצלול, מזג אוויר יבש יחסית, מעט מבקרים והתמורה הטובה ביותר לכסף בשנה. ארזו משהו לממטר המזדמן ותיהנו מכמה מהתנאים הטובים ביותר של חוף ושונית שפוארטו ויאחו מציעה.',
+    },
+    hi: {
+      seoTitle: 'अक्टूबर में प्यूर्टो विएखो का मौसम — जलवायु, बारिश और समुद्र',
+      seoDescription:
+        'प्यूर्टो विएखो दे तालामांका में अक्टूबर veranillo को जारी रखता है: शांत समुद्र, कम भीड़ और कैरिबियन तट पर साल का सबसे अच्छा मूल्य। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'अक्टूबर में प्यूर्टो विएखो का मौसम',
+      heroAlt: 'अक्टूबर में प्यूर्टो विएखो दे तालामांका में धूप वाला कैरिबियन समुद्र तट',
+      photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में अक्टूबर',
+      snapshot: [
+        { label: 'तापमान', value: '28°C / 22°C' },
+        { label: 'बारिश', value: '~200 mm — अब भी अपेक्षाकृत सूखा' },
+        { label: 'समुद्र', value: 'शांत और साफ़, ~29°C' },
+        { label: 'भीड़', value: 'कम — साल का सबसे अच्छा मूल्य' },
+      ],
+      whatItsLikeHeading: 'अक्टूबर वास्तव में कैसा होता है',
+      whatItsLikeParagraphs: [
+        'अक्टूबर veranillo को बनाए रखता है। जबकि देश के बाकी हिस्से अक्सर सबसे अधिक गीले होते हैं, दक्षिणी कैरिबियन तुलनात्मक रूप से उज्ज्वल बना रहता है, शांत समुद्र और गर्म, अक्सर धूप वाले दिनों के साथ।',
+        'यह गोताखोरों और स्नॉर्कलरों का पसंदीदा है क्योंकि पानी साफ़ और शांत रहता है। कम भीड़ और कम कीमतों के साथ, अक्टूबर संभवतः प्यूर्टो विएखो घूमने के लिए सर्वोत्तम समग्र मूल्य वाला महीना है।',
+      ],
+      rainHeading: 'कितनी बारिश होती है?',
+      rainParagraph:
+        'अक्टूबर में औसतन लगभग 200 mm बारिश होती है — इस तट के लिए अब भी सूखे पक्ष पर। लंबे धूसर दिनों के बजाय गर्म, उज्ज्वल अंतरालों की उम्मीद करें जो कभी-कभार की छोटी बौछार से टूटते हैं।',
+      rainyDayIntro: 'जब बौछार गुज़रती है, तो करने के लिए बहुत कुछ है:',
+      rainyDayItems: [
+        'जब दृश्यता अपने सर्वश्रेष्ठ पर हो तब रीफ़ में गोता लगाएँ या स्नॉर्कल करें',
+        'किसी ब्रिब्री आदिवासी समुदाय में जाएँ और कोको के बारे में जानें',
+        'शहर के किसी कैरिबियन कैफ़े या चॉकलेट की दुकान में आराम करें',
+      ],
+      crowdsHeading: 'भीड़, कीमतें और आयोजन',
+      crowdsParagraph:
+        'अक्टूबर साल का सबसे शांत और सबसे किफ़ायती दौर है। दरें कम हैं और समुद्र तट खाली महसूस होते हैं — आदर्श अगर आप भीड़ या पीक-सीज़न की कीमतों के बिना शांत परिस्थितियाँ चाहते हैं।',
+      stayRecommendationTitle: 'अक्टूबर में प्यूर्टो विएखो में कहाँ ठहरें',
+      verdictHeading: 'क्या अक्टूबर घूमने का अच्छा समय है?',
+      verdictParagraph:
+        'बिल्कुल। शांत, साफ़ समुद्र, गर्म दिनों, कम भीड़ और सबसे कम कीमतों के लिए, अक्टूबर कैरिबियन तट पर चुनने के लिए सबसे समझदार महीनों में से एक है।',
+      hubLinkText: 'महीने-दर-महीने का पूरा मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'अक्टूबर veranillo को जारी रखता है: शांत, साफ़ समुद्र, अपेक्षाकृत सूखा मौसम, कम भीड़ और साल का सबसे अच्छा मूल्य। कभी-कभार की बौछार के लिए सामान रखें और प्यूर्टो विएखो द्वारा प्रदान की जाने वाली कुछ बेहतरीन समुद्र तट और रीफ़ परिस्थितियों का आनंद लें।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in oktober — Klimaat, regen & zee',
+      seoDescription:
+        'Oktober in Puerto Viejo de Talamanca zet de veranillo voort: kalme zee, weinig drukte en de beste prijs-kwaliteitverhouding van het jaar aan de Caribische kust. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in oktober',
+      heroAlt: 'Zonnig Caribisch strand in Puerto Viejo de Talamanca in oktober',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Oktober in één oogopslag',
+      snapshot: [
+        { label: 'Temperatuur', value: '28°C / 22°C' },
+        { label: 'Regen', value: '~200 mm — nog relatief droog' },
+        { label: 'Zee', value: 'Kalm en helder, ~29°C' },
+        { label: 'Drukte', value: 'Laag — de beste prijs-kwaliteitverhouding van het jaar' },
+      ],
+      whatItsLikeHeading: 'Hoe oktober echt is',
+      whatItsLikeParagraphs: [
+        'Oktober houdt de veranillo gaande. Terwijl de rest van het land vaak op zijn natst is, blijft het zuidelijke Caribisch gebied vergelijkbaar helder, met kalme zee en warme, vaak zonnige dagen.',
+        'Het is een favoriet van duikers en snorkelaars omdat het water helder en vlak blijft. Met weinig drukte en lage prijzen is oktober wellicht de maand met de beste algehele prijs-kwaliteitverhouding om Puerto Viejo te bezoeken.',
+      ],
+      rainHeading: 'Hoeveel regent het?',
+      rainParagraph:
+        'Oktober kent gemiddeld zo\'n 200 mm — voor deze kust nog aan de drogere kant. Verwacht warme, heldere periodes onderbroken door een enkele korte bui in plaats van lange grauwe dagen.',
+      rainyDayIntro: 'Als er een bui voorbijtrekt, is er genoeg te doen:',
+      rainyDayItems: [
+        'Duik of snorkel bij het rif terwijl het zicht op zijn best is',
+        'Bezoek een inheemse Bribri-gemeenschap en leer over cacao',
+        'Ontspan in een Caribisch café of een chocoladewinkel in het dorp',
+      ],
+      crowdsHeading: 'Drukte, prijzen en evenementen',
+      crowdsParagraph:
+        'Oktober is de rustigste en voordeligste periode van het jaar. De tarieven zijn laag en de stranden voelen leeg aan — ideaal als je rustige omstandigheden wilt zonder de drukte of de hoogseizoenprijzen.',
+      stayRecommendationTitle: 'Waar te verblijven in Puerto Viejo in oktober',
+      verdictHeading: 'Is oktober een goede tijd om te bezoeken?',
+      verdictParagraph:
+        'Absoluut. Voor een kalme, heldere zee, warme dagen, weinig drukte en de laagste prijzen is oktober een van de slimste maanden om te kiezen aan de Caribische kust.',
+      hubLinkText: 'Bekijk de volledige weergids maand voor maand →',
+      takeawaysHeading: 'Belangrijkste punten',
+      takeawaysParagraph:
+        'Oktober zet de veranillo voort: kalme, heldere zee, relatief droog weer, weinig drukte en de beste prijs-kwaliteitverhouding van het jaar. Pak iets in voor de incidentele bui en geniet van enkele van de beste strand- en rifomstandigheden die Puerto Viejo te bieden heeft.',
+    },
+  },
+  november: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in November — Climate, Rain & Sea',
+      seoDescription:
+        'November is one of the wettest months in Puerto Viejo de Talamanca — deep-green jungle, full waterfalls and low prices. Here is what to expect and how to plan around the rain.',
+      heading: 'Weather in Puerto Viejo in November',
+      heroAlt: 'Lush green rainforest in Puerto Viejo de Talamanca in November',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'November at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '27°C / 22°C' },
+        { label: 'Rain', value: '~350–450 mm — one of the wettest months' },
+        { label: 'Sea', value: 'Often rougher, ~28°C' },
+        { label: 'Crowds', value: 'Low until late month' },
+      ],
+      whatItsLikeHeading: 'What November Is Really Like',
+      whatItsLikeParagraphs: [
+        'November is one of the wettest months on this coast — part of the rainy peak that runs from now into January (June and July are the other wet spell). After the calm veranillo of September and October, the rain returns in force, but it also turns the jungle a spectacular deep green and fills the rivers and waterfalls.',
+        'You will still get sunny spells, especially in the mornings, but expect heavier and more frequent showers and a rougher sea. It is a month for travellers who love a wild, green, atmospheric landscape and do not mind getting caught in the rain.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'Estimates vary by source — roughly 350 to 450 mm — but November is consistently one of the wettest months, and the ocean tends to be choppier. Rain can arrive at any time of day, so build flexibility into your plans and keep beach days opportunistic.',
+      rainyDayIntro: 'The rain opens up the best indoor and jungle experiences:',
+      rainyDayItems: [
+        'Take a chocolate (cacao) tour — mostly covered and magical in the rain',
+        'Chase full-flowing waterfalls and lush jungle trails',
+        'Visit a Bribri Indigenous community for cacao and traditional medicine',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'November is low season, so prices are among the lowest of the year and the town is quiet — right up until the festive rush begins at the very end of the month. Great value if you are prepared for the weather.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in November',
+      verdictHeading: 'Is November a Good Time to Visit?',
+      verdictParagraph:
+        'It depends on what you want. For low prices, empty beaches and a lush, dramatic jungle, yes. If your trip depends on guaranteed beach and calm sea, one of the drier months will suit you better.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'November is one of Puerto Viejo’s wettest and greenest months, with rough seas and low prices. Come for the jungle, waterfalls and quiet, pack a good rain jacket, and stay flexible with beach plans.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Noviembre — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Noviembre es uno de los meses más lluviosos en Puerto Viejo de Talamanca — selva de un verde intenso, cascadas llenas y precios bajos. Esto es lo que puedes esperar y cómo planificar.',
+      heading: 'El Clima en Puerto Viejo en Noviembre',
+      heroAlt: 'Selva verde y frondosa en Puerto Viejo de Talamanca en noviembre',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Noviembre de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 22°C' },
+        { label: 'Lluvia', value: '~350–450 mm — de los meses más lluviosos' },
+        { label: 'Mar', value: 'A menudo más bravo, ~28°C' },
+        { label: 'Afluencia', value: 'Baja hasta fin de mes' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Noviembre',
+      whatItsLikeParagraphs: [
+        'Noviembre es uno de los meses más lluviosos de esta costa — parte del pico lluvioso que va de ahora hasta enero (junio y julio son el otro período húmedo). Tras el veranillo tranquilo de septiembre y octubre, la lluvia regresa con fuerza, pero también tiñe la selva de un verde intenso espectacular y llena los ríos y las cascadas.',
+        'Aún tendrás ratos soleados, sobre todo por la mañana, pero espera aguaceros más fuertes y frecuentes y un mar más bravo. Es un mes para viajeros que aman un paisaje verde, salvaje y con atmósfera, y a quienes no les importa mojarse.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Las estimaciones varían según la fuente — entre unos 350 y 450 mm — pero noviembre es sistemáticamente uno de los meses más lluviosos, y el mar suele estar más picado. La lluvia puede llegar a cualquier hora, así que planifica con flexibilidad y aprovecha los días de playa cuando se den.',
+      rainyDayIntro: 'La lluvia realza las mejores experiencias bajo techo y en la selva:',
+      rainyDayItems: [
+        'Haz un tour de cacao (chocolate) — casi todo techado y mágico bajo la lluvia',
+        'Busca cascadas caudalosas y senderos de selva exuberante',
+        'Visita una comunidad indígena Bribri para conocer el cacao y la medicina tradicional',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'Noviembre es temporada baja, así que los precios están entre los más bajos del año y el pueblo está tranquilo — justo hasta que empieza el ajetreo festivo al final del mes. Gran relación calidad-precio si vienes preparado para el clima.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en noviembre',
+      verdictHeading: '¿Es Noviembre una Buena Época para Visitar?',
+      verdictParagraph:
+        'Depende de lo que busques. Para precios bajos, playas vacías y una selva exuberante y dramática, sí. Si tu viaje depende de playa garantizada y mar en calma, uno de los meses más secos te vendrá mejor.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Noviembre es uno de los meses más lluviosos y verdes de Puerto Viejo, con mar bravo y precios bajos. Ven por la selva, las cascadas y la tranquilidad, lleva una buena chaqueta impermeable y mantén flexibles los planes de playa.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im November — Klima, Regen & Meer',
+      seoDescription:
+        'Der November ist einer der nassesten Monate in Puerto Viejo de Talamanca — tiefgrüner Dschungel, volle Wasserfälle und niedrige Preise. Das erwartet Sie und so planen Sie rund um den Regen.',
+      heading: 'Wetter in Puerto Viejo im November',
+      heroAlt: 'Üppig grüner Regenwald in Puerto Viejo de Talamanca im November',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Der November auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '27°C / 22°C' },
+        { label: 'Regen', value: '~350–450 mm — einer der nassesten Monate' },
+        { label: 'Meer', value: 'Oft rauer, ~28°C' },
+        { label: 'Andrang', value: 'Gering bis Monatsende' },
+      ],
+      whatItsLikeHeading: 'Wie der November wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der November ist einer der nassesten Monate an dieser Küste — Teil des Regengipfels, der sich von jetzt bis in den Januar zieht (Juni und Juli sind die andere Regenphase). Nach dem ruhigen veranillo im September und Oktober kehrt der Regen mit Macht zurück, doch er färbt den Dschungel auch in ein spektakuläres tiefes Grün und füllt die Flüsse und Wasserfälle.',
+        'Sonnige Abschnitte gibt es weiterhin, besonders am Morgen, doch rechnen Sie mit stärkeren und häufigeren Schauern und einem raueren Meer. Es ist ein Monat für Reisende, die eine wilde, grüne, stimmungsvolle Landschaft lieben und nichts dagegen haben, nass zu werden.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Die Schätzungen variieren je nach Quelle — etwa 350 bis 450 mm — doch der November gehört durchweg zu den nassesten Monaten, und das Meer ist tendenziell unruhiger. Regen kann zu jeder Tageszeit einsetzen, planen Sie also flexibel und nutzen Sie Strandtage, wann immer sie sich bieten.',
+      rainyDayIntro: 'Der Regen erschließt die besten Erlebnisse drinnen und im Dschungel:',
+      rainyDayItems: [
+        'Machen Sie eine Schokoladen- (Kakao-) Tour — meist überdacht und im Regen magisch',
+        'Entdecken Sie tosende Wasserfälle und üppige Dschungelpfade',
+        'Besuchen Sie eine indigene Bribri-Gemeinschaft für Kakao und traditionelle Medizin',
+      ],
+      crowdsHeading: 'Andrang, Preise und Veranstaltungen',
+      crowdsParagraph:
+        'Der November ist Nebensaison, daher gehören die Preise zu den niedrigsten des Jahres und der Ort ist ruhig — bis ganz am Monatsende der festliche Trubel beginnt. Ein großartiges Preis-Leistungs-Verhältnis, wenn Sie auf das Wetter vorbereitet sind.',
+      stayRecommendationTitle: 'Wo Sie im November in Puerto Viejo übernachten',
+      verdictHeading: 'Ist der November eine gute Reisezeit?',
+      verdictParagraph:
+        'Das hängt davon ab, was Sie wollen. Für niedrige Preise, leere Strände und einen üppigen, dramatischen Dschungel: ja. Wenn Ihre Reise auf garantierten Strand und ruhiges Meer angewiesen ist, passt einer der trockeneren Monate besser.',
+      hubLinkText: 'Zum vollständigen Wetterführer Monat für Monat →',
+      takeawaysHeading: 'Das Wichtigste in Kürze',
+      takeawaysParagraph:
+        'Der November gehört zu den nassesten und grünsten Monaten in Puerto Viejo, mit rauer See und niedrigen Preisen. Kommen Sie für Dschungel, Wasserfälle und Ruhe, packen Sie eine gute Regenjacke ein und bleiben Sie bei den Strandplänen flexibel.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en novembre — Climat, pluie et mer',
+      seoDescription:
+        'Novembre est l\'un des mois les plus pluvieux à Puerto Viejo de Talamanca — jungle d\'un vert profond, cascades gonflées et prix bas. Voici à quoi vous attendre et comment composer avec la pluie.',
+      heading: 'Météo à Puerto Viejo en novembre',
+      heroAlt: 'Forêt tropicale luxuriante et verdoyante à Puerto Viejo de Talamanca en novembre',
+      photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Novembre en un coup d\'œil',
+      snapshot: [
+        { label: 'Température', value: '27°C / 22°C' },
+        { label: 'Pluie', value: '~350–450 mm — l\'un des mois les plus humides' },
+        { label: 'Mer', value: 'Souvent plus agitée, ~28°C' },
+        { label: 'Affluence', value: 'Faible jusqu\'à la fin du mois' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment novembre',
+      whatItsLikeParagraphs: [
+        'Novembre est l\'un des mois les plus humides de cette côte — il fait partie du pic de pluie qui s\'étend d\'ici jusqu\'en janvier (juin et juillet forment l\'autre période humide). Après le calme veranillo de septembre et octobre, la pluie revient en force, mais elle pare aussi la jungle d\'un vert profond spectaculaire et gonfle les rivières et les cascades.',
+        'Vous aurez encore des éclaircies, surtout le matin, mais attendez-vous à des averses plus fortes et plus fréquentes et à une mer plus agitée. C\'est un mois pour les voyageurs qui aiment les paysages sauvages, verts et pleins d\'atmosphère, et que la pluie ne dérange pas.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Les estimations varient selon les sources — environ 350 à 450 mm — mais novembre compte systématiquement parmi les mois les plus humides, et l\'océan a tendance à être plus houleux. La pluie peut arriver à tout moment de la journée, alors prévoyez de la souplesse et saisissez les journées de plage quand elles se présentent.',
+      rainyDayIntro: 'La pluie met en valeur les meilleures expériences en intérieur et dans la jungle :',
+      rainyDayItems: [
+        'Faites un tour du chocolat (cacao) — en grande partie couvert et magique sous la pluie',
+        'Partez à la découverte de cascades gonflées et de sentiers de jungle luxuriante',
+        'Visitez une communauté autochtone Bribri pour le cacao et la médecine traditionnelle',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'Novembre est la basse saison, donc les prix comptent parmi les plus bas de l\'année et le village est tranquille — jusqu\'à ce que l\'effervescence des fêtes commence tout à la fin du mois. Un excellent rapport qualité-prix si vous êtes prêt pour la météo.',
+      stayRecommendationTitle: 'Où loger à Puerto Viejo en novembre',
+      verdictHeading: 'Novembre est-il une bonne période pour visiter ?',
+      verdictParagraph:
+        'Cela dépend de ce que vous recherchez. Pour des prix bas, des plages désertes et une jungle luxuriante et spectaculaire, oui. Si votre voyage dépend d\'une plage garantie et d\'une mer calme, l\'un des mois plus secs vous conviendra mieux.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'À retenir',
+      takeawaysParagraph:
+        'Novembre est l\'un des mois les plus humides et les plus verts de Puerto Viejo, avec une mer agitée et des prix bas. Venez pour la jungle, les cascades et le calme, emportez un bon imperméable et gardez vos projets de plage flexibles.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo a novembre — Clima, pioggia e mare',
+      seoDescription:
+        'Novembre è uno dei mesi più piovosi a Puerto Viejo de Talamanca — giungla di un verde intenso, cascate piene e prezzi bassi. Ecco cosa aspettarsi e come organizzarsi con la pioggia.',
+      heading: 'Meteo a Puerto Viejo a novembre',
+      heroAlt: 'Rigogliosa foresta pluviale verde a Puerto Viejo de Talamanca a novembre',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Novembre in breve',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 22°C' },
+        { label: 'Pioggia', value: '~350–450 mm — uno dei mesi più piovosi' },
+        { label: 'Mare', value: 'Spesso più mosso, ~28°C' },
+        { label: 'Affluenza', value: 'Bassa fino a fine mese' },
+      ],
+      whatItsLikeHeading: 'Com\'è davvero novembre',
+      whatItsLikeParagraphs: [
+        'Novembre è uno dei mesi più piovosi di questa costa — fa parte del picco di pioggia che va da adesso fino a gennaio (giugno e luglio sono l\'altra fase piovosa). Dopo la calma del veranillo di settembre e ottobre, la pioggia torna con forza, ma tinge anche la giungla di un verde intenso spettacolare e riempie i fiumi e le cascate.',
+        'Avrai comunque schiarite, soprattutto al mattino, ma aspettati acquazzoni più forti e frequenti e un mare più mosso. È un mese per i viaggiatori che amano un paesaggio selvaggio, verde e suggestivo e a cui non dispiace bagnarsi.',
+      ],
+      rainHeading: 'Quanto piove?',
+      rainParagraph:
+        'Le stime variano a seconda della fonte — all\'incirca da 350 a 450 mm — ma novembre è costantemente uno dei mesi più piovosi, e l\'oceano tende a essere più agitato. La pioggia può arrivare a qualsiasi ora del giorno, quindi organizzati con flessibilità e cogli le giornate di mare quando capitano.',
+      rainyDayIntro: 'La pioggia esalta le migliori esperienze al coperto e nella giungla:',
+      rainyDayItems: [
+        'Fai un tour del cioccolato (cacao) — quasi tutto al coperto e magico sotto la pioggia',
+        'Vai alla ricerca di cascate impetuose e sentieri di giungla lussureggiante',
+        'Visita una comunità indigena Bribri per il cacao e la medicina tradizionale',
+      ],
+      crowdsHeading: 'Affluenza, prezzi ed eventi',
+      crowdsParagraph:
+        'Novembre è bassa stagione, quindi i prezzi sono tra i più bassi dell\'anno e il paese è tranquillo — fino a quando, proprio a fine mese, inizia il fermento delle feste. Un ottimo rapporto qualità-prezzo se sei preparato al meteo.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo a novembre',
+      verdictHeading: 'Novembre è un buon periodo per visitare?',
+      verdictParagraph:
+        'Dipende da cosa cerchi. Per prezzi bassi, spiagge deserte e una giungla lussureggiante e spettacolare, sì. Se il tuo viaggio dipende da spiaggia garantita e mare calmo, uno dei mesi più secchi ti si addice di più.',
+      hubLinkText: 'Vedi la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti chiave',
+      takeawaysParagraph:
+        'Novembre è uno dei mesi più piovosi e più verdi di Puerto Viejo, con mare mosso e prezzi bassi. Vieni per la giungla, le cascate e la tranquillità, porta una buona giacca impermeabile e mantieni flessibili i piani da spiaggia.',
+    },
+    pt: {
+      seoTitle: 'Clima em Puerto Viejo em novembro — Tempo, chuva e mar',
+      seoDescription:
+        'Novembro é um dos meses mais chuvosos em Puerto Viejo de Talamanca — selva de verde intenso, cachoeiras cheias e preços baixos. Veja o que esperar e como planejar em torno da chuva.',
+      heading: 'Clima em Puerto Viejo em novembro',
+      heroAlt: 'Floresta tropical exuberante e verde em Puerto Viejo de Talamanca em novembro',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Novembro num relance',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 22°C' },
+        { label: 'Chuva', value: '~350–450 mm — um dos meses mais chuvosos' },
+        { label: 'Mar', value: 'Muitas vezes mais agitado, ~28°C' },
+        { label: 'Movimento', value: 'Baixo até o fim do mês' },
+      ],
+      whatItsLikeHeading: 'Como novembro realmente é',
+      whatItsLikeParagraphs: [
+        'Novembro é um dos meses mais chuvosos desta costa — faz parte do pico de chuva que vai de agora até janeiro (junho e julho são o outro período chuvoso). Depois do calmo veranillo de setembro e outubro, a chuva volta com força, mas também tinge a selva de um verde intenso espetacular e enche os rios e as cachoeiras.',
+        'Você ainda terá momentos de sol, principalmente pela manhã, mas espere aguaceiros mais fortes e frequentes e um mar mais agitado. É um mês para viajantes que amam uma paisagem selvagem, verde e cheia de atmosfera e que não se importam de se molhar.',
+      ],
+      rainHeading: 'Quanto chove?',
+      rainParagraph:
+        'As estimativas variam conforme a fonte — cerca de 350 a 450 mm — mas novembro é consistentemente um dos meses mais chuvosos, e o oceano tende a ficar mais revolto. A chuva pode chegar a qualquer hora do dia, então planeje com flexibilidade e aproveite os dias de praia quando surgirem.',
+      rainyDayIntro: 'A chuva realça as melhores experiências em ambientes fechados e na selva:',
+      rainyDayItems: [
+        'Faça um tour de chocolate (cacau) — quase todo coberto e mágico na chuva',
+        'Vá atrás de cachoeiras caudalosas e trilhas de selva exuberante',
+        'Visite uma comunidade indígena Bribri para conhecer o cacau e a medicina tradicional',
+      ],
+      crowdsHeading: 'Movimento, preços e eventos',
+      crowdsParagraph:
+        'Novembro é baixa temporada, então os preços estão entre os mais baixos do ano e a vila está tranquila — bem até o corre-corre festivo começar no finzinho do mês. Ótimo custo-benefício se você vier preparado para o clima.',
+      stayRecommendationTitle: 'Onde se hospedar em Puerto Viejo em novembro',
+      verdictHeading: 'Novembro é uma boa época para visitar?',
+      verdictParagraph:
+        'Depende do que você quer. Para preços baixos, praias vazias e uma selva exuberante e dramática, sim. Se sua viagem depende de praia garantida e mar calmo, um dos meses mais secos vai lhe servir melhor.',
+      hubLinkText: 'Ver o guia completo de clima mês a mês →',
+      takeawaysHeading: 'Pontos principais',
+      takeawaysParagraph:
+        'Novembro é um dos meses mais chuvosos e verdes de Puerto Viejo, com mar agitado e preços baixos. Venha pela selva, pelas cachoeiras e pela tranquilidade, leve uma boa capa de chuva e mantenha os planos de praia flexíveis.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בפוארטו ויאחו בנובמבר — אקלים, גשם וים',
+      seoDescription:
+        'נובמבר הוא אחד החודשים הגשומים ביותר בפוארטו ויאחו דה טלמנקה — ג\'ונגל ירוק עמוק, מפלים גועשים ומחירים נמוכים. הנה למה לצפות וכיצד לתכנן סביב הגשם.',
+      heading: 'מזג האוויר בפוארטו ויאחו בנובמבר',
+      heroAlt: 'יער גשם ירוק ושופע בפוארטו ויאחו דה טלמנקה בנובמבר',
+      photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'נובמבר במבט חטוף',
+      snapshot: [
+        { label: 'טמפרטורה', value: '27°C / 22°C' },
+        { label: 'גשם', value: '~350–450 mm — אחד החודשים הגשומים ביותר' },
+        { label: 'ים', value: 'לרוב סוער יותר, ~28°C' },
+        { label: 'עומס תיירים', value: 'נמוך עד סוף החודש' },
+      ],
+      whatItsLikeHeading: 'איך נובמבר באמת נראה',
+      whatItsLikeParagraphs: [
+        'נובמבר הוא אחד החודשים הגשומים ביותר בחוף הזה — חלק משיא הגשמים שנמשך מעכשיו אל תוך ינואר (יוני ויולי הם תקופת הגשם האחרת). אחרי ה-veranillo הרגוע של ספטמבר ואוקטובר, הגשם חוזר בעוצמה, אך הוא גם צובע את הג\'ונגל בירוק עמוק ומרהיב וממלא את הנהרות והמפלים.',
+        'עדיין תזכו להפוגות שמש, במיוחד בבקרים, אך צפו לממטרים חזקים ותכופים יותר ולים סוער יותר. זהו חודש למטיילים שאוהבים נוף פראי, ירוק ואטמוספרי, ולא אכפת להם להירטב.',
+      ],
+      rainHeading: 'כמה יורד גשם?',
+      rainParagraph:
+        'ההערכות משתנות ממקור למקור — בערך 350 עד 450 mm — אבל נובמבר הוא בעקביות אחד החודשים הגשומים ביותר, והים נוטה להיות סוער יותר. הגשם עשוי להגיע בכל שעה ביום, אז שלבו גמישות בתוכניות ונצלו ימי חוף כשהם מזדמנים.',
+      rainyDayIntro: 'הגשם פותח את חוויות הפנים והג\'ונגל הטובות ביותר:',
+      rainyDayItems: [
+        'צאו לסיור שוקולד (קקאו) — ברובו מקורה וקסום בגשם',
+        'רדפו אחר מפלים גועשים ושבילי ג\'ונגל שופעים',
+        'בקרו בקהילת הילידים בריברי להיכרות עם קקאו ורפואה מסורתית',
+      ],
+      crowdsHeading: 'עומס תיירים, מחירים ואירועים',
+      crowdsParagraph:
+        'נובמבר הוא עונה שקטה, ולכן המחירים בין הנמוכים בשנה והעיירה רגועה — עד שממש בסוף החודש מתחיל השיא החגיגי. תמורה מצוינת אם תגיעו מוכנים למזג האוויר.',
+      stayRecommendationTitle: 'היכן להתארח בפוארטו ויאחו בנובמבר',
+      verdictHeading: 'האם נובמבר הוא זמן טוב לביקור?',
+      verdictParagraph:
+        'תלוי מה אתם מחפשים. למחירים נמוכים, חופים ריקים וג\'ונגל שופע ודרמטי — בהחלט. אם הטיול שלכם תלוי בחוף מובטח ובים רגוע, אחד החודשים היבשים יותר יתאים לכם יותר.',
+      hubLinkText: 'צפו במדריך מזג האוויר המלא חודש אחר חודש →',
+      takeawaysHeading: 'עיקרי הדברים',
+      takeawaysParagraph:
+        'נובמבר הוא אחד החודשים הגשומים והירוקים ביותר בפוארטו ויאחו, עם ים סוער ומחירים נמוכים. בואו בשביל הג\'ונגל, המפלים והשקט, ארזו מעיל גשם טוב ושמרו על גמישות בתוכניות החוף.',
+    },
+    hi: {
+      seoTitle: 'नवंबर में पुएर्तो वियेखो का मौसम — जलवायु, बारिश और समुद्र',
+      seoDescription:
+        'पुएर्तो वियेखो दे तालामांका में नवंबर सबसे अधिक बारिश वाले महीनों में से एक है — गहरा हरा जंगल, भरे हुए झरने और कम कीमतें। जानिए क्या उम्मीद करें और बारिश के हिसाब से योजना कैसे बनाएं।',
+      heading: 'नवंबर में पुएर्तो वियेखो का मौसम',
+      heroAlt: 'नवंबर में पुएर्तो वियेखो दे तालामांका का हरा-भरा वर्षावन',
+      photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में नवंबर',
+      snapshot: [
+        { label: 'तापमान', value: '27°C / 22°C' },
+        { label: 'बारिश', value: '~350–450 mm — सबसे गीले महीनों में से एक' },
+        { label: 'समुद्र', value: 'अक्सर अधिक अशांत, ~28°C' },
+        { label: 'भीड़', value: 'महीने के अंत तक कम' },
+      ],
+      whatItsLikeHeading: 'नवंबर असल में कैसा होता है',
+      whatItsLikeParagraphs: [
+        'इस तट पर नवंबर सबसे गीले महीनों में से एक है — यह बारिश के उस चरम का हिस्सा है जो अभी से जनवरी तक चलता है (जून और जुलाई दूसरा बरसाती दौर हैं)। सितंबर और अक्टूबर के शांत veranillo के बाद बारिश पूरे ज़ोर से लौटती है, लेकिन यह जंगल को शानदार गहरे हरे रंग में रंग देती है और नदियों तथा झरनों को भर देती है।',
+        'आपको धूप के पल फिर भी मिलेंगे, खासकर सुबह के समय, पर तेज़ और अधिक बार होने वाली बौछारों और अधिक अशांत समुद्र की उम्मीद रखें। यह उन यात्रियों का महीना है जो जंगली, हरे और भावपूर्ण परिदृश्य से प्यार करते हैं और जिन्हें भीगने में कोई परेशानी नहीं।',
+      ],
+      rainHeading: 'कितनी बारिश होती है?',
+      rainParagraph:
+        'अनुमान स्रोत के अनुसार बदलते हैं — मोटे तौर पर 350 से 450 mm — पर नवंबर लगातार सबसे गीले महीनों में से एक रहता है, और समुद्र अधिक उथल-पुथल भरा रहता है। बारिश दिन के किसी भी समय आ सकती है, इसलिए अपनी योजनाओं में लचीलापन रखें और समुद्र तट के दिनों का अवसर मिलते ही लाभ उठाएं।',
+      rainyDayIntro: 'बारिश सबसे बेहतरीन इनडोर और जंगल अनुभवों को खोल देती है:',
+      rainyDayItems: [
+        'चॉकलेट (कोको) टूर करें — ज़्यादातर ढका हुआ और बारिश में जादुई',
+        'भरपूर बहते झरनों और हरे-भरे जंगल के रास्तों का पीछा करें',
+        'कोको और पारंपरिक चिकित्सा के लिए किसी ब्रिब्री आदिवासी समुदाय में जाएं',
+      ],
+      crowdsHeading: 'भीड़, कीमतें और आयोजन',
+      crowdsParagraph:
+        'नवंबर कम सीज़न है, इसलिए कीमतें साल में सबसे कम में से हैं और कस्बा शांत रहता है — ठीक तब तक जब तक महीने के बिल्कुल अंत में उत्सव की भागदौड़ शुरू नहीं हो जाती। अगर आप मौसम के लिए तैयार हैं तो शानदार मूल्य।',
+      stayRecommendationTitle: 'नवंबर में पुएर्तो वियेखो में कहाँ ठहरें',
+      verdictHeading: 'क्या नवंबर घूमने के लिए अच्छा समय है?',
+      verdictParagraph:
+        'यह इस पर निर्भर करता है कि आप क्या चाहते हैं। कम कीमतों, खाली समुद्र तटों और हरे-भरे, नाटकीय जंगल के लिए, हाँ। अगर आपकी यात्रा गारंटीशुदा समुद्र तट और शांत समुद्र पर निर्भर है, तो कोई सूखा महीना आपके लिए बेहतर रहेगा।',
+      hubLinkText: 'महीने-दर-महीने का पूरा मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'नवंबर पुएर्तो वियेखो के सबसे गीले और सबसे हरे महीनों में से एक है, अशांत समुद्र और कम कीमतों के साथ। जंगल, झरनों और शांति के लिए आएं, एक अच्छी बारिश की जैकेट साथ रखें और समुद्र तट की योजनाओं में लचीलापन बनाए रखें।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in november — Klimaat, regen & zee',
+      seoDescription:
+        'November is een van de natste maanden in Puerto Viejo de Talamanca — diepgroene jungle, volle watervallen en lage prijzen. Dit kun je verwachten en zo plan je rond de regen.',
+      heading: 'Weer in Puerto Viejo in november',
+      heroAlt: 'Weelderig groen regenwoud in Puerto Viejo de Talamanca in november',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'November in een oogopslag',
+      snapshot: [
+        { label: 'Temperatuur', value: '27°C / 22°C' },
+        { label: 'Regen', value: '~350–450 mm — een van de natste maanden' },
+        { label: 'Zee', value: 'Vaak ruwer, ~28°C' },
+        { label: 'Drukte', value: 'Laag tot eind van de maand' },
+      ],
+      whatItsLikeHeading: 'Hoe november echt is',
+      whatItsLikeParagraphs: [
+        'November is een van de natste maanden aan deze kust — onderdeel van de natte piek die van nu tot in januari loopt (juni en juli vormen de andere natte periode). Na de rustige veranillo van september en oktober keert de regen in alle hevigheid terug, maar hij kleurt de jungle ook een spectaculair diep groen en vult de rivieren en watervallen.',
+        'Je krijgt nog steeds zonnige momenten, vooral in de ochtend, maar reken op zwaardere en frequentere buien en een ruwere zee. Het is een maand voor reizigers die van een wild, groen, sfeervol landschap houden en het niet erg vinden om nat te worden.',
+      ],
+      rainHeading: 'Hoeveel regent het?',
+      rainParagraph:
+        'De schattingen verschillen per bron — ongeveer 350 tot 450 mm — maar november is steevast een van de natste maanden, en de oceaan is doorgaans woeliger. Regen kan op elk moment van de dag komen, dus bouw flexibiliteit in je plannen in en grijp stranddagen als ze zich voordoen.',
+      rainyDayIntro: 'De regen opent de beste ervaringen binnen en in de jungle:',
+      rainyDayItems: [
+        'Doe een chocolade- (cacao-)tour — grotendeels overdekt en magisch in de regen',
+        'Ga op zoek naar bruisende watervallen en weelderige junglepaden',
+        'Bezoek een inheemse Bribri-gemeenschap voor cacao en traditionele geneeskunde',
+      ],
+      crowdsHeading: 'Drukte, prijzen en evenementen',
+      crowdsParagraph:
+        'November is laagseizoen, dus de prijzen behoren tot de laagste van het jaar en het dorp is rustig — tot helemaal aan het eind van de maand de feestdrukte losbarst. Uitstekende waarde als je voorbereid bent op het weer.',
+      stayRecommendationTitle: 'Waar te verblijven in Puerto Viejo in november',
+      verdictHeading: 'Is november een goede tijd om te bezoeken?',
+      verdictParagraph:
+        'Dat hangt af van wat je zoekt. Voor lage prijzen, lege stranden en een weelderige, dramatische jungle: ja. Als je reis afhangt van gegarandeerd strand en een kalme zee, past een van de drogere maanden beter bij je.',
+      hubLinkText: 'Bekijk de volledige weergids maand voor maand →',
+      takeawaysHeading: 'Belangrijkste punten',
+      takeawaysParagraph:
+        'November is een van de natste en groenste maanden van Puerto Viejo, met een ruwe zee en lage prijzen. Kom voor de jungle, de watervallen en de rust, pak een goede regenjas in en houd je strandplannen flexibel.',
+    },
+  },
+  december: {
+    en: {
+      seoTitle: 'Weather in Puerto Viejo in December — Climate, Rain & Sea',
+      seoDescription:
+        'December in Puerto Viejo de Talamanca is festive and lively, still rainy but with surf swells and holiday energy. Here is what to expect and how to plan your trip.',
+      heading: 'Weather in Puerto Viejo in December',
+      heroAlt: 'Festive Caribbean beach town of Puerto Viejo de Talamanca in December',
+      photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'December at a Glance',
+      snapshot: [
+        { label: 'Temperature', value: '27°C / 21°C' },
+        { label: 'Rain', value: '~350 mm — still wet, easing late month' },
+        { label: 'Sea', value: 'Surf swells, ~28°C' },
+        { label: 'Crowds', value: 'High over the holidays' },
+      ],
+      whatItsLikeHeading: 'What December Is Really Like',
+      whatItsLikeParagraphs: [
+        'December is a lively, festive month. It is still one of the wetter parts of the year, but the rain often eases as the month goes on, and the town fills with holiday energy — music, visitors and a buzzing beach scene.',
+        'Northeast swells make December a favourite with surfers, and the famous Salsa Brava reef is at its best. Nights are the coolest of the year, which is a welcome change if you feel the humidity.',
+      ],
+      rainHeading: 'How Much Does It Rain?',
+      rainParagraph:
+        'December averages around 350 mm, though it often trends drier toward the New Year. Expect a mix of showers and bright spells, and a sea that is more about surf than flat-water snorkelling this month.',
+      rainyDayIntro: 'Rain or shine, December keeps you busy:',
+      rainyDayItems: [
+        'Watch or try surfing the season\'s northeast swells',
+        'Take a chocolate tour or a cooking class between showers',
+        'Enjoy the festive nightlife, music and Caribbean food in town',
+      ],
+      crowdsHeading: 'Crowds, Prices and Events',
+      crowdsParagraph:
+        'The festive season is peak time. Expect the busiest crowds and the highest prices of the year, especially from Christmas to New Year — book your stay well in advance if you are coming for the holidays.',
+      stayRecommendationTitle: 'Where to stay in Puerto Viejo in December',
+      verdictHeading: 'Is December a Good Time to Visit?',
+      verdictParagraph:
+        'If you want atmosphere, surf and holiday energy, December is a great time — just book early and accept some rain. For calm, dry snorkelling weather, the veranillo months suit better.',
+      hubLinkText: 'See the full month-by-month weather guide →',
+      takeawaysHeading: 'Key Takeaways',
+      takeawaysParagraph:
+        'December is festive, lively and surf-friendly, still wet but often easing late in the month, with the coolest nights and the biggest crowds. Book early, pack for showers, and come for the energy rather than flat-water beach days.',
+    },
+    es: {
+      seoTitle: 'El Clima en Puerto Viejo en Diciembre — Tiempo, Lluvia y Mar',
+      seoDescription:
+        'Diciembre en Puerto Viejo de Talamanca es festivo y animado, todavía lluvioso pero con oleaje de surf y energía navideña. Esto es lo que puedes esperar y cómo planificar.',
+      heading: 'El Clima en Puerto Viejo en Diciembre',
+      heroAlt: 'Puerto Viejo de Talamanca, pueblo caribeño festivo, en diciembre',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Diciembre de un Vistazo',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 21°C' },
+        { label: 'Lluvia', value: '~350 mm — todavía húmedo, cede a fin de mes' },
+        { label: 'Mar', value: 'Oleaje de surf, ~28°C' },
+        { label: 'Afluencia', value: 'Alta durante las fiestas' },
+      ],
+      whatItsLikeHeading: 'Cómo es Realmente Diciembre',
+      whatItsLikeParagraphs: [
+        'Diciembre es un mes animado y festivo. Sigue siendo una de las épocas más húmedas del año, pero la lluvia suele ceder a medida que avanza el mes, y el pueblo se llena de energía navideña — música, visitantes y un ambiente de playa vibrante.',
+        'Los oleajes del noreste hacen de diciembre un favorito de los surfistas, y el famoso arrecife de Salsa Brava está en su mejor momento. Las noches son las más frescas del año, un cambio agradable si sientes la humedad.',
+      ],
+      rainHeading: '¿Cuánto Llueve?',
+      rainParagraph:
+        'Diciembre promedia unos 350 mm, aunque suele volverse más seco hacia el Año Nuevo. Espera una mezcla de aguaceros y ratos despejados, y un mar más de surf que de snorkel en agua plana este mes.',
+      rainyDayIntro: 'Con lluvia o con sol, diciembre te mantiene ocupado:',
+      rainyDayItems: [
+        'Observa o prueba el surf con los oleajes del noreste de la temporada',
+        'Haz un tour de chocolate o una clase de cocina entre aguaceros',
+        'Disfruta de la vida nocturna festiva, la música y la comida caribeña del pueblo',
+      ],
+      crowdsHeading: 'Afluencia, Precios y Eventos',
+      crowdsParagraph:
+        'La temporada festiva es el momento de mayor afluencia. Espera las mayores multitudes y los precios más altos del año, sobre todo de Navidad a Año Nuevo — reserva tu estadía con mucha antelación si vienes en fiestas.',
+      stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo en diciembre',
+      verdictHeading: '¿Es Diciembre una Buena Época para Visitar?',
+      verdictParagraph:
+        'Si buscas ambiente, surf y energía navideña, diciembre es una gran época — solo reserva temprano y acepta algo de lluvia. Para clima seco y en calma para snorkel, los meses del veranillo vienen mejor.',
+      hubLinkText: 'Ver la guía completa del clima mes a mes →',
+      takeawaysHeading: 'Puntos Clave',
+      takeawaysParagraph:
+        'Diciembre es festivo, animado y bueno para el surf, todavía húmedo pero a menudo cediendo a fin de mes, con las noches más frescas y la mayor afluencia. Reserva temprano, lleva algo para los aguaceros y ven por la energía más que por días de playa en agua plana.',
+    },
+    de: {
+      seoTitle: 'Wetter in Puerto Viejo im Dezember — Klima, Regen & Meer',
+      seoDescription:
+        'Der Dezember in Puerto Viejo de Talamanca ist festlich und lebhaft, noch regnerisch, aber mit Surf-Swells und Feiertagsstimmung. Das erwartet dich und so planst du deine Reise.',
+      heading: 'Wetter in Puerto Viejo im Dezember',
+      heroAlt: 'Festliches karibisches Küstenstädtchen Puerto Viejo de Talamanca im Dezember',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Der Dezember auf einen Blick',
+      snapshot: [
+        { label: 'Temperatur', value: '27°C / 21°C' },
+        { label: 'Regen', value: '~350 mm — noch nass, lässt gegen Monatsende nach' },
+        { label: 'Meer', value: 'Surf-Swells, ~28°C' },
+        { label: 'Andrang', value: 'Hoch über die Feiertage' },
+      ],
+      whatItsLikeHeading: 'Wie der Dezember wirklich ist',
+      whatItsLikeParagraphs: [
+        'Der Dezember ist ein lebhafter, festlicher Monat. Er zählt noch zu den feuchteren Zeiten des Jahres, doch der Regen lässt im Laufe des Monats oft nach, und der Ort füllt sich mit Feiertagsstimmung — Musik, Besucher und ein pulsierendes Strandleben.',
+        'Nordost-Swells machen den Dezember zum Favoriten der Surfer, und das berühmte Riff Salsa Brava zeigt sich von seiner besten Seite. Die Nächte sind die kühlsten des Jahres, eine willkommene Abwechslung, wenn dir die Luftfeuchtigkeit zu schaffen macht.',
+      ],
+      rainHeading: 'Wie viel regnet es?',
+      rainParagraph:
+        'Im Dezember fallen im Schnitt rund 350 mm, wobei es zum Neujahr hin oft trockener wird. Rechne mit einer Mischung aus Schauern und sonnigen Abschnitten und einem Meer, das diesen Monat eher zum Surfen als zum Schnorcheln bei ruhigem Wasser einlädt.',
+      rainyDayIntro: 'Ob Regen oder Sonne, der Dezember hält dich auf Trab:',
+      rainyDayItems: [
+        'Schau beim Surfen zu oder probiere die Nordost-Swells der Saison selbst',
+        'Mach eine Schokoladentour oder einen Kochkurs zwischen den Schauern',
+        'Genieße das festliche Nachtleben, die Musik und die karibische Küche im Ort',
+      ],
+      crowdsHeading: 'Andrang, Preise und Events',
+      crowdsParagraph:
+        'Die Festtagszeit ist Hochsaison. Rechne mit dem größten Andrang und den höchsten Preisen des Jahres, besonders von Weihnachten bis Neujahr — buche deinen Aufenthalt weit im Voraus, wenn du über die Feiertage kommst.',
+      stayRecommendationTitle: 'Wo man im Dezember in Puerto Viejo übernachtet',
+      verdictHeading: 'Ist der Dezember eine gute Reisezeit?',
+      verdictParagraph:
+        'Wenn du Atmosphäre, Surf und Feiertagsstimmung suchst, ist der Dezember eine großartige Zeit — buche nur früh und nimm etwas Regen in Kauf. Für ruhiges, trockenes Schnorchelwetter eignen sich die Veranillo-Monate besser.',
+      hubLinkText: 'Zum vollständigen Monat-für-Monat-Wetterguide →',
+      takeawaysHeading: 'Das Wichtigste in Kürze',
+      takeawaysParagraph:
+        'Der Dezember ist festlich, lebhaft und surf-freundlich, noch nass, lässt aber gegen Monatsende oft nach, mit den kühlsten Nächten und dem größten Andrang. Buche früh, packe für Schauer und komm für die Energie statt für ruhige Strandtage bei stillem Wasser.',
+    },
+    fr: {
+      seoTitle: 'Météo à Puerto Viejo en décembre — Climat, pluie & mer',
+      seoDescription:
+        'Décembre à Puerto Viejo de Talamanca est festif et animé, encore pluvieux mais avec des houles de surf et une énergie des fêtes. Voici à quoi vous attendre et comment planifier votre voyage.',
+      heading: 'Météo à Puerto Viejo en décembre',
+      heroAlt: 'Village balnéaire caribéen festif de Puerto Viejo de Talamanca en décembre',
+      photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Décembre en un coup d\'œil',
+      snapshot: [
+        { label: 'Température', value: '27°C / 21°C' },
+        { label: 'Pluie', value: '~350 mm — encore humide, se calme en fin de mois' },
+        { label: 'Mer', value: 'Houles de surf, ~28°C' },
+        { label: 'Affluence', value: 'Élevée pendant les fêtes' },
+      ],
+      whatItsLikeHeading: 'À quoi ressemble vraiment décembre',
+      whatItsLikeParagraphs: [
+        'Décembre est un mois animé et festif. Il reste l\'une des périodes les plus humides de l\'année, mais la pluie faiblit souvent à mesure que le mois avance, et le village se remplit de l\'énergie des fêtes — musique, visiteurs et une ambiance de plage vibrante.',
+        'Les houles du nord-est font de décembre un favori des surfeurs, et le célèbre récif de Salsa Brava est à son meilleur. Les nuits sont les plus fraîches de l\'année, un changement bienvenu si vous êtes sensible à l\'humidité.',
+      ],
+      rainHeading: 'Combien pleut-il ?',
+      rainParagraph:
+        'Décembre affiche en moyenne environ 350 mm, même s\'il tend souvent à s\'assécher à l\'approche du Nouvel An. Attendez-vous à un mélange d\'averses et d\'éclaircies, et à une mer davantage tournée vers le surf que vers le snorkeling en eau calme ce mois-ci.',
+      rainyDayIntro: 'Pluie ou soleil, décembre vous tient occupé :',
+      rainyDayItems: [
+        'Regardez ou essayez le surf sur les houles du nord-est de la saison',
+        'Faites un tour du chocolat ou un cours de cuisine entre deux averses',
+        'Profitez de la vie nocturne festive, de la musique et de la cuisine caribéenne du village',
+      ],
+      crowdsHeading: 'Affluence, prix et événements',
+      crowdsParagraph:
+        'La saison des fêtes est la haute saison. Attendez-vous à la plus grande affluence et aux prix les plus élevés de l\'année, surtout de Noël au Nouvel An — réservez votre séjour bien à l\'avance si vous venez pour les fêtes.',
+      stayRecommendationTitle: 'Où loger à Puerto Viejo en décembre',
+      verdictHeading: 'Décembre est-il une bonne période pour visiter ?',
+      verdictParagraph:
+        'Si vous recherchez l\'ambiance, le surf et l\'énergie des fêtes, décembre est une période idéale — réservez simplement tôt et acceptez un peu de pluie. Pour un temps sec et calme propice au snorkeling, les mois du veranillo conviennent mieux.',
+      hubLinkText: 'Voir le guide météo complet mois par mois →',
+      takeawaysHeading: 'Points clés',
+      takeawaysParagraph:
+        'Décembre est festif, animé et propice au surf, encore humide mais se calmant souvent en fin de mois, avec les nuits les plus fraîches et la plus forte affluence. Réservez tôt, prévoyez de quoi affronter les averses et venez pour l\'énergie plutôt que pour des journées de plage en eau calme.',
+    },
+    it: {
+      seoTitle: 'Meteo a Puerto Viejo a dicembre — Clima, pioggia e mare',
+      seoDescription:
+        'Dicembre a Puerto Viejo de Talamanca è festoso e vivace, ancora piovoso ma con mareggiate da surf ed energia natalizia. Ecco cosa aspettarti e come pianificare il tuo viaggio.',
+      heading: 'Meteo a Puerto Viejo a dicembre',
+      heroAlt: 'Festosa cittadina balneare caraibica di Puerto Viejo de Talamanca a dicembre',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Dicembre in breve',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 21°C' },
+        { label: 'Pioggia', value: '~350 mm — ancora umido, cala a fine mese' },
+        { label: 'Mare', value: 'Mareggiate da surf, ~28°C' },
+        { label: 'Affluenza', value: 'Alta durante le feste' },
+      ],
+      whatItsLikeHeading: 'Com\'è davvero dicembre',
+      whatItsLikeParagraphs: [
+        'Dicembre è un mese vivace e festoso. È ancora uno dei periodi più umidi dell\'anno, ma la pioggia spesso cala con l\'avanzare del mese, e il paese si riempie di energia natalizia — musica, visitatori e un\'animata vita di spiaggia.',
+        'Le mareggiate da nord-est rendono dicembre uno dei mesi preferiti dai surfisti, e la celebre barriera di Salsa Brava è al suo meglio. Le notti sono le più fresche dell\'anno, un cambiamento gradito se soffri l\'umidità.',
+      ],
+      rainHeading: 'Quanto piove?',
+      rainParagraph:
+        'Dicembre registra in media circa 350 mm, anche se tende spesso ad asciugarsi verso il Capodanno. Aspettati un mix di rovesci e schiarite, e un mare più adatto al surf che allo snorkeling in acque calme questo mese.',
+      rainyDayIntro: 'Con la pioggia o con il sole, dicembre ti tiene impegnato:',
+      rainyDayItems: [
+        'Guarda o prova a surfare le mareggiate da nord-est della stagione',
+        'Fai un tour del cioccolato o un corso di cucina tra un rovescio e l\'altro',
+        'Goditi la vita notturna festosa, la musica e la cucina caraibica del paese',
+      ],
+      crowdsHeading: 'Affluenza, prezzi ed eventi',
+      crowdsParagraph:
+        'Il periodo delle feste è l\'alta stagione. Aspettati la maggiore affluenza e i prezzi più alti dell\'anno, soprattutto da Natale a Capodanno — prenota il tuo soggiorno con largo anticipo se vieni per le feste.',
+      stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo a dicembre',
+      verdictHeading: 'Dicembre è un buon periodo per visitare?',
+      verdictParagraph:
+        'Se cerchi atmosfera, surf ed energia natalizia, dicembre è un periodo fantastico — basta prenotare presto e mettere in conto un po\' di pioggia. Per un clima asciutto e calmo da snorkeling, i mesi del veranillo sono più indicati.',
+      hubLinkText: 'Vedi la guida meteo completa mese per mese →',
+      takeawaysHeading: 'Punti chiave',
+      takeawaysParagraph:
+        'Dicembre è festoso, vivace e ottimo per il surf, ancora umido ma spesso in calo a fine mese, con le notti più fresche e la maggiore affluenza. Prenota presto, prepara qualcosa per i rovesci e vieni per l\'energia più che per giornate di spiaggia in acque calme.',
+    },
+    pt: {
+      seoTitle: 'Clima em Puerto Viejo em dezembro — Tempo, chuva e mar',
+      seoDescription:
+        'Dezembro em Puerto Viejo de Talamanca é festivo e animado, ainda chuvoso mas com ondulações de surfe e energia natalina. Veja o que esperar e como planejar sua viagem.',
+      heading: 'Clima em Puerto Viejo em dezembro',
+      heroAlt: 'Vila caribenha festiva de Puerto Viejo de Talamanca em dezembro',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'Dezembro num relance',
+      snapshot: [
+        { label: 'Temperatura', value: '27°C / 21°C' },
+        { label: 'Chuva', value: '~350 mm — ainda úmido, diminuindo no fim do mês' },
+        { label: 'Mar', value: 'Ondulações de surfe, ~28°C' },
+        { label: 'Movimento', value: 'Alto durante as festas' },
+      ],
+      whatItsLikeHeading: 'Como dezembro realmente é',
+      whatItsLikeParagraphs: [
+        'Dezembro é um mês animado e festivo. Ainda é uma das épocas mais úmidas do ano, mas a chuva costuma diminuir à medida que o mês avança, e a vila se enche de energia natalina — música, visitantes e uma agitada cena de praia.',
+        'As ondulações de nordeste tornam dezembro um favorito dos surfistas, e o famoso recife de Salsa Brava está no seu melhor. As noites são as mais frescas do ano, uma mudança bem-vinda se você sente a umidade.',
+      ],
+      rainHeading: 'Quanto chove?',
+      rainParagraph:
+        'Dezembro tem média em torno de 350 mm, embora costume ficar mais seco à medida que se aproxima o Ano Novo. Espere uma mistura de pancadas de chuva e momentos de sol, e um mar mais voltado ao surfe do que ao mergulho de snorkel em água calma neste mês.',
+      rainyDayIntro: 'Com chuva ou sol, dezembro mantém você ocupado:',
+      rainyDayItems: [
+        'Assista ou experimente surfar as ondulações de nordeste da temporada',
+        'Faça um tour de chocolate ou uma aula de culinária entre as pancadas de chuva',
+        'Aproveite a vida noturna festiva, a música e a comida caribenha da vila',
+      ],
+      crowdsHeading: 'Movimento, preços e eventos',
+      crowdsParagraph:
+        'A época festiva é a alta temporada. Espere a maior movimentação e os preços mais altos do ano, especialmente do Natal ao Ano Novo — reserve sua estadia com bastante antecedência se vier para as festas.',
+      stayRecommendationTitle: 'Onde se hospedar em Puerto Viejo em dezembro',
+      verdictHeading: 'Dezembro é uma boa época para visitar?',
+      verdictParagraph:
+        'Se você quer atmosfera, surfe e energia natalina, dezembro é uma ótima época — só reserve cedo e aceite um pouco de chuva. Para um clima seco e calmo para snorkel, os meses do veranillo são mais adequados.',
+      hubLinkText: 'Ver o guia completo de clima mês a mês →',
+      takeawaysHeading: 'Principais conclusões',
+      takeawaysParagraph:
+        'Dezembro é festivo, animado e bom para o surfe, ainda úmido mas muitas vezes diminuindo no fim do mês, com as noites mais frescas e a maior movimentação. Reserve cedo, leve algo para as pancadas de chuva e venha pela energia, mais do que por dias de praia em água calma.',
+    },
+    he: {
+      seoTitle: 'מזג האוויר בפוארטו ויאחו בדצמבר — אקלים, גשם וים',
+      seoDescription:
+        'דצמבר בפוארטו ויאחו דה טלמנקה חגיגי ותוסס, עדיין גשום אך עם גלי גלישה ואנרגיה של חגים. הנה למה לצפות וכיצד לתכנן את הטיול שלכם.',
+      heading: 'מזג האוויר בפוארטו ויאחו בדצמבר',
+      heroAlt: 'עיירת החוף הקריבית החגיגית פוארטו ויאחו דה טלמנקה בדצמבר',
+      photoCredit: <>תמונה: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'דצמבר במבט מהיר',
+      snapshot: [
+        { label: 'טמפרטורה', value: '27°C / 21°C' },
+        { label: 'גשם', value: '~350 mm — עדיין רטוב, נחלש בסוף החודש' },
+        { label: 'ים', value: 'גלי גלישה, ~28°C' },
+        { label: 'עומס מבקרים', value: 'גבוה בתקופת החגים' },
+      ],
+      whatItsLikeHeading: 'איך דצמבר באמת נראה',
+      whatItsLikeParagraphs: [
+        'דצמבר הוא חודש תוסס וחגיגי. הוא עדיין אחת התקופות הגשומות יותר בשנה, אך הגשם נוטה להיחלש ככל שהחודש מתקדם, והעיירה מתמלאת באנרגיה של חגים — מוזיקה, מבקרים וזירת חוף שוקקת.',
+        'גלי הצפון-מזרח הופכים את דצמבר לחביב על גולשים, ושונית סלסה בראבה המפורסמת נמצאת בשיאה. הלילות הם הקרירים ביותר בשנה, שינוי מבורך אם הלחות מכבידה עליכם.',
+      ],
+      rainHeading: 'כמה גשם יורד?',
+      rainParagraph:
+        'בדצמבר יורדים בממוצע כ-350 mm, אם כי לרוב הוא נעשה יבש יותר לקראת השנה החדשה. צפו לתערובת של ממטרים ורגעים בהירים, ולים שהוא יותר עניין של גלישה מאשר של שנורקלינג במים שקטים בחודש זה.',
+      rainyDayIntro: 'בגשם או בשמש, דצמבר דואג שיהיה לכם מה לעשות:',
+      rainyDayItems: [
+        'צפו או נסו לגלוש על גלי הצפון-מזרח של העונה',
+        'צאו לסיור שוקולד או לשיעור בישול בין הממטרים',
+        'תיהנו מחיי הלילה החגיגיים, המוזיקה והאוכל הקריבי בעיירה',
+      ],
+      crowdsHeading: 'עומס מבקרים, מחירים ואירועים',
+      crowdsParagraph:
+        'עונת החגים היא שיא העונה. צפו לעומס המבקרים הגדול ביותר ולמחירים הגבוהים ביותר בשנה, במיוחד מחג המולד ועד השנה החדשה — הזמינו את השהות שלכם הרבה מראש אם אתם מגיעים לחגים.',
+      stayRecommendationTitle: 'איפה להתארח בפוארטו ויאחו בדצמבר',
+      verdictHeading: 'האם דצמבר הוא זמן טוב לביקור?',
+      verdictParagraph:
+        'אם אתם מחפשים אווירה, גלישה ואנרגיה של חגים, דצמבר הוא זמן מצוין — רק הזמינו מוקדם וקבלו מעט גשם. למזג אוויר יבש ורגוע לשנורקלינג, חודשי הוורניו מתאימים יותר.',
+      hubLinkText: 'למדריך מזג האוויר המלא חודש אחר חודש →',
+      takeawaysHeading: 'נקודות עיקריות',
+      takeawaysParagraph:
+        'דצמבר חגיגי, תוסס וידידותי לגלישה, עדיין רטוב אך לרוב נחלש בסוף החודש, עם הלילות הקרירים ביותר ועומס המבקרים הגדול ביותר. הזמינו מוקדם, ארזו לממטרים ובואו בשביל האנרגיה ולא בשביל ימי חוף במים שקטים.',
+    },
+    hi: {
+      seoTitle: 'दिसंबर में प्यूर्टो विएखो का मौसम — जलवायु, बारिश और समुद्र',
+      seoDescription:
+        'प्यूर्टो विएखो दे तालामांका में दिसंबर उत्सवमय और जीवंत होता है, अब भी बरसाती पर सर्फ की लहरों और छुट्टियों की ऊर्जा के साथ। जानिए क्या उम्मीद करें और अपनी यात्रा की योजना कैसे बनाएं।',
+      heading: 'दिसंबर में प्यूर्टो विएखो का मौसम',
+      heroAlt: 'दिसंबर में प्यूर्टो विएखो दे तालामांका का उत्सवमय कैरिबियन तटीय कस्बा',
+      photoCredit: <>तस्वीर: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'एक नज़र में दिसंबर',
+      snapshot: [
+        { label: 'तापमान', value: '27°C / 21°C' },
+        { label: 'बारिश', value: '~350 mm — अब भी गीला, महीने के अंत में कम होता हुआ' },
+        { label: 'समुद्र', value: 'सर्फ की लहरें, ~28°C' },
+        { label: 'भीड़', value: 'छुट्टियों के दौरान अधिक' },
+      ],
+      whatItsLikeHeading: 'दिसंबर वास्तव में कैसा होता है',
+      whatItsLikeParagraphs: [
+        'दिसंबर एक जीवंत, उत्सवमय महीना है। यह अब भी साल के अधिक गीले हिस्सों में से एक है, पर जैसे-जैसे महीना आगे बढ़ता है बारिश अक्सर कम हो जाती है, और कस्बा छुट्टियों की ऊर्जा से भर जाता है — संगीत, पर्यटक और एक गुलज़ार समुद्रतट का माहौल।',
+        'उत्तर-पूर्वी लहरें दिसंबर को सर्फ़रों का पसंदीदा बनाती हैं, और मशहूर साल्सा ब्रावा रीफ़ अपने सबसे अच्छे रूप में होती है। रातें साल की सबसे ठंडी होती हैं, जो नमी महसूस करने पर एक सुखद बदलाव है।',
+      ],
+      rainHeading: 'कितनी बारिश होती है?',
+      rainParagraph:
+        'दिसंबर में औसतन लगभग 350 mm बारिश होती है, हालांकि नववर्ष की ओर यह अक्सर सूखता जाता है। बौछारों और उजले पलों के मिश्रण की उम्मीद करें, और इस महीने ऐसे समुद्र की जो शांत पानी में स्नॉर्कलिंग से ज़्यादा सर्फ़ के बारे में है।',
+      rainyDayIntro: 'बारिश हो या धूप, दिसंबर आपको व्यस्त रखता है:',
+      rainyDayItems: [
+        'मौसम की उत्तर-पूर्वी लहरों पर सर्फिंग देखें या आज़माएं',
+        'बौछारों के बीच चॉकलेट टूर या कुकिंग क्लास करें',
+        'कस्बे की उत्सवमय नाइटलाइफ़, संगीत और कैरिबियन भोजन का आनंद लें',
+      ],
+      crowdsHeading: 'भीड़, कीमतें और आयोजन',
+      crowdsParagraph:
+        'उत्सव का मौसम चरम समय होता है। साल की सबसे अधिक भीड़ और सबसे ऊंची कीमतों की उम्मीद करें, खासकर क्रिसमस से नववर्ष तक — यदि आप छुट्टियों के लिए आ रहे हैं तो अपना ठहराव काफ़ी पहले से बुक कर लें।',
+      stayRecommendationTitle: 'दिसंबर में प्यूर्टो विएखो में कहां ठहरें',
+      verdictHeading: 'क्या दिसंबर घूमने का अच्छा समय है?',
+      verdictParagraph:
+        'यदि आप माहौल, सर्फ़ और छुट्टियों की ऊर्जा चाहते हैं, तो दिसंबर एक बढ़िया समय है — बस जल्दी बुक करें और थोड़ी बारिश को स्वीकार करें। शांत, सूखे स्नॉर्कलिंग मौसम के लिए वेरानिलो के महीने बेहतर रहते हैं।',
+      hubLinkText: 'पूरा महीने-दर-महीने मौसम गाइड देखें →',
+      takeawaysHeading: 'मुख्य बातें',
+      takeawaysParagraph:
+        'दिसंबर उत्सवमय, जीवंत और सर्फ़-अनुकूल है, अब भी गीला पर अक्सर महीने के अंत में कम होता हुआ, सबसे ठंडी रातों और सबसे बड़ी भीड़ के साथ। जल्दी बुक करें, बौछारों के लिए सामान रखें, और शांत पानी वाले समुद्रतट दिनों के बजाय ऊर्जा के लिए आएं।',
+    },
+    nl: {
+      seoTitle: 'Weer in Puerto Viejo in december — Klimaat, regen & zee',
+      seoDescription:
+        'December in Puerto Viejo de Talamanca is feestelijk en levendig, nog nat maar met surfdeining en feestdagenenergie. Dit kun je verwachten en zo plan je je reis.',
+      heading: 'Weer in Puerto Viejo in december',
+      heroAlt: 'Feestelijk Caribisch kustplaatsje Puerto Viejo de Talamanca in december',
+      photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+      snapshotHeading: 'December in een oogopslag',
+      snapshot: [
+        { label: 'Temperatuur', value: '27°C / 21°C' },
+        { label: 'Regen', value: '~350 mm — nog nat, neemt af eind van de maand' },
+        { label: 'Zee', value: 'Surfdeining, ~28°C' },
+        { label: 'Drukte', value: 'Hoog tijdens de feestdagen' },
+      ],
+      whatItsLikeHeading: 'Hoe december echt is',
+      whatItsLikeParagraphs: [
+        'December is een levendige, feestelijke maand. Het is nog een van de nattere periodes van het jaar, maar de regen neemt vaak af naarmate de maand vordert, en het dorp vult zich met feestdagenenergie — muziek, bezoekers en een bruisende strandsfeer.',
+        'Noordoostelijke deining maakt december een favoriet onder surfers, en het beroemde Salsa Brava-rif is op zijn best. De nachten zijn de koelste van het jaar, een welkome verandering als je last hebt van de vochtigheid.',
+      ],
+      rainHeading: 'Hoeveel regent het?',
+      rainParagraph:
+        'December kent gemiddeld zo\'n 350 mm, al wordt het tegen de jaarwisseling vaak droger. Verwacht een mix van buien en heldere momenten, en een zee die deze maand meer om surfen draait dan om snorkelen in kalm water.',
+      rainyDayIntro: 'Regen of zon, december houdt je bezig:',
+      rainyDayItems: [
+        'Bekijk of probeer het surfen op de noordoostelijke deining van het seizoen',
+        'Doe een chocoladetour of een kookcursus tussen de buien door',
+        'Geniet van het feestelijke nachtleven, de muziek en het Caribische eten in het dorp',
+      ],
+      crowdsHeading: 'Drukte, prijzen en evenementen',
+      crowdsParagraph:
+        'Het feestseizoen is hoogseizoen. Verwacht de grootste drukte en de hoogste prijzen van het jaar, vooral van Kerstmis tot Nieuwjaar — boek je verblijf ruim van tevoren als je voor de feestdagen komt.',
+      stayRecommendationTitle: 'Waar te verblijven in Puerto Viejo in december',
+      verdictHeading: 'Is december een goede tijd om te bezoeken?',
+      verdictParagraph:
+        'Als je sfeer, surf en feestdagenenergie zoekt, is december een geweldige tijd — boek gewoon vroeg en neem wat regen op de koop toe. Voor kalm, droog snorkelweer passen de veranillo-maanden beter.',
+      hubLinkText: 'Bekijk de volledige maand-voor-maand weergids →',
+      takeawaysHeading: 'Belangrijkste punten',
+      takeawaysParagraph:
+        'December is feestelijk, levendig en surfvriendelijk, nog nat maar vaak afnemend laat in de maand, met de koelste nachten en de grootste drukte. Boek vroeg, pak in voor buien en kom voor de energie in plaats van voor strandagen in kalm water.',
+    },
+  },
+};
+
+export function monthlyWeatherContent(month: MonthKey, locale: Locale): MonthlyWeatherContent {
+  const byLocale = monthlyWeather[month]!;
+  return byLocale[locale] ?? byLocale.en!;
+}
+
+export const weatherJanuaryContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('january', locale);
+export const weatherFebruaryContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('february', locale);
+export const weatherMarchContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('march', locale);
+export const weatherAprilContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('april', locale);
+export const weatherMayContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('may', locale);
+export const weatherJuneContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('june', locale);
+export const weatherJulyContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('july', locale);
+export const weatherAugustContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('august', locale);
+export const weatherSeptemberContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('september', locale);
+export const weatherOctoberContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('october', locale);
+export const weatherNovemberContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('november', locale);
+export const weatherDecemberContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('december', locale);
+
+/* ------------------------------------------------------------------ *
+ * San José → Puerto Viejo — transport decision guide
+ *
+ * SEO gap: "buses puerto viejo san jose", "mepe san jose" and the English
+ * route long-tail get impressions with ~0 clicks. Distinct spin from the
+ * existing articles: bushours owns raw timetables, travellingtopuertoviejo
+ * owns the travel-diary narrative — this one owns the decision (bus vs
+ * shuttle vs private transfer vs flight) and links out to the other two.
+ * ------------------------------------------------------------------ */
+
+export interface TransportOptionRow {
+  option: string;
+  cost: string;
+  time: string;
+  comfort: string;
+  bestFor: string;
+}
+
+export interface SanJoseOptionsContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: [string, string];
+  tableHeading: string;
+  tableIntro: string;
+  colOption: string;
+  colCost: string;
+  colTime: string;
+  colComfort: string;
+  colBestFor: string;
+  rows: TransportOptionRow[];
+  busHeading: string;
+  busParagraphs: string[];
+  busLinkText: string;
+  shuttleHeading: string;
+  shuttleParagraphs: string[];
+  transferHeading: string;
+  transferParagraphs: string[];
+  flightHeading: string;
+  flightParagraphs: string[];
+  flightLinkText: string;
+  stayRecommendationTitle: string;
+  returnHeading: string;
+  returnParagraph: string;
+  chooseHeading: string;
+  chooseIntro: string;
+  chooseListItems: string[];
+  takeawaysHeading: string;
+  takeawaysParagraph: string;
+}
+
+const sanJoseOptions: Partial<Record<Locale, SanJoseOptionsContent>> = {
+  en: {
+    seoTitle: 'San José to Puerto Viejo — Bus, Shuttle, Private Transfer & Flight Compared',
+    seoDescription:
+      'Bus, shared shuttle, private transfer or flight? Compare cost, time and comfort for every way to travel from San José to Puerto Viejo de Talamanca — and back.',
+    heading: 'San José to Puerto Viejo: Every Way to Get There Compared',
+    heroAlt: 'Road along the Caribbean coast toward Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca sits about 210 km southeast of San José, on Costa Rica’s Caribbean coast. There are four realistic ways to make the trip, and the right one depends on your budget, your luggage and how much time you want to spend on the road.',
+      'This guide compares them side by side — the public bus, a shared shuttle, a private transfer and the domestic flight — so you can pick the one that fits your trip. For exact bus times, we link to our full schedule; here we focus on helping you choose.',
+    ],
+    tableHeading: 'The Four Options at a Glance',
+    tableIntro: 'Prices and times are approximate and change with season and traffic. Use them to compare, not as exact quotes.',
+    colOption: 'Option',
+    colCost: 'Cost (per person)',
+    colTime: 'Door-to-door time',
+    colComfort: 'Comfort',
+    colBestFor: 'Best for',
+    rows: [
+      { option: 'Public bus (MEPE)', cost: '~$11–13', time: '~5–6 hrs', comfort: 'Basic', bestFor: 'Budget travellers' },
+      { option: 'Shared shuttle', cost: '~$50–70', time: '~5 hrs', comfort: 'Comfortable', bestFor: 'Solo & couples, door-to-door' },
+      { option: 'Private transfer', cost: '~$180–250 / vehicle', time: '~4.5 hrs', comfort: 'High', bestFor: 'Groups, families, luggage' },
+      { option: 'Flight + transfer', cost: '~$90–150', time: '~2.5–3 hrs', comfort: 'High', bestFor: 'Saving time' },
+    ],
+    busHeading: 'Option 1 — The Public Bus (Cheapest)',
+    busParagraphs: [
+      'The MEPE bus is by far the cheapest way to reach Puerto Viejo, and it is reliable and used by locals and travellers alike. Direct buses leave San José from the Caribbean bus terminal (Gran Terminal del Caribe) several times a day and take around five to six hours, including stops.',
+      'It is basic — no reserved seats, and you pay in cash (colones) — but it is a genuine, affordable way to travel. Arrive early in high season, as seats fill up, and keep valuables with you.',
+    ],
+    busLinkText: 'See the full MEPE bus schedule and stops →',
+    shuttleHeading: 'Option 2 — Shared Shuttle',
+    shuttleParagraphs: [
+      'A shared shuttle is a tourist minivan that picks you up at your San José hotel and drops you at your accommodation in Puerto Viejo. It costs more than the bus but takes the hassle out of terminals and connections, and the vehicles are air-conditioned and comfortable.',
+      'It is a popular middle option for solo travellers and couples who want convenience without the price of a private transfer.',
+    ],
+    transferHeading: 'Option 3 — Private Transfer',
+    transferParagraphs: [
+      'A private transfer is your own vehicle and driver, door to door, on your schedule. For a family or a group it is often the best value per person, and it is the most comfortable option for anyone with a lot of luggage or who wants to stop along the way.',
+      'We can arrange a private transfer for your stay with us — just ask, and we will sort out the route, timing and price so your arrival is stress-free.',
+    ],
+    flightHeading: 'Option 4 — Domestic Flight (Fastest)',
+    flightParagraphs: [
+      'If time matters more than money, you can fly. Domestic airlines link San José (SJO) with Limón in about 40 minutes, and from Limón it is a short transfer (around an hour) to Puerto Viejo.',
+      'It is the quickest way to cross the country and comes with a beautiful aerial view of the rainforest — you just add a transfer at the Limón end.',
+    ],
+    flightLinkText: 'Read our guide to reaching Puerto Viejo by plane →',
+    stayRecommendationTitle: 'Where to stay when you arrive in Puerto Viejo',
+    returnHeading: 'The Return Trip: Puerto Viejo → San José',
+    returnParagraph:
+      'Every option works in reverse. Direct MEPE buses run from Puerto Viejo back to San José through the day, with the first departures early in the morning — worth planning around if you have an onward flight from SJO. Shuttles, private transfers and flights all run the other way too; for a departure day, a private transfer or an early direct bus gives you the most reliable timing.',
+    chooseHeading: 'Which Should You Choose?',
+    chooseIntro: 'A quick way to decide:',
+    chooseListItems: [
+      'On a tight budget, or want the local experience → the MEPE bus',
+      'Solo or a couple wanting easy door-to-door → a shared shuttle',
+      'A family or group, lots of luggage, or want to stop along the way → a private transfer',
+      'Short on time and happy to pay for it → fly to Limón and transfer',
+    ],
+    takeawaysHeading: 'Key Takeaways',
+    takeawaysParagraph:
+      'Getting from San José to Puerto Viejo takes roughly five hours by road or under three by air. The bus is cheapest, a shuttle is the easy middle ground, a private transfer is best for groups and luggage, and flying saves the most time. Pick by budget and party size — and let us help arrange your transfer when you book.',
+  },
+  es: {
+    seoTitle: 'De San José a Puerto Viejo — Bus, Shuttle, Transfer Privado y Avión',
+    seoDescription:
+      '¿Bus, shuttle compartido, transfer privado o avión? Compara precio, tiempo y comodidad de cada forma de viajar de San José a Puerto Viejo de Talamanca — y de regreso.',
+    heading: 'De San José a Puerto Viejo: Todas las Formas de Llegar Comparadas',
+    heroAlt: 'Carretera por la costa caribeña hacia Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca está a unos 210 km al sureste de San José, en el Caribe de Costa Rica. Hay cuatro formas realistas de hacer el viaje, y la mejor depende de tu presupuesto, tu equipaje y cuánto tiempo quieras pasar en la carretera.',
+      'Esta guía las compara lado a lado — el bus público, un shuttle compartido, un transfer privado y el vuelo doméstico — para que elijas la que mejor se adapte a tu viaje. Para los horarios exactos del bus, enlazamos nuestro horario completo; aquí nos centramos en ayudarte a decidir.',
+    ],
+    tableHeading: 'Las Cuatro Opciones de un Vistazo',
+    tableIntro: 'Los precios y tiempos son aproximados y cambian según la temporada y el tráfico. Úsalos para comparar, no como cotizaciones exactas.',
+    colOption: 'Opción',
+    colCost: 'Precio (por persona)',
+    colTime: 'Tiempo puerta a puerta',
+    colComfort: 'Comodidad',
+    colBestFor: 'Ideal para',
+    rows: [
+      { option: 'Bus público (MEPE)', cost: '~$11–13', time: '~5–6 h', comfort: 'Básica', bestFor: 'Viajeros con presupuesto ajustado' },
+      { option: 'Shuttle compartido', cost: '~$50–70', time: '~5 h', comfort: 'Cómoda', bestFor: 'Solos y parejas, puerta a puerta' },
+      { option: 'Transfer privado', cost: '~$180–250 / vehículo', time: '~4.5 h', comfort: 'Alta', bestFor: 'Grupos, familias, equipaje' },
+      { option: 'Vuelo + transfer', cost: '~$90–150', time: '~2.5–3 h', comfort: 'Alta', bestFor: 'Ahorrar tiempo' },
+    ],
+    busHeading: 'Opción 1 — El Bus Público (Lo Más Barato)',
+    busParagraphs: [
+      'El bus de MEPE es, con diferencia, la forma más barata de llegar a Puerto Viejo, y es confiable y lo usan tanto locales como viajeros. Los buses directos salen de San José desde la terminal del Caribe (Gran Terminal del Caribe) varias veces al día y tardan unas cinco a seis horas, incluyendo paradas.',
+      'Es básico — sin asientos reservados, y se paga en efectivo (colones) — pero es una forma auténtica y económica de viajar. Llega temprano en temporada alta, porque los asientos se llenan, y mantén tus objetos de valor contigo.',
+    ],
+    busLinkText: 'Ver el horario completo y las paradas del bus MEPE →',
+    shuttleHeading: 'Opción 2 — Shuttle Compartido',
+    shuttleParagraphs: [
+      'Un shuttle compartido es una van turística que te recoge en tu hotel de San José y te deja en tu alojamiento en Puerto Viejo. Cuesta más que el bus, pero evita las terminales y las conexiones, y los vehículos tienen aire acondicionado y son cómodos.',
+      'Es una opción intermedia popular para viajeros solos y parejas que quieren comodidad sin el precio de un transfer privado.',
+    ],
+    transferHeading: 'Opción 3 — Transfer Privado',
+    transferParagraphs: [
+      'Un transfer privado es tu propio vehículo y chofer, puerta a puerta y a tu horario. Para una familia o un grupo suele ser la mejor relación calidad-precio por persona, y es la opción más cómoda para quien lleva mucho equipaje o quiere parar por el camino.',
+      'Podemos organizar un transfer privado para tu estadía con nosotros — solo pídelo y nos encargamos de la ruta, el horario y el precio para que tu llegada sea sin estrés.',
+    ],
+    flightHeading: 'Opción 4 — Vuelo Doméstico (Lo Más Rápido)',
+    flightParagraphs: [
+      'Si el tiempo importa más que el dinero, puedes volar. Las aerolíneas domésticas conectan San José (SJO) con Limón en unos 40 minutos, y desde Limón es un transfer corto (alrededor de una hora) hasta Puerto Viejo.',
+      'Es la forma más rápida de cruzar el país y viene con una hermosa vista aérea de la selva — solo añades un transfer en Limón.',
+    ],
+    flightLinkText: 'Lee nuestra guía para llegar a Puerto Viejo en avión →',
+    stayRecommendationTitle: 'Dónde hospedarte al llegar a Puerto Viejo',
+    returnHeading: 'El Regreso: Puerto Viejo → San José',
+    returnParagraph:
+      'Todas las opciones funcionan a la inversa. Los buses directos de MEPE salen de Puerto Viejo hacia San José durante el día, con las primeras salidas temprano en la mañana — conviene planificar en torno a ellas si tienes un vuelo de salida desde SJO. Los shuttles, transfers privados y vuelos también funcionan en sentido contrario; para el día de salida, un transfer privado o un bus directo temprano te dan el horario más confiable.',
+    chooseHeading: '¿Cuál Deberías Elegir?',
+    chooseIntro: 'Una forma rápida de decidir:',
+    chooseListItems: [
+      'Con presupuesto ajustado, o si quieres la experiencia local → el bus de MEPE',
+      'Solo o en pareja buscando comodidad puerta a puerta → un shuttle compartido',
+      'Una familia o grupo, mucho equipaje, o ganas de parar por el camino → un transfer privado',
+      'Con poco tiempo y dispuesto a pagarlo → vuela a Limón y toma un transfer',
+    ],
+    takeawaysHeading: 'Puntos Clave',
+    takeawaysParagraph:
+      'Ir de San José a Puerto Viejo toma unas cinco horas por carretera o menos de tres por aire. El bus es lo más barato, el shuttle es el punto medio cómodo, el transfer privado es lo mejor para grupos y equipaje, y volar ahorra más tiempo. Elige según tu presupuesto y el tamaño del grupo — y déjanos ayudarte a organizar tu transfer cuando reserves.',
+  },
+  de: {
+    seoTitle: 'Von San José nach Puerto Viejo — Bus, Shuttle, Privattransfer und Flug im Vergleich',
+    seoDescription:
+      'Bus, Sammelshuttle, Privattransfer oder Flug? Vergleiche Preis, Zeit und Komfort für jede Art, von San José nach Puerto Viejo de Talamanca zu reisen — und zurück.',
+    heading: 'Von San José nach Puerto Viejo: Alle Wege im Vergleich',
+    heroAlt: 'Straße entlang der Karibikküste Richtung Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca liegt etwa 210 km südöstlich von San José, an der Karibikküste Costa Ricas. Es gibt vier realistische Möglichkeiten für die Reise, und welche die richtige ist, hängt von deinem Budget, deinem Gepäck und davon ab, wie viel Zeit du auf der Straße verbringen möchtest.',
+      'Dieser Leitfaden stellt sie nebeneinander — den öffentlichen Bus, ein Sammelshuttle, einen Privattransfer und den Inlandsflug —, damit du die passende Option für deine Reise findest. Für die genauen Buszeiten verlinken wir unseren kompletten Fahrplan; hier helfen wir dir vor allem bei der Wahl.',
+    ],
+    tableHeading: 'Die vier Optionen auf einen Blick',
+    tableIntro: 'Preise und Zeiten sind ungefähr und ändern sich je nach Saison und Verkehr. Nutze sie zum Vergleichen, nicht als genaue Angebote.',
+    colOption: 'Option',
+    colCost: 'Preis (pro Person)',
+    colTime: 'Tür-zu-Tür-Zeit',
+    colComfort: 'Komfort',
+    colBestFor: 'Ideal für',
+    rows: [
+      { option: 'Öffentlicher Bus (MEPE)', cost: '~$11–13', time: '~5–6 Std.', comfort: 'Einfach', bestFor: 'Budgetreisende' },
+      { option: 'Sammelshuttle', cost: '~$50–70', time: '~5 Std.', comfort: 'Komfortabel', bestFor: 'Alleinreisende & Paare, Tür zu Tür' },
+      { option: 'Privattransfer', cost: '~$180–250 / Fahrzeug', time: '~4.5 Std.', comfort: 'Hoch', bestFor: 'Gruppen, Familien, Gepäck' },
+      { option: 'Flug + Transfer', cost: '~$90–150', time: '~2.5–3 Std.', comfort: 'Hoch', bestFor: 'Zeit sparen' },
+    ],
+    busHeading: 'Option 1 — Der öffentliche Bus (am günstigsten)',
+    busParagraphs: [
+      'Der MEPE-Bus ist mit Abstand die günstigste Art, nach Puerto Viejo zu kommen, und er ist zuverlässig und wird von Einheimischen wie Reisenden genutzt. Direktbusse fahren mehrmals täglich von San José vom Karibik-Busbahnhof (Gran Terminal del Caribe) ab und brauchen etwa fünf bis sechs Stunden, Zwischenstopps eingerechnet.',
+      'Er ist einfach — keine reservierten Sitzplätze, und du zahlst bar (in Colones) —, aber es ist eine echte, günstige Art zu reisen. Komm in der Hochsaison früh, da die Plätze schnell voll sind, und behalte Wertsachen bei dir.',
+    ],
+    busLinkText: 'Den kompletten MEPE-Busfahrplan und die Haltestellen ansehen →',
+    shuttleHeading: 'Option 2 — Sammelshuttle',
+    shuttleParagraphs: [
+      'Ein Sammelshuttle ist ein Touristen-Minivan, der dich an deinem Hotel in San José abholt und an deiner Unterkunft in Puerto Viejo absetzt. Es kostet mehr als der Bus, erspart dir aber Terminals und Umstiege, und die Fahrzeuge sind klimatisiert und bequem.',
+      'Es ist eine beliebte Mittellösung für Alleinreisende und Paare, die Komfort ohne den Preis eines Privattransfers möchten.',
+    ],
+    transferHeading: 'Option 3 — Privattransfer',
+    transferParagraphs: [
+      'Ein Privattransfer ist dein eigenes Fahrzeug mit Fahrer, von Tür zu Tür und nach deinem Zeitplan. Für eine Familie oder Gruppe ist es pro Person oft das beste Preis-Leistungs-Verhältnis und die bequemste Option für alle mit viel Gepäck oder mit Lust auf Zwischenstopps unterwegs.',
+      'Wir organisieren gern einen Privattransfer für deinen Aufenthalt bei uns — frag einfach, und wir kümmern uns um Route, Zeit und Preis, damit deine Ankunft stressfrei verläuft.',
+    ],
+    flightHeading: 'Option 4 — Inlandsflug (am schnellsten)',
+    flightParagraphs: [
+      'Wenn Zeit wichtiger ist als Geld, kannst du fliegen. Inlandsfluggesellschaften verbinden San José (SJO) in etwa 40 Minuten mit Limón, und von Limón ist es ein kurzer Transfer (rund eine Stunde) nach Puerto Viejo.',
+      'Es ist die schnellste Art, das Land zu durchqueren, und bietet einen wunderschönen Blick aus der Luft auf den Regenwald — du fügst nur einen Transfer ab Limón hinzu.',
+    ],
+    flightLinkText: 'Lies unseren Leitfaden, wie du Puerto Viejo mit dem Flugzeug erreichst →',
+    stayRecommendationTitle: 'Wo du bei deiner Ankunft in Puerto Viejo übernachtest',
+    returnHeading: 'Die Rückreise: Puerto Viejo → San José',
+    returnParagraph:
+      'Jede Option funktioniert auch umgekehrt. Direkte MEPE-Busse fahren über den Tag verteilt von Puerto Viejo zurück nach San José, mit den ersten Abfahrten früh am Morgen — das lohnt sich einzuplanen, wenn du einen Anschlussflug ab SJO hast. Auch Shuttles, Privattransfers und Flüge fahren in die andere Richtung; für den Abreisetag geben dir ein Privattransfer oder ein früher Direktbus die zuverlässigste Zeitplanung.',
+    chooseHeading: 'Wofür solltest du dich entscheiden?',
+    chooseIntro: 'Schnell entschieden:',
+    chooseListItems: [
+      'Knappes Budget oder Lust auf das lokale Erlebnis → der MEPE-Bus',
+      'Allein oder als Paar mit dem Wunsch nach unkompliziertem Tür-zu-Tür → ein Sammelshuttle',
+      'Eine Familie oder Gruppe, viel Gepäck oder Lust auf Zwischenstopps unterwegs → ein Privattransfer',
+      'Wenig Zeit und bereit, dafür zu zahlen → flieg nach Limón und nimm einen Transfer',
+    ],
+    takeawaysHeading: 'Das Wichtigste in Kürze',
+    takeawaysParagraph:
+      'Von San José nach Puerto Viejo dauert es rund fünf Stunden über die Straße oder unter drei aus der Luft. Der Bus ist am günstigsten, ein Shuttle ist der bequeme Mittelweg, ein Privattransfer ist am besten für Gruppen und Gepäck, und der Flug spart die meiste Zeit. Wähle nach Budget und Gruppengröße — und lass uns deinen Transfer organisieren, wenn du buchst.',
+  },
+  fr: {
+    seoTitle: 'De San José à Puerto Viejo — Bus, navette, transfert privé et vol comparés',
+    seoDescription:
+      'Bus, navette partagée, transfert privé ou vol ? Comparez prix, temps et confort de chaque façon de voyager de San José à Puerto Viejo de Talamanca — et retour.',
+    heading: 'De San José à Puerto Viejo : toutes les façons d’y aller comparées',
+    heroAlt: 'Route le long de la côte caraïbe vers Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca se trouve à environ 210 km au sud-est de San José, sur la côte caraïbe du Costa Rica. Il existe quatre façons réalistes de faire le trajet, et la bonne dépend de votre budget, de vos bagages et du temps que vous voulez passer sur la route.',
+      'Ce guide les compare côte à côte — le bus public, une navette partagée, un transfert privé et le vol intérieur — pour que vous choisissiez celle qui convient à votre voyage. Pour les horaires exacts du bus, nous renvoyons à notre horaire complet ; ici, nous vous aidons surtout à choisir.',
+    ],
+    tableHeading: 'Les quatre options en un coup d’œil',
+    tableIntro: 'Les prix et les temps sont approximatifs et varient selon la saison et le trafic. Utilisez-les pour comparer, pas comme des devis exacts.',
+    colOption: 'Option',
+    colCost: 'Prix (par personne)',
+    colTime: 'Temps porte à porte',
+    colComfort: 'Confort',
+    colBestFor: 'Idéal pour',
+    rows: [
+      { option: 'Bus public (MEPE)', cost: '~$11–13', time: '~5–6 h', comfort: 'Basique', bestFor: 'Voyageurs à petit budget' },
+      { option: 'Navette partagée', cost: '~$50–70', time: '~5 h', comfort: 'Confortable', bestFor: 'Solos & couples, porte à porte' },
+      { option: 'Transfert privé', cost: '~$180–250 / véhicule', time: '~4.5 h', comfort: 'Élevé', bestFor: 'Groupes, familles, bagages' },
+      { option: 'Vol + transfert', cost: '~$90–150', time: '~2.5–3 h', comfort: 'Élevé', bestFor: 'Gagner du temps' },
+    ],
+    busHeading: 'Option 1 — Le bus public (le moins cher)',
+    busParagraphs: [
+      'Le bus MEPE est de loin le moyen le moins cher de rejoindre Puerto Viejo, et il est fiable, utilisé aussi bien par les habitants que par les voyageurs. Les bus directs partent de San José depuis la gare routière des Caraïbes (Gran Terminal del Caribe) plusieurs fois par jour et mettent environ cinq à six heures, arrêts compris.',
+      'Il est basique — pas de sièges réservés, et vous payez en espèces (colones) — mais c’est une façon authentique et abordable de voyager. Arrivez tôt en haute saison, car les places se remplissent, et gardez vos objets de valeur sur vous.',
+    ],
+    busLinkText: 'Voir l’horaire complet et les arrêts du bus MEPE →',
+    shuttleHeading: 'Option 2 — Navette partagée',
+    shuttleParagraphs: [
+      'Une navette partagée est un minibus touristique qui vous prend à votre hôtel de San José et vous dépose à votre hébergement à Puerto Viejo. Elle coûte plus cher que le bus, mais évite les gares et les correspondances, et les véhicules sont climatisés et confortables.',
+      'C’est une option intermédiaire prisée des voyageurs solos et des couples qui veulent du confort sans le prix d’un transfert privé.',
+    ],
+    transferHeading: 'Option 3 — Transfert privé',
+    transferParagraphs: [
+      'Un transfert privé, c’est votre propre véhicule avec chauffeur, de porte à porte et à votre rythme. Pour une famille ou un groupe, c’est souvent le meilleur rapport qualité-prix par personne, et l’option la plus confortable pour qui a beaucoup de bagages ou veut s’arrêter en chemin.',
+      'Nous pouvons organiser un transfert privé pour votre séjour chez nous — demandez-nous, et nous nous occupons de l’itinéraire, des horaires et du prix pour que votre arrivée soit sans stress.',
+    ],
+    flightHeading: 'Option 4 — Vol intérieur (le plus rapide)',
+    flightParagraphs: [
+      'Si le temps compte plus que l’argent, vous pouvez prendre l’avion. Les compagnies intérieures relient San José (SJO) à Limón en environ 40 minutes, et depuis Limón, un court transfert (environ une heure) vous mène à Puerto Viejo.',
+      'C’est le moyen le plus rapide de traverser le pays, avec une magnifique vue aérienne sur la forêt tropicale — il suffit d’ajouter un transfert côté Limón.',
+    ],
+    flightLinkText: 'Lisez notre guide pour rejoindre Puerto Viejo en avion →',
+    stayRecommendationTitle: 'Où loger à votre arrivée à Puerto Viejo',
+    returnHeading: 'Le trajet retour : Puerto Viejo → San José',
+    returnParagraph:
+      'Chaque option fonctionne dans l’autre sens. Les bus directs MEPE relient Puerto Viejo à San José tout au long de la journée, avec les premiers départs tôt le matin — à planifier si vous avez un vol au départ de SJO. Navettes, transferts privés et vols circulent aussi dans l’autre sens ; pour un jour de départ, un transfert privé ou un bus direct matinal vous offre les horaires les plus fiables.',
+    chooseHeading: 'Lequel choisir ?',
+    chooseIntro: 'Une façon rapide de décider :',
+    chooseListItems: [
+      'Budget serré, ou envie de l’expérience locale → le bus MEPE',
+      'Solo ou en couple, envie d’un porte-à-porte facile → une navette partagée',
+      'Une famille ou un groupe, beaucoup de bagages, ou envie de s’arrêter en chemin → un transfert privé',
+      'Peu de temps et prêt à payer pour ça → volez vers Limón et prenez un transfert',
+    ],
+    takeawaysHeading: 'À retenir',
+    takeawaysParagraph:
+      'Aller de San José à Puerto Viejo prend environ cinq heures par la route ou moins de trois par les airs. Le bus est le moins cher, la navette est le compromis facile, le transfert privé est idéal pour les groupes et les bagages, et l’avion fait gagner le plus de temps. Choisissez selon votre budget et la taille de votre groupe — et laissez-nous organiser votre transfert au moment de réserver.',
+  },
+  it: {
+    seoTitle: 'Da San José a Puerto Viejo — Bus, navetta, transfer privato e volo a confronto',
+    seoDescription:
+      'Bus, navetta condivisa, transfer privato o volo? Confronta prezzo, tempo e comfort di ogni modo di viaggiare da San José a Puerto Viejo de Talamanca — e ritorno.',
+    heading: 'Da San José a Puerto Viejo: tutti i modi per arrivarci a confronto',
+    heroAlt: 'Strada lungo la costa caraibica verso Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca si trova a circa 210 km a sud-est di San José, sulla costa caraibica della Costa Rica. Ci sono quattro modi realistici per fare il viaggio, e quello giusto dipende dal tuo budget, dal tuo bagaglio e da quanto tempo vuoi passare in strada.',
+      'Questa guida li mette a confronto uno accanto all’altro — il bus pubblico, una navetta condivisa, un transfer privato e il volo interno — così scegli quello più adatto al tuo viaggio. Per gli orari esatti del bus rimandiamo al nostro orario completo; qui ci concentriamo sull’aiutarti a scegliere.',
+    ],
+    tableHeading: 'Le quattro opzioni a colpo d’occhio',
+    tableIntro: 'Prezzi e tempi sono approssimativi e cambiano in base alla stagione e al traffico. Usali per confrontare, non come preventivi esatti.',
+    colOption: 'Opzione',
+    colCost: 'Prezzo (a persona)',
+    colTime: 'Tempo porta a porta',
+    colComfort: 'Comfort',
+    colBestFor: 'Ideale per',
+    rows: [
+      { option: 'Bus pubblico (MEPE)', cost: '~$11–13', time: '~5–6 h', comfort: 'Essenziale', bestFor: 'Viaggiatori con budget ridotto' },
+      { option: 'Navetta condivisa', cost: '~$50–70', time: '~5 h', comfort: 'Comodo', bestFor: 'Singoli e coppie, porta a porta' },
+      { option: 'Transfer privato', cost: '~$180–250 / veicolo', time: '~4.5 h', comfort: 'Alto', bestFor: 'Gruppi, famiglie, bagagli' },
+      { option: 'Volo + transfer', cost: '~$90–150', time: '~2.5–3 h', comfort: 'Alto', bestFor: 'Risparmiare tempo' },
+    ],
+    busHeading: 'Opzione 1 — Il bus pubblico (il più economico)',
+    busParagraphs: [
+      'Il bus MEPE è di gran lunga il modo più economico per raggiungere Puerto Viejo, ed è affidabile, usato sia dagli abitanti del posto sia dai viaggiatori. I bus diretti partono da San José dalla stazione dei bus dei Caraibi (Gran Terminal del Caribe) più volte al giorno e impiegano circa cinque o sei ore, soste comprese.',
+      'È essenziale — niente posti riservati, e si paga in contanti (colones) — ma è un modo autentico ed economico di viaggiare. Arriva presto in alta stagione, perché i posti si riempiono, e tieni con te gli oggetti di valore.',
+    ],
+    busLinkText: 'Vedi l’orario completo e le fermate del bus MEPE →',
+    shuttleHeading: 'Opzione 2 — Navetta condivisa',
+    shuttleParagraphs: [
+      'Una navetta condivisa è un minivan turistico che ti prende al tuo hotel di San José e ti lascia al tuo alloggio a Puerto Viejo. Costa più del bus, ma ti evita stazioni e coincidenze, e i veicoli sono climatizzati e comodi.',
+      'È un’opzione intermedia molto amata da chi viaggia da solo e dalle coppie che vogliono comodità senza il prezzo di un transfer privato.',
+    ],
+    transferHeading: 'Opzione 3 — Transfer privato',
+    transferParagraphs: [
+      'Un transfer privato è il tuo veicolo con autista, porta a porta e secondo i tuoi orari. Per una famiglia o un gruppo è spesso il miglior rapporto qualità-prezzo a persona, ed è l’opzione più comoda per chi ha molti bagagli o vuole fermarsi lungo il percorso.',
+      'Possiamo organizzare un transfer privato per il tuo soggiorno con noi — basta chiederlo e pensiamo noi a percorso, orari e prezzo, così il tuo arrivo è senza stress.',
+    ],
+    flightHeading: 'Opzione 4 — Volo interno (il più veloce)',
+    flightParagraphs: [
+      'Se il tempo conta più del denaro, puoi volare. Le compagnie interne collegano San José (SJO) con Limón in circa 40 minuti, e da Limón è un breve transfer (circa un’ora) fino a Puerto Viejo.',
+      'È il modo più rapido per attraversare il paese e regala una splendida vista aerea sulla foresta pluviale — basta aggiungere un transfer dal lato di Limón.',
+    ],
+    flightLinkText: 'Leggi la nostra guida per raggiungere Puerto Viejo in aereo →',
+    stayRecommendationTitle: 'Dove alloggiare al tuo arrivo a Puerto Viejo',
+    returnHeading: 'Il viaggio di ritorno: Puerto Viejo → San José',
+    returnParagraph:
+      'Ogni opzione funziona anche al contrario. I bus diretti MEPE collegano Puerto Viejo a San José durante tutta la giornata, con le prime partenze la mattina presto — da tenere in conto se hai un volo in partenza da SJO. Anche navette, transfer privati e voli viaggiano nell’altra direzione; per il giorno della partenza, un transfer privato o un bus diretto mattutino ti danno gli orari più affidabili.',
+    chooseHeading: 'Quale scegliere?',
+    chooseIntro: 'Un modo rapido per decidere:',
+    chooseListItems: [
+      'Budget ridotto, o voglia dell’esperienza locale → il bus MEPE',
+      'Da solo o in coppia con voglia di un comodo porta a porta → una navetta condivisa',
+      'Una famiglia o un gruppo, molti bagagli, o voglia di fermarsi lungo il percorso → un transfer privato',
+      'Poco tempo e disposto a pagarlo → vola a Limón e prendi un transfer',
+    ],
+    takeawaysHeading: 'Punti chiave',
+    takeawaysParagraph:
+      'Andare da San José a Puerto Viejo richiede circa cinque ore su strada o meno di tre in aereo. Il bus è il più economico, la navetta è la comoda via di mezzo, il transfer privato è il migliore per gruppi e bagagli, e volare fa risparmiare più tempo. Scegli in base al budget e al numero di persone — e lascia che ti aiutiamo a organizzare il transfer quando prenoti.',
+  },
+  pt: {
+    seoTitle: 'De San José a Puerto Viejo — Ônibus, Shuttle, Transfer Privado e Voo Comparados',
+    seoDescription:
+      'Ônibus, shuttle compartilhado, transfer privado ou voo? Compare preço, tempo e conforto de cada forma de viajar de San José a Puerto Viejo de Talamanca — e de volta.',
+    heading: 'De San José a Puerto Viejo: Todas as Formas de Chegar Comparadas',
+    heroAlt: 'Estrada pela costa caribenha rumo a Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca fica a cerca de 210 km a sudeste de San José, na costa caribenha da Costa Rica. Há quatro formas realistas de fazer a viagem, e a certa depende do seu orçamento, da sua bagagem e de quanto tempo você quer passar na estrada.',
+      'Este guia as compara lado a lado — o ônibus público, um shuttle compartilhado, um transfer privado e o voo doméstico — para você escolher a que melhor combina com a sua viagem. Para os horários exatos do ônibus, indicamos o nosso horário completo; aqui, focamos em ajudar você a decidir.',
+    ],
+    tableHeading: 'As Quatro Opções num Relance',
+    tableIntro: 'Preços e tempos são aproximados e mudam conforme a temporada e o trânsito. Use-os para comparar, não como cotações exatas.',
+    colOption: 'Opção',
+    colCost: 'Preço (por pessoa)',
+    colTime: 'Tempo porta a porta',
+    colComfort: 'Conforto',
+    colBestFor: 'Ideal para',
+    rows: [
+      { option: 'Ônibus público (MEPE)', cost: '~$11–13', time: '~5–6 h', comfort: 'Básico', bestFor: 'Viajantes com orçamento apertado' },
+      { option: 'Shuttle compartilhado', cost: '~$50–70', time: '~5 h', comfort: 'Confortável', bestFor: 'Sozinhos e casais, porta a porta' },
+      { option: 'Transfer privado', cost: '~$180–250 / veículo', time: '~4.5 h', comfort: 'Alto', bestFor: 'Grupos, famílias, bagagem' },
+      { option: 'Voo + transfer', cost: '~$90–150', time: '~2.5–3 h', comfort: 'Alto', bestFor: 'Economizar tempo' },
+    ],
+    busHeading: 'Opção 1 — O Ônibus Público (Mais Barato)',
+    busParagraphs: [
+      'O ônibus da MEPE é, de longe, a forma mais barata de chegar a Puerto Viejo, e é confiável, usado tanto por moradores quanto por viajantes. Os ônibus diretos saem de San José do terminal do Caribe (Gran Terminal del Caribe) várias vezes ao dia e levam cerca de cinco a seis horas, incluindo paradas.',
+      'É básico — sem lugares reservados, e você paga em dinheiro (colones) — mas é uma forma autêntica e econômica de viajar. Chegue cedo na alta temporada, pois os lugares lotam, e mantenha seus objetos de valor com você.',
+    ],
+    busLinkText: 'Ver o horário completo e as paradas do ônibus MEPE →',
+    shuttleHeading: 'Opção 2 — Shuttle Compartilhado',
+    shuttleParagraphs: [
+      'Um shuttle compartilhado é uma van turística que pega você no seu hotel em San José e deixa na sua acomodação em Puerto Viejo. Custa mais que o ônibus, mas evita terminais e conexões, e os veículos têm ar-condicionado e são confortáveis.',
+      'É uma opção intermediária popular entre quem viaja sozinho e casais que querem comodidade sem o preço de um transfer privado.',
+    ],
+    transferHeading: 'Opção 3 — Transfer Privado',
+    transferParagraphs: [
+      'Um transfer privado é o seu próprio veículo com motorista, porta a porta e no seu horário. Para uma família ou grupo costuma ser o melhor custo-benefício por pessoa, e é a opção mais confortável para quem leva muita bagagem ou quer parar pelo caminho.',
+      'Podemos organizar um transfer privado para a sua estadia conosco — é só pedir, e cuidamos da rota, do horário e do preço para que a sua chegada seja sem estresse.',
+    ],
+    flightHeading: 'Opção 4 — Voo Doméstico (Mais Rápido)',
+    flightParagraphs: [
+      'Se o tempo importa mais que o dinheiro, você pode voar. As companhias domésticas ligam San José (SJO) a Limón em cerca de 40 minutos, e de Limón é um transfer curto (por volta de uma hora) até Puerto Viejo.',
+      'É a forma mais rápida de atravessar o país e vem com uma linda vista aérea da floresta tropical — você só adiciona um transfer no lado de Limón.',
+    ],
+    flightLinkText: 'Leia o nosso guia para chegar a Puerto Viejo de avião →',
+    stayRecommendationTitle: 'Onde se hospedar ao chegar em Puerto Viejo',
+    returnHeading: 'A Viagem de Volta: Puerto Viejo → San José',
+    returnParagraph:
+      'Todas as opções funcionam no sentido inverso. Os ônibus diretos da MEPE saem de Puerto Viejo de volta a San José ao longo do dia, com as primeiras saídas de manhã cedo — vale planejar em torno delas se você tiver um voo de saída de SJO. Shuttles, transfers privados e voos também funcionam no sentido contrário; para o dia da partida, um transfer privado ou um ônibus direto cedo garantem os horários mais confiáveis.',
+    chooseHeading: 'Qual Você Deve Escolher?',
+    chooseIntro: 'Uma forma rápida de decidir:',
+    chooseListItems: [
+      'Com orçamento apertado, ou querendo a experiência local → o ônibus da MEPE',
+      'Sozinho ou em casal querendo um porta a porta fácil → um shuttle compartilhado',
+      'Uma família ou grupo, muita bagagem, ou vontade de parar pelo caminho → um transfer privado',
+      'Com pouco tempo e disposto a pagar por isso → voe até Limón e pegue um transfer',
+    ],
+    takeawaysHeading: 'Pontos Principais',
+    takeawaysParagraph:
+      'Ir de San José a Puerto Viejo leva cerca de cinco horas por estrada ou menos de três pelo ar. O ônibus é o mais barato, o shuttle é o meio-termo fácil, o transfer privado é o melhor para grupos e bagagem, e voar economiza mais tempo. Escolha pelo orçamento e pelo tamanho do grupo — e deixe a gente ajudar a organizar o seu transfer quando reservar.',
+  },
+  he: {
+    seoTitle: 'מ-San José ל-Puerto Viejo — אוטובוס, שאטל, הסעה פרטית וטיסה בהשוואה',
+    seoDescription:
+      'אוטובוס, שאטל משותף, הסעה פרטית או טיסה? השוו מחיר, זמן ונוחות לכל דרך לנסוע מ-San José ל-Puerto Viejo de Talamanca — ובחזרה.',
+    heading: 'מ-San José ל-Puerto Viejo: כל הדרכים להגיע בהשוואה',
+    heroAlt: 'כביש לאורך חוף הקריביים לכיוון Puerto Viejo de Talamanca, קוסטה ריקה',
+    photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca שוכנת כ-210 ק"מ דרומית-מזרחית ל-San José, על חוף הקריביים של קוסטה ריקה. יש ארבע דרכים ריאליות לעשות את הדרך, והנכונה תלויה בתקציב שלכם, בכמות המזוודות ובכמה זמן אתם מוכנים לבלות בכביש.',
+      'המדריך הזה משווה ביניהן זו לצד זו — האוטובוס הציבורי, שאטל משותף, הסעה פרטית והטיסה הפנימית — כדי שתבחרו את זו שמתאימה לטיול שלכם. לזמני האוטובוס המדויקים אנחנו מקשרים ללוח הזמנים המלא שלנו; כאן נתמקד בעזרה בבחירה.',
+    ],
+    tableHeading: 'ארבע האפשרויות במבט חטוף',
+    tableIntro: 'המחירים והזמנים משוערים ומשתנים לפי העונה והתנועה. השתמשו בהם להשוואה, לא כהצעת מחיר מדויקת.',
+    colOption: 'אפשרות',
+    colCost: 'מחיר (לאדם)',
+    colTime: 'זמן מדלת לדלת',
+    colComfort: 'נוחות',
+    colBestFor: 'מתאים במיוחד ל',
+    rows: [
+      { option: 'אוטובוס ציבורי (MEPE)', cost: '~$11–13', time: '~5–6 שעות', comfort: 'בסיסית', bestFor: 'מטיילים בתקציב מצומצם' },
+      { option: 'שאטל משותף', cost: '~$50–70', time: '~5 שעות', comfort: 'נוחה', bestFor: 'יחידים וזוגות, מדלת לדלת' },
+      { option: 'הסעה פרטית', cost: '~$180–250 / רכב', time: '~4.5 שעות', comfort: 'גבוהה', bestFor: 'קבוצות, משפחות, מזוודות' },
+      { option: 'טיסה + הסעה', cost: '~$90–150', time: '~2.5–3 שעות', comfort: 'גבוהה', bestFor: 'חיסכון בזמן' },
+    ],
+    busHeading: 'אפשרות 1 — האוטובוס הציבורי (הזול ביותר)',
+    busParagraphs: [
+      'האוטובוס של MEPE הוא ללא ספק הדרך הזולה ביותר להגיע ל-Puerto Viejo, והוא אמין ומשמש גם מקומיים וגם מטיילים. אוטובוסים ישירים יוצאים מ-San José מתחנת האוטובוסים של הקריביים (Gran Terminal del Caribe) כמה פעמים ביום, והנסיעה אורכת כחמש עד שש שעות, כולל עצירות.',
+      'הוא בסיסי — בלי מקומות שמורים, והתשלום במזומן (קולונס) — אבל זו דרך אותנטית וזולה לנסוע. הגיעו מוקדם בעונה הגבוהה, כי המקומות מתמלאים, ושמרו על חפצי הערך קרוב אליכם.',
+    ],
+    busLinkText: 'צפו בלוח הזמנים המלא ובתחנות של אוטובוס MEPE ←',
+    shuttleHeading: 'אפשרות 2 — שאטל משותף',
+    shuttleParagraphs: [
+      'שאטל משותף הוא מיניוואן תיירותי שאוסף אתכם ממלון ב-San José ומוריד אתכם בבית ההארחה שלכם ב-Puerto Viejo. הוא עולה יותר מהאוטובוס, אבל חוסך את הטרחה של תחנות וחיבורים, והרכבים ממוזגים ונוחים.',
+      'זו אפשרות ביניים פופולרית למטיילים יחידים ולזוגות שרוצים נוחות בלי המחיר של הסעה פרטית.',
+    ],
+    transferHeading: 'אפשרות 3 — הסעה פרטית',
+    transferParagraphs: [
+      'הסעה פרטית היא רכב ונהג משלכם, מדלת לדלת ולפי הזמנים שלכם. למשפחה או קבוצה זו לרוב התמורה הטובה ביותר לאדם, וזו האפשרות הנוחה ביותר למי שנוסע עם הרבה מזוודות או רוצה לעצור בדרך.',
+      'נשמח לארגן לכם הסעה פרטית לשהות אצלנו — רק בקשו, ואנחנו נדאג למסלול, לזמנים ולמחיר כדי שההגעה שלכם תהיה נטולת דאגות.',
+    ],
+    flightHeading: 'אפשרות 4 — טיסה פנימית (המהירה ביותר)',
+    flightParagraphs: [
+      'אם הזמן חשוב יותר מהכסף, אפשר לטוס. חברות תעופה פנימיות מקשרות בין San José (SJO) ל-Limón בכ-40 דקות, ומ-Limón זו הסעה קצרה (כשעה) עד Puerto Viejo.',
+      'זו הדרך המהירה ביותר לחצות את המדינה, והיא מגיעה עם נוף אווירי מרהיב של יער הגשם — רק מוסיפים הסעה בצד של Limón.',
+    ],
+    flightLinkText: 'קראו את המדריך שלנו להגעה ל-Puerto Viejo במטוס ←',
+    stayRecommendationTitle: 'איפה להתארח כשמגיעים ל-Puerto Viejo',
+    returnHeading: 'הדרך חזרה: מ-Puerto Viejo ל-San José',
+    returnParagraph:
+      'כל אפשרות עובדת גם בכיוון ההפוך. אוטובוסים ישירים של MEPE יוצאים מ-Puerto Viejo בחזרה ל-San José לאורך היום, כשהיציאות הראשונות מוקדם בבוקר — כדאי לתכנן סביבן אם יש לכם טיסת המשך מ-SJO. גם שאטלים, הסעות פרטיות וטיסות פועלים בכיוון ההפוך; ליום היציאה, הסעה פרטית או אוטובוס ישיר מוקדם ייתנו לכם את הזמנים האמינים ביותר.',
+    chooseHeading: 'מה כדאי לכם לבחור?',
+    chooseIntro: 'דרך מהירה להחליט:',
+    chooseListItems: [
+      'בתקציב מצומצם, או רוצים את החוויה המקומית ← האוטובוס של MEPE',
+      'יחידים או זוג שרוצים דלת-לדלת פשוט ← שאטל משותף',
+      'משפחה או קבוצה, הרבה מזוודות, או רצון לעצור בדרך ← הסעה פרטית',
+      'קצרים בזמן ומוכנים לשלם על זה ← טוסו ל-Limón וקחו הסעה',
+    ],
+    takeawaysHeading: 'עיקרי הדברים',
+    takeawaysParagraph:
+      'המעבר מ-San José ל-Puerto Viejo אורך כחמש שעות בכביש או פחות משלוש באוויר. האוטובוס הוא הזול ביותר, השאטל הוא דרך הביניים הנוחה, ההסעה הפרטית מתאימה ביותר לקבוצות ולמזוודות, והטיסה חוסכת הכי הרבה זמן. בחרו לפי התקציב וגודל הקבוצה — ותנו לנו לעזור לארגן את ההסעה שלכם בזמן ההזמנה.',
+  },
+  hi: {
+    seoTitle: 'San José से Puerto Viejo — बस, शटल, निजी ट्रांसफर और फ्लाइट की तुलना',
+    seoDescription:
+      'बस, साझा शटल, निजी ट्रांसफर या फ्लाइट? San José से Puerto Viejo de Talamanca तक — और वापसी की — हर यात्रा के तरीके की कीमत, समय और आराम की तुलना करें।',
+    heading: 'San José से Puerto Viejo: पहुँचने के हर तरीके की तुलना',
+    heroAlt: 'Puerto Viejo de Talamanca, कोस्टा रिका की ओर कैरिबियन तट के किनारे सड़क',
+    photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca, San José से लगभग 210 किमी दक्षिण-पूर्व में, कोस्टा रिका के कैरिबियन तट पर स्थित है। यह यात्रा करने के चार व्यावहारिक तरीके हैं, और सही तरीका आपके बजट, आपके सामान और सड़क पर आप कितना समय बिताना चाहते हैं, इस पर निर्भर करता है।',
+      'यह गाइड उन्हें आमने-सामने रखकर तुलना करती है — सार्वजनिक बस, एक साझा शटल, एक निजी ट्रांसफर और घरेलू फ्लाइट — ताकि आप अपनी यात्रा के लिए सही विकल्प चुन सकें। बस के सटीक समय के लिए, हम अपना पूरा शेड्यूल लिंक करते हैं; यहाँ हम आपको चुनने में मदद करने पर ध्यान देते हैं।',
+    ],
+    tableHeading: 'एक नज़र में चार विकल्प',
+    tableIntro: 'कीमतें और समय अनुमानित हैं और मौसम व ट्रैफ़िक के साथ बदलते हैं। इन्हें तुलना के लिए इस्तेमाल करें, सटीक कोटेशन के रूप में नहीं।',
+    colOption: 'विकल्प',
+    colCost: 'कीमत (प्रति व्यक्ति)',
+    colTime: 'दरवाज़े से दरवाज़े तक का समय',
+    colComfort: 'आराम',
+    colBestFor: 'सबसे उपयुक्त',
+    rows: [
+      { option: 'सार्वजनिक बस (MEPE)', cost: '~$11–13', time: '~5–6 घंटे', comfort: 'सामान्य', bestFor: 'कम बजट वाले यात्री' },
+      { option: 'साझा शटल', cost: '~$50–70', time: '~5 घंटे', comfort: 'आरामदेह', bestFor: 'अकेले और जोड़े, दरवाज़े से दरवाज़े तक' },
+      { option: 'निजी ट्रांसफर', cost: '~$180–250 / वाहन', time: '~4.5 घंटे', comfort: 'उच्च', bestFor: 'समूह, परिवार, सामान' },
+      { option: 'फ्लाइट + ट्रांसफर', cost: '~$90–150', time: '~2.5–3 घंटे', comfort: 'उच्च', bestFor: 'समय बचाना' },
+    ],
+    busHeading: 'विकल्प 1 — सार्वजनिक बस (सबसे सस्ती)',
+    busParagraphs: [
+      'MEPE बस Puerto Viejo पहुँचने का अब तक का सबसे सस्ता तरीका है, और यह भरोसेमंद है तथा स्थानीय लोग व यात्री दोनों इसका इस्तेमाल करते हैं। सीधी बसें San José से कैरिबियन बस टर्मिनल (Gran Terminal del Caribe) से दिन में कई बार चलती हैं और रुकावटों सहित करीब पाँच से छह घंटे लेती हैं।',
+      'यह सामान्य है — कोई आरक्षित सीट नहीं, और आप नकद (कोलोनेस) में भुगतान करते हैं — लेकिन यह यात्रा का एक असली और किफ़ायती तरीका है। पीक सीज़न में जल्दी पहुँचें, क्योंकि सीटें भर जाती हैं, और अपनी कीमती चीज़ें अपने पास रखें।',
+    ],
+    busLinkText: 'MEPE बस का पूरा शेड्यूल और स्टॉप देखें →',
+    shuttleHeading: 'विकल्प 2 — साझा शटल',
+    shuttleParagraphs: [
+      'साझा शटल एक पर्यटक मिनीवैन है जो आपको San José में आपके होटल से उठाती है और Puerto Viejo में आपके ठहरने की जगह पर छोड़ देती है। इसकी कीमत बस से ज़्यादा है, लेकिन यह टर्मिनल और कनेक्शन की झंझट खत्म कर देती है, और वाहन वातानुकूलित तथा आरामदेह होते हैं।',
+      'यह अकेले यात्रा करने वालों और जोड़ों के लिए एक लोकप्रिय बीच का विकल्प है, जो निजी ट्रांसफर की कीमत के बिना सुविधा चाहते हैं।',
+    ],
+    transferHeading: 'विकल्प 3 — निजी ट्रांसफर',
+    transferParagraphs: [
+      'निजी ट्रांसफर आपका अपना वाहन और ड्राइवर है, दरवाज़े से दरवाज़े तक, आपके समय के अनुसार। किसी परिवार या समूह के लिए यह अक्सर प्रति व्यक्ति सबसे किफ़ायती होता है, और जिनके पास ढेर सारा सामान है या जो रास्ते में रुकना चाहते हैं, उनके लिए यह सबसे आरामदेह विकल्प है।',
+      'हम आपके हमारे यहाँ ठहरने के लिए निजी ट्रांसफर की व्यवस्था कर सकते हैं — बस कहिए, और हम रास्ता, समय और कीमत संभाल लेंगे ताकि आपका आगमन तनावमुक्त रहे।',
+    ],
+    flightHeading: 'विकल्प 4 — घरेलू फ्लाइट (सबसे तेज़)',
+    flightParagraphs: [
+      'अगर समय पैसे से ज़्यादा मायने रखता है, तो आप उड़ान भर सकते हैं। घरेलू एयरलाइंस San José (SJO) को Limón से करीब 40 मिनट में जोड़ती हैं, और Limón से Puerto Viejo तक एक छोटा ट्रांसफर (लगभग एक घंटा) है।',
+      'यह देश को पार करने का सबसे तेज़ तरीका है और इसके साथ मिलता है वर्षावन का खूबसूरत हवाई नज़ारा — आपको बस Limón की ओर एक ट्रांसफर जोड़ना है।',
+    ],
+    flightLinkText: 'हवाई जहाज़ से Puerto Viejo पहुँचने की हमारी गाइड पढ़ें →',
+    stayRecommendationTitle: 'Puerto Viejo पहुँचने पर कहाँ ठहरें',
+    returnHeading: 'वापसी की यात्रा: Puerto Viejo → San José',
+    returnParagraph:
+      'हर विकल्प उल्टी दिशा में भी काम करता है। सीधी MEPE बसें दिन भर Puerto Viejo से San José वापस चलती हैं, जिनकी पहली रवानगी सुबह जल्दी होती है — अगर आपकी SJO से आगे की फ्लाइट है तो इसके हिसाब से योजना बनाना फ़ायदेमंद है। शटल, निजी ट्रांसफर और फ्लाइट भी दूसरी दिशा में चलते हैं; रवानगी के दिन के लिए, एक निजी ट्रांसफर या सुबह की सीधी बस आपको सबसे भरोसेमंद समय देती है।',
+    chooseHeading: 'आपको कौन-सा चुनना चाहिए?',
+    chooseIntro: 'तय करने का एक तेज़ तरीका:',
+    chooseListItems: [
+      'सीमित बजट में, या स्थानीय अनुभव चाहते हैं → MEPE बस',
+      'अकेले या जोड़े के रूप में आसान दरवाज़े-से-दरवाज़े तक चाहते हैं → एक साझा शटल',
+      'एक परिवार या समूह, ढेर सारा सामान, या रास्ते में रुकना चाहते हैं → एक निजी ट्रांसफर',
+      'समय कम है और उसके लिए भुगतान करने को तैयार हैं → Limón के लिए उड़ान भरें और ट्रांसफर लें',
+    ],
+    takeawaysHeading: 'मुख्य बातें',
+    takeawaysParagraph:
+      'San José से Puerto Viejo पहुँचने में सड़क मार्ग से करीब पाँच घंटे या हवाई मार्ग से तीन घंटे से कम लगते हैं। बस सबसे सस्ती है, शटल आसान बीच का रास्ता है, निजी ट्रांसफर समूहों और सामान के लिए सबसे अच्छा है, और उड़ान सबसे ज़्यादा समय बचाती है। अपने बजट और समूह के आकार के हिसाब से चुनें — और बुकिंग के समय अपना ट्रांसफर व्यवस्थित करने में हमें मदद करने दें।',
+  },
+  nl: {
+    seoTitle: 'Van San José naar Puerto Viejo — Bus, shuttle, privétransfer en vlucht vergeleken',
+    seoDescription:
+      'Bus, gedeelde shuttle, privétransfer of vlucht? Vergelijk prijs, tijd en comfort van elke manier om van San José naar Puerto Viejo de Talamanca te reizen — en terug.',
+    heading: 'Van San José naar Puerto Viejo: alle manieren om er te komen vergeleken',
+    heroAlt: 'Weg langs de Caribische kust richting Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca ligt zo’n 210 km ten zuidoosten van San José, aan de Caribische kust van Costa Rica. Er zijn vier realistische manieren om de reis te maken, en de juiste hangt af van je budget, je bagage en hoeveel tijd je onderweg wilt doorbrengen.',
+      'Deze gids zet ze naast elkaar — de openbare bus, een gedeelde shuttle, een privétransfer en de binnenlandse vlucht — zodat je de optie kiest die bij je reis past. Voor de exacte bustijden linken we naar ons volledige schema; hier helpen we je vooral kiezen.',
+    ],
+    tableHeading: 'De vier opties in één oogopslag',
+    tableIntro: 'Prijzen en tijden zijn bij benadering en veranderen met het seizoen en het verkeer. Gebruik ze om te vergelijken, niet als exacte offerte.',
+    colOption: 'Optie',
+    colCost: 'Prijs (per persoon)',
+    colTime: 'Deur-tot-deurtijd',
+    colComfort: 'Comfort',
+    colBestFor: 'Ideaal voor',
+    rows: [
+      { option: 'Openbare bus (MEPE)', cost: '~$11–13', time: '~5–6 u', comfort: 'Basic', bestFor: 'Reizigers met een klein budget' },
+      { option: 'Gedeelde shuttle', cost: '~$50–70', time: '~5 u', comfort: 'Comfortabel', bestFor: 'Alleenreizigers & stellen, deur tot deur' },
+      { option: 'Privétransfer', cost: '~$180–250 / voertuig', time: '~4.5 u', comfort: 'Hoog', bestFor: 'Groepen, gezinnen, bagage' },
+      { option: 'Vlucht + transfer', cost: '~$90–150', time: '~2.5–3 u', comfort: 'Hoog', bestFor: 'Tijd besparen' },
+    ],
+    busHeading: 'Optie 1 — De openbare bus (goedkoopst)',
+    busParagraphs: [
+      'De MEPE-bus is veruit de goedkoopste manier om Puerto Viejo te bereiken, en hij is betrouwbaar en wordt door zowel locals als reizigers gebruikt. Directe bussen vertrekken meerdere keren per dag vanuit San José vanaf het Caribische busstation (Gran Terminal del Caribe) en doen er ongeveer vijf tot zes uur over, inclusief stops.',
+      'Hij is basic — geen gereserveerde plaatsen, en je betaalt contant (colones) — maar het is een echte, betaalbare manier van reizen. Kom vroeg in het hoogseizoen, want de plaatsen raken vol, en houd je waardevolle spullen bij je.',
+    ],
+    busLinkText: 'Bekijk het volledige MEPE-busschema en de haltes →',
+    shuttleHeading: 'Optie 2 — Gedeelde shuttle',
+    shuttleParagraphs: [
+      'Een gedeelde shuttle is een toeristenbusje dat je bij je hotel in San José ophaalt en bij je accommodatie in Puerto Viejo afzet. Het kost meer dan de bus, maar bespaart je het gedoe van stations en overstappen, en de voertuigen zijn geairconditioneerd en comfortabel.',
+      'Het is een populaire tussenoptie voor alleenreizigers en stellen die comfort willen zonder de prijs van een privétransfer.',
+    ],
+    transferHeading: 'Optie 3 — Privétransfer',
+    transferParagraphs: [
+      'Een privétransfer is je eigen voertuig met chauffeur, van deur tot deur en op jouw schema. Voor een gezin of groep is het vaak de beste prijs-kwaliteitverhouding per persoon, en het is de comfortabelste optie voor wie veel bagage heeft of onderweg wil stoppen.',
+      'We regelen graag een privétransfer voor je verblijf bij ons — vraag het ons gewoon, en wij zorgen voor de route, de timing en de prijs zodat je aankomst zonder stress verloopt.',
+    ],
+    flightHeading: 'Optie 4 — Binnenlandse vlucht (snelst)',
+    flightParagraphs: [
+      'Als tijd belangrijker is dan geld, kun je vliegen. Binnenlandse luchtvaartmaatschappijen verbinden San José (SJO) in ongeveer 40 minuten met Limón, en vanaf Limón is het een korte transfer (ongeveer een uur) naar Puerto Viejo.',
+      'Het is de snelste manier om het land over te steken en biedt een prachtig uitzicht vanuit de lucht op het regenwoud — je voegt alleen een transfer toe aan de kant van Limón.',
+    ],
+    flightLinkText: 'Lees onze gids om Puerto Viejo met het vliegtuig te bereiken →',
+    stayRecommendationTitle: 'Waar te verblijven als je aankomt in Puerto Viejo',
+    returnHeading: 'De terugreis: Puerto Viejo → San José',
+    returnParagraph:
+      'Elke optie werkt ook omgekeerd. Directe MEPE-bussen rijden de hele dag door van Puerto Viejo terug naar San José, met de eerste vertrekken vroeg in de ochtend — het loont om daar rekening mee te houden als je een aansluitende vlucht vanaf SJO hebt. Ook shuttles, privétransfers en vluchten rijden de andere kant op; voor een vertrekdag geven een privétransfer of een vroege directe bus je de betrouwbaarste timing.',
+    chooseHeading: 'Welke moet je kiezen?',
+    chooseIntro: 'Snel beslissen:',
+    chooseListItems: [
+      'Klein budget, of zin in de lokale ervaring → de MEPE-bus',
+      'Alleen of als stel op zoek naar eenvoudig deur tot deur → een gedeelde shuttle',
+      'Een gezin of groep, veel bagage, of zin om onderweg te stoppen → een privétransfer',
+      'Weinig tijd en bereid ervoor te betalen → vlieg naar Limón en neem een transfer',
+    ],
+    takeawaysHeading: 'Belangrijkste punten',
+    takeawaysParagraph:
+      'Van San José naar Puerto Viejo duurt ongeveer vijf uur over de weg of minder dan drie door de lucht. De bus is het goedkoopst, een shuttle is de makkelijke tussenweg, een privétransfer is het best voor groepen en bagage, en vliegen bespaart de meeste tijd. Kies op budget en groepsgrootte — en laat ons je transfer regelen wanneer je boekt.',
+  },
+};
+
+export function sanJoseOptionsContent(locale: Locale): SanJoseOptionsContent {
+  return sanJoseOptions[locale] ?? sanJoseOptions.en!;
+}

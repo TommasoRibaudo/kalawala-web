@@ -184,7 +184,7 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     de: '2 Klimaanlagen',
     fr: '2 climatiseurs',
     it: '2 climatizzatori',
-    pt: '2 Ar condicionado',
+    pt: '2 unidades de ar condicionado',
     he: '2 מזגנים',
     hi: '2 A/C',
     nl: '2 airco\'s',

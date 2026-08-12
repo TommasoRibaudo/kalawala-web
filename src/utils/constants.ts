@@ -1597,7 +1597,7 @@ export const houseDataList: HouseDataType[] = [
         parking: true,
         amenities: [
             {
-                name: "2 Baños Privado Equipado",
+                name: "2 Baños Privados Equipados",
                 icon: "bath"
             },
             {

@@ -3119,6 +3119,8 @@ export const BLOG_ARTICLES: BlogArticle[] = [
   { key: 'weatherNov', routeKey: 'blogWeatherNov' },
   { key: 'weatherDec', routeKey: 'blogWeatherDec' },
   { key: 'sanjoseOptions', routeKey: 'blogSanjoseOptions' },
+  { key: 'gandocaRefuge', routeKey: 'blogGandocaRefuge' },
+  { key: 'beaches', routeKey: 'blogBeaches' },
 ];
 
 /**

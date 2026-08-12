@@ -165,6 +165,13 @@
       margin-top: 0;
       padding-top: 0;
     }
+
+    // The hero variant portals this panel onto document.body and sets its
+    // position/top/left/width inline. It only needs to out-rank the sticky
+    // navigation (z-index 1000) and its open mobile menu (1001).
+    &--floating {
+      z-index: 2000;
+    }
   }
 
   // The person icon + count already say "guests"; the label is redundant
@@ -229,6 +236,18 @@
     width: auto !important;
     margin: 6px 0 0 !important;
     text-align: start;
+  }
+
+  &__hint-link {
+    color: $kalawala-dark-green;
+    font-weight: 600;
+    text-decoration: underline;
+
+    &:hover,
+    &:focus-visible {
+      color: $kalawala-dark-green;
+      text-decoration: underline;
+    }
   }
 
   &__guest-count {

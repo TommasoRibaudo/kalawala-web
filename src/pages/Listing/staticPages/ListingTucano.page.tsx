@@ -21,6 +21,7 @@ import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { listingContent } from "../../../i18n/content/listings";
+import { vacationRentalJsonLd } from "../../../i18n/structuredData";
 import { houseDataByLangCode } from "../../../utils/constants";
 import { isPrerender } from "../../../utils/isPrerender";
 
@@ -75,6 +76,7 @@ const ListingTucano = () => {
                 <meta name="description" content={content.seoDescription} />
                 <link rel="canonical" href={canonicalUrl('tucano', locale)} />
                 {hreflangLinks('tucano')}
+                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Tucano', locale, houseData?.image))}</script>
             </Helmet>
             <FixedNavigation isBlog={false}/>
             {isScreenSmall && (

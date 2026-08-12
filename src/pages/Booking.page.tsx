@@ -122,6 +122,7 @@ interface StoredPayPalCheckout {
 }
 
 const paypalCheckoutStorageKey = 'kalawala_paypal_checkout';
+const depositCheckoutStorageKey = 'kalawala_deposit_checkout';
 const bookingConfirmationStorageKey = 'kalawala_booking_confirmation';
 const bookingConfirmationTrackedPrefix = 'kalawala_booking_confirmation_tracked_';
 const portalAutoLoginKey = 'kalawala_portal_autologin';
@@ -181,19 +182,31 @@ const BookingPage = () => {
   const formStartTrackedRef = React.useRef(false);
   const paymentStartTrackedRef = React.useRef<string | null>(null);
   const today = React.useMemo(() => getCostaRicaToday(), []);
+  // A guest who left to pay by SINPE and comes back (tab reload, back button, or
+  // reopening the site) would otherwise land on a blank search — the deposit
+  // step is in-memory only. Rehydrate it from localStorage so the timer, bank
+  // details and receipt upload are all still there (#308). Never on the PayPal
+  // return/confirmation routes, which own the wizard. Read once via a ref so the
+  // decision is stable across renders.
+  const resumedDepositRef = React.useRef<DepositHoldResponse | null>();
+  if (resumedDepositRef.current === undefined) {
+    resumedDepositRef.current = (isPayPalReturnRoute || isConfirmationRoute) ? null : readDepositCheckoutState();
+  }
+  const resumedDeposit = resumedDepositRef.current;
+
   const [arrivalDate, setArrivalDate] = React.useState(() => getInitialArrivalDate(searchParams.get('arrivalDate'), today));
   const [departureDate, setDepartureDate] = React.useState(() => getInitialDepartureDate(searchParams.get('departureDate'), searchParams.get('arrivalDate'), today));
   const [guests, setGuests] = React.useState(() => getInitialGuestCount(searchParams.get('guests')));
   // Set when the guest arrived from a listing page. It only promotes that home
   // to the top of the results — the search itself stays portfolio-wide.
   const [featuredSlug] = React.useState(() => sanitiseSlug(searchParams.get('property')));
-  const [result, setResult] = React.useState<BookingSearchResponse | null>(null);
+  const [result, setResult] = React.useState<BookingSearchResponse | null>(() => resumedDeposit ? searchResultFromHold(resumedDeposit) : null);
   const [error, setError] = React.useState<string | null>(null);
   const [depositHandoff, setDepositHandoff] = React.useState<DepositHandoffResponse | null>(null);
   const [depositError, setDepositError] = React.useState<string | null>(null);
   const [depositLoadingPropertyId, setDepositLoadingPropertyId] = React.useState<string | null>(null);
-  const [depositProperty, setDepositProperty] = React.useState<BookingAvailableProperty | null>(null);
-  const [depositHoldResponse, setDepositHoldResponse] = React.useState<DepositHoldResponse | null>(null);
+  const [depositProperty, setDepositProperty] = React.useState<BookingAvailableProperty | null>(() => resumedDeposit ? depositPropertyFromHold(resumedDeposit) : null);
+  const [depositHoldResponse, setDepositHoldResponse] = React.useState<DepositHoldResponse | null>(resumedDeposit ?? null);
   const [isCreatingDepositHold, setIsCreatingDepositHold] = React.useState(false);
   const [receiptState, setReceiptState] = React.useState<DepositReceiptState>({ status: 'idle' });
   const [checkoutProperty, setCheckoutProperty] = React.useState<BookingAvailableProperty | null>(null);
@@ -233,6 +246,18 @@ const BookingPage = () => {
   }, [isConfirmationRoute, bookingConfirmation, isPayPalReturnRoute, depositProperty, checkoutProperty, result]);
 
   React.useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [wizardStep]);
+
+  // Once the deposit hold expires it is released server-side, so drop the
+  // persisted copy — a later reload should not resume a dead hold (#308).
+  React.useEffect(() => {
+    const expiresAt = depositHoldResponse?.booking.hold.expiresAt;
+    if (!expiresAt) return;
+    const ms = Date.parse(expiresAt) - Date.now();
+    if (!Number.isFinite(ms)) return;
+    if (ms <= 0) { clearDepositCheckoutState(); return; }
+    const id = window.setTimeout(() => clearDepositCheckoutState(), ms);
+    return () => window.clearTimeout(id);
+  }, [depositHoldResponse]);
 
   const updateBookingQuery = React.useCallback((updates: Record<string, string | number>) => {
     const nextParams = new URLSearchParams(searchParams.toString());
@@ -319,6 +344,9 @@ const BookingPage = () => {
   const autoSearchFiredRef = React.useRef(false);
   React.useEffect(() => {
     if (autoSearchFiredRef.current) return;
+    // A resumed deposit already owns the wizard; a stale autoSearch in the URL
+    // (e.g. from the back button) must not overwrite it with a fresh search.
+    if (resumedDeposit) return;
     if (searchParams.get('autoSearch') !== 'true') return;
     if (!arrivalDate || !departureDate) return;
     if (isPayPalReturnRoute || isConfirmationRoute) return;
@@ -368,8 +396,10 @@ const BookingPage = () => {
     persistPortalAutoLogin(holdForm.portalPassword);
     setIsCreatingDepositHold(true);
     try {
-      const response = await createDepositHold({ quoteId: result.quoteId, bookingSessionId: result.bookingSessionId, propertyId: depositProperty.propertyId, language, guest: { firstName: holdForm.firstName, lastName: holdForm.lastName, email: holdForm.email, phone: holdForm.phone, country: holdForm.country, message: holdForm.message }, portalPassword: holdForm.portalPassword, termsAccepted: holdForm.termsAccepted, ...(withPet ? { withPet: true } : {}) });
+      const response = await createDepositHold({ quoteId: result.quoteId, bookingSessionId: result.bookingSessionId, propertyId: depositProperty.propertyId, language, guest: { firstName: holdForm.firstName, lastName: holdForm.lastName, email: holdForm.email, phone: holdForm.phone, country: holdForm.country, message: holdForm.message }, portalPassword: holdForm.portalPassword, termsAccepted: holdForm.termsAccepted, ...(nonRefundable ? { nonRefundable: true } : {}), ...(withPet ? { withPet: true } : {}) });
       setDepositHoldResponse(response);
+      // Stash the whole hold so the SINPE round-trip can rebuild this step (#308).
+      persistDepositCheckoutState(response);
       // The booking is not confirmed yet, but the guest will need these to log in
       // once staff verify the transfer.
       if (response.booking?.reservationPublicId) { savePortalCredentials(response.booking.reservationPublicId, holdForm.portalPassword); }
@@ -420,7 +450,7 @@ const BookingPage = () => {
     setHoldFieldErrors((c) => { const n = { ...c }; Object.keys(updates).forEach((k) => { delete n[k]; }); return n; });
   };
 
-  const handleBackToResults = () => { setCheckoutProperty(null); setHoldError(null); setHoldResponse(null); setHoldFieldErrors({}); setPayPalOrderError(null); setHoldCaptchaRequired(false); setDepositError(null); setDepositProperty(null); setDepositHoldResponse(null); setReceiptState({ status: 'idle' }); };
+  const handleBackToResults = () => { setCheckoutProperty(null); setHoldError(null); setHoldResponse(null); setHoldFieldErrors({}); setPayPalOrderError(null); setHoldCaptchaRequired(false); setDepositError(null); setDepositProperty(null); setDepositHoldResponse(null); setReceiptState({ status: 'idle' }); clearDepositCheckoutState(); };
   const handleBackToSearch = () => { setResult(null); setError(null); handleBackToResults(); };
 
   const handleCreatePayPalHold = async (event: React.FormEvent, captchaTokenOverride?: string) => {
@@ -531,7 +561,7 @@ const BookingPage = () => {
             {/* Step 3: Checkout / Deposit */}
             <div className={`booking-wizard-slide${wizardStep === 'checkout' || wizardStep === 'deposit' ? ' booking-wizard-slide--active' : stepIndex(wizardStep) > 2 ? ' booking-wizard-slide--left' : ' booking-wizard-slide--right'}`} aria-hidden={wizardStep !== 'checkout' && wizardStep !== 'deposit'}>
               <Row className="justify-content-center"><Col lg={8} xl={7}>
-                {result && depositProperty && <DepositCheckoutPanel result={result} property={depositProperty} strings={strings} language={language} withPet={withPet} form={holdForm} fieldErrors={holdFieldErrors} holdError={depositError} holdResponse={depositHoldResponse} isCreatingHold={isCreatingDepositHold} receiptState={receiptState} onChange={updateHoldForm} onSubmit={handleCreateDepositHold} onUploadReceipt={handleUploadReceipt} onBack={handleBackToResults} />}
+                {result && depositProperty && <DepositCheckoutPanel result={result} property={depositProperty} strings={strings} language={language} withPet={withPet} nonRefundable={nonRefundable} form={holdForm} fieldErrors={holdFieldErrors} holdError={depositError} holdResponse={depositHoldResponse} isCreatingHold={isCreatingDepositHold} receiptState={receiptState} onChange={updateHoldForm} onSubmit={handleCreateDepositHold} onUploadReceipt={handleUploadReceipt} onBack={handleBackToResults} />}
                 {result && checkoutProperty && <PayPalCheckoutPanel result={result} property={checkoutProperty} strings={strings} language={language} withPet={withPet} nonRefundable={nonRefundable} form={holdForm} fieldErrors={holdFieldErrors} holdError={holdError} holdResponse={holdResponse} paypalOrderError={paypalOrderError} isCreatingHold={isCreatingHold} isCreatingPayPalOrder={isCreatingPayPalOrder} onChange={updateHoldForm} onSubmit={handleCreatePayPalHold} onCreatePayPalOrder={handleCreatePayPalOrder} holdCaptchaRequired={holdCaptchaRequired} onBack={handleBackToResults} />}
               </Col></Row>
             </div>
@@ -938,7 +968,7 @@ const BookingConfirmationPanel = ({ result, strings, language, onManageBooking }
  * This replaces the old contact-only handoff, which told guests to get in touch
  * and reserved nothing.
  */
-const DepositCheckoutPanel = ({ result, property, strings, language, withPet, form, fieldErrors, holdError, holdResponse, isCreatingHold, receiptState, onChange, onSubmit, onUploadReceipt, onBack }: { result: BookingSearchResponse; property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; withPet: boolean; form: PayPalHoldFormState; fieldErrors: Record<string, string>; holdError: string | null; holdResponse: DepositHoldResponse | null; isCreatingHold: boolean; receiptState: DepositReceiptState; onChange: (u: Partial<PayPalHoldFormState>) => void; onSubmit: (e: React.FormEvent) => void; onUploadReceipt: (file: File) => void; onBack: () => void }) => {
+const DepositCheckoutPanel = ({ result, property, strings, language, withPet, nonRefundable, form, fieldErrors, holdError, holdResponse, isCreatingHold, receiptState, onChange, onSubmit, onUploadReceipt, onBack }: { result: BookingSearchResponse; property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; withPet: boolean; nonRefundable: boolean; form: PayPalHoldFormState; fieldErrors: Record<string, string>; holdError: string | null; holdResponse: DepositHoldResponse | null; isCreatingHold: boolean; receiptState: DepositReceiptState; onChange: (u: Partial<PayPalHoldFormState>) => void; onSubmit: (e: React.FormEvent) => void; onUploadReceipt: (file: File) => void; onBack: () => void }) => {
   const price = property.price ?? holdResponse?.booking.price;
   const bankInfo = holdResponse?.bankInfo;
 
@@ -953,7 +983,7 @@ const DepositCheckoutPanel = ({ result, property, strings, language, withPet, fo
 
       <div className="booking-checkout-panel__summary" aria-label={strings.checkoutSummary}>
         <div><span>{strings.depositContextTitle}</span><strong>{property.name}</strong><small>{strings.depositDates(formatDate(result.arrivalDate, language), formatDate(result.departureDate, language))}</small></div>
-        {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={false} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
+        {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={nonRefundable && !holdResponse} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
         {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
 
@@ -1251,6 +1281,43 @@ function confirmedBookingPath(language: BookingLanguage): string { return pathFo
 function persistPayPalCheckoutState(state: StoredPayPalCheckout): void { try { window.sessionStorage.setItem(paypalCheckoutStorageKey, JSON.stringify(state)); } catch { /* non-critical */ } }
 function readPayPalCheckoutState(): StoredPayPalCheckout | null { try { const raw = window.sessionStorage.getItem(paypalCheckoutStorageKey); if (!raw) return null; const p = JSON.parse(raw) as Partial<StoredPayPalCheckout>; if (typeof p.bookingSessionId !== 'string' || typeof p.paypalOrderId !== 'string' || (p.language !== 'en' && p.language !== 'es')) return null; return { bookingSessionId: p.bookingSessionId, paypalOrderId: p.paypalOrderId, reservationPublicId: typeof p.reservationPublicId === 'string' ? p.reservationPublicId : undefined, language: p.language }; } catch { return null; } }
 function clearPayPalCheckoutState(bookingSessionId: string): void { try { const s = readPayPalCheckoutState(); if (!s || s.bookingSessionId === bookingSessionId) window.sessionStorage.removeItem(paypalCheckoutStorageKey); } catch { /* non-critical */ } }
+// Deposit/SINPE resume (#308). Unlike PayPal there is no redirect back, so the
+// guest returns by reopening the site — which tears down the tab. localStorage
+// (not sessionStorage) is what survives that, and the depositAccessToken it
+// carries is good for 24h, so the whole DepositHoldResponse is stashed and the
+// deposit step is rebuilt from it on the next mount.
+function persistDepositCheckoutState(state: DepositHoldResponse): void { try { window.localStorage.setItem(depositCheckoutStorageKey, JSON.stringify(state)); } catch { /* non-critical */ } }
+function clearDepositCheckoutState(): void { try { window.localStorage.removeItem(depositCheckoutStorageKey); } catch { /* non-critical */ } }
+function readDepositCheckoutState(): DepositHoldResponse | null {
+  try {
+    const raw = window.localStorage.getItem(depositCheckoutStorageKey);
+    if (!raw) return null;
+    const p = JSON.parse(raw) as DepositHoldResponse;
+    const expiresAt = p?.booking?.hold?.expiresAt;
+    const expiresAtMs = typeof expiresAt === 'string' ? Date.parse(expiresAt) : NaN;
+    // A malformed entry, or a hold whose timer has run out (released server-side),
+    // is not resumable — drop it so it doesn't linger and resume a dead hold.
+    if (!p?.booking?.bookingSessionId || !p.booking.reservationPublicId || !p.booking.property?.propertyId || !p.bankInfo || typeof p.depositAccessToken !== 'string' || !Number.isFinite(expiresAtMs) || expiresAtMs <= Date.now()) {
+      clearDepositCheckoutState();
+      return null;
+    }
+    return p;
+  } catch { return null; }
+}
+/** The result card the deposit panel needs, rebuilt from a persisted hold. */
+function depositPropertyFromHold(hold: DepositHoldResponse): BookingAvailableProperty {
+  const p = hold.booking.property;
+  return { propertyId: p.propertyId, slug: p.slug, listingUrl: p.listingUrl, name: p.name, guestCapacity: p.guestCapacity, thumbnailUrl: p.thumbnailUrl, amenities: p.amenities, price: hold.booking.price };
+}
+/**
+ * Just enough BookingSearchResponse to drive the deposit panel (it only reads
+ * the dates). There is no live search behind a resumed hold, and the held view
+ * never re-submits, so quoteId is deliberately empty.
+ */
+function searchResultFromHold(hold: DepositHoldResponse): BookingSearchResponse {
+  const b = hold.booking;
+  return { bookingSessionId: b.bookingSessionId, quoteId: '', quoteExpiresAt: b.hold.expiresAt, arrivalDate: b.arrivalDate, departureDate: b.departureDate, guests: b.guests, language: b.language, resultsCount: 1, properties: [depositPropertyFromHold(hold)], availabilityWarnings: [] };
+}
 function persistBookingConfirmationState(state: PayPalCaptureResponse): void { try { window.sessionStorage.setItem(bookingConfirmationStorageKey, JSON.stringify(state)); } catch { /* non-critical */ } }
 function readBookingConfirmationState(): PayPalCaptureResponse | null { try { const raw = window.sessionStorage.getItem(bookingConfirmationStorageKey); if (!raw) return null; const p = JSON.parse(raw) as PayPalCaptureResponse; if (!p?.booking?.reservationPublicId || !p.booking.bookingSessionId || p.booking.status !== 'booking_confirmed' || !p.payment?.paypalOrderId) return null; return p; } catch { return null; } }
 function maybeTrackBookingConfirmation(result: PayPalCaptureResponse): void { const property = result.booking.property; const price = result.booking.price; if (!property?.propertyId || !property.slug || !property.name || !price?.currency || typeof price.totalAmountCents !== 'number') return; trackBookingConfirmed({ reservation_id: result.booking.reservationPublicId, property_id: property.propertyId, property_slug: property.slug, property_name: property.name, value_cents: price.totalAmountCents, currency: price.currency, arrival_date: result.booking.arrivalDate, departure_date: result.booking.departureDate, payment_method: 'paypal', language: result.booking.language }); }

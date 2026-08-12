@@ -1,10 +1,11 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDays, faUser, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import CalendarWithPriceDots from '../CalendarWithPriceDots';
-import { MAX_PORTFOLIO_GUESTS } from '../../utils/constants';
+import { MAX_PORTFOLIO_GUESTS, PROPERTY_CAPACITY } from '../../utils/constants';
 import { getCostaRicaToday, nightsBetween } from '../../utils/dates';
 import './BookingSearchWidget.style.scss';
 import type { Locale } from '../../i18n';
@@ -25,6 +26,11 @@ interface BookingSearchWidgetProps {
   apartmentSlug?: string;
 }
 
+// useLayoutEffect warns during server pre-render; the hero calendar only opens
+// after a client click, so fall back to useEffect where there is no DOM.
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 const strings = {
   en: {
     title: 'Check Availability',
@@ -36,6 +42,8 @@ const strings = {
     decreaseGuests: 'Decrease guests',
     increaseGuests: 'Increase guests',
     maxGuests: 'Our largest home sleeps {max}. Message us for bigger groups.',
+    maxGuestsListing: 'This home sleeps up to {max}.',
+    searchAllHomes: 'Search all our homes for a bigger group.',
     arrivalRequired: 'Please select a check-in date.',
     departureRequired: 'Please select a check-out date.',
     departureTooEarly: 'Check-out must be after check-in.',
@@ -53,6 +61,8 @@ const strings = {
     decreaseGuests: 'Menos huéspedes',
     increaseGuests: 'Más huéspedes',
     maxGuests: 'Nuestra casa más grande aloja a {max}. Escríbenos para grupos mayores.',
+    maxGuestsListing: 'Esta casa aloja hasta {max}.',
+    searchAllHomes: 'Busca en todas nuestras casas para un grupo más grande.',
     arrivalRequired: 'Selecciona una fecha de llegada.',
     departureRequired: 'Selecciona una fecha de salida.',
     departureTooEarly: 'La salida debe ser después de la llegada.',
@@ -73,10 +83,20 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
   const s = strings[lang];
   const today = useMemo(() => getCostaRicaToday(), []);
 
+  // On a listing page the guest picker must not exceed that home's own capacity
+  // (#309) — you can't book Villa Mar (sleeps 2) for six. The portfolio-wide
+  // hero has no single home, so it keeps the portfolio-wide max.
+  const listingCapacity = apartmentSlug ? PROPERTY_CAPACITY[apartmentSlug]?.maxGuests : undefined;
+  const guestCap = listingCapacity ?? MAX_PORTFOLIO_GUESTS;
+  // Only a home strictly smaller than the biggest one should send guests to the
+  // full-portfolio search for a bigger group — the largest home has no bigger
+  // sibling to offer.
+  const showListingHint = listingCapacity !== undefined && listingCapacity < MAX_PORTFOLIO_GUESTS;
+
   const [arrivalDate, setArrivalDate] = useState('');
   const [departureDate, setDepartureDate] = useState('');
   const [guests, setGuests] = useState(() =>
-    Math.min(Math.max(1, defaultGuests), MAX_PORTFOLIO_GUESTS)
+    Math.min(Math.max(1, defaultGuests), guestCap)
   );
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -84,6 +104,47 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
   // The listing sidebar has the room to keep it open permanently.
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const datesFieldRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  // The hero calendar renders in a portal on document.body (see the note where
+  // it is rendered), so it is positioned against the trigger by hand.
+  const [popoverStyle, setPopoverStyle] = useState<React.CSSProperties | null>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    if (variant !== 'hero' || !isCalendarOpen) {
+      setPopoverStyle(null);
+      return;
+    }
+
+    const updatePosition = () => {
+      const trigger = triggerRef.current;
+      if (!trigger) {
+        return;
+      }
+      const rect = trigger.getBoundingClientRect();
+      const margin = 16;
+      const width = Math.min(320, window.innerWidth - margin * 2);
+      // Prefer left-aligned with the trigger, but never let the panel spill off
+      // the viewport edge on a narrow screen.
+      let left = rect.left;
+      if (left + width > window.innerWidth - margin) {
+        left = window.innerWidth - margin - width;
+      }
+      if (left < margin) {
+        left = margin;
+      }
+      setPopoverStyle({ position: 'fixed', top: rect.bottom + 6, left, width });
+    };
+
+    updatePosition();
+    // `true` catches scrolls inside any nested scroll container, not just window.
+    window.addEventListener('scroll', updatePosition, true);
+    window.addEventListener('resize', updatePosition);
+    return () => {
+      window.removeEventListener('scroll', updatePosition, true);
+      window.removeEventListener('resize', updatePosition);
+    };
+  }, [variant, isCalendarOpen]);
 
   useEffect(() => {
     if (variant !== 'hero' || !isCalendarOpen) {
@@ -91,7 +152,13 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
     }
 
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
-      if (!datesFieldRef.current?.contains(event.target as Node)) {
+      const target = event.target as Node;
+      // The panel lives in a portal outside datesFieldRef, so it needs its own
+      // containment check or every click inside it would close the calendar.
+      if (
+        !datesFieldRef.current?.contains(target) &&
+        !popoverRef.current?.contains(target)
+      ) {
         setIsCalendarOpen(false);
       }
     };
@@ -228,6 +295,7 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
           {variant === 'hero' ? (
             <>
               <button
+                ref={triggerRef}
                 type="button"
                 className={`booking-search-widget__dates-trigger${
                   dateError ? ' booking-search-widget__dates-trigger--invalid' : ''
@@ -239,11 +307,26 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
                 <FontAwesomeIcon icon={faCalendarDays} />
                 <span>{rangeSummary}</span>
               </button>
-              {isCalendarOpen && (
-                <div className="booking-search-widget__calendar-popover" role="dialog" aria-label={s.dates}>
-                  {calendar}
-                </div>
-              )}
+              {/* Portalled to document.body: the hero clips its overflow and
+                  the sticky nav (z-index 1000) sits in a higher stacking layer
+                  than anything inside .block, so an in-place dropdown gets
+                  hidden behind the nav. Rendering at the body root, positioned
+                  against the trigger, escapes both traps. */}
+              {isCalendarOpen &&
+                popoverStyle &&
+                typeof document !== 'undefined' &&
+                createPortal(
+                  <div
+                    ref={popoverRef}
+                    className="booking-search-widget__calendar-popover booking-search-widget__calendar-popover--floating"
+                    role="dialog"
+                    aria-label={s.dates}
+                    style={popoverStyle}
+                  >
+                    {calendar}
+                  </div>,
+                  document.body
+                )}
             </>
           ) : (
             <div className="booking-search-widget__calendar">{calendar}</div>
@@ -285,8 +368,8 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
               variant="outline-secondary"
               size="sm"
               aria-label={s.increaseGuests}
-              onClick={() => setGuests((g) => Math.min(MAX_PORTFOLIO_GUESTS, g + 1))}
-              disabled={guests >= MAX_PORTFOLIO_GUESTS}
+              onClick={() => setGuests((g) => Math.min(guestCap, g + 1))}
+              disabled={guests >= guestCap}
             >
               +
             </Button>
@@ -306,9 +389,29 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
         </Button>
 
         {/* Full-width row so it never disturbs the alignment of the fields above. */}
-        {guests >= MAX_PORTFOLIO_GUESTS && (
+        {guests >= guestCap && (
           <p className="booking-search-widget__hint" aria-live="polite">
-            {s.maxGuests.replace('{max}', String(MAX_PORTFOLIO_GUESTS))}
+            {showListingHint ? (
+              <>
+                {s.maxGuestsListing.replace('{max}', String(guestCap))}{' '}
+                {/* A real href keeps middle/modifier-click working; plain clicks
+                    take the SPA route to the portfolio search, where the
+                    over-capacity flow already surfaces homes that fit. */}
+                <a
+                  href={bookingPath(locale)}
+                  className="booking-search-widget__hint-link"
+                  onClick={(e) => {
+                    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                    e.preventDefault();
+                    navigate(bookingPath(locale));
+                  }}
+                >
+                  {s.searchAllHomes}
+                </a>
+              </>
+            ) : (
+              s.maxGuests.replace('{max}', String(guestCap))
+            )}
           </p>
         )}
       </Form>

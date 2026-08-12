@@ -47,6 +47,8 @@ import {
   weatherNovemberContent,
   weatherDecemberContent,
   sanJoseOptionsContent,
+  gandocaRefugeContent,
+  beachesContent,
 } from '../blog';
 import { PROPERTY_MARKETING_CONFIG, RECOMMENDATION_REASONS } from '../../../utils/constants';
 
@@ -82,6 +84,8 @@ const BLOG_ACCESSORS: Record<string, (locale: Locale) => unknown> = {
   weatherNovember: weatherNovemberContent,
   weatherDecember: weatherDecemberContent,
   sanJoseOptions: sanJoseOptionsContent,
+  gandocaRefuge: gandocaRefugeContent,
+  beaches: beachesContent,
 };
 
 describe('Locale completeness — content modules never silently fall back to English', () => {

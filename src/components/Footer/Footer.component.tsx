@@ -10,9 +10,25 @@ interface IFooter {
   locale: Locale;
 }
 
+// A curated handful of evergreen guides for the footer. BLOG_ARTICLES holds 26
+// entries (including 13 month-by-month weather posts) — far too many to list in
+// the footer. Keep this to the highest-value, non-redundant guides.
+const FOOTER_GUIDE_ROUTE_KEYS = [
+  'blogBeaches',
+  'blogCahuitapark',
+  'blogBesttime',
+  'blogHiddengems',
+  'blogTwodays',
+  'blogGandoca',
+];
+
 const Footer: React.FC<IFooter> = ({ locale }) => {
   const m = getMessages(locale);
   const bookPath = bookingPath(locale);
+
+  const footerGuides = FOOTER_GUIDE_ROUTE_KEYS.map((routeKey) =>
+    BLOG_ARTICLES.find((article) => article.routeKey === routeKey),
+  ).filter((article): article is (typeof BLOG_ARTICLES)[number] => Boolean(article));
 
   return (
     <footer className="site-footer">
@@ -38,7 +54,7 @@ const Footer: React.FC<IFooter> = ({ locale }) => {
               {/* Locale-keyed DATA, not chrome: title reuses the Phase-8-translated
                   blog.tsx heading for this article; path comes straight from
                   routes.config.ts. Both resolve per-locale, not just en/es. */}
-              {BLOG_ARTICLES.map((article) => (
+              {footerGuides.map((article) => (
                 <li key={article.key}>
                   <Link to={pathForKey(article.routeKey, locale)}>
                     {blogArticleHeading(article.routeKey, locale)}

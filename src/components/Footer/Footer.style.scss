@@ -33,8 +33,11 @@
   }
 
   .footer-col {
+    // Global `_typography.scss` sets `h4 { color: $kalawala-text-gray !important }`
+    // (near-black), which would render these section titles unreadable on the dark
+    // green footer. Override with matching specificity + !important to force white.
     h4 {
-      color: #fff;
+      color: #fff !important;
       font-size: 15px;
       font-weight: 700;
       letter-spacing: 0.04em;

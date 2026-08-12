@@ -187,6 +187,13 @@ export const blogs = [
         text: "A beach-by-beach guide to Puerto Viejo: Playa Cocles, Playa Chiquita, Punta Uva, Playa Negra and Manzanillo — where to swim, surf, snorkel, and how to stay safe.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619",
         pictures: ["", ""]
+    },
+    {
+        id: "puerto-viejo-to-bocas-del-toro",
+        title: "Puerto Viejo to Bocas del Toro: Border Crossing & Shuttle Guide",
+        text: "How to get from Puerto Viejo, Costa Rica to Bocas del Toro, Panama: the DIY bus-taxi-boat route via the Sixaola border, entry requirements, and private shuttle options compared.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg",
+        pictures: ["", ""]
     }
 ]
 export const blogsES = [

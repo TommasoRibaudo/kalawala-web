@@ -10493,3 +10493,674 @@ const beaches: Partial<Record<Locale, BeachesContent>> = {
 export function beachesContent(locale: Locale): BeachesContent {
   return beaches[locale] ?? beaches.en!;
 }
+
+export interface DiyLegRow {
+  leg: string;
+  cost: string;
+  time: string;
+}
+
+export interface ShuttleOperatorRow {
+  operator: string;
+  departs: string;
+  price: string;
+  duration: string;
+}
+
+export interface BocasDelToroContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: [string, string];
+  tableHeading: string;
+  tableIntro: string;
+  colOption: string;
+  colCost: string;
+  colTime: string;
+  colComfort: string;
+  colBestFor: string;
+  rows: TransportOptionRow[];
+  diyHeading: string;
+  diyIntro: string;
+  diyColLeg: string;
+  diyColCost: string;
+  diyColTime: string;
+  diyLegs: DiyLegRow[];
+  diyLinkText: string;
+  requirementsHeading: string;
+  requirementsParagraphs: string[];
+  stayRecommendationTitle: string;
+  shuttleHeading: string;
+  shuttleParagraphs: string[];
+  shuttleColOperator: string;
+  shuttleColDeparts: string;
+  shuttleColPrice: string;
+  shuttleColDuration: string;
+  shuttleOperators: ShuttleOperatorRow[];
+  chooseHeading: string;
+  chooseIntro: string;
+  chooseListItems: string[];
+  takeawaysHeading: string;
+  takeawaysParagraph: string;
+}
+
+const bocasDelToro: Partial<Record<Locale, BocasDelToroContent>> = {
+  en: {
+    seoTitle: 'Puerto Viejo to Bocas del Toro, Panama: Border Crossing & Shuttle Guide',
+    seoDescription:
+      'How to get from Puerto Viejo, Costa Rica to Bocas del Toro, Panama: the DIY bus-taxi-boat route via the Sixaola border, entry requirements, and private shuttle options compared.',
+    heading: 'Puerto Viejo to Bocas del Toro: Border Crossing & Shuttle Guide',
+    heroAlt: 'The border crossing at Sixaola, Costa Rica, on the way to Bocas del Toro, Panama',
+    photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Sixaola" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Bocas del Toro, Panama, is close enough to Puerto Viejo to visit for a few days without a flight. Getting there does mean crossing an international border, though, and that trips up more travellers than any other leg of a Costa Rica trip. The short version: bus or taxi to the Sixaola border, cross on foot into Guabito, taxi on to Almirante, then a short boat to the islands.',
+      'You can do every leg yourself for the lowest price, or book a door-to-door shuttle that handles the border for you. This guide walks through both, plus what Panama actually asks for at the crossing so you are not caught out.',
+    ],
+    tableHeading: 'Two Ways to Make the Trip',
+    tableIntro: 'Prices and times are approximate, change with the season, and are always paid in cash. Use them to compare, not as exact quotes.',
+    colOption: 'Option',
+    colCost: 'Cost (per person)',
+    colTime: 'Door-to-door time',
+    colComfort: 'Comfort',
+    colBestFor: 'Best for',
+    rows: [
+      { option: 'DIY (bus + taxi + boat)', cost: '~$28–33', time: '~4–5 hrs', comfort: 'Basic (several changes)', bestFor: 'Budget travellers comfortable navigating a border alone' },
+      { option: 'Private door-to-door shuttle', cost: '~$35–37', time: '~4 hrs', comfort: 'High (one booking, guided crossing)', bestFor: 'Anyone who wants the border handled for them' },
+    ],
+    diyHeading: 'Step by Step: The DIY Route',
+    diyIntro:
+      'Four legs, each a separate transaction. It is the cheapest way to go, but every connection is on you, so leave Puerto Viejo early enough that a delay on one leg does not strand you on the wrong side of the border after it closes.',
+    diyColLeg: 'Leg',
+    diyColCost: 'Cost',
+    diyColTime: 'Time',
+    diyLegs: [
+      { leg: 'Puerto Viejo → Sixaola (MEPE bus)', cost: '~₡2,240 (about $4)', time: '~1.5 hrs' },
+      { leg: 'Sixaola–Guabito border crossing (on foot)', cost: 'Exit and entry taxes apply (see below)', time: 'Minutes, if queues are short' },
+      { leg: 'Guabito → Almirante (taxi)', cost: '~$10', time: '~1 hr' },
+      { leg: 'Almirante → Bocas del Toro (water taxi)', cost: '~$6–8', time: '~30 min' },
+    ],
+    diyLinkText: 'See the full MEPE bus schedule and stops →',
+    requirementsHeading: 'What You Will Need at the Border',
+    requirementsParagraphs: [
+      'Bring a passport valid for at least six months. Panama immigration commonly asks for proof of onward or return travel, and occasionally for proof of at least $500 in funds. A printed itinerary or a card with an available balance is usually enough. Travellers without an onward ticket have reported being able to buy a bus ticket out of Panama on the spot, at roughly $14, to satisfy the requirement.',
+      'Both sides charge a small cash fee: a Costa Rica exit tax (commonly quoted around $8–10) and a Panama entry/municipal tax (quoted anywhere from $4–8 depending on the source and when they last crossed). Carry small USD bills, since there are no reliable ATMs right at the crossing.',
+      'The Costa Rican border post keeps roughly 7am–5pm hours, and everything slows down around lunch and on Sundays. Panama\'s side is more flexible, but you cannot cross if the Costa Rican side is closed. Aim to reach Sixaola well before mid-afternoon.',
+    ],
+    stayRecommendationTitle: 'Where to stay in Puerto Viejo before you cross',
+    shuttleHeading: 'The Easy Way: Private Door-to-Door Shuttles',
+    shuttleParagraphs: [
+      'A private shuttle picks you up at your hotel in Puerto Viejo (or Cahuita, Punta Uva or Manzanillo for a small extra fee) and takes care of the whole route: a guide walks you through the border, then a van and a boat carry you the rest of the way to Bocas Town. It costs a little more than doing it yourself, but you book once, pay once, and never have to find the next taxi.',
+      'Caribe Shuttle is the best-known operator on this route, with a few departures a day; a couple of other companies run comparable schedules. All must be booked in advance, and some departures only run if enough passengers have booked.',
+    ],
+    shuttleColOperator: 'Operator',
+    shuttleColDeparts: 'Departs Puerto Viejo',
+    shuttleColPrice: 'Price (per person)',
+    shuttleColDuration: 'Duration',
+    shuttleOperators: [
+      { operator: 'Caribe Shuttle', departs: '6:00am, 8:00am, 12:00pm', price: '~$35–37 (+$6–8 for Cahuita/Punta Uva/Manzanillo pickup)', duration: '~4 hrs' },
+      { operator: "Willie's Tours CR", departs: '8:00am, 12:00pm', price: 'Comparable to Caribe Shuttle', duration: '~4 hrs' },
+      { operator: 'Interbus', departs: 'Varies', price: '~$70 (quoted secondhand, so confirm before booking)', duration: '~4–5 hrs, may include a lunch stop' },
+    ],
+    chooseHeading: 'Which Should You Choose?',
+    chooseIntro: 'A quick way to decide:',
+    chooseListItems: [
+      'Comfortable navigating a border crossing yourself and want the cheapest option → the DIY bus, taxi and boat',
+      'Want the border handled for you, one price, no changes → a private shuttle like Caribe Shuttle',
+      'Travelling as a group, or with a lot of luggage → a private shuttle',
+      'Short on time and want to guarantee same-day arrival → a private shuttle, so a missed connection cannot cost you the crossing',
+    ],
+    takeawaysHeading: 'Key Takeaways',
+    takeawaysParagraph:
+      'Either way, budget about half a day door-to-door and carry cash in small bills for the border taxes. The DIY route is cheapest but has four separate connections to manage; a private shuttle costs a little more and turns the whole trip into one booking. Confirm current prices and border tax amounts before you travel, since both change without much notice.',
+  },
+  es: {
+    seoTitle: 'De Puerto Viejo a Bocas del Toro, Panamá: Guía del Cruce Fronterizo y los Shuttles',
+    seoDescription:
+      'Cómo llegar de Puerto Viejo, Costa Rica, a Bocas del Toro, Panamá: la ruta bus-taxi-bote por la frontera de Sixaola, los requisitos de entrada y las opciones de shuttle privado comparadas.',
+    heading: 'De Puerto Viejo a Bocas del Toro: Guía del Cruce Fronterizo y los Shuttles',
+    heroAlt: 'El cruce fronterizo en Sixaola, Costa Rica, camino a Bocas del Toro, Panamá',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Sixaola" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Bocas del Toro, Panamá, está lo bastante cerca de Puerto Viejo como para visitarla unos días sin necesidad de volar. Llegar sí implica cruzar una frontera internacional, y eso complica a más viajeros que cualquier otro tramo de un viaje por Costa Rica. La versión corta: bus o taxi hasta la frontera de Sixaola, cruzas a pie hasta Guabito, taxi hasta Almirante, y luego un bote corto hasta las islas.',
+      'Puedes hacer cada tramo por tu cuenta para pagar lo mínimo, o reservar un shuttle puerta a puerta que se encarga de la frontera por ti. Esta guía repasa ambas opciones, además de lo que Panamá realmente pide en el cruce, para que no te tome por sorpresa.',
+    ],
+    tableHeading: 'Dos Formas de Hacer el Viaje',
+    tableIntro: 'Los precios y tiempos son aproximados, cambian según la temporada, y siempre se pagan en efectivo. Úsalos para comparar, no como cotizaciones exactas.',
+    colOption: 'Opción',
+    colCost: 'Precio (por persona)',
+    colTime: 'Tiempo puerta a puerta',
+    colComfort: 'Comodidad',
+    colBestFor: 'Ideal para',
+    rows: [
+      { option: 'Por tu cuenta (bus + taxi + bote)', cost: '~$28–33', time: '~4–5 h', comfort: 'Básica (varios cambios)', bestFor: 'Viajeros con presupuesto ajustado cómodos cruzando la frontera solos' },
+      { option: 'Shuttle privado puerta a puerta', cost: '~$35–37', time: '~4 h', comfort: 'Alta (una sola reserva, cruce guiado)', bestFor: 'Quien quiera que alguien se encargue de la frontera' },
+    ],
+    diyHeading: 'Paso a Paso: La Ruta por tu Cuenta',
+    diyIntro:
+      'Cuatro tramos, cada uno una transacción distinta. Es la forma más barata de viajar, pero cada conexión depende de ti, así que sal de Puerto Viejo con tiempo suficiente para que un retraso en un tramo no te deje varado del lado equivocado de la frontera después de que cierre.',
+    diyColLeg: 'Tramo',
+    diyColCost: 'Precio',
+    diyColTime: 'Tiempo',
+    diyLegs: [
+      { leg: 'Puerto Viejo → Sixaola (bus MEPE)', cost: '~₡2.240 (unos $4)', time: '~1.5 h' },
+      { leg: 'Cruce fronterizo Sixaola–Guabito (a pie)', cost: 'Aplican impuestos de salida y entrada (ver abajo)', time: 'Minutos, si las filas son cortas' },
+      { leg: 'Guabito → Almirante (taxi)', cost: '~$10', time: '~1 h' },
+      { leg: 'Almirante → Bocas del Toro (taxi acuático)', cost: '~$6–8', time: '~30 min' },
+    ],
+    diyLinkText: 'Ver el horario completo y las paradas del bus MEPE →',
+    requirementsHeading: 'Lo Que Necesitarás en la Frontera',
+    requirementsParagraphs: [
+      'Lleva un pasaporte con al menos seis meses de vigencia. Inmigración panameña suele pedir prueba de viaje de salida o de regreso, y ocasionalmente prueba de al menos $500 en fondos. Un itinerario impreso o una tarjeta con saldo disponible suele bastar. Viajeros sin boleto de salida han reportado poder comprar un boleto de bus para salir de Panamá en el momento, por unos $14, para cumplir con el requisito.',
+      'Ambos lados cobran una pequeña tarifa en efectivo: un impuesto de salida de Costa Rica (comúnmente citado entre $8 y $10) y un impuesto de entrada/municipal de Panamá (citado entre $4 y $8 según la fuente y cuándo cruzaron). Lleva billetes pequeños en dólares, ya que no hay cajeros automáticos confiables justo en el cruce.',
+      'El puesto fronterizo costarricense mantiene un horario aproximado de 7am a 5pm, y todo se ralentiza a la hora del almuerzo y los domingos. El lado panameño es más flexible, pero no puedes cruzar si el lado costarricense está cerrado. Procura llegar a Sixaola bien antes de media tarde.',
+    ],
+    stayRecommendationTitle: 'Dónde hospedarte en Puerto Viejo antes de cruzar',
+    shuttleHeading: 'La Forma Fácil: Shuttles Privados Puerta a Puerta',
+    shuttleParagraphs: [
+      'Un shuttle privado te recoge en tu hotel en Puerto Viejo (o en Cahuita, Punta Uva o Manzanillo por una pequeña tarifa adicional) y se encarga de toda la ruta: un guía te acompaña en la frontera, y luego una van y un bote te llevan el resto del camino hasta Bocas Town. Cuesta un poco más que hacerlo por tu cuenta, pero reservas una vez, pagas una vez, y nunca tienes que buscar el siguiente taxi.',
+      'Caribe Shuttle es el operador más conocido en esta ruta, con varias salidas al día; un par de empresas más ofrecen horarios comparables. Todos deben reservarse con anticipación, y algunas salidas solo operan si hay suficientes pasajeros reservados.',
+    ],
+    shuttleColOperator: 'Operador',
+    shuttleColDeparts: 'Sale de Puerto Viejo',
+    shuttleColPrice: 'Precio (por persona)',
+    shuttleColDuration: 'Duración',
+    shuttleOperators: [
+      { operator: 'Caribe Shuttle', departs: '6:00am, 8:00am, 12:00pm', price: '~$35–37 (+$6–8 por recogida en Cahuita/Punta Uva/Manzanillo)', duration: '~4 h' },
+      { operator: "Willie's Tours CR", departs: '8:00am, 12:00pm', price: 'Comparable a Caribe Shuttle', duration: '~4 h' },
+      { operator: 'Interbus', departs: 'Varía', price: '~$70 (precio de segunda mano, así que confirma antes de reservar)', duration: '~4–5 h, puede incluir parada para almorzar' },
+    ],
+    chooseHeading: '¿Cuál Deberías Elegir?',
+    chooseIntro: 'Una forma rápida de decidir:',
+    chooseListItems: [
+      'Te sientes cómodo cruzando una frontera por tu cuenta y quieres la opción más barata → el bus, taxi y bote por tu cuenta',
+      'Quieres que alguien se encargue de la frontera, un solo precio, sin cambios → un shuttle privado como Caribe Shuttle',
+      'Viajas en grupo, o con mucho equipaje → un shuttle privado',
+      'Tienes poco tiempo y quieres garantizar llegar el mismo día → un shuttle privado, para que una conexión perdida no te cueste el cruce',
+    ],
+    takeawaysHeading: 'Puntos Clave',
+    takeawaysParagraph:
+      'De cualquier forma, calcula medio día puerta a puerta y lleva efectivo en billetes pequeños para los impuestos fronterizos. La ruta por tu cuenta es la más barata pero tiene cuatro conexiones separadas que manejar; un shuttle privado cuesta un poco más y convierte todo el viaje en una sola reserva. Confirma los precios actuales y los montos de los impuestos fronterizos antes de viajar, ya que ambos cambian sin mucho aviso.',
+  },
+  de: {
+    seoTitle: 'Von Puerto Viejo nach Bocas del Toro, Panama: Grenzübertritt & Shuttle-Guide',
+    seoDescription:
+      'Wie du von Puerto Viejo, Costa Rica, nach Bocas del Toro, Panama kommst: die Bus-Taxi-Boot-Route über die Grenze bei Sixaola, Einreisebestimmungen und private Shuttle-Optionen im Vergleich.',
+    heading: 'Von Puerto Viejo nach Bocas del Toro: Grenzübertritt & Shuttle-Guide',
+    heroAlt: 'Der Grenzübergang in Sixaola, Costa Rica, auf dem Weg nach Bocas del Toro, Panama',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Sixaola" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Bocas del Toro, Panama, liegt nah genug an Puerto Viejo, um es für ein paar Tage ohne Flug zu besuchen. Die Anreise bedeutet allerdings, eine internationale Grenze zu überqueren, und das bereitet mehr Reisenden Kopfzerbrechen als jede andere Etappe einer Costa-Rica-Reise. Kurz gesagt: Bus oder Taxi zur Grenze bei Sixaola, zu Fuß nach Guabito, Taxi weiter nach Almirante, dann ein kurzes Boot zu den Inseln.',
+      'Du kannst jede Etappe selbst organisieren, um am wenigsten zu bezahlen, oder ein Tür-zu-Tür-Shuttle buchen, das sich um die Grenze kümmert. Dieser Guide geht beides durch, dazu auch, was Panama an der Grenze tatsächlich verlangt, damit du nicht überrascht wirst.',
+    ],
+    tableHeading: 'Zwei Wege für die Reise',
+    tableIntro: 'Preise und Zeiten sind ungefähr, ändern sich je nach Saison, und werden immer bar bezahlt. Nutze sie zum Vergleichen, nicht als genaue Angaben.',
+    colOption: 'Option',
+    colCost: 'Preis (pro Person)',
+    colTime: 'Tür-zu-Tür-Zeit',
+    colComfort: 'Komfort',
+    colBestFor: 'Ideal für',
+    rows: [
+      { option: 'Selbst organisiert (Bus + Taxi + Boot)', cost: '~$28–33', time: '~4–5 Std.', comfort: 'Einfach (mehrere Wechsel)', bestFor: 'Budgetreisende, die eine Grenze allein meistern können' },
+      { option: 'Privates Tür-zu-Tür-Shuttle', cost: '~$35–37', time: '~4 Std.', comfort: 'Hoch (eine Buchung, geführter Grenzübertritt)', bestFor: 'Alle, die die Grenze nicht selbst regeln wollen' },
+    ],
+    diyHeading: 'Schritt für Schritt: Die Route auf eigene Faust',
+    diyIntro:
+      'Vier Etappen, jede eine eigene Transaktion. Es ist die günstigste Art zu reisen, aber jede Anschlussverbindung liegt bei dir, also verlasse Puerto Viejo früh genug, damit eine Verzögerung auf einer Etappe dich nach Grenzschluss nicht auf der falschen Seite stranden lässt.',
+    diyColLeg: 'Etappe',
+    diyColCost: 'Preis',
+    diyColTime: 'Zeit',
+    diyLegs: [
+      { leg: 'Puerto Viejo → Sixaola (MEPE-Bus)', cost: '~₡2.240 (etwa $4)', time: '~1,5 Std.' },
+      { leg: 'Grenzübertritt Sixaola–Guabito (zu Fuß)', cost: 'Aus- und Einreisegebühren fallen an (siehe unten)', time: 'Minuten, wenn die Schlangen kurz sind' },
+      { leg: 'Guabito → Almirante (Taxi)', cost: '~$10', time: '~1 Std.' },
+      { leg: 'Almirante → Bocas del Toro (Wassertaxi)', cost: '~$6–8', time: '~30 Min.' },
+    ],
+    diyLinkText: 'Den kompletten MEPE-Busfahrplan und die Haltestellen ansehen →',
+    requirementsHeading: 'Was du an der Grenze brauchst',
+    requirementsParagraphs: [
+      'Bring einen Reisepass mit, der noch mindestens sechs Monate gültig ist. Die panamaische Einwanderungsbehörde verlangt häufig einen Nachweis der Weiter- oder Rückreise und gelegentlich einen Nachweis über mindestens $500. Ein ausgedrucktes Reiseprogramm oder eine Karte mit verfügbarem Guthaben reicht meist. Reisende ohne Weiterreiseticket konnten Berichten zufolge vor Ort für rund $14 ein Busticket aus Panama heraus kaufen, um die Anforderung zu erfüllen.',
+      'Auf beiden Seiten wird eine kleine Bargebühr fällig: eine costa-ricanische Ausreisegebühr (meist mit $8–10 angegeben) und eine panamaische Einreise-/Gemeindegebühr (je nach Quelle und Überquerungszeitpunkt zwischen $4 und $8 angegeben). Nimm kleine US-Dollar-Scheine mit, denn direkt am Grenzübergang gibt es keine verlässlichen Geldautomaten.',
+      'Der costa-ricanische Grenzposten hat etwa von 7 bis 17 Uhr geöffnet, und mittags sowie sonntags läuft alles langsamer. Die panamaische Seite ist flexibler, aber du kannst nicht hinüber, wenn die costa-ricanische Seite geschlossen ist. Versuche, deutlich vor dem späten Nachmittag in Sixaola anzukommen.',
+    ],
+    stayRecommendationTitle: 'Wo du in Puerto Viejo übernachten kannst, bevor du die Grenze überquerst',
+    shuttleHeading: 'Der einfache Weg: Private Tür-zu-Tür-Shuttles',
+    shuttleParagraphs: [
+      'Ein privates Shuttle holt dich an deinem Hotel in Puerto Viejo ab (oder in Cahuita, Punta Uva oder Manzanillo gegen einen kleinen Aufpreis) und übernimmt die gesamte Route: ein Guide begleitet dich über die Grenze, dann bringen dich ein Van und ein Boot den Rest des Weges nach Bocas Town. Es kostet etwas mehr, als es selbst zu organisieren, aber du buchst einmal, zahlst einmal und musst nie das nächste Taxi suchen.',
+      'Caribe Shuttle ist der bekannteste Anbieter auf dieser Route mit mehreren täglichen Abfahrten; ein paar andere Unternehmen bieten vergleichbare Fahrpläne. Alle müssen im Voraus gebucht werden, und manche Abfahrten finden nur statt, wenn genug Passagiere gebucht haben.',
+    ],
+    shuttleColOperator: 'Anbieter',
+    shuttleColDeparts: 'Abfahrt Puerto Viejo',
+    shuttleColPrice: 'Preis (pro Person)',
+    shuttleColDuration: 'Dauer',
+    shuttleOperators: [
+      { operator: 'Caribe Shuttle', departs: '6:00, 8:00, 12:00 Uhr', price: '~$35–37 (+$6–8 für Abholung in Cahuita/Punta Uva/Manzanillo)', duration: '~4 Std.' },
+      { operator: "Willie's Tours CR", departs: '8:00, 12:00 Uhr', price: 'Vergleichbar mit Caribe Shuttle', duration: '~4 Std.' },
+      { operator: 'Interbus', departs: 'Unterschiedlich', price: '~$70 (aus zweiter Hand zitiert, also vor Buchung bestätigen)', duration: '~4–5 Std., eventuell mit Mittagspause' },
+    ],
+    chooseHeading: 'Was solltest du wählen?',
+    chooseIntro: 'Eine schnelle Entscheidungshilfe:',
+    chooseListItems: [
+      'Du kommst allein mit einem Grenzübertritt zurecht und willst die günstigste Option → Bus, Taxi und Boot auf eigene Faust',
+      'Du willst, dass sich jemand um die Grenze kümmert, ein Preis, keine Wechsel → ein privates Shuttle wie Caribe Shuttle',
+      'Du reist als Gruppe oder mit viel Gepäck → ein privates Shuttle',
+      'Du hast wenig Zeit und willst die Ankunft am selben Tag garantieren → ein privates Shuttle, damit ein verpasster Anschluss dich nicht den Grenzübertritt kostet',
+    ],
+    takeawaysHeading: 'Das Wichtigste in Kürze',
+    takeawaysParagraph:
+      'So oder so solltest du etwa einen halben Tag Tür zu Tür einplanen und Bargeld in kleinen Scheinen für die Grenzgebühren mitnehmen. Die Route auf eigene Faust ist am günstigsten, hat aber vier separate Anschlüsse zu koordinieren; ein privates Shuttle kostet etwas mehr und macht die ganze Reise zu einer einzigen Buchung. Bestätige aktuelle Preise und Grenzgebühren vor der Reise, da sich beide ohne große Vorankündigung ändern.',
+  },
+  fr: {
+    seoTitle: 'De Puerto Viejo à Bocas del Toro, Panama : Guide du Passage de Frontière et des Navettes',
+    seoDescription:
+      'Comment se rendre de Puerto Viejo, Costa Rica, à Bocas del Toro, Panama : l’itinéraire bus-taxi-bateau par la frontière de Sixaola, les conditions d’entrée et les navettes privées comparées.',
+    heading: 'De Puerto Viejo à Bocas del Toro : Guide du Passage de Frontière et des Navettes',
+    heroAlt: 'Le poste-frontière de Sixaola, Costa Rica, en route vers Bocas del Toro, Panama',
+    photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Sixaola" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Bocas del Toro, au Panama, est assez proche de Puerto Viejo pour être visitée quelques jours sans prendre l’avion. S’y rendre implique cependant de traverser une frontière internationale, ce qui déroute plus de voyageurs qu’aucune autre étape d’un séjour au Costa Rica. En bref : bus ou taxi jusqu’à la frontière de Sixaola, traversée à pied jusqu’à Guabito, taxi jusqu’à Almirante, puis un court trajet en bateau jusqu’aux îles.',
+      'Vous pouvez faire chaque étape vous-même pour payer le moins cher, ou réserver une navette porte-à-porte qui s’occupe de la frontière pour vous. Ce guide détaille les deux options, ainsi que ce que le Panama demande réellement au passage, pour que vous ne soyez pas pris au dépourvu.',
+    ],
+    tableHeading: 'Deux Façons de Faire le Trajet',
+    tableIntro: 'Les prix et les temps sont approximatifs, varient selon la saison, et se paient toujours en espèces. Utilisez-les pour comparer, pas comme des devis exacts.',
+    colOption: 'Option',
+    colCost: 'Prix (par personne)',
+    colTime: 'Temps porte à porte',
+    colComfort: 'Confort',
+    colBestFor: 'Idéal pour',
+    rows: [
+      { option: 'Par vous-même (bus + taxi + bateau)', cost: '~$28–33', time: '~4–5 h', comfort: 'Basique (plusieurs changements)', bestFor: 'Voyageurs à petit budget à l’aise pour franchir seuls une frontière' },
+      { option: 'Navette privée porte-à-porte', cost: '~$35–37', time: '~4 h', comfort: 'Élevé (une seule réservation, passage guidé)', bestFor: 'Quiconque veut que la frontière soit prise en charge' },
+    ],
+    diyHeading: 'Étape par Étape : L’Itinéraire par Vous-Même',
+    diyIntro:
+      'Quatre étapes, chacune une transaction distincte. C’est la façon la moins chère de voyager, mais chaque correspondance est de votre ressort, alors partez de Puerto Viejo assez tôt pour qu’un retard sur une étape ne vous laisse pas bloqué du mauvais côté de la frontière après sa fermeture.',
+    diyColLeg: 'Étape',
+    diyColCost: 'Prix',
+    diyColTime: 'Temps',
+    diyLegs: [
+      { leg: 'Puerto Viejo → Sixaola (bus MEPE)', cost: '~₡2 240 (environ $4)', time: '~1,5 h' },
+      { leg: 'Passage frontalier Sixaola–Guabito (à pied)', cost: 'Taxes de sortie et d’entrée applicables (voir ci-dessous)', time: 'Quelques minutes, si les files sont courtes' },
+      { leg: 'Guabito → Almirante (taxi)', cost: '~$10', time: '~1 h' },
+      { leg: 'Almirante → Bocas del Toro (taxi aquatique)', cost: '~$6–8', time: '~30 min' },
+    ],
+    diyLinkText: 'Voir l’horaire complet et les arrêts du bus MEPE →',
+    requirementsHeading: 'Ce Qu’il Vous Faut à la Frontière',
+    requirementsParagraphs: [
+      'Munissez-vous d’un passeport valide au moins six mois. L’immigration panaméenne demande couramment une preuve de voyage de continuation ou de retour, et parfois la preuve d’au moins $500 de fonds. Un itinéraire imprimé ou une carte avec un solde disponible suffit généralement. Des voyageurs sans billet de continuation ont rapporté pouvoir acheter sur place un billet de bus pour quitter le Panama, pour environ $14, afin de satisfaire cette exigence.',
+      'Les deux côtés facturent de petits frais en espèces : une taxe de sortie du Costa Rica (généralement citée entre $8 et $10) et une taxe d’entrée/municipale du Panama (citée entre $4 et $8 selon la source et la date du passage). Prévoyez de petites coupures en dollars, car il n’y a pas de distributeurs fiables juste au passage.',
+      'Le poste-frontière costaricien ouvre environ de 7h à 17h, et tout ralentit à l’heure du déjeuner et le dimanche. Le côté panaméen est plus flexible, mais vous ne pouvez pas traverser si le côté costaricien est fermé. Essayez d’arriver à Sixaola bien avant le milieu de l’après-midi.',
+    ],
+    stayRecommendationTitle: 'Où loger à Puerto Viejo avant de traverser',
+    shuttleHeading: 'La Solution Simple : Navettes Privées Porte-à-Porte',
+    shuttleParagraphs: [
+      'Une navette privée vous prend à votre hôtel à Puerto Viejo (ou à Cahuita, Punta Uva ou Manzanillo moyennant un petit supplément) et se charge de tout l’itinéraire : un guide vous accompagne à la frontière, puis un van et un bateau vous conduisent le reste du chemin jusqu’à Bocas Town. Cela coûte un peu plus cher que de le faire vous-même, mais vous réservez une fois, payez une fois, et n’avez jamais à chercher le taxi suivant.',
+      'Caribe Shuttle est l’opérateur le plus connu sur cet itinéraire, avec plusieurs départs par jour ; quelques autres compagnies proposent des horaires comparables. Toutes doivent être réservées à l’avance, et certains départs n’ont lieu que si suffisamment de passagers ont réservé.',
+    ],
+    shuttleColOperator: 'Opérateur',
+    shuttleColDeparts: 'Départ de Puerto Viejo',
+    shuttleColPrice: 'Prix (par personne)',
+    shuttleColDuration: 'Durée',
+    shuttleOperators: [
+      { operator: 'Caribe Shuttle', departs: '6h00, 8h00, 12h00', price: '~$35–37 (+$6–8 pour une prise en charge à Cahuita/Punta Uva/Manzanillo)', duration: '~4 h' },
+      { operator: "Willie's Tours CR", departs: '8h00, 12h00', price: 'Comparable à Caribe Shuttle', duration: '~4 h' },
+      { operator: 'Interbus', departs: 'Variable', price: '~$70 (prix rapporté de seconde main, à confirmer avant réservation)', duration: '~4–5 h, avec parfois un arrêt déjeuner' },
+    ],
+    chooseHeading: 'Que Devriez-Vous Choisir ?',
+    chooseIntro: 'Un moyen rapide de décider :',
+    chooseListItems: [
+      'À l’aise pour franchir seul une frontière et voulez l’option la moins chère → le bus, le taxi et le bateau par vous-même',
+      'Vous voulez que la frontière soit prise en charge, un seul prix, aucun changement → une navette privée comme Caribe Shuttle',
+      'Vous voyagez en groupe, ou avec beaucoup de bagages → une navette privée',
+      'Vous manquez de temps et voulez garantir une arrivée le jour même → une navette privée, pour qu’une correspondance ratée ne vous coûte pas la traversée',
+    ],
+    takeawaysHeading: 'Points Clés',
+    takeawaysParagraph:
+      'Quelle que soit l’option, prévoyez environ une demi-journée porte-à-porte et prévoyez des espèces en petites coupures pour les taxes frontalières. L’itinéraire par vous-même est le moins cher mais implique quatre correspondances distinctes à gérer ; une navette privée coûte un peu plus cher et transforme tout le trajet en une seule réservation. Confirmez les prix actuels et les montants des taxes frontalières avant de voyager, car les deux changent sans grand préavis.',
+  },
+  it: {
+    seoTitle: 'Da Puerto Viejo a Bocas del Toro, Panama: Guida al Confine e alle Navette',
+    seoDescription:
+      'Come arrivare da Puerto Viejo, Costa Rica, a Bocas del Toro, Panama: il percorso fai-da-te bus-taxi-barca attraverso il confine di Sixaola, i requisiti d’ingresso e le opzioni di navetta privata a confronto.',
+    heading: 'Da Puerto Viejo a Bocas del Toro: Guida al Confine e alle Navette',
+    heroAlt: 'Il valico di frontiera di Sixaola, Costa Rica, sulla strada per Bocas del Toro, Panama',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Sixaola" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Bocas del Toro, Panama, è abbastanza vicina a Puerto Viejo da poterla visitare per qualche giorno senza prendere un volo. Arrivarci significa però attraversare un confine internazionale, e questo mette in difficoltà più viaggiatori di qualsiasi altra tappa di un viaggio in Costa Rica. In breve: bus o taxi fino al confine di Sixaola, attraversamento a piedi fino a Guabito, taxi fino ad Almirante, poi una breve traversata in barca fino alle isole.',
+      'Puoi organizzare ogni tappa da solo per spendere il minimo, oppure prenotare una navetta porta a porta che si occupa del confine al posto tuo. Questa guida analizza entrambe le opzioni, oltre a cosa chiede davvero Panama al valico, così non ti coglie impreparato.',
+    ],
+    tableHeading: 'Due Modi per Fare il Viaggio',
+    tableIntro: 'Prezzi e tempi sono approssimativi, cambiano con la stagione, e si pagano sempre in contanti. Usali per confrontare, non come preventivi esatti.',
+    colOption: 'Opzione',
+    colCost: 'Prezzo (a persona)',
+    colTime: 'Tempo porta a porta',
+    colComfort: 'Comfort',
+    colBestFor: 'Ideale per',
+    rows: [
+      { option: 'Fai-da-te (bus + taxi + barca)', cost: '~$28–33', time: '~4–5 h', comfort: 'Essenziale (vari cambi)', bestFor: 'Viaggiatori con budget ridotto a proprio agio nell’attraversare un confine da soli' },
+      { option: 'Navetta privata porta a porta', cost: '~$35–37', time: '~4 h', comfort: 'Alto (una sola prenotazione, attraversamento guidato)', bestFor: 'Chiunque voglia che il confine venga gestito per lui' },
+    ],
+    diyHeading: 'Passo Dopo Passo: Il Percorso Fai-da-Te',
+    diyIntro:
+      'Quattro tappe, ciascuna una transazione a sé. È il modo più economico per viaggiare, ma ogni coincidenza dipende da te, quindi parti da Puerto Viejo abbastanza presto perché un ritardo in una tappa non ti lasci bloccato dal lato sbagliato del confine dopo la chiusura.',
+    diyColLeg: 'Tappa',
+    diyColCost: 'Prezzo',
+    diyColTime: 'Tempo',
+    diyLegs: [
+      { leg: 'Puerto Viejo → Sixaola (bus MEPE)', cost: '~₡2.240 (circa $4)', time: '~1,5 h' },
+      { leg: 'Attraversamento del confine Sixaola–Guabito (a piedi)', cost: 'Si applicano tasse di uscita e ingresso (vedi sotto)', time: 'Pochi minuti, se le code sono brevi' },
+      { leg: 'Guabito → Almirante (taxi)', cost: '~$10', time: '~1 h' },
+      { leg: 'Almirante → Bocas del Toro (taxi acquatico)', cost: '~$6–8', time: '~30 min' },
+    ],
+    diyLinkText: 'Vedi l’orario completo e le fermate del bus MEPE →',
+    requirementsHeading: 'Cosa Ti Serve al Confine',
+    requirementsParagraphs: [
+      'Porta un passaporto valido per almeno sei mesi. L’immigrazione panamense chiede comunemente una prova di viaggio di proseguimento o di ritorno, e occasionalmente la prova di almeno $500 di fondi. Di solito bastano un itinerario stampato o una carta con saldo disponibile. I viaggiatori senza biglietto di proseguimento hanno segnalato di poter acquistare sul posto un biglietto di bus per lasciare Panama, per circa $14, per soddisfare il requisito.',
+      'Entrambi i lati applicano una piccola tassa in contanti: una tassa di uscita dal Costa Rica (comunemente indicata intorno a $8–10) e una tassa d’ingresso/municipale di Panama (indicata tra $4 e $8 a seconda della fonte e di quando hanno attraversato). Porta banconote di piccolo taglio in dollari, perché non ci sono bancomat affidabili proprio al valico.',
+      'Il posto di frontiera costaricano rimane aperto all’incirca dalle 7 alle 17, e tutto rallenta all’ora di pranzo e la domenica. Il lato panamense è più flessibile, ma non puoi attraversare se il lato costaricano è chiuso. Cerca di arrivare a Sixaola ben prima del tardo pomeriggio.',
+    ],
+    stayRecommendationTitle: 'Dove alloggiare a Puerto Viejo prima di attraversare',
+    shuttleHeading: 'Il Modo Facile: Navette Private Porta a Porta',
+    shuttleParagraphs: [
+      'Una navetta privata ti viene a prendere al tuo hotel a Puerto Viejo (o a Cahuita, Punta Uva o Manzanillo con un piccolo supplemento) e si occupa dell’intero percorso: una guida ti accompagna al confine, poi un furgone e una barca ti portano per il resto del tragitto fino a Bocas Town. Costa un po’ di più che organizzarlo da soli, ma prenoti una volta, paghi una volta, e non devi mai cercare il taxi successivo.',
+      'Caribe Shuttle è l’operatore più conosciuto su questo percorso, con diverse partenze al giorno; un paio di altre compagnie offrono orari comparabili. Tutte vanno prenotate in anticipo, e alcune partenze operano solo se ci sono abbastanza passeggeri prenotati.',
+    ],
+    shuttleColOperator: 'Operatore',
+    shuttleColDeparts: 'Partenza da Puerto Viejo',
+    shuttleColPrice: 'Prezzo (a persona)',
+    shuttleColDuration: 'Durata',
+    shuttleOperators: [
+      { operator: 'Caribe Shuttle', departs: '6:00, 8:00, 12:00', price: '~$35–37 (+$6–8 per il ritiro a Cahuita/Punta Uva/Manzanillo)', duration: '~4 h' },
+      { operator: "Willie's Tours CR", departs: '8:00, 12:00', price: 'Paragonabile a Caribe Shuttle', duration: '~4 h' },
+      { operator: 'Interbus', departs: 'Variabile', price: '~$70 (prezzo riportato di seconda mano, conferma prima di prenotare)', duration: '~4–5 h, può includere una sosta pranzo' },
+    ],
+    chooseHeading: 'Quale Dovresti Scegliere?',
+    chooseIntro: 'Un modo veloce per decidere:',
+    chooseListItems: [
+      'Sei a tuo agio ad attraversare un confine da solo e vuoi l’opzione più economica → bus, taxi e barca fai-da-te',
+      'Vuoi che il confine venga gestito per te, un prezzo unico, nessun cambio → una navetta privata come Caribe Shuttle',
+      'Viaggi in gruppo, o con molti bagagli → una navetta privata',
+      'Hai poco tempo e vuoi garantire l’arrivo in giornata → una navetta privata, così una coincidenza persa non ti costa l’attraversamento',
+    ],
+    takeawaysHeading: 'Punti Chiave',
+    takeawaysParagraph:
+      'In entrambi i casi, calcola circa mezza giornata porta a porta e porta contanti in banconote piccole per le tasse di confine. Il percorso fai-da-te è il più economico ma ha quattro coincidenze separate da gestire; una navetta privata costa un po’ di più e trasforma l’intero viaggio in un’unica prenotazione. Conferma i prezzi attuali e gli importi delle tasse di confine prima di viaggiare, perché entrambi cambiano senza molto preavviso.',
+  },
+  pt: {
+    seoTitle: 'De Puerto Viejo a Bocas del Toro, Panamá: Guia da Fronteira e dos Shuttles',
+    seoDescription:
+      'Como ir de Puerto Viejo, Costa Rica, a Bocas del Toro, Panamá: a rota por conta própria de ônibus-táxi-barco pela fronteira de Sixaola, os requisitos de entrada e as opções de shuttle privado comparadas.',
+    heading: 'De Puerto Viejo a Bocas del Toro: Guia da Fronteira e dos Shuttles',
+    heroAlt: 'A travessia de fronteira em Sixaola, Costa Rica, a caminho de Bocas del Toro, Panamá',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Sixaola" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Bocas del Toro, no Panamá, fica perto o suficiente de Puerto Viejo para visitar por alguns dias sem pegar um voo. Chegar lá significa, porém, cruzar uma fronteira internacional, e isso confunde mais viajantes do que qualquer outra etapa de uma viagem pela Costa Rica. Resumindo: ônibus ou táxi até a fronteira de Sixaola, atravessa a pé até Guabito, táxi até Almirante, e depois um barco curto até as ilhas.',
+      'Você pode fazer cada etapa por conta própria para pagar o mínimo, ou reservar um shuttle porta a porta que cuida da fronteira para você. Este guia percorre as duas opções, além do que o Panamá realmente exige na travessia, para você não ser pego de surpresa.',
+    ],
+    tableHeading: 'Duas Formas de Fazer a Viagem',
+    tableIntro: 'Preços e tempos são aproximados, mudam conforme a temporada, e são sempre pagos em dinheiro. Use-os para comparar, não como cotações exatas.',
+    colOption: 'Opção',
+    colCost: 'Preço (por pessoa)',
+    colTime: 'Tempo porta a porta',
+    colComfort: 'Conforto',
+    colBestFor: 'Ideal para',
+    rows: [
+      { option: 'Por conta própria (ônibus + táxi + barco)', cost: '~$28–33', time: '~4–5 h', comfort: 'Básico (várias trocas)', bestFor: 'Viajantes com orçamento apertado à vontade para atravessar a fronteira sozinhos' },
+      { option: 'Shuttle privado porta a porta', cost: '~$35–37', time: '~4 h', comfort: 'Alto (uma reserva só, travessia guiada)', bestFor: 'Quem quer que a fronteira seja resolvida por outra pessoa' },
+    ],
+    diyHeading: 'Passo a Passo: A Rota por Conta Própria',
+    diyIntro:
+      'Quatro etapas, cada uma uma transação separada. É a forma mais barata de viajar, mas cada conexão é por sua conta, então saia de Puerto Viejo com antecedência suficiente para que um atraso em uma etapa não deixe você preso do lado errado da fronteira depois que ela fechar.',
+    diyColLeg: 'Etapa',
+    diyColCost: 'Preço',
+    diyColTime: 'Tempo',
+    diyLegs: [
+      { leg: 'Puerto Viejo → Sixaola (ônibus MEPE)', cost: '~₡2.240 (cerca de $4)', time: '~1,5 h' },
+      { leg: 'Travessia de fronteira Sixaola–Guabito (a pé)', cost: 'Taxas de saída e entrada se aplicam (veja abaixo)', time: 'Minutos, se as filas forem curtas' },
+      { leg: 'Guabito → Almirante (táxi)', cost: '~$10', time: '~1 h' },
+      { leg: 'Almirante → Bocas del Toro (táxi aquático)', cost: '~$6–8', time: '~30 min' },
+    ],
+    diyLinkText: 'Veja o horário completo e as paradas do ônibus MEPE →',
+    requirementsHeading: 'O Que Você Vai Precisar na Fronteira',
+    requirementsParagraphs: [
+      'Leve um passaporte válido por pelo menos seis meses. A imigração panamenha costuma pedir prova de viagem de continuação ou de volta, e ocasionalmente prova de pelo menos $500 em fundos. Um itinerário impresso ou um cartão com saldo disponível costuma bastar. Viajantes sem passagem de continuação relataram conseguir comprar uma passagem de ônibus para sair do Panamá na hora, por cerca de $14, para cumprir a exigência.',
+      'Os dois lados cobram uma pequena taxa em dinheiro: uma taxa de saída da Costa Rica (geralmente citada entre $8 e $10) e uma taxa de entrada/municipal do Panamá (citada entre $4 e $8 dependendo da fonte e de quando cruzaram). Leve notas pequenas de dólar, pois não há caixas eletrônicos confiáveis bem na travessia.',
+      'O posto de fronteira costarriquenho funciona aproximadamente das 7h às 17h, e tudo fica mais lento na hora do almoço e aos domingos. O lado panamenho é mais flexível, mas você não pode atravessar se o lado costarriquenho estiver fechado. Procure chegar a Sixaola bem antes do meio da tarde.',
+    ],
+    stayRecommendationTitle: 'Onde se hospedar em Puerto Viejo antes de atravessar',
+    shuttleHeading: 'O Jeito Fácil: Shuttles Privados Porta a Porta',
+    shuttleParagraphs: [
+      'Um shuttle privado busca você no seu hotel em Puerto Viejo (ou em Cahuita, Punta Uva ou Manzanillo por uma pequena taxa extra) e cuida de toda a rota: um guia acompanha você na fronteira, e depois uma van e um barco levam você o resto do caminho até Bocas Town. Custa um pouco mais do que fazer por conta própria, mas você reserva uma vez, paga uma vez, e nunca precisa procurar o próximo táxi.',
+      'A Caribe Shuttle é a operadora mais conhecida nessa rota, com várias saídas por dia; mais algumas empresas oferecem horários parecidos. Todas precisam ser reservadas com antecedência, e algumas saídas só acontecem se houver passageiros suficientes reservados.',
+    ],
+    shuttleColOperator: 'Operadora',
+    shuttleColDeparts: 'Sai de Puerto Viejo',
+    shuttleColPrice: 'Preço (por pessoa)',
+    shuttleColDuration: 'Duração',
+    shuttleOperators: [
+      { operator: 'Caribe Shuttle', departs: '6h, 8h, 12h', price: '~$35–37 (+$6–8 para busca em Cahuita/Punta Uva/Manzanillo)', duration: '~4 h' },
+      { operator: "Willie's Tours CR", departs: '8h, 12h', price: 'Comparável à Caribe Shuttle', duration: '~4 h' },
+      { operator: 'Interbus', departs: 'Varia', price: '~$70 (preço de segunda mão, confirme antes de reservar)', duration: '~4–5 h, pode incluir parada para almoço' },
+    ],
+    chooseHeading: 'Qual Você Deveria Escolher?',
+    chooseIntro: 'Uma forma rápida de decidir:',
+    chooseListItems: [
+      'Você se sente à vontade para atravessar uma fronteira sozinho e quer a opção mais barata → o ônibus, táxi e barco por conta própria',
+      'Você quer que a fronteira seja resolvida para você, um preço só, sem trocas → um shuttle privado como a Caribe Shuttle',
+      'Você viaja em grupo, ou com muita bagagem → um shuttle privado',
+      'Você tem pouco tempo e quer garantir a chegada no mesmo dia → um shuttle privado, para que uma conexão perdida não custe a travessia',
+    ],
+    takeawaysHeading: 'Principais Pontos',
+    takeawaysParagraph:
+      'De qualquer forma, calcule cerca de meio dia porta a porta e leve dinheiro em notas pequenas para as taxas de fronteira. A rota por conta própria é a mais barata, mas tem quatro conexões separadas para gerenciar; um shuttle privado custa um pouco mais e transforma toda a viagem em uma única reserva. Confirme os preços atuais e os valores das taxas de fronteira antes de viajar, já que os dois mudam sem muito aviso.',
+  },
+  he: {
+    seoTitle: 'מ-Puerto Viejo ל-Bocas del Toro, פנמה: מדריך מעבר הגבול והשאטלים',
+    seoDescription:
+      'איך מגיעים מ-Puerto Viejo, קוסטה ריקה, ל-Bocas del Toro, פנמה: מסלול עצמאי של אוטובוס-מונית-סירה דרך גבול Sixaola, דרישות הכניסה, ואפשרויות השאטל הפרטי בהשוואה.',
+    heading: 'מ-Puerto Viejo ל-Bocas del Toro: מדריך מעבר הגבול והשאטלים',
+    heroAlt: 'מעבר הגבול ב-Sixaola, קוסטה ריקה, בדרך ל-Bocas del Toro, פנמה',
+    photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Sixaola" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Bocas del Toro שבפנמה קרובה מספיק ל-Puerto Viejo כדי לבקר בה לכמה ימים בלי לטוס. ההגעה לשם כן כוללת חציית גבול בינלאומי, וזה מבלבל יותר מטיילים מכל שלב אחר בטיול בקוסטה ריקה. בקצרה: אוטובוס או מונית עד גבול Sixaola, חציה ברגל אל Guabito, מונית עד Almirante, ואז סירה קצרה אל האיים.',
+      'אפשר לעשות כל שלב לבד כדי לשלם הכי פחות, או להזמין שאטל מדלת לדלת שמטפל בגבול בשבילכם. המדריך הזה עובר על שתי האפשרויות, ועל מה שפנמה באמת דורשת במעבר, כדי שלא תופתעו.',
+    ],
+    tableHeading: 'שתי דרכים לעשות את הטיול',
+    tableIntro: 'המחירים והזמנים משוערים, משתנים לפי העונה, ותמיד משולמים במזומן. השתמשו בהם להשוואה, לא כהצעת מחיר מדויקת.',
+    colOption: 'אפשרות',
+    colCost: 'מחיר (לאדם)',
+    colTime: 'זמן מדלת לדלת',
+    colComfort: 'נוחות',
+    colBestFor: 'מתאים במיוחד ל',
+    rows: [
+      { option: 'עצמאי (אוטובוס + מונית + סירה)', cost: '~$28–33', time: '~4–5 שעות', comfort: 'בסיסית (כמה חילופים)', bestFor: 'מטיילים בתקציב מצומצם שנוח להם לחצות גבול לבד' },
+      { option: 'שאטל פרטי מדלת לדלת', cost: '~$35–37', time: '~4 שעות', comfort: 'גבוהה (הזמנה אחת, חציה מלווה)', bestFor: 'כל מי שרוצה שמישהו יטפל בגבול בשבילו' },
+    ],
+    diyHeading: 'שלב אחר שלב: המסלול העצמאי',
+    diyIntro:
+      'ארבעה שלבים, כל אחד עסקה נפרדת. זו הדרך הזולה ביותר לנסוע, אבל כל חיבור תלוי בכם, אז צאו מ-Puerto Viejo מספיק מוקדם כדי שעיכוב בשלב אחד לא ישאיר אתכם תקועים בצד הלא נכון של הגבול אחרי שהוא נסגר.',
+    diyColLeg: 'שלב',
+    diyColCost: 'מחיר',
+    diyColTime: 'זמן',
+    diyLegs: [
+      { leg: 'Puerto Viejo → Sixaola (אוטובוס MEPE)', cost: '~₡2,240 (כ-$4)', time: '~1.5 שעות' },
+      { leg: 'מעבר הגבול Sixaola–Guabito (ברגל)', cost: 'חלים מיסי יציאה וכניסה (ראו למטה)', time: 'דקות, אם התורים קצרים' },
+      { leg: 'Guabito → Almirante (מונית)', cost: '~$10', time: '~שעה' },
+      { leg: 'Almirante → Bocas del Toro (מונית ים)', cost: '~$6–8', time: '~30 דקות' },
+    ],
+    diyLinkText: 'צפו בלוח הזמנים המלא ובתחנות של אוטובוס MEPE ←',
+    requirementsHeading: 'מה תצטרכו בגבול',
+    requirementsParagraphs: [
+      'קחו דרכון בתוקף לפחות לשישה חודשים. הגירה פנמית לרוב מבקשת הוכחת המשך נסיעה או חזרה, ולעיתים הוכחה לפחות ל-$500 בכספים. מסלול טיול מודפס או כרטיס עם יתרה זמינה בדרך כלל מספיקים. מטיילים בלי כרטיס המשך דיווחו שיכלו לקנות במקום כרטיס אוטובוס לצאת מפנמה, תמורת כ-$14, כדי לעמוד בדרישה.',
+      'משני הצדדים גובים תשלום קטן במזומן: מס יציאה מקוסטה ריקה (בדרך כלל מצוין כ-$8–10) ומס כניסה/עירייה בפנמה (מצוין בין $4 ל-$8 בהתאם למקור ולמועד החציה). קחו שטרות דולר קטנים, כי אין כספומטים אמינים ממש במעבר.',
+      'עמדת הגבול הקוסטה ריקנית פועלת בערך בין 7 בבוקר ל-5 אחר הצהריים, והכול מאט בזמן הצהריים ובימי ראשון. הצד הפנמי גמיש יותר, אבל אי אפשר לחצות אם הצד הקוסטה ריקני סגור. נסו להגיע ל-Sixaola הרבה לפני אמצע אחר הצהריים.',
+    ],
+    stayRecommendationTitle: 'איפה להתארח ב-Puerto Viejo לפני החציה',
+    shuttleHeading: 'הדרך הקלה: שאטלים פרטיים מדלת לדלת',
+    shuttleParagraphs: [
+      'שאטל פרטי אוסף אתכם מהמלון שלכם ב-Puerto Viejo (או ב-Cahuita, Punta Uva או Manzanillo תמורת תוספת קטנה) ומטפל בכל המסלול: מדריך מלווה אתכם בגבול, ואז ואן וסירה לוקחים אתכם את שאר הדרך עד Bocas Town. זה עולה קצת יותר מלעשות זאת לבד, אבל אתם מזמינים פעם אחת, משלמים פעם אחת, ולעולם לא צריכים לחפש את המונית הבאה.',
+      'Caribe Shuttle הוא המפעיל הידוע ביותר במסלול הזה, עם כמה יציאות ביום; עוד כמה חברות מציעות לוחות זמנים דומים. את כולם צריך להזמין מראש, וחלק מהיציאות פועלות רק אם יש מספיק נוסעים שהזמינו.',
+    ],
+    shuttleColOperator: 'מפעיל',
+    shuttleColDeparts: 'יציאה מ-Puerto Viejo',
+    shuttleColPrice: 'מחיר (לאדם)',
+    shuttleColDuration: 'משך',
+    shuttleOperators: [
+      { operator: 'Caribe Shuttle', departs: '6:00, 8:00, 12:00', price: '~$35–37 (+$6–8 לאיסוף ב-Cahuita/Punta Uva/Manzanillo)', duration: '~4 שעות' },
+      { operator: "Willie's Tours CR", departs: '8:00, 12:00', price: 'דומה ל-Caribe Shuttle', duration: '~4 שעות' },
+      { operator: 'Interbus', departs: 'משתנה', price: '~$70 (מחיר ממקור משני, יש לאשר לפני ההזמנה)', duration: '~4–5 שעות, ייתכן עם עצירת צהריים' },
+    ],
+    chooseHeading: 'מה כדאי לכם לבחור?',
+    chooseIntro: 'דרך מהירה להחליט:',
+    chooseListItems: [
+      'נוח לכם לחצות גבול לבד ורוצים את האפשרות הזולה ביותר ← אוטובוס, מונית וסירה עצמאי',
+      'רוצים שמישהו יטפל בגבול בשבילכם, מחיר אחד, בלי חילופים ← שאטל פרטי כמו Caribe Shuttle',
+      'נוסעים כקבוצה, או עם הרבה מזוודות ← שאטל פרטי',
+      'קצרים בזמן ורוצים להבטיח הגעה באותו היום ← שאטל פרטי, כדי שחיבור שהוחמץ לא יעלה לכם בחציה',
+    ],
+    takeawaysHeading: 'עיקרי הדברים',
+    takeawaysParagraph:
+      'בכל מקרה, תכננו בערך חצי יום מדלת לדלת וקחו מזומן בשטרות קטנים למיסי הגבול. המסלול העצמאי הוא הזול ביותר אך כולל ארבעה חיבורים נפרדים לנהל; שאטל פרטי עולה קצת יותר והופך את כל הטיול להזמנה אחת. אשרו מחירים עדכניים וסכומי מיסי גבול לפני הנסיעה, כי שניהם משתנים בלי הרבה התראה.',
+  },
+  hi: {
+    seoTitle: 'Puerto Viejo से Bocas del Toro, पनामा: बॉर्डर क्रॉसिंग और शटल गाइड',
+    seoDescription:
+      'Puerto Viejo, कोस्टा रिका से Bocas del Toro, पनामा कैसे पहुँचें: Sixaola बॉर्डर से होकर बस-टैक्सी-नाव का खुद का रास्ता, प्रवेश आवश्यकताएँ, और निजी शटल विकल्पों की तुलना।',
+    heading: 'Puerto Viejo से Bocas del Toro: बॉर्डर क्रॉसिंग और शटल गाइड',
+    heroAlt: 'Sixaola, कोस्टा रिका में बॉर्डर क्रॉसिंग, Bocas del Toro, पनामा के रास्ते में',
+    photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Sixaola" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'पनामा का Bocas del Toro, Puerto Viejo के इतना नज़दीक है कि बिना फ्लाइट लिए कुछ दिनों के लिए घूमा जा सकता है। वहाँ पहुँचने का मतलब है, हालाँकि, एक अंतरराष्ट्रीय सीमा पार करना, और यह कोस्टा रिका यात्रा के किसी भी अन्य हिस्से से ज़्यादा यात्रियों को उलझन में डालता है। संक्षेप में: Sixaola बॉर्डर तक बस या टैक्सी, पैदल Guabito में प्रवेश, फिर टैक्सी से Almirante, और फिर द्वीपों तक एक छोटी नाव यात्रा।',
+      'आप सबसे कम कीमत के लिए हर हिस्सा खुद कर सकते हैं, या एक दरवाज़े-से-दरवाज़े तक की शटल बुक कर सकते हैं जो आपके लिए बॉर्डर संभाल ले। यह गाइड दोनों को समझाता है, साथ ही यह भी कि पनामा क्रॉसिंग पर वास्तव में क्या माँगता है, ताकि आप अनजाने में न फँसें।',
+    ],
+    tableHeading: 'यात्रा करने के दो तरीके',
+    tableIntro: 'कीमतें और समय अनुमानित हैं, मौसम के साथ बदलते हैं, और हमेशा नकद में भुगतान किए जाते हैं। इन्हें तुलना के लिए इस्तेमाल करें, सटीक कोटेशन के रूप में नहीं।',
+    colOption: 'विकल्प',
+    colCost: 'कीमत (प्रति व्यक्ति)',
+    colTime: 'दरवाज़े से दरवाज़े तक का समय',
+    colComfort: 'आराम',
+    colBestFor: 'सबसे उपयुक्त',
+    rows: [
+      { option: 'खुद से (बस + टैक्सी + नाव)', cost: '~$28–33', time: '~4–5 घंटे', comfort: 'सामान्य (कई बदलाव)', bestFor: 'कम बजट वाले यात्री जो अकेले बॉर्डर पार करने में सहज हों' },
+      { option: 'निजी दरवाज़े-से-दरवाज़े शटल', cost: '~$35–37', time: '~4 घंटे', comfort: 'उच्च (एक बुकिंग, गाइडेड क्रॉसिंग)', bestFor: 'हर कोई जो चाहता है कि बॉर्डर उनके लिए संभाला जाए' },
+    ],
+    diyHeading: 'चरण दर चरण: खुद का रास्ता',
+    diyIntro:
+      'चार हिस्से, हर एक अलग लेन-देन। यह यात्रा करने का सबसे सस्ता तरीका है, लेकिन हर कनेक्शन आप पर निर्भर है, इसलिए Puerto Viejo से इतनी जल्दी निकलें कि किसी एक हिस्से में देरी आपको बॉर्डर बंद होने के बाद गलत तरफ न फँसा दे।',
+    diyColLeg: 'हिस्सा',
+    diyColCost: 'कीमत',
+    diyColTime: 'समय',
+    diyLegs: [
+      { leg: 'Puerto Viejo → Sixaola (MEPE बस)', cost: '~₡2,240 (करीब $4)', time: '~1.5 घंटे' },
+      { leg: 'Sixaola–Guabito बॉर्डर क्रॉसिंग (पैदल)', cost: 'निकास और प्रवेश कर लागू होते हैं (नीचे देखें)', time: 'कुछ मिनट, अगर कतारें छोटी हों' },
+      { leg: 'Guabito → Almirante (टैक्सी)', cost: '~$10', time: '~1 घंटा' },
+      { leg: 'Almirante → Bocas del Toro (वॉटर टैक्सी)', cost: '~$6–8', time: '~30 मिनट' },
+    ],
+    diyLinkText: 'MEPE बस का पूरा शेड्यूल और स्टॉप देखें →',
+    requirementsHeading: 'बॉर्डर पर आपको क्या चाहिए होगा',
+    requirementsParagraphs: [
+      'कम से कम छह महीने की वैधता वाला पासपोर्ट साथ रखें। पनामा आव्रजन आमतौर पर आगे की या वापसी यात्रा का प्रमाण माँगता है, और कभी-कभी कम से कम $500 के फंड का प्रमाण भी। एक प्रिंटेड यात्रा कार्यक्रम या उपलब्ध बैलेंस वाला कार्ड आमतौर पर काफी होता है। आगे की टिकट न रखने वाले यात्रियों ने बताया है कि वे इस आवश्यकता को पूरा करने के लिए मौके पर ही करीब $14 में पनामा से बाहर जाने की बस टिकट खरीद सकते हैं।',
+      'दोनों तरफ एक छोटा नकद शुल्क लिया जाता है: एक कोस्टा रिका निकास कर (आमतौर पर $8–10 के आसपास बताया गया) और एक पनामा प्रवेश/नगरपालिका कर (स्रोत और कब पार किया, इस पर निर्भर करते हुए $4 से $8 के बीच बताया गया)। डॉलर के छोटे नोट साथ रखें, क्योंकि क्रॉसिंग पर ही कोई भरोसेमंद एटीएम नहीं है।',
+      'कोस्टा रिकन बॉर्डर पोस्ट लगभग सुबह 7 बजे से शाम 5 बजे तक खुला रहता है, और दोपहर के भोजन के समय और रविवार को सब कुछ धीमा हो जाता है। पनामा की तरफ ज़्यादा लचीली है, लेकिन अगर कोस्टा रिकन तरफ बंद हो तो आप पार नहीं कर सकते। दोपहर के बाद से काफी पहले Sixaola पहुँचने की कोशिश करें।',
+    ],
+    stayRecommendationTitle: 'क्रॉस करने से पहले Puerto Viejo में कहाँ ठहरें',
+    shuttleHeading: 'आसान तरीका: निजी दरवाज़े-से-दरवाज़े शटल',
+    shuttleParagraphs: [
+      'एक निजी शटल आपको Puerto Viejo में आपके होटल से उठाती है (या थोड़े अतिरिक्त शुल्क पर Cahuita, Punta Uva या Manzanillo से) और पूरे रास्ते का ध्यान रखती है: एक गाइड बॉर्डर पर आपके साथ चलता है, फिर एक वैन और एक नाव आपको बाकी रास्ता Bocas Town तक ले जाती हैं। यह खुद करने से थोड़ा ज़्यादा महंगा है, लेकिन आप एक बार बुक करते हैं, एक बार भुगतान करते हैं, और आपको कभी अगली टैक्सी ढूँढ़नी नहीं पड़ती।',
+      'इस रास्ते पर Caribe Shuttle सबसे जाना-पहचाना ऑपरेटर है, जिसकी दिन में कई यात्राएँ होती हैं; कुछ और कंपनियाँ भी तुलनीय शेड्यूल चलाती हैं। सभी को पहले से बुक करना ज़रूरी है, और कुछ यात्राएँ तभी चलती हैं जब पर्याप्त यात्रियों ने बुकिंग की हो।',
+    ],
+    shuttleColOperator: 'ऑपरेटर',
+    shuttleColDeparts: 'Puerto Viejo से प्रस्थान',
+    shuttleColPrice: 'कीमत (प्रति व्यक्ति)',
+    shuttleColDuration: 'अवधि',
+    shuttleOperators: [
+      { operator: 'Caribe Shuttle', departs: 'सुबह 6:00, 8:00, दोपहर 12:00', price: '~$35–37 (Cahuita/Punta Uva/Manzanillo पिकअप के लिए +$6–8)', duration: '~4 घंटे' },
+      { operator: "Willie's Tours CR", departs: 'सुबह 8:00, दोपहर 12:00', price: 'Caribe Shuttle के तुलनीय', duration: '~4 घंटे' },
+      { operator: 'Interbus', departs: 'अलग-अलग', price: '~$70 (दूसरे स्रोत से बताई गई कीमत, बुकिंग से पहले पुष्टि करें)', duration: '~4–5 घंटे, दोपहर के भोजन के लिए रुकना शामिल हो सकता है' },
+    ],
+    chooseHeading: 'आपको क्या चुनना चाहिए?',
+    chooseIntro: 'तय करने का एक तेज़ तरीका:',
+    chooseListItems: [
+      'खुद बॉर्डर पार करने में सहज हैं और सबसे सस्ता विकल्प चाहते हैं → खुद से बस, टैक्सी और नाव',
+      'चाहते हैं कि बॉर्डर आपके लिए संभाला जाए, एक कीमत, कोई बदलाव नहीं → Caribe Shuttle जैसी निजी शटल',
+      'समूह में यात्रा कर रहे हैं, या बहुत सारे सामान के साथ → एक निजी शटल',
+      'समय कम है और उसी दिन पहुँचने की गारंटी चाहते हैं → एक निजी शटल, ताकि छूटा हुआ कनेक्शन आपको क्रॉसिंग की कीमत न चुकाए',
+    ],
+    takeawaysHeading: 'मुख्य बातें',
+    takeawaysParagraph:
+      'किसी भी तरह, दरवाज़े-से-दरवाज़े तक लगभग आधे दिन का बजट रखें और बॉर्डर करों के लिए छोटे नोटों में नकद साथ रखें। खुद का रास्ता सबसे सस्ता है लेकिन इसमें संभालने के लिए चार अलग-अलग कनेक्शन हैं; एक निजी शटल थोड़ी ज़्यादा महंगी है और पूरी यात्रा को एक ही बुकिंग बना देती है। यात्रा से पहले मौजूदा कीमतों और बॉर्डर कर की राशि की पुष्टि करें, क्योंकि दोनों बिना ज़्यादा सूचना के बदल जाते हैं।',
+  },
+  nl: {
+    seoTitle: 'Van Puerto Viejo naar Bocas del Toro, Panama: Grensovergang & Shuttlegids',
+    seoDescription:
+      'Hoe kom je van Puerto Viejo, Costa Rica, naar Bocas del Toro, Panama: de doe-het-zelfroute met bus, taxi en boot via de grens bij Sixaola, inreisvereisten en privéshuttle-opties vergeleken.',
+    heading: 'Van Puerto Viejo naar Bocas del Toro: Grensovergang & Shuttlegids',
+    heroAlt: 'De grensovergang bij Sixaola, Costa Rica, onderweg naar Bocas del Toro, Panama',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Sixaola" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Bocas del Toro in Panama ligt dicht genoeg bij Puerto Viejo om er een paar dagen naartoe te gaan zonder te vliegen. Om er te komen moet je wel een internationale grens oversteken, en dat zorgt voor meer verwarring dan welke andere etappe van een Costa Rica-reis dan ook. Kort gezegd: bus of taxi naar de grens bij Sixaola, te voet oversteken naar Guabito, taxi verder naar Almirante, en dan een korte boottocht naar de eilanden.',
+      'Je kunt elke etappe zelf regelen voor de laagste prijs, of een deur-tot-deurshuttle boeken die de grens voor je afhandelt. Deze gids behandelt beide opties, plus wat Panama daadwerkelijk vraagt bij de grens, zodat je niet voor verrassingen komt te staan.',
+    ],
+    tableHeading: 'Twee Manieren om de Reis te Maken',
+    tableIntro: 'Prijzen en tijden zijn bij benadering, veranderen met het seizoen, en worden altijd contant betaald. Gebruik ze om te vergelijken, niet als exacte offerte.',
+    colOption: 'Optie',
+    colCost: 'Prijs (per persoon)',
+    colTime: 'Deur-tot-deurtijd',
+    colComfort: 'Comfort',
+    colBestFor: 'Ideaal voor',
+    rows: [
+      { option: 'Zelf regelen (bus + taxi + boot)', cost: '~$28–33', time: '~4–5 u', comfort: 'Basic (meerdere overstappen)', bestFor: 'Reizigers met een klein budget die een grens zelf durven oversteken' },
+      { option: 'Privé deur-tot-deurshuttle', cost: '~$35–37', time: '~4 u', comfort: 'Hoog (één boeking, begeleide grensovergang)', bestFor: 'Iedereen die wil dat de grens voor hen geregeld wordt' },
+    ],
+    diyHeading: 'Stap voor Stap: De Doe-het-zelfroute',
+    diyIntro:
+      'Vier etappes, elk een aparte transactie. Het is de goedkoopste manier om te reizen, maar elke aansluiting is jouw verantwoordelijkheid, dus vertrek vroeg genoeg uit Puerto Viejo zodat een vertraging op één etappe je niet aan de verkeerde kant van de grens strandt nadat die gesloten is.',
+    diyColLeg: 'Etappe',
+    diyColCost: 'Prijs',
+    diyColTime: 'Tijd',
+    diyLegs: [
+      { leg: 'Puerto Viejo → Sixaola (MEPE-bus)', cost: '~₡2.240 (ongeveer $4)', time: '~1,5 u' },
+      { leg: 'Grensovergang Sixaola–Guabito (te voet)', cost: 'Uitreis- en inreisbelasting van toepassing (zie hieronder)', time: 'Minuten, als de rijen kort zijn' },
+      { leg: 'Guabito → Almirante (taxi)', cost: '~$10', time: '~1 u' },
+      { leg: 'Almirante → Bocas del Toro (watertaxi)', cost: '~$6–8', time: '~30 min' },
+    ],
+    diyLinkText: 'Bekijk het volledige MEPE-busschema en de haltes →',
+    requirementsHeading: 'Wat Je Nodig Hebt aan de Grens',
+    requirementsParagraphs: [
+      'Neem een paspoort mee dat nog minstens zes maanden geldig is. De Panamese immigratie vraagt vaak om bewijs van doorreis of terugreis, en soms om bewijs van minstens $500 aan middelen. Een uitgeprint reisschema of een kaart met beschikbaar saldo is meestal genoeg. Reizigers zonder doorreisticket melden dat ze ter plekke voor ongeveer $14 een busticket uit Panama konden kopen om aan de eis te voldoen.',
+      'Aan beide kanten wordt een kleine contante vergoeding gevraagd: een Costa Ricaanse uitreisbelasting (meestal rond $8–10) en een Panamese inreis-/gemeentebelasting (variërend van $4 tot $8 afhankelijk van de bron en het moment van oversteken). Neem kleine dollarbiljetten mee, want er zijn geen betrouwbare pinautomaten precies bij de grensovergang.',
+      'De Costa Ricaanse grenspost is ongeveer open van 7 tot 17 uur, en alles vertraagt rond de lunch en op zondag. De Panamese kant is flexibeler, maar je kunt niet oversteken als de Costa Ricaanse kant gesloten is. Probeer ruim vóór de late middag in Sixaola aan te komen.',
+    ],
+    stayRecommendationTitle: 'Waar je in Puerto Viejo kunt overnachten voordat je oversteekt',
+    shuttleHeading: 'De Makkelijke Manier: Privé Deur-tot-deurshuttles',
+    shuttleParagraphs: [
+      'Een privéshuttle haalt je op bij je hotel in Puerto Viejo (of in Cahuita, Punta Uva of Manzanillo tegen een kleine meerprijs) en regelt de hele route: een gids begeleidt je bij de grens, waarna een busje en een boot je de rest van de weg naar Bocas Town brengen. Het kost iets meer dan het zelf regelen, maar je boekt één keer, betaalt één keer, en hoeft nooit de volgende taxi te zoeken.',
+      'Caribe Shuttle is de bekendste aanbieder op deze route, met meerdere dagelijkse vertrekken; een paar andere bedrijven bieden vergelijkbare schema’s. Allemaal moeten van tevoren geboekt worden, en sommige vertrekken gaan alleen door als er genoeg passagiers geboekt hebben.',
+    ],
+    shuttleColOperator: 'Aanbieder',
+    shuttleColDeparts: 'Vertrek Puerto Viejo',
+    shuttleColPrice: 'Prijs (per persoon)',
+    shuttleColDuration: 'Duur',
+    shuttleOperators: [
+      { operator: 'Caribe Shuttle', departs: '6:00, 8:00, 12:00', price: '~$35–37 (+$6–8 voor ophalen in Cahuita/Punta Uva/Manzanillo)', duration: '~4 u' },
+      { operator: "Willie's Tours CR", departs: '8:00, 12:00', price: 'Vergelijkbaar met Caribe Shuttle', duration: '~4 u' },
+      { operator: 'Interbus', departs: 'Wisselend', price: '~$70 (uit tweede hand vermeld, bevestig voor het boeken)', duration: '~4–5 u, mogelijk met lunchstop' },
+    ],
+    chooseHeading: 'Wat Kun Je Het Beste Kiezen?',
+    chooseIntro: 'Een snelle manier om te beslissen:',
+    chooseListItems: [
+      'Je durft een grens zelf over te steken en wilt de goedkoopste optie → de bus, taxi en boot zelf regelen',
+      'Je wilt dat de grens voor je geregeld wordt, één prijs, geen overstappen → een privéshuttle zoals Caribe Shuttle',
+      'Je reist in een groep, of met veel bagage → een privéshuttle',
+      'Je hebt weinig tijd en wilt aankomst op dezelfde dag garanderen → een privéshuttle, zodat een gemiste aansluiting je niet de oversteek kost',
+    ],
+    takeawaysHeading: 'Belangrijkste Punten',
+    takeawaysParagraph:
+      'Hoe dan ook, reken op ongeveer een halve dag deur tot deur en neem contant geld in kleine coupures mee voor de grensbelastingen. De doe-het-zelfroute is het goedkoopst maar heeft vier aparte aansluitingen om te regelen; een privéshuttle kost iets meer en maakt van de hele reis één boeking. Bevestig actuele prijzen en grensbelastingbedragen voordat je op reis gaat, want beide veranderen zonder veel aankondiging.',
+  },
+};
+
+export function bocasDelToroContent(locale: Locale): BocasDelToroContent {
+  return bocasDelToro[locale] ?? bocasDelToro.en!;
+}

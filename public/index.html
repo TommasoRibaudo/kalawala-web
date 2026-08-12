@@ -16,11 +16,12 @@
 
        * The dataLayer shim and the Consent Mode defaults stay synchronous —
          they only push onto an array, cost nothing, and Consent Mode has to be
-         established before any hit can be queued. What is deferred is the
-         gtag/js network request, which is ~90 KB of script execution on the
-         critical path. dataLayer queues natively, so every gtag() call made
-         before the library arrives replays in order once it does; nothing is
-         lost but a little timing. -->
+         established before any hit can be queued. The ~90 KB gtag/js request
+         itself is loaded `async` at DOMContentLoaded (see loadGtag below), so
+         it stays off the critical render path without being deferred so long
+         that fast-bounce visitors go unmeasured. dataLayer queues natively, so
+         every gtag() call made before the library arrives replays in order once
+         it does; nothing is lost but a little timing. -->
   <script>
     (function () {
       var MEASUREMENT_ID = 'G-Q1LMHMNCMW';
@@ -58,15 +59,17 @@
         document.head.appendChild(tag);
       }
 
-      // Whichever comes first: the browser going idle, the first real user
-      // interaction, or a 5s backstop for a tab that is opened and left alone.
-      ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (evt) {
-        window.addEventListener(evt, loadGtag, { once: true, passive: true });
-      });
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(loadGtag, { timeout: 5000 });
+      // Load the library as soon as the document has parsed. `async` keeps the
+      // ~90 KB request off the critical render path, so FCP/LCP are untouched,
+      // but firing at DOMContentLoaded (typically <1s on these prerendered
+      // pages) means fast-bounce visitors are measured. Do NOT gate this behind
+      // a user interaction or a multi-second idle timeout: an earlier version
+      // did exactly that and dropped ~2/3 of all events, because most visitors
+      // leave before they ever scroll/tap or before the backstop fires.
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadGtag, { once: true });
       } else {
-        window.setTimeout(loadGtag, 2500);
+        loadGtag();
       }
     })();
   </script>

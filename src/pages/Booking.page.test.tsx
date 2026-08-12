@@ -1043,6 +1043,31 @@ function fillGuestDetails() {
   fireEvent.click(screen.getByLabelText('I accept the booking terms.'));
 }
 
+test('a persisted deposit hold is resumed on mount after the SINPE round-trip (#308)', async () => {
+  // The guest left to pay and came back to a fresh page — no search runs, but the
+  // hold was stashed in localStorage, so the timer, bank details and receipt
+  // upload must all reappear.
+  window.localStorage.setItem('kalawala_deposit_checkout', JSON.stringify(DEPOSIT_HOLD_FIXTURE));
+
+  renderBookingPage();
+
+  await screen.findByText('KWL-DEP12345');
+  expect(screen.getByText('8772 7355')).toBeInTheDocument();
+  expect(screen.getByText('Upload only the receipt for this deposit. Any other picture will cancel your reservation automatically.')).toBeInTheDocument();
+});
+
+test('an expired persisted deposit hold is not resumed (#308)', async () => {
+  const expired = { ...DEPOSIT_HOLD_FIXTURE, booking: { ...DEPOSIT_HOLD_FIXTURE.booking, hold: { status: 'active', expiresAt: '2000-01-01T00:00:00Z' } } };
+  window.localStorage.setItem('kalawala_deposit_checkout', JSON.stringify(expired));
+
+  renderBookingPage();
+
+  // Falls back to the ordinary search entry point; the dead hold is gone.
+  expect(await screen.findByRole('button', { name: /search availability/i })).toBeInTheDocument();
+  expect(screen.queryByText('KWL-DEP12345')).not.toBeInTheDocument();
+  expect(window.localStorage.getItem('kalawala_deposit_checkout')).toBeNull();
+});
+
 test('deposit checkout collects guest details and creates a real hold', async () => {
   mockJsonResponses([{ body: SEARCH_RESULT_FIXTURE }, { body: DEPOSIT_HOLD_FIXTURE }]);
 

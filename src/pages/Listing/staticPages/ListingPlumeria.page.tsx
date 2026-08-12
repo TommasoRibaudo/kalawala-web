@@ -21,6 +21,7 @@ import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { listingContent } from "../../../i18n/content/listings";
+import { vacationRentalJsonLd } from "../../../i18n/structuredData";
 import { houseDataByLangCode } from "../../../utils/constants";
 import { isPrerender } from "../../../utils/isPrerender";
 
@@ -74,6 +75,7 @@ const ListingPlumeria = () => {
                 <meta name="description" content={content.seoDescription} />
                 <link rel="canonical" href={canonicalUrl('plumeria', locale)} />
                 {hreflangLinks('plumeria')}
+                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Plumeria', locale, houseData?.image))}</script>
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (

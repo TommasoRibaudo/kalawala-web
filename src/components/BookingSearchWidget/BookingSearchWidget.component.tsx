@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,6 +25,11 @@ interface BookingSearchWidgetProps {
    */
   apartmentSlug?: string;
 }
+
+// useLayoutEffect warns during server pre-render; the hero calendar only opens
+// after a client click, so fall back to useEffect where there is no DOM.
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 const strings = {
   en: {
@@ -98,6 +104,47 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
   // The listing sidebar has the room to keep it open permanently.
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const datesFieldRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  // The hero calendar renders in a portal on document.body (see the note where
+  // it is rendered), so it is positioned against the trigger by hand.
+  const [popoverStyle, setPopoverStyle] = useState<React.CSSProperties | null>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    if (variant !== 'hero' || !isCalendarOpen) {
+      setPopoverStyle(null);
+      return;
+    }
+
+    const updatePosition = () => {
+      const trigger = triggerRef.current;
+      if (!trigger) {
+        return;
+      }
+      const rect = trigger.getBoundingClientRect();
+      const margin = 16;
+      const width = Math.min(320, window.innerWidth - margin * 2);
+      // Prefer left-aligned with the trigger, but never let the panel spill off
+      // the viewport edge on a narrow screen.
+      let left = rect.left;
+      if (left + width > window.innerWidth - margin) {
+        left = window.innerWidth - margin - width;
+      }
+      if (left < margin) {
+        left = margin;
+      }
+      setPopoverStyle({ position: 'fixed', top: rect.bottom + 6, left, width });
+    };
+
+    updatePosition();
+    // `true` catches scrolls inside any nested scroll container, not just window.
+    window.addEventListener('scroll', updatePosition, true);
+    window.addEventListener('resize', updatePosition);
+    return () => {
+      window.removeEventListener('scroll', updatePosition, true);
+      window.removeEventListener('resize', updatePosition);
+    };
+  }, [variant, isCalendarOpen]);
 
   useEffect(() => {
     if (variant !== 'hero' || !isCalendarOpen) {
@@ -105,7 +152,13 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
     }
 
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
-      if (!datesFieldRef.current?.contains(event.target as Node)) {
+      const target = event.target as Node;
+      // The panel lives in a portal outside datesFieldRef, so it needs its own
+      // containment check or every click inside it would close the calendar.
+      if (
+        !datesFieldRef.current?.contains(target) &&
+        !popoverRef.current?.contains(target)
+      ) {
         setIsCalendarOpen(false);
       }
     };
@@ -242,6 +295,7 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
           {variant === 'hero' ? (
             <>
               <button
+                ref={triggerRef}
                 type="button"
                 className={`booking-search-widget__dates-trigger${
                   dateError ? ' booking-search-widget__dates-trigger--invalid' : ''
@@ -253,11 +307,26 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
                 <FontAwesomeIcon icon={faCalendarDays} />
                 <span>{rangeSummary}</span>
               </button>
-              {isCalendarOpen && (
-                <div className="booking-search-widget__calendar-popover" role="dialog" aria-label={s.dates}>
-                  {calendar}
-                </div>
-              )}
+              {/* Portalled to document.body: the hero clips its overflow and
+                  the sticky nav (z-index 1000) sits in a higher stacking layer
+                  than anything inside .block, so an in-place dropdown gets
+                  hidden behind the nav. Rendering at the body root, positioned
+                  against the trigger, escapes both traps. */}
+              {isCalendarOpen &&
+                popoverStyle &&
+                typeof document !== 'undefined' &&
+                createPortal(
+                  <div
+                    ref={popoverRef}
+                    className="booking-search-widget__calendar-popover booking-search-widget__calendar-popover--floating"
+                    role="dialog"
+                    aria-label={s.dates}
+                    style={popoverStyle}
+                  >
+                    {calendar}
+                  </div>,
+                  document.body
+                )}
             </>
           ) : (
             <div className="booking-search-widget__calendar">{calendar}</div>

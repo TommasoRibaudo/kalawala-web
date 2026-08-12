@@ -242,3 +242,8 @@ output "payment_reconciliation_lambda_name" {
   description = "Scheduled worker that resolves PayPal payments whose webhook was missed."
   value       = aws_lambda_function.payment_reconciliation.function_name
 }
+
+output "booking_cache_table_name" {
+  description = "DynamoDB table backing the shared booking-api cache (calendar rates, availability)."
+  value       = aws_dynamodb_table.booking_cache.name
+}

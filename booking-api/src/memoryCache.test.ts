@@ -233,6 +233,45 @@ describe('cacheFactory — warm-start singleton', () => {
       delete process.env.CACHE_BACKEND;
     }
   });
+
+  it('getCacheBackend returns "dynamodb" when CACHE_BACKEND=dynamodb', () => {
+    const original = process.env.CACHE_BACKEND;
+    process.env.CACHE_BACKEND = 'dynamodb';
+    expect(getCacheBackend()).toBe('dynamodb');
+    if (original !== undefined) {
+      process.env.CACHE_BACKEND = original;
+    } else {
+      delete process.env.CACHE_BACKEND;
+    }
+  });
+
+  it('createCacheAdapter("dynamodb") falls back to the memory singleton when CACHE_TABLE_NAME is unset', () => {
+    const originalTable = process.env.CACHE_TABLE_NAME;
+    delete process.env.CACHE_TABLE_NAME;
+
+    const fallback = createCacheAdapter('dynamodb');
+    const memory = createCacheAdapter('memory');
+    expect(fallback).toBe(memory);
+
+    if (originalTable !== undefined) {
+      process.env.CACHE_TABLE_NAME = originalTable;
+    }
+  });
+
+  it('createCacheAdapter("dynamodb") returns the same object reference on repeated calls once configured', () => {
+    const originalTable = process.env.CACHE_TABLE_NAME;
+    process.env.CACHE_TABLE_NAME = 'kalawala-test-booking-cache';
+
+    const first = createCacheAdapter('dynamodb');
+    const second = createCacheAdapter('dynamodb');
+    expect(first).toBe(second);
+
+    if (originalTable !== undefined) {
+      process.env.CACHE_TABLE_NAME = originalTable;
+    } else {
+      delete process.env.CACHE_TABLE_NAME;
+    }
+  });
 });
 
 // ---------------------------------------------------------------------------

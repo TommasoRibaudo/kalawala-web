@@ -56,7 +56,7 @@ export type RouteKey =
   | 'blog' | 'blogTwodays' | 'blogGandoca' | 'blogSanjose' | 'blogByplane' | 'blogTenhours' | 'blogBushours' | 'blogCahuitapark' | 'blogIndigenous' | 'blogBesttime' | 'blogHiddengems' | 'blogWeather'
   | 'blogWeatherJan' | 'blogWeatherFeb' | 'blogWeatherMar' | 'blogWeatherApr' | 'blogWeatherMay' | 'blogWeatherJun' | 'blogWeatherJul' | 'blogWeatherAug'
   | 'blogWeatherSep' | 'blogWeatherOct' | 'blogWeatherNov' | 'blogWeatherDec' | 'blogSanjoseOptions'
-  | 'blogGandocaRefuge' | 'blogBeaches'
+  | 'blogGandocaRefuge' | 'blogBeaches' | 'blogBocas'
   | 'success';
 
 export interface RouteDef {
@@ -127,6 +127,7 @@ export const LOADERS: Record<RouteKey, () => Promise<{ default: ComponentType<an
   blogSanjoseOptions: () => import(/* webpackChunkName: "route-san-jose-to-puerto-viejo" */ './pages/Blog/staticPages/SanJoseToPuertoViejo'),
   blogGandocaRefuge: () => import(/* webpackChunkName: "route-gandoca-manzanillo-refuge" */ './pages/Blog/staticPages/GandocaManzanilloRefuge'),
   blogBeaches: () => import(/* webpackChunkName: "route-puerto-viejo-beaches" */ './pages/Blog/staticPages/PuertoViejoBeaches'),
+  blogBocas: () => import(/* webpackChunkName: "route-puerto-viejo-to-bocas-del-toro" */ './pages/Blog/staticPages/BocasDelToro'),
   success: () => import(/* webpackChunkName: "route-success" */ './pages/Home/Success.page'),
 };
 

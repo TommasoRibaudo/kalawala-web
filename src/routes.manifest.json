@@ -43,6 +43,7 @@
     { "key": "blogSanjoseOptions", "chunk": "route-san-jose-to-puerto-viejo", "slugs": { "en": "san-jose-to-puerto-viejo", "es": "san-jose-to-puerto-viejo" } },
     { "key": "blogGandocaRefuge", "chunk": "route-gandoca-manzanillo-refuge", "slugs": { "en": "gandoca-manzanillo-refuge", "es": "gandoca-manzanillo-refuge" } },
     { "key": "blogBeaches", "chunk": "route-puerto-viejo-beaches", "slugs": { "en": "puerto-viejo-beaches", "es": "puerto-viejo-beaches" } },
+    { "key": "blogBocas", "chunk": "route-puerto-viejo-to-bocas-del-toro", "slugs": { "en": "puerto-viejo-to-bocas-del-toro", "es": "puerto-viejo-to-bocas-del-toro" } },
     { "key": "success", "chunk": "route-success", "slugs": { "en": "success", "es": "success" }, "prerender": false, "sitemap": false }
   ]
 }

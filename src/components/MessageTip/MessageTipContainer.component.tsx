@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import MessageTip from './MessageTip.component';
+import { isPrerender } from '../../utils/isPrerender';
 import './MessageTip.style.scss';
 
 export interface MessageTipData {
@@ -54,9 +55,24 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
   // Check for cookie banner visibility and sticky CTA height
   useEffect(() => {
     const checkElements = () => {
+      // Guard the state change, not the render — same reasoning as
+      // isPrerender.ts's ImageWithSkeleton/CookieConsentBanner cases.
+      // react-snap's crawl waits for the page to settle before snapshotting,
+      // which gives this effect (and the resize/mutation listeners below)
+      // plenty of time to run — long enough that a mobile-width crawl
+      // viewport bakes stickyCTAHeight/isCookieBannerVisible's post-effect
+      // values (and the containerClassName/containerStyle they drive) into
+      // the static HTML. A real hydrating browser's FIRST render always
+      // starts from this component's initial state instead, so without this
+      // guard the snapshot and the first hydration pass can disagree —
+      // React error #418, discovered 2026-08-11 once removing route-level
+      // Suspense (docs/i18n-rollout-plan.md, Phase 11 P2) let hydration
+      // reconcile far enough to reach this sibling for the first time.
+      if (isPrerender()) return;
+
       const cookieBanner = document.querySelector('.cookie-consent-banner');
       const stickyCTA = document.querySelector('.sticky-cta-mobile');
-      
+
       // Use React.startTransition to avoid act() warnings in tests
       if (typeof React.startTransition === 'function') {
         React.startTransition(() => {
@@ -72,7 +88,9 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
     // Initial check
     checkElements();
     // Real width, read only after mount — see the windowWidth state comment.
-    setWindowWidth(window.innerWidth);
+    // Same isPrerender() reasoning as checkElements() above: windowWidth
+    // drives isMobile, which gates containerStyle.bottom.
+    if (!isPrerender()) setWindowWidth(window.innerWidth);
 
     // Set up observer to watch for changes
     const observer = new MutationObserver(checkElements);
@@ -85,7 +103,7 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
 
     // Also listen for resize events to recalculate heights
     const handleResize = () => {
-      setWindowWidth(window.innerWidth);
+      if (!isPrerender()) setWindowWidth(window.innerWidth);
       checkElements();
     };
     window.addEventListener('resize', handleResize);

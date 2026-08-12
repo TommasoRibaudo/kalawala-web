@@ -65,6 +65,7 @@ export const es: Messages = {
     otherListingsHeading: '¡Revisa nuestras otras opciones!',
     readBlog: (title: string) => `Leer blog: ${title}`,
     weOfferEquipped: 'Ofrecemos casas completamente equipadas:',
+    ourPhotosHeading: 'Fotos',
   },
 
   contact: {
@@ -104,6 +105,7 @@ export const es: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'El clima de Puerto Viejo es muy cambiante — estos son promedios aproximados de largo plazo, y las condiciones pueden cambiar varias veces en un mismo día. Tómalos como una guía, no como una garantía.',
     // Two Spanish pages capitalised the second and third words
     // ("Reserva Tu Estadía"); the other eight didn't. Unified on the majority
     // form.
@@ -139,5 +141,57 @@ export const es: Messages = {
     bedrooms: (count: number) => `${count} ${count === 1 ? 'habitación' : 'habitaciones'}`,
     bathrooms: (count: number) => `${count} ${count === 1 ? 'baño' : 'baños'}`,
     upToGuests: (count: number) => `Hasta ${count} ${count === 1 ? 'huésped' : 'huéspedes'}`,
+    viewHomeCta: 'Ver casa →',
+  },
+
+  cookieBanner: {
+    title: '🍪 Cookies',
+    description: 'Usamos cookies para mejorar tu experiencia y analizar el tráfico.',
+    acceptAll: 'Aceptar',
+    rejectAll: 'Rechazar',
+    customize: 'Opciones',
+    essential: 'Esenciales',
+    analytics: 'Análisis',
+    marketing: 'Marketing',
+    required: '(Req.)',
+    essentialDesc: 'Necesarias para el funcionamiento del sitio.',
+    analyticsDesc: 'Nos ayudan a entender el uso del sitio.',
+    marketingDesc: 'Para mostrar anuncios relevantes.',
+    savePreferences: 'Guardar',
+    cancel: 'Cancelar',
+  },
+
+  notFound: {
+    title: 'Página no encontrada | Reservas Kalawala',
+    heading: 'No encontramos esta página',
+    body: 'Es posible que el enlace esté roto o que la página se haya movido.',
+    cta: 'Volver al inicio',
+  },
+
+  whyStayWithUs: {
+    title: '¿Por qué reservar con nosotros?',
+    benefits: [
+      'Ubicaciones estratégicas',
+      'Casas totalmente equipadas',
+      'Reserva directa y soporte local',
+      'Sin comisiones de plataformas',
+    ],
+    ctaText: 'Ver todas nuestras propiedades',
+  },
+
+  imagesModal: {
+    close: 'Cerrar',
+    photos: 'fotos',
+    previous: 'Anterior',
+    next: 'Siguiente',
+    empty: 'No hay fotos disponibles',
+  },
+
+  reviewTags: {
+    'Stayed a few nights': 'Estadía de algunas noches',
+    'Stayed one night': 'Estadía de una noche',
+    'Stayed with kids': 'Estadía con niños',
+    'Stayed with a pet': 'Estadía con mascota',
+    'Stayed about a week': 'Estadía de aproximadamente una semana',
   },
 };

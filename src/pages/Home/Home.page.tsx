@@ -62,7 +62,7 @@ const Home = () => {
       </Helmet>
       <WelcomeSlider />
       <FixedNavigation isBlog={false} />
-      <HelpMeChoose title={m.home.helpMeChooseTitle} titleHighlight={m.home.helpMeChooseTitleHighlight} options={helpMeChooseOptions} />
+      <HelpMeChoose title={m.home.helpMeChooseTitle} titleHighlight={m.home.helpMeChooseTitleHighlight} options={helpMeChooseOptions} locale={locale} />
       <HomeReviews locale={locale} />
       <OurHomes houseDataList={locale === 'es' ? houseDataList : houseDataEngList} />
       <OurOtherHomes />

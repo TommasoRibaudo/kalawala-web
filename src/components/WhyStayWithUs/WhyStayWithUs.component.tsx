@@ -1,12 +1,13 @@
 import React from 'react';
 import './WhyStayWithUs.style.scss';
+import { getMessages, type Locale } from '../../i18n';
 
 interface WhyStayWithUsProps {
   title?: string;
   benefits?: string[];
   ctaText?: string;
   ctaLink: string;
-  language?: 'en' | 'es';
+  locale: Locale;
 }
 
 const WhyStayWithUs: React.FC<WhyStayWithUsProps> = ({
@@ -14,32 +15,9 @@ const WhyStayWithUs: React.FC<WhyStayWithUsProps> = ({
   benefits,
   ctaText,
   ctaLink,
-  language = 'es'
+  locale
 }) => {
-  const translations = {
-    en: {
-      title: "Why book with us?",
-      benefits: [
-        "Strategic locations",
-        "Fully equipped houses",
-        "Direct booking and local support",
-        "No platform commissions"
-      ],
-      ctaText: "View all our properties"
-    },
-    es: {
-      title: "¿Por qué reservar con nosotros?",
-      benefits: [
-        "Ubicaciones estratégicas",
-        "Casas totalmente equipadas",
-        "Reserva directa y soporte local",
-        "Sin comisiones de plataformas"
-      ],
-      ctaText: "Ver todas nuestras propiedades"
-    }
-  };
-
-  const currentTranslations = translations[language];
+  const currentTranslations = getMessages(locale).whyStayWithUs;
   const displayTitle = title || currentTranslations.title;
   const displayBenefits = benefits || currentTranslations.benefits;
   const displayCtaText = ctaText || currentTranslations.ctaText;

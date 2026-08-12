@@ -3,29 +3,33 @@ import { GUEST_REVIEWS, Review } from '../GuestReviews/reviewsData';
 import './HomeReviews.style.scss';
 import type { Locale } from '../../i18n';
 import { getMessages, pickLocalized } from '../../i18n';
+import { listingContent, type ListingKey } from '../../i18n/content/listings';
 
 interface HomeReviewsProps {
   locale: Locale;
 }
 
 interface FlatReview extends Review {
-  propertyLabel: string;
-  propertyLabelES: string;
+  // The listings.ts key for this property, resolved to a translated display
+  // name (featureName, e.g. "Haus Geco") at render time via listingContent —
+  // reuses the names Phase 8 already translated into all 8 locales instead
+  // of maintaining a second, separate translation of the same property names.
+  propertyKey: ListingKey;
 }
 
 const STARS = '★★★★★';
 
-const PROPERTY_LABELS: Record<string, { en: string; es: string }> = {
-  GECO: { en: 'House Geco', es: 'Casa Geco' },
-  TUCANO: { en: 'House Tucano', es: 'Casa Tucano' },
-  RANA: { en: 'House Rana', es: 'Casa Rana' },
-  AREKA: { en: 'House Areka', es: 'Casa Areka' },
-  PAPPAGALLO: { en: 'House Pappagallo', es: 'Casa Pappagallo' },
-  'VILLA CORAL': { en: 'Villa Coral', es: 'Villa Coral' },
-  PLUMERIA: { en: 'House Plumeria', es: 'Casa Plumeria' },
-  GIULIA: { en: 'Casa Giulia', es: 'Casa Giulia' },
-  'VILLA MAR': { en: 'Villa Mar', es: 'Villa Mar' },
-  DELFINES: { en: 'Casa Delfines', es: 'Casa Delfines' },
+const PROPERTY_KEY_MAP: Record<string, ListingKey> = {
+  GECO: 'Geco',
+  TUCANO: 'Tucano',
+  RANA: 'Rana',
+  AREKA: 'Areka',
+  PAPPAGALLO: 'Pappagallo',
+  'VILLA CORAL': 'VillaCoral',
+  PLUMERIA: 'Plumeria',
+  GIULIA: 'Giulia',
+  'VILLA MAR': 'VillaMar',
+  DELFINES: 'Delfin',
 };
 
 // Round-robin interleave so consecutive cards are always from different properties
@@ -33,8 +37,7 @@ function buildInterleavedReviews(): FlatReview[] {
   const byProperty = Object.entries(GUEST_REVIEWS).map(([key, reviews]) =>
     reviews.map((r) => ({
       ...r,
-      propertyLabel: PROPERTY_LABELS[key]?.en ?? key,
-      propertyLabelES: PROPERTY_LABELS[key]?.es ?? key,
+      propertyKey: PROPERTY_KEY_MAP[key] ?? 'Geco',
     }))
   );
   const result: FlatReview[] = [];
@@ -50,17 +53,6 @@ function buildInterleavedReviews(): FlatReview[] {
 const INTERLEAVED = buildInterleavedReviews();
 // Duplicate for seamless infinite loop
 const DOUBLED = [...INTERLEAVED, ...INTERLEAVED];
-
-function translateStayType(stayType: string): string {
-  const map: Record<string, string> = {
-    'Stayed a few nights': 'Estadía de algunas noches',
-    'Stayed one night': 'Estadía de una noche',
-    'Stayed with kids': 'Estadía con niños',
-    'Stayed with a pet': 'Estadía con mascota',
-    'Stayed about a week': 'Estadía de aproximadamente una semana',
-  };
-  return map[stayType] ?? stayType;
-}
 
 const SCROLL_SPEED_DESKTOP = 0.02; // px per ms
 const SCROLL_SPEED_MOBILE  = 0.01; // px per ms
@@ -156,8 +148,8 @@ const HomeReviews: React.FC<HomeReviewsProps> = ({ locale }) => {
       >
         {DOUBLED.map((review, index) => {
           const text = pickLocalized(review.text, locale);
-          const propertyLabel = locale === 'es' ? review.propertyLabelES : review.propertyLabel;
-          const stayLabel = locale === 'es' ? translateStayType(review.stayType) : review.stayType;
+          const propertyLabel = listingContent(review.propertyKey, locale).featureName;
+          const stayLabel = m.reviewTags[review.stayType as keyof typeof m.reviewTags] ?? review.stayType;
 
           return (
             <div
@@ -187,8 +179,8 @@ const HomeReviews: React.FC<HomeReviewsProps> = ({ locale }) => {
 
       {activeReview && (() => {
         const text = pickLocalized(activeReview.text, locale);
-        const propertyLabel = locale === 'es' ? activeReview.propertyLabelES : activeReview.propertyLabel;
-        const stayLabel = locale === 'es' ? translateStayType(activeReview.stayType) : activeReview.stayType;
+        const propertyLabel = listingContent(activeReview.propertyKey, locale).featureName;
+        const stayLabel = m.reviewTags[activeReview.stayType as keyof typeof m.reviewTags] ?? activeReview.stayType;
         return (
           <div
             className="home-reviews__overlay"

@@ -21,7 +21,9 @@ import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { listingContent } from "../../../i18n/content/listings";
+import { vacationRentalJsonLd } from "../../../i18n/structuredData";
 import { houseDataByLangCode } from "../../../utils/constants";
+import { isPrerender } from "../../../utils/isPrerender";
 
 
 const ListingDelfin = () => {
@@ -34,10 +36,16 @@ const ListingDelfin = () => {
     // react-snap's puppeteer viewport at prerender time and a real visitor's
     // viewport at hydration time are different numbers, and isScreenSmall
     // drives whether the sticky mobile CTA div renders at all (a structural
-    // difference, not just style). Same fix as
-    // MessageTipContainer.component.tsx: null means "not yet measured" (no
-    // CTA div, matching react-snap's desktop-sized prerender) until the
-    // effect below sets the real match post-mount.
+    // difference, not just style). null means "not yet measured" (no CTA
+    // div) until the effect below sets the real match post-mount — and that
+    // effect is now itself isPrerender()-guarded, because react-snap's
+    // actual crawl viewport is 480x850 ("mobile first", its own default),
+    // not desktop-width as previously assumed here: without the guard this
+    // media query matches true during the crawl and bakes the mobile CTA
+    // div into the snapshot, mismatching a real client's null-seeded first
+    // render. React error #418, found 2026-08-11 once removing route-level
+    // Suspense (docs/i18n-rollout-plan.md, Phase 11 P2) let hydration
+    // reconcile far enough to reach this element for the first time.
     const [isScreenSmall, setIsScreenSmall] = useState<boolean | null>(null);
 
     const [show, setShow] = useState(false);
@@ -52,6 +60,7 @@ const ListingDelfin = () => {
     }, [])
 
     useEffect(() => {
+        if (isPrerender()) return;
         const mq = window.matchMedia('(max-width: 992px)');
         setIsScreenSmall(mq.matches); // real match, read only after mount
         const handleChange = () => setIsScreenSmall(mq.matches);
@@ -68,6 +77,7 @@ const ListingDelfin = () => {
                 <meta name="description" content={content.seoDescription} />
                 <link rel="canonical" href={canonicalUrl('delfin', locale)} />
                 {hreflangLinks('delfin')}
+                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Delfin', locale, houseData?.image))}</script>
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (
@@ -122,7 +132,7 @@ const ListingDelfin = () => {
             <div className="other-listings-bottom">
                 <OtherListings listings={homesSnippet} currentListing={listing || ''} />
             </div>
-            {show && <ImagesModal closeModal={handleClose} houseName={listing!} />}
+            {show && <ImagesModal closeModal={handleClose} houseName={listing!} locale={locale} />}
             <Footer locale={locale} />
 
         </div>

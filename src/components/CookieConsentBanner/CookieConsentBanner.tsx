@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { CookieConsentService, ConsentPreferences } from '../../services/CookieConsent.service';
 import { isPrerender } from '../../utils/isPrerender';
 import './CookieConsentBanner.scss';
-import { detectLocaleFromPath, type Locale } from '../../i18n';
+import { detectLocaleFromPath, getMessages, type Locale } from '../../i18n';
 
 interface CookieConsentBannerProps {
   onConsentChange?: (canTrack: boolean) => void;
@@ -48,30 +48,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onCons
   const locale: Locale = detectLocaleFromPath(currentPath);
 
   // Text content based on language
-  const text = {
-    title: (locale === 'es') ? '🍪 Cookies' : '🍪 Cookies',
-    description: (locale === 'es') 
-      ? 'Usamos cookies para mejorar tu experiencia y analizar el tráfico.'
-      : 'We use cookies to improve your experience and analyze traffic.',
-    acceptAll: (locale === 'es') ? 'Aceptar' : 'Accept',
-    rejectAll: (locale === 'es') ? 'Rechazar' : 'Reject',
-    customize: (locale === 'es') ? 'Opciones' : 'Options',
-    essential: (locale === 'es') ? 'Esenciales' : 'Essential',
-    analytics: (locale === 'es') ? 'Análisis' : 'Analytics',
-    marketing: (locale === 'es') ? 'Marketing' : 'Marketing',
-    required: (locale === 'es') ? '(Req.)' : '(Req.)',
-    essentialDesc: (locale === 'es') 
-      ? 'Necesarias para el funcionamiento del sitio.'
-      : 'Required for the site to function.',
-    analyticsDesc: (locale === 'es')
-      ? 'Nos ayudan a entender el uso del sitio.'
-      : 'Help us understand site usage.',
-    marketingDesc: (locale === 'es')
-      ? 'Para mostrar anuncios relevantes.'
-      : 'To show relevant ads.',
-    savePreferences: (locale === 'es') ? 'Guardar' : 'Save',
-    cancel: (locale === 'es') ? 'Cancelar' : 'Cancel'
-  };
+  const text = getMessages(locale).cookieBanner;
 
   useEffect(() => {
     // react-snap saves the DOM after effects have run, so revealing the banner

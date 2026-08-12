@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { RELEASED_LOCALES, type Locale } from './locales';
+import { RELEASED_LOCALES, isLocale, type Locale } from './locales';
 import { useLocale } from './useLocale';
 import { pathInLocale } from '../routes.config';
 
@@ -18,6 +18,16 @@ import { pathInLocale } from '../routes.config';
  * page. A fresh crawler visit has no localStorage entry, so this never fires
  * for one; that's what makes the URL stay authoritative without any
  * crawler-detection logic of its own.
+ *
+ * Phase 11 P2, 2026-08-11: the redirect used to fire on *any* page whose
+ * locale differed from the stored preference, including a URL that already
+ * names an explicit locale — visiting `/he/...` directly in a browser that
+ * previously picked Italian silently served Italian instead of Hebrew, with
+ * no visible sign why. Narrowed to only fire when the current URL carries no
+ * explicit locale at all (this site's URL scheme has exactly one such page:
+ * the bare English root, `/` — every other page is `/xx/...`). An explicit
+ * `/xx/...` URL — typed, bookmarked, linked, or clicked from search results —
+ * is itself a locale selection and now always wins over a stored one.
  */
 
 const PREFERENCE_KEY = 'kalawala_locale_preference';
@@ -42,10 +52,11 @@ function readLocalePreference(): Locale | null {
 }
 
 /**
- * Redirects once per tab, on mount, to the stored locale preference if it
- * differs from the current page's locale. Call from a component every page
- * renders (FixedNavigation) — the sessionStorage guard makes repeat mounts
- * a no-op.
+ * Redirects once per tab, on mount, to the stored locale preference — but
+ * only from a URL with no explicit locale of its own (the bare root, `/`).
+ * A URL that already names a locale is left alone even if it differs from
+ * the stored preference. Call from a component every page renders
+ * (FixedNavigation) — the sessionStorage guard makes repeat mounts a no-op.
  */
 export function useApplyStoredLocalePreference(): void {
   const locale = useLocale();
@@ -60,6 +71,13 @@ export function useApplyStoredLocalePreference(): void {
       // No sessionStorage — fall through without the guard rather than never
       // honouring the preference at all.
     }
+
+    // An explicit locale in the URL is itself a selection — never override
+    // it with a stored preference from a previous visit. Only a URL with no
+    // locale segment (this site's URL scheme has exactly one: the bare
+    // English root, `/`) means the visitor hasn't chosen a language yet.
+    const firstSegment = location.pathname.split('/')[1];
+    if (isLocale(firstSegment)) return;
 
     const preferred = readLocalePreference();
     if (!preferred || preferred === locale) return;

@@ -11,14 +11,14 @@
  * exists, or the switcher navigates to pages that do not.
  */
 
-export const LOCALES = ['en', 'es', 'de', 'fr', 'it', 'pt', 'he', 'hi'] as const;
+export const LOCALES = ['en', 'es', 'de', 'fr', 'it', 'pt', 'he', 'hi', 'nl'] as const;
 
 export type Locale = (typeof LOCALES)[number];
 
 export const DEFAULT_LOCALE: Locale = 'en';
 
 /** Locales with real content, i.e. what the language switcher may offer. */
-export const RELEASED_LOCALES: readonly Locale[] = ['en', 'es', 'de', 'fr', 'it', 'pt', 'he', 'hi'];
+export const RELEASED_LOCALES: readonly Locale[] = ['en', 'es', 'de', 'fr', 'it', 'pt', 'he', 'hi', 'nl'];
 
 export type Direction = 'ltr' | 'rtl';
 
@@ -42,6 +42,7 @@ export const LOCALE_META: Record<Locale, { nativeName: string; flag: string; dir
   pt: { nativeName: 'Português', flag: 'PT', dir: 'ltr' },
   he: { nativeName: 'עברית', flag: 'IL', dir: 'rtl' },
   hi: { nativeName: 'हिन्दी', flag: 'IN', dir: 'ltr' },
+  nl: { nativeName: 'Nederlands', flag: 'NL', dir: 'ltr' },
 };
 
 export function isLocale(value: string): value is Locale {

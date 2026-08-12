@@ -2,20 +2,17 @@ import React, { useCallback, useEffect, useState } from "react";
 import './ImagesModal.style.scss';
 import { getHouseImages } from "../../../../utils/houseImages";
 import ZoomableImage from "./ZoomableImage.component";
-import type { Locale } from '../../../../i18n';
+import { getMessages, type Locale } from '../../../../i18n';
 
 
 interface IIMagesModal {
   closeModal: () => void;
   houseName: string;
+  locale: Locale;
 }
 
-/** House codes carry their own language: "GecoES" is the Spanish listing. */
-const localeOfHouse = (houseName: string): Locale => (houseName.endsWith('ES') ? 'es' : 'en');
-
-const ImagesModal = ({ closeModal, houseName }: IIMagesModal) => {
+const ImagesModal = ({ closeModal, houseName, locale }: IIMagesModal) => {
   const images = getHouseImages(houseName);
-  const spanish = localeOfHouse(houseName) === 'es';
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
   const isViewerOpen = viewerIndex !== null;
 
@@ -56,9 +53,7 @@ const ImagesModal = ({ closeModal, houseName }: IIMagesModal) => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [closeModal, closeViewer, isViewerOpen, step]);
 
-  const strings = spanish
-    ? { close: 'Cerrar', photos: 'fotos', previous: 'Anterior', next: 'Siguiente', empty: 'No hay fotos disponibles' }
-    : { close: 'Close', photos: 'photos', previous: 'Previous', next: 'Next', empty: 'No images available' };
+  const strings = getMessages(locale).imagesModal;
 
   return (
     <div className="imagesModal" role="dialog" aria-modal="true">

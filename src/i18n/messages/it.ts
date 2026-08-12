@@ -58,6 +58,7 @@ export const it: Messages = {
     otherListingsHeading: 'Scopri le nostre altre proposte!',
     readBlog: (title: string) => `Leggi l’articolo: ${title}`,
     weOfferEquipped: 'Offriamo case completamente attrezzate:',
+    ourPhotosHeading: 'Foto',
   },
 
   contact: {
@@ -96,6 +97,7 @@ export const it: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'Il meteo a Puerto Viejo è notoriamente mutevole — queste sono medie approssimative di lungo periodo e le condizioni possono cambiare più volte nello stesso giorno. Consideralle una guida, non una garanzia.',
     bookYourStay: 'Prenota il tuo soggiorno',
     indexTitle: 'Guide di viaggio a Puerto Viejo | Reservas Kalawala',
     indexDescription:
@@ -111,7 +113,13 @@ export const it: Messages = {
     helpMeChooseTitleHighlight: 'soggiorno ideale',
     optionCouples: 'Ideale per coppie',
     optionFamilies: 'Perfetto per famiglie',
-    optionPetFriendly: 'Pet-friendly',
+    // Unlike es.ts, there's no evidence this was a deliberate loanword choice
+    // for Italian — it was byte-identical to en/es, flagged as unconfirmed in
+    // Phase 11 P1. Translated to match how fr/de/pt/he all handled this key
+    // (none of them kept the English term); still worth a native-speaker
+    // read, since "pet friendly" does also see some use as an adopted term
+    // in Italian rental listings.
+    optionPetFriendly: 'Ammessi animali domestici',
     optionBestValue: 'Miglior rapporto qualità-prezzo',
   },
 
@@ -125,5 +133,57 @@ export const it: Messages = {
     bedrooms: (count: number) => `${count} ${count === 1 ? 'camera da letto' : 'camere da letto'}`,
     bathrooms: (count: number) => `${count} ${count === 1 ? 'bagno' : 'bagni'}`,
     upToGuests: (count: number) => `Fino a ${count} ${count === 1 ? 'ospite' : 'ospiti'}`,
+    viewHomeCta: 'Vedi la casa →',
   },
+  cookieBanner: {
+    title: '🍪 Cookies',
+    description: 'Utilizziamo i cookie per migliorare la tua esperienza e analizzare il traffico.',
+    acceptAll: 'Accetta',
+    rejectAll: 'Rifiuta',
+    customize: 'Opzioni',
+    essential: 'Essenziali',
+    analytics: 'Analisi',
+    marketing: 'Marketing',
+    required: '(Nec.)',
+    essentialDesc: 'Necessari per il funzionamento del sito.',
+    analyticsDesc: 'Ci aiutano a capire l\'utilizzo del sito.',
+    marketingDesc: 'Per mostrare annunci pertinenti.',
+    savePreferences: 'Salva',
+    cancel: 'Annulla',
+  },
+
+  notFound: {
+    title: 'Pagina non trovata | Reservas Kalawala',
+    heading: 'Non siamo riusciti a trovare questa pagina',
+    body: 'Il link potrebbe essere danneggiato oppure la pagina potrebbe essere stata spostata.',
+    cta: 'Torna alla home',
+  },
+
+  whyStayWithUs: {
+    title: 'Perché prenotare con noi?',
+    benefits: [
+      'Posizioni strategiche',
+      'Case completamente attrezzate',
+      'Prenotazione diretta e supporto locale',
+      'Nessuna commissione di piattaforma',
+    ],
+    ctaText: 'Vedi tutte le nostre proprietà',
+  },
+
+  imagesModal: {
+    close: 'Chiudi',
+    photos: 'foto',
+    previous: 'Precedente',
+    next: 'Successivo',
+    empty: 'Nessuna immagine disponibile',
+  },
+
+  reviewTags: {
+    'Stayed a few nights': 'Soggiorno di alcune notti',
+    'Stayed one night': 'Soggiorno di una notte',
+    'Stayed with kids': 'Soggiorno con bambini',
+    'Stayed with a pet': 'Soggiorno con animale domestico',
+    'Stayed about a week': 'Soggiorno di circa una settimana',
+  },
+
 };

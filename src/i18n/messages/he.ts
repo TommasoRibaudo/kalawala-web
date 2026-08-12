@@ -67,6 +67,7 @@ export const he: Messages = {
     otherListingsHeading: 'גלו את האפשרויות הנוספות שלנו!',
     readBlog: (title: string) => `קריאת הפוסט: ${title}`,
     weOfferEquipped: 'אנו מציעים בתים מאובזרים במלואם:',
+    ourPhotosHeading: 'תמונות',
   },
 
   contact: {
@@ -105,6 +106,7 @@ export const he: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'מזג האוויר בפוארטו ויאחו ידוע כהפכפך — אלה ממוצעים משוערים לטווח ארוך, והתנאים עשויים להשתנות כמה פעמים באותו יום. התייחסו אליהם כאל כיוון כללי, לא כהבטחה.',
     bookYourStay: 'הזמינו את השהות שלכם',
     indexTitle: 'מדריכי טיולים לפוארטו וייחו | Reservas Kalawala',
     indexDescription:
@@ -134,5 +136,57 @@ export const he: Messages = {
     bedrooms: (count: number) => `${count} ${count === 1 ? 'חדר שינה' : 'חדרי שינה'}`,
     bathrooms: (count: number) => `${count} ${count === 1 ? 'חדר רחצה' : 'חדרי רחצה'}`,
     upToGuests: (count: number) => `עד ${count} ${count === 1 ? 'אורח' : 'אורחים'}`,
+    viewHomeCta: 'צפייה בבית →',
   },
+  cookieBanner: {
+    title: '🍪 עוגיות',
+    description: 'אנו משתמשים בעוגיות כדי לשפר את חווייתך ולנתח את התנועה באתר.',
+    acceptAll: 'קבל הכול',
+    rejectAll: 'דחה הכול',
+    customize: 'אפשרויות',
+    essential: 'חיוניות',
+    analytics: 'אנליטיקה',
+    marketing: 'שיווק',
+    required: '(חובה)',
+    essentialDesc: 'נדרשות לתפקוד האתר.',
+    analyticsDesc: 'עוזרות לנו להבין את השימוש באתר.',
+    marketingDesc: 'להצגת מודעות רלוונטיות.',
+    savePreferences: 'שמור',
+    cancel: 'ביטול',
+  },
+
+  notFound: {
+    title: 'עמוד לא נמצא | Reservas Kalawala',
+    heading: 'לא הצלחנו למצוא את העמוד הזה',
+    body: 'ייתכן שהקישור שבור או שהעמוד הועבר.',
+    cta: 'חזרה לדף הבית',
+  },
+
+  whyStayWithUs: {
+    title: 'למה להזמין איתנו?',
+    benefits: [
+      'מיקומים אסטרטגיים',
+      'בתים מאובזרים במלואם',
+      'הזמנה ישירה ותמיכה מקומית',
+      'ללא עמלות פלטפורמה',
+    ],
+    ctaText: 'צפייה בכל הנכסים שלנו',
+  },
+
+  imagesModal: {
+    close: 'סגור',
+    photos: 'תמונות',
+    previous: 'הקודם',
+    next: 'הבא',
+    empty: 'אין תמונות זמינות',
+  },
+
+  reviewTags: {
+    'Stayed a few nights': 'שהות של כמה לילות',
+    'Stayed one night': 'שהות של לילה אחד',
+    'Stayed with kids': 'שהות עם ילדים',
+    'Stayed with a pet': 'שהות עם חיית מחמד',
+    'Stayed about a week': 'שהות של כשבוע',
+  },
+
 };

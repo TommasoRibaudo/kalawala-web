@@ -4,14 +4,13 @@ import '../../Listing/Listing.style.scss';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
-import { blogs, blogsES } from "../../../assets/blogs/blogs";
 import OtherBlogs from "../Components/OtherBlogs.Component";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
-import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import { generalPuertoViejoRecommendations } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
-import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { indigenousTravelContent } from "../../../i18n/content/blog";
 
@@ -21,8 +20,6 @@ const IndigenousTravel = () => {
     const locale = useLocale();
     const m = useMessages();
     const content = indigenousTravelContent(locale);
-    const lang = bookingLanguage(locale);
-    const selfId = `indigenousTravelPV${localeSuffix(locale)}`;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -87,8 +84,7 @@ const IndigenousTravel = () => {
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
                             title={content.stayRecommendationTitle}
-                            properties={locale === 'es' ? GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES : GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
-                            language={lang}
+                            properties={generalPuertoViejoRecommendations(locale)}
                         />
 
                         <p>{content.afterStayParagraph}</p>
@@ -156,7 +152,7 @@ const IndigenousTravel = () => {
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                         <div style={{ maxWidth: 1000 }}>
                             <WhyStayWithUs
-                                language={lang}
+                                locale={locale}
                                 ctaLink={homePath(locale)}
                             />
                         </div>
@@ -203,8 +199,8 @@ const IndigenousTravel = () => {
                     </div>
 
                     <OtherBlogs
-                        currentBlog={selfId}
-                        blogs={locale === 'es' ? blogsES : blogs}
+                        currentBlog="indigenousTravelPV"
+                        locale={locale}
                     />
                 </Col>
             </Row>

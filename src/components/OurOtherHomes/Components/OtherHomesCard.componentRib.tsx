@@ -5,7 +5,7 @@ import { faSnowflake, faUtensils, faWifi, faUser, faSwimmingPool, faParking } fr
 import { useNavigate } from 'react-router-dom';
 
 import './OtherHomesCard.style.scss';
-import { detectLocaleFromPath, type Locale } from '../../../i18n';
+import { detectLocaleFromPath, getMessages, type Locale } from '../../../i18n';
 
 interface IOtherHomesCard {
     name: string;
@@ -56,7 +56,7 @@ const OtherHomesCardRib: FC<IOtherHomesCard> = ({ guestNumber, hasFencedParking,
                     <FontAwesomeIcon icon={faWifi} />
                     {hasFencedParking && <FontAwesomeIcon icon={faParking} />}
                 </div>
-                <span className="card-cta">{cardLocale === 'es' ? 'Ver casa →' : 'View home →'}</span>
+                <span className="card-cta">{getMessages(cardLocale).property.viewHomeCta}</span>
             </div>
         </a>
     );

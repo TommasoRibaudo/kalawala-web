@@ -1,6 +1,10 @@
 @use '../../../../styles/mixins';
 @import '../../../../styles/styles.scss';
 
+// The cards themselves reuse HomeCard (issue #310) — their look comes from
+// HomeCard.style.scss via the `.about` wrapper + `.homes-grid` container. Only
+// the section shell (heading + centring) lives here now.
+
 .other-listings-container {
     display: flex;
     flex-direction: column;
@@ -18,126 +22,9 @@
     margin-top: 0;
 }
 
-.other-listings-grid {
-    width: 100%;
-    max-width: 1200px;
-    
-    &.single-listing {
-        display: flex;
-        justify-content: center;
-        
-        .listing-card {
-            width: 280px;
-        }
-    }
-    
-    &.desktop-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-        justify-items: center;
-    }
-    
-    &.mobile-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        padding: 0 10px;
-    }
-    
-    &.mobile-scroll {
-        display: flex;
-        overflow-x: auto;
-        gap: 15px;
-        padding: 0 10px 10px;
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-        
-        // Hide scrollbar but keep functionality
-        scrollbar-width: none; // Firefox
-        -ms-overflow-style: none; // IE and Edge
-        
-        &::-webkit-scrollbar {
-            display: none; // Chrome, Safari, Opera
-        }
-        
-        .listing-card {
-            flex: 0 0 200px;
-        }
-    }
-}
-
-.listing-card {
-    background-color: rgb(25, 136, 136);
-    height: 200px;
-    width: 250px;
-    border-radius: 8px;
-    border: 3px solid $primary-color;
-    background-size: cover;
-    background-position: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    
-    &:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-    }
-    
-    &:focus {
-        outline: 2px solid $primary-color;
-        outline-offset: 2px;
-    }
-}
-
-.listing-card-overlay {
-    position: absolute;
-    bottom: 0;
-    inset-inline-start: 0;
-    inset-inline-end: 0;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
-    padding: 20px 15px 15px;
-}
-
-.listing-card-title {
-    color: #fff !important;
-    -webkit-text-fill-color: #fff;
-    text-shadow: none;
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0;
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 @media (max-width: 768px) {
     .other-listings-header {
         font-size: 16px;
         margin-bottom: 20px;
-    }
-    
-    .other-listings-grid {
-        &.mobile-grid {
-            grid-template-columns: 1fr;
-            
-            .listing-card {
-                width: 100%;
-                max-width: 300px;
-                justify-self: center;
-            }
-        }
-    }
-    
-    .listing-card {
-        height: 180px;
-    }
-    
-    .listing-card-title {
-        font-size: 14px;
     }
 }

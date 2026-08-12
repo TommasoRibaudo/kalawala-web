@@ -1,5 +1,6 @@
 import { test, expect } from './fixtures/base.fixture';
 import { nav } from './helpers/selectors';
+import { RELEASED_LOCALES } from '../../src/i18n/locales';
 
 /**
  * Language Switching E2E tests.
@@ -51,7 +52,7 @@ test.describe('Language Switching', () => {
     expect(appPage.url()).toContain('/es/geco');
   });
 
-  test('the select shows the current locale and both released options', async ({ appPage }) => {
+  test('the select shows the current locale and every released option', async ({ appPage }) => {
     await appPage.goto('/en/geco');
 
     const select = nav.languageSwitcherDesktop(appPage);
@@ -60,20 +61,38 @@ test.describe('Language Switching', () => {
     const optionValues = await select.locator('option').evaluateAll(
       (options) => options.map((o) => (o as HTMLOptionElement).value),
     );
-    expect(optionValues.sort()).toEqual(['en', 'es']);
+    expect(optionValues.sort()).toEqual([...RELEASED_LOCALES].sort());
   });
 
-  test('a stored preference from a previous visit is honoured on the next one', async ({ appPage }) => {
+  test('a stored preference is honoured landing on the locale-less root', async ({ appPage }) => {
     // Requirement: "persist the choice and honour it on next visit". Simulate
     // a returning visitor who picked Spanish last time by seeding
-    // localStorage directly, then landing fresh on an English URL.
+    // localStorage directly, then landing fresh on `/` — the one page in
+    // this site's URL scheme with no explicit locale of its own.
+    await appPage.addInitScript(() => {
+      localStorage.setItem('kalawala_locale_preference', 'es');
+    });
+
+    await appPage.goto('/');
+
+    await appPage.waitForURL('**/es/');
+    expect(appPage.url()).toContain('/es/');
+  });
+
+  test('an explicit locale URL is never overridden by a stored preference', async ({ appPage }) => {
+    // Phase 11 P2: landing directly on /en/geco used to get silently bounced
+    // to a stored /es/ preference — confusing for anyone who followed a link,
+    // bookmark, or search result straight to an English page. The URL is a
+    // locale selection in its own right and must win.
     await appPage.addInitScript(() => {
       localStorage.setItem('kalawala_locale_preference', 'es');
     });
 
     await appPage.goto('/en/geco');
 
-    await appPage.waitForURL('**/es/geco');
-    expect(appPage.url()).toContain('/es/geco');
+    // Give the redirect a chance to fire if the fix regressed, rather than
+    // asserting on the very first paint.
+    await appPage.waitForTimeout(500);
+    expect(appPage.url()).toContain('/en/geco');
   });
 });

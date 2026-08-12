@@ -27,6 +27,22 @@
     { "key": "blogIndigenous", "chunk": "route-indigenoustravelpv", "slugs": { "en": "indigenoustravelpv", "es": "indigenoustravelpv" } },
     { "key": "blogBesttime", "chunk": "route-besttimetovisitpuerto", "slugs": { "en": "besttimetovisitpuerto", "es": "besttimetovisitpuerto" } },
     { "key": "blogHiddengems", "chunk": "route-puertohiddengems", "slugs": { "en": "puertohiddengems", "es": "puertohiddengems" } },
+    { "key": "blogWeather", "chunk": "route-weather-puerto-viejo", "slugs": { "en": "weather-puerto-viejo", "es": "weather-puerto-viejo" } },
+    { "key": "blogWeatherJan", "chunk": "route-weather-puerto-viejo-january", "slugs": { "en": "weather-puerto-viejo-january", "es": "weather-puerto-viejo-january" } },
+    { "key": "blogWeatherFeb", "chunk": "route-weather-puerto-viejo-february", "slugs": { "en": "weather-puerto-viejo-february", "es": "weather-puerto-viejo-february" } },
+    { "key": "blogWeatherMar", "chunk": "route-weather-puerto-viejo-march", "slugs": { "en": "weather-puerto-viejo-march", "es": "weather-puerto-viejo-march" } },
+    { "key": "blogWeatherApr", "chunk": "route-weather-puerto-viejo-april", "slugs": { "en": "weather-puerto-viejo-april", "es": "weather-puerto-viejo-april" } },
+    { "key": "blogWeatherMay", "chunk": "route-weather-puerto-viejo-may", "slugs": { "en": "weather-puerto-viejo-may", "es": "weather-puerto-viejo-may" } },
+    { "key": "blogWeatherJun", "chunk": "route-weather-puerto-viejo-june", "slugs": { "en": "weather-puerto-viejo-june", "es": "weather-puerto-viejo-june" } },
+    { "key": "blogWeatherJul", "chunk": "route-weather-puerto-viejo-july", "slugs": { "en": "weather-puerto-viejo-july", "es": "weather-puerto-viejo-july" } },
+    { "key": "blogWeatherAug", "chunk": "route-weather-puerto-viejo-august", "slugs": { "en": "weather-puerto-viejo-august", "es": "weather-puerto-viejo-august" } },
+    { "key": "blogWeatherSep", "chunk": "route-weather-puerto-viejo-september", "slugs": { "en": "weather-puerto-viejo-september", "es": "weather-puerto-viejo-september" } },
+    { "key": "blogWeatherOct", "chunk": "route-weather-puerto-viejo-october", "slugs": { "en": "weather-puerto-viejo-october", "es": "weather-puerto-viejo-october" } },
+    { "key": "blogWeatherNov", "chunk": "route-weather-puerto-viejo-november", "slugs": { "en": "weather-puerto-viejo-november", "es": "weather-puerto-viejo-november" } },
+    { "key": "blogWeatherDec", "chunk": "route-weather-puerto-viejo-december", "slugs": { "en": "weather-puerto-viejo-december", "es": "weather-puerto-viejo-december" } },
+    { "key": "blogSanjoseOptions", "chunk": "route-san-jose-to-puerto-viejo", "slugs": { "en": "san-jose-to-puerto-viejo", "es": "san-jose-to-puerto-viejo" } },
+    { "key": "blogGandocaRefuge", "chunk": "route-gandoca-manzanillo-refuge", "slugs": { "en": "gandoca-manzanillo-refuge", "es": "gandoca-manzanillo-refuge" } },
+    { "key": "blogBeaches", "chunk": "route-puerto-viejo-beaches", "slugs": { "en": "puerto-viejo-beaches", "es": "puerto-viejo-beaches" } },
     { "key": "success", "chunk": "route-success", "slugs": { "en": "success", "es": "success" }, "prerender": false, "sitemap": false }
   ]
 }

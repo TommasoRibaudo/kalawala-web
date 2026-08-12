@@ -61,6 +61,7 @@ export const de: Messages = {
     otherListingsHeading: 'Entdecken Sie unsere weiteren Unterkünfte!',
     readBlog: (title: string) => `Blogbeitrag lesen: ${title}`,
     weOfferEquipped: 'Wir bieten voll ausgestattete Häuser:',
+    ourPhotosHeading: 'Fotos',
   },
 
   contact: {
@@ -99,6 +100,7 @@ export const de: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'Das Wetter in Puerto Viejo ist bekanntlich wechselhaft — dies sind grobe langjährige Durchschnittswerte, und die Bedingungen können sich mehrmals an einem Tag ändern. Sieh sie als Orientierung, nicht als Garantie.',
     bookYourStay: 'Buchen Sie Ihren Aufenthalt',
     indexTitle: 'Reiseführer für Puerto Viejo | Reservas Kalawala',
     indexDescription:
@@ -128,5 +130,57 @@ export const de: Messages = {
     bedrooms: (count: number) => `${count} Schlafzimmer`,
     bathrooms: (count: number) => `${count} Badezimmer`,
     upToGuests: (count: number) => `Bis zu ${count} ${count === 1 ? 'Gast' : 'Gästen'}`,
+    viewHomeCta: 'Haus ansehen →',
   },
+  cookieBanner: {
+    title: '🍪 Cookies',
+    description: 'Wir verwenden Cookies, um Ihr Erlebnis zu verbessern und den Traffic zu analysieren.',
+    acceptAll: 'Akzeptieren',
+    rejectAll: 'Ablehnen',
+    customize: 'Optionen',
+    essential: 'Notwendig',
+    analytics: 'Analyse',
+    marketing: 'Marketing',
+    required: '(Erf.)',
+    essentialDesc: 'Notwendig, damit die Website funktioniert.',
+    analyticsDesc: 'Hilft uns, die Nutzung der Website zu verstehen.',
+    marketingDesc: 'Um relevante Werbung zu zeigen.',
+    savePreferences: 'Speichern',
+    cancel: 'Abbrechen',
+  },
+
+  notFound: {
+    title: 'Seite nicht gefunden | Reservas Kalawala',
+    heading: 'Wir konnten diese Seite nicht finden',
+    body: 'Der Link ist möglicherweise fehlerhaft, oder die Seite wurde verschoben.',
+    cta: 'Zurück zur Startseite',
+  },
+
+  whyStayWithUs: {
+    title: 'Warum bei uns buchen?',
+    benefits: [
+      'Strategische Lagen',
+      'Voll ausgestattete Häuser',
+      'Direkte Buchung und lokaler Support',
+      'Keine Plattformgebühren',
+    ],
+    ctaText: 'Alle unsere Unterkünfte ansehen',
+  },
+
+  imagesModal: {
+    close: 'Schließen',
+    photos: 'Fotos',
+    previous: 'Zurück',
+    next: 'Weiter',
+    empty: 'Keine Bilder verfügbar',
+  },
+
+  reviewTags: {
+    'Stayed a few nights': 'Aufenthalt von ein paar Nächten',
+    'Stayed one night': 'Aufenthalt von einer Nacht',
+    'Stayed with kids': 'Aufenthalt mit Kindern',
+    'Stayed with a pet': 'Aufenthalt mit Haustier',
+    'Stayed about a week': 'Aufenthalt von etwa einer Woche',
+  },
+
 };

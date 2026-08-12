@@ -1,22 +1,30 @@
 import { HouseDataType, ListingType, PropertyCapacity, PropertyMarketingContent } from "./types";
-import { pathForKey, pathForLegacyId } from "../routes.config";
+import { pathForKey, type RouteKey } from "../routes.config";
+import { pickLocalized, type Locale, type LocalizedValue } from "../i18n";
 
 // Random popup configuration
 export const RANDOM_POPUP_CONFIG = {
   // Probability of showing the popup (0-1, where 1 = 100% chance)
-  showProbability: 1, // 30% chance to show 
-  
+  showProbability: 1, // 100% chance to show
+
   // Time range in milliseconds for random delay
-  minDelay: 25000, 
-  maxDelay: 50000, 
-  
+  minDelay: 25000,
+  maxDelay: 50000,
+
   // Duration the popup stays visible
   duration: 8000, // 8 seconds
-  
+
   // Messages for different languages
   messages: {
     en: "Recent guests booked directly on our website.",
-    es: "Huéspedes recientes reservaron directamente en nuestra web."
+    es: "Huéspedes recientes reservaron directamente en nuestra web.",
+    de: "Kürzlich haben Gäste direkt auf unserer Website gebucht.",
+    fr: "Des voyageurs ont récemment réservé directement sur notre site.",
+    it: "Ospiti recenti hanno prenotato direttamente sul nostro sito.",
+    pt: "Hóspedes recentes reservaram diretamente no nosso site.",
+    he: "אורחים הזמינו לאחרונה ישירות באתר שלנו.",
+    hi: "हाल ही में मेहमानों ने हमारी वेबसाइट पर सीधे बुकिंग की।",
+    nl: "Recente gasten hebben rechtstreeks via onze website geboekt."
   }
 };
 
@@ -2022,12 +2030,26 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
         propertyKey: 'Rana',
         descriptiveTitle: {
             en: 'Family home, pet friendly with air conditioning',
-            es: 'Casa familiar, pet friendly con aire acondicionado'
+            es: 'Casa familiar, pet friendly con aire acondicionado',
+            de: 'Familienhaus, haustierfreundlich mit Klimaanlage',
+            fr: 'Maison familiale, climatisée et adaptée aux animaux',
+            it: 'Casa familiare, pet friendly con aria condizionata',
+            pt: 'Casa familiar, aceita animais de estimação, com ar condicionado',
+            he: 'בית משפחתי, ידידותי לחיות מחמד עם מיזוג אוויר',
+            hi: 'पारिवारिक घर, एयर कंडीशनिंग के साथ पालतू-अनुकूल',
+            nl: 'Gezinswoning, huisdiervriendelijk met airconditioning'
         },
         price: { crc: 80000, usd: 160 },
         socialStatement: {
             en: 'Chosen for its private internal parking and small garden for pets',
-            es: 'Elegida por su parqueo privado interno y pequeño jardín para las mascotas'
+            es: 'Elegida por su parqueo privado interno y pequeño jardín para las mascotas',
+            de: 'Ausgewählt wegen des privaten Innenparkplatzes und des kleinen Gartens für Haustiere',
+            fr: 'Choisie pour son parking privé intérieur et son petit jardin pour les animaux',
+            it: 'Scelta per il suo parcheggio interno privato e il piccolo giardino per gli animali',
+            pt: 'Escolhida pelo seu estacionamento interno privado e pequeno jardim para animais de estimação',
+            he: 'נבחר בזכות חניה פרטית פנימית וגינה קטנה לחיות מחמד',
+            hi: 'निजी आंतरिक पार्किंग और पालतू जानवरों के लिए छोटे बगीचे के कारण चुना गया',
+            nl: 'Gekozen vanwege de eigen inpandige parkeerplaats en de kleine tuin voor huisdieren'
         },
         featureHighlights: {
             en: [
@@ -2043,6 +2065,55 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ A/C en habitaciones',
                 '💻 WiFi rápido ideal para trabajo remoto',
                 '🐾 Pet-friendly con espacio exterior'
+            ],
+            de: [
+                '📍 Fußläufige Lage im Zentrum von Puerto Viejo',
+                '🏡 Privater Bereich für bis zu 5 Personen',
+                '❄️ Klimaanlage in den Schlafzimmern',
+                '💻 Schnelles WLAN, ideal für Remote-Arbeit',
+                '🐾 Haustierfreundlich mit Außenbereich'
+            ],
+            fr: [
+                '📍 Emplacement accessible à pied dans le centre de Puerto Viejo',
+                '🏡 Espace privé pour jusqu\'à 5 personnes',
+                '❄️ Climatisation dans les chambres',
+                '💻 WiFi rapide, idéal pour le télétravail',
+                '🐾 Adapté aux animaux avec espace extérieur'
+            ],
+            it: [
+                '📍 Posizione raggiungibile a piedi nel centro di Puerto Viejo',
+                '🏡 Spazio privato per un massimo di 5 persone',
+                '❄️ Aria condizionata nelle camere',
+                '💻 WiFi veloce ideale per il lavoro da remoto',
+                '🐾 Pet friendly con spazio esterno'
+            ],
+            pt: [
+                '📍 Localização acessível a pé no centro de Puerto Viejo',
+                '🏡 Espaço privado para até 5 pessoas',
+                '❄️ Ar condicionado nos quartos',
+                '💻 Wi-Fi rápido, ideal para trabalho remoto',
+                '🐾 Aceita animais de estimação, com espaço exterior'
+            ],
+            he: [
+                '📍 מיקום נגיש ברגל במרכז פוארטו ויחו',
+                '🏡 מרחב פרטי לעד 5 אנשים',
+                '❄️ מיזוג אוויר בחדרי השינה',
+                '💻 WiFi מהיר, אידיאלי לעבודה מרחוק',
+                '🐾 ידידותי לחיות מחמד עם שטח חוץ'
+            ],
+            hi: [
+                '📍 डाउनटाउन Puerto Viejo में पैदल दूरी पर स्थान',
+                '🏡 5 लोगों तक के लिए निजी स्थान',
+                '❄️ बेडरूम में A/C',
+                '💻 रिमोट वर्क के लिए तेज़ वाई-फाई',
+                '🐾 बाहरी स्थान के साथ पालतू-अनुकूल'
+            ],
+            nl: [
+                '📍 Op loopafstand van het centrum van Puerto Viejo',
+                '🏡 Eigen ruimte voor maximaal 5 personen',
+                '❄️ Airco in de slaapkamers',
+                '💻 Snel wifi, ideaal om op afstand te werken',
+                '🐾 Huisdiervriendelijk met buitenruimte'
             ]
         }
     },
@@ -2050,12 +2121,26 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
         propertyKey: 'Geco',
         descriptiveTitle: {
             en: 'Family home, pet friendly with air conditioning',
-            es: 'Casa familiar, pet friendly con aire acondicionado'
+            es: 'Casa familiar, pet friendly con aire acondicionado',
+            de: 'Familienhaus, haustierfreundlich mit Klimaanlage',
+            fr: 'Maison familiale, climatisée et adaptée aux animaux',
+            it: 'Casa familiare, pet friendly con aria condizionata',
+            pt: 'Casa familiar, aceita animais de estimação, com ar condicionado',
+            he: 'בית משפחתי, ידידותי לחיות מחמד עם מיזוג אוויר',
+            hi: 'पारिवारिक घर, एयर कंडीशनिंग के साथ पालतू-अनुकूल',
+            nl: 'Gezinswoning, huisdiervriendelijk met airconditioning'
         },
         price: { crc: 80000, usd: 160 },
         socialStatement: {
             en: 'Chosen for its private internal parking and small garden for pets',
-            es: 'Elegida por su parqueo privado interno y pequeño jardín para las mascotas'
+            es: 'Elegida por su parqueo privado interno y pequeño jardín para las mascotas',
+            de: 'Ausgewählt wegen des privaten Innenparkplatzes und des kleinen Gartens für Haustiere',
+            fr: 'Choisie pour son parking privé intérieur et son petit jardin pour les animaux',
+            it: 'Scelta per il suo parcheggio interno privato e il piccolo giardino per gli animali',
+            pt: 'Escolhida pelo seu estacionamento interno privado e pequeno jardim para animais de estimação',
+            he: 'נבחר בזכות חניה פרטית פנימית וגינה קטנה לחיות מחמד',
+            hi: 'निजी आंतरिक पार्किंग और पालतू जानवरों के लिए छोटे बगीचे के कारण चुना गया',
+            nl: 'Gekozen vanwege de eigen inpandige parkeerplaats en de kleine tuin voor huisdieren'
         },
         featureHighlights: {
             en: [
@@ -2071,6 +2156,55 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ A/C en habitaciones',
                 '💻 WiFi rápido ideal para trabajo remoto',
                 '🐾 Pet-friendly con espacio exterior'
+            ],
+            de: [
+                '📍 Fußläufige Lage im Zentrum von Puerto Viejo',
+                '🏡 Privater Bereich für bis zu 5 Personen',
+                '❄️ Klimaanlage in den Schlafzimmern',
+                '💻 Schnelles WLAN, ideal für Remote-Arbeit',
+                '🐾 Haustierfreundlich mit Außenbereich'
+            ],
+            fr: [
+                '📍 Emplacement accessible à pied dans le centre de Puerto Viejo',
+                '🏡 Espace privé pour jusqu\'à 5 personnes',
+                '❄️ Climatisation dans les chambres',
+                '💻 WiFi rapide, idéal pour le télétravail',
+                '🐾 Adapté aux animaux avec espace extérieur'
+            ],
+            it: [
+                '📍 Posizione raggiungibile a piedi nel centro di Puerto Viejo',
+                '🏡 Spazio privato per un massimo di 5 persone',
+                '❄️ Aria condizionata nelle camere',
+                '💻 WiFi veloce ideale per il lavoro da remoto',
+                '🐾 Pet friendly con spazio esterno'
+            ],
+            pt: [
+                '📍 Localização acessível a pé no centro de Puerto Viejo',
+                '🏡 Espaço privado para até 5 pessoas',
+                '❄️ Ar condicionado nos quartos',
+                '💻 Wi-Fi rápido, ideal para trabalho remoto',
+                '🐾 Aceita animais de estimação, com espaço exterior'
+            ],
+            he: [
+                '📍 מיקום נגיש ברגל במרכז פוארטו ויחו',
+                '🏡 מרחב פרטי לעד 5 אנשים',
+                '❄️ מיזוג אוויר בחדרי השינה',
+                '💻 WiFi מהיר, אידיאלי לעבודה מרחוק',
+                '🐾 ידידותי לחיות מחמד עם שטח חוץ'
+            ],
+            hi: [
+                '📍 डाउनटाउन Puerto Viejo में पैदल दूरी पर स्थान',
+                '🏡 5 लोगों तक के लिए निजी स्थान',
+                '❄️ बेडरूम में A/C',
+                '💻 रिमोट वर्क के लिए तेज़ वाई-फाई',
+                '🐾 बाहरी स्थान के साथ पालतू-अनुकूल'
+            ],
+            nl: [
+                '📍 Op loopafstand van het centrum van Puerto Viejo',
+                '🏡 Eigen ruimte voor maximaal 5 personen',
+                '❄️ Airco in de slaapkamers',
+                '💻 Snel wifi, ideaal om op afstand te werken',
+                '🐾 Huisdiervriendelijk met buitenruimte'
             ]
         }
     },
@@ -2078,12 +2212,26 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
         propertyKey: 'Tucano',
         descriptiveTitle: {
             en: 'Central apartment above Italian bakery',
-            es: 'Apartamento céntrico sobre panadería italiana'
+            es: 'Apartamento céntrico sobre panadería italiana',
+            de: 'Zentral gelegenes Apartment über einer italienischen Bäckerei',
+            fr: 'Appartement central au-dessus d\'une boulangerie italienne',
+            it: 'Appartamento centrale sopra una panetteria italiana',
+            pt: 'Apartamento central por cima de uma padaria italiana',
+            he: 'דירה מרכזית מעל מאפייה איטלקית',
+            hi: 'इतालवी बेकरी के ऊपर केंद्रीय अपार्टमेंट',
+            nl: 'Centraal gelegen appartement boven een Italiaanse bakkerij'
         },
         price: { crc: 84000, usd: 169 },
         socialStatement: {
             en: 'Chosen for its central location perfect for bars and restaurants',
-            es: 'Elegida por su ubicación céntrica perfecta para bares y restaurantes'
+            es: 'Elegida por su ubicación céntrica perfecta para bares y restaurantes',
+            de: 'Ausgewählt wegen seiner zentralen Lage, perfekt für Bars und Restaurants',
+            fr: 'Choisi pour son emplacement central, parfait pour les bars et restaurants',
+            it: 'Scelto per la sua posizione centrale, perfetta per bar e ristoranti',
+            pt: 'Escolhido pela sua localização central, perfeita para bares e restaurantes',
+            he: 'נבחרה בזכות המיקום המרכזי, אידיאלי לברים ומסעדות',
+            hi: 'बार और रेस्तरां के लिए बिल्कुल सही केंद्रीय स्थान के कारण चुना गया',
+            nl: 'Gekozen vanwege de centrale ligging, perfect voor bars en restaurants'
         },
         featureHighlights: {
             en: [
@@ -2099,6 +2247,55 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ A/C en habitaciones',
                 '💻 WiFi rápido ideal para trabajo remoto',
                 '🍞 15% descuento en panadería de abajo'
+            ],
+            de: [
+                '📍 Zentrale Lage über einer italienischen Bäckerei',
+                '🏡 Gemütliches Apartment für bis zu 5 Personen',
+                '❄️ Klimaanlage in den Schlafzimmern',
+                '💻 Schnelles WLAN, ideal für Remote-Arbeit',
+                '🍞 15 % Rabatt in der Bäckerei im Erdgeschoss'
+            ],
+            fr: [
+                '📍 Emplacement central au-dessus d\'une boulangerie italienne',
+                '🏡 Appartement chaleureux pour jusqu\'à 5 personnes',
+                '❄️ Climatisation dans les chambres',
+                '💻 WiFi rapide, idéal pour le télétravail',
+                '🍞 15 % de réduction à la boulangerie du rez-de-chaussée'
+            ],
+            it: [
+                '📍 Posizione centrale sopra una panetteria italiana',
+                '🏡 Appartamento accogliente per un massimo di 5 persone',
+                '❄️ Aria condizionata nelle camere',
+                '💻 WiFi veloce ideale per il lavoro da remoto',
+                '🍞 Sconto del 15% presso la panetteria al piano terra'
+            ],
+            pt: [
+                '📍 Localização central por cima de uma padaria italiana',
+                '🏡 Apartamento acolhedor para até 5 pessoas',
+                '❄️ Ar condicionado nos quartos',
+                '💻 Wi-Fi rápido, ideal para trabalho remoto',
+                '🍞 15% de desconto na padaria do rés do chão'
+            ],
+            he: [
+                '📍 מיקום מרכזי מעל מאפייה איטלקית',
+                '🏡 דירה נעימה לעד 5 אנשים',
+                '❄️ מיזוג אוויר בחדרי השינה',
+                '💻 WiFi מהיר, אידיאלי לעבודה מרחוק',
+                '🍞 הנחה של 15% במאפייה שבקומה התחתונה'
+            ],
+            hi: [
+                '📍 इतालवी बेकरी के ऊपर केंद्रीय स्थान',
+                '🏡 5 लोगों तक के लिए आरामदायक अपार्टमेंट',
+                '❄️ बेडरूम में A/C',
+                '💻 रिमोट वर्क के लिए तेज़ वाई-फाई',
+                '🍞 नीचे की बेकरी में 15% छूट'
+            ],
+            nl: [
+                '📍 Centrale ligging boven een Italiaanse bakkerij',
+                '🏡 Gezellig appartement voor maximaal 5 personen',
+                '❄️ Airco in de slaapkamers',
+                '💻 Snel wifi, ideaal om op afstand te werken',
+                '🍞 15% korting bij de bakkerij beneden'
             ]
         }
     },
@@ -2106,12 +2303,26 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
         propertyKey: 'Pappagallo',
         descriptiveTitle: {
             en: 'Central apartment above Italian bakery',
-            es: 'Apartamento céntrico sobre panadería italiana'
+            es: 'Apartamento céntrico sobre panadería italiana',
+            de: 'Zentral gelegenes Apartment über einer italienischen Bäckerei',
+            fr: 'Appartement central au-dessus d\'une boulangerie italienne',
+            it: 'Appartamento centrale sopra una panetteria italiana',
+            pt: 'Apartamento central por cima de uma padaria italiana',
+            he: 'דירה מרכזית מעל מאפייה איטלקית',
+            hi: 'इतालवी बेकरी के ऊपर केंद्रीय अपार्टमेंट',
+            nl: 'Centraal gelegen appartement boven een Italiaanse bakkerij'
         },
         price: { crc: 84000, usd: 169 },
         socialStatement: {
             en: 'Chosen for its central location perfect for bars and restaurants',
-            es: 'Elegida por su ubicación céntrica perfecta para bares y restaurantes'
+            es: 'Elegida por su ubicación céntrica perfecta para bares y restaurantes',
+            de: 'Ausgewählt wegen seiner zentralen Lage, perfekt für Bars und Restaurants',
+            fr: 'Choisi pour son emplacement central, parfait pour les bars et restaurants',
+            it: 'Scelto per la sua posizione centrale, perfetta per bar e ristoranti',
+            pt: 'Escolhido pela sua localização central, perfeita para bares e restaurantes',
+            he: 'נבחרה בזכות המיקום המרכזי, אידיאלי לברים ומסעדות',
+            hi: 'बार और रेस्तरां के लिए बिल्कुल सही केंद्रीय स्थान के कारण चुना गया',
+            nl: 'Gekozen vanwege de centrale ligging, perfect voor bars en restaurants'
         },
         featureHighlights: {
             en: [
@@ -2127,6 +2338,55 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ A/C en habitaciones',
                 '💻 WiFi rápido ideal para trabajo remoto',
                 '🍞 15% descuento en panadería de abajo'
+            ],
+            de: [
+                '📍 Zentrale Lage über einer italienischen Bäckerei',
+                '🏡 Gemütliches Apartment für bis zu 5 Personen',
+                '❄️ Klimaanlage in den Schlafzimmern',
+                '💻 Schnelles WLAN, ideal für Remote-Arbeit',
+                '🍞 15 % Rabatt in der Bäckerei im Erdgeschoss'
+            ],
+            fr: [
+                '📍 Emplacement central au-dessus d\'une boulangerie italienne',
+                '🏡 Appartement chaleureux pour jusqu\'à 5 personnes',
+                '❄️ Climatisation dans les chambres',
+                '💻 WiFi rapide, idéal pour le télétravail',
+                '🍞 15 % de réduction à la boulangerie du rez-de-chaussée'
+            ],
+            it: [
+                '📍 Posizione centrale sopra una panetteria italiana',
+                '🏡 Appartamento accogliente per un massimo di 5 persone',
+                '❄️ Aria condizionata nelle camere',
+                '💻 WiFi veloce ideale per il lavoro da remoto',
+                '🍞 Sconto del 15% presso la panetteria al piano terra'
+            ],
+            pt: [
+                '📍 Localização central por cima de uma padaria italiana',
+                '🏡 Apartamento acolhedor para até 5 pessoas',
+                '❄️ Ar condicionado nos quartos',
+                '💻 Wi-Fi rápido, ideal para trabalho remoto',
+                '🍞 15% de desconto na padaria do rés do chão'
+            ],
+            he: [
+                '📍 מיקום מרכזי מעל מאפייה איטלקית',
+                '🏡 דירה נעימה לעד 5 אנשים',
+                '❄️ מיזוג אוויר בחדרי השינה',
+                '💻 WiFi מהיר, אידיאלי לעבודה מרחוק',
+                '🍞 הנחה של 15% במאפייה שבקומה התחתונה'
+            ],
+            hi: [
+                '📍 इतालवी बेकरी के ऊपर केंद्रीय स्थान',
+                '🏡 5 लोगों तक के लिए आरामदायक अपार्टमेंट',
+                '❄️ बेडरूम में A/C',
+                '💻 रिमोट वर्क के लिए तेज़ वाई-फाई',
+                '🍞 नीचे की बेकरी में 15% छूट'
+            ],
+            nl: [
+                '📍 Centrale ligging boven een Italiaanse bakkerij',
+                '🏡 Gezellig appartement voor maximaal 5 personen',
+                '❄️ Airco in de slaapkamers',
+                '💻 Snel wifi, ideaal om op afstand te werken',
+                '🍞 15% korting bij de bakkerij beneden'
             ]
         }
     },
@@ -2134,12 +2394,26 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
         propertyKey: 'VillaMar',
         descriptiveTitle: {
             en: 'Private villa with pool for couples',
-            es: 'Villa privada con piscina para parejas'
+            es: 'Villa privada con piscina para parejas',
+            de: 'Private Villa mit Pool für Paare',
+            fr: 'Villa privée avec piscine pour couples',
+            it: 'Villa privata con piscina per coppie',
+            pt: 'Vivenda privada com piscina para casais',
+            he: 'וילה פרטית עם בריכה לזוגות',
+            hi: 'जोड़ों के लिए स्विमिंग पूल वाला निजी विला',
+            nl: 'Privévilla met zwembad voor stellen'
         },
         price: { crc: 99000, usd: 199 },
         socialStatement: {
             en: 'Chosen for its private pool perfect for romantic getaways',
-            es: 'Elegida por su piscina privada perfecta para escapadas románticas'
+            es: 'Elegida por su piscina privada perfecta para escapadas románticas',
+            de: 'Ausgewählt wegen des privaten Pools, perfekt für romantische Kurzurlaube',
+            fr: 'Choisie pour sa piscine privée, parfaite pour les escapades romantiques',
+            it: 'Scelta per la sua piscina privata, perfetta per fughe romantiche',
+            pt: 'Escolhida pela sua piscina privada, perfeita para escapadinhas românticas',
+            he: 'נבחרה בזכות הבריכה הפרטית שלה, מושלמת לחופשות רומנטיות',
+            hi: 'रोमांटिक छुट्टियों के लिए बिल्कुल सही निजी स्विमिंग पूल के कारण चुना गया',
+            nl: 'Gekozen vanwege het privézwembad, perfect voor romantische uitjes'
         },
         featureHighlights: {
             en: [
@@ -2155,6 +2429,55 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ A/C completo en toda la villa',
                 '💻 WiFi rápido con espacio de trabajo dedicado',
                 '🏖️ Cerca de la hermosa Playa Chiquita'
+            ],
+            de: [
+                '🏊 Privater Pool exklusiv für Gäste',
+                '💑 Perfekt für Paare, die Privatsphäre suchen',
+                '❄️ Vollklimatisierung in der gesamten Villa',
+                '💻 Schnelles WLAN mit eigenem Arbeitsbereich',
+                '🏖️ In der Nähe des wunderschönen Playa Chiquita'
+            ],
+            fr: [
+                '🏊 Piscine privée exclusive aux hôtes',
+                '💑 Parfait pour les couples en quête d\'intimité',
+                '❄️ Climatisation complète dans toute la villa',
+                '💻 WiFi rapide avec espace de travail dédié',
+                '🏖️ Proche de la magnifique Playa Chiquita'
+            ],
+            it: [
+                '🏊 Piscina privata esclusiva per gli ospiti',
+                '💑 Perfetta per coppie in cerca di privacy',
+                '❄️ Aria condizionata in tutta la villa',
+                '💻 WiFi veloce con spazio di lavoro dedicato',
+                '🏖️ Vicino alla splendida Playa Chiquita'
+            ],
+            pt: [
+                '🏊 Piscina privada, exclusiva para os hóspedes',
+                '💑 Perfeita para casais que procuram privacidade',
+                '❄️ Ar condicionado em toda a vivenda',
+                '💻 Wi-Fi rápido com espaço de trabalho dedicado',
+                '🏖️ Perto da bela Playa Chiquita'
+            ],
+            he: [
+                '🏊 בריכה פרטית בלעדית לאורחים',
+                '💑 מושלם לזוגות המחפשים פרטיות',
+                '❄️ מיזוג אוויר מלא בכל רחבי הווילה',
+                '💻 WiFi מהיר עם פינת עבודה ייעודית',
+                '🏖️ קרוב לחוף היפהפה פלייה צ\'יקיטה'
+            ],
+            hi: [
+                '🏊 मेहमानों के लिए विशेष निजी स्विमिंग पूल',
+                '💑 गोपनीयता चाहने वाले जोड़ों के लिए बिल्कुल सही',
+                '❄️ पूरे विला में पूर्ण A/C',
+                '💻 समर्पित कार्यक्षेत्र के साथ तेज़ वाई-फाई',
+                '🏖️ खूबसूरत Playa Chiquita के करीब'
+            ],
+            nl: [
+                '🏊 Privézwembad, exclusief voor gasten',
+                '💑 Perfect voor stellen die privacy zoeken',
+                '❄️ Volledige airco in de hele villa',
+                '💻 Snel wifi met eigen werkplek',
+                '🏖️ Dicht bij het prachtige Playa Chiquita'
             ]
         }
     },
@@ -2162,12 +2485,26 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
         propertyKey: 'VillaCoral',
         descriptiveTitle: {
             en: 'Private villa with pool for couples',
-            es: 'Villa privada con piscina para parejas'
+            es: 'Villa privada con piscina para parejas',
+            de: 'Private Villa mit Pool für Paare',
+            fr: 'Villa privée avec piscine pour couples',
+            it: 'Villa privata con piscina per coppie',
+            pt: 'Vivenda privada com piscina para casais',
+            he: 'וילה פרטית עם בריכה לזוגות',
+            hi: 'जोड़ों के लिए स्विमिंग पूल वाला निजी विला',
+            nl: 'Privévilla met zwembad voor stellen'
         },
         price: { crc: 99000, usd: 199 },
         socialStatement: {
             en: 'Chosen for its private pool perfect for romantic getaways',
-            es: 'Elegida por su piscina privada perfecta para escapadas románticas'
+            es: 'Elegida por su piscina privada perfecta para escapadas románticas',
+            de: 'Ausgewählt wegen des privaten Pools, perfekt für romantische Kurzurlaube',
+            fr: 'Choisie pour sa piscine privée, parfaite pour les escapades romantiques',
+            it: 'Scelta per la sua piscina privata, perfetta per fughe romantiche',
+            pt: 'Escolhida pela sua piscina privada, perfeita para escapadinhas românticas',
+            he: 'נבחרה בזכות הבריכה הפרטית שלה, מושלמת לחופשות רומנטיות',
+            hi: 'रोमांटिक छुट्टियों के लिए बिल्कुल सही निजी स्विमिंग पूल के कारण चुना गया',
+            nl: 'Gekozen vanwege het privézwembad, perfect voor romantische uitjes'
         },
         featureHighlights: {
             en: [
@@ -2183,6 +2520,55 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ A/C completo en toda la villa',
                 '💻 WiFi rápido con espacio de trabajo dedicado',
                 '🏖️ Cerca de la hermosa Playa Chiquita'
+            ],
+            de: [
+                '🏊 Privater Pool exklusiv für Gäste',
+                '💑 Perfekt für Paare, die Privatsphäre suchen',
+                '❄️ Vollklimatisierung in der gesamten Villa',
+                '💻 Schnelles WLAN mit eigenem Arbeitsbereich',
+                '🏖️ In der Nähe des wunderschönen Playa Chiquita'
+            ],
+            fr: [
+                '🏊 Piscine privée exclusive aux hôtes',
+                '💑 Parfait pour les couples en quête d\'intimité',
+                '❄️ Climatisation complète dans toute la villa',
+                '💻 WiFi rapide avec espace de travail dédié',
+                '🏖️ Proche de la magnifique Playa Chiquita'
+            ],
+            it: [
+                '🏊 Piscina privata esclusiva per gli ospiti',
+                '💑 Perfetta per coppie in cerca di privacy',
+                '❄️ Aria condizionata in tutta la villa',
+                '💻 WiFi veloce con spazio di lavoro dedicato',
+                '🏖️ Vicino alla splendida Playa Chiquita'
+            ],
+            pt: [
+                '🏊 Piscina privada, exclusiva para os hóspedes',
+                '💑 Perfeita para casais que procuram privacidade',
+                '❄️ Ar condicionado em toda a vivenda',
+                '💻 Wi-Fi rápido com espaço de trabalho dedicado',
+                '🏖️ Perto da bela Playa Chiquita'
+            ],
+            he: [
+                '🏊 בריכה פרטית בלעדית לאורחים',
+                '💑 מושלם לזוגות המחפשים פרטיות',
+                '❄️ מיזוג אוויר מלא בכל רחבי הווילה',
+                '💻 WiFi מהיר עם פינת עבודה ייעודית',
+                '🏖️ קרוב לחוף היפהפה פלייה צ\'יקיטה'
+            ],
+            hi: [
+                '🏊 मेहमानों के लिए विशेष निजी स्विमिंग पूल',
+                '💑 गोपनीयता चाहने वाले जोड़ों के लिए बिल्कुल सही',
+                '❄️ पूरे विला में पूर्ण A/C',
+                '💻 समर्पित कार्यक्षेत्र के साथ तेज़ वाई-फाई',
+                '🏖️ खूबसूरत Playa Chiquita के करीब'
+            ],
+            nl: [
+                '🏊 Privézwembad, exclusief voor gasten',
+                '💑 Perfect voor stellen die privacy zoeken',
+                '❄️ Volledige airco in de hele villa',
+                '💻 Snel wifi met eigen werkplek',
+                '🏖️ Dicht bij het prachtige Playa Chiquita'
             ]
         }
     },
@@ -2190,12 +2576,26 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
         propertyKey: 'Areka',
         descriptiveTitle: {
             en: 'Cozy retreat perfect for couples exploring Punta Uva',
-            es: 'Refugio acogedor perfecto para parejas explorando Punta Uva'
+            es: 'Refugio acogedor perfecto para parejas explorando Punta Uva',
+            de: 'Gemütlicher Rückzugsort, perfekt für Paare, die Punta Uva erkunden',
+            fr: 'Refuge chaleureux, parfait pour les couples explorant Punta Uva',
+            it: 'Rifugio accogliente perfetto per coppie che esplorano Punta Uva',
+            pt: 'Retiro acolhedor, perfeito para casais que exploram Punta Uva',
+            he: 'מפלט נעים ומושלם לזוגות היוצאים לגלות את פונטה אובה',
+            hi: 'Punta Uva घूमने वाले जोड़ों के लिए बिल्कुल सही आरामदायक ठिकाना',
+            nl: 'Gezellig toevluchtsoord, perfect voor stellen die Punta Uva verkennen'
         },
         price: { crc: 49000, usd: 99 },
         socialStatement: {
             en: 'Chosen for its peaceful location',
-            es: 'Elegida por su ubicación tranquila'
+            es: 'Elegida por su ubicación tranquila',
+            de: 'Ausgewählt wegen seiner ruhigen Lage',
+            fr: 'Choisi pour son emplacement paisible',
+            it: 'Scelto per la sua posizione tranquilla',
+            pt: 'Escolhido pela sua localização tranquila',
+            he: 'נבחר בזכות מיקומו השקט',
+            hi: 'इसके शांत स्थान के कारण चुना गया',
+            nl: 'Gekozen vanwege de rustige ligging'
         },
         featureHighlights: {
             en: [
@@ -2211,6 +2611,55 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ A/C para noches cómodas',
                 '💻 WiFi para mantenerse conectado',
                 '🚗 Parqueo privado externo disponible'
+            ],
+            de: [
+                '🏖️ 2 Minuten mit dem Auto vom Strand Punta Uva entfernt',
+                '💑 Intimer Raum, perfekt für Paare',
+                '❄️ Klimaanlage für angenehme Nächte',
+                '💻 WLAN, um in Verbindung zu bleiben',
+                '🚗 Privater Außenparkplatz vorhanden'
+            ],
+            fr: [
+                '🏖️ À 2 minutes en voiture de la plage de Punta Uva',
+                '💑 Espace intime parfait pour les couples',
+                '❄️ Climatisation pour des nuits confortables',
+                '💻 WiFi pour rester connecté',
+                '🚗 Parking privé extérieur disponible'
+            ],
+            it: [
+                '🏖️ A 2 minuti in auto dalla spiaggia di Punta Uva',
+                '💑 Spazio intimo perfetto per coppie',
+                '❄️ Aria condizionata per notti confortevoli',
+                '💻 WiFi per restare connessi',
+                '🚗 Parcheggio privato esterno disponibile'
+            ],
+            pt: [
+                '🏖️ A 2 minutos de carro da praia de Punta Uva',
+                '💑 Espaço íntimo, perfeito para casais',
+                '❄️ Ar condicionado para noites confortáveis',
+                '💻 Wi-Fi para se manter ligado',
+                '🚗 Estacionamento privado exterior disponível'
+            ],
+            he: [
+                '🏖️ נסיעה של 2 דקות מחוף פונטה אובה',
+                '💑 מרחב אינטימי ומושלם לזוגות',
+                '❄️ מיזוג אוויר ללילות נעימים',
+                '💻 WiFi להישארות מחוברים',
+                '🚗 חניה פרטית בחוץ זמינה'
+            ],
+            hi: [
+                '🏖️ Punta Uva समुद्र तट से 2 मिनट की ड्राइव',
+                '💑 जोड़ों के लिए बिल्कुल सही अंतरंग स्थान',
+                '❄️ आरामदायक रातों के लिए A/C',
+                '💻 जुड़े रहने के लिए वाई-फाई',
+                '🚗 बाहरी निजी पार्किंग उपलब्ध'
+            ],
+            nl: [
+                '🏖️ 2 minuten rijden van het strand van Punta Uva',
+                '💑 Intieme ruimte, perfect voor stellen',
+                '❄️ Airco voor comfortabele nachten',
+                '💻 Wifi om verbonden te blijven',
+                '🚗 Eigen parkeerplaats buiten beschikbaar'
             ]
         }
     },
@@ -2218,12 +2667,26 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
         propertyKey: 'Plumeria',
         descriptiveTitle: {
             en: 'Cozy retreat perfect for couples exploring Punta Uva',
-            es: 'Refugio acogedor perfecto para parejas explorando Punta Uva'
+            es: 'Refugio acogedor perfecto para parejas explorando Punta Uva',
+            de: 'Gemütlicher Rückzugsort, perfekt für Paare, die Punta Uva erkunden',
+            fr: 'Refuge chaleureux, parfait pour les couples explorant Punta Uva',
+            it: 'Rifugio accogliente perfetto per coppie che esplorano Punta Uva',
+            pt: 'Retiro acolhedor, perfeito para casais que exploram Punta Uva',
+            he: 'מפלט נעים ומושלם לזוגות היוצאים לגלות את פונטה אובה',
+            hi: 'Punta Uva घूमने वाले जोड़ों के लिए बिल्कुल सही आरामदायक ठिकाना',
+            nl: 'Gezellig toevluchtsoord, perfect voor stellen die Punta Uva verkennen'
         },
         price: { crc: 49000, usd: 99 },
         socialStatement: {
             en: 'Chosen for its peaceful location',
-            es: 'Elegida por su ubicación tranquila'
+            es: 'Elegida por su ubicación tranquila',
+            de: 'Ausgewählt wegen seiner ruhigen Lage',
+            fr: 'Choisi pour son emplacement paisible',
+            it: 'Scelto per la sua posizione tranquilla',
+            pt: 'Escolhido pela sua localização tranquila',
+            he: 'נבחר בזכות מיקומו השקט',
+            hi: 'इसके शांत स्थान के कारण चुना गया',
+            nl: 'Gekozen vanwege de rustige ligging'
         },
         featureHighlights: {
             en: [
@@ -2239,6 +2702,55 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ A/C para noches cómodas',
                 '💻 WiFi para mantenerse conectado',
                 '🚗 Parqueo privado externo disponible'
+            ],
+            de: [
+                '🏖️ 2 Minuten mit dem Auto vom Strand Punta Uva entfernt',
+                '💑 Intimer Raum, perfekt für Paare',
+                '❄️ Klimaanlage für angenehme Nächte',
+                '💻 WLAN, um in Verbindung zu bleiben',
+                '🚗 Privater Außenparkplatz vorhanden'
+            ],
+            fr: [
+                '🏖️ À 2 minutes en voiture de la plage de Punta Uva',
+                '💑 Espace intime parfait pour les couples',
+                '❄️ Climatisation pour des nuits confortables',
+                '💻 WiFi pour rester connecté',
+                '🚗 Parking privé extérieur disponible'
+            ],
+            it: [
+                '🏖️ A 2 minuti in auto dalla spiaggia di Punta Uva',
+                '💑 Spazio intimo perfetto per coppie',
+                '❄️ Aria condizionata per notti confortevoli',
+                '💻 WiFi per restare connessi',
+                '🚗 Parcheggio privato esterno disponibile'
+            ],
+            pt: [
+                '🏖️ A 2 minutos de carro da praia de Punta Uva',
+                '💑 Espaço íntimo, perfeito para casais',
+                '❄️ Ar condicionado para noites confortáveis',
+                '💻 Wi-Fi para se manter ligado',
+                '🚗 Estacionamento privado exterior disponível'
+            ],
+            he: [
+                '🏖️ נסיעה של 2 דקות מחוף פונטה אובה',
+                '💑 מרחב אינטימי ומושלם לזוגות',
+                '❄️ מיזוג אוויר ללילות נעימים',
+                '💻 WiFi להישארות מחוברים',
+                '🚗 חניה פרטית בחוץ זמינה'
+            ],
+            hi: [
+                '🏖️ Punta Uva समुद्र तट से 2 मिनट की ड्राइव',
+                '💑 जोड़ों के लिए बिल्कुल सही अंतरंग स्थान',
+                '❄️ आरामदायक रातों के लिए A/C',
+                '💻 जुड़े रहने के लिए वाई-फाई',
+                '🚗 बाहरी निजी पार्किंग उपलब्ध'
+            ],
+            nl: [
+                '🏖️ 2 minuten rijden van het strand van Punta Uva',
+                '💑 Intieme ruimte, perfect voor stellen',
+                '❄️ Airco voor comfortabele nachten',
+                '💻 Wifi om verbonden te blijven',
+                '🚗 Eigen parkeerplaats buiten beschikbaar'
             ]
         }
     },
@@ -2246,12 +2758,26 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
         propertyKey: 'Giulia',
         descriptiveTitle: {
             en: 'Family-friendly house near Punta Uva',
-            es: 'Casa familiar cerca de Punta Uva'
+            es: 'Casa familiar cerca de Punta Uva',
+            de: 'Familienfreundliches Haus in der Nähe von Punta Uva',
+            fr: 'Maison familiale près de Punta Uva',
+            it: 'Casa adatta alle famiglie vicino a Punta Uva',
+            pt: 'Casa familiar perto de Punta Uva',
+            he: 'בית ידידותי למשפחות ליד פונטה אובה',
+            hi: 'Punta Uva के पास पारिवारिक-अनुकूल घर',
+            nl: 'Gezinsvriendelijk huis bij Punta Uva'
         },
         price: { crc: 84000, usd: 169 },
         socialStatement: {
             en: 'Chosen for its family-friendly amenities and beach proximity',
-            es: 'Elegida por sus comodidades familiares y proximidad a la playa'
+            es: 'Elegida por sus comodidades familiares y proximidad a la playa',
+            de: 'Ausgewählt wegen der familienfreundlichen Ausstattung und der Strandnähe',
+            fr: 'Choisie pour ses équipements adaptés aux familles et sa proximité avec la plage',
+            it: 'Scelta per i suoi servizi adatti alle famiglie e la vicinanza alla spiaggia',
+            pt: 'Escolhida pelas suas comodidades familiares e proximidade à praia',
+            he: 'נבחר בזכות המתקנים הידידותיים למשפחות והקרבה לחוף',
+            hi: 'इसकी पारिवारिक-अनुकूल सुविधाओं और समुद्र तट की निकटता के कारण चुना गया',
+            nl: 'Gekozen vanwege de gezinsvriendelijke voorzieningen en de nabijheid van het strand'
         },
         featureHighlights: {
             en: [
@@ -2267,6 +2793,55 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ A/C en habitaciones para comodidad',
                 '💻 WiFi rápido para trabajo remoto',
                 '🚗 Espacio de parqueo disponible'
+            ],
+            de: [
+                '👨‍👩‍👧‍👦 Perfekt für Familien mit Kindern',
+                '🏖️ Fußläufig zum Strand Playa Chiquita',
+                '❄️ Klimaanlage in den Schlafzimmern für mehr Komfort',
+                '💻 Schnelles WLAN für Remote-Arbeit',
+                '🚗 Parkplatz vorhanden'
+            ],
+            fr: [
+                '👨‍👩‍👧‍👦 Parfait pour les familles avec enfants',
+                '🏖️ À quelques pas de la plage de Playa Chiquita',
+                '❄️ Climatisation dans les chambres pour plus de confort',
+                '💻 WiFi rapide pour le télétravail',
+                '🚗 Place de parking disponible'
+            ],
+            it: [
+                '👨‍👩‍👧‍👦 Perfetta per famiglie con bambini',
+                '🏖️ A pochi passi dalla spiaggia di Playa Chiquita',
+                '❄️ Aria condizionata nelle camere per il massimo comfort',
+                '💻 WiFi veloce per il lavoro da remoto',
+                '🚗 Posto auto disponibile'
+            ],
+            pt: [
+                '👨‍👩‍👧‍👦 Perfeita para famílias com crianças',
+                '🏖️ A pé da praia de Playa Chiquita',
+                '❄️ Ar condicionado nos quartos para maior conforto',
+                '💻 Wi-Fi rápido para trabalho remoto',
+                '🚗 Lugar de estacionamento disponível'
+            ],
+            he: [
+                '👨‍👩‍👧‍👦 מושלם למשפחות עם ילדים',
+                '🏖️ במרחק הליכה מחוף פלייה צ\'יקיטה',
+                '❄️ מיזוג אוויר בחדרי השינה לנוחות מרבית',
+                '💻 WiFi מהיר לעבודה מרחוק',
+                '🚗 מקום חניה זמין'
+            ],
+            hi: [
+                '👨‍👩‍👧‍👦 बच्चों वाले परिवारों के लिए बिल्कुल सही',
+                '🏖️ Playa Chiquita समुद्र तट से पैदल दूरी पर',
+                '❄️ आराम के लिए बेडरूम में A/C',
+                '💻 रिमोट वर्क के लिए तेज़ वाई-फाई',
+                '🚗 पार्किंग स्थान उपलब्ध'
+            ],
+            nl: [
+                '👨‍👩‍👧‍👦 Perfect voor gezinnen met kinderen',
+                '🏖️ Op loopafstand van het strand Playa Chiquita',
+                '❄️ Airco in de slaapkamers voor extra comfort',
+                '💻 Snel wifi om op afstand te werken',
+                '🚗 Parkeerplaats beschikbaar'
             ]
         }
     },
@@ -2274,12 +2849,26 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
         propertyKey: 'Delfin',
         descriptiveTitle: {
             en: 'Spacious house perfect for large families',
-            es: 'Casa espaciosa perfecta para familias grandes'
+            es: 'Casa espaciosa perfecta para familias grandes',
+            de: 'Geräumiges Haus, perfekt für große Familien',
+            fr: 'Grande maison parfaite pour les familles nombreuses',
+            it: 'Casa spaziosa perfetta per famiglie numerose',
+            pt: 'Casa espaçosa, perfeita para famílias grandes',
+            he: 'בית מרווח ומושלם למשפחות גדולות',
+            hi: 'बड़े परिवारों के लिए बिल्कुल सही विशाल घर',
+            nl: 'Ruim huis, perfect voor grote gezinnen'
         },
         price: { crc: 99000, usd: 199 },
         socialStatement: {
             en: 'Chosen for its spacious layout accommodating up to 6 guests',
-            es: 'Elegida por su diseño espacioso que acomoda hasta 6 huéspedes'
+            es: 'Elegida por su diseño espacioso que acomoda hasta 6 huéspedes',
+            de: 'Ausgewählt wegen des großzügigen Grundrisses für bis zu 6 Gäste',
+            fr: 'Choisie pour son espace généreux pouvant accueillir jusqu\'à 6 personnes',
+            it: 'Scelta per i suoi ampi spazi che ospitano fino a 6 persone',
+            pt: 'Escolhida pela sua disposição espaçosa, com capacidade para até 6 hóspedes',
+            he: 'נבחר בזכות התכנון המרווח המתאים עד 6 אורחים',
+            hi: '6 मेहमानों तक की क्षमता वाले विशाल लेआउट के कारण चुना गया',
+            nl: 'Gekozen vanwege de ruime indeling met plaats voor maximaal 6 gasten'
         },
         featureHighlights: {
             en: [
@@ -2295,6 +2884,55 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '❄️ A/C en todas las habitaciones',
                 '💻 WiFi rápido en toda la casa',
                 '🚗 Parqueo privado cercado para 2 vehículos'
+            ],
+            de: [
+                '👨‍👩‍👧‍👦 Geräumig für bis zu 6 Personen',
+                '🏡 Zwei Badezimmer für mehr Komfort',
+                '❄️ Klimaanlage in allen Schlafzimmern',
+                '💻 Schnelles WLAN im ganzen Haus',
+                '🚗 Privater umzäunter Parkplatz für 2 Fahrzeuge'
+            ],
+            fr: [
+                '👨‍👩‍👧‍👦 Spacieuse pour jusqu\'à 6 personnes',
+                '🏡 Deux salles de bain pour plus de confort',
+                '❄️ Climatisation dans toutes les chambres',
+                '💻 WiFi rapide dans toute la maison',
+                '🚗 Parking privé clôturé pour 2 véhicules'
+            ],
+            it: [
+                '👨‍👩‍👧‍👦 Spaziosa per un massimo di 6 persone',
+                '🏡 Due bagni per maggiore comodità',
+                '❄️ Aria condizionata in tutte le camere',
+                '💻 WiFi veloce in tutta la casa',
+                '🚗 Parcheggio privato recintato per 2 veicoli'
+            ],
+            pt: [
+                '👨‍👩‍👧‍👦 Espaçosa para até 6 pessoas',
+                '🏡 Duas casas de banho para maior comodidade',
+                '❄️ Ar condicionado em todos os quartos',
+                '💻 Wi-Fi rápido em toda a casa',
+                '🚗 Estacionamento privado vedado para 2 veículos'
+            ],
+            he: [
+                '👨‍👩‍👧‍👦 מרווח לעד 6 אנשים',
+                '🏡 שני חדרי אמבטיה לנוחות',
+                '❄️ מיזוג אוויר בכל חדרי השינה',
+                '💻 WiFi מהיר בכל רחבי הבית',
+                '🚗 חניה פרטית גדורה ל-2 רכבים'
+            ],
+            hi: [
+                '👨‍👩‍👧‍👦 6 लोगों तक के लिए विशाल',
+                '🏡 सुविधा के लिए दो बाथरूम',
+                '❄️ सभी बेडरूम में A/C',
+                '💻 पूरे घर में तेज़ वाई-फाई',
+                '🚗 2 वाहनों के लिए निजी घिरी हुई पार्किंग'
+            ],
+            nl: [
+                '👨‍👩‍👧‍👦 Ruim voor maximaal 6 personen',
+                '🏡 Twee badkamers voor extra gemak',
+                '❄️ Airco in alle slaapkamers',
+                '💻 Snel wifi in het hele huis',
+                '🚗 Eigen omheinde parkeerplaats voor 2 voertuigen'
             ]
         }
     }
@@ -2308,155 +2946,113 @@ export interface PropertyRecommendation {
   houseCode?: number;
 }
 
-// Found while merging Phase 3c (blog): this constant's `reason` text was
-// Spanish while its links were unsuffixed (English-style), and TwoDaysInPV.tsx
-// renders it on the *English* page — visitors were reading Spanish
-// recommendation copy under an English article. Translated to English here;
-// PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES below is the real Spanish counterpart
-// (ES-suffixed links) and was already correct.
-//
-// PHASE 4: `link` fields compute from routes.config.ts via pathForLegacyId
-// instead of hardcoding the pre-restructure `/Geco`-style paths — this file
-// is a plain-string sweep away from every other internal-link call site (the
-// `link: '/...'` fields here are single-quoted; the sweep that caught the
-// rest of the codebase's hardcoded paths only searched double-quoted
-// strings), so StayRecommendation's rendered hrefs would otherwise have kept
-// pointing at pre-Phase-4 URLs.
-export const PUERTO_VIEJO_BLOG_RECOMMENDATIONS: PropertyRecommendation[] = [
-  {
-    name: 'Casa Geco',
-    reason: 'Ideal for getting around on foot',
-    link: pathForLegacyId('Geco'),
-    houseCode: 1
+// Each `reason` phrase translated into every released locale, keyed by its exact
+// English source string. Was three EN consts plus three separately
+// hand-maintained _ES consts (PHASE 3c) — that pattern has no room for six
+// more languages, so this is now three `(locale) => PropertyRecommendation[]`
+// functions sharing one translation table instead. `link` now goes through
+// `pathForKey` directly (every locale), not `pathForLegacyId` (English/Spanish
+// only, by construction — see its own doc comment in routes.config.ts).
+export const RECOMMENDATION_REASONS: Record<string, LocalizedValue<string>> = {
+  'Ideal for getting around on foot': {
+    en: 'Ideal for getting around on foot', es: 'Ideal si quieres moverte caminando',
+    de: 'Ideal, um zu Fuß unterwegs zu sein', fr: 'Idéal pour se déplacer à pied',
+    it: 'Ideale per spostarsi a piedi', pt: 'Ideal para se deslocar a pé',
+    he: 'אידיאלי להתניידות ברגל', hi: 'पैदल घूमने के लिए आदर्श',
+    nl: 'Ideaal om te voet rond te komen',
   },
-  {
-    name: 'Casa Plumeria',
-    reason: 'Perfect for relaxing near the beach',
-    link: pathForLegacyId('Plumeria'),
-    houseCode: 8
+  'Perfect for relaxing near the beach': {
+    en: 'Perfect for relaxing near the beach', es: 'Perfecta para descansar cerca de la playa',
+    de: 'Perfekt zum Entspannen in Strandnähe', fr: 'Parfait pour se détendre près de la plage',
+    it: 'Perfetta per rilassarsi vicino alla spiaggia', pt: 'Perfeita para relaxar perto da praia',
+    he: 'מושלם למנוחה ליד החוף', hi: 'समुद्र तट के पास आराम करने के लिए एकदम सही',
+    nl: 'Perfect om te ontspannen dicht bij het strand',
   },
-  {
-    name: 'Villa Coral',
-    reason: 'Great for a short getaway with a private pool',
-    link: pathForLegacyId('VillaCoral'),
-    houseCode: 6
-  }
-];
+  'Great for a short getaway with a private pool': {
+    en: 'Great for a short getaway with a private pool', es: 'Si buscas una escapada corta con piscina privada',
+    de: 'Toll für einen Kurzurlaub mit Privatpool', fr: 'Idéal pour une courte escapade avec piscine privée',
+    it: 'Ottima per una breve fuga con piscina privata', pt: 'Ótima para uma escapadela curta com piscina privada',
+    he: 'מצוין לחופשה קצרה עם בריכה פרטית', hi: 'निजी पूल के साथ छोटी छुट्टी के लिए बढ़िया',
+    nl: 'Geweldig voor een kort uitje met een privézwembad',
+  },
+  'Perfect for exploring on foot': {
+    en: 'Perfect for exploring on foot', es: 'Perfecta para explorar a pie',
+    de: 'Perfekt, um zu Fuß zu erkunden', fr: 'Parfait pour explorer à pied',
+    it: 'Perfetta per esplorare a piedi', pt: 'Perfeita para explorar a pé',
+    he: 'מושלם לחקירה ברגל', hi: 'पैदल घूमने के लिए बिल्कुल सही',
+    nl: 'Perfect om te voet te verkennen',
+  },
+  'Ideal for beach relaxation': {
+    en: 'Ideal for beach relaxation', es: 'Ideal para relajarte cerca de la playa',
+    de: 'Ideal zum Entspannen am Strand', fr: 'Idéal pour se détendre à la plage',
+    it: 'Ideale per rilassarsi in spiaggia', pt: 'Ideal para relaxar na praia',
+    he: 'אידיאלי למנוחה בחוף הים', hi: 'समुद्र तट पर आराम के लिए आदर्श',
+    nl: 'Ideaal om te ontspannen op het strand',
+  },
+  'Great for short getaways with private pool': {
+    en: 'Great for short getaways with private pool', es: 'Excelente para escapadas cortas con piscina privada',
+    de: 'Toll für Kurzurlaube mit Privatpool', fr: "Idéal pour de courtes escapades avec piscine privée",
+    it: 'Ottima per brevi fughe con piscina privata', pt: 'Ótima para escapadelas curtas com piscina privada',
+    he: 'מצוין לחופשות קצרות עם בריכה פרטית', hi: 'निजी पूल के साथ छोटी छुट्टियों के लिए बढ़िया',
+    nl: 'Geweldig voor korte uitjes met een privézwembad',
+  },
+  'Perfect Retreat for Couples': {
+    en: 'Perfect Retreat for Couples', es: 'Retiro Perfecto para Parejas',
+    de: 'Perfekter Rückzugsort für Paare', fr: 'Retraite parfaite pour les couples',
+    it: 'Rifugio perfetto per coppie', pt: 'Refúgio perfeito para casais',
+    he: 'מפלט מושלם לזוגות', hi: 'जोड़ों के लिए बेहतरीन ठिकाना',
+    nl: 'Perfecte plek voor stellen',
+  },
+  'Easy access to transportation': {
+    en: 'Easy access to transportation', es: 'Fácil acceso al transporte',
+    de: 'Einfacher Zugang zu Transportmitteln', fr: 'Accès facile aux transports',
+    it: 'Facile accesso ai trasporti', pt: 'Fácil acesso a transportes',
+    he: 'גישה נוחה לתחבורה', hi: 'परिवहन तक आसान पहुंच',
+    nl: 'Gemakkelijke toegang tot vervoer',
+  },
+  'Perfect for relaxing after park visits': {
+    en: 'Perfect for relaxing after park visits', es: 'Perfecta para relajarte después de visitar el parque',
+    de: 'Perfekt zum Entspannen nach einem Parkbesuch', fr: 'Parfait pour se détendre après la visite du parc',
+    it: 'Perfetta per rilassarsi dopo la visita al parco', pt: 'Perfeita para relaxar depois de visitar o parque',
+    he: 'מושלם למנוחה אחרי ביקור בפארק', hi: 'पार्क घूमने के बाद आराम के लिए बिल्कुल सही',
+    nl: 'Perfect om te ontspannen na een bezoek aan het park',
+  },
+};
+
+function withReason(name: string, reasonEn: string, routeKey: RouteKey, houseCode: number) {
+  return (locale: Locale): PropertyRecommendation => ({
+    name,
+    reason: pickLocalized(RECOMMENDATION_REASONS[reasonEn], locale),
+    link: pathForKey(routeKey, locale),
+    houseCode,
+  });
+}
+
+export function puertoViejoBlogRecommendations(locale: Locale): PropertyRecommendation[] {
+  return [
+    withReason('Casa Geco', 'Ideal for getting around on foot', 'geco', 1)(locale),
+    withReason('Casa Plumeria', 'Perfect for relaxing near the beach', 'plumeria', 8)(locale),
+    withReason('Villa Coral', 'Great for a short getaway with a private pool', 'villacoral', 6)(locale),
+  ];
+}
 
 // General Puerto Viejo area recommendations for travel-focused blogs
-export const GENERAL_PUERTO_VIEJO_RECOMMENDATIONS: PropertyRecommendation[] = [
-  {
-    name: 'Casa Geco',
-    reason: 'Perfect for exploring on foot',
-    link: pathForLegacyId('Geco'),
-    houseCode: 1
-  },
-  {
-    name: 'Casa Plumeria',
-    reason: 'Ideal for beach relaxation',
-    link: pathForLegacyId('Plumeria'),
-    houseCode: 8
-  },
-  {
-    name: 'Villa Coral',
-    reason: 'Great for short getaways with private pool',
-    link: pathForLegacyId('VillaCoral'),
-    houseCode: 6
-  }
-];
-
-// Spanish counterpart of GENERAL_PUERTO_VIEJO_RECOMMENDATIONS. Did not exist
-// before Phase 3c — every Spanish page whose English twin used the general set
-// was falling back to PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES instead (or, on
-// BestTimeToVisitPuertoES/PuertoHiddenGemsES, rendering the raw English array).
-export const GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES: PropertyRecommendation[] = [
-  {
-    name: 'Casa Geco',
-    reason: 'Perfecta para explorar a pie',
-    link: pathForLegacyId('GecoES'),
-    houseCode: 1
-  },
-  {
-    name: 'Casa Plumeria',
-    reason: 'Ideal para relajarte cerca de la playa',
-    link: pathForLegacyId('PlumeriaES'),
-    houseCode: 8
-  },
-  {
-    name: 'Villa Coral',
-    reason: 'Excelente para escapadas cortas con piscina privada',
-    link: pathForLegacyId('VillaCoralES'),
-    houseCode: 6
-  }
-];
+export function generalPuertoViejoRecommendations(locale: Locale): PropertyRecommendation[] {
+  return [
+    withReason('Casa Geco', 'Perfect for exploring on foot', 'geco', 1)(locale),
+    withReason('Casa Plumeria', 'Ideal for beach relaxation', 'plumeria', 8)(locale),
+    withReason('Villa Coral', 'Great for short getaways with private pool', 'villacoral', 6)(locale),
+  ];
+}
 
 // Cahuita-focused recommendations
-export const CAHUITA_AREA_RECOMMENDATIONS: PropertyRecommendation[] = [
-  {
-    name: 'Casa Plumeria',
-    reason: 'Perfect Retreat for Couples',
-    link: pathForLegacyId('Plumeria'),
-    houseCode: 8
-  },
-  {
-    name: 'Casa Geco',
-    reason: 'Easy access to transportation',
-    link: pathForLegacyId('Geco'),
-    houseCode: 1
-  },
-  {
-    name: 'Villa Coral',
-    reason: 'Perfect for relaxing after park visits',
-    link: pathForLegacyId('VillaCoral'),
-    houseCode: 6
-  }
-];
-
-// Spanish counterpart of CAHUITA_AREA_RECOMMENDATIONS. Did not exist before
-// Phase 3c — TenHoursInPuertoES's "¿Dónde hospedarte cuando explores Cahuita?"
-// heading was followed by the generic Puerto Viejo list, not a Cahuita one.
-export const CAHUITA_AREA_RECOMMENDATIONS_ES: PropertyRecommendation[] = [
-  {
-    name: 'Casa Plumeria',
-    reason: 'Retiro Perfecto para Parejas',
-    link: pathForLegacyId('PlumeriaES'),
-    houseCode: 8
-  },
-  {
-    name: 'Casa Geco',
-    reason: 'Fácil acceso al transporte',
-    link: pathForLegacyId('GecoES'),
-    houseCode: 1
-  },
-  {
-    name: 'Villa Coral',
-    reason: 'Perfecta para relajarte después de visitar el parque',
-    link: pathForLegacyId('VillaCoralES'),
-    houseCode: 6
-  }
-];
-
-// Spanish versions for ES blog pages
-export const PUERTO_VIEJO_BLOG_RECOMMENDATIONS_ES: PropertyRecommendation[] = [
-  {
-    name: 'Casa Geco',
-    reason: 'Ideal si quieres moverte caminando',
-    link: pathForLegacyId('GecoES'),
-    houseCode: 1
-  },
-  {
-    name: 'Casa Plumeria',
-    reason: 'Perfecta para descansar cerca de la playa',
-    link: pathForLegacyId('PlumeriaES'),
-    houseCode: 8
-  },
-  {
-    name: 'Villa Coral',
-    reason: 'Si buscas una escapada corta con piscina privada',
-    link: pathForLegacyId('VillaCoralES'),
-    houseCode: 6
-  }
-];
+export function cahuitaAreaRecommendations(locale: Locale): PropertyRecommendation[] {
+  return [
+    withReason('Casa Plumeria', 'Perfect Retreat for Couples', 'plumeria', 8)(locale),
+    withReason('Casa Geco', 'Easy access to transportation', 'geco', 1)(locale),
+    withReason('Villa Coral', 'Perfect for relaxing after park visits', 'villacoral', 6)(locale),
+  ];
+}
 /**
  * Largest party any single property can host. Derived from the house data so a
  * capacity change in one place is enough — the booking search widget uses this
@@ -2488,34 +3084,43 @@ export const PORTFOLIO_GUEST_RANGE: { min: number; max: number } = CAPACITY_VALU
 
 export interface BlogArticle {
   key: string;
-  titleEn: string;
-  titleEs: string;
-  pathEn: string;
-  pathEs: string;
+  routeKey: RouteKey;
 }
 
 /**
  * The ten travel guides, in one place, so the footer and the blog index don't
- * drift apart. Titles here are short link labels, not the full SEO <title> —
- * see src/pages/Blog/staticPages(_ES) for the per-article long-form title.
- *
- * PHASE 4: pathEn/pathEs are computed from routes.config.ts (the actual route
- * table) instead of being hand-maintained literals, so this can't drift from
- * what Router.tsx serves the way the old `/TenHoursInPuerto` /
- * `/bestTimeToVisitPuerto` casing already had (routes.config.ts's slugs are
- * uniformly lowercase).
+ * drift apart. `title(locale)`/`path(locale)` below read straight from
+ * routes.config.ts and the Phase-8-translated blog.tsx content — no
+ * per-locale literal here to drift, and no EN/ES-only ceiling the way the old
+ * titleEn/titleEs/pathEn/pathEs fields had.
  */
 export const BLOG_ARTICLES: BlogArticle[] = [
-  { key: 'twodays', titleEn: '2 Days in Puerto Viejo', titleEs: '2 días en Puerto Viejo', pathEn: pathForKey('blogTwodays', 'en'), pathEs: pathForKey('blogTwodays', 'es') },
-  { key: 'gandoca', titleEn: 'Getting to Gandoca-Manzanillo', titleEs: 'Cómo llegar a Gandoca-Manzanillo', pathEn: pathForKey('blogGandoca', 'en'), pathEs: pathForKey('blogGandoca', 'es') },
-  { key: 'sanjose', titleEn: 'From San José to Puerto Viejo', titleEs: 'De San José a Puerto Viejo', pathEn: pathForKey('blogSanjose', 'en'), pathEs: pathForKey('blogSanjose', 'es') },
-  { key: 'byplane', titleEn: 'Getting to Puerto Viejo by Plane', titleEs: 'Llegar a Puerto Viejo en avión', pathEn: pathForKey('blogByplane', 'en'), pathEs: pathForKey('blogByplane', 'es') },
-  { key: 'tenhours', titleEn: 'Ten Hours to Explore Cahuita', titleEs: 'Diez horas para explorar Cahuita', pathEn: pathForKey('blogTenhours', 'en'), pathEs: pathForKey('blogTenhours', 'es') },
-  { key: 'bushours', titleEn: 'Bus Schedule & Routes', titleEs: 'Horarios de autobuses', pathEn: pathForKey('blogBushours', 'en'), pathEs: pathForKey('blogBushours', 'es') },
-  { key: 'cahuitapark', titleEn: 'Visiting Cahuita National Park', titleEs: 'Visitar el Parque Nacional Cahuita', pathEn: pathForKey('blogCahuitapark', 'en'), pathEs: pathForKey('blogCahuitapark', 'es') },
-  { key: 'indigenous', titleEn: 'Indigenous Culture Nearby', titleEs: 'Cultura indígena cercana', pathEn: pathForKey('blogIndigenous', 'en'), pathEs: pathForKey('blogIndigenous', 'es') },
-  { key: 'besttime', titleEn: 'Best Time to Visit', titleEs: 'Mejor época para visitar', pathEn: pathForKey('blogBesttime', 'en'), pathEs: pathForKey('blogBesttime', 'es') },
-  { key: 'hiddengems', titleEn: 'Hidden Gems in Puerto Viejo', titleEs: 'Joyas escondidas', pathEn: pathForKey('blogHiddengems', 'en'), pathEs: pathForKey('blogHiddengems', 'es') },
+  { key: 'twodays', routeKey: 'blogTwodays' },
+  { key: 'gandoca', routeKey: 'blogGandoca' },
+  { key: 'sanjose', routeKey: 'blogSanjose' },
+  { key: 'byplane', routeKey: 'blogByplane' },
+  { key: 'tenhours', routeKey: 'blogTenhours' },
+  { key: 'bushours', routeKey: 'blogBushours' },
+  { key: 'cahuitapark', routeKey: 'blogCahuitapark' },
+  { key: 'indigenous', routeKey: 'blogIndigenous' },
+  { key: 'besttime', routeKey: 'blogBesttime' },
+  { key: 'hiddengems', routeKey: 'blogHiddengems' },
+  { key: 'weather', routeKey: 'blogWeather' },
+  { key: 'weatherJan', routeKey: 'blogWeatherJan' },
+  { key: 'weatherFeb', routeKey: 'blogWeatherFeb' },
+  { key: 'weatherMar', routeKey: 'blogWeatherMar' },
+  { key: 'weatherApr', routeKey: 'blogWeatherApr' },
+  { key: 'weatherMay', routeKey: 'blogWeatherMay' },
+  { key: 'weatherJun', routeKey: 'blogWeatherJun' },
+  { key: 'weatherJul', routeKey: 'blogWeatherJul' },
+  { key: 'weatherAug', routeKey: 'blogWeatherAug' },
+  { key: 'weatherSep', routeKey: 'blogWeatherSep' },
+  { key: 'weatherOct', routeKey: 'blogWeatherOct' },
+  { key: 'weatherNov', routeKey: 'blogWeatherNov' },
+  { key: 'weatherDec', routeKey: 'blogWeatherDec' },
+  { key: 'sanjoseOptions', routeKey: 'blogSanjoseOptions' },
+  { key: 'gandocaRefuge', routeKey: 'blogGandocaRefuge' },
+  { key: 'beaches', routeKey: 'blogBeaches' },
 ];
 
 /**

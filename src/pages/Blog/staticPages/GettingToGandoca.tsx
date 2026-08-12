@@ -3,7 +3,6 @@ import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
 import '../../Listing/Listing.style.scss';
 
-import { blogs, blogsES } from "../../../assets/blogs/blogs";
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import OtherBlogs from "../Components/OtherBlogs.Component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
@@ -11,9 +10,9 @@ import { Helmet } from "react-helmet";
 import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
-import { GENERAL_PUERTO_VIEJO_RECOMMENDATIONS, GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES } from "../../../utils/constants";
+import { generalPuertoViejoRecommendations } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
-import { localeSuffix, bookingLanguage, homePath } from "../../../i18n/paths";
+import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { gettingToGandocaContent } from "../../../i18n/content/blog";
 
@@ -37,8 +36,6 @@ const GettingToGandoca = () => {
     const locale = useLocale();
     const m = useMessages();
     const content = gettingToGandocaContent(locale);
-    const lang = bookingLanguage(locale);
-    const selfId = `gettingtogandoca${localeSuffix(locale)}`;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -100,8 +97,7 @@ const GettingToGandoca = () => {
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
                             title={content.stayRecommendationTitle}
-                            properties={locale === 'es' ? GENERAL_PUERTO_VIEJO_RECOMMENDATIONS_ES : GENERAL_PUERTO_VIEJO_RECOMMENDATIONS}
-                            language={lang}
+                            properties={generalPuertoViejoRecommendations(locale)}
                         />
                         <br />
 
@@ -133,7 +129,7 @@ const GettingToGandoca = () => {
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                         <div style={{ maxWidth: 1000 }}>
                             <WhyStayWithUs
-                                language={lang}
+                                locale={locale}
                                 ctaLink={homePath(locale)}
                             />
                         </div>
@@ -160,7 +156,7 @@ const GettingToGandoca = () => {
                         </div>
                     </div>
 
-                    <OtherBlogs currentBlog={selfId} blogs={locale === 'es' ? blogsES : blogs} />
+                    <OtherBlogs currentBlog="gettingtogandoca" locale={locale} />
                 </Col>
             </Row>
             <ContactUs />

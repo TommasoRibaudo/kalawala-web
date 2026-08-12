@@ -61,6 +61,7 @@ export const hi: Messages = {
     otherListingsHeading: 'हमारे अन्य विकल्प देखें!',
     readBlog: (title: string) => `ब्लॉग पढ़ें: ${title}`,
     weOfferEquipped: 'हम पूरी तरह सुसज्जित घर उपलब्ध कराते हैं:',
+    ourPhotosHeading: 'तस्वीरें',
   },
 
   contact: {
@@ -99,6 +100,7 @@ export const hi: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'प्वेर्तो विएखो का मौसम बेहद परिवर्तनशील है — ये दीर्घकालिक अनुमानित औसत हैं, और स्थिति एक ही दिन में कई बार बदल सकती है। इन्हें एक मार्गदर्शन मानें, गारंटी नहीं।',
     bookYourStay: 'अपना ठहराव बुक करें',
     indexTitle: 'पुएर्तो वियेहो यात्रा गाइड | Reservas Kalawala',
     indexDescription:
@@ -128,5 +130,57 @@ export const hi: Messages = {
     bedrooms: (count: number) => `${count} ${count === 1 ? 'कमरा' : 'कमरे'}`,
     bathrooms: (count: number) => `${count} बाथरूम`,
     upToGuests: (count: number) => `${count} तक मेहमान`,
+    viewHomeCta: 'घर देखें →',
   },
+  cookieBanner: {
+    title: '🍪 कुकीज़',
+    description: 'हम आपके अनुभव को बेहतर बनाने और ट्रैफ़िक का विश्लेषण करने के लिए कुकीज़ का उपयोग करते हैं।',
+    acceptAll: 'स्वीकार करें',
+    rejectAll: 'अस्वीकार करें',
+    customize: 'विकल्प',
+    essential: 'आवश्यक',
+    analytics: 'विश्लेषण',
+    marketing: 'मार्केटिंग',
+    required: '(आवश्यक)',
+    essentialDesc: 'साइट के कार्य करने के लिए आवश्यक।',
+    analyticsDesc: 'हमें साइट के उपयोग को समझने में मदद करता है।',
+    marketingDesc: 'प्रासंगिक विज्ञापन दिखाने के लिए।',
+    savePreferences: 'सहेजें',
+    cancel: 'रद्द करें',
+  },
+
+  notFound: {
+    title: 'पेज नहीं मिला | Reservas Kalawala',
+    heading: 'हमें वह पेज नहीं मिला',
+    body: 'हो सकता है लिंक टूटा हो, या पेज हटा दिया गया हो।',
+    cta: 'होम पर वापस जाएं',
+  },
+
+  whyStayWithUs: {
+    title: 'हमारे साथ बुकिंग क्यों करें?',
+    benefits: [
+      'रणनीतिक स्थान',
+      'पूरी तरह से सुसज्जित घर',
+      'सीधी बुकिंग और स्थानीय सहायता',
+      'कोई प्लेटफ़ॉर्म कमीशन नहीं',
+    ],
+    ctaText: 'हमारी सभी संपत्तियां देखें',
+  },
+
+  imagesModal: {
+    close: 'बंद करें',
+    photos: 'तस्वीरें',
+    previous: 'पिछला',
+    next: 'अगला',
+    empty: 'कोई तस्वीर उपलब्ध नहीं है',
+  },
+
+  reviewTags: {
+    'Stayed a few nights': 'कुछ रातें ठहरे',
+    'Stayed one night': 'एक रात ठहरे',
+    'Stayed with kids': 'बच्चों के साथ ठहरे',
+    'Stayed with a pet': 'पालतू जानवर के साथ ठहरे',
+    'Stayed about a week': 'लगभग एक हफ्ते ठहरे',
+  },
+
 };

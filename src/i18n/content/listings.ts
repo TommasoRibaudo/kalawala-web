@@ -199,6 +199,23 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "प्वेर्तो वियेहो अपने शानदार प्राकृतिक परिवेश की बदौलत दुनियाभर के पर्यटकों के बीच एक लोकप्रिय गंतव्य है। इस कस्बे में विशाल समुद्र तट हैं जो उष्णकटिबंधीय वर्षावन से घिरे हुए हैं, साथ ही यहां दो राष्ट्रीय उद्यान भी हैं (मानसानियो और काहुइटा)। रात होते ही यह कस्बा जीवंत और सक्रिय नाइटलाइफ़ के साथ जाग उठता है। यहां ठहरने के दौरान आप उस हर चीज़ में पूरी तरह डूब सकेंगे, जो प्वेर्तो वियेहो को अनूठा बनाती है।",
       ],
     },
+    nl: {
+      seoTitle: "Casa Areka - Retraite voor Stellen met Airco",
+      seoDescription:
+        "Nieuwe, volledig uitgeruste bungalows met airconditioning op 200 meter van het prachtige strand Playa Chiquita, in een van de veiligste en rustigste buurten van de Caraïben. Op een paar minuten van Puerto Viejo en Manzanillo liggen we ideaal gelegen om het strand van Punta Uva en Arrecife te bezoeken.",
+      heading: "Casa Areka",
+      featureName: "Huis Areka",
+      checkIn: "15:00",
+      checkOut: "12:00 (middag)",
+      paragraphs: [
+        "Nieuwe, volledig uitgeruste bungalows met airconditioning op 200 meter van het prachtige strand Playa Chiquita, in een van de veiligste en rustigste buurten van de Caraïben. Op een paar minuten van Puerto Viejo en Manzanillo liggen we ideaal gelegen om het strand van Punta Uva en Arrecife te bezoeken.",
+        "De volledig private ruimte beschikt over airconditioning, een volledig uitgeruste keuken en een eigen badkamer met warm water. De parkeerplaats is privé, ruim en bevindt zich buiten het perceel. Elk huis heeft een kleine veranda voor onze gasten.",
+        "Alle hier beschreven ruimtes zijn privé, inclusief de volledig uitgeruste keuken en badkamer. Je hebt alles wat je nodig hebt om je meteen thuis te voelen.",
+        "Restaurants, supermarkten en fietsverhuur vind je op loopafstand. We vertrouwen erop dat onze gasten gezond verstand gebruiken bij het verlaten van het huis, daarom hanteren we geen uitcheckregels en geen uitchecklijst.",
+        "Heb je een speciaal verzoek? We helpen je graag verder als het mogelijk is. Aarzel niet om het ons te laten weten.",
+        "Puerto Viejo is dankzij zijn adembenemende omgeving een geliefde bestemming voor toeristen van over de hele wereld. Het dorp heeft uitgestrekte stranden omzoomd door tropisch regenwoud, en telt twee nationale parken (Manzanillo en Cahuita). 's Avonds komt het dorp tot leven met een levendig en actief nachtleven. Tijdens je verblijf hier ga je volledig op in alles wat Puerto Viejo uniek maakt.",
+      ],
+    },
   },
   Delfin: {
     en: {
@@ -339,6 +356,23 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "प्वेर्तो वियेहो अपने शानदार प्राकृतिक परिवेश की बदौलत दुनियाभर के पर्यटकों के बीच एक लोकप्रिय गंतव्य है। इस कस्बे में विशाल समुद्र तट हैं जो उष्णकटिबंधीय वर्षावन से घिरे हुए हैं, साथ ही यहां दो राष्ट्रीय उद्यान भी हैं (मानसानियो और काहुइटा)। रात होते ही यह कस्बा जीवंत और सक्रिय नाइटलाइफ़ के साथ जाग उठता है। यहां ठहरने के दौरान आप उस हर चीज़ में पूरी तरह डूब सकेंगे, जो प्वेर्तो वियेहो को अनूठा बनाती है।",
         "यह घर समुद्र तट के उस रास्ते के पास स्थित है जो अंततः कॉक्लेस तक ले जाता है। रास्ते में आपको विभिन्न प्रकार के जानवर देखने और प्रवाल में बने प्राकृतिक जलकुंडों को निहारने का मौका मिलेगा। यहां तक कि एक छिपा हुआ दर्शनीय स्थल भी है, जो खोजे जाने का इंतज़ार कर रहा है!",
         "प्वेर्तो वियेहो और इसके आसपास घूमने-फिरने का सबसे आसान तरीका है बाइक या स्कूटर किराए पर लेना। हालांकि, एक भरोसेमंद सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला तक ले जा सकती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम कारों की भी व्यवस्था कर सकते हैं। हम निजी पार्किंग की सुविधा देते हैं, लेकिन कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।",
+      ],
+    },
+    nl: {
+      seoTitle: "Casa Delfines - Vakantiehuis te Huur in Puerto Viejo",
+      seoDescription:
+        "Welkom bij Reservas Kalawala. Dit huis, gelegen in het hart van het dorp, biedt plaats aan maximaal 6 gasten, met een volledig uitgeruste keuken, 2 badkamers, 2 airco-units en privéparkeren voor 2 auto's.",
+      heading: "Casa Delfines",
+      featureName: "Huis Delfin",
+      checkIn: "15:00",
+      checkOut: "12:00 (middag)",
+      paragraphs: [
+        "Welkom bij Reservas Kalawala. Dit huis, gelegen in het hart van het dorp, biedt plaats aan maximaal 6 gasten en beschikt over een volledig uitgeruste keuken, 2 badkamers, 2 airco-units (niet in de keuken of woonkamer) en privéparkeren. Onze uitstekende ligging zorgt voor gemakkelijke toegang tot zowel het centrum als de mooiste stranden die Puerto Viejo te bieden heeft.",
+        "Alle hier beschreven ruimtes zijn privé, inclusief de volledig uitgeruste keuken en de badkamers. Je hebt alles wat je nodig hebt om je meteen thuis te voelen.",
+        "Heb je een speciaal verzoek? We helpen je graag verder als het mogelijk is. Aarzel niet om het ons te laten weten.",
+        "Puerto Viejo is wereldwijd een geliefde bestemming dankzij de betoverende omgeving. Het dorp heeft immense stranden omringd door tropisch regenwoud, en telt twee nationale parken (Manzanillo en Cahuita). 's Avonds ontwaakt het dorp met een levendig en actief nachtleven. Tijdens je verblijf hier ga je volledig op in alles wat Puerto Viejo uniek maakt.",
+        "Het huis ligt vlak bij een strandtoegang die uiteindelijk naar Cocles leidt. Onderweg kun je allerlei dieren spotten en genieten van natuurlijke zwembaden in het koraal. Er wacht zelfs een verborgen uitkijkpunt om ontdekt te worden!",
+        "De makkelijkste manier om je in Puerto Viejo en omgeving te verplaatsen is met een gehuurde fiets of scooter. Er is ook een betrouwbare openbare busdienst die je naar Cahuita, Manzanillo en Sixaola brengt. Rijd je liever zelf, dan is dat ook mogelijk. We bieden privéparkeren aan, maar laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.",
       ],
     },
   },
@@ -503,6 +537,26 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "प्वेर्तो वियेहो और इसके आसपास घूमने-फिरने का सबसे आसान तरीका है बाइक या स्कूटर किराए पर लेना। हालांकि, एक भरोसेमंद सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला तक ले जा सकती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम कारों की भी व्यवस्था कर सकते हैं। हम निजी पार्किंग की सुविधा देते हैं, लेकिन कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।",
       ],
     },
+    nl: {
+      seoTitle: "Casa Geco - Huisdiervriendelijk Huis in Puerto Viejo",
+      seoDescription:
+        "In het hart van het dorp gelegen, biedt dit huis ruimte voor maximaal 5 personen en beschikt het over een volledig uitgeruste keuken, een badkamer, 2 airco-units en een privéparkeerplaats.",
+      heading: "Casa Geco",
+      featureName: "Huis Geco",
+      checkIn: "14:00",
+      checkOut: "11:00",
+      paragraphs: [
+        "In het hart van het dorp gelegen, biedt dit huis ruimte voor maximaal 5 personen en beschikt het over een volledig uitgeruste keuken, een badkamer, 2 airco-units en een privéparkeerplaats. Onze uitstekende ligging biedt gemakkelijke toegang tot zowel het centrum van het dorp als de mooiste stranden die Puerto Viejo te bieden heeft.",
+        "De meeste winkels en restaurants zijn op loopafstand, en er loopt vlakbij een junglepad langs de oceaan dat leidt naar natuurlijke zwembaden in het koraal en naar Cocles.",
+        "Alle hier beschreven ruimtes zijn privé, inclusief de volledig uitgeruste keuken en badkamer. Je hebt alles wat je nodig hebt om je meteen thuis te voelen.",
+        "Voor boekingen van 5 nachten of langer bieden we schoonmaakdiensten aan. Ons team neemt tijdens je verblijf contact met je op om een geschikt moment voor de schoonmaak af te spreken.",
+        "Heb je een specifiek verzoek? We voldoen er graag zo goed mogelijk aan. Aarzel niet om het ons te laten weten.",
+        "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
+        "Puerto Viejo is dankzij zijn adembenemende omgeving een geliefde bestemming voor toeristen van over de hele wereld. Het dorp heeft uitgestrekte stranden omzoomd door tropisch regenwoud, en telt twee nationale parken (Manzanillo en Cahuita). 's Avonds komt het dorp tot leven met een levendig en actief nachtleven. Tijdens je verblijf hier ga je volledig op in alles wat Puerto Viejo uniek maakt.",
+        "Het huis ligt vlak bij een strandtoegang die uiteindelijk naar Cocles leidt. Onderweg kun je allerlei dieren spotten en genieten van natuurlijke zwembaden in het koraal. Er wacht zelfs een verborgen uitkijkpunt om ontdekt te worden!",
+        "De makkelijkste manier om je in Puerto Viejo en omgeving te verplaatsen is met een gehuurde fiets of scooter. Er is ook een betrouwbare openbare busdienst die je naar Cahuita, Manzanillo en Sixaola brengt. Rijd je liever zelf, dan is dat ook mogelijk. We bieden privéparkeren aan, maar laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.",
+      ],
+    },
   },
   Giulia: {
     en: {
@@ -638,6 +692,23 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "आस-पास आपको रेस्तरां, सुपरमार्केट और बाइक किराए पर लेने की सुविधाएं मिल जाएंगी। हमें अपने मेहमानों पर भरोसा है कि वे घर छोड़ते समय सामान्य समझ का पालन करेंगे, इसीलिए हमारे यहां चेक-आउट के लिए कोई नियम नहीं हैं और कोई चेक-आउट सूची भी नहीं है।",
         "क्या आपकी कोई विशेष अनुरोध है? यदि हम कर सकें, तो हमें आपकी मदद करके बेहद खुशी होगी। कृपया हमें बताने में संकोच न करें।",
         "प्वेर्तो वियेहो अपने शानदार प्राकृतिक परिवेश की बदौलत दुनियाभर के पर्यटकों के बीच एक लोकप्रिय गंतव्य है। इस कस्बे में विशाल समुद्र तट हैं जो उष्णकटिबंधीय वर्षावन से घिरे हुए हैं, साथ ही यहां दो राष्ट्रीय उद्यान भी हैं (मानसानियो और काहुइटा)। रात होते ही यह कस्बा जीवंत और सक्रिय नाइटलाइफ़ के साथ जाग उठता है। यहां ठहरने के दौरान आप उस हर चीज़ में पूरी तरह डूब सकेंगे, जो प्वेर्तो वियेहो को अनूठा बनाती है।",
+      ],
+    },
+    nl: {
+      seoTitle: "Casa Giulia - Familieretraite",
+      seoDescription:
+        "Nieuwe, volledig uitgeruste bungalows met airconditioning op 200 meter van het prachtige strand Playa Chiquita, in een van de veiligste en rustigste buurten van de Caraïben. Perfect voor gezinnen tot 4 personen.",
+      heading: "Casa Giulia",
+      featureName: "Huis Giulia",
+      checkIn: "15:00",
+      checkOut: "12:00 (middag)",
+      paragraphs: [
+        "Ontsnap naar Puerto Viejo in ons huis met airconditioning, een gaskeuken en een ruime kledingkast. Ontspan op je eigen overdekte privéterras. Ons huis ligt op slechts 200 meter van het prachtige strand Playa Chiquita, in een van de veiligste en rustigste buurten van de Caraïben. Verken vanaf onze perfecte locatie de omgeving, met onder meer Puerto Viejo, Manzanillo, het strand van Punta Uva en Arrecife.",
+        "De volledig private ruimte beschikt over 2 airco-units, een volledig uitgeruste keuken en 2 eigen badkamers met warm water. De parkeerplaats is privé, voor één auto, en bevindt zich buiten het perceel. Het huis heeft een veranda voor onze gasten. ✓ airco ✓ keuken ✓ wifi ✓ privéveranda ✓ privéparkeren.",
+        "Alle hier beschreven ruimtes zijn privé, inclusief de volledig uitgeruste keuken en badkamers. Je hebt alles wat je nodig hebt om je meteen thuis te voelen.",
+        "Restaurants, supermarkten en fietsverhuur vind je op loopafstand. We vertrouwen erop dat onze gasten gezond verstand gebruiken bij het verlaten van het huis, daarom hanteren we geen uitcheckregels en geen uitchecklijst.",
+        "Heb je een speciaal verzoek? We helpen je graag verder als het mogelijk is. Aarzel niet om het ons te laten weten.",
+        "Puerto Viejo is dankzij zijn adembenemende omgeving een geliefde bestemming voor toeristen van over de hele wereld. Het dorp heeft uitgestrekte stranden omzoomd door tropisch regenwoud, en telt twee nationale parken (Manzanillo en Cahuita). 's Avonds komt het dorp tot leven met een levendig en actief nachtleven. Tijdens je verblijf hier ga je volledig op in alles wat Puerto Viejo uniek maakt.",
       ],
     },
   },
@@ -794,6 +865,25 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "प्वेर्तो वियेहो और इसके आसपास घूमने-फिरने का सबसे आसान तरीका है बाइक या स्कूटर किराए पर लेना। हालांकि, एक भरोसेमंद सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला तक ले जा सकती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम कारों की भी व्यवस्था कर सकते हैं। हम निजी पार्किंग की सुविधा देते हैं, लेकिन कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।",
       ],
     },
+    nl: {
+      seoTitle: "Casa Pappagallo - Volledig Uitgerust Huis in Puerto Viejo",
+      seoDescription:
+        "Welkom bij Kalawala, een charmant complex van twee appartementen in het hart van Puerto Viejo. Elk appartement is volledig van hout gebouwd en bevindt zich boven een heerlijke Italiaanse bakkerij, en is voorzien van alles wat je nodig hebt voor een comfortabel verblijf.",
+      heading: "Casa Pappagallo",
+      featureName: "Huis Pappagallo",
+      checkIn: "14:00",
+      checkOut: "11:00",
+      paragraphs: [
+        "Welkom bij Kalawala, een charmant complex van twee appartementen in het hart van Puerto Viejo. Elk appartement is volledig van hout gebouwd en bevindt zich boven een heerlijke Italiaanse bakkerij. De appartementen zijn voorzien van alles wat je nodig hebt voor een comfortabel verblijf, waaronder een volledig uitgeruste keuken, twee gezellige slaapkamers, een lief terras, twee airco-units en een goed uitgeruste badkamer.",
+        "Alle hier beschreven ruimtes zijn privé, inclusief de volledig uitgeruste keuken en badkamer. Je hebt alles wat je nodig hebt om je meteen thuis te voelen.",
+        "Voor boekingen van 5 nachten of langer bieden we schoonmaakdiensten aan. Ons team neemt tijdens je verblijf contact met je op om een geschikt moment voor de schoonmaak af te spreken.",
+        "Heb je een speciaal verzoek? We helpen je graag verder als het mogelijk is. Aarzel niet om het ons te laten weten.",
+        "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
+        "Puerto Viejo is dankzij zijn adembenemende omgeving een geliefde bestemming voor toeristen van over de hele wereld. Het dorp heeft uitgestrekte stranden omzoomd door tropisch regenwoud, en telt twee nationale parken (Manzanillo en Cahuita). 's Avonds komt het dorp tot leven met een levendig en actief nachtleven. Tijdens je verblijf hier ga je volledig op in alles wat Puerto Viejo uniek maakt.",
+        "Het huis ligt vlak bij een strandtoegang die uiteindelijk naar Cocles leidt. Onderweg kun je allerlei dieren spotten en genieten van natuurlijke zwembaden in het koraal. Er wacht zelfs een verborgen uitkijkpunt om ontdekt te worden!",
+        "De makkelijkste manier om je in Puerto Viejo en omgeving te verplaatsen is met een gehuurde fiets of scooter. Er is ook een betrouwbare openbare busdienst die je naar Cahuita, Manzanillo en Sixaola brengt. Rijd je liever zelf, dan is dat ook mogelijk. We bieden privéparkeren aan, maar laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.",
+      ],
+    },
   },
   Plumeria: {
     en: {
@@ -923,6 +1013,22 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "आस-पास आपको रेस्तरां, सुपरमार्केट और बाइक किराए पर लेने की सुविधाएं मिल जाएंगी। हमें अपने मेहमानों पर भरोसा है कि वे घर छोड़ते समय सामान्य समझ का पालन करेंगे, इसीलिए हमारे यहां चेक-आउट के लिए कोई नियम नहीं हैं और कोई चेक-आउट सूची भी नहीं है।",
         "क्या आपकी कोई विशेष अनुरोध है? यदि हम कर सकें, तो हमें आपकी मदद करके बेहद खुशी होगी। कृपया हमें बताने में संकोच न करें।",
         "प्वेर्तो वियेहो अपने शानदार प्राकृतिक परिवेश की बदौलत दुनियाभर के पर्यटकों के बीच एक लोकप्रिय गंतव्य है। इस कस्बे में विशाल समुद्र तट हैं जो उष्णकटिबंधीय वर्षावन से घिरे हुए हैं, साथ ही यहां दो राष्ट्रीय उद्यान भी हैं (मानसानियो और काहुइटा)। रात होते ही यह कस्बा जीवंत और सक्रिय नाइटलाइफ़ के साथ जाग उठता है। यहां ठहरने के दौरान आप उस हर चीज़ में पूरी तरह डूब सकेंगे, जो प्वेर्तो वियेहो को अनूठा बनाती है।",
+      ],
+    },
+    nl: {
+      seoTitle: "Casa Plumeria - Retraite voor Stellen",
+      seoDescription:
+        "Nieuwe, volledig uitgeruste bungalows met airconditioning op 200 meter van het prachtige strand Playa Chiquita, in een van de veiligste en rustigste buurten van de Caraïben. Op een paar minuten van Puerto Viejo en Manzanillo liggen we ideaal gelegen om het strand van Punta Uva en Arrecife te bezoeken.",
+      heading: "Casa Plumeria",
+      featureName: "Huis Plumeria",
+      checkIn: "15:00",
+      checkOut: "12:00 (middag)",
+      paragraphs: [
+        "Nieuwe, volledig uitgeruste bungalows met airconditioning op 200 meter van het prachtige strand Playa Chiquita, in een van de veiligste en rustigste buurten van de Caraïben. Op een paar minuten van Puerto Viejo en Manzanillo liggen we ideaal gelegen om het strand van Punta Uva en Arrecife te bezoeken.",
+        "De volledig private ruimte beschikt over airconditioning, een volledig uitgeruste keuken en een eigen badkamer met warm water. De parkeerplaats is privé, ruim en bevindt zich buiten het perceel. Elk huis heeft een kleine veranda voor onze gasten.",
+        "Restaurants, supermarkten en fietsverhuur vind je op loopafstand. We vertrouwen erop dat onze gasten gezond verstand gebruiken bij het verlaten van het huis, daarom hanteren we geen uitcheckregels en geen uitchecklijst.",
+        "Heb je een speciaal verzoek? We helpen je graag verder als het mogelijk is. Aarzel niet om het ons te laten weten.",
+        "Puerto Viejo is dankzij zijn adembenemende omgeving een geliefde bestemming voor toeristen van over de hele wereld. Het dorp heeft uitgestrekte stranden omzoomd door tropisch regenwoud, en telt twee nationale parken (Manzanillo en Cahuita). 's Avonds komt het dorp tot leven met een levendig en actief nachtleven. Tijdens je verblijf hier ga je volledig op in alles wat Puerto Viejo uniek maakt.",
       ],
     },
   },
@@ -1087,6 +1193,24 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "प्वेर्तो वियेहो और इसके आसपास घूमने-फिरने का सबसे आसान तरीका है बाइक या स्कूटर किराए पर लेना। हालांकि, एक भरोसेमंद सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला तक ले जा सकती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम कारों की भी व्यवस्था कर सकते हैं। हम निजी पार्किंग की सुविधा देते हैं, लेकिन कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।",
       ],
     },
+    nl: {
+      seoTitle: "Casa Rana - Vakantiehuis te Huur in Puerto Viejo",
+      seoDescription:
+        "In het hart van het dorp gelegen biedt dit karakteristieke huis comfortabel onderdak aan maximaal 5 gasten. Het beschikt over een volledig uitgeruste keuken, een badkamer, twee airco-units en een privéparkeerplaats.",
+      heading: "Casa Rana",
+      featureName: "Huis Rana",
+      checkIn: "14:00",
+      checkOut: "11:00",
+      paragraphs: [
+        "In het hart van het dorp gelegen biedt dit karakteristieke huis comfortabel onderdak aan maximaal 5 gasten. Het beschikt over een volledig uitgeruste keuken, een badkamer, twee airco-units en een privéparkeerplaats. Onze uitstekende ligging zorgt voor gemakkelijke toegang tot zowel het centrum als de stranden van Puerto Viejo.",
+        "Het huis biedt volledige privacy: alle genoemde ruimtes, inclusief de keuken en badkamer, zijn uitsluitend voor jouw gebruik. Je vindt er alle voorzieningen die je nodig hebt om je thuis te voelen.",
+        "De meeste winkels en restaurants zijn op loopafstand. Daarnaast leidt een nabijgelegen junglepad langs de oceaan naar natuurlijke koraalzwembaden en naar Cocles.",
+        "Heb je een speciaal verzoek? We voldoen er graag aan, als het kan. Aarzel niet om het ons te laten weten.",
+        "Puerto Viejo is een bekende bestemming voor toeristen van over de hele wereld. Het dorp heeft prachtige stranden omzoomd door weelderig tropisch regenwoud en telt twee nationale parken, Manzanillo en Cahuita. 's Avonds verandert Puerto Viejo in een levendig uitgaansgebied. Tijdens je verblijf hier kun je alles ervaren wat Puerto Viejo bijzonder maakt.",
+        "Het huis ligt gunstig dicht bij een strandpad dat uiteindelijk naar Cocles leidt. Onderweg kun je uiteenlopende dieren spotten en genieten van natuurlijke koraalzwembaden. Er is zelfs een verborgen uitkijkpunt te ontdekken!",
+        "Je verplaatst je het best door de omgeving van Puerto Viejo met een gehuurde fiets of elektrische fiets. Daarnaast is er een openbare busdienst die je verbindt met Cahuita, Manzanillo en Sixaola. Rijd je liever zelf, dan bieden we ook privéparkeren aan. Laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.",
+      ],
+    },
   },
   Tucano: {
     en: {
@@ -1223,6 +1347,23 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "प्वेर्तो वियेहो अपने अद्भुत परिदृश्यों से दुनियाभर के पर्यटकों को आकर्षित करता है। यह कस्बा उष्णकटिबंधीय वर्षावनों से घिरे अपने विस्तृत समुद्र तटों के लिए जाना जाता है और यहां दो राष्ट्रीय उद्यान भी हैं, मानसानियो और काहुइटा। यहां की नाइटलाइफ़ जीवंत और सजीव है, जो रात ढलने के बाद एक अनोखा अनुभव प्रदान करती है। प्वेर्तो वियेहो में ठहरने से आप इसके अनूठे आकर्षण में पूरी तरह डूब सकते हैं।",
         "हमारा घर एक ऐसे समुद्र तट के रास्ते के पास सुविधाजनक ढंग से स्थित है जो अंततः कॉक्लेस तक ले जाता है। रास्ते में आप विभिन्न प्रकार के वन्यजीव देख सकते हैं और प्राकृतिक प्रवाल जलकुंडों का आनंद ले सकते हैं। एक छिपा हुआ दर्शनीय स्थल भी खोजे जाने का इंतज़ार कर रहा है!",
         "प्वेर्तो वियेहो और इसके आसपास घूमना-फिरना बाइक या स्कूटर किराए पर लेकर सबसे सुविधाजनक होता है। इसके अलावा, एक अच्छी सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला से जोड़ती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम निजी पार्किंग की सुविधा देते हैं। कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।",
+      ],
+    },
+    nl: {
+      seoTitle: "Casa Tucano - Anders dan al het Andere in Puerto Viejo",
+      seoDescription:
+        "Dit huis biedt een heerlijke ervaring in het hart van Puerto Viejo, met een charmant houten appartement boven een Italiaanse bakkerij. Het appartement heeft twee comfortabele slaapkamers, een goed uitgeruste badkamer, een volledig uitgeruste keuken, een lief terras en twee airco-units.",
+      heading: "Casa Tucano",
+      featureName: "Huis Tucano",
+      checkIn: "14:00",
+      checkOut: "11:00",
+      paragraphs: [
+        "Dit huis biedt een heerlijke ervaring in het hart van Puerto Viejo, met een charmant houten appartement boven een Italiaanse bakkerij. Het appartement heeft twee comfortabele slaapkamers, een goed uitgeruste badkamer, een volledig uitgeruste keuken, een lief terras en twee airco-units, voor een knus verblijf.",
+        "Deze appartementen bieden privéruimtes, waaronder de keuken en badkamer, met alles wat je nodig hebt om je thuis te voelen. Bij verblijven van 5 nachten of langer bieden we gratis schoonmaakdiensten aan; ons team stemt tijdens je bezoek een geschikt moment met je af.",
+        "Heb je speciale wensen? We voldoen er graag aan waar mogelijk, dus aarzel niet om het ons te laten weten. Heb je tijdens je verblijf een reisbedje nodig, laat het ons dan van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
+        "Puerto Viejo trekt bezoekers van over de hele wereld aan met zijn adembenemende landschappen. Het dorp staat bekend om zijn uitgestrekte stranden omzoomd door tropisch regenwoud en telt twee nationale parken, Manzanillo en Cahuita. Het nachtleven hier is levendig en bruisend en biedt een unieke ervaring na zonsondergang. Een verblijf in Puerto Viejo laat je volledig opgaan in de unieke sfeer van het dorp.",
+        "Ons huis ligt gunstig dicht bij een strandpad dat uiteindelijk naar Cocles leidt. Onderweg kun je diverse dieren spotten en genieten van de natuurlijke koraalzwembaden. Ook wacht er een verborgen uitkijkpunt om te ontdekken!",
+        "Puerto Viejo en omgeving verken je het handigst met een gehuurde fiets of scooter. Daarnaast is er een goede openbare busdienst die je verbindt met Cahuita, Manzanillo en Sixaola. Rijd je liever zelf, dan bieden we privéparkeren aan. Laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.",
       ],
     },
   },
@@ -1379,6 +1520,25 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "प्वेर्तो वियेहो और इसके आसपास घूमने-फिरने का सबसे आसान तरीका है बाइक या स्कूटर किराए पर लेना। हालांकि, एक भरोसेमंद सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला तक ले जा सकती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम कारों की भी व्यवस्था कर सकते हैं। हम निजी पार्किंग की सुविधा देते हैं, लेकिन कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।",
       ],
     },
+    nl: {
+      seoTitle: "Villa Coral - Huis met Privézwembad in Playa Chiquita",
+      seoDescription:
+        "Ontdek de perfecte retraite in Playa Chiquita, Puerto Viejo. Onze nieuw gebouwde luxevilla biedt een ideale vakantie-ervaring, met een combinatie van comfort en gemak in een rustige tropische omgeving.",
+      heading: "Villa Coral",
+      featureName: "Villa Coral",
+      checkIn: "15:00",
+      checkOut: "12:00 (middag)",
+      paragraphs: [
+        "Ontdek de perfecte retraite in Playa Chiquita, Puerto Viejo. Onze nieuw gebouwde luxevilla biedt een ideale vakantie-ervaring, met een combinatie van comfort en gemak in een rustige tropische omgeving.",
+        "Blijf verbonden met snel internet tot 100Mbps en maak gebruik van de aparte werkplek als je tijdens je verblijf nog wat taken moet afhandelen.",
+        "De villa, met een privézwembad, keuken en badkamer, is ingericht door de Puerto Ricaanse interieurontwerper Lourdes Menéndez",
+        { text: "Ontspan en kom tot rust in je eigen privéparadijs, met een kraakhelder zwembad enkel voor jou. De villa beschikt over een ruime hoofdslaapkamer en woonkamer, beide voorzien van airconditioning om de hitte te ontvluchten.", trailingBreak: false },
+        "Heb je een speciaal verzoek? We helpen je graag verder als het mogelijk is. Aarzel niet om het ons te laten weten.",
+        "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
+        "Ontdek de schoonheid van Playa Chiquita, Punta Uva en de levendige cultuur van Puerto Viejo, terwijl je steeds kunt terugkeren naar een comfortabele thuisbasis. Haal het maximale uit je Costa Ricaanse uitstapje met deze uitnodigende villa als onderkomen.",
+        "De makkelijkste manier om je in Puerto Viejo en omgeving te verplaatsen is met een gehuurde fiets of scooter. Er is ook een betrouwbare openbare busdienst die je naar Cahuita, Manzanillo en Sixaola brengt. Rijd je liever zelf, dan is dat ook mogelijk. We bieden privéparkeren aan, maar laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.",
+      ],
+    },
   },
   VillaMar: {
     en: {
@@ -1531,6 +1691,25 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "यदि आपको अपने ठहरने के दौरान पैक-एंड-प्ले क्रिब (बच्चों के लिए पालना) चाहिए, तो कृपया हमें पहले से सूचित करें। हम सफाई के दौरान इसे आपके कमरे में लगाना सुनिश्चित करेंगे।",
         "प्लाया चिकिता, पुंटा उवा की खूबसूरती और प्वेर्तो वियेहो की जीवंत संस्कृति का आनंद लें, और साथ ही लौटने के लिए एक आरामदायक ठिकाना भी पाएं। इस आकर्षक विला में ठहरकर अपनी कोस्टा रिका यात्रा का पूरा लुत्फ़ उठाएं।",
         { text: "प्वेर्तो वियेहो और इसके आसपास घूमने-फिरने का सबसे आसान तरीका है बाइक या स्कूटर किराए पर लेना। हालांकि, एक भरोसेमंद सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला तक ले जा सकती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम कारों की भी व्यवस्था कर सकते हैं। हम निजी पार्किंग की सुविधा देते हैं, लेकिन कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।", trailingBreak: false },
+      ],
+    },
+    nl: {
+      seoTitle: "Villa Mar - Huis met Privézwembad in Playa Chiquita",
+      seoDescription:
+        "Ontdek de perfecte retraite in Playa Chiquita, Puerto Viejo. Onze nieuw gebouwde luxevilla biedt een ideale vakantie-ervaring, met een combinatie van comfort en gemak in een rustige tropische omgeving.",
+      heading: "Villa Mar",
+      featureName: "Villa Mar",
+      checkIn: "15:00",
+      checkOut: "12:00 (middag)",
+      paragraphs: [
+        "Ontdek de perfecte retraite in Playa Chiquita, Puerto Viejo. Onze nieuw gebouwde luxevilla biedt een ideale vakantie-ervaring, met een combinatie van comfort en gemak in een rustige tropische omgeving.",
+        "Blijf verbonden met snel internet tot 100Mbps en maak gebruik van de aparte werkplek als je tijdens je verblijf nog wat taken moet afhandelen.",
+        "De villa, met een privézwembad, keuken en badkamer, is ingericht door de Puerto Ricaanse interieurontwerper Lourdes Menéndez",
+        { text: "Ontspan en kom tot rust in je eigen privéparadijs, met een kraakhelder zwembad enkel voor jou. De villa beschikt over een ruime hoofdslaapkamer en woonkamer, beide voorzien van airconditioning om de hitte te ontvluchten.", trailingBreak: false },
+        "Heb je een speciaal verzoek? We helpen je graag verder als het mogelijk is. Aarzel niet om het ons te laten weten.",
+        "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
+        "Ontdek de schoonheid van Playa Chiquita, Punta Uva en de levendige cultuur van Puerto Viejo, terwijl je steeds kunt terugkeren naar een comfortabele thuisbasis. Haal het maximale uit je Costa Ricaanse uitstapje met deze uitnodigende villa als onderkomen.",
+        { text: "De makkelijkste manier om je in Puerto Viejo en omgeving te verplaatsen is met een gehuurde fiets of scooter. Er is ook een betrouwbare openbare busdienst die je naar Cahuita, Manzanillo en Sixaola brengt. Rijd je liever zelf, dan is dat ook mogelijk. We bieden privéparkeren aan, maar laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.", trailingBreak: false },
       ],
     },
   },

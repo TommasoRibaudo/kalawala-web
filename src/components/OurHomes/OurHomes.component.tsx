@@ -2,7 +2,7 @@ import React from 'react';
 import HomeCard from './Components/HomeCard.component';
 import './OurHomes.style.scss'
 import { HouseDataType } from '../../utils/types';
-import { useMessages } from '../../i18n';
+import { useMessages, useLocale } from '../../i18n';
 
 interface IOurHomes{
     style?: any;
@@ -11,6 +11,7 @@ interface IOurHomes{
 
 const OurHomes: React.FC<IOurHomes> = ({ style, houseDataList }) => {
     const m = useMessages();
+    const locale = useLocale();
     // Homes data is passed as props
     return (
         <section id="house-list" className="bg-one about section" style={style}>
@@ -29,6 +30,7 @@ const OurHomes: React.FC<IOurHomes> = ({ style, houseDataList }) => {
                                 name={name}
                                 image={image}
                                 houseLangCode={houseLangCode}
+                                locale={locale}
                             />
                         ))}
                     </div>

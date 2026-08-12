@@ -278,7 +278,36 @@ const hi: DiscoverContent = {
   },
 };
 
-const CONTENT: Partial<Record<Locale, DiscoverContent>> = { en, es, de, fr, it, pt, he, hi };
+const nl: DiscoverContent = {
+  heading: 'Ontdek Puerto Viejo vanuit het comfort van onze huizen.',
+  paragraphs: [
+    <>Reservas Kalawala biedt {PORTFOLIO_PROPERTY_COUNT} gerenoveerde huizen en villa's, <b>elk met een volledig uitgeruste eigen keuken en badkamer</b>. De huizen bieden plaats aan {PORTFOLIO_GUEST_RANGE.min} tot {PORTFOLIO_GUEST_RANGE.max} gasten, met {PORTFOLIO_BEDROOM_RANGE.min} tot {PORTFOLIO_BEDROOM_RANGE.max} slaapkamers en <b>overal airconditioning</b>.</>,
+    <>Onze huizen in het centrum van Puerto Viejo liggen midden in het dorp, met <b>bars, restaurants en winkels op loopafstand</b>. Het strand van Cocles ligt op 2 minuten rijden, en fiets- en motorverhuur in de buurt brengen Punta Uva, Cahuita en Manzanillo binnen bereik, zelfs zonder auto!</>,
+    <>Onze huizen in <b>Playa Chiquita</b> liggen een kort ritje ten zuidoosten van het dorp, in een rustigere, groenere omgeving midden in de jungle en op enkele minuten van een aantal van de mooiste stranden van de kust, zoals Punta Uva. Het is een ideale uitvalsbasis als je op zoek bent naar natuur en rust, met de levendigheid van Puerto Viejo altijd dichtbij wanneer je daar zin in hebt.</>,
+    <><b>Werk je vanuit huis?</b> Wij bieden <b>gratis wifi</b>, met een maximale snelheid van <b>100Mbps</b>. We hebben twee aparte contracten afgesloten met onze internetprovider, zodat je internetverbinding wordt gedeeld tussen minder apparaten, wat zorgt voor minder vertraging tijdens vergaderingen.</>,
+    <><b>Huisdiervriendelijk:</b> Casa Rana, Casa Geco, Casa Tucano en Casa Pappagallo verwelkomen huisdieren. Rana en Geco zijn het meest geschikt, omdat ze een eigen tuin hebben.</>,
+  ],
+  features: {
+    selfCheckIn: {
+      heading: 'Zelf inchecken',
+      text: 'Eenvoudig te volgen, contactloos inchecken.',
+    },
+    cheapestPrices: {
+      heading: 'Laagste prijzen',
+      text: 'En extra korting bij het rechtstreeks boeken via de website.',
+    },
+    nonRefundable: {
+      heading: 'Niet-restitueerbare korting',
+      text: "Kies bij het boeken voor het niet-restitueerbare tarief voor 10% extra korting, maar dan heb je geen recht op terugbetaling bij annulering.",
+    },
+    flexibleCancellation: {
+      heading: 'Flexibel annuleringsbeleid',
+      text: 'Volledige terugbetaling tot één dag voor inchecken bij elke reservering geboekt tegen het standaardtarief.',
+    },
+  },
+};
+
+const CONTENT: Partial<Record<Locale, DiscoverContent>> = { en, es, de, fr, it, pt, he, hi, nl };
 
 export function discoverContent(locale: Locale): DiscoverContent {
   return CONTENT[locale] ?? CONTENT[DEFAULT_LOCALE]!;

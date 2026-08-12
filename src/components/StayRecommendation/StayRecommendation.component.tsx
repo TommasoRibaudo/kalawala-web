@@ -10,20 +10,9 @@ interface PropertyRecommendation {
 interface StayRecommendationProps {
   title: string;
   properties: PropertyRecommendation[];
-  language?: 'en' | 'es';
 }
 
-const StayRecommendation: React.FC<StayRecommendationProps> = ({ title, properties, language = 'es' }) => {
-  const translations = {
-    en: {
-      defaultTitle: "Where to stay if you only have 2 days in Puerto Viejo?"
-    },
-    es: {
-      defaultTitle: "¿Dónde hospedarte si solo tienes 2 días en Puerto Viejo?"
-    }
-  };
-
-  const currentTranslations = translations[language];
+const StayRecommendation: React.FC<StayRecommendationProps> = ({ title, properties }) => {
   return (
     <div className="stay-recommendation">
       <div className="stay-recommendation__container">

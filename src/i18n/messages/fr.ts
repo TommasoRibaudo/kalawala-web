@@ -60,6 +60,7 @@ export const fr: Messages = {
     otherListingsHeading: 'Découvrez nos autres options !',
     readBlog: (title: string) => `Lire l’article : ${title}`,
     weOfferEquipped: 'Nous proposons des maisons entièrement équipées :',
+    ourPhotosHeading: 'Photos',
   },
 
   contact: {
@@ -98,6 +99,7 @@ export const fr: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'La météo à Puerto Viejo est réputée changeante — ce sont des moyennes approximatives sur le long terme, et les conditions peuvent varier plusieurs fois dans une même journée. À prendre comme un repère, pas une garantie.',
     bookYourStay: 'Réservez votre séjour',
     indexTitle: 'Guides de voyage à Puerto Viejo | Reservas Kalawala',
     indexDescription:
@@ -127,5 +129,57 @@ export const fr: Messages = {
     bedrooms: (count: number) => `${count} ${count > 1 ? 'chambres' : 'chambre'}`,
     bathrooms: (count: number) => `${count} ${count > 1 ? 'salles de bain' : 'salle de bain'}`,
     upToGuests: (count: number) => `Jusqu’à ${count} ${count > 1 ? 'personnes' : 'personne'}`,
+    viewHomeCta: 'Voir la maison →',
   },
+  cookieBanner: {
+    title: '🍪 Cookies',
+    description: 'Nous utilisons des cookies pour améliorer votre expérience et analyser le trafic.',
+    acceptAll: 'Accepter',
+    rejectAll: 'Refuser',
+    customize: 'Options',
+    essential: 'Essentiels',
+    analytics: 'Analyse',
+    marketing: 'Marketing',
+    required: '(Req.)',
+    essentialDesc: 'Nécessaires au fonctionnement du site.',
+    analyticsDesc: 'Nous aident à comprendre l\'utilisation du site.',
+    marketingDesc: 'Pour afficher des publicités pertinentes.',
+    savePreferences: 'Enregistrer',
+    cancel: 'Annuler',
+  },
+
+  notFound: {
+    title: 'Page introuvable | Reservas Kalawala',
+    heading: 'Nous n\'avons pas trouvé cette page',
+    body: 'Il est possible que le lien soit rompu ou que la page ait été déplacée.',
+    cta: 'Retour à l\'accueil',
+  },
+
+  whyStayWithUs: {
+    title: 'Pourquoi réserver avec nous ?',
+    benefits: [
+      'Emplacements stratégiques',
+      'Maisons entièrement équipées',
+      'Réservation directe et assistance locale',
+      'Aucune commission de plateforme',
+    ],
+    ctaText: 'Voir toutes nos propriétés',
+  },
+
+  imagesModal: {
+    close: 'Fermer',
+    photos: 'photos',
+    previous: 'Précédent',
+    next: 'Suivant',
+    empty: 'Aucune photo disponible',
+  },
+
+  reviewTags: {
+    'Stayed a few nights': 'Séjour de quelques nuits',
+    'Stayed one night': 'Séjour d\'une nuit',
+    'Stayed with kids': 'Séjour avec des enfants',
+    'Stayed with a pet': 'Séjour avec un animal de compagnie',
+    'Stayed about a week': 'Séjour d\'environ une semaine',
+  },
+
 };

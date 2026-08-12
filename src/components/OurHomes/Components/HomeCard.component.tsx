@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSnowflake, faUtensils, faWifi, faUser, faParking } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 import './HomeCard.style.scss'
-import type { Locale } from '../../../i18n';
-import { pathForLegacyId } from '../../../routes.config';
+import { getMessages, type Locale } from '../../../i18n';
+import { pathForKey, routeKeyForSlug } from '../../../routes.config';
 
 interface IHomeCard {
     name: string;
@@ -15,15 +15,18 @@ interface IHomeCard {
     hasFencedParking: boolean;
     image: string
     houseLangCode:string;
+    locale: Locale;
 }
 
 
-const HomeCard: FC<IHomeCard> = ({ guestNumber, hasFencedParking, name, image, houseLangCode }) => {
-
-    // Spanish house codes contain "ES" (see OurHomes.component filter), so the
-    // card can label its own CTA without threading a language prop from parents.
-    const cardLocale: Locale = houseLangCode.includes('ES') ? 'es' : 'en';
+const HomeCard: FC<IHomeCard> = ({ guestNumber, hasFencedParking, name, image, houseLangCode, locale }) => {
     const navigate = useNavigate();
+    // houseLangCode is an "ES"-suffixed or unsuffixed slug (see OurHomes'
+    // caller) — the suffix only ever distinguishes en/es and was never wired
+    // for the other six locales, so both the card and its href go through
+    // routeKeyForSlug + pathForKey(locale) instead, driven by the real locale.
+    const routeKey = routeKeyForSlug(houseLangCode.replace(/ES$/, ''));
+    const href = routeKey ? pathForKey(routeKey, locale) : '#';
     const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
         // A real href already handles ctrl/cmd-click, middle-click and "open in
         // new tab" correctly — only take over plain left-clicks so those keep
@@ -32,13 +35,13 @@ const HomeCard: FC<IHomeCard> = ({ guestNumber, hasFencedParking, name, image, h
             return;
         }
         event.preventDefault();
-        navigate(pathForLegacyId(houseLangCode));
+        navigate(href);
         setTimeout(() => {
             window.scrollTo(0, 0);
         }, 0);
     };
     return (
-        <a className="home-card-item" data-wow-duration="500ms" href={pathForLegacyId(houseLangCode)} onClick={handleClick}>
+        <a className="home-card-item" data-wow-duration="500ms" href={href} onClick={handleClick}>
             <div className="block">
                 <div className="icon-box d-block mx-auto">
                     <img src={image} alt={name} className="img-fluid rounded our-homes-img-m" width={1000} height={667} loading="lazy" decoding="async" srcSet={cdnSrcSet(image)} sizes="(max-width: 767px) 90vw, (max-width: 1199px) 45vw, 350px" />
@@ -58,7 +61,7 @@ const HomeCard: FC<IHomeCard> = ({ guestNumber, hasFencedParking, name, image, h
                         <FontAwesomeIcon icon={faWifi} />
                         {hasFencedParking && <FontAwesomeIcon icon={faParking} />}
                     </div>
-                    <span className="card-cta">{cardLocale === 'es' ? 'Ver casa →' : 'View home →'}</span>
+                    <span className="card-cta">{getMessages(locale).property.viewHomeCta}</span>
                 </div>
             </div>
 

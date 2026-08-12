@@ -104,10 +104,11 @@ export interface CreatePayPalHoldRequest {
 }
 
 /**
- * Same shape as a PayPal hold minus the rate options — deposit is always
- * flexible. A pet travels with the guest either way, so `withPet` stays.
+ * Same shape as a PayPal hold, minus the PayPal-only captcha step. The rate
+ * options (`nonRefundable`, `withPet`) travel with the guest whichever way they
+ * pay, so a non-refundable rate keeps its discount on the SINPE path too (#307).
  */
-export type CreateDepositHoldRequest = Omit<CreatePayPalHoldRequest, 'nonRefundable'>;
+export type CreateDepositHoldRequest = Omit<CreatePayPalHoldRequest, 'captchaToken'>;
 
 export interface DepositBankInfo {
   sinpePhone: string;
@@ -644,6 +645,7 @@ export async function createDepositHold(request: CreateDepositHoldRequest): Prom
       marketingConsent: request.marketingConsent === true,
       // Re-sent because the guest may have accepted the cookie banner after searching.
       ...buildTrackingPayload(),
+      ...(request.nonRefundable ? { nonRefundable: true } : {}),
       ...(request.withPet ? { withPet: true } : {}),
     }),
   });

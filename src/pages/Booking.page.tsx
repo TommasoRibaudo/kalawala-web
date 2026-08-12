@@ -368,7 +368,7 @@ const BookingPage = () => {
     persistPortalAutoLogin(holdForm.portalPassword);
     setIsCreatingDepositHold(true);
     try {
-      const response = await createDepositHold({ quoteId: result.quoteId, bookingSessionId: result.bookingSessionId, propertyId: depositProperty.propertyId, language, guest: { firstName: holdForm.firstName, lastName: holdForm.lastName, email: holdForm.email, phone: holdForm.phone, country: holdForm.country, message: holdForm.message }, portalPassword: holdForm.portalPassword, termsAccepted: holdForm.termsAccepted, ...(withPet ? { withPet: true } : {}) });
+      const response = await createDepositHold({ quoteId: result.quoteId, bookingSessionId: result.bookingSessionId, propertyId: depositProperty.propertyId, language, guest: { firstName: holdForm.firstName, lastName: holdForm.lastName, email: holdForm.email, phone: holdForm.phone, country: holdForm.country, message: holdForm.message }, portalPassword: holdForm.portalPassword, termsAccepted: holdForm.termsAccepted, ...(nonRefundable ? { nonRefundable: true } : {}), ...(withPet ? { withPet: true } : {}) });
       setDepositHoldResponse(response);
       // The booking is not confirmed yet, but the guest will need these to log in
       // once staff verify the transfer.
@@ -531,7 +531,7 @@ const BookingPage = () => {
             {/* Step 3: Checkout / Deposit */}
             <div className={`booking-wizard-slide${wizardStep === 'checkout' || wizardStep === 'deposit' ? ' booking-wizard-slide--active' : stepIndex(wizardStep) > 2 ? ' booking-wizard-slide--left' : ' booking-wizard-slide--right'}`} aria-hidden={wizardStep !== 'checkout' && wizardStep !== 'deposit'}>
               <Row className="justify-content-center"><Col lg={8} xl={7}>
-                {result && depositProperty && <DepositCheckoutPanel result={result} property={depositProperty} strings={strings} language={language} withPet={withPet} form={holdForm} fieldErrors={holdFieldErrors} holdError={depositError} holdResponse={depositHoldResponse} isCreatingHold={isCreatingDepositHold} receiptState={receiptState} onChange={updateHoldForm} onSubmit={handleCreateDepositHold} onUploadReceipt={handleUploadReceipt} onBack={handleBackToResults} />}
+                {result && depositProperty && <DepositCheckoutPanel result={result} property={depositProperty} strings={strings} language={language} withPet={withPet} nonRefundable={nonRefundable} form={holdForm} fieldErrors={holdFieldErrors} holdError={depositError} holdResponse={depositHoldResponse} isCreatingHold={isCreatingDepositHold} receiptState={receiptState} onChange={updateHoldForm} onSubmit={handleCreateDepositHold} onUploadReceipt={handleUploadReceipt} onBack={handleBackToResults} />}
                 {result && checkoutProperty && <PayPalCheckoutPanel result={result} property={checkoutProperty} strings={strings} language={language} withPet={withPet} nonRefundable={nonRefundable} form={holdForm} fieldErrors={holdFieldErrors} holdError={holdError} holdResponse={holdResponse} paypalOrderError={paypalOrderError} isCreatingHold={isCreatingHold} isCreatingPayPalOrder={isCreatingPayPalOrder} onChange={updateHoldForm} onSubmit={handleCreatePayPalHold} onCreatePayPalOrder={handleCreatePayPalOrder} holdCaptchaRequired={holdCaptchaRequired} onBack={handleBackToResults} />}
               </Col></Row>
             </div>
@@ -938,7 +938,7 @@ const BookingConfirmationPanel = ({ result, strings, language, onManageBooking }
  * This replaces the old contact-only handoff, which told guests to get in touch
  * and reserved nothing.
  */
-const DepositCheckoutPanel = ({ result, property, strings, language, withPet, form, fieldErrors, holdError, holdResponse, isCreatingHold, receiptState, onChange, onSubmit, onUploadReceipt, onBack }: { result: BookingSearchResponse; property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; withPet: boolean; form: PayPalHoldFormState; fieldErrors: Record<string, string>; holdError: string | null; holdResponse: DepositHoldResponse | null; isCreatingHold: boolean; receiptState: DepositReceiptState; onChange: (u: Partial<PayPalHoldFormState>) => void; onSubmit: (e: React.FormEvent) => void; onUploadReceipt: (file: File) => void; onBack: () => void }) => {
+const DepositCheckoutPanel = ({ result, property, strings, language, withPet, nonRefundable, form, fieldErrors, holdError, holdResponse, isCreatingHold, receiptState, onChange, onSubmit, onUploadReceipt, onBack }: { result: BookingSearchResponse; property: BookingAvailableProperty; strings: BookingStrings; language: BookingLanguage; withPet: boolean; nonRefundable: boolean; form: PayPalHoldFormState; fieldErrors: Record<string, string>; holdError: string | null; holdResponse: DepositHoldResponse | null; isCreatingHold: boolean; receiptState: DepositReceiptState; onChange: (u: Partial<PayPalHoldFormState>) => void; onSubmit: (e: React.FormEvent) => void; onUploadReceipt: (file: File) => void; onBack: () => void }) => {
   const price = property.price ?? holdResponse?.booking.price;
   const bankInfo = holdResponse?.bankInfo;
 
@@ -953,7 +953,7 @@ const DepositCheckoutPanel = ({ result, property, strings, language, withPet, fo
 
       <div className="booking-checkout-panel__summary" aria-label={strings.checkoutSummary}>
         <div><span>{strings.depositContextTitle}</span><strong>{property.name}</strong><small>{strings.depositDates(formatDate(result.arrivalDate, language), formatDate(result.departureDate, language))}</small></div>
-        {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={false} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
+        {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={nonRefundable && !holdResponse} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
         {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
 

@@ -173,6 +173,20 @@ export const blogs = [
         text: "Bus, shared shuttle, private transfer or flight? Compare cost, time and comfort for every way to travel from San José to Puerto Viejo de Talamanca.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg",
         pictures: ["", ""]
+    },
+    {
+        id: "gandoca-manzanillo-refuge",
+        title: "Gandoca-Manzanillo Wildlife Refuge: What to Do",
+        text: "A guide to the Gandoca-Manzanillo National Wildlife Refuge near Puerto Viejo: coral reef snorkelling, the Manzanillo–Punta Mona coastal trail, wildlife, sea turtles and practical tips.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg",
+        pictures: ["", ""]
+    },
+    {
+        id: "puerto-viejo-beaches",
+        title: "The Best Beaches in Puerto Viejo",
+        text: "A beach-by-beach guide to Puerto Viejo: Playa Cocles, Playa Chiquita, Punta Uva, Playa Negra and Manzanillo — where to swim, surf, snorkel, and how to stay safe.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619",
+        pictures: ["", ""]
     }
 ]
 export const blogsES = [

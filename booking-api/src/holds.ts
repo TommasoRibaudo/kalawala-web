@@ -956,6 +956,7 @@ export async function createSmoobuBackedHold(
       noticePrefix: flavour.noticePrefix,
       noticeCaveat: flavour.noticeCaveat,
       withPet,
+      nonRefundable: holdRequest.nonRefundable === true,
     });
     const payloadHash = hashJson(reservationPayload);
 
@@ -1293,6 +1294,7 @@ function buildSmoobuHoldPayload(input: {
   noticePrefix: string;
   noticeCaveat: string;
   withPet: boolean;
+  nonRefundable: boolean;
 }) {
   return {
     arrivalDate: input.session.arrivalDate,
@@ -1310,7 +1312,8 @@ function buildSmoobuHoldPayload(input: {
       input.expiresAt,
       input.noticePrefix,
       input.noticeCaveat,
-      input.withPet
+      input.withPet,
+      input.nonRefundable
     ),
     adults: input.session.guests,
     children: 0,
@@ -1330,9 +1333,16 @@ function buildSmoobuNotice(
   expiresAt: string,
   noticePrefix: string,
   noticeCaveat: string,
-  withPet: boolean
+  withPet: boolean,
+  nonRefundable: boolean
 ): string {
-  const parts = [`${noticePrefix} Quote ${session.quoteId}. Hold expires ${expiresAt}. ${noticeCaveat}`];
+  // Spelled out on the reservation so staff confirming a SINPE/bank transfer see
+  // that the (already-discounted) price is the non-refundable rate, computed via
+  // the #norefundallowed code at quote time — not an underpayment (#307).
+  const rateNote = nonRefundable
+    ? " Non-refundable rate (#norefundallowed): 10% discount already applied to the price above."
+    : "";
+  const parts = [`${noticePrefix} Quote ${session.quoteId}. Hold expires ${expiresAt}. ${noticeCaveat}${rateNote}`];
 
   // Ahead of the free-text guest note: housekeeping reads this line off the
   // Smoobu reservation, so it must not be buried under a long message.

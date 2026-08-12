@@ -100,6 +100,7 @@ export const de: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'Das Wetter in Puerto Viejo ist bekanntlich wechselhaft — dies sind grobe langjährige Durchschnittswerte, und die Bedingungen können sich mehrmals an einem Tag ändern. Sieh sie als Orientierung, nicht als Garantie.',
     bookYourStay: 'Buchen Sie Ihren Aufenthalt',
     indexTitle: 'Reiseführer für Puerto Viejo | Reservas Kalawala',
     indexDescription:

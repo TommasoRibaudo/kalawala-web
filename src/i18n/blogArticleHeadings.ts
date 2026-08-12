@@ -11,6 +11,20 @@ import {
   indigenousTravelContent,
   puertoHiddenGemsContent,
   busHoursContent,
+  weatherHubContent,
+  weatherJanuaryContent,
+  weatherFebruaryContent,
+  weatherMarchContent,
+  weatherAprilContent,
+  weatherMayContent,
+  weatherJuneContent,
+  weatherJulyContent,
+  weatherAugustContent,
+  weatherSeptemberContent,
+  weatherOctoberContent,
+  weatherNovemberContent,
+  weatherDecemberContent,
+  sanJoseOptionsContent,
 } from './content/blog';
 
 /**
@@ -34,6 +48,20 @@ const BLOG_HEADING_BY_ROUTE_KEY: Partial<Record<RouteKey, (locale: Locale) => st
   blogIndigenous: (l) => indigenousTravelContent(l).heading,
   blogBesttime: (l) => bestTimeToVisitContent(l).heading,
   blogHiddengems: (l) => puertoHiddenGemsContent(l).heading,
+  blogWeather: (l) => weatherHubContent(l).heading,
+  blogWeatherJan: (l) => weatherJanuaryContent(l).heading,
+  blogWeatherFeb: (l) => weatherFebruaryContent(l).heading,
+  blogWeatherMar: (l) => weatherMarchContent(l).heading,
+  blogWeatherApr: (l) => weatherAprilContent(l).heading,
+  blogWeatherMay: (l) => weatherMayContent(l).heading,
+  blogWeatherJun: (l) => weatherJuneContent(l).heading,
+  blogWeatherJul: (l) => weatherJulyContent(l).heading,
+  blogWeatherAug: (l) => weatherAugustContent(l).heading,
+  blogWeatherSep: (l) => weatherSeptemberContent(l).heading,
+  blogWeatherOct: (l) => weatherOctoberContent(l).heading,
+  blogWeatherNov: (l) => weatherNovemberContent(l).heading,
+  blogWeatherDec: (l) => weatherDecemberContent(l).heading,
+  blogSanjoseOptions: (l) => sanJoseOptionsContent(l).heading,
 };
 
 export function blogArticleHeading(routeKey: RouteKey, locale: Locale): string {

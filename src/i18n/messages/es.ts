@@ -105,6 +105,7 @@ export const es: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'El clima de Puerto Viejo es muy cambiante — estos son promedios aproximados de largo plazo, y las condiciones pueden cambiar varias veces en un mismo día. Tómalos como una guía, no como una garantía.',
     // Two Spanish pages capitalised the second and third words
     // ("Reserva Tu Estadía"); the other eight didn't. Unified on the majority
     // form.

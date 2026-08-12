@@ -75,6 +75,104 @@ export const blogs = [
         text: "Puerto Viejo has famous beaches, music, and nightlife. But some of its best places stay off the main list. These spots feel calmer, closer to nature, and more personal.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205",
         pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo",
+        title: "Weather in Puerto Viejo de Limón: A Month-by-Month Guide",
+        text: "What's the weather really like in Puerto Viejo de Limón? A month-by-month breakdown of rain, sun, heat and sea conditions — plus the best things to do on rainy days.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-january",
+        title: "Weather in Puerto Viejo in January",
+        text: "January in Puerto Viejo de Talamanca is warm and breezy, with post-holiday calm, some showers and good surf.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-february",
+        title: "Weather in Puerto Viejo in February",
+        text: "February is the driest month in Puerto Viejo de Talamanca — the classic dry window with the best beach and snorkelling conditions.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-march",
+        title: "Weather in Puerto Viejo in March",
+        text: "March in Puerto Viejo de Talamanca stays warm and fairly dry as the dry window continues — great for beaches, hikes and jungle.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-april",
+        title: "Weather in Puerto Viejo in April",
+        text: "April in Puerto Viejo de Talamanca is warm and lush as the dry window fades into greener days, with crowds thinning after Easter.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-may",
+        title: "Weather in Puerto Viejo in May",
+        text: "May in Puerto Viejo de Talamanca opens the green season: lush jungle, afternoon showers, great wildlife and low prices.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-june",
+        title: "Weather in Puerto Viejo in June",
+        text: "June in Puerto Viejo de Talamanca is wet and green, with turtle-nesting season nearby, lively jungle and low prices.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-july",
+        title: "Weather in Puerto Viejo in July",
+        text: "July in Puerto Viejo de Talamanca is mixed — warm sun and heavy showers, sometimes a short drier spell, with good surf.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-august",
+        title: "Weather in Puerto Viejo in August",
+        text: "August in Puerto Viejo de Talamanca is warm and green with rainy spells, a dramatic jungle and good surf.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-september",
+        title: "Weather in Puerto Viejo in September",
+        text: "September in Puerto Viejo de Talamanca is the start of the veranillo: calmer seas, clear water and some of the fewest crowds of the year.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-october",
+        title: "Weather in Puerto Viejo in October",
+        text: "October in Puerto Viejo de Talamanca continues the veranillo: calm seas, thin crowds and the best value of the year on the Caribbean coast.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-november",
+        title: "Weather in Puerto Viejo in November",
+        text: "November is the rainiest month in Puerto Viejo de Talamanca — deep-green jungle, full waterfalls and low prices.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg",
+        pictures: ["", ""]
+    },
+    {
+        id: "weather-puerto-viejo-december",
+        title: "Weather in Puerto Viejo in December",
+        text: "December in Puerto Viejo de Talamanca is festive and lively, still rainy but with surf swells and holiday energy.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619",
+        pictures: ["", ""]
+    },
+    {
+        id: "san-jose-to-puerto-viejo",
+        title: "San José to Puerto Viejo: Every Way to Get There Compared",
+        text: "Bus, shared shuttle, private transfer or flight? Compare cost, time and comfort for every way to travel from San José to Puerto Viejo de Talamanca.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg",
+        pictures: ["", ""]
     }
 ]
 export const blogsES = [

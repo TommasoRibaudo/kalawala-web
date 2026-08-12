@@ -3105,6 +3105,20 @@ export const BLOG_ARTICLES: BlogArticle[] = [
   { key: 'indigenous', routeKey: 'blogIndigenous' },
   { key: 'besttime', routeKey: 'blogBesttime' },
   { key: 'hiddengems', routeKey: 'blogHiddengems' },
+  { key: 'weather', routeKey: 'blogWeather' },
+  { key: 'weatherJan', routeKey: 'blogWeatherJan' },
+  { key: 'weatherFeb', routeKey: 'blogWeatherFeb' },
+  { key: 'weatherMar', routeKey: 'blogWeatherMar' },
+  { key: 'weatherApr', routeKey: 'blogWeatherApr' },
+  { key: 'weatherMay', routeKey: 'blogWeatherMay' },
+  { key: 'weatherJun', routeKey: 'blogWeatherJun' },
+  { key: 'weatherJul', routeKey: 'blogWeatherJul' },
+  { key: 'weatherAug', routeKey: 'blogWeatherAug' },
+  { key: 'weatherSep', routeKey: 'blogWeatherSep' },
+  { key: 'weatherOct', routeKey: 'blogWeatherOct' },
+  { key: 'weatherNov', routeKey: 'blogWeatherNov' },
+  { key: 'weatherDec', routeKey: 'blogWeatherDec' },
+  { key: 'sanjoseOptions', routeKey: 'blogSanjoseOptions' },
 ];
 
 /**

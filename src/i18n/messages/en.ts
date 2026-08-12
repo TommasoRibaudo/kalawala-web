@@ -122,6 +122,7 @@ export const en = {
 
   blog: {
     bookYourStay: 'Book Your Stay',
+    weatherVariabilityNote: 'Puerto Viejo weather is famously changeable — these are rough long-term averages, and conditions can shift several times in a single day. Treat them as a guide, not a guarantee.',
     indexTitle: 'Puerto Viejo Travel Guides | Reservas Kalawala',
     indexDescription:
       "Ten local guides to Puerto Viejo de Talamanca: getting there, getting around, and what to do once you're here.",

@@ -53,7 +53,9 @@ import routesManifest from './routes.manifest.json';
 export type RouteKey =
   | 'home' | 'book' | 'bookReturn' | 'bookConfirmed' | 'portal' | 'portalDetail'
   | 'geco' | 'rana' | 'tucano' | 'pappagallo' | 'delfin' | 'areka' | 'giulia' | 'plumeria' | 'villamar' | 'villacoral'
-  | 'blog' | 'blogTwodays' | 'blogGandoca' | 'blogSanjose' | 'blogByplane' | 'blogTenhours' | 'blogBushours' | 'blogCahuitapark' | 'blogIndigenous' | 'blogBesttime' | 'blogHiddengems'
+  | 'blog' | 'blogTwodays' | 'blogGandoca' | 'blogSanjose' | 'blogByplane' | 'blogTenhours' | 'blogBushours' | 'blogCahuitapark' | 'blogIndigenous' | 'blogBesttime' | 'blogHiddengems' | 'blogWeather'
+  | 'blogWeatherJan' | 'blogWeatherFeb' | 'blogWeatherMar' | 'blogWeatherApr' | 'blogWeatherMay' | 'blogWeatherJun' | 'blogWeatherJul' | 'blogWeatherAug'
+  | 'blogWeatherSep' | 'blogWeatherOct' | 'blogWeatherNov' | 'blogWeatherDec' | 'blogSanjoseOptions'
   | 'success';
 
 export interface RouteDef {
@@ -108,6 +110,20 @@ export const LOADERS: Record<RouteKey, () => Promise<{ default: ComponentType<an
   blogIndigenous: () => import(/* webpackChunkName: "route-indigenoustravelpv" */ './pages/Blog/staticPages/IndigenousTravel'),
   blogBesttime: () => import(/* webpackChunkName: "route-besttimetovisitpuerto" */ './pages/Blog/staticPages/BestTimeToVisitPuerto'),
   blogHiddengems: () => import(/* webpackChunkName: "route-puertohiddengems" */ './pages/Blog/staticPages/PuertoHiddenGems'),
+  blogWeather: () => import(/* webpackChunkName: "route-weather-puerto-viejo" */ './pages/Blog/staticPages/WeatherPuertoViejo'),
+  blogWeatherJan: () => import(/* webpackChunkName: "route-weather-puerto-viejo-january" */ './pages/Blog/staticPages/WeatherJanuary'),
+  blogWeatherFeb: () => import(/* webpackChunkName: "route-weather-puerto-viejo-february" */ './pages/Blog/staticPages/WeatherFebruary'),
+  blogWeatherMar: () => import(/* webpackChunkName: "route-weather-puerto-viejo-march" */ './pages/Blog/staticPages/WeatherMarch'),
+  blogWeatherApr: () => import(/* webpackChunkName: "route-weather-puerto-viejo-april" */ './pages/Blog/staticPages/WeatherApril'),
+  blogWeatherMay: () => import(/* webpackChunkName: "route-weather-puerto-viejo-may" */ './pages/Blog/staticPages/WeatherMay'),
+  blogWeatherJun: () => import(/* webpackChunkName: "route-weather-puerto-viejo-june" */ './pages/Blog/staticPages/WeatherJune'),
+  blogWeatherJul: () => import(/* webpackChunkName: "route-weather-puerto-viejo-july" */ './pages/Blog/staticPages/WeatherJuly'),
+  blogWeatherAug: () => import(/* webpackChunkName: "route-weather-puerto-viejo-august" */ './pages/Blog/staticPages/WeatherAugust'),
+  blogWeatherSep: () => import(/* webpackChunkName: "route-weather-puerto-viejo-september" */ './pages/Blog/staticPages/WeatherSeptember'),
+  blogWeatherOct: () => import(/* webpackChunkName: "route-weather-puerto-viejo-october" */ './pages/Blog/staticPages/WeatherOctober'),
+  blogWeatherNov: () => import(/* webpackChunkName: "route-weather-puerto-viejo-november" */ './pages/Blog/staticPages/WeatherNovember'),
+  blogWeatherDec: () => import(/* webpackChunkName: "route-weather-puerto-viejo-december" */ './pages/Blog/staticPages/WeatherDecember'),
+  blogSanjoseOptions: () => import(/* webpackChunkName: "route-san-jose-to-puerto-viejo" */ './pages/Blog/staticPages/SanJoseToPuertoViejo'),
   success: () => import(/* webpackChunkName: "route-success" */ './pages/Home/Success.page'),
 };
 

@@ -102,6 +102,7 @@ export const nl: Messages = {
   },
 
   blog: {
+    weatherVariabilityNote: 'Het weer in Puerto Viejo staat bekend als wispelturig — dit zijn ruwe langjarige gemiddelden, en de omstandigheden kunnen meerdere keren op een dag veranderen. Zie ze als richtlijn, niet als garantie.',
     bookYourStay: 'Boek je verblijf',
     indexTitle: 'Reisgidsen Puerto Viejo | Reservas Kalawala',
     indexDescription:

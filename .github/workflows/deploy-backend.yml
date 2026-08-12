@@ -108,7 +108,11 @@ jobs:
       - name: Audit dependencies
         run: |
           set +e
-          AUDIT_OUTPUT=$(npm audit --json 2>&1)
+          # --omit=dev: the Lambda bundle ships production deps only, so the
+          # deploy gate audits those. Dev/test-only advisories (e.g. js-yaml in
+          # the Jest/istanbul toolchain, whose 3.x fix was not backported) are
+          # tracked by Dependabot but must not block a production release.
+          AUDIT_OUTPUT=$(npm audit --omit=dev --json 2>&1)
           AUDIT_EXIT=$?
           set -e
           CRITICAL=$(echo "$AUDIT_OUTPUT" | node -e "
@@ -122,7 +126,7 @@ jobs:
             console.log(v.high || 0);
           " 2>/dev/null || echo "0")
           echo "Critical: $CRITICAL  High: $HIGH"
-          npm audit --audit-level=high 2>&1 || true
+          npm audit --omit=dev --audit-level=high 2>&1 || true
           if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
             echo "::error::Critical or high vulnerabilities found in booking-api dependencies"
             exit 1

@@ -272,11 +272,17 @@ export async function handleCapturePayPalOrder(
   });
 
   let confirmedSession: BookingSessionRecord;
+  // Tracks whether *this* request is the one that made the transition, as
+  // opposed to discovering it already happened (see the catch branch below).
+  // Only the transitioning request should send the confirmation email — the
+  // webhook path may equally have won that race, and it already sends its own.
+  let justConfirmed = false;
   try {
     confirmedSession = await sessions.markBookingConfirmed({
       bookingSessionId: session.id,
       confirmedAt: capturedAt,
     });
+    justConfirmed = true;
   } catch (error) {
     // A concurrent webhook or the reconciliation sweep may have confirmed this
     // session first; markBookingConfirmed's CAS then matches 0 rows and throws.
@@ -356,6 +362,23 @@ export async function handleCapturePayPalOrder(
         error: err instanceof Error ? err.message : String(err),
       });
     });
+  }
+
+  // Send booking_confirmed email — non-fatal; must not affect the guest's
+  // response. Only fires for the request that actually made the transition
+  // (see `justConfirmed` above); the webhook path sends its own on the rare
+  // race where it wins instead (paypalWebhooks.ts's early-return on an
+  // already-`booking_confirmed` session prevents a double-send there too).
+  if (justConfirmed) {
+    try {
+      const emailClient = createEmailClient(config.email, request.observability.logger);
+      await emailClient.sendBookingConfirmed(confirmedSession, property.name, captureResult.captureId);
+    } catch (emailError) {
+      request.observability.logger.error("booking_confirmed_email_failed", {
+        bookingSessionId: session.id,
+        error: emailError instanceof Error ? emailError.message : String(emailError),
+      });
+    }
   }
 
   const updatedPayment = await payments.getByBookingSessionId(session.id);

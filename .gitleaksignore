@@ -1,0 +1,27 @@
+# Known false positives from gitleaks' generic-api-key entropy heuristic.
+# Every entry below is a test fixture, example-env placeholder, or a code
+# identifier/property-name match — not a real credential. Verified by hand
+# against the source at each fingerprint's commit before being added here.
+#
+# These only surface when gitleaks scans full history (workflow_dispatch
+# manual redeploys in main.yml); normal push-triggered deploys only scan new
+# commits and never hit them. Regenerate this list with `gitleaks detect
+# --report-format json` if new false positives show up in a full-history scan.
+
+57788468b87f7fb086b9a0a70421be857bc0aa43:booking-api/src/secrets.test.ts:generic-api-key:17
+57788468b87f7fb086b9a0a70421be857bc0aa43:booking-api/src/db.test.ts:generic-api-key:29
+febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:src/components/PortalGuard/__tests__/PortalGuard.test.tsx:generic-api-key:50
+febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:booking-api/src/bookingSessions.ts:generic-api-key:993
+febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:src/services/__tests__/PortalSession.service.test.ts:generic-api-key:30
+febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:src/services/__tests__/PortalSession.service.test.ts:generic-api-key:36
+febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:src/services/__tests__/PortalSession.service.test.ts:generic-api-key:45
+a5db91ddfe91e51a615c3835396230b0e02a6a77:booking-api/src/paypalOrders.test.ts:generic-api-key:227
+cb27b2794533411b2d6bd9506d90edbcc133fad2:booking-api/src/db.test.ts:generic-api-key:27
+1928d2dbe1a1d9a434a459e3935a042bcf7c7d28:booking-api/src/happyPath.test.ts:generic-api-key:235
+1928d2dbe1a1d9a434a459e3935a042bcf7c7d28:booking-api/src/happyPath.test.ts:generic-api-key:299
+febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:booking-api/src/knownGaps.test.ts:generic-api-key:175
+febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:booking-api/src/knownGaps.test.ts:generic-api-key:200
+febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:booking-api/src/knownGaps.test.ts:generic-api-key:226
+febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:booking-api/src/knownGaps.test.ts:generic-api-key:253
+febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:booking-api/.env.local.example:generic-api-key:45
+f5f301f276f5c9f63c01cfde2fdce4f18cf8450b:booking-api/src/secrets.test.ts:generic-api-key:12

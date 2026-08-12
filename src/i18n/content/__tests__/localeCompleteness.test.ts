@@ -49,6 +49,7 @@ import {
   sanJoseOptionsContent,
   gandocaRefugeContent,
   beachesContent,
+  thingsToDoContent,
 } from '../blog';
 import { PROPERTY_MARKETING_CONFIG, RECOMMENDATION_REASONS } from '../../../utils/constants';
 
@@ -86,6 +87,7 @@ const BLOG_ACCESSORS: Record<string, (locale: Locale) => unknown> = {
   sanJoseOptions: sanJoseOptionsContent,
   gandocaRefuge: gandocaRefugeContent,
   beaches: beachesContent,
+  thingsToDo: thingsToDoContent,
 };
 
 describe('Locale completeness — content modules never silently fall back to English', () => {

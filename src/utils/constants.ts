@@ -3122,6 +3122,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
   { key: 'gandocaRefuge', routeKey: 'blogGandocaRefuge' },
   { key: 'beaches', routeKey: 'blogBeaches' },
   { key: 'bocas', routeKey: 'blogBocas' },
+  { key: 'thingsToDo', routeKey: 'blogThingsToDo' },
 ];
 
 /**

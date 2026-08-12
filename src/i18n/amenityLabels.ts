@@ -18,15 +18,6 @@
  * fall back to the unsuffixed, English houseDataList entry).
  */
 export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 'pt' | 'he' | 'hi' | 'nl', string>>> = {
-  'Private Pool, Exclusive for guests of this villa': {
-    de: 'Privater Pool, exklusiv für Gäste dieser Villa',
-    fr: 'Piscine privée, exclusive aux hôtes de cette villa',
-    it: 'Piscina privata, esclusiva per gli ospiti di questa villa',
-    pt: 'Piscina privada, exclusiva para os hóspedes desta vivenda',
-    he: 'בריכה פרטית, בלעדית לאורחי הווילה',
-    hi: 'निजी स्विमिंग पूल, इस विला के मेहमानों के लिए विशेष',
-    nl: 'Privézwembad, exclusief voor gasten van deze villa',
-  },
   'Private Equipped Bathroom': {
     de: 'Privates ausgestattetes Badezimmer',
     fr: 'Salle de bain privée équipée',
@@ -98,24 +89,6 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     he: 'ידידותי לחיות מחמד',
     hi: 'पालतू-अनुकूल',
     nl: 'Huisdiervriendelijk',
-  },
-  'Private Outside Parking': {
-    de: 'Privater Außenparkplatz',
-    fr: 'Parking privé extérieur',
-    it: 'Parcheggio privato esterno',
-    pt: 'Estacionamento privado exterior',
-    he: 'חניה פרטית בחוץ',
-    hi: 'निजी बाहरी पार्किंग',
-    nl: 'Eigen parkeerplaats buiten',
-  },
-  '2 Private Equipped Bathroom': {
-    de: '2 private ausgestattete Badezimmer',
-    fr: '2 salles de bain privées équipées',
-    it: '2 bagni privati attrezzati',
-    pt: '2 Casas de banho privativas equipadas',
-    he: '2 חדרי אמבטיה פרטיים ומאובזרים',
-    hi: '2 निजी सुसज्जित बाथरूम',
-    nl: '2 eigen ingerichte badkamers',
   },
   'Bedrooms with A/C': {
     de: 'Schlafzimmer mit Klimaanlage',

@@ -85,7 +85,7 @@ export const nl: Messages = {
   },
 
   price: {
-    tooltip: 'Laagste beschikbare tarief deze maand. Tarieven variëren per seizoen en per gekozen data.',
+    tooltip: 'Laagste beschikbare tarief in de komende 30 dagen. Tarieven variëren per seizoen en per gekozen data.',
     fromPerNight: (price: string) => `Vanaf ${price} per nacht`,
     discountLead: 'Kies het',
     discountBold: 'niet-restitueerbare tarief',

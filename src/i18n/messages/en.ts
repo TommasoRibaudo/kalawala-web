@@ -104,7 +104,7 @@ export const en = {
   },
 
   price: {
-    tooltip: 'Lowest available rate this month. Rates vary by season and by the dates you choose.',
+    tooltip: 'Lowest available rate over the next 30 days. Rates vary by season and by the dates you choose.',
     fromPerNight: (price: string) => `From ${price} per night`,
     discountLead: 'Choose the',
     discountBold: 'non-refundable rate',

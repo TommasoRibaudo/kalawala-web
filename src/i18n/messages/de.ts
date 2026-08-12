@@ -83,7 +83,7 @@ export const de: Messages = {
   },
 
   price: {
-    tooltip: 'Niedrigster verfügbarer Preis in diesem Monat. Die Preise variieren je nach Saison und den gewählten Daten.',
+    tooltip: 'Niedrigster verfügbarer Preis in den nächsten 30 Tagen. Die Preise variieren je nach Saison und den gewählten Daten.',
     fromPerNight: (price: string) => `Ab ${price} pro Nacht`,
     discountLead: 'Wählen Sie die',
     discountBold: 'nicht erstattungsfähige Rate',

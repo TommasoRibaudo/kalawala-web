@@ -158,13 +158,16 @@ describe('CalendarWithPriceDots', () => {
     mockFetchByMonth();
 
     render(<CalendarWithPriceDots apartmentSlug="Geco" language="en" />);
-    await screen.findByRole('img', { name: /June 1,/ });
+    // The fetch trigger is debounced, so the placeholder ("Unavailable") label
+    // renders before the real price data does — wait for the priced label to
+    // be sure the June request actually landed before navigating away.
+    await screen.findByRole('img', { name: /June 1, \$90\.00, low price, 2-night minimum/ });
 
     fireEvent.click(screen.getByRole('button', { name: 'Next month' }));
     await screen.findByRole('img', { name: /July 1, \$150\.00, average price/ });
 
     fireEvent.click(screen.getByRole('button', { name: 'Previous month' }));
-    await screen.findByRole('img', { name: /June 1,/ });
+    await screen.findByRole('img', { name: /June 1, \$90\.00, low price, 2-night minimum/ });
 
     const fetchedUrls = (global.fetch as jest.Mock).mock.calls.map(([url]) => url);
     expect(fetchedUrls).toEqual([
@@ -315,7 +318,9 @@ describe('CalendarWithPriceDots', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getAllByRole('img', { name: /June 1,/ })).toHaveLength(2);
+      expect(
+        screen.getAllByRole('img', { name: /June 1, \$90\.00, low price, 2-night minimum/ })
+      ).toHaveLength(2);
     });
 
     expect((global.fetch as jest.Mock).mock.calls).toHaveLength(1);

@@ -2,15 +2,20 @@
  * Cache adapter factory for the Kalawala booking API.
  *
  * Reads the CACHE_BACKEND environment variable to determine which backend to
- * use.  When running in staging (ElastiCache disabled) the Lambda environment
- * sets CACHE_BACKEND=memory; production sets CACHE_BACKEND=redis.
+ * use. `dynamodb` is the real shared-cache backend — a DynamoDB table visible
+ * to every concurrently warm Lambda execution environment, not just the one
+ * handling the current request (see dynamoCacheAdapter.ts). `redis` predates
+ * that and is a stub that logs a warning and falls back to memory; it is kept
+ * only so an old CACHE_BACKEND=redis env var doesn't hard-fail. `memory`
+ * (the default) is a single execution environment's in-Lambda cache only.
  *
- * The module-level singleton for the memory backend survives Lambda warm
- * starts, so cached entries are reused across invocations of the same
- * execution environment (Requirement 4.5).
+ * The module-level singletons survive Lambda warm starts, so cached entries
+ * (and, for `dynamodb`, the underlying client connection) are reused across
+ * invocations of the same execution environment (Requirement 4.5).
  */
 
 import { CacheAdapter, MemoryCache, createMemoryCache } from "./memoryCache";
+import { DynamoCacheAdapter } from "./dynamoCacheAdapter";
 
 // ---------------------------------------------------------------------------
 // TTL scopes (seconds)
@@ -38,10 +43,13 @@ export const TTL_SCOPES: Record<string, number> = {
  * Defaults to `'memory'` when the variable is absent or set to an
  * unrecognised value.
  */
-export function getCacheBackend(): "redis" | "memory" {
+export function getCacheBackend(): "redis" | "memory" | "dynamodb" {
   const raw = process.env.CACHE_BACKEND;
   if (raw === "redis") {
     return "redis";
+  }
+  if (raw === "dynamodb") {
+    return "dynamodb";
   }
   return "memory";
 }
@@ -135,6 +143,13 @@ class RedisAdapter implements CacheAdapter {
  */
 let memoryCacheSingleton: MemoryCache | null = null;
 
+/**
+ * Singleton DynamoCacheAdapter instance (and thus its underlying DynamoDB
+ * client) — same warm-start-persistence reasoning as memoryCacheSingleton.
+ */
+let dynamoCacheSingleton: DynamoCacheAdapter | null = null;
+let warnedDynamoMisconfigured = false;
+
 // ---------------------------------------------------------------------------
 // Factory
 // ---------------------------------------------------------------------------
@@ -142,10 +157,11 @@ let memoryCacheSingleton: MemoryCache | null = null;
 /**
  * Returns a `CacheAdapter` for the requested backend.
  *
- * @param backend     - `'memory'` for the in-Lambda LRU cache or `'redis'`
- *                      for the Redis adapter.
+ * @param backend     - `'memory'` for the in-Lambda LRU cache, `'dynamodb'`
+ *                      for the shared DynamoDB-backed cache, or `'redis'` for
+ *                      the (stubbed, falls back to memory) Redis adapter.
  * @param redisConfig - Optional Redis connection overrides (host, port,
- *                      secretName).  Ignored when `backend = 'memory'`.
+ *                      secretName).  Ignored except when `backend = 'redis'`.
  *
  * @example
  * ```ts
@@ -153,11 +169,11 @@ let memoryCacheSingleton: MemoryCache | null = null;
  * const cache = createCacheAdapter(getCacheBackend());
  *
  * // Explicit backend selection:
- * const cache = createCacheAdapter('memory');
+ * const cache = createCacheAdapter('dynamodb');
  * ```
  */
 export function createCacheAdapter(
-  backend: "redis" | "memory",
+  backend: "redis" | "memory" | "dynamodb",
   redisConfig?: RedisConfig
 ): CacheAdapter {
   if (backend === "memory") {
@@ -165,6 +181,27 @@ export function createCacheAdapter(
       memoryCacheSingleton = createMemoryCache();
     }
     return memoryCacheSingleton;
+  }
+
+  if (backend === "dynamodb") {
+    const tableName = process.env.CACHE_TABLE_NAME;
+    if (!tableName) {
+      if (!warnedDynamoMisconfigured) {
+        console.warn(
+          "[DynamoCacheAdapter] CACHE_TABLE_NAME is not configured — falling back to in-memory cache."
+        );
+        warnedDynamoMisconfigured = true;
+      }
+      if (!memoryCacheSingleton) {
+        memoryCacheSingleton = createMemoryCache();
+      }
+      return memoryCacheSingleton;
+    }
+
+    if (!dynamoCacheSingleton) {
+      dynamoCacheSingleton = new DynamoCacheAdapter({ tableName });
+    }
+    return dynamoCacheSingleton;
   }
 
   // Redis backend — a new adapter instance per call is fine because the

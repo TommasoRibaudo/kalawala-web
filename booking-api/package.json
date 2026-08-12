@@ -19,6 +19,9 @@
     "testEnvironment": "node",
     "testMatch": [
       "<rootDir>/src/**/*.test.ts"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/testSetup.ts"
     ]
   },
   "engines": {
@@ -34,8 +37,10 @@
     "ts-jest": "^29.4.9"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1039.0",
     "@aws-sdk/client-s3": "^3.1039.0",
     "@aws-sdk/client-secrets-manager": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.1039.0",
     "@aws-sdk/s3-request-presigner": "^3.1039.0",
     "pg": "^8.20.0"
   },

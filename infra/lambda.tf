@@ -182,14 +182,10 @@ locals {
     # so this reproduces the same invoke_url without the cycle.
     DEPOSIT_STAFF_CONFIRM_BASE_URL = "https://${aws_api_gateway_rest_api.main.id}.execute-api.${data.aws_region.current.name}.amazonaws.com/${var.environment}"
 
-    # Shared TTL cache — a DynamoDB table (dynamodb.tf), visible to every
-    # concurrently warm Lambda instance, not just the one in-Lambda memory
-    # cache (src/memoryCache.ts) that used to serve each request. There is no
-    # Redis client in booking-api's dependencies — cacheFactory.ts's
-    # RedisAdapter is a stub — so "redis" is not a usable value here. See
-    # cacheFactory.getCacheBackend().
-    CACHE_BACKEND    = "dynamodb"
-    CACHE_TABLE_NAME = aws_dynamodb_table.booking_cache.name
+    # In-Lambda TTL cache (src/memoryCache.ts). There is no Redis client in
+    # booking-api's dependencies — src/cacheFactory.ts:71 RedisAdapter is a
+    # stub — so "redis" is not a usable value here. See cacheFactory.getCacheBackend().
+    CACHE_BACKEND = "memory"
 
     SES_CONFIG_SET    = aws_ses_configuration_set.booking.name
     SES_FROM_ADDRESS  = local.ses_from_email

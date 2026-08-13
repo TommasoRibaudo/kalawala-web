@@ -16,25 +16,6 @@ const DEFAULT_SMOOBU_CONFIG: SmoobuClientConfig = {
 
 const RETRYABLE_STATUS_CODES = new Set([408, 429, 500, 502, 503, 504]);
 
-/**
- * When Smoobu 429s, this is the one thing that's supposed to stop the next
- * request from immediately hitting it again. It has to live at module scope,
- * not on a SmoobuClient instance: every route handler calls
- * `createSmoobuClient()` fresh per invocation (see below), so an instance
- * field would be discarded the moment the request that observed the 429
- * finished — the very next request, even on the same warm Lambda, would have
- * no idea a rate limit window was active. Module scope survives across
- * invocations for the life of the execution environment, which is what
- * actually lets concurrent/rapid requests back off together instead of each
- * independently re-triggering the limit.
- */
-let sharedRateLimitBlockedUntilMs = 0;
-
-/** Test seam — clears the shared rate-limit window between test cases. */
-export function resetSmoobuRateLimitState(): void {
-  sharedRateLimitBlockedUntilMs = 0;
-}
-
 type FetchFn = (input: string | URL, init?: RequestInit) => Promise<Response>;
 type SleepFn = (ms: number) => Promise<void>;
 
@@ -102,6 +83,7 @@ export class SmoobuClient {
   private readonly sleep: SleepFn;
   private readonly now: () => number;
   private readonly nonceFn: () => string;
+  private rateLimitBlockedUntilMs = 0;
 
   constructor(options: SmoobuClientOptions) {
     const apiKey = options.apiKey.trim();
@@ -375,14 +357,14 @@ export class SmoobuClient {
       return;
     }
 
-    sharedRateLimitBlockedUntilMs = Math.max(
-      sharedRateLimitBlockedUntilMs,
+    this.rateLimitBlockedUntilMs = Math.max(
+      this.rateLimitBlockedUntilMs,
       this.now() + rateLimit.retryAfterSeconds * 1_000
     );
   }
 
   private async waitForKnownRateLimitWindow(): Promise<void> {
-    const delayMs = sharedRateLimitBlockedUntilMs - this.now();
+    const delayMs = this.rateLimitBlockedUntilMs - this.now();
     if (delayMs <= 0) {
       return;
     }

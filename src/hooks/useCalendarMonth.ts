@@ -9,12 +9,6 @@ interface UseCalendarMonthResult {
   hasError: boolean;
 }
 
-// A guest flipping quickly through months (or the anchor/anchorNext pair
-// re-firing as a check-in candidate changes) would otherwise send one real
-// request per month they passed through. Waiting for a short pause means
-// only the month they actually land on gets fetched.
-const FETCH_DEBOUNCE_MS = 200;
-
 /**
  * Loads one month of calendar rates through the shared cache.
  *
@@ -61,28 +55,25 @@ export function useCalendarMonth(
     setLoadingKey(key);
     setErrorKey(null);
 
-    const timer = setTimeout(() => {
-      loadCalendarMonth(apartmentSlug, month, language)
-        .then(() => {
-          if (!isCancelled) {
-            markLoaded();
-          }
-        })
-        .catch(() => {
-          if (!isCancelled) {
-            setErrorKey(key);
-          }
-        })
-        .finally(() => {
-          if (!isCancelled) {
-            setLoadingKey((current) => (current === key ? null : current));
-          }
-        });
-    }, FETCH_DEBOUNCE_MS);
+    loadCalendarMonth(apartmentSlug, month, language)
+      .then(() => {
+        if (!isCancelled) {
+          markLoaded();
+        }
+      })
+      .catch(() => {
+        if (!isCancelled) {
+          setErrorKey(key);
+        }
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setLoadingKey((current) => (current === key ? null : current));
+        }
+      });
 
     return () => {
       isCancelled = true;
-      clearTimeout(timer);
     };
   }, [apartmentSlug, month, language, enabled, key]);
 

@@ -340,14 +340,16 @@ const BookingPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [arrivalDate, departureDate, guests, language, strings, executeRecaptcha]);
 
-  // Auto-search when arriving from BookingSearchWidget with autoSearch=true
+  // Auto-search when arriving from BookingSearchWidget with autoSearch=true, or
+  // when a guest opens a shared link that already carries both dates.
   const autoSearchFiredRef = React.useRef(false);
   React.useEffect(() => {
     if (autoSearchFiredRef.current) return;
     // A resumed deposit already owns the wizard; a stale autoSearch in the URL
     // (e.g. from the back button) must not overwrite it with a fresh search.
     if (resumedDeposit) return;
-    if (searchParams.get('autoSearch') !== 'true') return;
+    const hasSharedDates = Boolean(searchParams.get('arrivalDate') && searchParams.get('departureDate'));
+    if (searchParams.get('autoSearch') !== 'true' && !hasSharedDates) return;
     if (!arrivalDate || !departureDate) return;
     if (isPayPalReturnRoute || isConfirmationRoute) return;
     autoSearchFiredRef.current = true;

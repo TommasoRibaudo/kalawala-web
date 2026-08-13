@@ -342,6 +342,25 @@ test('language switcher toggles booking routes and preserves search query state'
   expect(activeSlide().getByLabelText('Huéspedes')).toHaveValue(4);
 });
 
+test('auto-searches when a shared link already carries arrival and departure dates', async () => {
+  mockJsonResponse({ ...spanishSearchResult, language: 'en' });
+
+  renderBookingPage('/en/book?arrivalDate=2099-07-10&departureDate=2099-07-14');
+
+  await screen.findByText('Casa Geco');
+
+  const [, request] = (global.fetch as jest.Mock).mock.calls[0];
+  expect(JSON.parse(request.body)).toMatchObject({ arrivalDate: '2099-07-10', departureDate: '2099-07-14' });
+});
+
+test('does not auto-search when a shared link is missing one of the dates', () => {
+  global.fetch = jest.fn() as typeof fetch;
+
+  renderBookingPage('/en/book?arrivalDate=2099-07-10');
+
+  expect(global.fetch).not.toHaveBeenCalled();
+});
+
 test('builds Spanish listing links from the property slug and opens them in a new tab', async () => {
   mockJsonResponse({
     bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',

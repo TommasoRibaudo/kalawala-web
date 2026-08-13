@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import '../../Listing/Listing.style.scss';
 
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
@@ -14,6 +15,8 @@ import { cahuitaAreaRecommendations } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
+import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { tenHoursInPuertoContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE =
@@ -83,6 +86,13 @@ const TenHoursInPuerto = () => {
                                 <br />
                             </React.Fragment>
                         ))}
+                        <p>
+                            <Link to={pathForKey('blogBushours', locale)}><strong>{internalLinkLabel('blogBushours', locale)}</strong></Link>
+                        </p>
+                        <p>
+                            <Link to={pathForKey('blogCahuitapark', locale)}><strong>{internalLinkLabel('blogCahuitapark', locale)}</strong></Link>
+                        </p>
+                        <br />
 
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation

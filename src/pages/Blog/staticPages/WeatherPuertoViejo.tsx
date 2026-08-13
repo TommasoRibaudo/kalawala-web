@@ -14,6 +14,7 @@ import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { pathForKey, RouteKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { weatherHubContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619";
@@ -153,6 +154,12 @@ const WeatherPuertoViejo = () => {
                         <ul>
                             {content.rainyListItems.map((item, i) => <li key={i}>{item}</li>)}
                         </ul>
+                        <p>
+                            <Link to={pathForKey('blogIndigenous', locale)}><strong>{internalLinkLabel('blogIndigenous', locale)}</strong></Link>
+                        </p>
+                        <p>
+                            <Link to={pathForKey('blogCahuitapark', locale)}><strong>{internalLinkLabel('blogCahuitapark', locale)}</strong></Link>
+                        </p>
                         <br />
 
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}

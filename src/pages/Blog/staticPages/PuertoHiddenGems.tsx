@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import '../../Listing/Listing.style.scss';
 
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
@@ -13,6 +14,8 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
+import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { puertoHiddenGemsContent, HiddenGemSection } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205";
@@ -114,6 +117,13 @@ const PuertoHiddenGems = () => {
                         {content.sections.slice(0, 6).map((section, i) => (
                             <Section key={i} section={section} />
                         ))}
+                        <p>
+                            <Link to={pathForKey('blogBeaches', locale)}><strong>{internalLinkLabel('blogBeaches', locale)}</strong></Link>
+                        </p>
+                        <p>
+                            <Link to={pathForKey('blogGandocaRefuge', locale)}><strong>{internalLinkLabel('blogGandocaRefuge', locale)}</strong></Link>
+                        </p>
+                        <br />
 
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                         <div style={{ maxWidth: 1000 }}>

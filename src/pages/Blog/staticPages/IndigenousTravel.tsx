@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import '../../Listing/Listing.style.scss';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
@@ -12,6 +13,8 @@ import { generalPuertoViejoRecommendations } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
+import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { indigenousTravelContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Palenque_bribri._Costa_Rica.jpg/960px-Palenque_bribri._Costa_Rica.jpg";
@@ -81,6 +84,10 @@ const IndigenousTravel = () => {
                         <br />
 
                         <p>{content.introParagraph}</p>
+                        <p>
+                            <Link to={pathForKey('blogBeaches', locale)}><strong>{internalLinkLabel('blogBeaches', locale)}</strong></Link>
+                        </p>
+                        <br />
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
                             title={content.stayRecommendationTitle}

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import '../../Listing/Listing.style.scss';
 
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
@@ -14,6 +15,8 @@ import { generalPuertoViejoRecommendations } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
+import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { puertoViejoByPlaneContent } from "../../../i18n/content/blog";
 
 // The pre-merge English page pointed this at a placeholder id
@@ -98,6 +101,10 @@ const PuertoViejoByPlane = () => {
                                 <br />
                             </React.Fragment>
                         ))}
+                        <p>
+                            <Link to={pathForKey('blogBushours', locale)}><strong>{internalLinkLabel('blogBushours', locale)}</strong></Link>
+                        </p>
+                        <br />
 
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                         <div style={{ maxWidth: 1000 }}>
@@ -113,6 +120,10 @@ const PuertoViejoByPlane = () => {
                                 <br />
                             </React.Fragment>
                         ))}
+                        <p>
+                            <Link to={pathForKey('blogSanjoseOptions', locale)}><strong>{internalLinkLabel('blogSanjoseOptions', locale)}</strong></Link>
+                        </p>
+                        <br />
                     </div>
 
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import '../Listing.style.scss'
 import OtherListings from "../components/OtherListings/OtherListings.component";
 import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
@@ -20,6 +21,8 @@ import GuestReviews from "../../../components/GuestReviews/GuestReviews.componen
 import { useLocale, useMessages } from "../../../i18n";
 import { localeSuffix } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
+import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { listingContent } from "../../../i18n/content/listings";
 import { vacationRentalJsonLd } from "../../../i18n/structuredData";
 import { houseDataByLangCode } from "../../../utils/constants";
@@ -117,6 +120,12 @@ const ListingRana = () => {
                             const withBreak = typeof paragraph === 'string';
                             return <p key={i}>{text}{withBreak && <br />}</p>;
                         })}
+                        <p>
+                            <Link to={pathForKey('blogCahuitapark', locale)}><strong>{internalLinkLabel('blogCahuitapark', locale)}</strong></Link>
+                        </p>
+                        <p>
+                            <Link to={pathForKey('blogBushours', locale)}><strong>{internalLinkLabel('blogBushours', locale)}</strong></Link>
+                        </p>
                     </div>
 
                     <GuestReviews propertyKey="RANA" locale={locale} />

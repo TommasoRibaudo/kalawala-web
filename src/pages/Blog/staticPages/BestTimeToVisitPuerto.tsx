@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import '../../Listing/Listing.style.scss';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
@@ -12,6 +13,8 @@ import { generalPuertoViejoRecommendations } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
+import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { bestTimeToVisitContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg/1280px-Lim%C3%B3n_Province%2C_Puerto_Viejo_de_Talamanca%2C_Costa_Rica_-_panoramio_%281%29.jpg?20170313071619";
@@ -112,6 +115,9 @@ const BestTimeToVisitPuerto = () => {
                         <ul>
                             {content.bestTimeListItems.map((item, i) => <li key={i}>{item}</li>)}
                         </ul>
+                        <p>
+                            <Link to={pathForKey('blogWeather', locale)}><strong>{internalLinkLabel('blogWeather', locale)}</strong></Link>
+                        </p>
 
                         <br />
 

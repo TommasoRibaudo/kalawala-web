@@ -14,6 +14,7 @@ import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { bocasDelToroContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg";
@@ -151,6 +152,9 @@ const BocasDelToro = () => {
 
                         <h2>{content.shuttleHeading}</h2>
                         {content.shuttleParagraphs.map((p, i) => <p key={i}>{p}</p>)}
+                        <p>
+                            <Link to={pathForKey('blogCahuitapark', locale)}><strong>{internalLinkLabel('blogCahuitapark', locale)}</strong></Link>
+                        </p>
                         <br />
                         <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ddd' }}>

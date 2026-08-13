@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import '../../Listing/Listing.style.scss';
 
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
@@ -14,6 +15,8 @@ import { generalPuertoViejoRecommendations } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
+import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { gettingToGandocaContent } from "../../../i18n/content/blog";
 
 // Matches the real "gettingtogandoca" thumbnail in assets/blogs/blogs.ts and
@@ -126,6 +129,10 @@ const GettingToGandoca = () => {
                                 </tbody>
                             </table>
                         </div>
+                        <p>
+                            <Link to={pathForKey('blogBushours', locale)}><strong>{internalLinkLabel('blogBushours', locale)}</strong></Link>
+                        </p>
+                        <br />
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                         <div style={{ maxWidth: 1000 }}>
                             <WhyStayWithUs
@@ -143,6 +150,10 @@ const GettingToGandoca = () => {
                         <br />
                         <h3><strong>{content.conclusionHeading}</strong></h3>
                         <p>{content.conclusionParagraph1}</p>
+                        <br />
+                        <p>
+                            <Link to={pathForKey('blogGandocaRefuge', locale)}><strong>{internalLinkLabel('blogGandocaRefuge', locale)}</strong></Link>
+                        </p>
                         <br />
                         <p>{content.conclusionParagraph2}</p>
                     </div>

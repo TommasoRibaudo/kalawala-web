@@ -15,6 +15,7 @@ import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { pathForKey, RouteKey } from "../../../routes.config";
 import { monthlyWeatherContent, MonthKey } from "../../../i18n/content/blog";
+import { internalLinkLabel, RAINY_DAY_LINK_TARGET } from "../../../i18n/content/internalLinks";
 
 interface IMonthlyWeatherArticle {
     /** Which month's content to render. */
@@ -37,6 +38,7 @@ const MonthlyWeatherArticle: FC<IMonthlyWeatherArticle> = ({ month, routeKey, sl
     const locale = useLocale();
     const m = useMessages();
     const content = monthlyWeatherContent(month, locale);
+    const rainyDayLinkTarget = RAINY_DAY_LINK_TARGET[month];
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -128,6 +130,9 @@ const MonthlyWeatherArticle: FC<IMonthlyWeatherArticle> = ({ month, routeKey, sl
                         <ul>
                             {content.rainyDayItems.map((item, i) => <li key={i}>{item}</li>)}
                         </ul>
+                        <p>
+                            <Link to={pathForKey(rainyDayLinkTarget, locale)}><strong>{internalLinkLabel(rainyDayLinkTarget, locale)}</strong></Link>
+                        </p>
                         <br />
 
                         <h2>{content.crowdsHeading}</h2>

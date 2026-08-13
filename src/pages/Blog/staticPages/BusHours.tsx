@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import '../../Listing/Listing.style.scss';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
@@ -12,6 +13,8 @@ import { generalPuertoViejoRecommendations } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
+import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { busHoursContent, BusHoursContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg";
@@ -145,6 +148,9 @@ const BusHours = () => {
                         <ul>
                             {content.destinations.map((d) => <li key={d}><strong>{d.split(' - ')[0]}</strong> - {d.split(' - ')[1]}</li>)}
                         </ul>
+                        <p>
+                            <Link to={pathForKey('blogCahuitapark', locale)}><strong>{internalLinkLabel('blogCahuitapark', locale)}</strong></Link>
+                        </p>
                         <br />
                         <h3><strong>{content.schedulesHeading}</strong></h3>
                         <br />
@@ -175,6 +181,9 @@ const BusHours = () => {
                             ['Puerto Viejo → Manzanillo', ['7:40 AM', '8:10 AM', '9:40 AM', '11:40 AM', '1:40 PM', '4:40 PM', '6:40 PM']],
                             ['Manzanillo → Puerto Viejo', ['5:00 AM', '6:30 AM', '8:00 AM', '10:00 AM', '10:30 AM', '12:30 PM', '1:30 PM', '3:30 PM', '4:00 PM', '5:00 PM']],
                         ]} />
+                        <p>
+                            <Link to={pathForKey('blogGandocaRefuge', locale)}><strong>{internalLinkLabel('blogGandocaRefuge', locale)}</strong></Link>
+                        </p>
                         <br />
                         <h4><strong>{content.sixaolaHeading}</strong></h4>
                         <p>{content.sixaolaIntro}</p>
@@ -187,6 +196,10 @@ const BusHours = () => {
                                 ['6:30 AM', '7:30 AM', '8:30 AM', '9:30 AM', '10:30 AM', '11:30 AM', '12:30 PM', '1:30 PM', '2:30 PM', '3:30 PM', '4:30 PM', '5:30 PM', '6:30 PM', '7:30 PM', '8:15 PM'],
                                 ['6:30 AM', '8:30 AM', '10:30 AM', '12:30 PM', '2:30 PM', '4:30 PM', '6:30 PM', '8:15 PM']],
                         ]} />
+                        <p>
+                            <Link to={pathForKey('blogBocas', locale)}><strong>{internalLinkLabel('blogBocas', locale)}</strong></Link>
+                        </p>
+                        <br />
                     {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                     <div style={{ maxWidth: 1000 }}>
                         <WhyStayWithUs

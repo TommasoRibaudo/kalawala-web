@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { cdnImage, cdnSrcSet } from '../../../utils/imageCdn';
 import { Col, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import '../../Listing/Listing.style.scss';
 
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
@@ -14,6 +15,8 @@ import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.compo
 import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
+import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { twoDaysInPVContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE =
@@ -92,6 +95,10 @@ const TwoDaysInPV = () => {
                                 <br />
                             </React.Fragment>
                         ))}
+                        <p>
+                            <Link to={pathForKey('blogBeaches', locale)}><strong>{internalLinkLabel('blogBeaches', locale)}</strong></Link>
+                        </p>
+                        <br />
 
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}
                         <div style={{ maxWidth: 1000 }}>

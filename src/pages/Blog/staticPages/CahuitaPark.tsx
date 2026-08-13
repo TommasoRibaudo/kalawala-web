@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import '../../Listing/Listing.style.scss';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
@@ -12,6 +13,8 @@ import { generalPuertoViejoRecommendations } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
+import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { cahuitaParkContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Cahuita_national_park%2C_Costa_Rica.jpg/1280px-Cahuita_national_park%2C_Costa_Rica.jpg?20090819063715";
@@ -75,6 +78,9 @@ const CahuitaPark = () => {
                     <div className="description" style={{ maxWidth: 1000, }}>
 
                         {content.introParagraphs.map((p, i) => <p key={i}>{p}</p>)}
+                        <p>
+                            <Link to={pathForKey('blogTenhours', locale)}><strong>{internalLinkLabel('blogTenhours', locale)}</strong></Link>
+                        </p>
 
                         <br />
                         <h3><strong>{content.enterHeading}</strong></h3>

@@ -14,6 +14,7 @@ import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { pathForKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { gandocaRefugeContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg";
@@ -76,6 +77,9 @@ const GandocaManzanilloRefuge = () => {
                         <h2>{content.beachesHeading}</h2>
                         <p>{content.beachesParagraphs[0]}</p>
                         <p>{content.beachesParagraphs[1]}</p>
+                        <p>
+                            <Link to={pathForKey('blogBeaches', locale)}><strong>{internalLinkLabel('blogBeaches', locale)}</strong></Link>
+                        </p>
                         <br />
 
                         <h2>{content.thingsHeading}</h2>

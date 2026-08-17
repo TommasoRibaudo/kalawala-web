@@ -22,11 +22,9 @@ const FeatureHighlights: React.FC<FeatureHighlightsProps> = ({
     return null;
   }
 
-  const features = pickLocalized(config.featureHighlights, locale)
-;
+  const features: string[] = pickLocalized(config.featureHighlights, locale);
 
-  const sectionTitle = getMessages(locale).property.whyGuestsChoose(propertyName)
-;
+  const sectionTitle = getMessages(locale).property.whyGuestsChoose(propertyName);
 
   return (
     <div className="feature-highlights">

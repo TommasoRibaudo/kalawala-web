@@ -44,8 +44,8 @@
   margin-bottom: 20px;
   text-align: center;
   h1 {
-    font-size: 50px;
-    line-height: 1.5;
+    font-size: clamp(1.75rem, 1.1rem + 3vw, 3.125rem);
+    line-height: 1.2;
     text-transform: capitalize;
   }
 }

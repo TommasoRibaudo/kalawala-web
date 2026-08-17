@@ -87,9 +87,12 @@ export const CATEGORY_PROPERTIES: Record<
 > = {
   blogHousesCentro: ['Geco', 'Rana', 'Tucano', 'Pappagallo', 'Delfin'],
   blogHousesPuntaUva: ['Areka', 'Plumeria', 'Giulia', 'VillaMar', 'VillaCoral'],
-  blogFamilyHouses: ['Rana', 'Geco', 'Giulia', 'Delfin'],
-  blogCouplesHouses: ['Tucano', 'Pappagallo', 'VillaMar', 'VillaCoral', 'Areka', 'Plumeria'],
-  blogPetFriendlyHouses: ['Rana', 'Geco'],
+  // Owner correction (2026-08-17): Tucano/Pappagallo are family houses, not
+  // couples — moved from Couples to Families, and both are also pet-friendly
+  // (no fee), though unlike Rana/Geco they don't have a fenced garden.
+  blogFamilyHouses: ['Rana', 'Geco', 'Giulia', 'Delfin', 'Tucano', 'Pappagallo'],
+  blogCouplesHouses: ['VillaMar', 'VillaCoral', 'Areka', 'Plumeria'],
+  blogPetFriendlyHouses: ['Rana', 'Geco', 'Tucano', 'Pappagallo'],
 };
 
 /** All 10 properties, Centro first then Punta Uva/Playa Chiquita — the hub's full grid. */
@@ -118,7 +121,7 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
     tripTypeLinks: [
       { routeKey: 'blogFamilyHouses', title: 'Family Houses', description: 'Spacious homes with room to spread out, including our largest house for big families.' },
       { routeKey: 'blogCouplesHouses', title: 'Couples Retreats', description: 'Private villas with a pool and cozy houses built for two.' },
-      { routeKey: 'blogPetFriendlyHouses', title: 'Pet-Friendly Houses', description: 'Bring your dog — these 2 houses have outdoor space and no pet fee.' },
+      { routeKey: 'blogPetFriendlyHouses', title: 'Pet-Friendly Houses', description: 'Bring your dog — these 4 houses welcome pets with no extra fee.' },
     ],
     allHomesHeading: 'All 10 homes',
     ctaHeading: 'Ready to book?',
@@ -146,7 +149,7 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
     tripTypeLinks: [
       { routeKey: 'blogFamilyHouses', title: 'Casas para Familias', description: 'Casas amplias con espacio de sobra, incluyendo nuestra casa más grande para familias numerosas.' },
       { routeKey: 'blogCouplesHouses', title: 'Casas para Parejas', description: 'Villas privadas con piscina y casas acogedoras pensadas para dos.' },
-      { routeKey: 'blogPetFriendlyHouses', title: 'Casas Pet Friendly', description: 'Trae a tu perro — estas 2 casas tienen espacio exterior y no cobran cargo por mascota.' },
+      { routeKey: 'blogPetFriendlyHouses', title: 'Casas Pet Friendly', description: 'Trae a tu perro — estas 4 casas reciben mascotas sin cargo extra.' },
     ],
     allHomesHeading: 'Las 10 casas',
     ctaHeading: '¿Listo para reservar?',
@@ -174,7 +177,7 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
     tripTypeLinks: [
       { routeKey: 'blogFamilyHouses', title: 'Familienhäuser', description: 'Geräumige Häuser mit viel Platz, darunter unser größtes Haus für große Familien.' },
       { routeKey: 'blogCouplesHouses', title: 'Rückzugsorte für Paare', description: 'Private Villen mit Pool und gemütliche Häuser für zwei.' },
-      { routeKey: 'blogPetFriendlyHouses', title: 'Haustierfreundliche Häuser', description: 'Bring deinen Hund mit — diese 2 Häuser haben Außenbereich und keine Haustiergebühr.' },
+      { routeKey: 'blogPetFriendlyHouses', title: 'Haustierfreundliche Häuser', description: 'Bring deinen Hund mit — diese 4 Häuser heißen Haustiere ohne Extragebühr willkommen.' },
     ],
     allHomesHeading: 'Alle 10 Häuser',
     ctaHeading: 'Bereit zu buchen?',
@@ -202,7 +205,7 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
     tripTypeLinks: [
       { routeKey: 'blogFamilyHouses', title: 'Maisons Familiales', description: 'Des maisons spacieuses avec de la place, dont notre plus grande maison pour les familles nombreuses.' },
       { routeKey: 'blogCouplesHouses', title: 'Refuges pour Couples', description: 'Villas privées avec piscine et maisons chaleureuses pensées pour deux.' },
-      { routeKey: 'blogPetFriendlyHouses', title: 'Maisons Acceptant les Animaux', description: 'Amenez votre chien — ces 2 maisons ont un espace extérieur et aucun supplément animal.' },
+      { routeKey: 'blogPetFriendlyHouses', title: 'Maisons Acceptant les Animaux', description: 'Amenez votre chien — ces 4 maisons accueillent les animaux sans supplément.' },
     ],
     allHomesHeading: 'Les 10 maisons',
     ctaHeading: 'Prêt à réserver ?',
@@ -230,7 +233,7 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
     tripTypeLinks: [
       { routeKey: 'blogFamilyHouses', title: 'Case per Famiglie', description: 'Case spaziose con posto extra, inclusa la nostra casa più grande per famiglie numerose.' },
       { routeKey: 'blogCouplesHouses', title: 'Rifugi per Coppie', description: 'Ville private con piscina e case accoglienti pensate per due.' },
-      { routeKey: 'blogPetFriendlyHouses', title: 'Case Pet Friendly', description: 'Porta il tuo cane — queste 2 case hanno spazio esterno e nessun costo extra per l’animale.' },
+      { routeKey: 'blogPetFriendlyHouses', title: 'Case Pet Friendly', description: 'Porta il tuo cane — queste 4 case accolgono gli animali senza costo extra.' },
     ],
     allHomesHeading: 'Tutte le 10 case',
     ctaHeading: 'Pronto a prenotare?',
@@ -258,7 +261,7 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
     tripTypeLinks: [
       { routeKey: 'blogFamilyHouses', title: 'Casas para Famílias', description: 'Casas espaçosas com bastante espaço, incluindo a nossa maior casa para famílias grandes.' },
       { routeKey: 'blogCouplesHouses', title: 'Refúgios para Casais', description: 'Vilas privativas com piscina e casas aconchegantes pensadas para dois.' },
-      { routeKey: 'blogPetFriendlyHouses', title: 'Casas Pet Friendly', description: 'Traga o seu cão — estas 2 casas têm área externa e nenhuma taxa extra por animal.' },
+      { routeKey: 'blogPetFriendlyHouses', title: 'Casas Pet Friendly', description: 'Traga o seu cão — estas 4 casas recebem animais sem taxa extra.' },
     ],
     allHomesHeading: 'As 10 casas',
     ctaHeading: 'Pronto para reservar?',
@@ -438,10 +441,10 @@ const housesPuntaUva: Partial<Record<Locale, PropertyCategoryContent>> = {
 const familyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   en: {
     seoTitle: 'Family-Friendly Vacation Houses in Puerto Viejo',
-    seoDescription: '4 spacious vacation houses in Puerto Viejo, Costa Rica built for families — including Casa Delfines, our largest house, and 2 pet-friendly options.',
+    seoDescription: '6 vacation houses in Puerto Viejo, Costa Rica built for families — including Casa Delfines, our largest house, and 4 pet-friendly options.',
     heading: 'Family-Friendly Houses in Puerto Viejo',
     introParagraphs: [
-      "These 4 houses have the extra space families ask for most: separate bedrooms and room to spread out, plus — for Casa Rana and Casa Geco — a fenced garden and no pet fee if you're bringing the dog.",
+      'These 6 houses have the extra space families ask for most: separate bedrooms and room to spread out. Four of them — Casa Rana, Casa Geco, Casa Tucano and Casa Pappagallo — also welcome pets with no extra fee, and Rana and Geco each have a small fenced garden.',
       'Casa Delfines is our largest house and the usual pick for bigger families or two families traveling together.',
     ],
     gridHeading: 'Houses that fit families',
@@ -451,10 +454,10 @@ const familyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   es: {
     seoTitle: 'Casas Vacacionales para Familias en Puerto Viejo',
-    seoDescription: '4 casas vacacionales amplias en Puerto Viejo, Costa Rica, pensadas para familias — incluyendo Casa Delfines, nuestra casa más grande, y 2 opciones pet friendly.',
+    seoDescription: '6 casas vacacionales en Puerto Viejo, Costa Rica, pensadas para familias — incluyendo Casa Delfines, nuestra casa más grande, y 4 opciones pet friendly.',
     heading: 'Casas para Familias en Puerto Viejo',
     introParagraphs: [
-      'Estas 4 casas tienen el espacio extra que más piden las familias: habitaciones separadas y lugar de sobra, además de que Casa Rana y Casa Geco tienen jardín cercado y no cobran cargo por mascota si viajas con tu perro.',
+      'Estas 6 casas tienen el espacio extra que más piden las familias: habitaciones separadas y lugar de sobra. Cuatro de ellas — Casa Rana, Casa Geco, Casa Tucano y Casa Pappagallo — también reciben mascotas sin cargo extra, y Rana y Geco además tienen jardín cercado.',
       'Casa Delfines es nuestra casa más grande, la opción habitual para familias numerosas o dos familias viajando juntas.',
     ],
     gridHeading: 'Casas ideales para familias',
@@ -464,10 +467,10 @@ const familyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   de: {
     seoTitle: 'Familienfreundliche Ferienhäuser in Puerto Viejo',
-    seoDescription: '4 geräumige Ferienhäuser in Puerto Viejo, Costa Rica für Familien — darunter Casa Delfines, unser größtes Haus, und 2 haustierfreundliche Optionen.',
+    seoDescription: '6 Ferienhäuser in Puerto Viejo, Costa Rica für Familien — darunter Casa Delfines, unser größtes Haus, und 4 haustierfreundliche Optionen.',
     heading: 'Familienfreundliche Häuser in Puerto Viejo',
     introParagraphs: [
-      'Diese 4 Häuser bieten den zusätzlichen Platz, den Familien am häufigsten wünschen: getrennte Schlafzimmer und viel Raum, plus bei Casa Rana und Casa Geco einen umzäunten Garten und keine Haustiergebühr, wenn der Hund mitkommt.',
+      'Diese 6 Häuser bieten den zusätzlichen Platz, den Familien am häufigsten wünschen: getrennte Schlafzimmer und viel Raum. Vier davon — Casa Rana, Casa Geco, Casa Tucano und Casa Pappagallo — heißen zudem Haustiere ohne Extragebühr willkommen, und Rana und Geco haben zusätzlich einen umzäunten Garten.',
       'Casa Delfines ist unser größtes Haus und die übliche Wahl für größere Familien oder zwei gemeinsam reisende Familien.',
     ],
     gridHeading: 'Häuser, die zu Familien passen',
@@ -477,10 +480,10 @@ const familyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   fr: {
     seoTitle: 'Maisons de Vacances Familiales à Puerto Viejo',
-    seoDescription: '4 maisons de vacances spacieuses à Puerto Viejo, Costa Rica conçues pour les familles — dont Casa Delfines, notre plus grande maison, et 2 options acceptant les animaux.',
+    seoDescription: '6 maisons de vacances à Puerto Viejo, Costa Rica conçues pour les familles — dont Casa Delfines, notre plus grande maison, et 4 options acceptant les animaux.',
     heading: 'Maisons Familiales à Puerto Viejo',
     introParagraphs: [
-      'Ces 4 maisons offrent l’espace supplémentaire que les familles demandent le plus : chambres séparées et de la place, ainsi que, pour Casa Rana et Casa Geco, un jardin clôturé et aucun supplément animal si vous amenez votre chien.',
+      'Ces 6 maisons offrent l’espace supplémentaire que les familles demandent le plus : chambres séparées et de la place. Quatre d’entre elles — Casa Rana, Casa Geco, Casa Tucano et Casa Pappagallo — acceptent aussi les animaux sans supplément, et Rana et Geco disposent en plus d’un jardin clôturé.',
       'Casa Delfines est notre plus grande maison, le choix habituel pour les familles nombreuses ou deux familles voyageant ensemble.',
     ],
     gridHeading: 'Des maisons adaptées aux familles',
@@ -490,10 +493,10 @@ const familyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   it: {
     seoTitle: 'Case Vacanza per Famiglie a Puerto Viejo',
-    seoDescription: '4 case vacanza spaziose a Puerto Viejo, Costa Rica pensate per le famiglie — inclusa Casa Delfines, la nostra casa più grande, e 2 opzioni pet friendly.',
+    seoDescription: '6 case vacanza a Puerto Viejo, Costa Rica pensate per le famiglie — inclusa Casa Delfines, la nostra casa più grande, e 4 opzioni pet friendly.',
     heading: 'Case per Famiglie a Puerto Viejo',
     introParagraphs: [
-      'Queste 4 case offrono lo spazio extra che le famiglie chiedono di più: camere separate e posto in abbondanza, e per Casa Rana e Casa Geco un giardino recintato senza costo extra per l’animale.',
+      'Queste 6 case offrono lo spazio extra che le famiglie chiedono di più: camere separate e posto in abbondanza. Quattro di esse — Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo — accolgono anche gli animali senza costo extra, e Rana e Geco hanno inoltre un giardino recintato.',
       'Casa Delfines è la nostra casa più grande, la scelta abituale per famiglie numerose o due famiglie che viaggiano insieme.',
     ],
     gridHeading: 'Case ideali per famiglie',
@@ -503,10 +506,10 @@ const familyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   pt: {
     seoTitle: 'Casas de Férias para Famílias em Puerto Viejo',
-    seoDescription: '4 casas de férias espaçosas em Puerto Viejo, Costa Rica pensadas para famílias — incluindo Casa Delfines, a nossa maior casa, e 2 opções pet friendly.',
+    seoDescription: '6 casas de férias em Puerto Viejo, Costa Rica pensadas para famílias — incluindo Casa Delfines, a nossa maior casa, e 4 opções pet friendly.',
     heading: 'Casas para Famílias em Puerto Viejo',
     introParagraphs: [
-      'Estas 4 casas têm o espaço extra que as famílias mais pedem: quartos separados e bastante espaço, além de, na Casa Rana e na Casa Geco, jardim cercado e nenhuma taxa extra se você trouxer o cachorro.',
+      'Estas 6 casas têm o espaço extra que as famílias mais pedem: quartos separados e bastante espaço. Quatro delas — Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo — também aceitam animais sem taxa extra, e Rana e Geco têm ainda jardim cercado.',
       'Casa Delfines é a nossa maior casa, a escolha habitual para famílias grandes ou duas famílias viajando juntas.',
     ],
     gridHeading: 'Casas ideais para famílias',
@@ -519,11 +522,11 @@ const familyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
 const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   en: {
     seoTitle: 'Romantic Vacation Rentals for Couples in Puerto Viejo',
-    seoDescription: '6 vacation rentals in Puerto Viejo, Costa Rica built for two — private villas with a pool near Punta Uva, plus central apartments above an Italian bakery.',
+    seoDescription: '4 vacation rentals in Puerto Viejo, Costa Rica built for two — private villas with a pool near Punta Uva, plus cozy retreats in the same area.',
     heading: 'Couples Retreats in Puerto Viejo',
     introParagraphs: [
-      'Six of our ten homes are sized and set up for two: Villa Mar and Villa Coral are private villas with their own pool near Punta Uva; Casa Areka and Casa Plumeria are cozy retreats in the same area; and Casa Tucano and Casa Pappagallo are central apartments above an Italian bakery in downtown Puerto Viejo.',
-      "Pick a villa if you want privacy and a pool, or a central apartment if you'd rather walk to dinner.",
+      'Four of our ten homes are sized and set up for two: Villa Mar and Villa Coral are private villas with their own pool near Punta Uva, and Casa Areka and Casa Plumeria are cozy retreats in the same area.',
+      "Pick a villa if you want a pool of your own, or one of the two cozy retreats if you'd rather keep things simple.",
     ],
     gridHeading: 'Homes built for two',
     backToHubLabel: 'See all vacation homes in Puerto Viejo →',
@@ -532,11 +535,11 @@ const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   es: {
     seoTitle: 'Casas Vacacionales Románticas para Parejas en Puerto Viejo',
-    seoDescription: '6 casas vacacionales en Puerto Viejo, Costa Rica pensadas para dos — villas privadas con piscina cerca de Punta Uva y apartamentos céntricos sobre una panadería italiana.',
+    seoDescription: '4 casas vacacionales en Puerto Viejo, Costa Rica pensadas para dos — villas privadas con piscina cerca de Punta Uva y refugios acogedores en la misma zona.',
     heading: 'Casas para Parejas en Puerto Viejo',
     introParagraphs: [
-      'Seis de nuestras diez casas están pensadas para dos personas: Villa Mar y Villa Coral son villas privadas con piscina propia cerca de Punta Uva; Casa Areka y Casa Plumeria son refugios acogedores en la misma zona; y Casa Tucano y Casa Pappagallo son apartamentos céntricos sobre una panadería italiana en el centro de Puerto Viejo.',
-      'Elige una villa si buscas privacidad y piscina, o un apartamento céntrico si prefieres caminar a cenar.',
+      'Cuatro de nuestras diez casas están pensadas para dos personas: Villa Mar y Villa Coral son villas privadas con piscina propia cerca de Punta Uva, y Casa Areka y Casa Plumeria son refugios acogedores en la misma zona.',
+      'Elige una villa si quieres piscina propia, o uno de los dos refugios acogedores si prefieres algo más sencillo.',
     ],
     gridHeading: 'Casas pensadas para dos',
     backToHubLabel: 'Ver todas las casas vacacionales en Puerto Viejo →',
@@ -545,11 +548,11 @@ const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   de: {
     seoTitle: 'Romantische Ferienunterkünfte für Paare in Puerto Viejo',
-    seoDescription: '6 Ferienunterkünfte in Puerto Viejo, Costa Rica für zwei — private Villen mit Pool nahe Punta Uva sowie zentrale Apartments über einer italienischen Bäckerei.',
+    seoDescription: '4 Ferienunterkünfte in Puerto Viejo, Costa Rica für zwei — private Villen mit Pool nahe Punta Uva sowie gemütliche Rückzugsorte in derselben Gegend.',
     heading: 'Rückzugsorte für Paare in Puerto Viejo',
     introParagraphs: [
-      'Sechs unserer zehn Häuser sind für zwei Personen ausgelegt: Villa Mar und Villa Coral sind private Villen mit eigenem Pool nahe Punta Uva; Casa Areka und Casa Plumeria sind gemütliche Rückzugsorte in derselben Gegend; und Casa Tucano und Casa Pappagallo sind zentrale Apartments über einer italienischen Bäckerei im Zentrum von Puerto Viejo.',
-      'Wähle eine Villa für Privatsphäre und Pool, oder ein zentrales Apartment, wenn du lieber zum Abendessen läufst.',
+      'Vier unserer zehn Häuser sind für zwei Personen ausgelegt: Villa Mar und Villa Coral sind private Villen mit eigenem Pool nahe Punta Uva, und Casa Areka und Casa Plumeria sind gemütliche Rückzugsorte in derselben Gegend.',
+      'Wähle eine Villa, wenn du einen eigenen Pool möchtest, oder einen der beiden gemütlichen Rückzugsorte, wenn du es lieber einfach magst.',
     ],
     gridHeading: 'Häuser für zwei',
     backToHubLabel: 'Alle Ferienhäuser in Puerto Viejo ansehen →',
@@ -558,11 +561,11 @@ const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   fr: {
     seoTitle: 'Locations de Vacances Romantiques pour Couples à Puerto Viejo',
-    seoDescription: '6 locations de vacances à Puerto Viejo, Costa Rica conçues pour deux — villas privées avec piscine près de Punta Uva et appartements centraux au-dessus d’une boulangerie italienne.',
+    seoDescription: '4 locations de vacances à Puerto Viejo, Costa Rica conçues pour deux — villas privées avec piscine près de Punta Uva et refuges chaleureux dans le même secteur.',
     heading: 'Refuges pour Couples à Puerto Viejo',
     introParagraphs: [
-      'Six de nos dix maisons sont conçues pour deux personnes : Villa Mar et Villa Coral sont des villas privées avec piscine propre près de Punta Uva ; Casa Areka et Casa Plumeria sont des refuges chaleureux dans le même secteur ; et Casa Tucano et Casa Pappagallo sont des appartements centraux au-dessus d’une boulangerie italienne au centre de Puerto Viejo.',
-      'Choisissez une villa pour l’intimité et la piscine, ou un appartement central si vous préférez marcher jusqu’au restaurant.',
+      'Quatre de nos dix maisons sont conçues pour deux personnes : Villa Mar et Villa Coral sont des villas privées avec piscine propre près de Punta Uva, et Casa Areka et Casa Plumeria sont des refuges chaleureux dans le même secteur.',
+      'Choisissez une villa si vous voulez une piscine privée, ou l’un des deux refuges chaleureux pour rester simple.',
     ],
     gridHeading: 'Des maisons pensées pour deux',
     backToHubLabel: 'Voir toutes les maisons de vacances à Puerto Viejo →',
@@ -571,11 +574,11 @@ const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   it: {
     seoTitle: 'Case Vacanza Romantiche per Coppie a Puerto Viejo',
-    seoDescription: '6 case vacanza a Puerto Viejo, Costa Rica pensate per due — ville private con piscina vicino a Punta Uva e appartamenti centrali sopra una panetteria italiana.',
+    seoDescription: '4 case vacanza a Puerto Viejo, Costa Rica pensate per due — ville private con piscina vicino a Punta Uva e rifugi accoglienti nella stessa zona.',
     heading: 'Rifugi per Coppie a Puerto Viejo',
     introParagraphs: [
-      'Sei delle nostre dieci case sono pensate per due persone: Villa Mar e Villa Coral sono ville private con piscina propria vicino a Punta Uva; Casa Areka e Casa Plumeria sono rifugi accoglienti nella stessa zona; Casa Tucano e Casa Pappagallo sono appartamenti centrali sopra una panetteria italiana nel centro di Puerto Viejo.',
-      'Scegli una villa se cerchi privacy e piscina, o un appartamento centrale se preferisci raggiungere a piedi i ristoranti.',
+      'Quattro delle nostre dieci case sono pensate per due persone: Villa Mar e Villa Coral sono ville private con piscina propria vicino a Punta Uva, e Casa Areka e Casa Plumeria sono rifugi accoglienti nella stessa zona.',
+      'Scegli una villa se desideri una piscina privata, o uno dei due rifugi accoglienti se preferisci qualcosa di più semplice.',
     ],
     gridHeading: 'Case pensate per due',
     backToHubLabel: 'Vedi tutte le case vacanza a Puerto Viejo →',
@@ -584,11 +587,11 @@ const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   pt: {
     seoTitle: 'Casas de Férias Românticas para Casais em Puerto Viejo',
-    seoDescription: '6 casas de férias em Puerto Viejo, Costa Rica pensadas para dois — vilas privativas com piscina perto de Punta Uva e apartamentos centrais sobre uma padaria italiana.',
+    seoDescription: '4 casas de férias em Puerto Viejo, Costa Rica pensadas para dois — vilas privativas com piscina perto de Punta Uva e refúgios aconchegantes na mesma área.',
     heading: 'Refúgios para Casais em Puerto Viejo',
     introParagraphs: [
-      'Seis das nossas dez casas são pensadas para duas pessoas: Villa Mar e Villa Coral são vilas privativas com piscina própria perto de Punta Uva; Casa Areka e Casa Plumeria são refúgios aconchegantes na mesma área; e Casa Tucano e Casa Pappagallo são apartamentos centrais sobre uma padaria italiana no centro de Puerto Viejo.',
-      'Escolha uma vila se busca privacidade e piscina, ou um apartamento central se prefere caminhar até o jantar.',
+      'Quatro das nossas dez casas são pensadas para duas pessoas: Villa Mar e Villa Coral são vilas privativas com piscina própria perto de Punta Uva, e Casa Areka e Casa Plumeria são refúgios aconchegantes na mesma área.',
+      'Escolha uma vila se quer piscina própria, ou um dos dois refúgios aconchegantes se prefere algo mais simples.',
     ],
     gridHeading: 'Casas pensadas para dois',
     backToHubLabel: 'Ver todas as casas de férias em Puerto Viejo →',
@@ -600,78 +603,78 @@ const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
 const petFriendlyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   en: {
     seoTitle: 'Pet-Friendly Vacation Houses in Puerto Viejo, Costa Rica',
-    seoDescription: 'Casa Rana and Casa Geco are our 2 pet-friendly vacation houses in downtown Puerto Viejo — fenced outdoor space, no pet fee, and a short walk to the beach.',
+    seoDescription: 'Casa Rana, Casa Geco, Casa Tucano and Casa Pappagallo are our 4 pet-friendly vacation houses in downtown Puerto Viejo — no pet fee and a short walk to the beach.',
     heading: 'Pet-Friendly Houses in Puerto Viejo',
     introParagraphs: [
-      'Casa Rana and Casa Geco are the two houses in our portfolio set up for guests traveling with a dog: both have a small fenced garden, and we don’t charge a pet fee.',
-      'Both sit in downtown Puerto Viejo, walking distance to the beach — handy for a pre-breakfast walk before it gets hot.',
+      'Casa Rana, Casa Geco, Casa Tucano and Casa Pappagallo are the four houses in our portfolio that welcome guests traveling with a dog, with no pet fee. Casa Rana and Casa Geco each have a small fenced garden; Casa Tucano and Casa Pappagallo are central apartments above an Italian bakery.',
+      'All four sit in downtown Puerto Viejo, walking distance to the beach — handy for a pre-breakfast walk before it gets hot.',
     ],
-    gridHeading: 'Our 2 pet-friendly houses',
+    gridHeading: 'Our 4 pet-friendly houses',
     backToHubLabel: 'See all vacation homes in Puerto Viejo →',
     ctaHeading: 'Ready to book?',
     ctaText: 'Check availability and prices for your dates.',
   },
   es: {
     seoTitle: 'Casas Vacacionales Pet Friendly en Puerto Viejo, Costa Rica',
-    seoDescription: 'Casa Rana y Casa Geco son nuestras 2 casas vacacionales pet friendly en el centro de Puerto Viejo: jardín cercado, sin cargo por mascota y a pocos minutos caminando de la playa.',
+    seoDescription: 'Casa Rana, Casa Geco, Casa Tucano y Casa Pappagallo son nuestras 4 casas vacacionales pet friendly en el centro de Puerto Viejo: sin cargo por mascota y a pocos minutos caminando de la playa.',
     heading: 'Casas Pet Friendly en Puerto Viejo',
     introParagraphs: [
-      'Casa Rana y Casa Geco son las dos casas de nuestro portafolio preparadas para huéspedes que viajan con perro: ambas tienen un pequeño jardín cercado y no cobramos cargo por mascota.',
-      'Las dos están en el centro de Puerto Viejo, a pocos minutos caminando de la playa — ideal para un paseo antes del desayuno, antes de que empiece el calor.',
+      'Casa Rana, Casa Geco, Casa Tucano y Casa Pappagallo son las cuatro casas de nuestro portafolio que reciben huéspedes que viajan con perro, sin cargo por mascota. Casa Rana y Casa Geco tienen cada una un pequeño jardín cercado; Casa Tucano y Casa Pappagallo son apartamentos céntricos sobre una panadería italiana.',
+      'Las cuatro están en el centro de Puerto Viejo, a pocos minutos caminando de la playa — ideal para un paseo antes del desayuno, antes de que empiece el calor.',
     ],
-    gridHeading: 'Nuestras 2 casas pet friendly',
+    gridHeading: 'Nuestras 4 casas pet friendly',
     backToHubLabel: 'Ver todas las casas vacacionales en Puerto Viejo →',
     ctaHeading: '¿Listo para reservar?',
     ctaText: 'Consulta disponibilidad y precios para tus fechas.',
   },
   de: {
     seoTitle: 'Haustierfreundliche Ferienhäuser in Puerto Viejo, Costa Rica',
-    seoDescription: 'Casa Rana und Casa Geco sind unsere 2 haustierfreundlichen Ferienhäuser im Zentrum von Puerto Viejo — umzäunter Außenbereich, keine Haustiergebühr und wenige Gehminuten zum Strand.',
+    seoDescription: 'Casa Rana, Casa Geco, Casa Tucano und Casa Pappagallo sind unsere 4 haustierfreundlichen Ferienhäuser im Zentrum von Puerto Viejo — keine Haustiergebühr und wenige Gehminuten zum Strand.',
     heading: 'Haustierfreundliche Häuser in Puerto Viejo',
     introParagraphs: [
-      'Casa Rana und Casa Geco sind die zwei Häuser in unserem Portfolio für Gäste, die mit Hund reisen: beide haben einen kleinen umzäunten Garten, und wir berechnen keine Haustiergebühr.',
-      'Beide liegen im Zentrum von Puerto Viejo, fußläufig zum Strand — praktisch für einen Spaziergang vor dem Frühstück, bevor es heiß wird.',
+      'Casa Rana, Casa Geco, Casa Tucano und Casa Pappagallo sind die vier Häuser in unserem Portfolio, die Gäste mit Hund willkommen heißen, ohne Haustiergebühr. Casa Rana und Casa Geco haben jeweils einen kleinen umzäunten Garten; Casa Tucano und Casa Pappagallo sind zentrale Apartments über einer italienischen Bäckerei.',
+      'Alle vier liegen im Zentrum von Puerto Viejo, fußläufig zum Strand — praktisch für einen Spaziergang vor dem Frühstück, bevor es heiß wird.',
     ],
-    gridHeading: 'Unsere 2 haustierfreundlichen Häuser',
+    gridHeading: 'Unsere 4 haustierfreundlichen Häuser',
     backToHubLabel: 'Alle Ferienhäuser in Puerto Viejo ansehen →',
     ctaHeading: 'Bereit zu buchen?',
     ctaText: 'Prüfe Verfügbarkeit und Preise für deine Daten.',
   },
   fr: {
     seoTitle: 'Maisons de Vacances Acceptant les Animaux à Puerto Viejo, Costa Rica',
-    seoDescription: 'Casa Rana et Casa Geco sont nos 2 maisons de vacances acceptant les animaux au centre de Puerto Viejo — espace extérieur clôturé, aucun supplément animal, et une courte marche jusqu’à la plage.',
+    seoDescription: 'Casa Rana, Casa Geco, Casa Tucano et Casa Pappagallo sont nos 4 maisons de vacances acceptant les animaux au centre de Puerto Viejo — aucun supplément animal, et une courte marche jusqu’à la plage.',
     heading: 'Maisons Acceptant les Animaux à Puerto Viejo',
     introParagraphs: [
-      'Casa Rana et Casa Geco sont les deux maisons de notre portefeuille prévues pour les voyageurs accompagnés d’un chien : toutes deux ont un petit jardin clôturé, et nous ne facturons aucun supplément animal.',
-      'Les deux se trouvent au centre de Puerto Viejo, à distance de marche de la plage — pratique pour une promenade avant le petit-déjeuner, avant que la chaleur ne s’installe.',
+      'Casa Rana, Casa Geco, Casa Tucano et Casa Pappagallo sont les quatre maisons de notre portefeuille qui accueillent les voyageurs accompagnés d’un chien, sans supplément animal. Casa Rana et Casa Geco ont chacune un petit jardin clôturé ; Casa Tucano et Casa Pappagallo sont des appartements centraux au-dessus d’une boulangerie italienne.',
+      'Les quatre se trouvent au centre de Puerto Viejo, à distance de marche de la plage — pratique pour une promenade avant le petit-déjeuner, avant que la chaleur ne s’installe.',
     ],
-    gridHeading: 'Nos 2 maisons acceptant les animaux',
+    gridHeading: 'Nos 4 maisons acceptant les animaux',
     backToHubLabel: 'Voir toutes les maisons de vacances à Puerto Viejo →',
     ctaHeading: 'Prêt à réserver ?',
     ctaText: 'Vérifiez les disponibilités et les tarifs pour vos dates.',
   },
   it: {
     seoTitle: 'Case Vacanza Pet Friendly a Puerto Viejo, Costa Rica',
-    seoDescription: 'Casa Rana e Casa Geco sono le nostre 2 case vacanza pet friendly nel centro di Puerto Viejo — spazio esterno recintato, nessun costo extra per l’animale e pochi minuti a piedi dalla spiaggia.',
+    seoDescription: 'Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo sono le nostre 4 case vacanza pet friendly nel centro di Puerto Viejo — nessun costo extra per l’animale e pochi minuti a piedi dalla spiaggia.',
     heading: 'Case Pet Friendly a Puerto Viejo',
     introParagraphs: [
-      'Casa Rana e Casa Geco sono le due case del nostro portafoglio pensate per ospiti che viaggiano con il cane: entrambe hanno un piccolo giardino recintato e non applichiamo costi extra per l’animale.',
-      'Entrambe si trovano nel centro di Puerto Viejo, a pochi minuti a piedi dalla spiaggia — comode per una passeggiata prima di colazione, prima che arrivi il caldo.',
+      'Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo sono le quattro case del nostro portafoglio che accolgono ospiti che viaggiano con il cane, senza costi extra. Casa Rana e Casa Geco hanno ciascuna un piccolo giardino recintato; Casa Tucano e Casa Pappagallo sono appartamenti centrali sopra una panetteria italiana.',
+      'Tutte e quattro si trovano nel centro di Puerto Viejo, a pochi minuti a piedi dalla spiaggia — comode per una passeggiata prima di colazione, prima che arrivi il caldo.',
     ],
-    gridHeading: 'Le nostre 2 case pet friendly',
+    gridHeading: 'Le nostre 4 case pet friendly',
     backToHubLabel: 'Vedi tutte le case vacanza a Puerto Viejo →',
     ctaHeading: 'Pronto a prenotare?',
     ctaText: 'Controlla disponibilità e prezzi per le tue date.',
   },
   pt: {
     seoTitle: 'Casas de Férias Pet Friendly em Puerto Viejo, Costa Rica',
-    seoDescription: 'Casa Rana e Casa Geco são as nossas 2 casas de férias pet friendly no centro de Puerto Viejo — área externa cercada, sem taxa extra por animal e a poucos minutos a pé da praia.',
+    seoDescription: 'Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo são as nossas 4 casas de férias pet friendly no centro de Puerto Viejo — sem taxa extra por animal e a poucos minutos a pé da praia.',
     heading: 'Casas Pet Friendly em Puerto Viejo',
     introParagraphs: [
-      'Casa Rana e Casa Geco são as duas casas do nosso portfólio preparadas para hóspedes que viajam com cachorro: ambas têm um pequeno jardim cercado e não cobramos taxa extra por animal.',
-      'As duas ficam no centro de Puerto Viejo, a poucos minutos a pé da praia — ótimo para um passeio antes do café da manhã, antes de esquentar.',
+      'Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo são as quatro casas do nosso portfólio que recebem hóspedes que viajam com cachorro, sem taxa extra. Casa Rana e Casa Geco têm cada uma um pequeno jardim cercado; Casa Tucano e Casa Pappagallo são apartamentos centrais sobre uma padaria italiana.',
+      'As quatro ficam no centro de Puerto Viejo, a poucos minutos a pé da praia — ótimo para um passeio antes do café da manhã, antes de esquentar.',
     ],
-    gridHeading: 'As nossas 2 casas pet friendly',
+    gridHeading: 'As nossas 4 casas pet friendly',
     backToHubLabel: 'Ver todas as casas de férias em Puerto Viejo →',
     ctaHeading: 'Pronto para reservar?',
     ctaText: 'Consulte disponibilidade e preços para as suas datas.',

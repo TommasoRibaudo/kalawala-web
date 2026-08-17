@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import FixedNavigation from "../../components/FixedNavigation/FixedNavigation.component";
 import Discover from "../../components/Discover/Discover.component";
 import OurHomes from "../../components/OurHomes/OurHomes.component";
@@ -15,10 +16,13 @@ import OurOtherHomes from "../../components/OurOtherHomes/OurOtherHomes.componen
 import { useLocale, useMessages } from "../../i18n";
 import { localeSuffix } from "../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../i18n/seo";
+import { pathForKey } from "../../routes.config";
+import { vacationRentalHubContent } from "../../i18n/content/propertyCategories";
 
 const Home = () => {
   const locale = useLocale();
   const m = useMessages();
+  const hubTeaser = vacationRentalHubContent(locale);
 
   const helpMeChooseOptions = [
     {
@@ -65,6 +69,11 @@ const Home = () => {
       <HelpMeChoose title={m.home.helpMeChooseTitle} titleHighlight={m.home.helpMeChooseTitleHighlight} options={helpMeChooseOptions} locale={locale} />
       <HomeReviews locale={locale} />
       <OurHomes houseDataList={locale === 'es' ? houseDataList : houseDataEngList} />
+      <div className="container" style={{ textAlign: 'center', padding: '1.5rem 1rem 2.5rem' }}>
+        <h3 style={{ marginBottom: '0.5rem' }}>{hubTeaser.homeTeaserTitle}</h3>
+        <p style={{ marginBottom: '1rem' }}>{hubTeaser.homeTeaserText}</p>
+        <Link to={pathForKey('blogVacationRentals', locale)}><strong>{hubTeaser.homeTeaserCta}</strong></Link>
+      </div>
       <OurOtherHomes />
       <BookingCtaBanner locale={locale} />
       <Discover />

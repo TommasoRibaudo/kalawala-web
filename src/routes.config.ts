@@ -57,6 +57,7 @@ export type RouteKey =
   | 'blogWeatherJan' | 'blogWeatherFeb' | 'blogWeatherMar' | 'blogWeatherApr' | 'blogWeatherMay' | 'blogWeatherJun' | 'blogWeatherJul' | 'blogWeatherAug'
   | 'blogWeatherSep' | 'blogWeatherOct' | 'blogWeatherNov' | 'blogWeatherDec' | 'blogSanjoseOptions'
   | 'blogGandocaRefuge' | 'blogBeaches' | 'blogBocas' | 'blogThingsToDo'
+  | 'blogVacationRentals' | 'blogHousesCentro' | 'blogHousesPuntaUva' | 'blogFamilyHouses' | 'blogCouplesHouses' | 'blogPetFriendlyHouses'
   | 'success';
 
 export interface RouteDef {
@@ -129,6 +130,12 @@ export const LOADERS: Record<RouteKey, () => Promise<{ default: ComponentType<an
   blogBeaches: () => import(/* webpackChunkName: "route-puerto-viejo-beaches" */ './pages/Blog/staticPages/PuertoViejoBeaches'),
   blogBocas: () => import(/* webpackChunkName: "route-puerto-viejo-to-bocas-del-toro" */ './pages/Blog/staticPages/BocasDelToro'),
   blogThingsToDo: () => import(/* webpackChunkName: "route-things-to-do-puerto-viejo" */ './pages/Blog/staticPages/ThingsToDoPuertoViejo'),
+  blogVacationRentals: () => import(/* webpackChunkName: "route-vacation-rentals-puerto-viejo" */ './pages/Blog/staticPages/VacationRentalsHub'),
+  blogHousesCentro: () => import(/* webpackChunkName: "route-puerto-viejo-centro-houses" */ './pages/Blog/staticPages/HousesCentro'),
+  blogHousesPuntaUva: () => import(/* webpackChunkName: "route-punta-uva-vacation-homes" */ './pages/Blog/staticPages/HousesPuntaUva'),
+  blogFamilyHouses: () => import(/* webpackChunkName: "route-family-houses-puerto-viejo" */ './pages/Blog/staticPages/FamilyHouses'),
+  blogCouplesHouses: () => import(/* webpackChunkName: "route-couples-retreats-puerto-viejo" */ './pages/Blog/staticPages/CouplesHouses'),
+  blogPetFriendlyHouses: () => import(/* webpackChunkName: "route-pet-friendly-houses-puerto-viejo" */ './pages/Blog/staticPages/PetFriendlyHouses'),
   success: () => import(/* webpackChunkName: "route-success" */ './pages/Home/Success.page'),
 };
 

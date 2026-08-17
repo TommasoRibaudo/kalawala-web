@@ -28,6 +28,7 @@ import {
   gandocaRefugeContent,
   beachesContent,
   bocasDelToroContent,
+  thingsToDoContent,
 } from './content/blog';
 
 /**
@@ -68,6 +69,7 @@ const BLOG_HEADING_BY_ROUTE_KEY: Partial<Record<RouteKey, (locale: Locale) => st
   blogGandocaRefuge: (l) => gandocaRefugeContent(l).heading,
   blogBeaches: (l) => beachesContent(l).heading,
   blogBocas: (l) => bocasDelToroContent(l).heading,
+  blogThingsToDo: (l) => thingsToDoContent(l).heading,
 };
 
 export function blogArticleHeading(routeKey: RouteKey, locale: Locale): string {

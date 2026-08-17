@@ -11164,3 +11164,658 @@ const bocasDelToro: Partial<Record<Locale, BocasDelToroContent>> = {
 export function bocasDelToroContent(locale: Locale): BocasDelToroContent {
   return bocasDelToro[locale] ?? bocasDelToro.en!;
 }
+
+/* ------------------------------------------------------------------ *
+ * Things to Do — pillar article
+ *
+ * SEO gap (see docs / competitor review, 2026-08-12): every comparable
+ * Puerto Viejo travel blog has a cornerstone "things to do" list post; this
+ * site had none, despite already owning the sub-topics (beaches, Cahuita,
+ * Gandoca-Manzanillo, indigenous culture, weather) that a hub can link out
+ * to. `activities` pairs by index with THINGS_TO_DO_LINKS in the page
+ * component, same convention as the weather hub's MONTH_ROUTE_KEYS —
+ * content stays routing-agnostic, the page component owns the RouteKeys.
+ * ------------------------------------------------------------------ */
+
+/** One activity card. `linkText` is only set for activities that point at
+ * an existing article; entries without it render as plain text. */
+export interface ThingsToDoActivity {
+  title: string;
+  description: string;
+  linkText?: string;
+}
+
+export interface ThingsToDoContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: [string, string];
+  stayRecommendationTitle: string;
+  activities: ThingsToDoActivity[];
+  itineraryHeading: string;
+  itineraryParagraphs: [string, string];
+  itineraryLinkText: string;
+  takeawaysHeading: string;
+  takeawaysParagraph: string;
+}
+
+const thingsToDo: Partial<Record<Locale, ThingsToDoContent>> = {
+  en: {
+    seoTitle: 'Things to Do in Puerto Viejo, Costa Rica: The Complete Guide',
+    seoDescription:
+      "From Salsa Brava's legendary reef break to sloth sanctuaries and jungle waterfalls — everything worth doing in Puerto Viejo de Talamanca, Costa Rica's laid-back Caribbean coast.",
+    heading: 'Things to Do in Puerto Viejo, Costa Rica: The Complete Guide',
+    heroAlt: 'Palm-lined beach and jungle coastline in Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      "Puerto Viejo de Talamanca packs an unusual mix into one small stretch of Caribbean coast: a world-class reef break, a laid-back national park full of sloths and monkeys, Bribri indigenous communities still growing cacao the old way, and some of the calmest, clearest beaches in Costa Rica. It rewards slowing down — most of what's worth doing here is a short bike ride from town.",
+      "This guide rounds up everything worth doing, from the classics to the easy-to-miss. For the deeper dive on any one of them, we've linked our full guides below.",
+    ],
+    stayRecommendationTitle: 'Looking for a base to explore Puerto Viejo from?',
+    activities: [
+      {
+        title: 'Surf Salsa Brava, Cocles or Playa Negra',
+        description: 'Puerto Viejo is one of Central America\'s best-known surf towns. Salsa Brava, the reef break right in front of town, is for experienced surfers only and peaks between December and February. Playa Cocles is friendlier for beginners and intermediates, with a sandy bottom, and Playa Negra sits in between. Surf shops in town rent boards and run lessons most of the year.',
+      },
+      {
+        title: 'Swim and sunbathe along the coast',
+        description: "The coastline south of town strings together some of Costa Rica's best beaches — Cocles, Chiquita, Punta Uva and Manzanillo each have a different character, from lively and surf-friendly to quiet coves shaded by rainforest.",
+        linkText: 'Read our full beach-by-beach guide →',
+      },
+      {
+        title: 'Hike Cahuita National Park',
+        description: "A flat, easy trail runs along the edge of the jungle and the beach, and it's one of the most reliable places on the coast to spot monkeys, sloths and coatis without a guide. The reef offshore is good for snorkeling on a calm day.",
+        linkText: 'See our full Cahuita National Park guide →',
+      },
+      {
+        title: 'Explore the Gandoca-Manzanillo Wildlife Refuge',
+        description: "South of Manzanillo, this refuge protects mangroves, coral reef and a coastal trail that's quieter and wilder than Cahuita. It's a good half-day trip for anyone who wants nature without the crowds.",
+        linkText: 'Read our full Gandoca-Manzanillo guide →',
+      },
+      {
+        title: 'Meet the local wildlife up close at a rescue centre',
+        description: "The South Caribbean is home to a couple of well-regarded wildlife rescue and rehabilitation centres, where injured or orphaned sloths, monkeys and other animals recover before release. Most run short guided tours that explain what each animal is there for.",
+      },
+      {
+        title: 'Take a chocolate tour and learn about Bribri culture',
+        description: "Small, family-run cacao farms around Puerto Viejo walk you through the whole process, from pod to bar, and many are run by or connected to the Bribri indigenous community, whose ancestral land borders the town. It's one of the best ways to understand the region beyond the beach.",
+        linkText: 'Read more about indigenous culture near Puerto Viejo →',
+      },
+      {
+        title: 'Cool off at the Ma-Cuu waterfalls',
+        description: "A short drive from town, this small set of jungle waterfalls has a series of natural pools to swim in, at different heights. It's a good half-day trip if you want jungle scenery without a long journey.",
+      },
+      {
+        title: 'Browse the Saturday farmers market',
+        description: "If you're around on a Saturday, the local farmers market in the centre of town is worth an early visit — organic fruit, vegetables and handmade crafts from around the South Caribbean, and a good sense of daily life beyond the tourist strip.",
+      },
+      {
+        title: 'Get around by bike',
+        description: 'Bikes are the easiest way to move between beaches, restaurants and the town centre — most accommodation in the area either provides them or can arrange a rental. The coastal road is flat and mostly shaded.',
+      },
+      {
+        title: 'Have a backup plan for rainy days',
+        description: "The Caribbean coast doesn't have a true dry season, so it's worth knowing what to do when a downpour rolls in. Chocolate tours, the wildlife rescue centres and a slow lunch somewhere covered all work well when the weather doesn't.",
+        linkText: 'See our month-by-month weather guide →',
+      },
+    ],
+    itineraryHeading: 'How many days do you need?',
+    itineraryParagraphs: [
+      "Three days is enough to get a real feel for Puerto Viejo: a beach day, one park or refuge, and time to wander town. Five to seven days lets you add a wildlife rescue centre, a chocolate tour, and a day trip further along the coast without feeling rushed.",
+      "Because Puerto Viejo takes some effort to reach, it's worth pairing it with at least a few other stops on a longer Costa Rica trip rather than a quick one-night visit.",
+    ],
+    itineraryLinkText: 'Compare every way to get here from San José →',
+    takeawaysHeading: 'The takeaway',
+    takeawaysParagraph: "Puerto Viejo rewards a slower pace: pick two or three activities a day, leave room to change plans around the weather, and get around by bike. Whether you're chasing waves, wildlife or just a quiet beach, it's all within easy reach of town.",
+  },
+  es: {
+    seoTitle: 'Qué hacer en Puerto Viejo, Costa Rica: la guía completa',
+    seoDescription:
+      'Desde la mítica ola de Salsa Brava hasta santuarios de perezosos y cascadas en la selva: todo lo que vale la pena hacer en Puerto Viejo de Talamanca, el Caribe Sur relajado de Costa Rica.',
+    heading: 'Qué hacer en Puerto Viejo, Costa Rica: la guía completa',
+    heroAlt: 'Playa bordeada de palmeras y costa selvática en Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca reúne una mezcla poco común en un solo tramo de costa caribeña: una ola de clase mundial, un parque nacional relajado lleno de perezosos y monos, comunidades indígenas Bribri que aún cultivan cacao a la manera tradicional, y algunas de las playas más tranquilas y claras de Costa Rica. Aquí vale la pena bajar el ritmo: casi todo lo que merece la pena está a un corto paseo en bici del pueblo.',
+      'Esta guía reúne todo lo que vale la pena hacer, desde los clásicos hasta lo que es fácil pasar por alto. Para profundizar en cualquiera de ellos, dejamos el enlace a nuestra guía completa.',
+    ],
+    stayRecommendationTitle: '¿Buscas un lugar desde donde explorar Puerto Viejo?',
+    activities: [
+      {
+        title: 'Surfea en Salsa Brava, Cocles o Playa Negra',
+        description: 'Puerto Viejo es uno de los pueblos de surf más conocidos de Centroamérica. Salsa Brava, la ola de arrecife justo frente al pueblo, es solo para surfistas experimentados y alcanza su mejor momento entre diciembre y febrero. Playa Cocles es más amigable para principiantes e intermedios, con fondo de arena, y Playa Negra queda en un punto medio. Las tiendas de surf del pueblo alquilan tablas y dan clases casi todo el año.',
+      },
+      {
+        title: 'Nada y toma sol en la costa',
+        description: 'La costa al sur del pueblo enlaza algunas de las mejores playas de Costa Rica: Cocles, Chiquita, Punta Uva y Manzanillo, cada una con su propio carácter, desde animada y apta para surf hasta calas tranquilas bajo la selva.',
+        linkText: 'Lee nuestra guía completa playa por playa →',
+      },
+      {
+        title: 'Camina por el Parque Nacional Cahuita',
+        description: 'Un sendero plano y fácil recorre el borde entre la selva y la playa, y es uno de los lugares más confiables de la costa para ver monos, perezosos y pizotes sin necesidad de guía. El arrecife frente a la costa es bueno para hacer snorkel en un día de mar calmo.',
+        linkText: 'Mira nuestra guía completa del Parque Nacional Cahuita →',
+      },
+      {
+        title: 'Explora el Refugio de Vida Silvestre Gandoca-Manzanillo',
+        description: 'Al sur de Manzanillo, este refugio protege manglares, arrecife de coral y un sendero costero más tranquilo y silvestre que Cahuita. Es una buena excursión de medio día para quienes buscan naturaleza sin las multitudes.',
+        linkText: 'Lee nuestra guía completa de Gandoca-Manzanillo →',
+      },
+      {
+        title: 'Conoce de cerca la fauna local en un centro de rescate',
+        description: 'El Caribe Sur tiene un par de centros de rescate y rehabilitación de fauna muy bien valorados, donde perezosos, monos y otros animales heridos o huérfanos se recuperan antes de ser liberados. La mayoría ofrece tours guiados cortos que explican la historia de cada animal.',
+      },
+      {
+        title: 'Haz un tour de chocolate y conoce la cultura Bribri',
+        description: 'Pequeñas fincas familiares de cacao cerca de Puerto Viejo te muestran todo el proceso, de la mazorca a la barra, y muchas están vinculadas a la comunidad indígena Bribri, cuyo territorio ancestral limita con el pueblo. Es una de las mejores formas de entender la región más allá de la playa.',
+        linkText: 'Lee más sobre la cultura indígena cerca de Puerto Viejo →',
+      },
+      {
+        title: 'Refréscate en las cascadas de Ma-Cuu',
+        description: 'A poca distancia en carro del pueblo, este pequeño conjunto de cascadas en la selva tiene varias pozas naturales para nadar, a distintas alturas. Es una buena excursión de medio día si quieres paisaje de selva sin un viaje largo.',
+      },
+      {
+        title: 'Recorre la feria del sábado',
+        description: 'Si estás en el pueblo un sábado, vale la pena visitar temprano la feria de agricultores en el centro: frutas y verduras orgánicas y artesanías de todo el Caribe Sur, y una buena forma de sentir la vida diaria más allá de la zona turística.',
+      },
+      {
+        title: 'Muévete en bicicleta',
+        description: 'La bicicleta es la forma más fácil de moverte entre playas, restaurantes y el centro del pueblo. La mayoría de los alojamientos de la zona las ofrece o puede conseguirte una. El camino costero es plano y en gran parte con sombra.',
+      },
+      {
+        title: 'Ten un plan B para los días de lluvia',
+        description: 'El Caribe no tiene una verdadera estación seca, así que conviene saber qué hacer cuando cae un aguacero. Un tour de chocolate, los centros de rescate de fauna o un almuerzo tranquilo bajo techo funcionan bien cuando el clima no acompaña.',
+        linkText: 'Mira nuestra guía del clima mes a mes →',
+      },
+    ],
+    itineraryHeading: '¿Cuántos días necesitas?',
+    itineraryParagraphs: [
+      'Tres días alcanzan para sentir de verdad Puerto Viejo: un día de playa, un parque o refugio, y tiempo para caminar por el pueblo. Cinco a siete días te permiten sumar un centro de rescate de fauna, un tour de chocolate y una excursión más lejos por la costa sin sentirte apurado.',
+      'Como llegar a Puerto Viejo requiere cierto esfuerzo, vale la pena combinarlo con al menos un par de paradas más en un viaje más largo por Costa Rica, en vez de una visita rápida de una noche.',
+    ],
+    itineraryLinkText: 'Compara todas las formas de llegar desde San José →',
+    takeawaysHeading: 'En resumen',
+    takeawaysParagraph: 'Puerto Viejo premia un ritmo lento: elige dos o tres actividades por día, deja espacio para cambiar de planes según el clima, y muévete en bicicleta. Ya sea que busques olas, fauna o simplemente una playa tranquila, todo está a poca distancia del pueblo.',
+  },
+  de: {
+    seoTitle: 'Puerto Viejo, Costa Rica: Der komplette Guide',
+    seoDescription:
+      'Vom legendären Reef Break in Salsa Brava bis zu Faultier-Auffangstationen und Dschungelwasserfällen — alles, was man in Puerto Viejo de Talamanca erleben sollte, an Costa Ricas entspannter Karibikküste.',
+    heading: 'Puerto Viejo, Costa Rica: Der komplette Guide',
+    heroAlt: 'Palmengesäumter Strand und Dschungelküste in Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca vereint auf einem kurzen Stück Karibikküste eine ungewöhnliche Mischung: einen Weltklasse-Reef-Break, einen entspannten Nationalpark voller Faultiere und Affen, indigene Bribri-Gemeinschaften, die noch immer nach alter Tradition Kakao anbauen, und einige der ruhigsten, klarsten Strände Costa Ricas. Wer sich Zeit nimmt, wird belohnt — das meiste, was man hier erleben sollte, ist nur eine kurze Fahrradfahrt vom Ort entfernt.',
+      'Dieser Guide fasst alles zusammen, was man unternehmen kann — von den Klassikern bis zu den Dingen, die man leicht übersieht. Wer tiefer einsteigen möchte, findet unten die Links zu unseren ausführlichen Guides.',
+    ],
+    stayRecommendationTitle: 'Auf der Suche nach einer Unterkunft, von der aus du Puerto Viejo erkunden kannst?',
+    activities: [
+      {
+        title: 'Surfen in Salsa Brava, Cocles oder Playa Negra',
+        description: 'Puerto Viejo zählt zu den bekanntesten Surferorten Mittelamerikas. Salsa Brava, der Reef-Break direkt vor dem Ort, ist nur für erfahrene Surfer geeignet und hat zwischen Dezember und Februar seine beste Zeit. Playa Cocles mit ihrem Sandboden ist freundlicher für Anfänger und Fortgeschrittene, Playa Negra liegt vom Niveau her dazwischen. Die Surfshops im Ort verleihen Boards und bieten fast das ganze Jahr über Kurse an.',
+      },
+      {
+        title: 'Schwimmen und Sonnenbaden an der Küste',
+        description: 'Die Küste südlich des Ortes reiht einige der schönsten Strände Costa Ricas aneinander — Cocles, Chiquita, Punta Uva und Manzanillo haben jeweils ihren eigenen Charakter, von lebendig und surf-freundlich bis zu ruhigen, vom Regenwald beschatteten Buchten.',
+        linkText: 'Unseren ausführlichen Guide zu allen Stränden lesen →',
+      },
+      {
+        title: 'Wandern im Nationalpark Cahuita',
+        description: 'Ein flacher, leichter Wanderweg verläuft am Rand von Dschungel und Strand entlang und zählt zu den zuverlässigsten Orten an der Küste, um ohne Guide Affen, Faultiere und Nasenbären zu entdecken. Bei ruhigem Wetter eignet sich das vorgelagerte Riff gut zum Schnorcheln.',
+        linkText: 'Unseren ausführlichen Guide zum Nationalpark Cahuita ansehen →',
+      },
+      {
+        title: 'Das Schutzgebiet Gandoca-Manzanillo erkunden',
+        description: 'Südlich von Manzanillo schützt dieses Gebiet Mangroven, Korallenriff und einen Küstenweg, der ruhiger und wilder ist als in Cahuita. Ein guter Halbtagesausflug für alle, die Natur ohne Menschenmassen erleben möchten.',
+        linkText: 'Unseren ausführlichen Guide zu Gandoca-Manzanillo lesen →',
+      },
+      {
+        title: 'Die einheimische Tierwelt hautnah in einer Auffangstation erleben',
+        description: 'An der Südkaribik gibt es mehrere angesehene Auffangstationen für verletzte oder verwaiste Faultiere, Affen und andere Tiere, die sich dort erholen, bevor sie ausgewildert werden. Die meisten bieten kurze geführte Touren an, bei denen erklärt wird, warum die einzelnen Tiere dort sind.',
+      },
+      {
+        title: 'Eine Schokoladentour machen und mehr über die Bribri-Kultur erfahren',
+        description: 'Kleine, familiengeführte Kakaofarmen rund um Puerto Viejo zeigen den gesamten Prozess von der Kakaoschote bis zur fertigen Schokolade, viele davon werden von der indigenen Bribri-Gemeinschaft geführt oder stehen mit ihr in Verbindung — ihr angestammtes Land grenzt direkt an den Ort. Das ist einer der besten Wege, die Region jenseits des Strandes kennenzulernen.',
+        linkText: 'Mehr über die indigene Kultur rund um Puerto Viejo erfahren →',
+      },
+      {
+        title: 'Abkühlung an den Wasserfällen von Ma-Cuu',
+        description: 'Nur eine kurze Fahrt vom Ort entfernt liegt diese kleine Gruppe von Dschungelwasserfällen mit natürlichen Becken auf verschiedenen Höhen, die zum Schwimmen einladen. Ein guter Halbtagesausflug, wenn du Dschungelkulisse ohne lange Anfahrt suchst.',
+      },
+      {
+        title: 'Den Samstagsmarkt besuchen',
+        description: 'Wenn du samstags vor Ort bist, lohnt sich ein früher Besuch des lokalen Markts im Zentrum — Bio-Obst, Gemüse und handgemachtes Kunsthandwerk aus der ganzen Südkaribik, und ein guter Einblick in den Alltag abseits der Touristenmeile.',
+      },
+      {
+        title: 'Mit dem Fahrrad unterwegs sein',
+        description: 'Das Fahrrad ist die einfachste Art, zwischen Stränden, Restaurants und dem Ortszentrum unterwegs zu sein — die meisten Unterkünfte in der Gegend stellen Fahrräder zur Verfügung oder organisieren gern einen Verleih. Die Küstenstraße ist flach und größtenteils schattig.',
+      },
+      {
+        title: 'Einen Plan B für Regentage haben',
+        description: 'An der Karibikküste gibt es keine wirkliche Trockenzeit, deshalb lohnt es sich zu wissen, was zu tun ist, wenn ein Regenguss einsetzt. Schokoladentouren, die Auffangstationen für Wildtiere oder ein gemütliches Mittagessen unter einem Dach funktionieren immer gut, wenn das Wetter nicht mitspielt.',
+        linkText: 'Unseren Wetter-Guide Monat für Monat ansehen →',
+      },
+    ],
+    itineraryHeading: 'Wie viele Tage sollte man einplanen?',
+    itineraryParagraphs: [
+      'Drei Tage reichen aus, um ein echtes Gefühl für Puerto Viejo zu bekommen: ein Strandtag, ein Park oder Schutzgebiet und Zeit, um durch den Ort zu bummeln. Fünf bis sieben Tage geben dir die Möglichkeit, zusätzlich eine Auffangstation, eine Schokoladentour und einen Tagesausflug weiter die Küste entlang einzuplanen, ganz ohne Zeitdruck.',
+      'Da die Anreise nach Puerto Viejo etwas aufwendiger ist, lohnt es sich, den Ort mit mindestens ein paar weiteren Stationen einer längeren Costa-Rica-Reise zu verbinden, statt nur eine Nacht einzuplanen.',
+    ],
+    itineraryLinkText: 'Alle Anreisemöglichkeiten ab San José im Vergleich →',
+    takeawaysHeading: 'Fazit',
+    takeawaysParagraph: 'Puerto Viejo belohnt ein langsameres Tempo: zwei bis drei Aktivitäten pro Tag einplanen, Raum lassen, um die Pläne dem Wetter anzupassen, und mit dem Fahrrad unterwegs sein. Ob du Wellen, Tierwelt oder einfach einen ruhigen Strand suchst — alles liegt in bequemer Reichweite vom Ort.',
+  },
+  fr: {
+    seoTitle: 'Que faire à Puerto Viejo, Costa Rica : le guide complet',
+    seoDescription:
+      "Du mythique récif de Salsa Brava aux sanctuaires de paresseux et aux cascades de jungle — tout ce qu'il y a à faire à Puerto Viejo de Talamanca, sur la côte caribéenne décontractée du Costa Rica.",
+    heading: 'Que faire à Puerto Viejo, Costa Rica : le guide complet',
+    heroAlt: 'Plage bordée de palmiers et littoral de jungle à Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      "Puerto Viejo de Talamanca concentre un mélange assez unique sur une petite portion de côte caribéenne : un récif de renommée mondiale pour le surf, un parc national tranquille peuplé de paresseux et de singes, des communautés indigènes bribri qui cultivent encore le cacao à l'ancienne, et certaines des plages les plus calmes et les plus limpides du Costa Rica. Mieux vaut prendre son temps ici — la plupart des activités se trouvent à quelques minutes de vélo du centre-ville.",
+      "Ce guide rassemble tout ce qu'il y a à faire, des incontournables aux activités plus confidentielles. Pour aller plus loin sur chacune d'elles, nos guides complets sont accessibles ci-dessous.",
+    ],
+    stayRecommendationTitle: 'Vous cherchez un point de chute pour explorer Puerto Viejo ?',
+    activities: [
+      {
+        title: 'Surf Salsa Brava, Cocles ou Playa Negra',
+        description: "Puerto Viejo est l'une des villes de surf les plus connues d'Amérique centrale. Salsa Brava, le récif juste en face de la ville, est réservé aux surfeurs expérimentés et atteint son pic entre décembre et février. Playa Cocles, avec son fond sablonneux, convient mieux aux débutants et aux surfeurs de niveau intermédiaire, tandis que Playa Negra se situe entre les deux. Les boutiques de surf en ville louent des planches et proposent des cours presque toute l'année.",
+      },
+      {
+        title: 'Se baigner et bronzer le long de la côte',
+        description: "Au sud de la ville, le littoral enchaîne certaines des plus belles plages du Costa Rica — Cocles, Chiquita, Punta Uva et Manzanillo ont chacune leur propre caractère, entre ambiance animée et propice au surf, et criques tranquilles à l'ombre de la forêt tropicale.",
+        linkText: 'Lire notre guide complet plage par plage →',
+      },
+      {
+        title: 'Randonner dans le parc national de Cahuita',
+        description: "Un sentier plat et facile longe la lisière de la jungle et la plage ; c'est l'un des meilleurs endroits de la côte pour observer singes, paresseux et coatis sans guide. Le récif au large se prête bien au snorkeling les jours de mer calme.",
+        linkText: 'Voir notre guide complet du parc national de Cahuita →',
+      },
+      {
+        title: 'Explorer la réserve naturelle de Gandoca-Manzanillo',
+        description: "Au sud de Manzanillo, cette réserve protège mangroves, récif corallien et un sentier côtier plus calme et plus sauvage que celui de Cahuita. C'est une excursion idéale pour une demi-journée, pour qui cherche la nature sans la foule.",
+        linkText: 'Lire notre guide complet de Gandoca-Manzanillo →',
+      },
+      {
+        title: 'Observer la faune locale de près dans un centre de sauvetage',
+        description: "La Caraïbe Sud abrite quelques centres de sauvetage et de réhabilitation de la faune très réputés, où paresseux, singes et autres animaux blessés ou orphelins se rétablissent avant d'être relâchés. La plupart proposent de courtes visites guidées qui expliquent l'histoire de chaque animal.",
+      },
+      {
+        title: 'Faire une visite du cacao et découvrir la culture bribri',
+        description: "De petites plantations de cacao familiales autour de Puerto Viejo font découvrir tout le processus, de la cabosse à la tablette ; beaucoup sont tenues par la communauté indigène bribri, ou y sont liées, dont les terres ancestrales bordent la ville. C'est l'une des meilleures façons de comprendre la région au-delà de la plage.",
+        linkText: 'En savoir plus sur la culture indigène près de Puerto Viejo →',
+      },
+      {
+        title: 'Se rafraîchir aux cascades de Ma-Cuu',
+        description: "À quelques minutes de route du centre-ville, ce petit ensemble de cascades en pleine jungle offre une série de bassins naturels où se baigner, à différentes hauteurs. C'est une bonne excursion d'une demi-journée pour profiter de paysages de jungle sans long trajet.",
+      },
+      {
+        title: 'Flâner au marché fermier du samedi',
+        description: 'Si vous êtes sur place un samedi, le marché fermier du centre-ville mérite une visite matinale — fruits et légumes bio, artisanat fait main venu de toute la Caraïbe Sud, et un bon aperçu de la vie quotidienne loin de la zone touristique.',
+      },
+      {
+        title: 'Se déplacer à vélo',
+        description: 'Le vélo est le moyen le plus simple de circuler entre les plages, les restaurants et le centre-ville — la plupart des hébergements de la région en fournissent ou peuvent organiser une location. La route côtière est plate et en grande partie ombragée.',
+      },
+      {
+        title: 'Prévoir un plan B pour les jours de pluie',
+        description: "La côte caribéenne n'a pas vraiment de saison sèche, mieux vaut donc savoir quoi faire quand une averse arrive. Une visite du cacao, un centre de sauvetage de la faune ou un déjeuner tranquille à l'abri sont toujours de bonnes options quand le temps ne coopère pas.",
+        linkText: 'Voir notre guide météo mois par mois →',
+      },
+    ],
+    itineraryHeading: 'Combien de jours faut-il prévoir ?',
+    itineraryParagraphs: [
+      "Trois jours suffisent pour vraiment prendre le pouls de Puerto Viejo : une journée plage, un parc ou une réserve, et du temps pour flâner en ville. Cinq à sept jours permettent d'ajouter un centre de sauvetage de la faune, une visite du cacao et une excursion plus loin sur la côte, sans se presser.",
+      "Puerto Viejo demandant un peu d'effort pour y arriver, mieux vaut l'associer à quelques autres étapes dans le cadre d'un séjour plus long au Costa Rica, plutôt que de s'y arrêter pour une seule nuit.",
+    ],
+    itineraryLinkText: 'Comparer tous les moyens de rejoindre Puerto Viejo depuis San José →',
+    takeawaysHeading: 'En résumé',
+    takeawaysParagraph: 'Puerto Viejo se savoure à un rythme tranquille : choisissez deux ou trois activités par jour, gardez de la marge pour adapter vos plans à la météo, et déplacez-vous à vélo. Que vous couriez après les vagues, la faune ou simplement une plage tranquille, tout est à portée de la ville.',
+  },
+  it: {
+    seoTitle: 'Cosa fare a Puerto Viejo, Costa Rica: la guida completa',
+    seoDescription:
+      'Dalla leggendaria onda di Salsa Brava ai santuari per bradipi e alle cascate della giungla — tutto quello che vale la pena fare a Puerto Viejo de Talamanca, la rilassata costa caraibica del Costa Rica.',
+    heading: 'Cosa fare a Puerto Viejo, Costa Rica: la guida completa',
+    heroAlt: 'Spiaggia bordata di palme e costa di giungla a Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      "Puerto Viejo de Talamanca racchiude un mix insolito in un piccolo tratto di costa caraibica: un'onda da surf di livello mondiale, un parco nazionale rilassato pieno di bradipi e scimmie, comunità indigene Bribri che coltivano ancora il cacao alla vecchia maniera, e alcune delle spiagge più calme e cristalline del Costa Rica. Qui conviene rallentare: la maggior parte di quello che vale la pena fare è a pochi minuti di bicicletta dal paese.",
+      'Questa guida raccoglie tutto ciò che vale la pena fare, dai classici alle chicche meno note. Per approfondire ognuna di queste attività, qui sotto trovate i link alle nostre guide complete.',
+    ],
+    stayRecommendationTitle: 'In cerca di una base da cui esplorare Puerto Viejo?',
+    activities: [
+      {
+        title: 'Fai surf a Salsa Brava, Cocles o Playa Negra',
+        description: "Puerto Viejo è una delle città surf più conosciute dell'America Centrale. Salsa Brava, l'onda che si forma proprio davanti al paese, è riservata ai surfisti esperti e raggiunge il suo picco tra dicembre e febbraio. Playa Cocles è più adatta a principianti e surfisti di livello intermedio, grazie al fondale sabbioso, mentre Playa Negra si trova a metà strada tra le due. I surf shop in paese noleggiano tavole e organizzano lezioni per gran parte dell'anno.",
+      },
+      {
+        title: 'Nuota e prendi il sole lungo la costa',
+        description: 'La costa a sud del paese collega alcune delle spiagge più belle del Costa Rica: Cocles, Chiquita, Punta Uva e Manzanillo hanno ciascuna un carattere diverso, da quelle vivaci e amate dai surfisti a calette tranquille ombreggiate dalla foresta pluviale.',
+        linkText: 'Leggi la nostra guida completa spiaggia per spiaggia →',
+      },
+      {
+        title: 'Fai trekking nel Parco Nazionale di Cahuita',
+        description: 'Un sentiero pianeggiante e facile costeggia il confine tra la giungla e la spiaggia, ed è uno dei posti più affidabili della costa per avvistare scimmie, bradipi e coati senza una guida. La barriera corallina al largo è ottima per fare snorkeling nelle giornate di mare calmo.',
+        linkText: 'Leggi la nostra guida completa al Parco Nazionale di Cahuita →',
+      },
+      {
+        title: 'Esplora il Rifugio di Fauna Selvatica Gandoca-Manzanillo',
+        description: 'A sud di Manzanillo, questo rifugio protegge mangrovie, barriera corallina e un sentiero costiero più tranquillo e selvaggio rispetto a Cahuita. È una buona gita di mezza giornata per chi cerca la natura senza la folla.',
+        linkText: 'Leggi la nostra guida completa a Gandoca-Manzanillo →',
+      },
+      {
+        title: 'Osserva da vicino la fauna locale in un centro di recupero',
+        description: 'Nei Caraibi Sud si trovano un paio di centri di recupero e riabilitazione della fauna selvatica molto apprezzati, dove bradipi, scimmie e altri animali feriti o orfani si riprendono prima di essere reintrodotti in natura. La maggior parte organizza brevi tour guidati che spiegano la storia di ciascun animale.',
+      },
+      {
+        title: 'Fai un tour del cioccolato e scopri la cultura Bribri',
+        description: "Piccole fattorie di cacao a conduzione familiare intorno a Puerto Viejo mostrano l'intero processo, dalla cabossa alla tavoletta, e molte sono gestite da o legate alla comunità indigena Bribri, la cui terra ancestrale confina con il paese. È uno dei modi migliori per conoscere la regione al di là della spiaggia.",
+        linkText: 'Scopri di più sulla cultura indigena vicino a Puerto Viejo →',
+      },
+      {
+        title: 'Rinfrescati alle cascate di Ma-Cuu',
+        description: 'A breve distanza in auto dal paese, questo piccolo gruppo di cascate nella giungla offre una serie di piscine naturali a diverse altezze in cui nuotare. È una buona gita di mezza giornata per chi vuole paesaggi di giungla senza un lungo viaggio.',
+      },
+      {
+        title: 'Visita il mercato dei contadini del sabato',
+        description: "Se vi trovate in zona di sabato, vale la pena visitare presto il mercato dei contadini nel centro del paese: frutta e verdura biologiche e artigianato fatto a mano da tutta l'area dei Caraibi Sud, oltre a un buon assaggio della vita quotidiana lontano dal circuito turistico.",
+      },
+      {
+        title: 'Spostati in bicicletta',
+        description: 'La bicicletta è il modo più semplice per spostarsi tra spiagge, ristoranti e il centro del paese: la maggior parte degli alloggi della zona le mette a disposizione oppure può organizzare un noleggio. La strada costiera è pianeggiante e per lo più ombreggiata.',
+      },
+      {
+        title: 'Prepara un piano B per i giorni di pioggia',
+        description: 'La costa caraibica non ha una vera stagione secca, quindi conviene sapere cosa fare quando arriva un acquazzone. I tour del cioccolato, i centri di recupero della fauna selvatica e un pranzo tranquillo al riparo sono tutte buone opzioni quando il tempo non collabora.',
+        linkText: 'Consulta la nostra guida meteo mese per mese →',
+      },
+    ],
+    itineraryHeading: 'Di quanti giorni avete bisogno?',
+    itineraryParagraphs: [
+      "Tre giorni bastano per farsi un'idea autentica di Puerto Viejo: una giornata di spiaggia, un parco o un rifugio, e un po' di tempo per girare per il paese. Cinque o sette giorni permettono di aggiungere un centro di recupero della fauna, un tour del cioccolato e una gita più lontana lungo la costa senza avere fretta.",
+      'Dato che raggiungere Puerto Viejo richiede un certo impegno, conviene abbinarlo ad almeno qualche altra tappa in un viaggio più lungo in Costa Rica, invece di una rapida visita di una notte.',
+    ],
+    itineraryLinkText: 'Confronta tutti i modi per arrivare qui da San José →',
+    takeawaysHeading: 'In sintesi',
+    takeawaysParagraph: 'Puerto Viejo premia un ritmo più lento: scegliete due o tre attività al giorno, lasciate spazio per cambiare programma in base al meteo e spostatevi in bicicletta. Che stiate cercando onde, fauna selvatica o semplicemente una spiaggia tranquilla, è tutto facilmente raggiungibile dal paese.',
+  },
+  pt: {
+    seoTitle: 'O Que Fazer em Puerto Viejo, Costa Rica: O Guia Completo',
+    seoDescription:
+      "Desde a lendária onda de recife de Salsa Brava até santuários de preguiças e quedas de água na selva — tudo o que vale a pena fazer em Puerto Viejo de Talamanca, a descontraída costa caribenha da Costa Rica.",
+    heading: 'O Que Fazer em Puerto Viejo, Costa Rica: O Guia Completo',
+    heroAlt: 'Praia ladeada por palmeiras e costa de selva em Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      "Puerto Viejo de Talamanca reúne uma mistura pouco comum num pequeno troço de costa caribenha: uma onda de recife de nível mundial, um parque nacional descontraído repleto de preguiças e macacos, comunidades indígenas Bribri que ainda cultivam cacau à moda antiga, e algumas das praias mais calmas e límpidas da Costa Rica. Compensa abrandar o ritmo — a maior parte do que vale a pena fazer aqui fica a um curto trajeto de bicicleta da cidade.",
+      "Este guia reúne tudo o que vale a pena fazer, desde os clássicos até ao que passa mais facilmente despercebido. Para um aprofundamento sobre qualquer um deles, deixamos abaixo os links para os nossos guias completos.",
+    ],
+    stayRecommendationTitle: 'À procura de uma base para explorar Puerto Viejo?',
+    activities: [
+      {
+        title: 'Surfar em Salsa Brava, Cocles ou Playa Negra',
+        description: 'Puerto Viejo é uma das cidades de surf mais conhecidas da América Central. Salsa Brava, a onda de recife mesmo em frente à cidade, é só para surfistas experientes e atinge o auge entre dezembro e fevereiro. Playa Cocles é mais amigável para principiantes e intermédios, com fundo de areia, e Playa Negra fica a meio-termo. As lojas de surf na cidade alugam pranchas e dão aulas durante quase todo o ano.',
+      },
+      {
+        title: 'Nadar e apanhar sol ao longo da costa',
+        description: "A costa a sul da cidade encadeia algumas das melhores praias da Costa Rica — Cocles, Chiquita, Punta Uva e Manzanillo têm cada uma um caráter diferente, desde animadas e propícias ao surf até enseadas tranquilas sombreadas pela floresta tropical.",
+        linkText: 'Leia o nosso guia completo praia a praia →',
+      },
+      {
+        title: 'Caminhar no Parque Nacional de Cahuita',
+        description: "Um trilho plano e fácil segue ao longo da fronteira entre a selva e a praia, e é um dos locais mais fiáveis da costa para avistar macacos, preguiças e quatis sem guia. O recife ao largo é bom para snorkeling num dia calmo.",
+        linkText: 'Veja o nosso guia completo do Parque Nacional de Cahuita →',
+      },
+      {
+        title: 'Explorar o Refúgio de Vida Silvestre Gandoca-Manzanillo',
+        description: "A sul de Manzanillo, este refúgio protege mangais, recife de coral e um trilho costeiro mais tranquilo e selvagem do que o de Cahuita. É um bom passeio de meio dia para quem quer natureza sem multidões.",
+        linkText: 'Leia o nosso guia completo de Gandoca-Manzanillo →',
+      },
+      {
+        title: 'Conhecer de perto a fauna local num centro de resgate',
+        description: 'O Caribe Sul é lar de alguns centros de resgate e reabilitação de vida selvagem bem conceituados, onde preguiças, macacos e outros animais feridos ou órfãos recuperam antes de serem libertados. A maioria oferece pequenas visitas guiadas que explicam a razão de cada animal estar ali.',
+      },
+      {
+        title: 'Fazer um tour de chocolate e conhecer a cultura Bribri',
+        description: "Pequenas quintas de cacau geridas por famílias nos arredores de Puerto Viejo mostram todo o processo, da vagem à tablete, e muitas são geridas por, ou estão ligadas à, comunidade indígena Bribri, cujas terras ancestrais fazem fronteira com a cidade. É uma das melhores formas de compreender a região para além da praia.",
+        linkText: 'Leia mais sobre a cultura indígena perto de Puerto Viejo →',
+      },
+      {
+        title: 'Refrescar-se nas quedas de água de Ma-Cuu',
+        description: "A uma curta distância de carro da cidade, este pequeno conjunto de quedas de água na selva tem uma série de piscinas naturais para nadar, a diferentes alturas. É um bom passeio de meio dia para quem quer paisagens de selva sem uma viagem longa.",
+      },
+      {
+        title: 'Visitar o mercado de produtores de sábado',
+        description: "Se estiver por perto num sábado, vale a pena visitar cedo o mercado de produtores local no centro da cidade — fruta e vegetais biológicos e artesanato feito à mão de toda a região do Caribe Sul, além de uma boa perceção do dia a dia para lá da faixa turística.",
+      },
+      {
+        title: 'Deslocar-se de bicicleta',
+        description: 'As bicicletas são a forma mais fácil de circular entre as praias, os restaurantes e o centro da cidade — a maioria dos alojamentos na zona disponibiliza-as ou consegue tratar de um aluguer. A estrada costeira é plana e maioritariamente sombreada.',
+      },
+      {
+        title: 'Ter um plano alternativo para dias de chuva',
+        description: "A costa caribenha não tem uma verdadeira estação seca, por isso vale a pena saber o que fazer quando cai um aguaceiro. Tours de chocolate, os centros de resgate de vida selvagem e um almoço demorado nalgum sítio coberto funcionam bem quando o tempo não ajuda.",
+        linkText: 'Veja o nosso guia do clima mês a mês →',
+      },
+    ],
+    itineraryHeading: 'Quantos dias são necessários?',
+    itineraryParagraphs: [
+      'Três dias são suficientes para sentir verdadeiramente Puerto Viejo: um dia de praia, um parque ou refúgio, e tempo para passear pela cidade. Cinco a sete dias permitem acrescentar um centro de resgate de vida selvagem, um tour de chocolate e uma excursão de um dia mais longe ao longo da costa, sem sensação de pressa.',
+      "Como chegar a Puerto Viejo exige algum esforço, vale a pena combiná-lo com pelo menos mais algumas paragens numa viagem mais longa pela Costa Rica, em vez de uma visita rápida de uma noite.",
+    ],
+    itineraryLinkText: 'Compare todas as formas de chegar aqui a partir de San José →',
+    takeawaysHeading: 'Conclusão',
+    takeawaysParagraph: "Puerto Viejo compensa um ritmo mais lento: escolha duas ou três atividades por dia, deixe margem para ajustar os planos consoante o tempo, e desloque-se de bicicleta. Quer esteja à procura de ondas, vida selvagem ou apenas uma praia tranquila, está tudo a um curto alcance da cidade.",
+  },
+  he: {
+    seoTitle: 'דברים לעשות ב-Puerto Viejo, Costa Rica: המדריך המלא',
+    seoDescription:
+      'משובר הגלים האגדי של Salsa Brava ועד מקלטי עצלנים ומפלים ביער — כל מה שכדאי לעשות ב-Puerto Viejo de Talamanca, החוף הקריבי הרגוע של Costa Rica.',
+    heading: 'דברים לעשות ב-Puerto Viejo, Costa Rica: המדריך המלא',
+    heroAlt: 'חוף עטור דקלים וקו חוף יערי ב-Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>תמונה: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca דוחסת לתוך פס חוף קריבי קצר אחד שילוב יוצא דופן: שובר גלים ברמה עולמית, פארק לאומי רגוע ומלא עצלנים וקופים, קהילות ילידי Bribri שעדיין מגדלות קקאו בשיטה המסורתית, וכמה מהחופים השקטים והצלולים ביותר ב-Costa Rica. כדאי להאט כאן את הקצב — רוב מה שכדאי לעשות נמצא במרחק רכיבת אופניים קצרה מהעיר.',
+      'המדריך הזה מרכז את כל מה שכדאי לעשות, מהקלאסיקות ועד לדברים שקל לפספס. לצלילה מעמיקה יותר בכל אחת מהפעילויות, קישרנו למטה למדריכים המלאים שלנו.',
+    ],
+    stayRecommendationTitle: 'מחפשים בסיס נוח לטייל ממנו ב-Puerto Viejo?',
+    activities: [
+      {
+        title: 'לגלוש ב-Salsa Brava, Cocles או Playa Negra',
+        description: 'Puerto Viejo היא אחת מערי הגלישה המוכרות ביותר במרכז אמריקה. Salsa Brava, שובר הגלים ממש מול העיר, מיועד לגולשים מנוסים בלבד ומגיע לשיאו בין דצמבר לפברואר. Playa Cocles ידידותית יותר למתחילים ולרמת ביניים, עם קרקעית חולית, ו-Playa Negra נמצאת איפשהו באמצע. חנויות הגלישה בעיר משכירות גלשנים ומעבירות שיעורים ברוב חודשי השנה.',
+      },
+      {
+        title: 'לשחות ולהשתזף לאורך החוף',
+        description: 'קו החוף מדרום לעיר מחבר בין כמה מהחופים היפים ביותר ב-Costa Rica — Cocles, Chiquita, Punta Uva ו-Manzanillo, וכל אחד מהם עם אופי משלו, מחוף תוסס וידידותי לגולשים ועד למפרצונים שקטים המוצלים ביער הגשם.',
+        linkText: 'קראו את המדריך המלא שלנו, חוף אחרי חוף →',
+      },
+      {
+        title: 'לטייל ברגל בפארק הלאומי Cahuita',
+        description: 'שביל קל ומישורי עובר לאורך קצה היער והחוף, וזה אחד המקומות הבטוחים ביותר לאורך החוף לצפות בקופים, עצלנים וקואטים בלי מדריך. השונית שמול החוף טובה לשנורקלינג בימים שקטים.',
+        linkText: 'ראו את המדריך המלא שלנו לפארק הלאומי Cahuita →',
+      },
+      {
+        title: 'לחקור את שמורת הטבע Gandoca-Manzanillo',
+        description: 'מדרום ל-Manzanillo, השמורה הזו מגנה על מנגרובים, שונית אלמוגים ושביל חוף שקט ופראי יותר מזה שב-Cahuita. זהו טיול נעים לחצי יום לכל מי שמחפש טבע בלי ההמונים.',
+        linkText: 'קראו את המדריך המלא שלנו ל-Gandoca-Manzanillo →',
+      },
+      {
+        title: 'להכיר מקרוב את חיות הבר המקומיות במרכז הצלה',
+        description: 'באזור הקריביים הדרומי פועלים כמה מרכזי הצלה ושיקום לחיות בר בעלי שם טוב, שם מחלימים עצלנים, קופים ובעלי חיים נוספים שנפצעו או התייתמו, לפני שהם משוחררים חזרה לטבע. רוב המרכזים מציעים סיורים קצרים עם מדריך, שבהם מסבירים מה הסיפור מאחורי כל חיה.',
+      },
+      {
+        title: 'לצאת לסיור שוקולד וללמוד על תרבות ה-Bribri',
+        description: 'חוות קקאו קטנות ומשפחתיות מסביב ל-Puerto Viejo מלוות אתכם לאורך כל התהליך, מהפרי ועד לחפיסת השוקולד, ורבות מהן מנוהלות בידי בני קהילת הילידים Bribri או קשורות אליה — קהילה שאדמות אבותיה גובלות בעיר. זו אחת הדרכים הטובות ביותר להכיר את האזור מעבר לחוף.',
+        linkText: 'קראו עוד על תרבות הילידים ליד Puerto Viejo →',
+      },
+      {
+        title: 'להתקרר במפלי Ma-Cuu',
+        description: 'במרחק נסיעה קצרה מהעיר, אשכול המפלים הקטן הזה שביער מציע שורה של בריכות טבעיות לשחייה, בגבהים שונים. זהו טיול נעים לחצי יום למי שרוצה נופי יער בלי מסע ארוך.',
+      },
+      {
+        title: 'לבקר בשוק האיכרים של יום שבת',
+        description: 'אם אתם באזור בשבת, שוק האיכרים המקומי במרכז העיר שווה ביקור מוקדם — פירות וירקות אורגניים ומלאכת יד מכל רחבי הקריביים הדרומי, והצצה נעימה לחיי היומיום מעבר לרצועת התיירים.',
+      },
+      {
+        title: 'להתנייד באופניים',
+        description: 'אופניים הם הדרך הכי נוחה לזוז בין החופים, המסעדות ומרכז העיר — רוב מקומות האירוח באזור מספקים אופניים או יכולים לארגן השכרה. הכביש החופי מישורי ומוצל ברובו.',
+      },
+      {
+        title: 'לתכנן גיבוי לימים גשומים',
+        description: 'לחוף הקריבי אין באמת עונה יבשה, אז כדאי לדעת מה לעשות כשמגיע גשם זלעפות. סיורי שוקולד, מרכזי הצלת חיות הבר וארוחת צהריים איטית במקום מקורה — כל אלה עובדים מצוין כשמזג האוויר לא משתף פעולה.',
+        linkText: 'ראו את מדריך מזג האוויר החודשי שלנו →',
+      },
+    ],
+    itineraryHeading: 'כמה ימים צריך?',
+    itineraryParagraphs: [
+      'שלושה ימים מספיקים כדי לקבל תחושה אמיתית של Puerto Viejo: יום חוף, פארק או שמורה אחת, וזמן פנוי לשוטט בעיר. חמישה עד שבעה ימים מאפשרים להוסיף מרכז הצלת חיות בר, סיור שוקולד, ויום טיול הלאה לאורך החוף, בלי להרגיש בלחץ.',
+      'מכיוון שההגעה ל-Puerto Viejo דורשת מאמץ מסוים, כדאי לשלב אותה עם עוד כמה תחנות בטיול ארוך יותר ב-Costa Rica, ולא להסתפק בביקור קצר של לילה אחד.',
+    ],
+    itineraryLinkText: 'השוו בין כל הדרכים להגיע לכאן מ-San José →',
+    takeawaysHeading: 'לסיכום',
+    takeawaysParagraph: 'Puerto Viejo מתגמלת קצב איטי: בחרו שתיים-שלוש פעילויות ליום, השאירו מקום לשנות תוכניות בהתאם למזג האוויר, והתניידו באופניים. בין אם אתם מחפשים גלים, חיות בר או סתם חוף שקט, הכול נמצא במרחק נגיעה מהעיר.',
+  },
+  hi: {
+    seoTitle: 'Puerto Viejo, Costa Rica में करने के लिए चीज़ें: पूरी गाइड',
+    seoDescription:
+      'Salsa Brava की मशहूर रीफ ब्रेक से लेकर स्लॉथ सैंक्चुअरी और जंगल के झरनों तक — Puerto Viejo de Talamanca, Costa Rica के इस बेफ़िक्र कैरिबियन तट पर करने लायक हर चीज़।',
+    heading: 'Puerto Viejo, Costa Rica में करने के लिए चीज़ें: पूरी गाइड',
+    heroAlt: 'Puerto Viejo de Talamanca, Costa Rica में नारियल के पेड़ों से घिरा समुद्र तट और जंगल का किनारा',
+    photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca कैरिबियन तट के एक छोटे से हिस्से में एक अनोखा मिश्रण समेटे हुए है: विश्वस्तरीय रीफ ब्रेक, स्लॉथ और बंदरों से भरा बेफ़िक्र नेशनल पार्क, Bribri आदिवासी समुदाय जो आज भी पुराने तरीके से कोको उगाते हैं, और Costa Rica के कुछ सबसे शांत व साफ़ समुद्र तट। यहाँ रफ़्तार धीमी करने का फ़ायदा मिलता है — यहाँ करने लायक ज़्यादातर चीज़ें कस्बे से बस थोड़ी दूर साइकिल पर हैं।',
+      'यह गाइड यहाँ करने लायक हर चीज़ को एक जगह लाती है — मशहूर जगहों से लेकर उन तक जिन्हें अक्सर लोग नज़रअंदाज़ कर देते हैं। किसी भी एक के बारे में गहराई से जानने के लिए, नीचे हमारी पूरी गाइड्स के लिंक दिए गए हैं।',
+    ],
+    stayRecommendationTitle: 'Puerto Viejo घूमने के लिए ठहरने की जगह ढूंढ रहे हैं?',
+    activities: [
+      {
+        title: 'Salsa Brava, Cocles या Playa Negra में सर्फ़िंग करें',
+        description: 'Puerto Viejo मध्य अमेरिका के सबसे मशहूर सर्फ़ शहरों में से एक है। कस्बे के ठीक सामने की रीफ ब्रेक Salsa Brava सिर्फ़ अनुभवी सर्फ़रों के लिए है और दिसंबर से फ़रवरी के बीच अपने चरम पर रहती है। Playa Cocles का रेतीला तल इसे शुरुआती और मध्यम स्तर के सर्फ़रों के लिए ज़्यादा अनुकूल बनाता है, जबकि Playa Negra इन दोनों के बीच कहीं आता है। कस्बे की सर्फ़ शॉप्स साल के ज़्यादातर हिस्से में बोर्ड किराए पर देती हैं और सबक भी सिखाती हैं।',
+      },
+      {
+        title: 'तट के किनारे तैराकी और धूप सेंकें',
+        description: 'कस्बे के दक्षिण में फैला तट Costa Rica के कुछ सबसे बेहतरीन समुद्र तटों को आपस में जोड़ता है — Cocles, Chiquita, Punta Uva और Manzanillo, हर एक का अपना अलग मिज़ाज है, कहीं चहल-पहल और सर्फ़िंग के अनुकूल माहौल तो कहीं वर्षावन की छाया में बसी शांत खाड़ियाँ।',
+        linkText: 'हमारी पूरी बीच-दर-बीच गाइड पढ़ें →',
+      },
+      {
+        title: 'Cahuita National Park में हाइकिंग करें',
+        description: 'यहाँ जंगल और समुद्र तट के किनारे-किनारे एक सपाट, आसान ट्रेल चलता है, और यह तट पर बिना गाइड के बंदर, स्लॉथ और कोआती देखने के लिए सबसे भरोसेमंद जगहों में से एक है। शांत दिन में तट के पास की रीफ स्नॉर्कलिंग के लिए भी अच्छी रहती है।',
+        linkText: 'हमारी पूरी Cahuita National Park गाइड देखें →',
+      },
+      {
+        title: 'Gandoca-Manzanillo Wildlife Refuge घूमें',
+        description: 'Manzanillo के दक्षिण में स्थित यह रिफ्यूज मैंग्रोव, कोरल रीफ और एक तटीय ट्रेल की रक्षा करता है, जो Cahuita से कहीं ज़्यादा शांत और जंगली है। भीड़ से दूर प्रकृति का आनंद लेने वालों के लिए यह आधे दिन की अच्छी सैर है।',
+        linkText: 'हमारी पूरी Gandoca-Manzanillo गाइड पढ़ें →',
+      },
+      {
+        title: 'रेस्क्यू सेंटर में स्थानीय वन्यजीवों को नज़दीक से देखें',
+        description: 'साउथ कैरिबियन क्षेत्र में कुछ जाने-माने वन्यजीव रेस्क्यू और पुनर्वास केंद्र हैं, जहाँ घायल या अनाथ स्लॉथ, बंदर और दूसरे जानवर छोड़े जाने से पहले स्वस्थ होते हैं। ज़्यादातर केंद्र छोटे गाइडेड टूर चलाते हैं, जिनमें बताया जाता है कि हर जानवर वहाँ क्यों है।',
+      },
+      {
+        title: 'चॉकलेट टूर लें और Bribri संस्कृति के बारे में जानें',
+        description: 'Puerto Viejo के आस-पास छोटे, पारिवारिक कोको फ़ार्म आपको पूरी प्रक्रिया दिखाते हैं, फली से लेकर चॉकलेट बार तक, और इनमें से कई Bribri आदिवासी समुदाय द्वारा चलाए जाते हैं या उनसे जुड़े हैं, जिनकी पुश्तैनी ज़मीन कस्बे से सटी हुई है। समुद्र तट से आगे इस इलाके को समझने का यह सबसे अच्छा तरीका है।',
+        linkText: 'Puerto Viejo के पास की आदिवासी संस्कृति के बारे में और पढ़ें →',
+      },
+      {
+        title: 'Ma-Cuu झरनों में ठंडक लें',
+        description: 'कस्बे से थोड़ी ही दूरी पर, जंगल के इन छोटे झरनों में अलग-अलग ऊँचाइयों पर तैरने के लिए कई प्राकृतिक तालाब हैं। अगर आप लंबी यात्रा किए बिना जंगल के नज़ारे देखना चाहते हैं, तो यह आधे दिन की अच्छी सैर है।',
+      },
+      {
+        title: 'शनिवार के फ़ार्मर्स मार्केट में घूमें',
+        description: 'अगर आप शनिवार को यहाँ हों, तो कस्बे के बीचोंबीच लगने वाला स्थानीय फ़ार्मर्स मार्केट सुबह-सुबह देखने लायक है — साउथ कैरिबियन के आस-पास से आया ऑर्गेनिक फल, सब्ज़ियाँ और हाथ से बने शिल्प, और पर्यटकों की भीड़ से हटकर यहाँ की रोज़मर्रा की ज़िंदगी की एक झलक।',
+      },
+      {
+        title: 'साइकिल से घूमें',
+        description: 'समुद्र तटों, रेस्टोरेंट और कस्बे के बीच आने-जाने का सबसे आसान तरीका साइकिल है — इलाके के ज़्यादातर ठहरने के ठिकाने या तो साइकिल देते हैं या किराए पर दिलवा सकते हैं। तटीय सड़क सपाट है और ज़्यादातर छायादार भी।',
+      },
+      {
+        title: 'बारिश के दिनों के लिए एक बैकअप योजना रखें',
+        description: 'कैरिबियन तट पर असल में कोई सूखा मौसम नहीं होता, इसलिए यह जानना ज़रूरी है कि बारिश आने पर क्या किया जाए। जब मौसम साथ न दे, तो चॉकलेट टूर, वन्यजीव रेस्क्यू सेंटर या किसी छत के नीचे इत्मीनान से लंच — ये सब अच्छे विकल्प हैं।',
+        linkText: 'हमारी महीने-दर-महीने मौसम गाइड देखें →',
+      },
+    ],
+    itineraryHeading: 'आपको कितने दिन चाहिए?',
+    itineraryParagraphs: [
+      'Puerto Viejo का असली एहसास पाने के लिए तीन दिन काफ़ी हैं: एक दिन समुद्र तट पर, एक पार्क या रिफ्यूज देखने में, और बाकी समय कस्बे में घूमने-फिरने में। पाँच से सात दिन में आप बिना जल्दबाज़ी किए वन्यजीव रेस्क्यू सेंटर, चॉकलेट टूर और तट पर आगे किसी दिन की सैर भी जोड़ सकते हैं।',
+      'चूँकि Puerto Viejo तक पहुँचने में थोड़ी मेहनत लगती है, इसलिए एक रात की जल्दबाज़ी भरी यात्रा के बजाय इसे Costa Rica की किसी लंबी यात्रा में कम से कम कुछ और पड़ावों के साथ जोड़ना बेहतर रहता है।',
+    ],
+    itineraryLinkText: 'San José से यहाँ पहुँचने के सभी तरीकों की तुलना करें →',
+    takeawaysHeading: 'निष्कर्ष',
+    takeawaysParagraph: 'Puerto Viejo में धीमी रफ़्तार का फ़ायदा मिलता है: एक दिन में दो-तीन गतिविधियाँ चुनें, मौसम के हिसाब से योजना बदलने की गुंजाइश रखें, और साइकिल से घूमें। चाहे आप लहरों के पीछे भाग रहे हों, वन्यजीवों की तलाश में हों या बस किसी शांत समुद्र तट की, कस्बे से सब कुछ आसानी से पास ही है।',
+  },
+  nl: {
+    seoTitle: 'Wat te doen in Puerto Viejo, Costa Rica: De Complete Gids',
+    seoDescription:
+      'Van de legendarische reefbreak bij Salsa Brava tot luiaardopvangcentra en jungle-watervallen — alles wat de moeite waard is in Puerto Viejo de Talamanca, de relaxte Caribische kust van Costa Rica.',
+    heading: 'Wat te doen in Puerto Viejo, Costa Rica: De Complete Gids',
+    heroAlt: 'Strand met palmbomen en jungle langs de kust van Puerto Viejo de Talamanca, Costa Rica',
+    photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Puerto Viejo de Talamanca verenigt een ongewone mix in één klein stukje Caribische kust: een wereldberoemde reefbreak, een ontspannen nationaal park vol luiaards en apen, Bribri-gemeenschappen die cacao nog op traditionele wijze verbouwen, en enkele van de rustigste, helderste stranden van Costa Rica. Het is de moeite waard om het rustig aan te doen — het meeste dat de moeite waard is, ligt op fietsafstand van het dorp.',
+      'Deze gids zet alles op een rij wat de moeite waard is, van de klassiekers tot de dingen die je makkelijk over het hoofd ziet. Wil je dieper op een van deze onderwerpen ingaan? Hieronder linken we naar onze uitgebreide gidsen.',
+    ],
+    stayRecommendationTitle: 'Op zoek naar een uitvalsbasis om Puerto Viejo te verkennen?',
+    activities: [
+      {
+        title: 'Surf bij Salsa Brava, Cocles of Playa Negra',
+        description: 'Puerto Viejo is een van de bekendste surfplaatsen van Midden-Amerika. Salsa Brava, de reefbreak recht voor het dorp, is alleen voor ervaren surfers en is op zijn best tussen december en februari. Playa Cocles is vriendelijker voor beginners en gevorderden, met een zandige bodem, en Playa Negra zit er qua niveau tussenin. Surfwinkels in het dorp verhuren boards en geven het grootste deel van het jaar les.',
+      },
+      {
+        title: 'Zwemmen en zonnen langs de kust',
+        description: 'De kustlijn ten zuiden van het dorp rijgt enkele van de mooiste stranden van Costa Rica aaneen — Cocles, Chiquita, Punta Uva en Manzanillo hebben elk een ander karakter, van levendig en surfvriendelijk tot rustige baaien in de schaduw van het regenwoud.',
+        linkText: 'Lees onze volledige gids per strand →',
+      },
+      {
+        title: 'Wandel door Nationaal Park Cahuita',
+        description: 'Een vlak, makkelijk begaanbaar pad loopt langs de rand van de jungle en het strand, en dit is een van de betrouwbaarste plekken aan de kust om zonder gids apen, luiaards en neusberen te spotten. Het rif voor de kust is bij rustig weer goed voor het snorkelen.',
+        linkText: 'Bekijk onze volledige gids voor Nationaal Park Cahuita →',
+      },
+      {
+        title: 'Verken het wildreservaat Gandoca-Manzanillo',
+        description: 'Ten zuiden van Manzanillo beschermt dit reservaat mangrovebossen, koraalrif en een kustpad dat rustiger en wilder is dan dat van Cahuita. Het is een prima uitstapje van een halve dag voor wie natuur wil zonder de drukte.',
+        linkText: 'Lees onze volledige gids over Gandoca-Manzanillo →',
+      },
+      {
+        title: 'Bekijk lokale dieren van dichtbij in een opvangcentrum',
+        description: 'De Zuid-Caribische kust telt een paar goed aangeschreven opvang- en revalidatiecentra voor dieren, waar gewonde of verweesde luiaards, apen en andere dieren herstellen voordat ze worden vrijgelaten. De meeste bieden korte, begeleide rondleidingen waarbij wordt uitgelegd waarom elk dier daar is.',
+      },
+      {
+        title: 'Maak een chocoladetour en leer over de Bribri-cultuur',
+        description: 'Kleine cacaoboerderijen in familiebezit rond Puerto Viejo nemen je mee door het hele proces, van cacaopeul tot chocoladereep, en veel daarvan worden gerund door of zijn verbonden met de inheemse Bribri-gemeenschap, waarvan de voorouderlijke grond aan het dorp grenst. Het is een van de beste manieren om de regio te leren kennen, verder dan het strand alleen.',
+        linkText: 'Lees meer over de inheemse cultuur bij Puerto Viejo →',
+      },
+      {
+        title: 'Verkoel jezelf bij de watervallen van Ma-Cuu',
+        description: 'Op korte rijafstand van het dorp ligt deze kleine groep jungle-watervallen met een reeks natuurlijke zwembassins op verschillende hoogtes. Het is een prima uitstapje van een halve dag als je junglelandschap wilt zonder een lange reis.',
+      },
+      {
+        title: 'Struin over de zaterdagse boerenmarkt',
+        description: 'Ben je op een zaterdag in de buurt, dan is een vroeg bezoek aan de lokale boerenmarkt in het centrum de moeite waard — biologisch fruit, groenten en handgemaakte ambachten uit de hele Zuid-Caribische regio, en een goed beeld van het dagelijks leven voorbij de toeristische strip.',
+      },
+      {
+        title: 'Verplaats je per fiets',
+        description: 'Fietsen zijn de makkelijkste manier om je tussen stranden, restaurants en het centrum te verplaatsen — de meeste accommodaties in de omgeving stellen ze beschikbaar of kunnen een verhuur regelen. De kustweg is vlak en grotendeels overschaduwd.',
+      },
+      {
+        title: 'Heb een back-upplan voor regenachtige dagen',
+        description: 'De Caribische kust kent geen echt droog seizoen, dus het is handig om te weten wat je kunt doen als er een stortbui aankomt. Chocoladetours, de dierenopvangcentra en een rustige lunch op een overdekte plek werken allemaal prima als het weer tegenzit.',
+        linkText: 'Bekijk onze maand-voor-maand weergids →',
+      },
+    ],
+    itineraryHeading: 'Hoeveel dagen heb je nodig?',
+    itineraryParagraphs: [
+      'Drie dagen zijn genoeg om een echt gevoel voor Puerto Viejo te krijgen: een stranddag, één park of reservaat, en tijd om door het dorp te struinen. Met vijf tot zeven dagen kun je er een dierenopvangcentrum, een chocoladetour en een dagtrip verderop langs de kust aan toevoegen, zonder je gehaast te voelen.',
+      'Omdat Puerto Viejo wat moeite kost om te bereiken, is het de moeite waard om er minstens een paar andere stops bij te combineren tijdens een langere reis door Costa Rica, in plaats van een kort bezoek van één nacht.',
+    ],
+    itineraryLinkText: 'Vergelijk alle manieren om hier vanuit San José te komen →',
+    takeawaysHeading: 'Kortom',
+    takeawaysParagraph: 'Puerto Viejo is gebaat bij een rustig tempo: kies twee of drie activiteiten per dag, houd ruimte om je plannen aan te passen aan het weer, en verplaats je per fiets. Of je nu op zoek bent naar golven, dieren in het wild of gewoon een rustig strand, alles ligt op korte afstand van het dorp.',
+  },
+};
+
+export function thingsToDoContent(locale: Locale): ThingsToDoContent {
+  return thingsToDo[locale] ?? thingsToDo.en!;
+}

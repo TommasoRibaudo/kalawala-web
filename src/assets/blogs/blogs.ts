@@ -194,6 +194,13 @@ export const blogs = [
         text: "How to get from Puerto Viejo, Costa Rica to Bocas del Toro, Panama: the DIY bus-taxi-boat route via the Sixaola border, entry requirements, and private shuttle options compared.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg",
         pictures: ["", ""]
+    },
+    {
+        id: "things-to-do-puerto-viejo",
+        title: "Things to Do in Puerto Viejo, Costa Rica: The Complete Guide",
+        text: "From Salsa Brava's legendary reef break to sloth sanctuaries and jungle waterfalls — everything worth doing in Puerto Viejo de Talamanca, Costa Rica's laid-back Caribbean coast.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205",
+        pictures: ["", ""]
     }
 ]
 export const blogsES = [

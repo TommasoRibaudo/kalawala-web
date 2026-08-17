@@ -92,6 +92,9 @@ const Footer: React.FC<IFooter> = ({ locale }) => {
 
         <div className="footer-bottom">
           <span>Reservas Kalawala &middot; Puerto Viejo de Talamanca, Costa Rica</span>
+          <span className="footer-copyright">
+            &copy; {new Date().getFullYear()} Reservas Kalawala. {m.footer.copyrightNotice}
+          </span>
         </div>
       </div>
     </footer>

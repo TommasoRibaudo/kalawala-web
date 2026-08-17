@@ -34,6 +34,7 @@ export const he: Messages = {
     travelGuides: 'מדריכי טיולים',
     contact: 'צרו קשר',
     chatOnWhatsApp: 'צ׳אט בוואטסאפ',
+    copyrightNotice: 'כל הזכויות שמורות. אין להעתיק או לעשות שימוש חוזר בטקסטים ובתמונות ללא אישור בכתב.',
   },
 
   callToAction: {

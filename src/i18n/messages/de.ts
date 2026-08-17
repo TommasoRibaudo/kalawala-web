@@ -28,6 +28,7 @@ export const de: Messages = {
     travelGuides: 'Reiseführer',
     contact: 'Kontakt',
     chatOnWhatsApp: 'Auf WhatsApp chatten',
+    copyrightNotice: 'Alle Rechte vorbehalten. Texte und Fotos dürfen ohne schriftliche Genehmigung nicht kopiert oder weiterverwendet werden.',
   },
 
   callToAction: {

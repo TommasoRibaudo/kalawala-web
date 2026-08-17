@@ -30,6 +30,7 @@ export const nl: Messages = {
     travelGuides: 'Reisgidsen',
     contact: 'Contact',
     chatOnWhatsApp: 'Chat via WhatsApp',
+    copyrightNotice: 'Alle rechten voorbehouden. Tekst en foto\'s mogen niet zonder schriftelijke toestemming worden gekopieerd of hergebruikt.',
   },
 
   callToAction: {

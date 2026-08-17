@@ -28,6 +28,7 @@ export const hi: Messages = {
     travelGuides: 'यात्रा गाइड',
     contact: 'संपर्क करें',
     chatOnWhatsApp: 'व्हाट्सएप पर चैट करें',
+    copyrightNotice: 'सर्वाधिकार सुरक्षित। लिखित अनुमति के बिना टेक्स्ट और फ़ोटो की नकल या पुन: उपयोग नहीं किया जा सकता।',
   },
 
   callToAction: {

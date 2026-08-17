@@ -23,6 +23,7 @@ export const es: Messages = {
     travelGuides: 'Guías de Viaje',
     contact: 'Contacto',
     chatOnWhatsApp: 'Chatear por WhatsApp',
+    copyrightNotice: 'Todos los derechos reservados. El texto y las fotos no pueden copiarse ni reutilizarse sin permiso escrito.',
   },
 
   callToAction: {

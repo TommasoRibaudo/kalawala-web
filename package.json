@@ -2,6 +2,7 @@
   "name": "kalawala-web",
   "version": "0.1.0",
   "private": true,
+  "license": "AGPL-3.0-only",
   "homepage": "/",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.3.0",

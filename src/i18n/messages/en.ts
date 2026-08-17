@@ -35,6 +35,7 @@ export const en = {
     travelGuides: 'Travel Guides',
     contact: 'Contact',
     chatOnWhatsApp: 'Chat on WhatsApp',
+    copyrightNotice: 'All rights reserved. Text and photos may not be copied or reused without written permission.',
   },
 
   callToAction: {

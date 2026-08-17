@@ -2,6 +2,7 @@
   "name": "@kalawala/booking-api",
   "version": "0.1.0",
   "private": true,
+  "license": "AGPL-3.0-only",
   "description": "AWS Lambda booking API scaffold for Kalawala's Smoobu-backed booking engine.",
   "main": "dist/index.js",
   "scripts": {

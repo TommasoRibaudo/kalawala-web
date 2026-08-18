@@ -235,6 +235,13 @@ const BookingPage = () => {
   // hold so the booking itself records the pet.
   const [withPet, setWithPet] = React.useState(false);
   const minDepartureDate = addDays(arrivalDate || today, 1);
+  // Distinguishes "just landed here from the widget/a shared link and the very
+  // first search is still in flight" from a guest manually resubmitting this
+  // same step — only the former should hide the full search form behind a
+  // loading state (#312: guests were seeing the "pick your dates" form flash
+  // for a moment, with dates already filled in, right before results appeared).
+  const [isAutoSearching, setIsAutoSearching] = React.useState(false);
+  const resultsAnchorRef = React.useRef<HTMLDivElement>(null);
 
   // Derive wizard step
   const wizardStep: WizardStep = React.useMemo(() => {
@@ -246,7 +253,17 @@ const BookingPage = () => {
     return 'search';
   }, [isConfirmationRoute, bookingConfirmation, isPayPalReturnRoute, depositProperty, checkoutProperty, result]);
 
-  React.useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [wizardStep]);
+  React.useEffect(() => {
+    // Landing on results: scroll past the (re-openable) search bar and
+    // straight to the homes, rather than to the top of the page — the guest
+    // already gave us dates/guests once, they shouldn't have to scroll past
+    // that form again to see what came back.
+    if (wizardStep === 'results' && typeof resultsAnchorRef.current?.scrollIntoView === 'function') {
+      resultsAnchorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [wizardStep]);
 
   // Once the deposit hold expires it is released server-side, so drop the
   // persisted copy — a later reload should not resume a dead hold (#308).
@@ -319,27 +336,41 @@ const BookingPage = () => {
     if (value && departureDate <= value) { const nd = addDays(value, 1); setDepartureDate(nd); updates.departureDate = nd; }
     updateBookingQuery(updates);
   };
-  const handleGuestInputChange = (value: number) => { const n = Number.isFinite(value) ? value : 0; setGuests(n); setSearchCaptchaRequired(false); updateBookingQuery({ guests: n }); };
-  const handleGuestStepChange = (value: number) => { const n = Math.max(1, value); setGuests(n); setSearchCaptchaRequired(false); updateBookingQuery({ guests: n }); };
-
-  const doSearch = React.useCallback(async (captchaToken?: string, sourceOverride?: string) => {
+  const doSearch = React.useCallback(async (captchaToken?: string, sourceOverride?: string, overrides?: { guests?: number }) => {
+    const effectiveGuests = overrides?.guests ?? guests;
     setError(null); setDepositError(null); setCheckoutProperty(null); setHoldError(null); setHoldResponse(null); setHoldFieldErrors({}); setPayPalOrderError(null); setSearchCaptchaRequired(false); setIsSubmitting(true);
     const source = sourceOverride ?? 'booking_page';
     try {
-      trackBookingSearch({ arrival_date: arrivalDate, departure_date: departureDate, guests, language, source });
-      const response = await searchAvailability({ arrivalDate, departureDate, guests, language, source, ...(captchaToken ? { captchaToken } : {}) });
+      trackBookingSearch({ arrival_date: arrivalDate, departure_date: departureDate, guests: effectiveGuests, language, source });
+      const response = await searchAvailability({ arrivalDate, departureDate, guests: effectiveGuests, language, source, ...(captchaToken ? { captchaToken } : {}) });
       setResult(response);
       const minPriceCents = response.properties.length > 0 ? Math.min(...response.properties.map((p) => p.price?.totalAmountCents).filter((v): v is number => v != null)) : null;
       const firstCurrency = response.properties.find((p) => p.price?.currency)?.price?.currency ?? null;
-      trackAvailabilityResults({ available_count: response.properties.length, min_price_cents: minPriceCents === Infinity ? null : minPriceCents, currency: firstCurrency, arrival_date: arrivalDate, departure_date: departureDate, guests, language });
+      trackAvailabilityResults({ available_count: response.properties.length, min_price_cents: minPriceCents === Infinity ? null : minPriceCents, currency: firstCurrency, arrival_date: arrivalDate, departure_date: departureDate, guests: effectiveGuests, language });
     } catch (searchError) {
       if (searchError instanceof BookingApiError && searchError.status === 403 && searchError.code === 'captcha_required' && !captchaToken && executeRecaptcha) {
         setSearchCaptchaRequired(true);
-        executeRecaptcha('search').then((token) => { setSearchCaptchaRequired(false); void doSearch(token, source); }).catch(() => setError(strings.captchaError));
+        executeRecaptcha('search').then((token) => { setSearchCaptchaRequired(false); void doSearch(token, source, overrides); }).catch(() => setError(strings.captchaError));
       } else { setResult(null); setError(getSearchErrorMessage(searchError, strings)); }
     } finally { setIsSubmitting(false); }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [arrivalDate, departureDate, guests, language, strings, executeRecaptcha]);
+
+  // Changing the guest count updates state/URL instantly, but that alone never
+  // re-ran the search — guests would tap +/- on the results step and see no
+  // change at all (#312). A result already on screen means we are past the
+  // initial search, so re-run it with the new count; debounced so a burst of
+  // +/- taps or digit keystrokes collapses into one request.
+  const guestSearchTimeoutRef = React.useRef<number | null>(null);
+  const scheduleGuestSearch = React.useCallback((n: number) => {
+    if (!result) return;
+    if (guestSearchTimeoutRef.current) window.clearTimeout(guestSearchTimeoutRef.current);
+    guestSearchTimeoutRef.current = window.setTimeout(() => { doSearch(undefined, undefined, { guests: n }); }, 500);
+  }, [result, doSearch]);
+  React.useEffect(() => () => { if (guestSearchTimeoutRef.current) window.clearTimeout(guestSearchTimeoutRef.current); }, []);
+
+  const handleGuestInputChange = (value: number) => { const n = Number.isFinite(value) ? value : 0; setGuests(n); setSearchCaptchaRequired(false); updateBookingQuery({ guests: n }); scheduleGuestSearch(n); };
+  const handleGuestStepChange = (value: number) => { const n = Math.max(1, value); setGuests(n); setSearchCaptchaRequired(false); updateBookingQuery({ guests: n }); scheduleGuestSearch(n); };
 
   // Auto-search when arriving from BookingSearchWidget with autoSearch=true, or
   // when a guest opens a shared link that already carries both dates.
@@ -349,8 +380,9 @@ const BookingPage = () => {
     // A resumed deposit already owns the wizard; a stale autoSearch in the URL
     // (e.g. from the back button) must not overwrite it with a fresh search.
     if (resumedDeposit) return;
+    const cameFromWidget = searchParams.get('autoSearch') === 'true';
     const hasSharedDates = Boolean(searchParams.get('arrivalDate') && searchParams.get('departureDate'));
-    if (searchParams.get('autoSearch') !== 'true' && !hasSharedDates) return;
+    if (!cameFromWidget && !hasSharedDates) return;
     if (!arrivalDate || !departureDate) return;
     if (isPayPalReturnRoute || isConfirmationRoute) return;
     autoSearchFiredRef.current = true;
@@ -362,7 +394,12 @@ const BookingPage = () => {
     nextParams.delete('autoSearch');
     nextParams.delete('src');
     setSearchParams(nextParams, { replace: true });
-    doSearch(undefined, widgetSource);
+    // Only the widget hop (dates picked a moment ago on another page, then
+    // redirected here) gets the loading swap-out — that's the flash guests
+    // were seeing. A shared link lands here fresh; showing its dates in the
+    // form while the first search runs is a normal, expected loading state.
+    if (cameFromWidget) setIsAutoSearching(true);
+    doSearch(undefined, widgetSource).finally(() => setIsAutoSearching(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -543,13 +580,22 @@ const BookingPage = () => {
             {/* Step 1: Search */}
             <div className={`booking-wizard-slide${wizardStep === 'search' ? ' booking-wizard-slide--active' : ' booking-wizard-slide--left'}`} aria-hidden={wizardStep !== 'search'}>
               <Row className="justify-content-center"><Col lg={10} xl={9}>
-                <section className="booking-search-header" aria-labelledby="booking-search-title">
-                  <p className="booking-search-eyebrow">{strings.eyebrow}</p>
-                  <h1 id="booking-search-title">{strings.title}</h1>
-                  <p>{strings.subtitle}</p>
-                </section>
-                <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={false} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} withPet={withPet} onWithPetChange={setWithPet} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} />
-                {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
+                {isAutoSearching ? (
+                  <div className="booking-search-loading" role="status" aria-live="polite">
+                    <Spinner animation="border" />
+                    <p>{strings.searching}</p>
+                  </div>
+                ) : (
+                  <>
+                    <section className="booking-search-header" aria-labelledby="booking-search-title">
+                      <p className="booking-search-eyebrow">{strings.eyebrow}</p>
+                      <h1 id="booking-search-title">{strings.title}</h1>
+                      <p>{strings.subtitle}</p>
+                    </section>
+                    <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={false} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} withPet={withPet} onWithPetChange={setWithPet} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} />
+                    {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
+                  </>
+                )}
               </Col></Row>
             </div>
             {/* Step 2: Results */}
@@ -558,6 +604,7 @@ const BookingPage = () => {
                 <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={true} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} withPet={withPet} onWithPetChange={setWithPet} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} onBack={handleBackToSearch} />
                 {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
                 {depositError && <Alert className="booking-search-alert" variant="danger" role="alert">{depositError}</Alert>}
+                <div ref={resultsAnchorRef} className="booking-results-anchor" />
                 {result && <BookingSearchResults result={result} strings={strings} language={language} nonRefundable={nonRefundable} withPet={withPet} onManualDepositHandoff={handleStartDepositCheckout} onStartPayPalHold={handleStartPayPalHold} selectedPropertyId={checkoutProperty?.propertyId ?? null} featuredSlug={featuredSlug} />}
               </Col></Row>
             </div>

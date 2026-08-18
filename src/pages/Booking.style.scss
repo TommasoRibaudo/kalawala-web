@@ -365,6 +365,33 @@
   margin-top: 24px;
 }
 
+// Shown in place of the "pick your dates" form while a search started
+// elsewhere (the homepage/listing widget, or a shared link) is still in
+// flight, so guests never see that form flash with their own dates already
+// filled in right before results appear.
+.booking-search-loading {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  min-height: 360px;
+  padding: 40px 0;
+  text-align: center;
+
+  .spinner-border {
+    color: $kalawala-darker-green;
+    height: 44px;
+    width: 44px;
+  }
+
+  p {
+    color: $kalawala-text-gray;
+    font-size: 17px;
+    margin: 0;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Search — compact (step 2+)
 // ---------------------------------------------------------------------------
@@ -512,6 +539,13 @@
 // Results
 // ---------------------------------------------------------------------------
 
+// Scroll target for landing on the results step (see the wizardStep effect in
+// Booking.page.tsx) — offset clears FixedNavigation's sticky bar (80px floor
+// height, more if its content wraps to two lines on a narrow viewport).
+.booking-results-anchor {
+  scroll-margin-top: 96px;
+}
+
 .booking-results,
 .booking-results-empty {
   margin-top: 10px;
@@ -578,7 +612,7 @@
 
 .booking-results-featured-missing {
   background: rgba(138, 162, 136, 0.14);
-  border-inline-start: 4px solid $kalawala-light-green;
+  border: 1px solid rgba(41, 79, 68, 0.16);
   border-radius: 8px;
   margin-bottom: 26px;
   padding: 14px 18px;
@@ -599,7 +633,7 @@
 
 .booking-warning-list {
   background: rgba(138, 162, 136, 0.14);
-  border-inline-start: 4px solid $kalawala-light-green;
+  border: 1px solid rgba(41, 79, 68, 0.16);
   border-radius: 8px;
   color: $kalawala-darker-green;
   list-style: none;
@@ -627,7 +661,7 @@
 
   .booking-warning-list {
     background: transparent;
-    border-inline-start: none;
+    border: none;
     border-radius: 0;
     color: rgba(23, 23, 23, 0.66);
     font-size: 14px;

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Col, Row, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import '../Listing.style.scss'
 import OtherListings from "../components/OtherListings/OtherListings.component";
-import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
+import BookingSearchWidget, { BookingSearchWidgetHandle } from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import ImagesContainer from "../components/ImagesContainer/ImagesContainer.component";
 import ImagesModal from "../components/ImagesModal/ImagesModal.component";
 import Footer from "../../../components/Footer/Footer.component";
@@ -49,6 +49,9 @@ const ListingVillaMar = () => {
     // Suspense (docs/i18n-rollout-plan.md, Phase 11 P2) let hydration
     // reconcile far enough to reach this element for the first time.
     const [isScreenSmall, setIsScreenSmall] = useState<boolean | null>(null);
+    // Lets the sticky mobile CTA below ask the widget whether dates are
+    // already picked, so it can search directly instead of just scrolling.
+    const widgetRef = useRef<BookingSearchWidgetHandle>(null);
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -90,7 +93,7 @@ const ListingVillaMar = () => {
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (
-                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp">{m.property.stickyCta}</Button></div>)}
+                <div className="button-hold fixed-bottom sticky-cta-mobile" style={{ paddingBottom: "env(safe-area-inset-bottom);" }}><Button className='btn-darker sticky-cta-button' href="#smoobuComp" onClick={(e) => { if (widgetRef.current?.hasSelectedDates()) { e.preventDefault(); widgetRef.current.submit(); } }}>{m.property.stickyCta}</Button></div>)}
 
             <Row className="subContainer">
                 <Col className="info col" lg={{ order: 'first', span: 10 }} md={{ order: 'first', span: 12 }} sm={12} xs={12}>
@@ -139,7 +142,7 @@ const ListingVillaMar = () => {
                 </Col>
                 <Col id="smoobuComp" className="book col" lg={2} md={{ span: 12 }} sm={{ span: 12 }} xs={{ span: 12 }}>
                     <PriceConfirmationSection propertyKey="VillaMar" locale={locale} />
-                    <BookingSearchWidget locale={locale} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="VillaMar" />
+                    <BookingSearchWidget ref={widgetRef} locale={locale} defaultGuests={houseData!.guestNumber} variant="sidebar" apartmentSlug="VillaMar" />
                 </Col>
             </Row>
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useLayoutEffect, forwardRef, useImperativeHandle } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Spinner } from 'react-bootstrap';
@@ -24,6 +24,17 @@ interface BookingSearchWidgetProps {
    * the whole portfolio and there is no single home to price.
    */
   apartmentSlug?: string;
+}
+
+/**
+ * Exposed so a listing page's sticky mobile CTA (which lives outside this
+ * component) can ask "does the guest already have valid dates?" and, if so,
+ * trigger the same submit this form's own button would — rather than just
+ * scrolling to this widget, which is all it can do without this handle.
+ */
+export interface BookingSearchWidgetHandle {
+  hasSelectedDates: () => boolean;
+  submit: () => void;
 }
 
 // useLayoutEffect warns during server pre-render; the hero calendar only opens
@@ -72,12 +83,12 @@ const strings = {
   },
 };
 
-const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
+const BookingSearchWidget = forwardRef<BookingSearchWidgetHandle, BookingSearchWidgetProps>(({
   locale,
   defaultGuests = 2,
   variant = 'sidebar',
   apartmentSlug,
-}) => {
+}, ref) => {
   const navigate = useNavigate();
   const lang = bookingLanguage(locale);
   const s = strings[lang];
@@ -204,8 +215,7 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
     setFieldErrors({});
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const performSubmit = () => {
     const errors: Record<string, string> = {};
 
     if (!arrivalDate) errors.arrivalDate = s.arrivalRequired;
@@ -246,6 +256,16 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
       setIsSubmitting(false);
     }
   };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    performSubmit();
+  };
+
+  useImperativeHandle(ref, () => ({
+    hasSelectedDates: () => Boolean(arrivalDate && departureDate && departureDate > arrivalDate),
+    submit: performSubmit,
+  }));
 
   const rangeSummary = (() => {
     if (!arrivalDate) {
@@ -417,7 +437,9 @@ const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({
       </Form>
     </div>
   );
-};
+});
+
+BookingSearchWidget.displayName = 'BookingSearchWidget';
 
 function formatShortDate(date: string, language: 'en' | 'es'): string {
   return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {

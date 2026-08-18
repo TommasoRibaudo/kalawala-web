@@ -59,7 +59,16 @@
 
 .booking-wizard-viewport {
   position: relative;
-  overflow: hidden;
+  // `hidden` clips visually but is still a live scroll container — its
+  // absolutely-positioned off-screen slides give it real scrollWidth, so
+  // anything that asks a browser to scroll a focused/targeted element into
+  // view (native focus-follow on click, `Element.scrollIntoView()`) can and
+  // will shift *this* container sideways instead of (or as well as) the
+  // page, permanently hiding the slide behind stale clipped-off space
+  // (#313). `clip` keeps the same visual clipping but is never scrollable,
+  // by anything, closing off that whole class of bug — the carousel only
+  // ever moves via the transforms below, never via scroll.
+  overflow: clip;
 }
 
 .booking-wizard-slide {
@@ -538,13 +547,6 @@
 // ---------------------------------------------------------------------------
 // Results
 // ---------------------------------------------------------------------------
-
-// Scroll target for landing on the results step (see the wizardStep effect in
-// Booking.page.tsx) — offset clears FixedNavigation's sticky bar (80px floor
-// height, more if its content wraps to two lines on a narrow viewport).
-.booking-results-anchor {
-  scroll-margin-top: 96px;
-}
 
 .booking-results,
 .booking-results-empty {

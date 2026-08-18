@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './CallToAction.style.scss'
 import Smoobu2 from '../Smoobu2/Smoobu2.component';
-import { useMessages } from '../../i18n';
+import { useLocale, useMessages, bookingLanguage } from '../../i18n';
 import { isPrerender } from '../../utils/isPrerender';
+import { trackContactWhatsappClicked } from '../../services/BookingAnalytics.service';
 
 /**
  * Replaces the former CallToAction / CallToActionES pair.
@@ -19,6 +20,7 @@ import { isPrerender } from '../../utils/isPrerender';
  */
 const CallToAction = () => {
   const m = useMessages();
+  const locale = useLocale();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -67,7 +69,7 @@ const CallToAction = () => {
               <Smoobu2 targetId="callToActionSmoobu" /> 
               <p style={{ color: 'black', fontWeight: 550, fontSize: 12 }}>{m.callToAction.availabilityDisclaimer}</p>
             </div>
-            <p style={{marginTop: 10}}>{m.callToAction.bankTransferLead} <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> {m.callToAction.bankTransferMid} <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">+506 8463 2276</a> {m.callToAction.bankTransferTail}</p>
+            <p style={{marginTop: 10}}>{m.callToAction.bankTransferLead} <a href="mailto:reservas.kalawala@gmail.com">reservas.kalawala@gmail.com</a> {m.callToAction.bankTransferMid} <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer" onClick={() => trackContactWhatsappClicked({ location: 'call_to_action', language: bookingLanguage(locale) })}>+506 8463 2276</a> {m.callToAction.bankTransferTail}</p>
           </div>
           </div>
         </div>

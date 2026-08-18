@@ -1,5 +1,6 @@
 import React from "react";
-import { useMessages } from "../../i18n";
+import { useLocale, useMessages, bookingLanguage } from "../../i18n";
+import { trackContactWhatsappClicked } from "../../services/BookingAnalytics.service";
 
 /**
  * Replaces the former ContactUs / ContactUsES pair.
@@ -11,6 +12,7 @@ import { useMessages } from "../../i18n";
  */
 const ContactUs: React.FC = () => {
   const m = useMessages();
+  const locale = useLocale();
 
   return (
     <section id="contact-us" className="contact-us section-bg">
@@ -37,7 +39,7 @@ const ContactUs: React.FC = () => {
 
               <div className="con-info clearfix">
                 <i className="tf-ion-ios-telephone-outline"></i>
-                <span>{m.contact.phoneLabel} <a href="tel:+50684632276">+506 8463-2276</a> · <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">{m.contact.chatOnWhatsApp}</a></span>
+                <span>{m.contact.phoneLabel} <a href="tel:+50684632276">+506 8463-2276</a> · <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer" onClick={() => trackContactWhatsappClicked({ location: 'contact_us', language: bookingLanguage(locale) })}>{m.contact.chatOnWhatsApp}</a></span>
               </div>
 
               <div className="con-info clearfix">

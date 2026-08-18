@@ -41,6 +41,7 @@ import {
   trackPaymentStarted,
   trackPaymentCompleted,
   trackPaypalApproved,
+  trackContactWhatsappClicked,
 } from '../services/BookingAnalytics.service';
 import { CookieConsentService } from '../services/CookieConsent.service';
 import { useExchangeRate } from '../hooks/useExchangeRate';
@@ -911,7 +912,7 @@ const PayPalCheckoutPanel = ({ result, property, strings, language, withPet, non
       <div className="booking-checkout-panel__contacts">
         <h3>{strings.needHelp}</h3>
         <div className="booking-checkout-panel__contacts-grid">
-          <a className="booking-checkout-panel__contact" href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer"><span>{strings.contactByWhatsapp}</span><strong>+506 8463 2276</strong></a>
+          <a className="booking-checkout-panel__contact" href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer" onClick={() => trackContactWhatsappClicked({ location: 'booking_checkout_paypal', property_id: property.propertyId, property_slug: property.slug, language })}><span>{strings.contactByWhatsapp}</span><strong>+506 8463 2276</strong></a>
           <a className="booking-checkout-panel__contact" href="mailto:reservas.kalawala@gmail.com"><span>{strings.contactByEmail}</span><strong>reservas.kalawala@gmail.com</strong></a>
         </div>
       </div>
@@ -1071,7 +1072,7 @@ const DepositCheckoutPanel = ({ result, property, strings, language, withPet, no
       <div className="booking-checkout-panel__contacts">
         <h3>{strings.needHelp}</h3>
         <div className="booking-checkout-panel__contacts-grid">
-          <a className="booking-checkout-panel__contact" href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer"><span>{strings.contactByWhatsapp}</span><strong>+506 8463 2276</strong></a>
+          <a className="booking-checkout-panel__contact" href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer" onClick={() => trackContactWhatsappClicked({ location: 'booking_checkout_deposit', property_id: property.propertyId, property_slug: property.slug, language })}><span>{strings.contactByWhatsapp}</span><strong>+506 8463 2276</strong></a>
           <a className="booking-checkout-panel__contact" href="mailto:reservas.kalawala@gmail.com"><span>{strings.contactByEmail}</span><strong>reservas.kalawala@gmail.com</strong></a>
         </div>
       </div>

@@ -2,9 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { PROPERTY_DISPLAY_NAMES, BLOG_ARTICLES } from '../../utils/constants';
 import './Footer.style.scss';
-import { bookingPath, getMessages, type Locale } from '../../i18n';
+import { bookingPath, bookingLanguage, getMessages, type Locale } from '../../i18n';
 import { blogArticleHeading } from '../../i18n/blogArticleHeadings';
 import { pathForKey, routeKeyForSlug } from '../../routes.config';
+import { trackContactWhatsappClicked } from '../../services/BookingAnalytics.service';
 
 interface IFooter {
   locale: Locale;
@@ -71,7 +72,12 @@ const Footer: React.FC<IFooter> = ({ locale }) => {
                 <a href="tel:+50684632276">+506 8463-2276</a>
               </li>
               <li>
-                <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://wa.me/50684632276"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackContactWhatsappClicked({ location: 'footer', language: bookingLanguage(locale) })}
+                >
                   {m.footer.chatOnWhatsApp}
                 </a>
               </li>

@@ -14,6 +14,7 @@ import {
   updatePortalGuests,
 } from '../services/BookingApi.service';
 import { clearPortalSession, readPortalToken } from '../services/PortalSession.service';
+import { trackContactWhatsappClicked } from '../services/BookingAnalytics.service';
 import { portalDetailStrings, PortalDetailStrings } from './PortalDetail.i18n';
 import './PortalDetail.style.scss';
 import { pathForKey } from '../routes.config';
@@ -609,7 +610,12 @@ const PortalDetailPage = () => {
                     {blockedNotice && panel === 'closed' && (
                       <Alert variant="light" className="portal-detail-cancel-blocked">
                         <span>{blockedNotice}</span>
-                        <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">
+                        <a
+                          href="https://wa.me/50684632276"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => trackContactWhatsappClicked({ location: 'portal_detail_cancellation_blocked', property_id: reservation.property?.propertyId, property_slug: reservation.property?.slug, language })}
+                        >
                           {strings.cancellationBlockedContact}
                         </a>
                       </Alert>
@@ -951,7 +957,13 @@ const PortalDetailPage = () => {
                   <section className="portal-detail-contacts">
                     <h2>{strings.needHelp}</h2>
                     <div className="portal-detail-contacts__grid">
-                      <a className="portal-detail-contacts__link" href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">
+                      <a
+                        className="portal-detail-contacts__link"
+                        href="https://wa.me/50684632276"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => trackContactWhatsappClicked({ location: 'portal_detail_contacts', property_id: reservation.property?.propertyId, property_slug: reservation.property?.slug, language })}
+                      >
                         <span>{strings.contactByWhatsapp}</span>
                         <strong>+506 8463 2276</strong>
                       </a>

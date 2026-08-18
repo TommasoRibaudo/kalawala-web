@@ -18,6 +18,7 @@
  *   booking_confirmed         → GA4: purchase / Meta: Purchase  (server-side preferred)
  *   manual_deposit_handoff_clicked → GA4: custom / Meta: Lead (optional)
  *   booking_cancelled         → GA4: custom
+ *   contact_whatsapp_clicked  → GA4: custom / Meta: ContactWhatsApp (custom, optional)
  *
  * FUNNEL — the six steps behind the PostHog "Booking funnel" insight are
  * $pageview → booking_search → availability_results → booking_form_viewed →
@@ -198,6 +199,25 @@ export interface BookingCancelledProps {
   language: BookingAnalyticsLanguage;
 }
 
+/** Where on the site the guest clicked a WhatsApp contact link. */
+export type WhatsappClickLocation =
+  | 'footer'
+  | 'nav'
+  | 'contact_us'
+  | 'call_to_action'
+  | 'booking_checkout_paypal'
+  | 'booking_checkout_deposit'
+  | 'portal_detail_cancellation_blocked'
+  | 'portal_detail_contacts';
+
+export interface ContactWhatsappClickedProps {
+  location: WhatsappClickLocation;
+  /** Absent outside a property-scoped context, e.g. the footer or nav. */
+  property_id?: string;
+  property_slug?: string;
+  language: BookingAnalyticsLanguage;
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -261,6 +281,24 @@ function fbq(event: string, params?: Record<string, unknown>, eventId?: string):
   } else {
     (window as any).fbq('track', event, {}, options);
   }
+}
+
+/**
+ * Safe fbq call for a custom (non-standard) event name — no-ops if fbq is
+ * unavailable or marketing consent is absent.
+ *
+ * Meta requires `trackCustom` rather than `track` for event names outside its
+ * fixed standard-event list; sending a custom name through `track` gets it
+ * silently bucketed as an unrecognized standard event instead of showing up
+ * as its own custom conversion in Events Manager.
+ */
+function fbqCustom(event: string, params?: Record<string, unknown>, eventId?: string): void {
+  if (!canTrackMarketing()) return;
+  if (typeof window === 'undefined' || typeof (window as any).fbq !== 'function') return;
+
+  const options = eventId ? { eventID: eventId } : undefined;
+
+  (window as any).fbq('trackCustom', event, params ?? {}, options);
 }
 
 /** Convert cents to a decimal amount for GA4 / Meta (they expect e.g. 52000 → 520.00). */
@@ -544,5 +582,36 @@ export function trackBookingCancelled(props: BookingCancelledProps): void {
     reason: props.reason,
     property_id: props.property_id ?? null,
     language: props.language,
+  });
+}
+
+/**
+ * Guest clicks a WhatsApp contact link — footer, nav, a marketing page, the
+ * booking checkout's "need help" panel, or the guest portal.
+ *
+ * Meta gets a custom event rather than the standard Lead — this click spans
+ * everything from a cold footer visit to a mid-checkout guest, and folding it
+ * into Lead would dilute the stronger signal manual_deposit_handoff_clicked
+ * already reports under that name.
+ *
+ * PostHog: contact_whatsapp_clicked | GA4: custom | Meta: ContactWhatsApp (custom, optional)
+ */
+export function trackContactWhatsappClicked(props: ContactWhatsappClickedProps): void {
+  if (!canTrack()) return;
+
+  PostHog.capture('contact_whatsapp_clicked', props);
+
+  gtag('contact_whatsapp_clicked', {
+    event_category: 'contact',
+    location: props.location,
+    property_id: props.property_id ?? null,
+    property_slug: props.property_slug ?? null,
+    language: props.language,
+  });
+
+  fbqCustom('ContactWhatsApp', {
+    content_category: 'whatsapp',
+    location: props.location,
+    ...(props.property_id ? { content_ids: [props.property_id] } : {}),
   });
 }

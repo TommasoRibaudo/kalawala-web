@@ -9,8 +9,9 @@ import KalawalaLogo from "../../assets/images/logo-cream.png";
 import { LanguageSwitcher } from "../FlagComponent/Flag.component";
 import { useLocale, messagesFor } from "../../i18n";
 import type { Locale } from "../../i18n";
-import { bookingPath, homePath, blogPath, portalPath } from "../../i18n/paths";
+import { bookingPath, bookingLanguage, homePath, blogPath, portalPath } from "../../i18n/paths";
 import { useApplyStoredLocalePreference } from "../../i18n/localePreference";
+import { trackContactWhatsappClicked } from "../../services/BookingAnalytics.service";
 
 interface IFixedNavigation {
   isBlog: boolean
@@ -130,7 +131,15 @@ const FixedNavigation = ({ isBlog, locale: localeOverride }: IFixedNavigation) =
             <Nav.Link href={`${homePath(locale)}#body`} className={`navText${(isActive && !isBlog) ? ' active' : ''}`} onClick={closeMenu}>{m.nav.home}</Nav.Link>
             <Nav.Link href={blogPath(locale)} className={`navText${(isActive && isBlog) ? ' active' : ''}`} onClick={closeMenu}>{m.nav.blog}</Nav.Link>
             <Nav.Link href={portalPath(locale)} className="navText" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick(portalPath(locale)) }}>{m.nav.myBooking}</Nav.Link>
-            <Nav.Link href="https://wa.me/50684632276" className="navText" target="_blank" rel="noopener noreferrer">WhatsApp</Nav.Link>
+            <Nav.Link
+              href="https://wa.me/50684632276"
+              className="navText"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackContactWhatsappClicked({ location: 'nav', language: bookingLanguage(locale) })}
+            >
+              WhatsApp
+            </Nav.Link>
           </Nav>
           <div className="mobile-flag">
             <LanguageSwitcher />

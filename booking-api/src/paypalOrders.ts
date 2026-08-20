@@ -90,8 +90,14 @@ export async function handleCreatePayPalOrder(
 
   // Derive return/cancel URLs from the request's Origin header so the same
   // Lambda serves both localhost and production without env var changes.
+  //
+  // The SPA only bare-roots the "home" route for English (see pathForKey()
+  // in src/routes.config.ts) — every other route, "book" included, is
+  // registered under its locale prefix ("/en/book", "/es/book"). There is no
+  // legacy redirect covering "/book" the way there is for prerendered
+  // listing pages, so a bare "/book" path 404s.
   const requestOrigin = getHeader(request.headers, "origin")?.trim();
-  const bookPath = session.language === "es" ? "/bookES" : "/book";
+  const bookPath = session.language === "es" ? "/es/book" : "/en/book";
   const returnUrl = requestOrigin
     ? `${requestOrigin}${bookPath}/return`
     : config.paypal.orderReturnUrl;

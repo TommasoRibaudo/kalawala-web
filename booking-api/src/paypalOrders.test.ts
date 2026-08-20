@@ -171,7 +171,7 @@ function makeHappyPathFetch(): jest.Mock {
 
 // ─── Event builders ───────────────────────────────────────────────────────────
 
-function makeSearchEvent(): LambdaHttpRequest {
+function makeSearchEvent(language: "en" | "es" = "en"): LambdaHttpRequest {
   return {
     version: "2.0",
     rawPath: "/api/search",
@@ -184,7 +184,7 @@ function makeSearchEvent(): LambdaHttpRequest {
       arrivalDate: "2099-06-10",
       departureDate: "2099-06-14",
       guests: 2,
-      language: "en",
+      language,
     }),
     requestContext: {
       http: { method: "POST", path: "/api/search", sourceIp: "203.0.113.30" },
@@ -293,8 +293,11 @@ function makeScopedCaptureEvent(
 const NONEXISTENT_SESSION_ID = "b8a1f2e7-0000-4000-8000-000000000000";
 
 /** Drives the full search → hold flow and returns the IDs needed for the PayPal steps. */
-async function setupSessionWithActiveHold(handler: ReturnType<typeof createBookingApiHandler>) {
-  const searchResp = await handler(makeSearchEvent());
+async function setupSessionWithActiveHold(
+  handler: ReturnType<typeof createBookingApiHandler>,
+  language: "en" | "es" = "en"
+) {
+  const searchResp = await handler(makeSearchEvent(language));
   expect(searchResp.statusCode).toBe(200);
   const searchBody = JSON.parse(searchResp.body);
   const { bookingSessionId, properties } = searchBody;
@@ -418,12 +421,61 @@ test("POST /api/paypal/order sends PayPal-Request-Id header and correct order pa
       locale: "en-US",
       shipping_preference: "NO_SHIPPING",
       user_action: "PAY_NOW",
-      return_url: "https://kalawala.test/book/return",
-      cancel_url: "https://kalawala.test/book",
+      return_url: "https://kalawala.test/en/book/return",
+      cancel_url: "https://kalawala.test/en/book",
     },
   });
   expect(orderPayload.purchase_units[0].description).toContain("Casa Geco");
   expect(orderPayload.purchase_units[0].custom_id).toMatch(/^KWL-[A-Z2-9]{8}$/);
+});
+
+test("POST /api/paypal/order sends locale-prefixed return_url/cancel_url for a Spanish session", async () => {
+  // Regression test — the return/cancel URLs used to be built from the legacy
+  // "...ES"-suffixed scheme ("/bookES/return"), which isn't a route the SPA
+  // registers under the current locale-prefix routing (routes.manifest.json
+  // registers "book/return" under the "/es" prefix, not a "/bookES" path).
+  // That 404'd every Spanish guest returning from PayPal. English sessions
+  // had the same class of bug for a different reason — see the sibling test
+  // below.
+  const fetchFn = makeHappyPathFetch();
+  global.fetch = fetchFn as typeof fetch;
+  const handler = createBookingApiHandler(config);
+  const { bookingSessionId } = await setupSessionWithActiveHold(handler, "es");
+
+  await handler(makeOrderEvent({ bookingSessionId }));
+
+  const orderCall = fetchFn.mock.calls.find(([url]) =>
+    new URL(url.toString()).pathname === "/v2/checkout/orders"
+  );
+  const orderPayload = JSON.parse(orderCall?.[1]?.body as string);
+  expect(orderPayload.application_context).toMatchObject({
+    return_url: "https://kalawala.test/es/book/return",
+    cancel_url: "https://kalawala.test/es/book",
+  });
+});
+
+test("POST /api/paypal/order sends locale-prefixed return_url/cancel_url for an English session", async () => {
+  // Regression test — the return/cancel URLs used to be built as a bare
+  // "/book" path with no locale prefix. src/Router/Router.tsx only bare-roots
+  // the "home" route for English (see pathForKey() in src/routes.config.ts);
+  // every other route, "book" included, is only registered at "/en/book".
+  // Unlike prerendered listing pages, there's no legacy redirect covering a
+  // bare "/book", so that 404'd every English guest returning from PayPal.
+  const fetchFn = makeHappyPathFetch();
+  global.fetch = fetchFn as typeof fetch;
+  const handler = createBookingApiHandler(config);
+  const { bookingSessionId } = await setupSessionWithActiveHold(handler, "en");
+
+  await handler(makeOrderEvent({ bookingSessionId }));
+
+  const orderCall = fetchFn.mock.calls.find(([url]) =>
+    new URL(url.toString()).pathname === "/v2/checkout/orders"
+  );
+  const orderPayload = JSON.parse(orderCall?.[1]?.body as string);
+  expect(orderPayload.application_context).toMatchObject({
+    return_url: "https://kalawala.test/en/book/return",
+    cancel_url: "https://kalawala.test/en/book",
+  });
 });
 
 test("POST /api/paypal/order advances session status to paypal_order_created", async () => {

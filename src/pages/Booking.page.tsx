@@ -66,6 +66,11 @@ const amenityIcons: Record<string, typeof faWifi> = { ac: faSnowflake, kitchen: 
 
 const PUERTO_VIEJO_CENTER_SLUGS = new Set(['geco', 'rana', 'tucano', 'pappagallo', 'delfin']);
 
+// Clears FixedNavigation's sticky bar (80px floor height, more if its content
+// wraps to two lines on a narrow viewport) when scrolling the results section
+// into view.
+const RESULTS_SCROLL_OFFSET = 96;
+
 /**
  * Mirrors `isPetFriendly` in the backend catalog: the `pet` amenity is what
  * makes a home pet friendly, so the badge on the card and the pet filter can
@@ -258,8 +263,18 @@ const BookingPage = () => {
     // straight to the homes, rather than to the top of the page — the guest
     // already gave us dates/guests once, they shouldn't have to scroll past
     // that form again to see what came back.
-    if (wizardStep === 'results' && typeof resultsAnchorRef.current?.scrollIntoView === 'function') {
-      resultsAnchorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    //
+    // Deliberately window.scrollTo, not resultsAnchorRef.scrollIntoView: the
+    // anchor sits inside .booking-wizard-viewport, the sliding carousel that
+    // holds all four wizard steps side by side (overflow: hidden, positioned
+    // via transform, not scroll). scrollIntoView doesn't know that — it also
+    // scrolled that ancestor's hidden horizontal scrollbar to bring the
+    // anchor into view, which permanently shifted the whole carousel off
+    // screen (#313). Computing the offset by hand only ever touches the
+    // window's own vertical scroll position.
+    if (wizardStep === 'results' && resultsAnchorRef.current) {
+      const top = window.scrollY + resultsAnchorRef.current.getBoundingClientRect().top - RESULTS_SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: 'smooth' });
       return;
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });

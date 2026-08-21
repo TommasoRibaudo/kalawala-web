@@ -81,6 +81,31 @@ export class CookieConsentService {
   }
 
   /**
+   * GA4's automatic session_start/first_visit only fire alongside the very
+   * first hit a browsing session sends. index.html's gtag('config', ...) runs
+   * before the banner is ever answered, so that hit — and both auto-events —
+   * already went out as a denied, session-less cookieless ping by the time
+   * consent is granted. A later 'consent update' only changes state for
+   * hits sent from here on; it does not reopen the one already sent. Firing a
+   * fresh page_view right after granting analytics consent gives gtag.js a
+   * hit to process under 'granted', which is what actually starts a real,
+   * countable session.
+   */
+  private static refireInitialPageview(): void {
+    try {
+      const gtag = (window as any).gtag;
+      if (typeof gtag !== 'function') return;
+
+      gtag('event', 'page_view', {
+        page_location: window.location.href,
+        page_title: document.title
+      });
+    } catch (error) {
+      console.warn('Failed to refire initial pageview after consent grant:', error);
+    }
+  }
+
+  /**
    * Save consent preferences
    */
   public static saveConsent(preferences: ConsentPreferences): void {
@@ -96,9 +121,17 @@ export class CookieConsentService {
 
       this.syncGoogleConsent(preferences);
 
+      // This is a first-time decision (index.tsx's returning-visitor replay
+      // calls syncGoogleConsent directly, not saveConsent), so if analytics
+      // was just granted, GA4's denied initial pageview never counted a real
+      // session — give it one under the now-granted state.
+      if (preferences.analytics) {
+        this.refireInitialPageview();
+      }
+
       // Dispatch custom event for other components to listen
-      window.dispatchEvent(new CustomEvent('consentChanged', { 
-        detail: state 
+      window.dispatchEvent(new CustomEvent('consentChanged', {
+        detail: state
       }));
     } catch (error) {
       console.error('Failed to save consent state:', error);

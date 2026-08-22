@@ -23,6 +23,8 @@ export class CookieConsentService {
   private static readonly STORAGE_KEY = 'cookie_consent';
   private static readonly CONSENT_VERSION = '1.0';
   private static readonly EXPIRY_DAYS = 365;
+  /** Must stay in sync with the GA4 measurement ID configured in public/index.html. */
+  private static readonly GA4_MEASUREMENT_ID = 'G-Q1LMHMNCMW';
 
   /**
    * Get current consent state
@@ -81,24 +83,31 @@ export class CookieConsentService {
   }
 
   /**
-   * GA4's automatic session_start/first_visit only fire alongside the very
-   * first hit a browsing session sends. index.html's gtag('config', ...) runs
-   * before the banner is ever answered, so that hit — and both auto-events —
-   * already went out as a denied, session-less cookieless ping by the time
-   * consent is granted. A later 'consent update' only changes state for
-   * hits sent from here on; it does not reopen the one already sent. Firing a
-   * fresh page_view right after granting analytics consent gives gtag.js a
-   * hit to process under 'granted', which is what actually starts a real,
-   * countable session.
+   * GA4 only decides whether a hit marks a new session_start/first_visit
+   * (the internal `_ss`/`_fv` flags) as part of processing a 'config' call —
+   * that's when it checks for an existing `_ga`/`_ga_<container>` session
+   * cookie. index.html's gtag('config', ...) runs before the banner is ever
+   * answered, so that check already ran once under denied consent, when no
+   * cookie could be written either way, and produced a denied cookieless
+   * ping that GA4 never counts.
+   *
+   * A bare gtag('event', 'page_view', ...) after granting consent does NOT
+   * rerun that check — verified against production traffic, it lands as a
+   * plain `user_engagement` hit with no `_ss`/`_fv` flags, because event
+   * calls don't get the session-initialization treatment that 'config' does.
+   * Re-issuing 'config' (the same pattern used for SPA route-change
+   * pageviews, see analyticsCompatibilityValidation.ts) forces gtag.js to
+   * redo that check now that analytics_storage is granted — this time it
+   * finds no session cookie, writes one, and correctly marks the hit as a
+   * real, countable session start.
    */
   private static refireInitialPageview(): void {
     try {
       const gtag = (window as any).gtag;
       if (typeof gtag !== 'function') return;
 
-      gtag('event', 'page_view', {
-        page_location: window.location.href,
-        page_title: document.title
+      gtag('config', this.GA4_MEASUREMENT_ID, {
+        page_path: window.location.pathname + window.location.search
       });
     } catch (error) {
       console.warn('Failed to refire initial pageview after consent grant:', error);

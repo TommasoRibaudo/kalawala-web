@@ -284,6 +284,8 @@ export interface ProviderCallObservation {
   rateLimitRemaining?: number;
   rateLimitResetSeconds?: number;
   errorCode?: string;
+  /** Raw provider-side error detail (e.g. PayPal's `details[0].description`), kept alongside the mapped `errorCode` so logs stay diagnosable even when `errorCode` falls back to a generic bucket. */
+  errorDetail?: string;
 }
 
 export interface StateTransitionObservation {
@@ -297,6 +299,7 @@ export interface StateTransitionObservation {
   provider?: ProviderName;
   providerObjectId?: string;
   errorCode?: string;
+  errorDetail?: string;
 }
 
 export interface SecurityEventObservation {

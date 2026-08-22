@@ -133,6 +133,7 @@ export async function handleCreatePayPalOrder(
       reservationPublicId: session.reservationPublicId,
       provider: "paypal",
       errorCode: safeErrorCode(error),
+      errorDetail: safeErrorDetail(error),
     });
     throw error;
   }
@@ -264,6 +265,7 @@ export async function handleCapturePayPalOrder(
         reservationPublicId: session.reservationPublicId,
         provider: "paypal",
         errorCode: safeErrorCode(error),
+        errorDetail: safeErrorDetail(error),
       });
     }
     throw error;
@@ -551,4 +553,9 @@ function safeErrorCode(error: unknown): string {
   if (error instanceof ApiError) return error.code;
   if (error instanceof Error) return error.name;
   return "unknown_error";
+}
+
+function safeErrorDetail(error: unknown): string | undefined {
+  if (error instanceof PayPalProviderError) return error.providerDetail;
+  return undefined;
 }

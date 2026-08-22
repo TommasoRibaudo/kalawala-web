@@ -206,6 +206,137 @@ test.describe('Booking Flow', () => {
     await expect(paypalButton).toBeEnabled();
   });
 
+  test('clicking "Continue to payment" after a hold redirects to the PayPal approval URL', async ({
+    appPage,
+  }) => {
+    // Extends the previous test one step further: hold creation is not the
+    // end of the flow — the guest still has to reach PayPal. This is the
+    // continuation nothing else in this file exercised.
+    await appPage.goto(BOOKING_URL);
+
+    await expect(
+      appPage.locator('.booking-wizard-slide--active .booking-results'),
+    ).toBeVisible({ timeout: 15_000 });
+
+    const bookButton = appPage
+      .locator('.booking-wizard-slide--active .booking-result-card')
+      .first()
+      .getByRole('button', { name: /Book with PayPal/i });
+    await bookButton.click();
+
+    const checkoutSlide = appPage.locator('.booking-wizard-slide--active');
+    await checkoutSlide.getByLabel('First name').fill('John');
+    await checkoutSlide.getByLabel('Last name').fill('Doe');
+    await checkoutSlide.getByLabel('Email').fill('john.doe@example.com');
+    await checkoutSlide.getByLabel('Phone').fill('+1234567890');
+    await checkoutSlide.getByLabel('Country').fill('US');
+    await checkoutSlide
+      .getByLabel('Create a password to manage your booking')
+      .fill('securepassword123');
+    await checkoutSlide.getByLabel(/I accept the booking terms/i).check();
+    await checkoutSlide
+      .getByRole('button', { name: /Continue to payment/i })
+      .click();
+
+    const holdSection = checkoutSlide.locator(
+      '.booking-checkout-panel__hold',
+    );
+    await expect(holdSection).toBeVisible({ timeout: 10_000 });
+
+    await holdSection
+      .getByRole('button', { name: /Continue to payment/i })
+      .click();
+
+    // The mocked create-order response's approvalUrl is what the app hands to
+    // window.location.assign() — reaching it is the guest actually leaving
+    // for PayPal, which is the real success signal for this step.
+    await expect(appPage).toHaveURL(/\/book\/return\?token=PAYPAL-ORDER-MOCK-001/);
+  });
+
+  test('shows a recoverable error, not a dead end, when PayPal order creation fails', async ({
+    appPage,
+  }) => {
+    // Regression test for the incident where a guest created a hold, PayPal
+    // order creation then failed server-side, and the guest was left stuck
+    // with no clear next step (see booking-api's paypalClient.ts createOrder
+    // fix — PayPal rejections used to collapse into an opaque 502). This test
+    // only covers the frontend half: given the API now correctly reports a
+    // provider failure (503, retryable), the checkout panel must show a
+    // visible, actionable error and keep the "Continue to payment" button
+    // available so the guest can retry instead of being stuck on a dead end.
+    await appPage.route(
+      '**/api/bookings/*/paypal/create-order**',
+      async (route) => {
+        await route.fulfill({
+          status: 503,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            error: {
+              code: 'paypal_account_restricted',
+              message: 'Unexpected server error.',
+              retryable: false,
+              correlationId: 'e2e-test-correlation-id',
+            },
+          }),
+        });
+      },
+    );
+
+    await appPage.goto(BOOKING_URL);
+
+    await expect(
+      appPage.locator('.booking-wizard-slide--active .booking-results'),
+    ).toBeVisible({ timeout: 15_000 });
+
+    const bookButton = appPage
+      .locator('.booking-wizard-slide--active .booking-result-card')
+      .first()
+      .getByRole('button', { name: /Book with PayPal/i });
+    await bookButton.click();
+
+    const checkoutSlide = appPage.locator('.booking-wizard-slide--active');
+    await checkoutSlide.getByLabel('First name').fill('John');
+    await checkoutSlide.getByLabel('Last name').fill('Doe');
+    await checkoutSlide.getByLabel('Email').fill('john.doe@example.com');
+    await checkoutSlide.getByLabel('Phone').fill('+1234567890');
+    await checkoutSlide.getByLabel('Country').fill('US');
+    await checkoutSlide
+      .getByLabel('Create a password to manage your booking')
+      .fill('securepassword123');
+    await checkoutSlide.getByLabel(/I accept the booking terms/i).check();
+    await checkoutSlide
+      .getByRole('button', { name: /Continue to payment/i })
+      .click();
+
+    const holdSection = checkoutSlide.locator(
+      '.booking-checkout-panel__hold',
+    );
+    await expect(holdSection).toBeVisible({ timeout: 10_000 });
+
+    const paypalButton = holdSection.getByRole('button', {
+      name: /Continue to payment/i,
+    });
+    await paypalButton.click();
+
+    // A visible, non-blank error must appear...
+    await expect(holdSection.getByRole('alert')).toBeVisible({
+      timeout: 10_000,
+    });
+
+    // ...the guest must still be looking at their active hold, not a blank
+    // or crashed panel...
+    await expect(holdSection).toBeVisible();
+
+    // ...and the button must still be there and enabled, so a retry (or a
+    // second attempt after switching to bank transfer) is possible instead
+    // of the hold being a dead end.
+    await expect(paypalButton).toBeVisible();
+    await expect(paypalButton).toBeEnabled();
+
+    // The guest must never be silently redirected anywhere on failure.
+    await expect(appPage).toHaveURL(/\/en\/book(\?|$)/);
+  });
+
   test('confirmation step displays reservation ID after capture', async ({
     appPage,
   }) => {

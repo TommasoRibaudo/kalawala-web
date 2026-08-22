@@ -475,6 +475,15 @@ jobs:
           # Must be one of booking_api_allowed_origins in the tfvars, or the CORS
           # preflight check fails against a perfectly healthy API.
           SMOKE_ORIGIN: https://www.reservaskalawala.com
+          # Exercises the hold -> PayPal create-order path end to end (see
+          # smoke-test.sh) — the path a PayPal 502 incident went undetected on,
+          # since /api/health, /api/calendar and /api/search never touch it.
+          # Off unless a SMOKE_TEST_GUEST_EMAIL repo secret is set, because
+          # enabling it creates a real Smoobu "Blocked" reservation and sends a
+          # real "hold created" email on every deploy — point that secret at a
+          # mailbox the team actually monitors before turning this on.
+          SMOKE_TEST_PAYPAL_INTEGRATION: ${{ secrets.SMOKE_TEST_GUEST_EMAIL != '' }}
+          SMOKE_TEST_GUEST_EMAIL: ${{ secrets.SMOKE_TEST_GUEST_EMAIL }}
         run: |
           sleep 5
           bash scripts/smoke-test.sh

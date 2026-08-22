@@ -498,6 +498,56 @@ test("POST /api/paypal/order advances session status to paypal_order_created", a
   expect(payment?.paypalRequestIdOrder).not.toBe(payment?.paypalRequestIdCapture);
 });
 
+test("POST /api/paypal/order returns 503 (not a blind 502) with the real reason when PayPal rejects order creation", async () => {
+  // Regression test — createOrder used to have no explicit 422 handling, so any
+  // PayPal rejection here (bad payload, restricted merchant account, unsupported
+  // currency) fell into buildPayPalHttpError's generic fallback: a 502 "PayPal
+  // rejected the request" that discarded PayPal's actual issue/description. A
+  // guest with an active hold would see a bare 502 and have no way to retry or
+  // recover, and the state-transition log gave engineers nothing to diagnose from.
+  const fetchFn = jest.fn(async (url: string | URL) => {
+    const { hostname, pathname } = new URL(url.toString());
+
+    if (hostname === "login.smoobu.com") {
+      if (pathname === "/booking/checkApartmentAvailability") return jsonResp(SMOOBU_AVAILABILITY_RESPONSE);
+      if (pathname === "/api/reservations") return jsonResp(SMOOBU_RESERVATION_RESPONSE);
+    }
+
+    if (hostname === "api-m.sandbox.paypal.com") {
+      if (pathname === "/v1/oauth2/token") return jsonResp(PAYPAL_TOKEN_RESPONSE);
+      if (pathname === "/v2/checkout/orders") {
+        return jsonResp(
+          {
+            name: "UNPROCESSABLE_ENTITY",
+            details: [
+              { issue: "PAYEE_ACCOUNT_RESTRICTED", description: "Payee account is restricted." },
+            ],
+          },
+          { status: 422 }
+        );
+      }
+    }
+
+    return jsonResp({ detail: "unexpected" }, { status: 500 });
+  });
+  global.fetch = fetchFn as typeof fetch;
+  const handler = createBookingApiHandler(config);
+  const { bookingSessionId } = await setupSessionWithActiveHold(handler);
+
+  const response = await handler(makeOrderEvent({ bookingSessionId }));
+
+  expect(response.statusCode).toBe(503);
+  const body = JSON.parse(response.body);
+  expect(body.error.code).toBe("paypal_account_restricted");
+
+  // No payment row was created, and the session is still hold_active — the
+  // guest can retry (e.g. with bank transfer) without losing their hold.
+  const payment = await payments.getByBookingSessionId(bookingSessionId);
+  const session = await bookingSessions.getById(bookingSessionId);
+  expect(payment).toBeUndefined();
+  expect(session?.status).toBe("hold_active");
+});
+
 test("POST /api/paypal/order is idempotent: second call returns the same orderId without re-calling PayPal", async () => {
   const fetchFn = makeHappyPathFetch();
   global.fetch = fetchFn as typeof fetch;

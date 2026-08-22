@@ -38,6 +38,60 @@ test.describe('Booking Flow', () => {
     await expect(resultsSlide.getByText('Casa Rana')).toBeVisible();
   });
 
+  test('landing on the results step does not scroll the wizard viewport horizontally', async ({ appPage }) => {
+    // Regression test for #313 — .booking-wizard-viewport holds all four
+    // wizard steps side by side (overflow: clip, positioned via transform,
+    // never meant to scroll). resultsAnchorRef.scrollIntoView() used to ask
+    // the browser to bring the anchor into view, and the browser obliged by
+    // scrolling that ancestor's horizontal scrollbar by a full slide-width,
+    // permanently hiding the results behind clipped, empty space — while
+    // the results slide remained non-zero-size and technically "visible"
+    // per Playwright's definition, since visibility checks don't account
+    // for an ancestor's scroll offset. Asserting scrollLeft directly is
+    // what actually catches that failure mode.
+    await appPage.goto(BOOKING_URL);
+
+    await expect(
+      appPage.locator('.booking-wizard-slide--active .booking-results'),
+    ).toBeVisible({ timeout: 15_000 });
+
+    const scrollLeft = await appPage
+      .locator('.booking-wizard-viewport')
+      .evaluate((el) => el.scrollLeft);
+    expect(scrollLeft).toBe(0);
+  });
+
+  test('changing guest count on the results step does not scroll the wizard viewport horizontally', async ({
+    appPage,
+  }) => {
+    // Regression test for #313 — the more severe live repro: a plain
+    // click-triggered browser focus-follow-scroll on the guest stepper
+    // button (rendered in the results step's compact search form)
+    // reproduced the same class of bug as the scrollIntoView call above,
+    // just with a smaller offset. Exercising the actual repro (not just
+    // landing on results) is what the pre-fix suite never did.
+    await appPage.goto(BOOKING_URL);
+
+    const resultsSlide = appPage.locator('.booking-wizard-slide--active');
+    await expect(resultsSlide.locator('.booking-results')).toBeVisible({
+      timeout: 15_000,
+    });
+
+    const viewport = appPage.locator('.booking-wizard-viewport');
+    const increaseGuests = resultsSlide.getByRole('button', {
+      name: /increase guests/i,
+    });
+
+    for (let i = 0; i < 3; i++) {
+      await increaseGuests.click();
+      await expect
+        .poll(() => viewport.evaluate((el) => el.scrollLeft))
+        .toBe(0);
+    }
+
+    await expect(resultsSlide.locator('.booking-results')).toBeVisible();
+  });
+
   test('step indicator reflects the current step throughout the flow', async ({ appPage }) => {
     // Requirement 8.6 — Wizard step indicator reflects the current step
     await appPage.goto(BOOKING_URL);

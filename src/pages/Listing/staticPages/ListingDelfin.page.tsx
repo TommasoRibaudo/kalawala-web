@@ -83,7 +83,7 @@ const ListingDelfin = () => {
                 <meta name="description" content={content.seoDescription} />
                 <link rel="canonical" href={canonicalUrl('delfin', locale)} />
                 {hreflangLinks('delfin')}
-                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Delfin', locale, houseData?.image))}</script>
+                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Delfin', locale))}</script>
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (

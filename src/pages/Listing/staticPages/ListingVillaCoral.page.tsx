@@ -89,7 +89,7 @@ const ListingVillaCoral = () => {
                 <meta name="description" content={content.seoDescription} />
                 <link rel="canonical" href={canonicalUrl('villacoral', locale)} />
                 {hreflangLinks('villacoral')}
-                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('VillaCoral', locale, houseData?.image))}</script>
+                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('VillaCoral', locale))}</script>
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (

@@ -84,7 +84,7 @@ const ListingGeco = () => {
                 <meta name="description" content={content.seoDescription} />
                 <link rel="canonical" href={canonicalUrl('geco', locale)} />
                 {hreflangLinks('geco')}
-                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Geco', locale, houseData?.image))}</script>
+                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Geco', locale))}</script>
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (

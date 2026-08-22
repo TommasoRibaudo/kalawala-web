@@ -81,7 +81,7 @@ const ListingPlumeria = () => {
                 <meta name="description" content={content.seoDescription} />
                 <link rel="canonical" href={canonicalUrl('plumeria', locale)} />
                 {hreflangLinks('plumeria')}
-                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Plumeria', locale, houseData?.image))}</script>
+                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Plumeria', locale))}</script>
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (

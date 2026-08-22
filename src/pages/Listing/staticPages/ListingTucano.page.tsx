@@ -82,7 +82,7 @@ const ListingTucano = () => {
                 <meta name="description" content={content.seoDescription} />
                 <link rel="canonical" href={canonicalUrl('tucano', locale)} />
                 {hreflangLinks('tucano')}
-                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Tucano', locale, houseData?.image))}</script>
+                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Tucano', locale))}</script>
             </Helmet>
             <FixedNavigation isBlog={false}/>
             {isScreenSmall && (

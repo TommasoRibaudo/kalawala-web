@@ -82,7 +82,7 @@ const ListingAreka = () => {
                 <meta name="description" content={content.seoDescription} />
                 <link rel="canonical" href={canonicalUrl('areka', locale)} />
                 {hreflangLinks('areka')}
-                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Areka', locale, houseData?.image))}</script>
+                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Areka', locale))}</script>
             </Helmet>
 
             <FixedNavigation isBlog={false} />

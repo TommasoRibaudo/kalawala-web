@@ -82,7 +82,7 @@ const ListingPappagallo = () => {
                 <meta name="description" content={content.seoDescription} />
                 <link rel="canonical" href={canonicalUrl('pappagallo', locale)} />
                 {hreflangLinks('pappagallo')}
-                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Pappagallo', locale, houseData?.image))}</script>
+                <script type="application/ld+json">{JSON.stringify(vacationRentalJsonLd('Pappagallo', locale))}</script>
             </Helmet>
             <FixedNavigation isBlog={false} />
             {isScreenSmall && (

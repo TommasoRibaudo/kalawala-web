@@ -427,6 +427,7 @@ function buildTemplateInput(session: BookingSessionRecord, propertyName: string)
     language: session.language,
     guestFirstName: session.guest?.firstName ?? "",
     guestEmail: session.guest?.email ?? "",
+    ...(session.guest?.phone ? { guestPhone: session.guest.phone } : {}),
     reservationPublicId: session.reservationPublicId,
     propertyName,
     arrivalDate: session.arrivalDate,

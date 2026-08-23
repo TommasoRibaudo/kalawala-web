@@ -47,6 +47,7 @@ jest.mock("@aws-sdk/s3-request-presigner", () => ({
 
 import { createBookingApiHandler } from "./app";
 import { InMemoryBookingSessionRepository } from "./bookingSessions";
+import { EmailClient } from "./email";
 import { InMemoryHoldRepository } from "./holds";
 import { InMemoryPaymentRepository } from "./payments";
 import { StaticSecretProvider } from "./secrets";
@@ -99,8 +100,14 @@ function createTestConfig(): BookingApiConfig {
       allowedMimeTypes: ["image/jpeg", "image/png", "application/pdf"],
     },
     hold: { defaultTtlMinutes: 60, idempotencyTtlMinutes: 1440, staleIdempotencyLockSeconds: 120 },
+    deposit: { holdTtlHours: 48, confirmTokenTtlHours: 168, staffConfirmBaseUrl: "https://kalawala.test-api/prod" },
     abuseProtection: { enabled: false, captchaChallengesEnabled: false, maxTrackedBuckets: 100 },
-    email: { fromAddress: "test@kalawala.com", region: "us-east-1", disabled: true },
+    email: {
+      fromAddress: "test@kalawala.com",
+      region: "us-east-1",
+      disabled: true,
+      staffNotificationEmail: "staff@kalawala.test",
+    },
     observability: { serviceName: "booking-api", environment: "test", logLevel: "silent", metricsEnabled: false },
   };
 }
@@ -292,4 +299,130 @@ it("reports a missing object as an upload that has not happened yet", async () =
 
   expect(response.statusCode).toBe(400);
   expect(JSON.parse(response.body).error.code).toBe("upload_not_found");
+});
+
+// ── staff notification on confirm ───────────────────────────────────────────
+//
+// Prior to this, a confirmed receipt only updated Smoobu's internal notice —
+// staff had no email telling them a transfer proof was waiting, short of the
+// original hold-creation email (sent before any receipt existed) or checking
+// Smoobu themselves.
+
+describe("staff notification on receipt confirm", () => {
+  const originalFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    jest.restoreAllMocks();
+  });
+
+  function jsonResp(body: unknown, init: ResponseInit = {}): Response {
+    return new Response(JSON.stringify(body), {
+      status: 200,
+      ...init,
+      headers: { "content-type": "application/json", ...(init.headers as Record<string, string> | undefined) },
+    });
+  }
+
+  function makeSearchEvent(): LambdaHttpRequest {
+    return {
+      version: "2.0",
+      rawPath: "/api/search",
+      headers: { "content-type": "application/json", origin: "https://kalawala.test" },
+      body: JSON.stringify({ arrivalDate: "2099-06-10", departureDate: "2099-06-14", guests: 2, language: "en" }),
+      requestContext: { http: { method: "POST", path: "/api/search", sourceIp: "203.0.113.9" } },
+    };
+  }
+
+  function makeDepositHoldEvent(body: unknown): LambdaHttpRequest {
+    return {
+      version: "2.0",
+      rawPath: "/api/deposit-holds",
+      headers: { "content-type": "application/json", "idempotency-key": "idem-deposit-receipt-staff-notify-001", origin: "https://kalawala.test" },
+      body: JSON.stringify(body),
+      requestContext: { http: { method: "POST", path: "/api/deposit-holds", sourceIp: "203.0.113.9" } },
+    };
+  }
+
+  async function setupDepositHoldWithProperty(): Promise<{ bookingSessionId: string; reservationPublicId: string; depositAccessToken: string }> {
+    global.fetch = jest.fn(async (url: string | URL) => {
+      const { hostname, pathname } = new URL(url.toString());
+      if (hostname === "login.smoobu.com") {
+        if (pathname === "/booking/checkApartmentAvailability") {
+          return jsonResp({ availableApartments: [301061], prices: { "301061": { price: 510, currency: "USD" } }, errorMessages: {} });
+        }
+        if (pathname === "/api/reservations") return jsonResp({ id: 987654 });
+      }
+      return jsonResp({ detail: "unexpected" }, { status: 500 });
+    }) as typeof fetch;
+
+    const searchResp = await handler(makeSearchEvent());
+    expect(searchResp.statusCode).toBe(200);
+    const searchBody = JSON.parse(searchResp.body);
+
+    const holdResp = await handler(
+      makeDepositHoldEvent({
+        quoteId: searchBody.quoteId,
+        bookingSessionId: searchBody.bookingSessionId,
+        propertyId: searchBody.properties[0].propertyId,
+        guest: { firstName: "Ana", lastName: "Mora", email: "ana@example.com", phone: "+506 8000 0000" },
+        portalPassword: "correct horse battery staple",
+        termsAccepted: true,
+      })
+    );
+    expect(holdResp.statusCode).toBe(200);
+    const holdBody = JSON.parse(holdResp.body);
+
+    return {
+      bookingSessionId: searchBody.bookingSessionId,
+      reservationPublicId: holdBody.booking.reservationPublicId,
+      depositAccessToken: holdBody.depositAccessToken,
+    };
+  }
+
+  it("emails staff with the receipt link when a receipt is confirmed", async () => {
+    const sendStaffDepositReview = jest.spyOn(EmailClient.prototype, "sendStaffDepositReview");
+    const { bookingSessionId, reservationPublicId, depositAccessToken } = await setupDepositHoldWithProperty();
+    // Hold creation already sent its own staff email above — only interested
+    // in the one triggered by confirming the receipt.
+    sendStaffDepositReview.mockClear();
+    const s3Key = `deposit-receipts/${bookingSessionId}/1700000000-receipt.jpg`;
+    headObjectResponses.push({ ContentLength: 2048 });
+
+    const response = await handler(
+      post(
+        "/api/deposit-receipt/confirm",
+        { bookingSessionId, s3Key },
+        `Bearer ${depositAccessToken}`,
+        "deposit-receipt-confirm-staff-notify-001"
+      )
+    );
+
+    expect(response.statusCode).toBe(200);
+    expect(sendStaffDepositReview).toHaveBeenCalledTimes(1);
+    const [session, , options] = sendStaffDepositReview.mock.calls[0];
+    expect(session.reservationPublicId).toBe(reservationPublicId);
+    expect(options.receiptUrl).toBe("https://s3.example.test/presigned");
+    expect(options.confirmUrl).toContain("/api/staff/deposit-review/");
+    expect(options.rejectUrl).toContain("/api/staff/deposit-review/");
+  });
+
+  it("does not fail the confirm request if the property can't be resolved (e.g. no propertyId on the session)", async () => {
+    // seedSession() never sets a propertyId, so the new staff-notification
+    // step must skip gracefully rather than throw.
+    const session = await seedSession();
+    const s3Key = `deposit-receipts/${session.id}/1700000000-receipt.jpg`;
+    headObjectResponses.push({ ContentLength: 2048 });
+
+    const response = await handler(
+      post(
+        "/api/deposit-receipt/confirm",
+        { bookingSessionId: session.id, s3Key },
+        accessToken(session.id, session.reservationPublicId),
+        "deposit-receipt-confirm-staff-notify-002"
+      )
+    );
+
+    expect(response.statusCode).toBe(200);
+  });
 });

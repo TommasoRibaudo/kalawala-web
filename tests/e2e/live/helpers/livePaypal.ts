@@ -51,7 +51,8 @@ export async function approvePaypal(page: Page, mode: PaypalApprovalMode): Promi
  * failing here, re-record the selectors against a live sandbox checkout. The
  * fallbacks below cover the common variants seen as of this writing:
  *   - single-page login vs. email-then-Next two-step login
- *   - "Pay Now" review button id `#payment-submit-btn`
+ *   - the localized review CTA ("Completar compra" / "Complete Purchase" / …),
+ *     matched by role+name since it has no stable id
  */
 async function approveOnPaypalSandbox(page: Page): Promise<void> {
   const email = requiredEnv('PAYPAL_SANDBOX_BUYER_EMAIL');
@@ -81,9 +82,17 @@ async function approveOnPaypalSandbox(page: Page): Promise<void> {
   const loginButton = page.locator('#btnLogin');
   await loginButton.click();
 
-  // Review page — approve the payment. `#payment-submit-btn` is PayPal's stable
-  // id for the primary "Pay Now" / "Complete Purchase" CTA.
-  const payButton = page.locator('#payment-submit-btn');
+  // Review page — approve the payment. The primary CTA has no stable id across
+  // PayPal's variants (the once-reliable `#payment-submit-btn` was absent here),
+  // and it is localized to the buyer account's language, so match it by role +
+  // name across the locales we might hit. Verified against a Spanish sandbox
+  // buyer, whose button reads "Completar compra".
+  const payButton = page
+    .getByRole('button', {
+      name: /Completar compra|Complete Purchase|Pay Now|Pagar ahora|Continuar y revisar|Continue to Review Order/i,
+    })
+    .or(page.locator('#payment-submit-btn'))
+    .first();
   await payButton.waitFor({ state: 'visible', timeout: 60_000 });
   await payButton.click();
 

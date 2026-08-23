@@ -11,6 +11,7 @@ import {
   renderBookingConfirmedEmail,
   renderCancelledEmail,
   renderDepositHandoffEmail,
+  renderStaffDepositReviewEmail,
 } from "./emailTemplates";
 import { EmailClient } from "./email";
 import type { BookingSessionRecord } from "./bookingSessions";
@@ -246,6 +247,62 @@ describe("renderDepositHandoffEmail", () => {
 
     expect(result.subject).toContain("depósito manual");
     expect(result.html).toContain("NO está confirmada");
+  });
+});
+
+describe("renderStaffDepositReviewEmail", () => {
+  it("includes the guest phone number alongside name and email (#325 follow-up)", () => {
+    const result = renderStaffDepositReviewEmail({
+      language: "en",
+      guestFirstName: "Ana",
+      guestEmail: "ana@example.com",
+      guestPhone: "+506 8000 0000",
+      reservationPublicId: "KWL-DEP0001",
+      propertyName: "Casa Geco",
+      arrivalDate: "2026-08-10",
+      departureDate: "2026-08-14",
+      guests: 2,
+      depositConfirmUrl: "https://api.kalawala.com/api/staff/deposit-review/confirm-token",
+      depositRejectUrl: "https://api.kalawala.com/api/staff/deposit-review/reject-token",
+    });
+
+    expect(result.html).toContain("Ana · ana@example.com · +506 8000 0000");
+    expect(result.text).toContain("Ana · ana@example.com · +506 8000 0000");
+  });
+
+  it("omits the phone segment cleanly when absent", () => {
+    const result = renderStaffDepositReviewEmail({
+      language: "en",
+      guestFirstName: "Ana",
+      guestEmail: "ana@example.com",
+      reservationPublicId: "KWL-DEP0002",
+      propertyName: "Casa Geco",
+      arrivalDate: "2026-08-10",
+      departureDate: "2026-08-14",
+      guests: 2,
+      depositConfirmUrl: "https://api.kalawala.com/api/staff/deposit-review/confirm-token",
+      depositRejectUrl: "https://api.kalawala.com/api/staff/deposit-review/reject-token",
+    });
+
+    expect(result.html).toContain("Ana · ana@example.com<");
+  });
+
+  it("includes the receipt link when depositReceiptUrl is present", () => {
+    const result = renderStaffDepositReviewEmail({
+      language: "en",
+      guestFirstName: "Ana",
+      guestEmail: "ana@example.com",
+      reservationPublicId: "KWL-DEP0003",
+      propertyName: "Casa Geco",
+      arrivalDate: "2026-08-10",
+      departureDate: "2026-08-14",
+      guests: 2,
+      depositConfirmUrl: "https://api.kalawala.com/api/staff/deposit-review/confirm-token",
+      depositRejectUrl: "https://api.kalawala.com/api/staff/deposit-review/reject-token",
+      depositReceiptUrl: "https://s3.example.com/receipt.jpg",
+    });
+
+    expect(result.html).toContain("https://s3.example.com/receipt.jpg");
   });
 });
 

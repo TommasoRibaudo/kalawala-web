@@ -5,9 +5,13 @@
  */
 
 import { BookingSessionRepository } from "./bookingSessions";
+import { buildBankInfo } from "./depositHandoff";
+import { buildStaffActionUrl } from "./depositHolds";
+import { createEmailClient } from "./email";
 import { HoldRepository } from "./holds";
 import { ApiError } from "./http/errors";
 import { jsonResponse } from "./http/response";
+import { BOOKING_PROPERTIES_BY_ID } from "./propertyCatalog";
 import { extractBearerToken, verifySignedToken } from "./signedTokens";
 import { createSmoobuClient } from "./smoobuClient";
 import { ApiResponse, BookingApiConfig, HeadersMap, RouteObservability, S3UploadConfig } from "./types";
@@ -327,6 +331,37 @@ export async function handleDepositReceiptConfirm(
     observability.logger.warn("deposit_receipt_no_smoobu_reservation", {
       bookingSessionId: session.id,
       note: "No Smoobu reservation found for this booking session. Receipt stored locally only.",
+    });
+  }
+
+  // Notify staff a receipt landed. The only other staff email in this flow
+  // fires at hold creation, before any receipt exists, so without this staff
+  // have no way to learn a transfer proof is waiting on them short of
+  // checking Smoobu's notice field themselves.
+  try {
+    const property = BOOKING_PROPERTIES_BY_ID.get(updatedSession.propertyId ?? "");
+    const deposit = config.deposit;
+    if (property && deposit) {
+      const { portalSessionSecret } = await config.secrets.getSecrets();
+      const confirmUrl = buildStaffActionUrl(deposit.staffConfirmBaseUrl, "confirm", updatedSession, portalSessionSecret, deposit.confirmTokenTtlHours);
+      const rejectUrl = buildStaffActionUrl(deposit.staffConfirmBaseUrl, "reject", updatedSession, portalSessionSecret, deposit.confirmTokenTtlHours);
+      const emailClient = createEmailClient(config.email, observability.logger);
+      await emailClient.sendStaffDepositReview(updatedSession, property.name, {
+        confirmUrl,
+        rejectUrl,
+        bankInfo: buildBankInfo(property),
+        receiptUrl: s3Link,
+      });
+    } else {
+      observability.logger.warn("deposit_receipt_staff_notification_skipped", {
+        bookingSessionId: session.id,
+        reason: !property ? "property_not_found" : "deposit_not_configured",
+      });
+    }
+  } catch (err) {
+    observability.logger.error("deposit_receipt_staff_notification_failed", {
+      bookingSessionId: session.id,
+      error: err instanceof Error ? err.message : String(err),
     });
   }
 

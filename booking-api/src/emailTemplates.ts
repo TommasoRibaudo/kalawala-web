@@ -13,6 +13,8 @@ export interface EmailTemplateInput {
   language: BookingLanguage;
   guestFirstName: string;
   guestEmail: string;
+  /** Shown to staff on the deposit review email so they can reach the guest directly. */
+  guestPhone?: string;
   reservationPublicId: string;
   propertyName: string;
   arrivalDate: string;
@@ -653,7 +655,7 @@ export function renderStaffDepositReviewEmail(input: EmailTemplateInput): Render
       ? ([[s.totalAmount, formatAmount(input.totalAmountCents, input.currency)]] as Array<[string, string]>)
       : []),
     ...(input.holdExpiresAt ? ([[s.holdExpires, input.holdExpiresAt]] as Array<[string, string]>) : []),
-    [t.guestContact, `${input.guestFirstName} · ${input.guestEmail}`],
+    [t.guestContact, [input.guestFirstName, input.guestEmail, input.guestPhone].filter(Boolean).join(" · ")],
     [t.receiptLabel, input.depositReceiptUrl ? input.depositReceiptUrl : t.noReceipt],
   ];
 

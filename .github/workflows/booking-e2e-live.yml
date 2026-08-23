@@ -63,11 +63,11 @@ jobs:
     runs-on: ubuntu-latest
     # Fork PRs cannot read secrets; run only on same-repo PRs and manual dispatch.
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository }}
-    # PayPal drives its own sandbox pages, whose markup shifts and whose selectors
-    # in tests/e2e/live/helpers/livePaypal.ts are not yet proven in CI. Keep this
-    # non-blocking until it has gone green a few times; then DROP this line so a
-    # broken live PayPal integration blocks the merge — which is the point.
-    continue-on-error: true
+    # Required gate: a broken live-PayPal integration must block the merge.
+    # PayPal drives its own sandbox pages (whose markup shifts and is localized),
+    # so the live config retries once in CI to absorb the occasional PayPal-UI
+    # hiccup — a genuine integration break still fails both attempts. If PayPal's
+    # markup changes, retune the selectors in tests/e2e/live/helpers/livePaypal.ts.
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

@@ -20,7 +20,9 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   forbidOnly: isCI,
-  retries: 0,
+  // One retry in CI: these are now blocking gates, and the sandbox PayPal path
+  // drives PayPal's own UI, which can hiccup. A real break still fails twice.
+  retries: isCI ? 1 : 0,
   reporter: [
     ['html', { open: 'never', outputFolder: 'playwright-report-live' }],
     ['list'],

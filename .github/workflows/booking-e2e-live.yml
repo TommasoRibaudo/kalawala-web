@@ -45,6 +45,9 @@ jobs:
           REACT_APP_CAPTCHA_SITE_KEY: test-site-key
       - name: Run full flow (PayPal + deposit, mock PayPal)
         run: bash scripts/booking-live-e2e.sh
+      - name: booking-api log (on failure)
+        if: failure()
+        run: tail -n 400 /tmp/booking-live-api.log || true
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4
@@ -93,6 +96,11 @@ jobs:
           PAYPAL_CLIENT_SECRET: ${{ secrets.PAYPAL_CLIENT_SECRET }}
           PAYPAL_SANDBOX_BUYER_EMAIL: ${{ secrets.PAYPAL_SANDBOX_BUYER_EMAIL }}
           PAYPAL_SANDBOX_BUYER_PASSWORD: ${{ secrets.PAYPAL_SANDBOX_BUYER_PASSWORD }}
+      - name: booking-api log (on failure)
+        if: failure()
+        # Server-side PayPal errors keep their issue/description here (see
+        # observability.ts errorDetail) — the reason a create-order was rejected.
+        run: tail -n 400 /tmp/booking-live-api.log || true
       - name: Upload report + trace
         if: always()
         uses: actions/upload-artifact@v4

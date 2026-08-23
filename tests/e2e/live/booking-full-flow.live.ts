@@ -115,7 +115,20 @@ test.describe('Booking full flow (real API, mock Smoobu, PayPal ' + paypalApprov
     await expect(holdSection.getByText(reservationPublicId)).toBeVisible();
 
     // ── 4. PayPal order + approve + capture ──────────────────────────────────
+    // Capture the create-order response so a provider rejection (e.g. a
+    // restricted/unverified sandbox merchant account) surfaces as the real
+    // PayPal error instead of an opaque "never reached paypal.com" timeout in
+    // approvePaypal.
+    const orderResponsePromise = page.waitForResponse(
+      (r) => r.url().includes('/paypal/create-order') && r.request().method() === 'POST',
+    );
     await holdSection.getByRole('button', { name: /Continue to payment/i }).click();
+    const orderResponse = await orderResponsePromise;
+    if (!orderResponse.ok()) {
+      throw new Error(
+        `PayPal create-order failed (${orderResponse.status()}): ${await orderResponse.text()}`,
+      );
+    }
     await approvePaypal(page, mode); // lands on /book/confirmed
 
     // ── 5. Confirmation ───────────────────────────────────────────────────────

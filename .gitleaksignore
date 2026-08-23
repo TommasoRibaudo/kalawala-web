@@ -25,3 +25,4 @@ febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:booking-api/src/knownGaps.test.ts:gener
 febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:booking-api/src/knownGaps.test.ts:generic-api-key:253
 febfc4fe1fd80a038eb13d7b3e260a6cda499d2c:booking-api/.env.local.example:generic-api-key:45
 f5f301f276f5c9f63c01cfde2fdce4f18cf8450b:booking-api/src/secrets.test.ts:generic-api-key:12
+4c81e4de79f0132f3db80b3dc1c7f47a6203d13f:booking-api/src/depositReceipt.test.ts:generic-api-key:341

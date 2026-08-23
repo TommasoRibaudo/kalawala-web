@@ -3,7 +3,7 @@ import { Alert, Button, Col, Container, Form, Row, Spinner } from 'react-bootstr
 import { Helmet } from 'react-helmet';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarDays, faUser, faWifi, faSnowflake, faCar, faKitchenSet, faArrowLeft, faCheck, faPlus, faLocationDot, faBath, faPaw, faSwimmingPool } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarDays, faUser, faWifi, faSnowflake, faCar, faKitchenSet, faArrowLeft, faCheck, faPlus, faLocationDot, faBath, faPaw, faSwimmingPool, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
 import { bookingLanguage, useLocale } from '../i18n';
@@ -48,7 +48,20 @@ import { CookieConsentService } from '../services/CookieConsent.service';
 import { useExchangeRate } from '../hooks/useExchangeRate';
 import { formatColones, formatExchangeRate } from '../utils/money';
 import { addDays, getCostaRicaToday } from '../utils/dates';
-import { PROPERTY_DISPLAY_NAMES } from '../utils/constants';
+import {
+  PROPERTY_DISPLAY_NAMES,
+  IImageDescription,
+  gecoImageDescriptions, gecoImageDescriptionsES,
+  ranaImageDescriptions, ranaImageDescriptionsES,
+  tucanoImageDescriptions, tucanoImageDescriptionsES,
+  pappagalloImageDescriptions, pappagalloImageDescriptionsES,
+  VillaMarImageDescriptions, VillaMarImageDescriptionsES,
+  VillaCoralImageDescriptions, VillaCoralImageDescriptionsES,
+  ArekaImageDescriptions, ArekaImageDescriptionsES,
+  PlumeriaImageDescriptions, PlumeriaImageDescriptionsES,
+  GiuliaImageDescriptions, GiuliaImageDescriptionsES,
+  delfinImageDescriptions, delfinImageDescriptionsES,
+} from '../utils/constants';
 import { bookingStrings, BookingStrings } from './Booking.i18n';
 import './Booking.style.scss';
 import { pathForKey, routeKeyForSlug } from '../routes.config';
@@ -85,6 +98,28 @@ function getPropertyLocation(slug: string, strings: BookingStrings): string {
   return PUERTO_VIEJO_CENTER_SLUGS.has(slug.toLowerCase())
     ? strings.locationPuertoViejo
     : strings.locationPlayaChiquita;
+}
+
+// Room-by-room photo sets, keyed the same way as PROPERTY_DISPLAY_NAMES —
+// reused from the listing pages' galleries so the result card can show more
+// than the single search-response thumbnail.
+const PROPERTY_GALLERY_IMAGES: Record<string, { en: IImageDescription[]; es: IImageDescription[] }> = {
+  Geco: { en: gecoImageDescriptions, es: gecoImageDescriptionsES },
+  Rana: { en: ranaImageDescriptions, es: ranaImageDescriptionsES },
+  Tucano: { en: tucanoImageDescriptions, es: tucanoImageDescriptionsES },
+  Pappagallo: { en: pappagalloImageDescriptions, es: pappagalloImageDescriptionsES },
+  VillaMar: { en: VillaMarImageDescriptions, es: VillaMarImageDescriptionsES },
+  VillaCoral: { en: VillaCoralImageDescriptions, es: VillaCoralImageDescriptionsES },
+  Areka: { en: ArekaImageDescriptions, es: ArekaImageDescriptionsES },
+  Plumeria: { en: PlumeriaImageDescriptions, es: PlumeriaImageDescriptionsES },
+  Giulia: { en: GiuliaImageDescriptions, es: GiuliaImageDescriptionsES },
+  Delfin: { en: delfinImageDescriptions, es: delfinImageDescriptionsES },
+};
+
+function getPropertyGalleryImages(property: BookingAvailableProperty, language: BookingLanguage): IImageDescription[] {
+  const key = Object.keys(PROPERTY_GALLERY_IMAGES).find((k) => k.toLowerCase() === property.slug.toLowerCase());
+  const images = key ? PROPERTY_GALLERY_IMAGES[key][language] : undefined;
+  return images && images.length > 0 ? images : [{ roomType: property.name, roomDescription: '', imageLink: property.thumbnailUrl }];
 }
 
 const warningMessages: Record<string, WarningStringKey> = {
@@ -941,13 +976,56 @@ const BookingPropertyCard = ({ property, strings, language, nonRefundable, onMan
       language,
     });
   };
+  const galleryImages = React.useMemo(() => getPropertyGalleryImages(property, language), [property, language]);
+  const hasMultiplePhotos = galleryImages.length > 1;
+  const galleryTrackRef = React.useRef<HTMLDivElement>(null);
+  const [activePhoto, setActivePhoto] = React.useState(0);
+  const scrollToPhoto = (index: number) => {
+    const track = galleryTrackRef.current;
+    if (!track) return;
+    const clamped = Math.max(0, Math.min(index, galleryImages.length - 1));
+    track.scrollTo({ left: clamped * track.clientWidth, behavior: 'smooth' });
+  };
+  const handleGalleryScroll: React.UIEventHandler<HTMLDivElement> = (e) => {
+    const track = e.currentTarget;
+    if (track.clientWidth === 0) return;
+    setActivePhoto(Math.round(track.scrollLeft / track.clientWidth));
+  };
   return (
     <article className={`booking-result-card${isFeatured ? ' booking-result-card--featured' : ''}`} aria-labelledby={titleId}>
       <div className="booking-result-card__media-frame">
-        <a className="booking-result-card__media" href={listingUrl} target="_blank" rel="noopener noreferrer" onClick={handleListingOpen} aria-label={`${strings.viewListing}: ${property.name}`}>
-          <img src={property.thumbnailUrl} alt={property.name} />
-          <span className="booking-result-card__media-hover" aria-hidden="true">{strings.viewListing}</span>
-        </a>
+        <div className="booking-result-card__gallery" ref={galleryTrackRef} onScroll={handleGalleryScroll} role="group" aria-label={`${property.name}: ${strings.photoOf(activePhoto + 1, galleryImages.length)}`}>
+          {galleryImages.map((image, index) => (
+            <a
+              key={`${property.propertyId}-photo-${index}`}
+              className="booking-result-card__media"
+              href={listingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleListingOpen}
+              aria-label={`${strings.viewListing}: ${property.name}`}
+              tabIndex={index === activePhoto ? 0 : -1}
+            >
+              <img src={image.imageLink} alt={image.roomType || property.name} loading={isFeatured && index === 0 ? 'eager' : 'lazy'} />
+              <span className="booking-result-card__media-hover" aria-hidden="true">{strings.viewListing}</span>
+            </a>
+          ))}
+        </div>
+        {hasMultiplePhotos && (
+          <>
+            <button type="button" className="booking-result-card__gallery-nav booking-result-card__gallery-nav--prev" onClick={() => scrollToPhoto(activePhoto - 1)} disabled={activePhoto === 0} aria-label={strings.previousPhoto}>
+              <FontAwesomeIcon icon={faChevronLeft} />
+            </button>
+            <button type="button" className="booking-result-card__gallery-nav booking-result-card__gallery-nav--next" onClick={() => scrollToPhoto(activePhoto + 1)} disabled={activePhoto === galleryImages.length - 1} aria-label={strings.nextPhoto}>
+              <FontAwesomeIcon icon={faChevronRight} />
+            </button>
+            <div className="booking-result-card__gallery-dots" aria-hidden="true">
+              {galleryImages.map((_, index) => (
+                <span key={`${property.propertyId}-dot-${index}`} className={`booking-result-card__gallery-dot${index === activePhoto ? ' booking-result-card__gallery-dot--active' : ''}`} />
+              ))}
+            </div>
+          </>
+        )}
         <span className="booking-result-card__status">{strings.available}</span>
       </div>
       <div className="booking-result-card__content">

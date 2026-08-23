@@ -407,13 +407,18 @@ test('builds Spanish listing links from the property slug and opens them in a ne
   await screen.findByText('Casa Geco');
 
   const viewListingLink = screen.getByRole('link', { name: 'Ver alojamiento' });
-  const imageListingLink = screen.getByRole('link', { name: 'Ver alojamiento: Casa Geco' });
+  // The result card's photo gallery renders one link per photo, all sharing
+  // the same accessible name.
+  const imageListingLinks = screen.getAllByRole('link', { name: 'Ver alojamiento: Casa Geco' });
   expect(viewListingLink).toHaveAttribute('href', '/es/geco');
   expect(viewListingLink).toHaveAttribute('target', '_blank');
   expect(viewListingLink).toHaveAttribute('rel', 'noopener noreferrer');
-  expect(imageListingLink).toHaveAttribute('href', '/es/geco');
-  expect(imageListingLink).toHaveAttribute('target', '_blank');
-  expect(imageListingLink).toHaveAttribute('rel', 'noopener noreferrer');
+  expect(imageListingLinks.length).toBeGreaterThan(0);
+  imageListingLinks.forEach((link) => {
+    expect(link).toHaveAttribute('href', '/es/geco');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
 });
 
 test('creates a PayPal hold from the property result card and shows the live hold timer', async () => {

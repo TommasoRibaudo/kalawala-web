@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Locale } from '../locales';
+import { upcomingYearForMonth } from '../../utils/dates';
 
 /**
  * Long-form copy for the ten blog articles, Phase 3c.
@@ -4665,6 +4666,11 @@ export type MonthKey =
   | 'january' | 'february' | 'march' | 'april' | 'may' | 'june'
   | 'july' | 'august' | 'september' | 'october' | 'november' | 'december';
 
+const MONTH_INDEX: Record<MonthKey, number> = {
+  january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+  july: 6, august: 7, september: 8, october: 9, november: 10, december: 11,
+};
+
 export interface WeatherSnapshotRow {
   label: string;
   value: string;
@@ -4697,10 +4703,10 @@ export interface MonthlyWeatherContent {
 const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWeatherContent>>>> = {
   january: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in January: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in January {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'January in Puerto Viejo de Talamanca is warm and breezy, with post-holiday calm, a few showers and good surf. Here is what to expect and how to plan your trip.',
-      heading: 'Weather in Puerto Viejo in January',
+        'January {{YEAR}} in Puerto Viejo de Talamanca is warm and breezy, with post-holiday calm, a few showers and good surf. Here is what to expect and how to plan your trip.',
+      heading: 'Weather in Puerto Viejo in January {{YEAR}}',
       heroAlt: 'Breezy Caribbean beach in Puerto Viejo de Talamanca in January',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'January at a glance',
@@ -4737,10 +4743,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'January is warm, green and breezy, drying out after December with a lively surf scene. Come after the first couple of weeks for the best mix of good weather and thinner crowds, and pack for the odd passing shower.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en enero: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en enero {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'En enero, Puerto Viejo de Talamanca es cálido y ventoso, con calma tras las fiestas, algunos aguaceros y buen surf. Esto es lo que puedes esperar y cómo planificar.',
-      heading: 'El clima en Puerto Viejo en enero',
+        'En enero {{YEAR}}, Puerto Viejo de Talamanca es cálido y ventoso, con calma tras las fiestas, algunos aguaceros y buen surf. Esto es lo que puedes esperar y cómo planificar.',
+      heading: 'El clima en Puerto Viejo en enero {{YEAR}}',
       heroAlt: 'Playa caribeña ventosa en Puerto Viejo de Talamanca en enero',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Enero de un vistazo',
@@ -4777,10 +4783,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Enero es cálido, verde y ventoso, se va secando tras diciembre y trae una escena de surf muy animada. Ven después de las dos primeras semanas para combinar buen clima con menos gente, y lleva algo para el aguacero de paso.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im Januar: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im Januar {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Der Januar in Puerto Viejo de Talamanca ist warm und windig, mit Ruhe nach den Feiertagen, einigen Schauern und guten Wellen. Das erwartet Sie und so planen Sie Ihre Reise.',
-      heading: 'Wetter in Puerto Viejo im Januar',
+        'Der Januar {{YEAR}} in Puerto Viejo de Talamanca ist warm und windig, mit Ruhe nach den Feiertagen, einigen Schauern und guten Wellen. Das erwartet Sie und so planen Sie Ihre Reise.',
+      heading: 'Wetter in Puerto Viejo im Januar {{YEAR}}',
       heroAlt: 'Windiger Karibikstrand in Puerto Viejo de Talamanca im Januar',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Der Januar auf einen Blick',
@@ -4817,10 +4823,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der Januar ist warm, grün und windig, trocknet nach dem Dezember ab und bietet eine lebendige Surfszene. Kommen Sie nach den ersten paar Wochen für die beste Mischung aus gutem Wetter und weniger Andrang und packen Sie etwas für den gelegentlichen Schauer ein.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en janvier : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en janvier {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'En janvier, Puerto Viejo de Talamanca est chaud et venteux, avec un calme d\'après-fêtes, quelques averses et de bonnes vagues. Voici à quoi vous attendre et comment planifier votre voyage.',
-      heading: 'Météo à Puerto Viejo en janvier',
+        'En janvier {{YEAR}}, Puerto Viejo de Talamanca est chaud et venteux, avec un calme d\'après-fêtes, quelques averses et de bonnes vagues. Voici à quoi vous attendre et comment planifier votre voyage.',
+      heading: 'Météo à Puerto Viejo en janvier {{YEAR}}',
       heroAlt: 'Plage caraïbe venteuse à Puerto Viejo de Talamanca en janvier',
       photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Janvier en un coup d\'œil',
@@ -4857,10 +4863,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Janvier est chaud, verdoyant et venteux, il s\'assèche après décembre et la scène de surf y est animée. Venez après les deux premières semaines pour allier beau temps et tranquillité, et prévoyez de quoi affronter une averse passagère.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo a gennaio: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo a gennaio {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'A gennaio Puerto Viejo de Talamanca è calda e ventilata, con la calma dopo le feste, qualche acquazzone e buone onde. Ecco cosa aspettarti e come pianificare il viaggio.',
-      heading: 'Meteo a Puerto Viejo a gennaio',
+        'A gennaio {{YEAR}} Puerto Viejo de Talamanca è calda e ventilata, con la calma dopo le feste, qualche acquazzone e buone onde. Ecco cosa aspettarti e come pianificare il viaggio.',
+      heading: 'Meteo a Puerto Viejo a gennaio {{YEAR}}',
       heroAlt: 'Spiaggia caraibica ventilata a Puerto Viejo de Talamanca a gennaio',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Gennaio in breve',
@@ -4897,10 +4903,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Gennaio è caldo, verde e ventilato, si asciuga dopo dicembre e ha una scena del surf molto vivace. Vieni dopo le prime due settimane per unire bel tempo e meno folla, e porta qualcosa per l\'acquazzone di passaggio.',
     },
     pt: {
-      seoTitle: 'Clima em Puerto Viejo em janeiro: tempo, chuva e mar',
+      seoTitle: 'Clima em Puerto Viejo em janeiro {{YEAR}}: tempo, chuva e mar',
       seoDescription:
-        'Janeiro em Puerto Viejo de Talamanca é quente e ventoso, com a calma pós-festas, alguns aguaceiros e boas ondas. Veja o que esperar e como planejar sua viagem.',
-      heading: 'Clima em Puerto Viejo em janeiro',
+        'Janeiro {{YEAR}} em Puerto Viejo de Talamanca é quente e ventoso, com a calma pós-festas, alguns aguaceiros e boas ondas. Veja o que esperar e como planejar sua viagem.',
+      heading: 'Clima em Puerto Viejo em janeiro {{YEAR}}',
       heroAlt: 'Praia caribenha ventosa em Puerto Viejo de Talamanca em janeiro',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Janeiro num relance',
@@ -4937,10 +4943,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Janeiro é quente, verde e ventoso, seca após dezembro e tem uma cena de surfe animada. Venha depois das duas primeiras semanas para juntar bom tempo e menos gente, e leve algo para o aguaceiro passageiro.',
     },
     he: {
-      seoTitle: 'מזג האוויר בPuerto Viejo בינואר: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בPuerto Viejo בינואר {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'ינואר בPuerto Viejo de Talamanca חם ורוחני, עם שקט אחרי החגים, כמה ממטרים וגלישה טובה. הנה למה לצפות ואיך לתכנן את הטיול שלכם.',
-      heading: 'מזג האוויר בPuerto Viejo בינואר',
+        'ינואר {{YEAR}} בPuerto Viejo de Talamanca חם ורוחני, עם שקט אחרי החגים, כמה ממטרים וגלישה טובה. הנה למה לצפות ואיך לתכנן את הטיול שלכם.',
+      heading: 'מזג האוויר בPuerto Viejo בינואר {{YEAR}}',
       heroAlt: 'חוף קריבי רוחני בPuerto Viejo de Talamanca בינואר',
       photoCredit: <>תמונה: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'ינואר במבט חטוף',
@@ -4977,10 +4983,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'ינואר חם, ירוק ורוחני, מתייבש אחרי דצמבר עם סצנת גלישה תוססת. בואו אחרי השבועיים הראשונים לשילוב הטוב ביותר של מזג אוויר טוב ופחות עומס, וארזו משהו לממטר חולף.',
     },
     hi: {
-      seoTitle: 'जनवरी में Puerto Viejo का मौसम: जलवायु, बारिश और समुद्र',
+      seoTitle: 'जनवरी {{YEAR}} में Puerto Viejo का मौसम: जलवायु, बारिश और समुद्र',
       seoDescription:
-        'Puerto Viejo de Talamanca में जनवरी गर्म और हवादार होता है, त्योहारों के बाद की शांति, कुछ बौछारें और अच्छी सर्फिंग के साथ। जानिए क्या उम्मीद करें और अपनी यात्रा की योजना कैसे बनाएं।',
-      heading: 'जनवरी में Puerto Viejo का मौसम',
+        'Puerto Viejo de Talamanca में जनवरी {{YEAR}} गर्म और हवादार होता है, त्योहारों के बाद की शांति, कुछ बौछारें और अच्छी सर्फिंग के साथ। जानिए क्या उम्मीद करें और अपनी यात्रा की योजना कैसे बनाएं।',
+      heading: 'जनवरी {{YEAR}} में Puerto Viejo का मौसम',
       heroAlt: 'जनवरी में Puerto Viejo de Talamanca का हवादार कैरिबियन समुद्र तट',
       photoCredit: <>तस्वीर: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में जनवरी',
@@ -5017,10 +5023,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'जनवरी गर्म, हरा-भरा और हवादार होता है, दिसंबर के बाद सूखता हुआ और एक जीवंत सर्फिंग दृश्य के साथ। अच्छे मौसम और कम भीड़ के सबसे अच्छे मेल के लिए पहले कुछ हफ्तों के बाद आएं, और किसी गुज़रती बौछार के लिए कुछ साथ रखें।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in januari: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in januari {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'Januari in Puerto Viejo de Talamanca is warm en winderig, met rust na de feestdagen, wat buien en goede golven. Dit kunt u verwachten en zo plant u uw reis.',
-      heading: 'Weer in Puerto Viejo in januari',
+        'Januari {{YEAR}} in Puerto Viejo de Talamanca is warm en winderig, met rust na de feestdagen, wat buien en goede golven. Dit kunt u verwachten en zo plant u uw reis.',
+      heading: 'Weer in Puerto Viejo in januari {{YEAR}}',
       heroAlt: 'Winderig Caribisch strand in Puerto Viejo de Talamanca in januari',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Januari in een oogopslag',
@@ -5059,10 +5065,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
   },
   february: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in February: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in February {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'February is the driest month in Puerto Viejo de Talamanca, the classic dry window with warm sun and the best beach and snorkelling conditions. Here is what to expect.',
-      heading: 'Weather in Puerto Viejo in February',
+        'February {{YEAR}} is the driest month in Puerto Viejo de Talamanca, the classic dry window with warm sun and the best beach and snorkelling conditions. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in February {{YEAR}}',
       heroAlt: 'Sunny dry-season beach in Puerto Viejo de Talamanca in February',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'February at a glance',
@@ -5099,10 +5105,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'February is the driest month in Puerto Viejo, with the most reliable sun and often the calmest, clearest sea: prime beach and snorkelling weather. Expect moderate crowds and book ahead, but pack for the odd Caribbean surprise shower.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en febrero: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en febrero {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'Febrero es el mes más seco en Puerto Viejo de Talamanca, la clásica ventana seca con sol cálido y las mejores condiciones de playa y snorkel. Esto es lo que puedes esperar.',
-      heading: 'El clima en Puerto Viejo en febrero',
+        'Febrero {{YEAR}} es el mes más seco en Puerto Viejo de Talamanca, la clásica ventana seca con sol cálido y las mejores condiciones de playa y snorkel. Esto es lo que puedes esperar.',
+      heading: 'El clima en Puerto Viejo en febrero {{YEAR}}',
       heroAlt: 'Playa soleada de temporada seca en Puerto Viejo de Talamanca en febrero',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Febrero de un vistazo',
@@ -5139,10 +5145,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Febrero es el mes más seco de Puerto Viejo, con el sol más fiable y a menudo el mar más tranquilo y claro: clima ideal de playa y snorkel. Espera afluencia moderada y reserva con antelación, pero lleva algo por si el Caribe sorprende con un aguacero.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im Februar: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im Februar {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Februar ist der trockenste Monat in Puerto Viejo de Talamanca, das klassische Trockenfenster mit warmer Sonne und den besten Bedingungen für Strand und Schnorcheln. Das erwartet Sie.',
-      heading: 'Wetter in Puerto Viejo im Februar',
+        'Februar {{YEAR}} ist der trockenste Monat in Puerto Viejo de Talamanca, das klassische Trockenfenster mit warmer Sonne und den besten Bedingungen für Strand und Schnorcheln. Das erwartet Sie.',
+      heading: 'Wetter in Puerto Viejo im Februar {{YEAR}}',
       heroAlt: 'Sonniger Strand der Trockenzeit in Puerto Viejo de Talamanca im Februar',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Februar auf einen Blick',
@@ -5179,10 +5185,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der Februar ist der trockenste Monat in Puerto Viejo, mit der verlässlichsten Sonne und oft dem ruhigsten, klarsten Meer: ideales Wetter für Strand und Schnorcheln. Rechnen Sie mit mäßigem Andrang und buchen Sie im Voraus, aber packen Sie für den gelegentlichen karibischen Überraschungsschauer.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en février : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en février {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'Février est le mois le plus sec à Puerto Viejo de Talamanca, la classique fenêtre sèche avec un soleil chaud et les meilleures conditions pour la plage et le snorkeling. Voici à quoi vous attendre.',
-      heading: 'Météo à Puerto Viejo en février',
+        'Février {{YEAR}} est le mois le plus sec à Puerto Viejo de Talamanca, la classique fenêtre sèche avec un soleil chaud et les meilleures conditions pour la plage et le snorkeling. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en février {{YEAR}}',
       heroAlt: 'Plage ensoleillée de saison sèche à Puerto Viejo de Talamanca en février',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Février en un coup d\'œil',
@@ -5219,10 +5225,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Février est le mois le plus sec à Puerto Viejo, avec le soleil le plus fiable et souvent la mer la plus calme et la plus claire : un temps idéal pour la plage et le snorkeling. Attendez-vous à une affluence modérée et réservez à l\'avance, mais prévoyez de quoi faire face à une averse surprise des Caraïbes.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo a febbraio: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo a febbraio {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'Febbraio è il mese più secco a Puerto Viejo de Talamanca, la classica finestra secca con sole caldo e le migliori condizioni per spiaggia e snorkeling. Ecco cosa aspettarti.',
-      heading: 'Meteo a Puerto Viejo a febbraio',
+        'Febbraio {{YEAR}} è il mese più secco a Puerto Viejo de Talamanca, la classica finestra secca con sole caldo e le migliori condizioni per spiaggia e snorkeling. Ecco cosa aspettarti.',
+      heading: 'Meteo a Puerto Viejo a febbraio {{YEAR}}',
       heroAlt: 'Spiaggia soleggiata della stagione secca a Puerto Viejo de Talamanca a febbraio',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Febbraio in breve',
@@ -5259,10 +5265,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Febbraio è il mese più secco di Puerto Viejo, con il sole più affidabile e spesso il mare più calmo e limpido: tempo ideale per spiaggia e snorkeling. Aspettati un\'affluenza moderata e prenota in anticipo, ma metti in valigia qualcosa per l\'occasionale acquazzone a sorpresa dei Caraibi.',
     },
     pt: {
-      seoTitle: 'Clima em Puerto Viejo em fevereiro: tempo, chuva e mar',
+      seoTitle: 'Clima em Puerto Viejo em fevereiro {{YEAR}}: tempo, chuva e mar',
       seoDescription:
-        'Fevereiro é o mês mais seco em Puerto Viejo de Talamanca, a clássica janela seca com sol quente e as melhores condições para praia e snorkeling. Veja o que esperar.',
-      heading: 'Clima em Puerto Viejo em fevereiro',
+        'Fevereiro {{YEAR}} é o mês mais seco em Puerto Viejo de Talamanca, a clássica janela seca com sol quente e as melhores condições para praia e snorkeling. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em fevereiro {{YEAR}}',
       heroAlt: 'Praia ensolarada da estação seca em Puerto Viejo de Talamanca em fevereiro',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Fevereiro num relance',
@@ -5299,10 +5305,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Fevereiro é o mês mais seco de Puerto Viejo, com o sol mais confiável e muitas vezes o mar mais calmo e claro: tempo ideal para praia e snorkeling. Espere movimento moderado e reserve com antecedência, mas leve algo para a eventual pancada de chuva surpresa do Caribe.',
     },
     he: {
-      seoTitle: 'מזג האוויר בפוארטו ויאחו בפברואר: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בפוארטו ויאחו בפברואר {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'פברואר הוא החודש היבש ביותר בפוארטו ויאחו דה טלמנקה, חלון היובש הקלאסי עם שמש חמה והתנאים הטובים ביותר לחוף ולשנורקלינג. הנה למה לצפות.',
-      heading: 'מזג האוויר בפוארטו ויאחו בפברואר',
+        'פברואר {{YEAR}} הוא החודש היבש ביותר בפוארטו ויאחו דה טלמנקה, חלון היובש הקלאסי עם שמש חמה והתנאים הטובים ביותר לחוף ולשנורקלינג. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו בפברואר {{YEAR}}',
       heroAlt: 'חוף שטוף שמש בעונה היבשה בפוארטו ויאחו דה טלמנקה בפברואר',
       photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'פברואר במבט חטוף',
@@ -5339,10 +5345,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'פברואר הוא החודש היבש ביותר בפוארטו ויאחו, עם השמש האמינה ביותר ולרוב הים הרגוע והצלול ביותר: מזג אוויר אידיאלי לחוף ולשנורקלינג. צפו לעומס בינוני והזמינו מראש, אך ארזו גם למקרה של ממטר הפתעה קריבי.',
     },
     hi: {
-      seoTitle: 'फ़रवरी में पुएर्तो विएखो का मौसम: जलवायु, बारिश और समुद्र',
+      seoTitle: 'फ़रवरी {{YEAR}} में पुएर्तो विएखो का मौसम: जलवायु, बारिश और समुद्र',
       seoDescription:
-        'फ़रवरी पुएर्तो विएखो दे तालामांका का सबसे शुष्क महीना है, गर्म धूप और समुद्र तट तथा स्नॉर्कलिंग की बेहतरीन परिस्थितियों वाली क्लासिक शुष्क अवधि। यहाँ जानिए क्या उम्मीद करें।',
-      heading: 'फ़रवरी में पुएर्तो विएखो का मौसम',
+        'फ़रवरी {{YEAR}} पुएर्तो विएखो दे तालामांका का सबसे शुष्क महीना है, गर्म धूप और समुद्र तट तथा स्नॉर्कलिंग की बेहतरीन परिस्थितियों वाली क्लासिक शुष्क अवधि। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'फ़रवरी {{YEAR}} में पुएर्तो विएखो का मौसम',
       heroAlt: 'फ़रवरी में पुएर्तो विएखो दे तालामांका में शुष्क मौसम का धूप भरा समुद्र तट',
       photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में फ़रवरी',
@@ -5379,10 +5385,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'फ़रवरी पुएर्तो विएखो का सबसे शुष्क महीना है, जिसमें सबसे भरोसेमंद धूप और अक्सर सबसे शांत, साफ़ समुद्र होता है: समुद्र तट और स्नॉर्कलिंग के लिए बेहतरीन मौसम। मध्यम भीड़ की उम्मीद करें और पहले से बुक करें, लेकिन कभी-कभार कैरिबियन की अचानक बौछार के लिए भी सामान रखें।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in februari: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in februari {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'Februari is de droogste maand in Puerto Viejo de Talamanca, het klassieke droge venster met warme zon en de beste omstandigheden voor strand en snorkelen. Dit is wat je kunt verwachten.',
-      heading: 'Weer in Puerto Viejo in februari',
+        'Februari {{YEAR}} is de droogste maand in Puerto Viejo de Talamanca, het klassieke droge venster met warme zon en de beste omstandigheden voor strand en snorkelen. Dit is wat je kunt verwachten.',
+      heading: 'Weer in Puerto Viejo in februari {{YEAR}}',
       heroAlt: 'Zonnig strand in het droge seizoen in Puerto Viejo de Talamanca in februari',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Februari in het kort',
@@ -5421,10 +5427,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
   },
   march: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in March: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in March {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'March in Puerto Viejo de Talamanca stays warm and fairly dry as the dry window continues, great for beaches, hikes and jungle. Here is what to expect.',
-      heading: 'Weather in Puerto Viejo in March',
+        'March {{YEAR}} in Puerto Viejo de Talamanca stays warm and fairly dry as the dry window continues, great for beaches, hikes and jungle. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in March {{YEAR}}',
       heroAlt: 'Warm sunny day on the Caribbean coast of Puerto Viejo de Talamanca in March',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'March at a glance',
@@ -5461,10 +5467,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'March keeps the dry window going: warm, fairly dry and great for both beaches and jungle. Crowds are moderate, watch for Easter if it falls late in the month, and pack for the occasional afternoon shower.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en marzo: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en marzo {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'Marzo en Puerto Viejo de Talamanca se mantiene cálido y bastante seco mientras continúa la ventana seca, ideal para playas, caminatas y selva. Esto es lo que puedes esperar.',
-      heading: 'El clima en Puerto Viejo en marzo',
+        'Marzo {{YEAR}} en Puerto Viejo de Talamanca se mantiene cálido y bastante seco mientras continúa la ventana seca, ideal para playas, caminatas y selva. Esto es lo que puedes esperar.',
+      heading: 'El clima en Puerto Viejo en marzo {{YEAR}}',
       heroAlt: 'Día cálido y soleado en el Caribe de Puerto Viejo de Talamanca en marzo',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Marzo de un vistazo',
@@ -5501,10 +5507,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Marzo mantiene la ventana seca: cálido, bastante seco y genial tanto para playas como para selva. La afluencia es moderada, ojo con la Semana Santa si cae a fin de mes, y lleva algo para algún aguacero de la tarde.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im März: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im März {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Der März in Puerto Viejo de Talamanca bleibt warm und recht trocken, während das Trockenfenster anhält, ideal für Strände, Wanderungen und Dschungel. Das erwartet dich.',
-      heading: 'Wetter in Puerto Viejo im März',
+        'Der März {{YEAR}} in Puerto Viejo de Talamanca bleibt warm und recht trocken, während das Trockenfenster anhält, ideal für Strände, Wanderungen und Dschungel. Das erwartet dich.',
+      heading: 'Wetter in Puerto Viejo im März {{YEAR}}',
       heroAlt: 'Warmer, sonniger Tag an der Karibikküste von Puerto Viejo de Talamanca im März',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'März auf einen Blick',
@@ -5541,10 +5547,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der März hält das Trockenfenster offen: warm, recht trocken und großartig für Strände wie Dschungel. Der Andrang ist moderat, achte auf Ostern, falls es spät im Monat liegt, und packe für den gelegentlichen Nachmittagsschauer.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en mars : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en mars {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'En mars, Puerto Viejo de Talamanca reste chaud et plutôt sec tandis que la fenêtre sèche se poursuit, parfait pour les plages, les randonnées et la jungle. Voici à quoi vous attendre.',
-      heading: 'Météo à Puerto Viejo en mars',
+        'En mars {{YEAR}}, Puerto Viejo de Talamanca reste chaud et plutôt sec tandis que la fenêtre sèche se poursuit, parfait pour les plages, les randonnées et la jungle. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en mars {{YEAR}}',
       heroAlt: 'Journée chaude et ensoleillée sur la côte caraïbe de Puerto Viejo de Talamanca en mars',
       photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Mars en un coup d\'œil',
@@ -5581,10 +5587,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Mars maintient la fenêtre sèche : chaud, plutôt sec et parfait pour les plages comme pour la jungle. L\'affluence est modérée, surveillez Pâques s\'il tombe tard dans le mois, et prévoyez de quoi affronter l\'averse occasionnelle de l\'après-midi.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo a marzo: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo a marzo {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'A marzo Puerto Viejo de Talamanca resta caldo e piuttosto secco mentre prosegue la finestra secca, ottimo per spiagge, escursioni e giungla. Ecco cosa aspettarti.',
-      heading: 'Meteo a Puerto Viejo a marzo',
+        'A marzo {{YEAR}} Puerto Viejo de Talamanca resta caldo e piuttosto secco mentre prosegue la finestra secca, ottimo per spiagge, escursioni e giungla. Ecco cosa aspettarti.',
+      heading: 'Meteo a Puerto Viejo a marzo {{YEAR}}',
       heroAlt: 'Giornata calda e soleggiata sulla costa caraibica di Puerto Viejo de Talamanca a marzo',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Marzo in breve',
@@ -5621,10 +5627,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Marzo mantiene aperta la finestra secca: caldo, piuttosto secco e perfetto sia per le spiagge sia per la giungla. L\'affluenza è moderata, attenzione alla Pasqua se cade a fine mese, e metti in valigia qualcosa per il rovescio pomeridiano occasionale.',
     },
     pt: {
-      seoTitle: 'Clima em Puerto Viejo em março: tempo, chuva e mar',
+      seoTitle: 'Clima em Puerto Viejo em março {{YEAR}}: tempo, chuva e mar',
       seoDescription:
-        'Março em Puerto Viejo de Talamanca continua quente e bastante seco enquanto a janela seca prossegue, ótimo para praias, caminhadas e selva. Veja o que esperar.',
-      heading: 'Clima em Puerto Viejo em março',
+        'Março {{YEAR}} em Puerto Viejo de Talamanca continua quente e bastante seco enquanto a janela seca prossegue, ótimo para praias, caminhadas e selva. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em março {{YEAR}}',
       heroAlt: 'Dia quente e ensolarado no litoral caribenho de Puerto Viejo de Talamanca em março',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Março num relance',
@@ -5661,10 +5667,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Março mantém a janela seca: quente, bastante seco e ótimo tanto para praias quanto para a selva. O movimento é moderado, fique atento à Páscoa se ela cair no fim do mês, e leve algo para a eventual pancada de chuva da tarde.',
     },
     he: {
-      seoTitle: 'מזג האוויר בפוארטו ויאחו במרץ: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בפוארטו ויאחו במרץ {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'מרץ בפוארטו ויאחו דה טלמנקה נשאר חמים ויבש למדי בעוד חלון היובש נמשך, מצוין לחופים, לטיולים רגליים ולג\'ונגל. הנה למה לצפות.',
-      heading: 'מזג האוויר בפוארטו ויאחו במרץ',
+        'מרץ {{YEAR}} בפוארטו ויאחו דה טלמנקה נשאר חמים ויבש למדי בעוד חלון היובש נמשך, מצוין לחופים, לטיולים רגליים ולג\'ונגל. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו במרץ {{YEAR}}',
       heroAlt: 'יום חמים ושטוף שמש בחוף הקריבי של פוארטו ויאחו דה טלמנקה במרץ',
       photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'מרץ במבט חטוף',
@@ -5701,10 +5707,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'מרץ שומר על חלון היובש פתוח: חמים, יבש למדי ומצוין גם לחופים וגם לג\'ונגל. עומס המבקרים בינוני; שימו לב לחג הפסחא אם הוא חל בסוף החודש, וארזו לקראת ממטר אחר צהריים מזדמן.',
     },
     hi: {
-      seoTitle: 'मार्च में प्यूर्टो विएहो का मौसम: जलवायु, बारिश और समुद्र',
+      seoTitle: 'मार्च {{YEAR}} में प्यूर्टो विएहो का मौसम: जलवायु, बारिश और समुद्र',
       seoDescription:
-        'मार्च में प्यूर्टो विएहो डे तालामांका गर्म और काफ़ी शुष्क रहता है क्योंकि शुष्क दौर जारी रहता है, समुद्र तटों, ट्रेक और जंगल के लिए बढ़िया। यहाँ जानिए क्या उम्मीद करें।',
-      heading: 'मार्च में प्यूर्टो विएहो का मौसम',
+        'मार्च {{YEAR}} में प्यूर्टो विएहो डे तालामांका गर्म और काफ़ी शुष्क रहता है क्योंकि शुष्क दौर जारी रहता है, समुद्र तटों, ट्रेक और जंगल के लिए बढ़िया। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'मार्च {{YEAR}} में प्यूर्टो विएहो का मौसम',
       heroAlt: 'मार्च में प्यूर्टो विएहो डे तालामांका के कैरिबियन तट पर गर्म धूप वाला दिन',
       photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में मार्च',
@@ -5741,10 +5747,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'मार्च शुष्क दौर को बनाए रखता है: गर्म, काफ़ी शुष्क और समुद्र तटों तथा जंगल दोनों के लिए बढ़िया। भीड़ मध्यम रहती है, अगर ईस्टर महीने के अंत में पड़े तो ध्यान रखें, और कभी-कभार की दोपहर की बौछार के लिए सामान रखें।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in maart: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in maart {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'Maart in Puerto Viejo de Talamanca blijft warm en vrij droog terwijl het droge venster aanhoudt, ideaal voor stranden, wandelingen en jungle. Dit kun je verwachten.',
-      heading: 'Weer in Puerto Viejo in maart',
+        'Maart {{YEAR}} in Puerto Viejo de Talamanca blijft warm en vrij droog terwijl het droge venster aanhoudt, ideaal voor stranden, wandelingen en jungle. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in maart {{YEAR}}',
       heroAlt: 'Warme, zonnige dag aan de Caribische kust van Puerto Viejo de Talamanca in maart',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Maart in het kort',
@@ -5783,10 +5789,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
   },
   april: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in April: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in April {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'April in Puerto Viejo de Talamanca is warm and lush as the dry window fades into greener days, with crowds thinning after Easter. Here is what to expect.',
-      heading: 'Weather in Puerto Viejo in April',
+        'April {{YEAR}} in Puerto Viejo de Talamanca is warm and lush as the dry window fades into greener days, with crowds thinning after Easter. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in April {{YEAR}}',
       heroAlt: 'Lush warm Caribbean coast in Puerto Viejo de Talamanca in April',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'April at a glance',
@@ -5823,10 +5829,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'April is warm and lush, a transition from dry to green season with rising showers. Skip the Easter crowds if you can, aim for the second half of the month, and pack for warm days with the odd afternoon downpour.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en abril: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en abril {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'Abril en Puerto Viejo de Talamanca es cálido y frondoso mientras la ventana seca da paso a días más verdes, con menos gente tras la Semana Santa. Esto es lo que puedes esperar.',
-      heading: 'El clima en Puerto Viejo en abril',
+        'Abril {{YEAR}} en Puerto Viejo de Talamanca es cálido y frondoso mientras la ventana seca da paso a días más verdes, con menos gente tras la Semana Santa. Esto es lo que puedes esperar.',
+      heading: 'El clima en Puerto Viejo en abril {{YEAR}}',
       heroAlt: 'Costa caribeña cálida y frondosa en Puerto Viejo de Talamanca en abril',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Abril de un vistazo',
@@ -5863,10 +5869,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Abril es cálido y frondoso, una transición de la temporada seca a la verde con aguaceros en aumento. Evita la multitud de Semana Santa si puedes, apunta a la segunda mitad del mes y lleva algo para días cálidos con algún aguacero de tarde.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im April: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im April {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Der April in Puerto Viejo de Talamanca ist warm und üppig, wenn das trockene Fenster in grünere Tage übergeht und die Besucherzahlen nach Ostern zurückgehen. Das können Sie erwarten.',
-      heading: 'Wetter in Puerto Viejo im April',
+        'Der April {{YEAR}} in Puerto Viejo de Talamanca ist warm und üppig, wenn das trockene Fenster in grünere Tage übergeht und die Besucherzahlen nach Ostern zurückgehen. Das können Sie erwarten.',
+      heading: 'Wetter in Puerto Viejo im April {{YEAR}}',
       heroAlt: 'Üppige, warme Karibikküste in Puerto Viejo de Talamanca im April',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Der April auf einen Blick',
@@ -5903,10 +5909,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der April ist warm und üppig, ein Übergang von der Trocken- zur grünen Saison mit zunehmenden Schauern. Meiden Sie nach Möglichkeit den Oster-Andrang, zielen Sie auf die zweite Monatshälfte und packen Sie für warme Tage mit gelegentlichem Nachmittagsguss.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en avril : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en avril {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'En avril, Puerto Viejo de Talamanca est chaud et luxuriant, tandis que la fenêtre sèche cède la place à des jours plus verts et que l\'affluence diminue après Pâques. Voici à quoi vous attendre.',
-      heading: 'Météo à Puerto Viejo en avril',
+        'En avril {{YEAR}}, Puerto Viejo de Talamanca est chaud et luxuriant, tandis que la fenêtre sèche cède la place à des jours plus verts et que l\'affluence diminue après Pâques. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en avril {{YEAR}}',
       heroAlt: 'Côte caribéenne chaude et luxuriante à Puerto Viejo de Talamanca en avril',
       photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Aperçu du mois d\'avril',
@@ -5943,10 +5949,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Avril est chaud et luxuriant, une transition de la saison sèche à la saison verte avec des averses en hausse. Évitez la foule de Pâques si vous le pouvez, visez la seconde moitié du mois et prévoyez des tenues pour des journées chaudes avec quelques averses l\'après-midi.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo ad aprile: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo ad aprile {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'Ad aprile Puerto Viejo de Talamanca è caldo e rigoglioso, mentre la finestra secca lascia spazio a giornate più verdi e l\'affluenza cala dopo Pasqua. Ecco cosa aspettarti.',
-      heading: 'Meteo a Puerto Viejo ad aprile',
+        'Ad aprile {{YEAR}} Puerto Viejo de Talamanca è caldo e rigoglioso, mentre la finestra secca lascia spazio a giornate più verdi e l\'affluenza cala dopo Pasqua. Ecco cosa aspettarti.',
+      heading: 'Meteo a Puerto Viejo ad aprile {{YEAR}}',
       heroAlt: 'Costa caraibica calda e rigogliosa a Puerto Viejo de Talamanca ad aprile',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Aprile in breve',
@@ -5983,10 +5989,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Aprile è caldo e rigoglioso, una transizione dalla stagione secca a quella verde con acquazzoni in aumento. Evita la folla di Pasqua se puoi, punta alla seconda metà del mese e prepara l\'abbigliamento per giornate calde con qualche acquazzone pomeridiano.',
     },
     pt: {
-      seoTitle: 'Clima em Puerto Viejo em abril: tempo, chuva e mar',
+      seoTitle: 'Clima em Puerto Viejo em abril {{YEAR}}: tempo, chuva e mar',
       seoDescription:
-        'Abril em Puerto Viejo de Talamanca é quente e exuberante, à medida que a janela seca dá lugar a dias mais verdes e o movimento diminui depois da Páscoa. Veja o que esperar.',
-      heading: 'Clima em Puerto Viejo em abril',
+        'Abril {{YEAR}} em Puerto Viejo de Talamanca é quente e exuberante, à medida que a janela seca dá lugar a dias mais verdes e o movimento diminui depois da Páscoa. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em abril {{YEAR}}',
       heroAlt: 'Costa caribenha quente e exuberante em Puerto Viejo de Talamanca em abril',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Abril num relance',
@@ -6023,10 +6029,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Abril é quente e exuberante, uma transição da estação seca para a verde com pancadas de chuva em alta. Evite a multidão da Páscoa se puder, mire na segunda metade do mês e leve roupas para dias quentes com uma ou outra pancada à tarde.',
     },
     he: {
-      seoTitle: 'מזג האוויר בפוארטו ויאחו באפריל: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בפוארטו ויאחו באפריל {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'אפריל בפוארטו ויאחו דה טלמנקה חם ושופע ירק, כשחלון היובש מפנה מקום לימים ירוקים יותר והצפיפות פוחתת אחרי חג הפסחא. הנה למה לצפות.',
-      heading: 'מזג האוויר בפוארטו ויאחו באפריל',
+        'אפריל {{YEAR}} בפוארטו ויאחו דה טלמנקה חם ושופע ירק, כשחלון היובש מפנה מקום לימים ירוקים יותר והצפיפות פוחתת אחרי חג הפסחא. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו באפריל {{YEAR}}',
       heroAlt: 'חוף קריבי חם ושופע ירק בפוארטו ויאחו דה טלמנקה באפריל',
       photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'אפריל במבט מהיר',
@@ -6063,10 +6069,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'אפריל חם ושופע ירק, מעבר מהעונה היבשה לירוקה עם ממטרים הולכים וגוברים. הימנעו מעומס חג הפסחא אם אפשר, כוונו למחצית השנייה של החודש וארזו לימים חמים עם ממטר מזדמן אחר הצהריים.',
     },
     hi: {
-      seoTitle: 'अप्रैल में प्वेर्तो विएखो का मौसम: जलवायु, वर्षा और समुद्र',
+      seoTitle: 'अप्रैल {{YEAR}} में प्वेर्तो विएखो का मौसम: जलवायु, वर्षा और समुद्र',
       seoDescription:
-        'अप्रैल में प्वेर्तो विएखो दे तालामांका गर्म और हरा-भरा रहता है, जब शुष्क मौसम हरियाली भरे दिनों में बदलता है और ईस्टर के बाद भीड़ कम हो जाती है। यहाँ जानिए क्या उम्मीद करें।',
-      heading: 'अप्रैल में प्वेर्तो विएखो का मौसम',
+        'अप्रैल {{YEAR}} में प्वेर्तो विएखो दे तालामांका गर्म और हरा-भरा रहता है, जब शुष्क मौसम हरियाली भरे दिनों में बदलता है और ईस्टर के बाद भीड़ कम हो जाती है। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'अप्रैल {{YEAR}} में प्वेर्तो विएखो का मौसम',
       heroAlt: 'अप्रैल में प्वेर्तो विएखो दे तालामांका में हरा-भरा, गर्म कैरिबियन तट',
       photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में अप्रैल',
@@ -6103,10 +6109,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'अप्रैल गर्म और हरा-भरा होता है, शुष्क से हरे मौसम की ओर एक संक्रमण, जिसमें बौछारें बढ़ती जाती हैं। हो सके तो ईस्टर की भीड़ से बचें, महीने के दूसरे भाग को चुनें और गर्म दिनों के लिए सामान रखें, जिनमें कभी-कभी दोपहर की तेज़ बौछार आ सकती है।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in april: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in april {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'April in Puerto Viejo de Talamanca is warm en weelderig, terwijl het droge venster overgaat in groenere dagen en de drukte na Pasen afneemt. Dit kun je verwachten.',
-      heading: 'Weer in Puerto Viejo in april',
+        'April {{YEAR}} in Puerto Viejo de Talamanca is warm en weelderig, terwijl het droge venster overgaat in groenere dagen en de drukte na Pasen afneemt. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in april {{YEAR}}',
       heroAlt: 'Weelderige, warme Caribische kust in Puerto Viejo de Talamanca in april',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'April in een oogopslag',
@@ -6145,10 +6151,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
   },
   may: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in May: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in May {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'May in Puerto Viejo de Talamanca opens the green season, with a deep-green jungle, afternoon showers, plenty of wildlife and low prices. Here is what to expect.',
-      heading: 'Weather in Puerto Viejo in May',
+        'May {{YEAR}} in Puerto Viejo de Talamanca opens the green season, with a deep-green jungle, afternoon showers, plenty of wildlife and low prices. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in May {{YEAR}}',
       heroAlt: 'Green rainy-season jungle in Puerto Viejo de Talamanca in May',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'May at a glance',
@@ -6185,10 +6191,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'May kicks off the green season, with a lush jungle, warm afternoon showers, busy wildlife and low prices. Plan around the bright mornings and bring a rain jacket; it is one of the greenest and best-value times to come.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en mayo: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en mayo {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'Mayo en Puerto Viejo de Talamanca abre la temporada verde, con una selva de un verde intenso, aguaceros por la tarde, mucha fauna y precios bajos. Esto es lo que puedes esperar.',
-      heading: 'El clima en Puerto Viejo en mayo',
+        'Mayo {{YEAR}} en Puerto Viejo de Talamanca abre la temporada verde, con una selva de un verde intenso, aguaceros por la tarde, mucha fauna y precios bajos. Esto es lo que puedes esperar.',
+      heading: 'El clima en Puerto Viejo en mayo {{YEAR}}',
       heroAlt: 'Selva verde de temporada lluviosa en Puerto Viejo de Talamanca en mayo',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Mayo de un vistazo',
@@ -6225,10 +6231,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Mayo arranca la temporada verde, con selva frondosa, aguaceros cálidos por la tarde, fauna activa y precios bajos. Organízate alrededor de las mañanas luminosas y lleva un chubasquero; es una de las épocas más verdes y económicas para venir.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im Mai: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im Mai {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Der Mai in Puerto Viejo de Talamanca eröffnet die grüne Saison, mit tiefgrünem Dschungel, nachmittäglichen Schauern, viel Tierwelt und niedrigen Preisen. Das erwartet dich.',
-      heading: 'Wetter in Puerto Viejo im Mai',
+        'Der Mai {{YEAR}} in Puerto Viejo de Talamanca eröffnet die grüne Saison, mit tiefgrünem Dschungel, nachmittäglichen Schauern, viel Tierwelt und niedrigen Preisen. Das erwartet dich.',
+      heading: 'Wetter in Puerto Viejo im Mai {{YEAR}}',
       heroAlt: 'Grüner Regenzeit-Dschungel in Puerto Viejo de Talamanca im Mai',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Der Mai auf einen Blick',
@@ -6265,10 +6271,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der Mai startet die grüne Saison, mit üppigem Dschungel, warmen Nachmittagsschauern, aktiver Tierwelt und niedrigen Preisen. Plane rund um die hellen Morgen und pack eine Regenjacke ein; es ist eine der grünsten und günstigsten Reisezeiten.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en mai : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en mai {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'En mai, Puerto Viejo de Talamanca ouvre la saison verte, avec une jungle d\'un vert profond, des averses l\'après-midi, une belle faune et des prix bas. Voici à quoi vous attendre.',
-      heading: 'Météo à Puerto Viejo en mai',
+        'En mai {{YEAR}}, Puerto Viejo de Talamanca ouvre la saison verte, avec une jungle d\'un vert profond, des averses l\'après-midi, une belle faune et des prix bas. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en mai {{YEAR}}',
       heroAlt: 'Jungle verdoyante de saison des pluies à Puerto Viejo de Talamanca en mai',
       photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Mai en un coup d\'œil',
@@ -6305,10 +6311,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Mai lance la saison verte : jungle luxuriante, averses chaudes l\'après-midi, faune active et prix bas. Organisez-vous autour des matinées lumineuses et emportez une veste de pluie ; c\'est l\'une des périodes les plus vertes et les plus abordables pour venir.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo a maggio: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo a maggio {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'Maggio a Puerto Viejo de Talamanca apre la stagione verde, con una giungla di un verde intenso, acquazzoni pomeridiani, tanta fauna e prezzi bassi. Ecco cosa aspettarti.',
-      heading: 'Meteo a Puerto Viejo a maggio',
+        'Maggio {{YEAR}} a Puerto Viejo de Talamanca apre la stagione verde, con una giungla di un verde intenso, acquazzoni pomeridiani, tanta fauna e prezzi bassi. Ecco cosa aspettarti.',
+      heading: 'Meteo a Puerto Viejo a maggio {{YEAR}}',
       heroAlt: 'Giungla verde della stagione delle piogge a Puerto Viejo de Talamanca a maggio',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Maggio in breve',
@@ -6345,10 +6351,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Maggio dà il via alla stagione verde: giungla rigogliosa, caldi acquazzoni pomeridiani, fauna attiva e prezzi bassi. Organizzati intorno alle mattine luminose e porta una giacca antipioggia; è uno dei periodi più verdi e convenienti per venire.',
     },
     pt: {
-      seoTitle: 'Tempo em Puerto Viejo em maio: clima, chuva e mar',
+      seoTitle: 'Tempo em Puerto Viejo em maio {{YEAR}}: clima, chuva e mar',
       seoDescription:
-        'Maio em Puerto Viejo de Talamanca abre a estação verde, com uma selva de um verde intenso, aguaceiros à tarde, muita fauna e preços baixos. Veja o que esperar.',
-      heading: 'Tempo em Puerto Viejo em maio',
+        'Maio {{YEAR}} em Puerto Viejo de Talamanca abre a estação verde, com uma selva de um verde intenso, aguaceiros à tarde, muita fauna e preços baixos. Veja o que esperar.',
+      heading: 'Tempo em Puerto Viejo em maio {{YEAR}}',
       heroAlt: 'Selva verde da estação chuvosa em Puerto Viejo de Talamanca em maio',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Maio num relance',
@@ -6385,10 +6391,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Maio dá início à estação verde: selva exuberante, aguaceiros quentes à tarde, fauna ativa e preços baixos. Organize-se em torno das manhãs luminosas e leve uma capa de chuva; é uma das épocas mais verdes e em conta para vir.',
     },
     he: {
-      seoTitle: 'מזג האוויר בפוארטו ויאחו במאי: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בפוארטו ויאחו במאי {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'מאי בפוארטו ויאחו דה טלמנקה פותח את העונה הירוקה: יער טרופי ירוק ושופע, ממטרים אחר הצהריים, חיות בר רבות ומחירים נמוכים. הנה למה לצפות.',
-      heading: 'מזג האוויר בפוארטו ויאחו במאי',
+        'מאי {{YEAR}} בפוארטו ויאחו דה טלמנקה פותח את העונה הירוקה: יער טרופי ירוק ושופע, ממטרים אחר הצהריים, חיות בר רבות ומחירים נמוכים. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו במאי {{YEAR}}',
       heroAlt: 'יער טרופי ירוק של עונת הגשמים בפוארטו ויאחו דה טלמנקה במאי',
       photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'מאי במבט מהיר',
@@ -6425,10 +6431,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'מאי פותח את העונה הירוקה: יער טרופי שופע, ממטרים חמימים אחר הצהריים, חיות בר פעילות ומחירים נמוכים. תכננו סביב הבקרים הבהירים וארזו מעיל גשם; זה אחד הזמנים הירוקים והמשתלמים ביותר לבוא.',
     },
     hi: {
-      seoTitle: 'मई में प्यूर्टो विएजो का मौसम: जलवायु, बारिश और समुद्र',
+      seoTitle: 'मई {{YEAR}} में प्यूर्टो विएजो का मौसम: जलवायु, बारिश और समुद्र',
       seoDescription:
-        'मई में प्यूर्टो विएजो दे तालामांका हरित मौसम की शुरुआत करता है: गहरा हरा-भरा जंगल, दोपहर की बौछारें, ढेर सारे वन्यजीव और कम कीमतें। यहाँ जानिए क्या उम्मीद करें।',
-      heading: 'मई में प्यूर्टो विएजो का मौसम',
+        'मई {{YEAR}} में प्यूर्टो विएजो दे तालामांका हरित मौसम की शुरुआत करता है: गहरा हरा-भरा जंगल, दोपहर की बौछारें, ढेर सारे वन्यजीव और कम कीमतें। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'मई {{YEAR}} में प्यूर्टो विएजो का मौसम',
       heroAlt: 'मई में प्यूर्टो विएजो दे तालामांका में बरसात के मौसम का हरा-भरा जंगल',
       photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में मई',
@@ -6465,10 +6471,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'मई हरित मौसम शुरू करता है: हरा-भरा जंगल, दोपहर की गर्म बौछारें, सक्रिय वन्यजीव और कम कीमतें। उजली सुबहों के हिसाब से योजना बनाएँ और रेन जैकेट रखें; यह आने के सबसे हरे-भरे और किफ़ायती समयों में से एक है।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in mei: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in mei {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'Mei opent in Puerto Viejo de Talamanca het groene seizoen, met een diepgroene jungle, middagbuien, veel dieren en lage prijzen. Dit kun je verwachten.',
-      heading: 'Weer in Puerto Viejo in mei',
+        'Mei {{YEAR}} opent in Puerto Viejo de Talamanca het groene seizoen, met een diepgroene jungle, middagbuien, veel dieren en lage prijzen. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in mei {{YEAR}}',
       heroAlt: 'Groene regenseizoen-jungle in Puerto Viejo de Talamanca in mei',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Mei in een oogopslag',
@@ -6507,10 +6513,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
   },
   june: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in June: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in June {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'June in Puerto Viejo de Talamanca is wet and green, with turtle-nesting season nearby, a lively jungle and low prices. Here is what to expect and how to plan for it.',
-      heading: 'Weather in Puerto Viejo in June',
+        'June {{YEAR}} in Puerto Viejo de Talamanca is wet and green, with turtle-nesting season nearby, a lively jungle and low prices. Here is what to expect and how to plan for it.',
+      heading: 'Weather in Puerto Viejo in June {{YEAR}}',
       heroAlt: 'Wet green rainforest in Puerto Viejo de Talamanca in June',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'June at a glance',
@@ -6547,10 +6553,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'June is wet, warm and green, with lively wildlife, turtle-nesting season nearby and low prices. Plan around the brighter mornings and pack a good rain jacket; come for the nature, not for guaranteed beach weather.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en junio: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en junio {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'Junio en Puerto Viejo de Talamanca es húmedo y verde, con temporada de anidación de tortugas cerca, selva viva y precios bajos. Esto es lo que puedes esperar y cómo organizarte.',
-      heading: 'El clima en Puerto Viejo en junio',
+        'Junio {{YEAR}} en Puerto Viejo de Talamanca es húmedo y verde, con temporada de anidación de tortugas cerca, selva viva y precios bajos. Esto es lo que puedes esperar y cómo organizarte.',
+      heading: 'El clima en Puerto Viejo en junio {{YEAR}}',
       heroAlt: 'Selva verde y húmeda en Puerto Viejo de Talamanca en junio',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Junio de un vistazo',
@@ -6587,10 +6593,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Junio es húmedo, cálido y verde, con fauna activa, temporada de anidación de tortugas cerca y precios bajos. Organízate alrededor de las mañanas más luminosas y lleva una buena chaqueta impermeable; ven por la naturaleza, no por la playa garantizada.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im Juni: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im Juni {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Der Juni in Puerto Viejo de Talamanca ist nass und grün, mit der nahen Nistsaison der Meeresschildkröten, lebendigem Dschungel und niedrigen Preisen. Das erwartet dich, und so planst du deine Reise.',
-      heading: 'Wetter in Puerto Viejo im Juni',
+        'Der Juni {{YEAR}} in Puerto Viejo de Talamanca ist nass und grün, mit der nahen Nistsaison der Meeresschildkröten, lebendigem Dschungel und niedrigen Preisen. Das erwartet dich, und so planst du deine Reise.',
+      heading: 'Wetter in Puerto Viejo im Juni {{YEAR}}',
       heroAlt: 'Nasser grüner Regenwald in Puerto Viejo de Talamanca im Juni',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Der Juni auf einen Blick',
@@ -6627,10 +6633,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der Juni ist nass, warm und grün, mit lebendiger Tierwelt, naher Schildkröten-Nistsaison und niedrigen Preisen. Plane rund um die helleren Morgenstunden und pack eine gute Regenjacke ein; komm für die Natur, nicht für garantiertes Strandwetter.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en juin : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en juin {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'En juin, Puerto Viejo de Talamanca est humide et verdoyant, avec la saison de nidification des tortues tout près, une jungle animée et des prix bas. Voici à quoi vous attendre et comment vous organiser.',
-      heading: 'Météo à Puerto Viejo en juin',
+        'En juin {{YEAR}}, Puerto Viejo de Talamanca est humide et verdoyant, avec la saison de nidification des tortues tout près, une jungle animée et des prix bas. Voici à quoi vous attendre et comment vous organiser.',
+      heading: 'Météo à Puerto Viejo en juin {{YEAR}}',
       heroAlt: 'Forêt tropicale verte et humide à Puerto Viejo de Talamanca en juin',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Juin en un coup d\'œil',
@@ -6667,10 +6673,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Juin est humide, chaud et verdoyant, avec une faune animée, la saison de nidification des tortues tout près et des prix bas. Organisez-vous autour des matinées plus lumineuses et emportez un bon imperméable ; venez pour la nature, pas pour un temps de plage garanti.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo a giugno: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo a giugno {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'A giugno Puerto Viejo de Talamanca è umido e verde, con la stagione di nidificazione delle tartarughe lì vicino, giungla vivace e prezzi bassi. Ecco cosa aspettarti e come organizzarti.',
-      heading: 'Meteo a Puerto Viejo a giugno',
+        'A giugno {{YEAR}} Puerto Viejo de Talamanca è umido e verde, con la stagione di nidificazione delle tartarughe lì vicino, giungla vivace e prezzi bassi. Ecco cosa aspettarti e come organizzarti.',
+      heading: 'Meteo a Puerto Viejo a giugno {{YEAR}}',
       heroAlt: 'Foresta pluviale verde e umida a Puerto Viejo de Talamanca a giugno',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Giugno in breve',
@@ -6707,10 +6713,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Giugno è umido, caldo e verde, con fauna vivace, stagione di nidificazione delle tartarughe lì vicino e prezzi bassi. Organizzati intorno alle mattine più luminose e porta una buona giacca impermeabile; vieni per la natura, non per un mare garantito.',
     },
     pt: {
-      seoTitle: 'Clima em Puerto Viejo em junho: tempo, chuva e mar',
+      seoTitle: 'Clima em Puerto Viejo em junho {{YEAR}}: tempo, chuva e mar',
       seoDescription:
-        'Junho em Puerto Viejo de Talamanca é úmido e verde, com a época de desova das tartarugas ali perto, selva animada e preços baixos. Veja o que esperar e como se organizar.',
-      heading: 'Clima em Puerto Viejo em junho',
+        'Junho {{YEAR}} em Puerto Viejo de Talamanca é úmido e verde, com a época de desova das tartarugas ali perto, selva animada e preços baixos. Veja o que esperar e como se organizar.',
+      heading: 'Clima em Puerto Viejo em junho {{YEAR}}',
       heroAlt: 'Floresta tropical verde e úmida em Puerto Viejo de Talamanca em junho',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Junho num relance',
@@ -6747,10 +6753,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Junho é úmido, quente e verde, com vida selvagem animada, época de desova das tartarugas ali perto e preços baixos. Organize-se em torno das manhãs mais claras e leve uma boa capa de chuva; venha pela natureza, não por tempo de praia garantido.',
     },
     he: {
-      seoTitle: 'מזג האוויר בפוארטו ויאחו ביוני: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בפוארטו ויאחו ביוני {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'יוני בפוארטו ויאחו דה טלמנקה הוא לח וירוק, עם עונת קינון הצבים בקרבת מקום, ג\'ונגל שוקק ומחירים נמוכים. הנה למה לצפות ואיך לתכנן.',
-      heading: 'מזג האוויר בפוארטו ויאחו ביוני',
+        'יוני {{YEAR}} בפוארטו ויאחו דה טלמנקה הוא לח וירוק, עם עונת קינון הצבים בקרבת מקום, ג\'ונגל שוקק ומחירים נמוכים. הנה למה לצפות ואיך לתכנן.',
+      heading: 'מזג האוויר בפוארטו ויאחו ביוני {{YEAR}}',
       heroAlt: 'יער גשם ירוק ולח בפוארטו ויאחו דה טלמנקה ביוני',
       photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'יוני במבט חטוף',
@@ -6787,10 +6793,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'יוני לח, חמים וירוק, עם חיות בר תוססות, עונת קינון צבים בקרבת מקום ומחירים נמוכים. תכננו סביב הבקרים הבהירים יותר וארזו מעיל גשם טוב; בואו בשביל הטבע ולא בשביל מזג חוף מובטח.',
     },
     hi: {
-      seoTitle: 'जून में पुएर्तो विएखो का मौसम: जलवायु, बारिश और समुद्र',
+      seoTitle: 'जून {{YEAR}} में पुएर्तो विएखो का मौसम: जलवायु, बारिश और समुद्र',
       seoDescription:
-        'जून में पुएर्तो विएखो दे तालामांका नम और हरा-भरा रहता है, पास ही कछुओं के घोंसले बनाने का मौसम, जीवंत जंगल और कम दाम। यहाँ जानिए क्या उम्मीद करें और कैसे योजना बनाएँ।',
-      heading: 'जून में पुएर्तो विएखो का मौसम',
+        'जून {{YEAR}} में पुएर्तो विएखो दे तालामांका नम और हरा-भरा रहता है, पास ही कछुओं के घोंसले बनाने का मौसम, जीवंत जंगल और कम दाम। यहाँ जानिए क्या उम्मीद करें और कैसे योजना बनाएँ।',
+      heading: 'जून {{YEAR}} में पुएर्तो विएखो का मौसम',
       heroAlt: 'जून में पुएर्तो विएखो दे तालामांका में नम हरा वर्षावन',
       photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में जून',
@@ -6827,10 +6833,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'जून नम, गर्म और हरा-भरा होता है, जीवंत वन्यजीवन, पास ही कछुओं के घोंसले का मौसम और कम दामों के साथ। उजली सुबहों के हिसाब से योजना बनाएँ और एक अच्छी बरसाती जैकेट रखें; गारंटीशुदा समुद्र तट मौसम के लिए नहीं, प्रकृति के लिए आएँ।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in juni: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in juni {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'Juni in Puerto Viejo de Talamanca is nat en groen, met vlakbij het nestseizoen van zeeschildpadden, een levendige jungle en lage prijzen. Dit kun je verwachten en zo plan je.',
-      heading: 'Weer in Puerto Viejo in juni',
+        'Juni {{YEAR}} in Puerto Viejo de Talamanca is nat en groen, met vlakbij het nestseizoen van zeeschildpadden, een levendige jungle en lage prijzen. Dit kun je verwachten en zo plan je.',
+      heading: 'Weer in Puerto Viejo in juni {{YEAR}}',
       heroAlt: 'Nat groen regenwoud in Puerto Viejo de Talamanca in juni',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Juni in een oogopslag',
@@ -6869,10 +6875,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
   },
   july: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in July: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in July {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'July in Puerto Viejo de Talamanca is a mixed bag: warm sun and heavy showers, sometimes a short drier spell, with good surf and a lively jungle. Here is what to expect.',
-      heading: 'Weather in Puerto Viejo in July',
+        'July {{YEAR}} in Puerto Viejo de Talamanca is a mixed bag: warm sun and heavy showers, sometimes a short drier spell, with good surf and a lively jungle. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in July {{YEAR}}',
       heroAlt: 'Green Caribbean coast with surf in Puerto Viejo de Talamanca in July',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'July at a glance',
@@ -6909,10 +6915,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'July is warm, green and unpredictable: heavy showers, good surf and sometimes a short drier spell. Expect a summer-holiday bump in visitors, plan flexibly around the weather, and pack for both sun and rain.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en julio: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en julio {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'Julio en Puerto Viejo de Talamanca es variable: sol cálido y aguaceros fuertes, a veces un breve período más seco, con buen surf y selva viva. Esto es lo que puedes esperar.',
-      heading: 'El clima en Puerto Viejo en julio',
+        'Julio {{YEAR}} en Puerto Viejo de Talamanca es variable: sol cálido y aguaceros fuertes, a veces un breve período más seco, con buen surf y selva viva. Esto es lo que puedes esperar.',
+      heading: 'El clima en Puerto Viejo en julio {{YEAR}}',
       heroAlt: 'Costa caribeña verde con surf en Puerto Viejo de Talamanca en julio',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Julio de un vistazo',
@@ -6949,10 +6955,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Julio es cálido, verde e impredecible: aguaceros fuertes, buen surf y a veces un breve período más seco. Espera un repunte de visitantes por las vacaciones de verano, planea con flexibilidad y lleva para sol y lluvia.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im Juli: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im Juli {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Der Juli in Puerto Viejo de Talamanca ist wechselhaft: warme Sonne und heftige Schauer, manchmal eine kurze trockenere Phase, mit gutem Surf und lebendigem Dschungel. Das erwartet dich hier.',
-      heading: 'Wetter in Puerto Viejo im Juli',
+        'Der Juli {{YEAR}} in Puerto Viejo de Talamanca ist wechselhaft: warme Sonne und heftige Schauer, manchmal eine kurze trockenere Phase, mit gutem Surf und lebendigem Dschungel. Das erwartet dich hier.',
+      heading: 'Wetter in Puerto Viejo im Juli {{YEAR}}',
       heroAlt: 'Grüne Karibikküste mit Surf in Puerto Viejo de Talamanca im Juli',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Der Juli auf einen Blick',
@@ -6989,10 +6995,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der Juli ist warm, grün und wechselhaft: heftige Schauer, guter Surf und manchmal eine kurze trockenere Phase. Erwarte einen Anstieg der Besucher durch die Sommerferien, plane flexibel um das Wetter herum und pack für Sonne und Regen.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en juillet : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en juillet {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'Juillet à Puerto Viejo de Talamanca est changeant : soleil chaud et fortes averses, parfois une courte période plus sèche, avec du bon surf et une jungle vivante. Voici à quoi vous attendre.',
-      heading: 'Météo à Puerto Viejo en juillet',
+        'Juillet {{YEAR}} à Puerto Viejo de Talamanca est changeant : soleil chaud et fortes averses, parfois une courte période plus sèche, avec du bon surf et une jungle vivante. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en juillet {{YEAR}}',
       heroAlt: 'Côte caraïbe verdoyante avec du surf à Puerto Viejo de Talamanca en juillet',
       photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Juillet en un coup d\'œil',
@@ -7029,10 +7035,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Juillet est chaud, vert et changeant : fortes averses, bon surf et parfois une courte période plus sèche. Attendez-vous à une hausse de visiteurs due aux vacances d\'été, planifiez avec souplesse en fonction de la météo et préparez-vous au soleil comme à la pluie.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo a luglio: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo a luglio {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'Luglio a Puerto Viejo de Talamanca è variabile: sole caldo e forti acquazzoni, a volte un breve periodo più asciutto, con buon surf e giungla vivace. Ecco cosa aspettarsi.',
-      heading: 'Meteo a Puerto Viejo a luglio',
+        'Luglio {{YEAR}} a Puerto Viejo de Talamanca è variabile: sole caldo e forti acquazzoni, a volte un breve periodo più asciutto, con buon surf e giungla vivace. Ecco cosa aspettarsi.',
+      heading: 'Meteo a Puerto Viejo a luglio {{YEAR}}',
       heroAlt: 'Costa caraibica verde con surf a Puerto Viejo de Talamanca a luglio',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Luglio in breve',
@@ -7069,10 +7075,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Luglio è caldo, verde e variabile: forti acquazzoni, buon surf e a volte un breve periodo più asciutto. Aspettati un aumento di visitatori per le vacanze estive, pianifica con flessibilità in base al meteo e prepara sia per il sole sia per la pioggia.',
     },
     pt: {
-      seoTitle: 'Clima em Puerto Viejo em julho: tempo, chuva e mar',
+      seoTitle: 'Clima em Puerto Viejo em julho {{YEAR}}: tempo, chuva e mar',
       seoDescription:
-        'Julho em Puerto Viejo de Talamanca é variável: sol quente e aguaceiros fortes, às vezes um breve período mais seco, com bom surf e selva viva. Veja o que esperar.',
-      heading: 'Clima em Puerto Viejo em julho',
+        'Julho {{YEAR}} em Puerto Viejo de Talamanca é variável: sol quente e aguaceiros fortes, às vezes um breve período mais seco, com bom surf e selva viva. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em julho {{YEAR}}',
       heroAlt: 'Costa caribenha verde com surf em Puerto Viejo de Talamanca em julho',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Julho num relance',
@@ -7109,10 +7115,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Julho é quente, verde e variável: aguaceiros fortes, bom surf e às vezes um breve período mais seco. Espere um aumento de visitantes pelas férias de verão, planeje com flexibilidade em torno do clima e leve tanto para sol quanto para chuva.',
     },
     he: {
-      seoTitle: 'מזג האוויר בפוארטו ויאחו ביולי: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בפוארטו ויאחו ביולי {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'יולי בפוארטו ויאחו דה טלמנקה הוא הפכפך: שמש חמה וממטרים כבדים, לעיתים תקופה יבשה קצרה, עם גלישה טובה וג\'ונגל תוסס. הנה למה לצפות.',
-      heading: 'מזג האוויר בפוארטו ויאחו ביולי',
+        'יולי {{YEAR}} בפוארטו ויאחו דה טלמנקה הוא הפכפך: שמש חמה וממטרים כבדים, לעיתים תקופה יבשה קצרה, עם גלישה טובה וג\'ונגל תוסס. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו ביולי {{YEAR}}',
       heroAlt: 'חוף קריבי ירוק עם גלישה בפוארטו ויאחו דה טלמנקה ביולי',
       photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'יולי במבט חטוף',
@@ -7149,10 +7155,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'יולי חם, ירוק והפכפך: ממטרים כבדים, גלישה טובה ולעיתים תקופה יבשה קצרה. צפה לעלייה במבקרים בשל חופשת הקיץ, תכנן בגמישות סביב מזג האוויר וארוז גם לשמש וגם לגשם.',
     },
     hi: {
-      seoTitle: 'जुलाई में पुएर्तो विएजो का मौसम: जलवायु, बारिश और समुद्र',
+      seoTitle: 'जुलाई {{YEAR}} में पुएर्तो विएजो का मौसम: जलवायु, बारिश और समुद्र',
       seoDescription:
-        'पुएर्तो विएजो दे तालामांका में जुलाई मिला-जुला रहता है: गर्म धूप और तेज़ बौछारें, कभी-कभी एक छोटी सूखी अवधि, अच्छे सर्फ़ और जीवंत जंगल के साथ। यहाँ जानिए क्या उम्मीद करें।',
-      heading: 'जुलाई में पुएर्तो विएजो का मौसम',
+        'पुएर्तो विएजो दे तालामांका में जुलाई {{YEAR}} मिला-जुला रहता है: गर्म धूप और तेज़ बौछारें, कभी-कभी एक छोटी सूखी अवधि, अच्छे सर्फ़ और जीवंत जंगल के साथ। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'जुलाई {{YEAR}} में पुएर्तो विएजो का मौसम',
       heroAlt: 'जुलाई में पुएर्तो विएजो दे तालामांका में सर्फ़ के साथ हरा कैरिबियन तट',
       photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में जुलाई',
@@ -7189,10 +7195,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'जुलाई गर्म, हरा-भरा और परिवर्तनशील होता है: तेज़ बौछारें, अच्छा सर्फ़ और कभी-कभी एक छोटी सूखी अवधि। गर्मी की छुट्टियों के कारण पर्यटकों में वृद्धि की उम्मीद करें, मौसम के अनुसार लचीली योजना बनाएँ, और धूप व बारिश दोनों के लिए सामान पैक करें।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in juli: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in juli {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'Juli in Puerto Viejo de Talamanca is wisselvallig: warme zon en zware buien, soms een korte drogere periode, met goede surf en een levendige jungle. Dit kun je verwachten.',
-      heading: 'Weer in Puerto Viejo in juli',
+        'Juli {{YEAR}} in Puerto Viejo de Talamanca is wisselvallig: warme zon en zware buien, soms een korte drogere periode, met goede surf en een levendige jungle. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in juli {{YEAR}}',
       heroAlt: 'Groene Caribische kust met surf in Puerto Viejo de Talamanca in juli',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Juli in het kort',
@@ -7231,10 +7237,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
   },
   august: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in August: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in August {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'August in Puerto Viejo de Talamanca is warm and green, with rainy spells, a dramatic jungle and good surf. Here is what to expect and how to plan your trip.',
-      heading: 'Weather in Puerto Viejo in August',
+        'August {{YEAR}} in Puerto Viejo de Talamanca is warm and green, with rainy spells, a dramatic jungle and good surf. Here is what to expect and how to plan your trip.',
+      heading: 'Weather in Puerto Viejo in August {{YEAR}}',
       heroAlt: 'Dramatic green jungle and beach in Puerto Viejo de Talamanca in August',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'August at a glance',
@@ -7271,10 +7277,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'August is warm, green and atmospheric, with rainy spells and good surf, just before the September veranillo. Plan around the bright mornings and pack a rain jacket; it is a lush, good-value month on the coast.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en agosto: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en agosto {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'Agosto en Puerto Viejo de Talamanca es cálido y verde, con períodos de lluvia, una selva dramática y buen surf. Esto es lo que puedes esperar y cómo organizarte.',
-      heading: 'El clima en Puerto Viejo en agosto',
+        'Agosto {{YEAR}} en Puerto Viejo de Talamanca es cálido y verde, con períodos de lluvia, una selva dramática y buen surf. Esto es lo que puedes esperar y cómo organizarte.',
+      heading: 'El clima en Puerto Viejo en agosto {{YEAR}}',
       heroAlt: 'Selva verde dramática y playa en Puerto Viejo de Talamanca en agosto',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Agosto de un vistazo',
@@ -7311,10 +7317,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Agosto es cálido, verde y con atmósfera, con períodos de lluvia y buen surf, justo antes del veranillo de septiembre. Organízate alrededor de las mañanas luminosas y lleva chaqueta impermeable; es un mes frondoso y de buen precio en la costa.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im August: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im August {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Der August in Puerto Viejo de Talamanca ist warm und grün, mit Regenphasen, einem eindrucksvollen Dschungel und gutem Surf. Das erwartet dich, und so planst du deine Reise.',
-      heading: 'Wetter in Puerto Viejo im August',
+        'Der August {{YEAR}} in Puerto Viejo de Talamanca ist warm und grün, mit Regenphasen, einem eindrucksvollen Dschungel und gutem Surf. Das erwartet dich, und so planst du deine Reise.',
+      heading: 'Wetter in Puerto Viejo im August {{YEAR}}',
       heroAlt: 'Eindrucksvoller grüner Dschungel und Strand in Puerto Viejo de Talamanca im August',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'August auf einen Blick',
@@ -7351,10 +7357,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der August ist warm, grün und stimmungsvoll, mit Regenphasen und gutem Surf, kurz vor dem veranillo im September. Plane rund um die hellen Morgen und pack eine Regenjacke ein; es ist ein üppiger Monat mit gutem Preis-Leistungs-Verhältnis an der Küste.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en août : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en août {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'En août, Puerto Viejo de Talamanca est chaud et vert, avec des épisodes de pluie, une jungle spectaculaire et de bonnes vagues. Voici à quoi vous attendre et comment planifier votre voyage.',
-      heading: 'Météo à Puerto Viejo en août',
+        'En août {{YEAR}}, Puerto Viejo de Talamanca est chaud et vert, avec des épisodes de pluie, une jungle spectaculaire et de bonnes vagues. Voici à quoi vous attendre et comment planifier votre voyage.',
+      heading: 'Météo à Puerto Viejo en août {{YEAR}}',
       heroAlt: 'Jungle verte spectaculaire et plage à Puerto Viejo de Talamanca en août',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Août en un coup d\'œil',
@@ -7391,10 +7397,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Août est chaud, vert et plein d\'atmosphère, avec des épisodes de pluie et de bonnes vagues, juste avant le veranillo de septembre. Organisez-vous autour des matinées lumineuses et emportez une veste de pluie ; c\'est un mois luxuriant et avantageux sur la côte.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo ad agosto: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo ad agosto {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'Ad agosto Puerto Viejo de Talamanca è caldo e verde, con fasi di pioggia, una giungla spettacolare e buone onde. Ecco cosa aspettarti e come organizzare il viaggio.',
-      heading: 'Meteo a Puerto Viejo ad agosto',
+        'Ad agosto {{YEAR}} Puerto Viejo de Talamanca è caldo e verde, con fasi di pioggia, una giungla spettacolare e buone onde. Ecco cosa aspettarti e come organizzare il viaggio.',
+      heading: 'Meteo a Puerto Viejo ad agosto {{YEAR}}',
       heroAlt: 'Giungla verde spettacolare e spiaggia a Puerto Viejo de Talamanca ad agosto',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Agosto in breve',
@@ -7431,10 +7437,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Agosto è caldo, verde e suggestivo, con fasi di pioggia e buone onde, appena prima del veranillo di settembre. Organizzati intorno alle mattine luminose e porta una giacca impermeabile; è un mese rigoglioso e conveniente sulla costa.',
     },
     pt: {
-      seoTitle: 'Clima em Puerto Viejo em agosto: tempo, chuva e mar',
+      seoTitle: 'Clima em Puerto Viejo em agosto {{YEAR}}: tempo, chuva e mar',
       seoDescription:
-        'Agosto em Puerto Viejo de Talamanca é quente e verde, com períodos de chuva, uma selva dramática e boas ondas. Veja o que esperar e como planejar sua viagem.',
-      heading: 'Clima em Puerto Viejo em agosto',
+        'Agosto {{YEAR}} em Puerto Viejo de Talamanca é quente e verde, com períodos de chuva, uma selva dramática e boas ondas. Veja o que esperar e como planejar sua viagem.',
+      heading: 'Clima em Puerto Viejo em agosto {{YEAR}}',
       heroAlt: 'Selva verde dramática e praia em Puerto Viejo de Talamanca em agosto',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Agosto num relance',
@@ -7471,10 +7477,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Agosto é quente, verde e cheio de atmosfera, com períodos de chuva e boas ondas, logo antes do veranillo de setembro. Organize-se em torno das manhãs ensolaradas e leve uma capa de chuva; é um mês exuberante e de bom custo-benefício no litoral.',
     },
     he: {
-      seoTitle: 'מזג האוויר בפוארטו ויאחו באוגוסט: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בפוארטו ויאחו באוגוסט {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'אוגוסט בפוארטו ויאחו דה טלמנקה חם וירוק, עם ממטרים, ג\'ונגל דרמטי וגלישה טובה. הנה למה לצפות ואיך לתכנן את הטיול.',
-      heading: 'מזג האוויר בפוארטו ויאחו באוגוסט',
+        'אוגוסט {{YEAR}} בפוארטו ויאחו דה טלמנקה חם וירוק, עם ממטרים, ג\'ונגל דרמטי וגלישה טובה. הנה למה לצפות ואיך לתכנן את הטיול.',
+      heading: 'מזג האוויר בפוארטו ויאחו באוגוסט {{YEAR}}',
       heroAlt: 'ג\'ונגל ירוק דרמטי וחוף בפוארטו ויאחו דה טלמנקה באוגוסט',
       photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'אוגוסט במבט מהיר',
@@ -7511,10 +7517,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'אוגוסט חם, ירוק ואטמוספרי, עם ממטרים וגלישה טובה, ממש לפני ה-veranillo של ספטמבר. תכננו סביב הבקרים הבהירים וארזו מעיל גשם; זהו חודש שופע ומשתלם לאורך החוף.',
     },
     hi: {
-      seoTitle: 'अगस्त में प्यूर्तो विएखो का मौसम: जलवायु, बारिश और समुद्र',
+      seoTitle: 'अगस्त {{YEAR}} में प्यूर्तो विएखो का मौसम: जलवायु, बारिश और समुद्र',
       seoDescription:
-        'अगस्त में प्यूर्तो विएखो दे तालामांका गर्म और हरा-भरा रहता है, बारिश के दौर, नाटकीय जंगल और अच्छी सर्फिंग के साथ। जानिए क्या उम्मीद करें और अपनी यात्रा की योजना कैसे बनाएं।',
-      heading: 'अगस्त में प्यूर्तो विएखो का मौसम',
+        'अगस्त {{YEAR}} में प्यूर्तो विएखो दे तालामांका गर्म और हरा-भरा रहता है, बारिश के दौर, नाटकीय जंगल और अच्छी सर्फिंग के साथ। जानिए क्या उम्मीद करें और अपनी यात्रा की योजना कैसे बनाएं।',
+      heading: 'अगस्त {{YEAR}} में प्यूर्तो विएखो का मौसम',
       heroAlt: 'अगस्त में प्यूर्तो विएखो दे तालामांका में नाटकीय हरा-भरा जंगल और समुद्र तट',
       photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में अगस्त',
@@ -7551,10 +7557,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'अगस्त गर्म, हरा-भरा और खुशनुमा होता है, बारिश के दौर और अच्छी सर्फिंग के साथ, सितंबर के veranillo से ठीक पहले। उजली सुबहों के हिसाब से योजना बनाएं और रेनकोट साथ रखें; तट पर यह एक हरा-भरा और किफ़ायती महीना है।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in augustus: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in augustus {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'Augustus in Puerto Viejo de Talamanca is warm en groen, met regenbuien, een indrukwekkende jungle en goede surf. Dit kun je verwachten en zo plan je je reis.',
-      heading: 'Weer in Puerto Viejo in augustus',
+        'Augustus {{YEAR}} in Puerto Viejo de Talamanca is warm en groen, met regenbuien, een indrukwekkende jungle en goede surf. Dit kun je verwachten en zo plan je je reis.',
+      heading: 'Weer in Puerto Viejo in augustus {{YEAR}}',
       heroAlt: 'Indrukwekkende groene jungle en strand in Puerto Viejo de Talamanca in augustus',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Augustus in het kort',
@@ -7593,10 +7599,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
   },
   september: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in September: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in September {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'September in Puerto Viejo de Talamanca is the start of the veranillo, with calmer seas, clear water and some of the fewest crowds all year. Here is what to expect.',
-      heading: 'Weather in Puerto Viejo in September',
+        'September {{YEAR}} in Puerto Viejo de Talamanca is the start of the veranillo, with calmer seas, clear water and some of the fewest crowds all year. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in September {{YEAR}}',
       heroAlt: 'Calm Caribbean sea in Puerto Viejo de Talamanca in September',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'September at a glance',
@@ -7633,10 +7639,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'September brings the veranillo to Puerto Viejo: calm, clear seas, some of the driest weather of the year, thin crowds and low prices. Pack for the odd shower, but expect one of the best months for the beach and the reef.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en septiembre: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en septiembre {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'Septiembre en Puerto Viejo de Talamanca marca el inicio del veranillo, con mar más tranquilo, agua clara y de la menor afluencia del año. Esto es lo que puedes esperar.',
-      heading: 'El Clima en Puerto Viejo en Septiembre',
+        'Septiembre {{YEAR}} en Puerto Viejo de Talamanca marca el inicio del veranillo, con mar más tranquilo, agua clara y de la menor afluencia del año. Esto es lo que puedes esperar.',
+      heading: 'El Clima en Puerto Viejo en Septiembre {{YEAR}}',
       heroAlt: 'Mar caribeño en calma en Puerto Viejo de Talamanca en septiembre',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Septiembre de un vistazo',
@@ -7673,10 +7679,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Septiembre trae el veranillo a Puerto Viejo: mar en calma y claro, un clima de los más secos del año, poca gente y precios bajos. Lleva algo para algún aguacero, pero espera uno de los mejores meses para la playa y el arrecife.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im September: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im September {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Der September in Puerto Viejo de Talamanca läutet den Veranillo ein, mit ruhigerer See, klarem Wasser und einem der ruhigsten Monate des Jahres. Das erwartet Sie.',
-      heading: 'Wetter in Puerto Viejo im September',
+        'Der September {{YEAR}} in Puerto Viejo de Talamanca läutet den Veranillo ein, mit ruhigerer See, klarem Wasser und einem der ruhigsten Monate des Jahres. Das erwartet Sie.',
+      heading: 'Wetter in Puerto Viejo im September {{YEAR}}',
       heroAlt: 'Ruhige Karibiksee in Puerto Viejo de Talamanca im September',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Der September auf einen Blick',
@@ -7713,10 +7719,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der September bringt den Veranillo nach Puerto Viejo: ruhige, klare See, eines der trockeneren Wetter des Jahres, wenig Andrang und niedrige Preise. Packen Sie etwas für den gelegentlichen Schauer ein, freuen Sie sich aber auf einen der besten Monate für Strand und Riff.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en septembre : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en septembre {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'Septembre à Puerto Viejo de Talamanca marque le début du veranillo, avec une mer plus calme, une eau claire et l\'une des périodes les moins fréquentées de l\'année. Voici à quoi vous attendre.',
-      heading: 'Météo à Puerto Viejo en septembre',
+        'Septembre {{YEAR}} à Puerto Viejo de Talamanca marque le début du veranillo, avec une mer plus calme, une eau claire et l\'une des périodes les moins fréquentées de l\'année. Voici à quoi vous attendre.',
+      heading: 'Météo à Puerto Viejo en septembre {{YEAR}}',
       heroAlt: 'Mer des Caraïbes calme à Puerto Viejo de Talamanca en septembre',
       photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Septembre en un coup d\'œil',
@@ -7753,10 +7759,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Septembre apporte le veranillo à Puerto Viejo : mer calme et claire, l\'un des temps les plus secs de l\'année, peu de monde et prix bas. Prévoyez de quoi affronter une averse, mais attendez-vous à l\'un des meilleurs mois pour la plage et le récif.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo a settembre: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo a settembre {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'Settembre a Puerto Viejo de Talamanca segna l\'inizio del veranillo, con mare più calmo, acqua limpida e uno dei periodi meno affollati dell\'anno. Ecco cosa aspettarsi.',
-      heading: 'Meteo a Puerto Viejo a settembre',
+        'Settembre {{YEAR}} a Puerto Viejo de Talamanca segna l\'inizio del veranillo, con mare più calmo, acqua limpida e uno dei periodi meno affollati dell\'anno. Ecco cosa aspettarsi.',
+      heading: 'Meteo a Puerto Viejo a settembre {{YEAR}}',
       heroAlt: 'Mare caraibico calmo a Puerto Viejo de Talamanca a settembre',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Settembre in breve',
@@ -7793,10 +7799,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Settembre porta il veranillo a Puerto Viejo: mare calmo e limpido, uno dei climi più asciutti dell\'anno, poca gente e prezzi bassi. Metti in valigia qualcosa per l\'acquazzone di turno, ma aspettati uno dei mesi migliori per la spiaggia e la barriera corallina.',
     },
     pt: {
-      seoTitle: 'Clima em Puerto Viejo em setembro: tempo, chuva e mar',
+      seoTitle: 'Clima em Puerto Viejo em setembro {{YEAR}}: tempo, chuva e mar',
       seoDescription:
-        'Setembro em Puerto Viejo de Talamanca marca o início do veranillo, com mar mais calmo, água clara e uma das épocas menos movimentadas do ano. Veja o que esperar.',
-      heading: 'Clima em Puerto Viejo em setembro',
+        'Setembro {{YEAR}} em Puerto Viejo de Talamanca marca o início do veranillo, com mar mais calmo, água clara e uma das épocas menos movimentadas do ano. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em setembro {{YEAR}}',
       heroAlt: 'Mar do Caribe calmo em Puerto Viejo de Talamanca em setembro',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Setembro num relance',
@@ -7833,10 +7839,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Setembro traz o veranillo a Puerto Viejo: mar calmo e claro, um dos climas mais secos do ano, pouca gente e preços baixos. Leve algo para um aguaceiro, mas espere um dos melhores meses para a praia e o recife.',
     },
     he: {
-      seoTitle: 'מזג האוויר בפוארטו ויאחו בספטמבר: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בפוארטו ויאחו בספטמבר {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'ספטמבר בפוארטו ויאחו דה טלמנקה מסמן את תחילת ה-veranillo: ים רגוע יותר, מים צלולים ואחת התקופות הכי פחות עמוסות בשנה. הנה למה לצפות.',
-      heading: 'מזג האוויר בפוארטו ויאחו בספטמבר',
+        'ספטמבר {{YEAR}} בפוארטו ויאחו דה טלמנקה מסמן את תחילת ה-veranillo: ים רגוע יותר, מים צלולים ואחת התקופות הכי פחות עמוסות בשנה. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו בספטמבר {{YEAR}}',
       heroAlt: 'ים קריבי רגוע בפוארטו ויאחו דה טלמנקה בספטמבר',
       photoCredit: <>תמונה: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'ספטמבר במבט חטוף',
@@ -7873,10 +7879,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'ספטמבר מביא את ה-veranillo לפוארטו ויאחו: ים רגוע וצלול, מזג אוויר מהיבשים בשנה, מעט מבקרים ומחירים נמוכים. ארזו משהו לממטר מזדמן, אבל צפו לאחד החודשים הטובים ביותר לחוף ולשונית האלמוגים.',
     },
     hi: {
-      seoTitle: 'सितंबर में पुएर्तो विएखो का मौसम: जलवायु, बारिश और समुद्र',
+      seoTitle: 'सितंबर {{YEAR}} में पुएर्तो विएखो का मौसम: जलवायु, बारिश और समुद्र',
       seoDescription:
-        'पुएर्तो विएखो दे तालामांका में सितंबर veranillo की शुरुआत है: शांत समुद्र, साफ़ पानी और साल की सबसे कम भीड़ वाली अवधियों में से एक। जानिए क्या उम्मीद करें।',
-      heading: 'सितंबर में पुएर्तो विएखो का मौसम',
+        'पुएर्तो विएखो दे तालामांका में सितंबर {{YEAR}} veranillo की शुरुआत है: शांत समुद्र, साफ़ पानी और साल की सबसे कम भीड़ वाली अवधियों में से एक। जानिए क्या उम्मीद करें।',
+      heading: 'सितंबर {{YEAR}} में पुएर्तो विएखो का मौसम',
       heroAlt: 'सितंबर में पुएर्तो विएखो दे तालामांका में शांत कैरेबियाई समुद्र',
       photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में सितंबर',
@@ -7913,10 +7919,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'सितंबर पुएर्तो विएखो में veranillo लाता है: शांत, साफ़ समुद्र, साल के सबसे सूखे मौसमों में से एक, कम भीड़ और कम कीमतें। कभी-कभार की बौछार के लिए सामान रखें, पर समुद्र तट और रीफ़ के सबसे बेहतरीन महीनों में से एक की उम्मीद करें।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in september: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in september {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'September in Puerto Viejo de Talamanca luidt de veranillo in: kalmere zee, helder water en een van de rustigste periodes van het jaar. Dit kun je verwachten.',
-      heading: 'Weer in Puerto Viejo in september',
+        'September {{YEAR}} in Puerto Viejo de Talamanca luidt de veranillo in: kalmere zee, helder water en een van de rustigste periodes van het jaar. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in september {{YEAR}}',
       heroAlt: 'Kalme Caribische zee in Puerto Viejo de Talamanca in september',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'September in een oogopslag',
@@ -7955,10 +7961,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
   },
   october: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in October: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in October {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'October in Puerto Viejo de Talamanca continues the veranillo: calm seas, thin crowds and the best value of the year on the Caribbean coast. Here is what to expect.',
-      heading: 'Weather in Puerto Viejo in October',
+        'October {{YEAR}} in Puerto Viejo de Talamanca continues the veranillo: calm seas, thin crowds and the best value of the year on the Caribbean coast. Here is what to expect.',
+      heading: 'Weather in Puerto Viejo in October {{YEAR}}',
       heroAlt: 'Sunny Caribbean beach in Puerto Viejo de Talamanca in October',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'October at a glance',
@@ -7995,10 +8001,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'October continues the veranillo: calm, clear seas, relatively dry weather, thin crowds and the best value of the year. Pack for the odd shower and enjoy some of the best beach and reef conditions Puerto Viejo offers.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en octubre: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en octubre {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'Octubre en Puerto Viejo de Talamanca continúa el veranillo: mar en calma, poca gente y la mejor relación calidad-precio del año en el Caribe. Esto es lo que puedes esperar.',
-      heading: 'El Clima en Puerto Viejo en Octubre',
+        'Octubre {{YEAR}} en Puerto Viejo de Talamanca continúa el veranillo: mar en calma, poca gente y la mejor relación calidad-precio del año en el Caribe. Esto es lo que puedes esperar.',
+      heading: 'El Clima en Puerto Viejo en Octubre {{YEAR}}',
       heroAlt: 'Playa caribeña soleada en Puerto Viejo de Talamanca en octubre',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Octubre de un vistazo',
@@ -8035,10 +8041,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Octubre continúa el veranillo: mar en calma y claro, clima relativamente seco, poca gente y la mejor relación calidad-precio del año. Lleva algo para algún aguacero y disfruta de algunas de las mejores condiciones de playa y arrecife de Puerto Viejo.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im Oktober: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im Oktober {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Der Oktober in Puerto Viejo de Talamanca setzt den veranillo fort: ruhige See, wenig Andrang und das beste Preis-Leistungs-Verhältnis des Jahres an der Karibikküste. Das erwartet dich.',
-      heading: 'Wetter in Puerto Viejo im Oktober',
+        'Der Oktober {{YEAR}} in Puerto Viejo de Talamanca setzt den veranillo fort: ruhige See, wenig Andrang und das beste Preis-Leistungs-Verhältnis des Jahres an der Karibikküste. Das erwartet dich.',
+      heading: 'Wetter in Puerto Viejo im Oktober {{YEAR}}',
       heroAlt: 'Sonniger Karibikstrand in Puerto Viejo de Talamanca im Oktober',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Der Oktober auf einen Blick',
@@ -8075,10 +8081,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der Oktober setzt den veranillo fort: ruhige, klare See, relativ trockenes Wetter, wenig Andrang und das beste Preis-Leistungs-Verhältnis des Jahres. Pack etwas für den gelegentlichen Schauer ein und genieße einige der besten Strand- und Riffbedingungen, die Puerto Viejo zu bieten hat.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en octobre : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en octobre {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'En octobre, Puerto Viejo de Talamanca poursuit le veranillo : mer calme, peu de monde et le meilleur rapport qualité-prix de l\'année sur la côte caraïbe. Voici à quoi s\'attendre.',
-      heading: 'Météo à Puerto Viejo en octobre',
+        'En octobre {{YEAR}}, Puerto Viejo de Talamanca poursuit le veranillo : mer calme, peu de monde et le meilleur rapport qualité-prix de l\'année sur la côte caraïbe. Voici à quoi s\'attendre.',
+      heading: 'Météo à Puerto Viejo en octobre {{YEAR}}',
       heroAlt: 'Plage caraïbe ensoleillée à Puerto Viejo de Talamanca en octobre',
       photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Octobre en un coup d\'œil',
@@ -8115,10 +8121,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Octobre poursuit le veranillo : mer calme et claire, temps relativement sec, peu de monde et le meilleur rapport qualité-prix de l\'année. Prévoyez de quoi affronter l\'averse occasionnelle et profitez de certaines des meilleures conditions de plage et de récif qu\'offre Puerto Viejo.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo a ottobre: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo a ottobre {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'A ottobre Puerto Viejo de Talamanca prosegue il veranillo: mare calmo, poca gente e il miglior rapporto qualità-prezzo dell\'anno sulla costa caraibica. Ecco cosa aspettarsi.',
-      heading: 'Meteo a Puerto Viejo a ottobre',
+        'A ottobre {{YEAR}} Puerto Viejo de Talamanca prosegue il veranillo: mare calmo, poca gente e il miglior rapporto qualità-prezzo dell\'anno sulla costa caraibica. Ecco cosa aspettarsi.',
+      heading: 'Meteo a Puerto Viejo a ottobre {{YEAR}}',
       heroAlt: 'Spiaggia caraibica soleggiata a Puerto Viejo de Talamanca a ottobre',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Ottobre in breve',
@@ -8155,10 +8161,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Ottobre prosegue il veranillo: mare calmo e limpido, tempo relativamente asciutto, poca gente e il miglior rapporto qualità-prezzo dell\'anno. Metti in valigia qualcosa per l\'acquazzone di turno e goditi alcune delle migliori condizioni di spiaggia e barriera che Puerto Viejo offre.',
     },
     pt: {
-      seoTitle: 'Clima em Puerto Viejo em outubro: tempo, chuva e mar',
+      seoTitle: 'Clima em Puerto Viejo em outubro {{YEAR}}: tempo, chuva e mar',
       seoDescription:
-        'Outubro em Puerto Viejo de Talamanca dá continuidade ao veranillo: mar calmo, pouca gente e o melhor custo-benefício do ano na costa caribenha. Veja o que esperar.',
-      heading: 'Clima em Puerto Viejo em outubro',
+        'Outubro {{YEAR}} em Puerto Viejo de Talamanca dá continuidade ao veranillo: mar calmo, pouca gente e o melhor custo-benefício do ano na costa caribenha. Veja o que esperar.',
+      heading: 'Clima em Puerto Viejo em outubro {{YEAR}}',
       heroAlt: 'Praia caribenha ensolarada em Puerto Viejo de Talamanca em outubro',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Outubro num relance',
@@ -8195,10 +8201,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Outubro dá continuidade ao veranillo: mar calmo e claro, tempo relativamente seco, pouca gente e o melhor custo-benefício do ano. Leve algo para a pancada ocasional e aproveite algumas das melhores condições de praia e recife que Puerto Viejo oferece.',
     },
     he: {
-      seoTitle: 'מזג האוויר בפוארטו ויאחו באוקטובר: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בפוארטו ויאחו באוקטובר {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'אוקטובר בפוארטו ויאחו דה טלמנקה ממשיך את ה-veranillo: ים רגוע, מעט מבקרים והתמורה הטובה ביותר לכסף בשנה בחוף הקריבי. הנה למה לצפות.',
-      heading: 'מזג האוויר בפוארטו ויאחו באוקטובר',
+        'אוקטובר {{YEAR}} בפוארטו ויאחו דה טלמנקה ממשיך את ה-veranillo: ים רגוע, מעט מבקרים והתמורה הטובה ביותר לכסף בשנה בחוף הקריבי. הנה למה לצפות.',
+      heading: 'מזג האוויר בפוארטו ויאחו באוקטובר {{YEAR}}',
       heroAlt: 'חוף קריבי שטוף שמש בפוארטו ויאחו דה טלמנקה באוקטובר',
       photoCredit: <>תמונה: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'אוקטובר במבט חטוף',
@@ -8235,10 +8241,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'אוקטובר ממשיך את ה-veranillo: ים רגוע וצלול, מזג אוויר יבש יחסית, מעט מבקרים והתמורה הטובה ביותר לכסף בשנה. ארזו משהו לממטר המזדמן ותיהנו מכמה מהתנאים הטובים ביותר של חוף ושונית שפוארטו ויאחו מציעה.',
     },
     hi: {
-      seoTitle: 'अक्टूबर में प्यूर्टो विएखो का मौसम: जलवायु, बारिश और समुद्र',
+      seoTitle: 'अक्टूबर {{YEAR}} में प्यूर्टो विएखो का मौसम: जलवायु, बारिश और समुद्र',
       seoDescription:
-        'प्यूर्टो विएखो दे तालामांका में अक्टूबर veranillo को जारी रखता है: शांत समुद्र, कम भीड़ और कैरिबियन तट पर साल का सबसे अच्छा मूल्य। यहाँ जानिए क्या उम्मीद करें।',
-      heading: 'अक्टूबर में प्यूर्टो विएखो का मौसम',
+        'प्यूर्टो विएखो दे तालामांका में अक्टूबर {{YEAR}} veranillo को जारी रखता है: शांत समुद्र, कम भीड़ और कैरिबियन तट पर साल का सबसे अच्छा मूल्य। यहाँ जानिए क्या उम्मीद करें।',
+      heading: 'अक्टूबर {{YEAR}} में प्यूर्टो विएखो का मौसम',
       heroAlt: 'अक्टूबर में प्यूर्टो विएखो दे तालामांका में धूप वाला कैरिबियन समुद्र तट',
       photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में अक्टूबर',
@@ -8275,10 +8281,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'अक्टूबर veranillo को जारी रखता है: शांत, साफ़ समुद्र, अपेक्षाकृत सूखा मौसम, कम भीड़ और साल का सबसे अच्छा मूल्य। कभी-कभार की बौछार के लिए सामान रखें और प्यूर्टो विएखो द्वारा प्रदान की जाने वाली कुछ बेहतरीन समुद्र तट और रीफ़ परिस्थितियों का आनंद लें।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in oktober: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in oktober {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'Oktober in Puerto Viejo de Talamanca zet de veranillo voort: kalme zee, weinig drukte en de beste prijs-kwaliteitverhouding van het jaar aan de Caribische kust. Dit kun je verwachten.',
-      heading: 'Weer in Puerto Viejo in oktober',
+        'Oktober {{YEAR}} in Puerto Viejo de Talamanca zet de veranillo voort: kalme zee, weinig drukte en de beste prijs-kwaliteitverhouding van het jaar aan de Caribische kust. Dit kun je verwachten.',
+      heading: 'Weer in Puerto Viejo in oktober {{YEAR}}',
       heroAlt: 'Zonnig Caribisch strand in Puerto Viejo de Talamanca in oktober',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Oktober in één oogopslag',
@@ -8317,10 +8323,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
   },
   november: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in November: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in November {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'November is one of the wettest months in Puerto Viejo de Talamanca: deep-green jungle, full waterfalls and low prices. Here is what to expect and how to plan around the rain.',
-      heading: 'Weather in Puerto Viejo in November',
+        'November {{YEAR}} is one of the wettest months in Puerto Viejo de Talamanca: deep-green jungle, full waterfalls and low prices. Here is what to expect and how to plan around the rain.',
+      heading: 'Weather in Puerto Viejo in November {{YEAR}}',
       heroAlt: 'Lush green rainforest in Puerto Viejo de Talamanca in November',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'November at a glance',
@@ -8357,10 +8363,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'November is one of Puerto Viejo’s wettest and greenest months, with rough seas and low prices. Come for the jungle, waterfalls and quiet, pack a good rain jacket, and stay flexible with beach plans.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en noviembre: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en noviembre {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'Noviembre es uno de los meses más lluviosos en Puerto Viejo de Talamanca: selva de un verde intenso, cascadas llenas y precios bajos. Esto es lo que puedes esperar y cómo planificar.',
-      heading: 'El Clima en Puerto Viejo en Noviembre',
+        'Noviembre {{YEAR}} es uno de los meses más lluviosos en Puerto Viejo de Talamanca: selva de un verde intenso, cascadas llenas y precios bajos. Esto es lo que puedes esperar y cómo planificar.',
+      heading: 'El Clima en Puerto Viejo en Noviembre {{YEAR}}',
       heroAlt: 'Selva verde y frondosa en Puerto Viejo de Talamanca en noviembre',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Noviembre de un vistazo',
@@ -8397,10 +8403,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Noviembre es uno de los meses más lluviosos y verdes de Puerto Viejo, con mar bravo y precios bajos. Ven por la selva, las cascadas y la tranquilidad, lleva una buena chaqueta impermeable y mantén flexibles los planes de playa.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im November: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im November {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Der November ist einer der nassesten Monate in Puerto Viejo de Talamanca: tiefgrüner Dschungel, volle Wasserfälle und niedrige Preise. Das erwartet Sie und so planen Sie rund um den Regen.',
-      heading: 'Wetter in Puerto Viejo im November',
+        'Der November {{YEAR}} ist einer der nassesten Monate in Puerto Viejo de Talamanca: tiefgrüner Dschungel, volle Wasserfälle und niedrige Preise. Das erwartet Sie und so planen Sie rund um den Regen.',
+      heading: 'Wetter in Puerto Viejo im November {{YEAR}}',
       heroAlt: 'Üppig grüner Regenwald in Puerto Viejo de Talamanca im November',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Der November auf einen Blick',
@@ -8437,10 +8443,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der November gehört zu den nassesten und grünsten Monaten in Puerto Viejo, mit rauer See und niedrigen Preisen. Kommen Sie für Dschungel, Wasserfälle und Ruhe, packen Sie eine gute Regenjacke ein und bleiben Sie bei den Strandplänen flexibel.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en novembre : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en novembre {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'Novembre est l\'un des mois les plus pluvieux à Puerto Viejo de Talamanca : jungle d\'un vert profond, cascades gonflées et prix bas. Voici à quoi vous attendre et comment composer avec la pluie.',
-      heading: 'Météo à Puerto Viejo en novembre',
+        'Novembre {{YEAR}} est l\'un des mois les plus pluvieux à Puerto Viejo de Talamanca : jungle d\'un vert profond, cascades gonflées et prix bas. Voici à quoi vous attendre et comment composer avec la pluie.',
+      heading: 'Météo à Puerto Viejo en novembre {{YEAR}}',
       heroAlt: 'Forêt tropicale luxuriante et verdoyante à Puerto Viejo de Talamanca en novembre',
       photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Novembre en un coup d\'œil',
@@ -8477,10 +8483,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Novembre est l\'un des mois les plus humides et les plus verts de Puerto Viejo, avec une mer agitée et des prix bas. Venez pour la jungle, les cascades et le calme, emportez un bon imperméable et gardez vos projets de plage flexibles.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo a novembre: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo a novembre {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'Novembre è uno dei mesi più piovosi a Puerto Viejo de Talamanca: giungla di un verde intenso, cascate piene e prezzi bassi. Ecco cosa aspettarsi e come organizzarsi con la pioggia.',
-      heading: 'Meteo a Puerto Viejo a novembre',
+        'Novembre {{YEAR}} è uno dei mesi più piovosi a Puerto Viejo de Talamanca: giungla di un verde intenso, cascate piene e prezzi bassi. Ecco cosa aspettarsi e come organizzarsi con la pioggia.',
+      heading: 'Meteo a Puerto Viejo a novembre {{YEAR}}',
       heroAlt: 'Rigogliosa foresta pluviale verde a Puerto Viejo de Talamanca a novembre',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Novembre in breve',
@@ -8517,10 +8523,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Novembre è uno dei mesi più piovosi e più verdi di Puerto Viejo, con mare mosso e prezzi bassi. Vieni per la giungla, le cascate e la tranquillità, porta una buona giacca impermeabile e mantieni flessibili i piani da spiaggia.',
     },
     pt: {
-      seoTitle: 'Clima em Puerto Viejo em novembro: tempo, chuva e mar',
+      seoTitle: 'Clima em Puerto Viejo em novembro {{YEAR}}: tempo, chuva e mar',
       seoDescription:
-        'Novembro é um dos meses mais chuvosos em Puerto Viejo de Talamanca: selva de verde intenso, cachoeiras cheias e preços baixos. Veja o que esperar e como planejar em torno da chuva.',
-      heading: 'Clima em Puerto Viejo em novembro',
+        'Novembro {{YEAR}} é um dos meses mais chuvosos em Puerto Viejo de Talamanca: selva de verde intenso, cachoeiras cheias e preços baixos. Veja o que esperar e como planejar em torno da chuva.',
+      heading: 'Clima em Puerto Viejo em novembro {{YEAR}}',
       heroAlt: 'Floresta tropical exuberante e verde em Puerto Viejo de Talamanca em novembro',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Novembro num relance',
@@ -8557,10 +8563,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Novembro é um dos meses mais chuvosos e verdes de Puerto Viejo, com mar agitado e preços baixos. Venha pela selva, pelas cachoeiras e pela tranquilidade, leve uma boa capa de chuva e mantenha os planos de praia flexíveis.',
     },
     he: {
-      seoTitle: 'מזג האוויר בפוארטו ויאחו בנובמבר: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בפוארטו ויאחו בנובמבר {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'נובמבר הוא אחד החודשים הגשומים ביותר בפוארטו ויאחו דה טלמנקה: ג\'ונגל ירוק עמוק, מפלים גועשים ומחירים נמוכים. הנה למה לצפות וכיצד לתכנן סביב הגשם.',
-      heading: 'מזג האוויר בפוארטו ויאחו בנובמבר',
+        'נובמבר {{YEAR}} הוא אחד החודשים הגשומים ביותר בפוארטו ויאחו דה טלמנקה: ג\'ונגל ירוק עמוק, מפלים גועשים ומחירים נמוכים. הנה למה לצפות וכיצד לתכנן סביב הגשם.',
+      heading: 'מזג האוויר בפוארטו ויאחו בנובמבר {{YEAR}}',
       heroAlt: 'יער גשם ירוק ושופע בפוארטו ויאחו דה טלמנקה בנובמבר',
       photoCredit: <>צילום: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'נובמבר במבט חטוף',
@@ -8597,10 +8603,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'נובמבר הוא אחד החודשים הגשומים והירוקים ביותר בפוארטו ויאחו, עם ים סוער ומחירים נמוכים. בואו בשביל הג\'ונגל, המפלים והשקט, ארזו מעיל גשם טוב ושמרו על גמישות בתוכניות החוף.',
     },
     hi: {
-      seoTitle: 'नवंबर में पुएर्तो वियेखो का मौसम: जलवायु, बारिश और समुद्र',
+      seoTitle: 'नवंबर {{YEAR}} में पुएर्तो वियेखो का मौसम: जलवायु, बारिश और समुद्र',
       seoDescription:
-        'पुएर्तो वियेखो दे तालामांका में नवंबर सबसे अधिक बारिश वाले महीनों में से एक है: गहरा हरा जंगल, भरे हुए झरने और कम कीमतें। जानिए क्या उम्मीद करें और बारिश के हिसाब से योजना कैसे बनाएं।',
-      heading: 'नवंबर में पुएर्तो वियेखो का मौसम',
+        'पुएर्तो वियेखो दे तालामांका में नवंबर {{YEAR}} सबसे अधिक बारिश वाले महीनों में से एक है: गहरा हरा जंगल, भरे हुए झरने और कम कीमतें। जानिए क्या उम्मीद करें और बारिश के हिसाब से योजना कैसे बनाएं।',
+      heading: 'नवंबर {{YEAR}} में पुएर्तो वियेखो का मौसम',
       heroAlt: 'नवंबर में पुएर्तो वियेखो दे तालामांका का हरा-भरा वर्षावन',
       photoCredit: <>फ़ोटो: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में नवंबर',
@@ -8637,10 +8643,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'नवंबर पुएर्तो वियेखो के सबसे गीले और सबसे हरे महीनों में से एक है, अशांत समुद्र और कम कीमतों के साथ। जंगल, झरनों और शांति के लिए आएं, एक अच्छी बारिश की जैकेट साथ रखें और समुद्र तट की योजनाओं में लचीलापन बनाए रखें।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in november: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in november {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'November is een van de natste maanden in Puerto Viejo de Talamanca: diepgroene jungle, volle watervallen en lage prijzen. Dit kun je verwachten en zo plan je rond de regen.',
-      heading: 'Weer in Puerto Viejo in november',
+        'November {{YEAR}} is een van de natste maanden in Puerto Viejo de Talamanca: diepgroene jungle, volle watervallen en lage prijzen. Dit kun je verwachten en zo plan je rond de regen.',
+      heading: 'Weer in Puerto Viejo in november {{YEAR}}',
       heroAlt: 'Weelderig groen regenwoud in Puerto Viejo de Talamanca in november',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'November in een oogopslag',
@@ -8679,10 +8685,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
   },
   december: {
     en: {
-      seoTitle: 'Weather in Puerto Viejo in December: climate, rain and sea',
+      seoTitle: 'Weather in Puerto Viejo in December {{YEAR}}: climate, rain and sea',
       seoDescription:
-        'December in Puerto Viejo de Talamanca is festive and lively, still rainy but with surf swells and holiday energy. Here is what to expect and how to plan your trip.',
-      heading: 'Weather in Puerto Viejo in December',
+        'December {{YEAR}} in Puerto Viejo de Talamanca is festive and lively, still rainy but with surf swells and holiday energy. Here is what to expect and how to plan your trip.',
+      heading: 'Weather in Puerto Viejo in December {{YEAR}}',
       heroAlt: 'Festive Caribbean beach town of Puerto Viejo de Talamanca in December',
       photoCredit: <>Photo: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'December at a glance',
@@ -8719,10 +8725,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'December is festive, lively and surf-friendly, still wet but often easing late in the month, with the coolest nights and the biggest crowds. Book early, pack for showers, and come for the energy rather than flat-water beach days.',
     },
     es: {
-      seoTitle: 'El clima en Puerto Viejo en diciembre: tiempo, lluvia y mar',
+      seoTitle: 'El clima en Puerto Viejo en diciembre {{YEAR}}: tiempo, lluvia y mar',
       seoDescription:
-        'Diciembre en Puerto Viejo de Talamanca es festivo y animado, todavía lluvioso pero con oleaje de surf y energía navideña. Esto es lo que puedes esperar y cómo planificar.',
-      heading: 'El Clima en Puerto Viejo en Diciembre',
+        'Diciembre {{YEAR}} en Puerto Viejo de Talamanca es festivo y animado, todavía lluvioso pero con oleaje de surf y energía navideña. Esto es lo que puedes esperar y cómo planificar.',
+      heading: 'El Clima en Puerto Viejo en Diciembre {{YEAR}}',
       heroAlt: 'Puerto Viejo de Talamanca, pueblo caribeño festivo, en diciembre',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Diciembre de un vistazo',
@@ -8759,10 +8765,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Diciembre es festivo, animado y bueno para el surf, todavía húmedo pero a menudo cediendo a fin de mes, con las noches más frescas y la mayor afluencia. Reserva temprano, lleva algo para los aguaceros y ven por la energía más que por días de playa en agua plana.',
     },
     de: {
-      seoTitle: 'Wetter in Puerto Viejo im Dezember: Klima, Regen und Meer',
+      seoTitle: 'Wetter in Puerto Viejo im Dezember {{YEAR}}: Klima, Regen und Meer',
       seoDescription:
-        'Der Dezember in Puerto Viejo de Talamanca ist festlich und lebhaft, noch regnerisch, aber mit Surf-Swells und Feiertagsstimmung. Das erwartet dich und so planst du deine Reise.',
-      heading: 'Wetter in Puerto Viejo im Dezember',
+        'Der Dezember {{YEAR}} in Puerto Viejo de Talamanca ist festlich und lebhaft, noch regnerisch, aber mit Surf-Swells und Feiertagsstimmung. Das erwartet dich und so planst du deine Reise.',
+      heading: 'Wetter in Puerto Viejo im Dezember {{YEAR}}',
       heroAlt: 'Festliches karibisches Küstenstädtchen Puerto Viejo de Talamanca im Dezember',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Der Dezember auf einen Blick',
@@ -8799,10 +8805,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Der Dezember ist festlich, lebhaft und surf-freundlich, noch nass, lässt aber gegen Monatsende oft nach, mit den kühlsten Nächten und dem größten Andrang. Buche früh, packe für Schauer und komm für die Energie statt für ruhige Strandtage bei stillem Wasser.',
     },
     fr: {
-      seoTitle: 'Météo à Puerto Viejo en décembre : climat, pluie et mer',
+      seoTitle: 'Météo à Puerto Viejo en décembre {{YEAR}} : climat, pluie et mer',
       seoDescription:
-        'Décembre à Puerto Viejo de Talamanca est festif et animé, encore pluvieux mais avec des houles de surf et une énergie des fêtes. Voici à quoi vous attendre et comment planifier votre voyage.',
-      heading: 'Météo à Puerto Viejo en décembre',
+        'Décembre {{YEAR}} à Puerto Viejo de Talamanca est festif et animé, encore pluvieux mais avec des houles de surf et une énergie des fêtes. Voici à quoi vous attendre et comment planifier votre voyage.',
+      heading: 'Météo à Puerto Viejo en décembre {{YEAR}}',
       heroAlt: 'Village balnéaire caribéen festif de Puerto Viejo de Talamanca en décembre',
       photoCredit: <>Photo : <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Décembre en un coup d\'œil',
@@ -8839,10 +8845,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Décembre est festif, animé et propice au surf, encore humide mais se calmant souvent en fin de mois, avec les nuits les plus fraîches et la plus forte affluence. Réservez tôt, prévoyez de quoi affronter les averses et venez pour l\'énergie plutôt que pour des journées de plage en eau calme.',
     },
     it: {
-      seoTitle: 'Meteo a Puerto Viejo a dicembre: clima, pioggia e mare',
+      seoTitle: 'Meteo a Puerto Viejo a dicembre {{YEAR}}: clima, pioggia e mare',
       seoDescription:
-        'Dicembre a Puerto Viejo de Talamanca è festoso e vivace, ancora piovoso ma con mareggiate da surf ed energia natalizia. Ecco cosa aspettarti e come pianificare il tuo viaggio.',
-      heading: 'Meteo a Puerto Viejo a dicembre',
+        'Dicembre {{YEAR}} a Puerto Viejo de Talamanca è festoso e vivace, ancora piovoso ma con mareggiate da surf ed energia natalizia. Ecco cosa aspettarti e come pianificare il tuo viaggio.',
+      heading: 'Meteo a Puerto Viejo a dicembre {{YEAR}}',
       heroAlt: 'Festosa cittadina balneare caraibica di Puerto Viejo de Talamanca a dicembre',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Dicembre in breve',
@@ -8879,10 +8885,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Dicembre è festoso, vivace e ottimo per il surf, ancora umido ma spesso in calo a fine mese, con le notti più fresche e la maggiore affluenza. Prenota presto, prepara qualcosa per i rovesci e vieni per l\'energia più che per giornate di spiaggia in acque calme.',
     },
     pt: {
-      seoTitle: 'Clima em Puerto Viejo em dezembro: tempo, chuva e mar',
+      seoTitle: 'Clima em Puerto Viejo em dezembro {{YEAR}}: tempo, chuva e mar',
       seoDescription:
-        'Dezembro em Puerto Viejo de Talamanca é festivo e animado, ainda chuvoso mas com ondulações de surfe e energia natalina. Veja o que esperar e como planejar sua viagem.',
-      heading: 'Clima em Puerto Viejo em dezembro',
+        'Dezembro {{YEAR}} em Puerto Viejo de Talamanca é festivo e animado, ainda chuvoso mas com ondulações de surfe e energia natalina. Veja o que esperar e como planejar sua viagem.',
+      heading: 'Clima em Puerto Viejo em dezembro {{YEAR}}',
       heroAlt: 'Vila caribenha festiva de Puerto Viejo de Talamanca em dezembro',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'Dezembro num relance',
@@ -8919,10 +8925,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'Dezembro é festivo, animado e bom para o surfe, ainda úmido mas muitas vezes diminuindo no fim do mês, com as noites mais frescas e a maior movimentação. Reserve cedo, leve algo para as pancadas de chuva e venha pela energia, mais do que por dias de praia em água calma.',
     },
     he: {
-      seoTitle: 'מזג האוויר בפוארטו ויאחו בדצמבר: אקלים, גשם וים',
+      seoTitle: 'מזג האוויר בפוארטו ויאחו בדצמבר {{YEAR}}: אקלים, גשם וים',
       seoDescription:
-        'דצמבר בפוארטו ויאחו דה טלמנקה חגיגי ותוסס, עדיין גשום אך עם גלי גלישה ואנרגיה של חגים. הנה למה לצפות וכיצד לתכנן את הטיול שלכם.',
-      heading: 'מזג האוויר בפוארטו ויאחו בדצמבר',
+        'דצמבר {{YEAR}} בפוארטו ויאחו דה טלמנקה חגיגי ותוסס, עדיין גשום אך עם גלי גלישה ואנרגיה של חגים. הנה למה לצפות וכיצד לתכנן את הטיול שלכם.',
+      heading: 'מזג האוויר בפוארטו ויאחו בדצמבר {{YEAR}}',
       heroAlt: 'עיירת החוף הקריבית החגיגית פוארטו ויאחו דה טלמנקה בדצמבר',
       photoCredit: <>תמונה: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'דצמבר במבט מהיר',
@@ -8959,10 +8965,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'דצמבר חגיגי, תוסס וידידותי לגלישה, עדיין רטוב אך לרוב נחלש בסוף החודש, עם הלילות הקרירים ביותר ועומס המבקרים הגדול ביותר. הזמינו מוקדם, ארזו לממטרים ובואו בשביל האנרגיה ולא בשביל ימי חוף במים שקטים.',
     },
     hi: {
-      seoTitle: 'दिसंबर में प्यूर्टो विएखो का मौसम: जलवायु, बारिश और समुद्र',
+      seoTitle: 'दिसंबर {{YEAR}} में प्यूर्टो विएखो का मौसम: जलवायु, बारिश और समुद्र',
       seoDescription:
-        'प्यूर्टो विएखो दे तालामांका में दिसंबर उत्सवमय और जीवंत होता है, अब भी बरसाती पर सर्फ की लहरों और छुट्टियों की ऊर्जा के साथ। जानिए क्या उम्मीद करें और अपनी यात्रा की योजना कैसे बनाएं।',
-      heading: 'दिसंबर में प्यूर्टो विएखो का मौसम',
+        'प्यूर्टो विएखो दे तालामांका में दिसंबर {{YEAR}} उत्सवमय और जीवंत होता है, अब भी बरसाती पर सर्फ की लहरों और छुट्टियों की ऊर्जा के साथ। जानिए क्या उम्मीद करें और अपनी यात्रा की योजना कैसे बनाएं।',
+      heading: 'दिसंबर {{YEAR}} में प्यूर्टो विएखो का मौसम',
       heroAlt: 'दिसंबर में प्यूर्टो विएखो दे तालामांका का उत्सवमय कैरिबियन तटीय कस्बा',
       photoCredit: <>तस्वीर: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'एक नज़र में दिसंबर',
@@ -8999,10 +9005,10 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
         'दिसंबर उत्सवमय, जीवंत और सर्फ़-अनुकूल है, अब भी गीला पर अक्सर महीने के अंत में कम होता हुआ, सबसे ठंडी रातों और सबसे बड़ी भीड़ के साथ। जल्दी बुक करें, बौछारों के लिए सामान रखें, और शांत पानी वाले समुद्रतट दिनों के बजाय ऊर्जा के लिए आएं।',
     },
     nl: {
-      seoTitle: 'Weer in Puerto Viejo in december: klimaat, regen en zee',
+      seoTitle: 'Weer in Puerto Viejo in december {{YEAR}}: klimaat, regen en zee',
       seoDescription:
-        'December in Puerto Viejo de Talamanca is feestelijk en levendig, nog nat maar met surfdeining en feestdagenenergie. Dit kun je verwachten en zo plan je je reis.',
-      heading: 'Weer in Puerto Viejo in december',
+        'December {{YEAR}} in Puerto Viejo de Talamanca is feestelijk en levendig, nog nat maar met surfdeining en feestdagenenergie. Dit kun je verwachten en zo plan je je reis.',
+      heading: 'Weer in Puerto Viejo in december {{YEAR}}',
       heroAlt: 'Feestelijk Caribisch kustplaatsje Puerto Viejo de Talamanca in december',
       photoCredit: <>Foto: <a href="https://commons.wikimedia.org/wiki/Category:Puerto_Viejo_de_Talamanca" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a></>,
       snapshotHeading: 'December in een oogopslag',
@@ -9044,6 +9050,19 @@ const monthlyWeather: Partial<Record<MonthKey, Partial<Record<Locale, MonthlyWea
 export function monthlyWeatherContent(month: MonthKey, locale: Locale): MonthlyWeatherContent {
   const byLocale = monthlyWeather[month]!;
   return byLocale[locale] ?? byLocale.en!;
+}
+
+/**
+ * Fills the `{{YEAR}}` placeholder left in a month's seoTitle/heading/
+ * seoDescription (see monthlyWeather above) with the year of that month's
+ * next occurrence — so "weather in Puerto Viejo in October" resolves to
+ * whichever October (this one or next) hasn't happened yet. Kept separate
+ * from monthlyWeatherContent() itself so that function keeps returning the
+ * exact `byLocale.en` reference on fallback, which localeCompleteness.test.ts
+ * relies on to detect a missing locale block.
+ */
+export function resolveMonthlyWeatherYear(month: MonthKey, text: string): string {
+  return text.replace('{{YEAR}}', String(upcomingYearForMonth(MONTH_INDEX[month])));
 }
 
 export const weatherJanuaryContent = (locale: Locale): MonthlyWeatherContent => monthlyWeatherContent('january', locale);

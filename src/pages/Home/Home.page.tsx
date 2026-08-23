@@ -68,7 +68,7 @@ const Home = () => {
       <FixedNavigation isBlog={false} />
       <HelpMeChoose title={m.home.helpMeChooseTitle} titleHighlight={m.home.helpMeChooseTitleHighlight} options={helpMeChooseOptions} locale={locale} />
       <HomeReviews locale={locale} />
-      <OurHomes houseDataList={locale === 'es' ? houseDataList : houseDataEngList} />
+      <OurHomes houseDataList={locale === 'es' ? houseDataList.filter((house) => house.houseLangCode.endsWith('ES')) : houseDataEngList} />
       <div className="container" style={{ textAlign: 'center', padding: '1.5rem 1rem 2.5rem' }}>
         <h3 style={{ marginBottom: '0.5rem' }}>{hubTeaser.homeTeaserTitle}</h3>
         <p style={{ marginBottom: '1rem' }}>{hubTeaser.homeTeaserText}</p>

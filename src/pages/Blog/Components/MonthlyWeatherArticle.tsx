@@ -14,7 +14,7 @@ import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { pathForKey, RouteKey } from "../../../routes.config";
-import { monthlyWeatherContent, MonthKey } from "../../../i18n/content/blog";
+import { monthlyWeatherContent, resolveMonthlyWeatherYear, MonthKey } from "../../../i18n/content/blog";
 import { internalLinkLabel, RAINY_DAY_LINK_TARGET } from "../../../i18n/content/internalLinks";
 
 interface IMonthlyWeatherArticle {
@@ -39,6 +39,9 @@ const MonthlyWeatherArticle: FC<IMonthlyWeatherArticle> = ({ month, routeKey, sl
     const m = useMessages();
     const content = monthlyWeatherContent(month, locale);
     const rainyDayLinkTarget = RAINY_DAY_LINK_TARGET[month];
+    const seoTitle = resolveMonthlyWeatherYear(month, content.seoTitle);
+    const seoDescription = resolveMonthlyWeatherYear(month, content.seoDescription);
+    const heading = resolveMonthlyWeatherYear(month, content.heading);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -50,8 +53,8 @@ const MonthlyWeatherArticle: FC<IMonthlyWeatherArticle> = ({ month, routeKey, sl
         <div className={`listingContainer`}>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>{content.seoTitle}</title>
-                <meta name="description" content={content.seoDescription} />
+                <title>{seoTitle}</title>
+                <meta name="description" content={seoDescription} />
                 <link rel="canonical" href={canonicalUrl(routeKey, locale)} />
                 {hreflangLinks(routeKey)}
             </Helmet>
@@ -63,7 +66,7 @@ const MonthlyWeatherArticle: FC<IMonthlyWeatherArticle> = ({ month, routeKey, sl
 
                     <div className="blog-header" style={{ maxWidth: 1000, marginBottom: '2rem' }}>
                         <div className="heading title-container">
-                            <h1 className="title blog-title">{content.heading}</h1>
+                            <h1 className="title blog-title">{heading}</h1>
                             <div className="border"></div>
                         </div>
 

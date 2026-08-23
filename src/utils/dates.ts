@@ -39,3 +39,16 @@ export function nightsBetween(startDate: string, endDate: string): number {
 
   return Math.max(0, Math.round((endMs - startMs) / 86_400_000));
 }
+
+/**
+ * Year of the next occurrence of a given month (0 = January … 11 = December),
+ * relative to Costa Rica "today". The current month counts as not yet passed,
+ * so in August 2026 October resolves to 2026 but January resolves to 2027.
+ * Used to keep the monthly weather pages' title/heading pinned to the year a
+ * visitor searching "weather in Puerto Viejo in <month>" actually means.
+ */
+export function upcomingYearForMonth(monthIndex: number): number {
+  const [year, month] = getCostaRicaToday().split('-').map(Number);
+  const currentMonthIndex = month - 1;
+  return monthIndex >= currentMonthIndex ? year : year + 1;
+}

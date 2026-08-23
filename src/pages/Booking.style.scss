@@ -732,17 +732,32 @@
 }
 
 .booking-result-card__media-frame {
-  aspect-ratio: 16 / 11;
   background: rgba(41, 79, 68, 0.12);
+  // Height comes from the padding-top ratio hack, not `aspect-ratio` — this
+  // frame sits inside a column flex container (.booking-result-card), and an
+  // aspect-ratio-derived size on a flex item isn't reliably treated as
+  // "definite" for descendants resolving `height: 100%` (the gallery track,
+  // each slide, each <img>) across engines. Photos here come from each
+  // listing's own per-room gallery (arbitrary source aspect ratios), so any
+  // gap in that percentage-height chain falls back to each <img>'s natural
+  // size — every property's card frame ends up a different height. A
+  // padding-top percentage always resolves against the frame's own width, so
+  // it can't inherit that ambiguity.
+  height: 0;
+  padding-top: 68.75%; // 11 / 16
   position: relative;
 }
 
 .booking-result-card__gallery {
+  bottom: 0;
   display: flex;
-  height: 100%;
+  left: 0;
   overflow-x: auto;
+  position: absolute;
+  right: 0;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
+  top: 0;
   -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {

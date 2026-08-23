@@ -27,6 +27,7 @@ yarn-error.log*
 # Environment files (may contain secrets or internal config)
 .env
 booking-api/.env
+booking-api/.env.sandbox
 
 # Terraform state — belt-and-suspenders (also in infra/.gitignore)
 *.tfstate
@@ -71,6 +72,7 @@ scripts/update-lambda-env.ps1
 # Playwright
 test-results/
 playwright-report/
+playwright-report-live/
 blob-report/
 /.claude
 

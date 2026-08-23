@@ -1,6 +1,7 @@
 import { createHash } from "crypto";
 import { BookingSessionRecord, BookingSessionRepository } from "./bookingSessions";
 import { createEmailClient } from "./email";
+import { bookPathForLanguage, buildBookingPageUrl } from "./frontendLinks";
 import { HoldRepository } from "./holds";
 import { ApiError } from "./http/errors";
 import { reportServerConversion } from "./serverConversions";
@@ -97,7 +98,7 @@ export async function handleCreatePayPalOrder(
   // legacy redirect covering "/book" the way there is for prerendered
   // listing pages, so a bare "/book" path 404s.
   const requestOrigin = getHeader(request.headers, "origin")?.trim();
-  const bookPath = session.language === "es" ? "/es/book" : "/en/book";
+  const bookPath = bookPathForLanguage(session.language);
   const returnUrl = requestOrigin
     ? `${requestOrigin}${bookPath}/return`
     : config.paypal.orderReturnUrl;
@@ -186,7 +187,8 @@ export async function handleCreatePayPalOrder(
 
   // Send payment_pending email — non-fatal
   const emailClient = createEmailClient(config.email, request.observability.logger);
-  await emailClient.sendPaymentPending(session, property.name, paypalOrderResult.orderId);
+  const resumeUrl = buildBookingPageUrl(session, request, config);
+  await emailClient.sendPaymentPending(session, property.name, paypalOrderResult.orderId, resumeUrl);
 
   const responseBody = buildCreateOrderResponse(session, paypalOrderResult, property);
   return jsonResponse(200, responseBody, request.responseHeaders);

@@ -12,6 +12,7 @@ import {
   renderCancelledEmail,
   renderDepositHandoffEmail,
   renderStaffDepositReviewEmail,
+  renderDepositInstructionsEmail,
 } from "./emailTemplates";
 import { EmailClient } from "./email";
 import type { BookingSessionRecord } from "./bookingSessions";
@@ -135,6 +136,63 @@ describe("renderPaymentPendingEmail", () => {
 
     expect(result.html).toContain("Hola Carlos,");
     expect(result.html).toContain("Regresa a la página de reserva");
+  });
+
+  it("links the CTA to paypalResumeUrl when present (#325)", () => {
+    const result = renderPaymentPendingEmail({
+      language: "en",
+      guestFirstName: "Bob",
+      guestEmail: "bob@example.com",
+      reservationPublicId: "KWL-XYZ9999",
+      propertyName: "Casa Rana",
+      arrivalDate: "2026-08-10",
+      departureDate: "2026-08-14",
+      guests: 3,
+      paypalOrderId: "PP-ORDER-123",
+      paypalResumeUrl: "https://kalawala.com/en/book?bookingSessionId=sess-1",
+    });
+
+    expect(result.html).toContain('<a href="https://kalawala.com/en/book?bookingSessionId=sess-1"');
+    expect(result.text).toContain("https://kalawala.com/en/book?bookingSessionId=sess-1");
+  });
+
+  it("omits a link when paypalResumeUrl is absent", () => {
+    const result = renderPaymentPendingEmail({
+      language: "en",
+      guestFirstName: "Bob",
+      guestEmail: "bob@example.com",
+      reservationPublicId: "KWL-XYZ9999",
+      propertyName: "Casa Rana",
+      arrivalDate: "2026-08-10",
+      departureDate: "2026-08-14",
+      guests: 3,
+    });
+
+    expect(result.html).not.toContain("<a href=");
+  });
+});
+
+describe("renderDepositInstructionsEmail", () => {
+  it("links the upload CTA to depositUploadUrl when present (#325)", () => {
+    const result = renderDepositInstructionsEmail({
+      language: "en",
+      guestFirstName: "Ana",
+      guestEmail: "ana@example.com",
+      reservationPublicId: "KWL-DEP0001",
+      propertyName: "Casa Geco",
+      arrivalDate: "2026-08-10",
+      departureDate: "2026-08-14",
+      guests: 2,
+      bankInfo: {
+        sinpePhone: "8888-8888",
+        sinpeName: "Kalawala",
+        bankAccount: { accountHolder: "Kalawala SRL", colonesIban: "CR00", dolaresIban: "CR11" },
+      },
+      depositUploadUrl: "https://kalawala.com/en/book?bookingSessionId=sess-1&depositAccessToken=tok",
+    });
+
+    expect(result.html).toContain('<a href="https://kalawala.com/en/book?bookingSessionId=sess-1&depositAccessToken=tok"');
+    expect(result.text).toContain("https://kalawala.com/en/book?bookingSessionId=sess-1&depositAccessToken=tok");
   });
 });
 
@@ -334,6 +392,13 @@ describe("EmailClient (disabled)", () => {
       "email_send_skipped_disabled",
       expect.objectContaining({ template: "payment_pending" })
     );
+  });
+
+  it("sendPaymentPending: accepts an optional resume URL (#325)", async () => {
+    const session = makeSession();
+    await expect(
+      client.sendPaymentPending(session, "Casa Geco", "PP-ORDER-1", "https://kalawala.com/en/book?bookingSessionId=sess-1")
+    ).resolves.toBeUndefined();
   });
 
   it("sendBookingConfirmed: logs skip and does not throw", async () => {

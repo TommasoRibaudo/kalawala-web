@@ -660,6 +660,36 @@ export async function createDepositHold(request: CreateDepositHoldRequest): Prom
 }
 
 /**
+ * Resumes an in-progress hold from a payment-pending/deposit-instructions
+ * email link — same response shape a fresh hold-create call already returns.
+ * `depositAccessToken` is required for manual-deposit holds (the same token
+ * `createDepositHold` returns) and omitted for PayPal holds, which have no
+ * separate access token.
+ */
+export async function fetchHoldState(
+  bookingSessionId: string,
+  depositAccessToken?: string
+): Promise<PayPalHoldResponse | DepositHoldResponse> {
+  const headers: Record<string, string> = { Accept: 'application/json' };
+  if (depositAccessToken) {
+    headers.Authorization = `Bearer ${depositAccessToken}`;
+  }
+
+  const response = await fetch(`${apiBaseUrl}/api/holds/${encodeURIComponent(bookingSessionId)}`, {
+    method: 'GET',
+    headers,
+  });
+
+  const body = await parseJson(response);
+
+  if (!response.ok) {
+    throw new BookingApiError(response.status, body as BookingErrorResponse);
+  }
+
+  return body as PayPalHoldResponse | DepositHoldResponse;
+}
+
+/**
  * Uploads a deposit receipt straight to S3 with a presigned URL, then tells the
  * API where it landed. The file never passes through the booking API.
  *

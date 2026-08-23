@@ -14,6 +14,7 @@
 import { BookingSessionRecord } from "./bookingSessions";
 import { buildBankInfo, DepositBankInfo } from "./depositHandoff";
 import { createEmailClient } from "./email";
+import { buildBookingPageUrl } from "./frontendLinks";
 import { ApiError } from "./http/errors";
 import { checkInInstantMs } from "./cancellationPolicy";
 import { createSmoobuBackedHold } from "./holds";
@@ -69,6 +70,7 @@ export async function handleCreateDepositHold(
           session,
           property,
           bankInfo,
+          depositAccessToken,
           config: cfg,
           request: req,
           portalSessionSecret,
@@ -113,18 +115,20 @@ async function sendDepositNotifications(input: {
   session: BookingSessionRecord;
   property: BookingProperty;
   bankInfo: DepositBankInfo;
+  depositAccessToken: string;
   config: BookingApiConfig;
   request: RouteRequest;
   portalSessionSecret: string;
 }): Promise<void> {
-  const { session, property, bankInfo, config, request, portalSessionSecret } = input;
+  const { session, property, bankInfo, depositAccessToken, config, request, portalSessionSecret } = input;
   const deposit = requireDepositConfig(config);
   const emailClient = createEmailClient(config.email, request.observability.logger);
 
   // Non-fatal: the hold exists and the dates are blocked. A mail failure must
   // not roll that back, but staff need to know it happened.
   try {
-    await emailClient.sendDepositInstructions(session, property.name, bankInfo);
+    const resumeUrl = buildBookingPageUrl(session, request, config, { depositAccessToken });
+    await emailClient.sendDepositInstructions(session, property.name, bankInfo, resumeUrl);
   } catch (error) {
     request.observability.logger.error("deposit_instructions_email_failed", {
       bookingSessionId: session.id,

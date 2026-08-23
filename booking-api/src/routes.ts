@@ -9,6 +9,7 @@ import { handlePortalReservation, handlePortalHelpRequest, handlePortalCancellat
 import { handleManualDepositHandoff, handleManualDepositHandoffEvent } from "./depositHandoff";
 import { handleDepositReceiptUploadUrl, handleDepositReceiptConfirm } from "./depositReceipt";
 import { handleCreatePayPalHold } from "./holds";
+import { handleGetHoldState } from "./holdResume";
 import { handleCreateDepositHold } from "./depositHolds";
 import { handleStaffDepositReviewPage, handleStaffDepositReviewSubmit } from "./depositConfirm";
 import { handleCreatePayPalOrder, handleCapturePayPalOrder } from "./paypalOrders";
@@ -72,6 +73,13 @@ export function createRouter(config: BookingApiConfig): Router {
     },
     { requireJsonBody: true, requireIdempotencyKey: true, abuseProtection: "holdCreate" }
   );
+
+  // Resumes an in-progress hold from a payment-pending/deposit-instructions
+  // email link — see holdResume.ts for the auth model per payment method.
+  router.get("/api/holds/:bookingSessionId", async (request) => {
+    const { bookingSessionId } = validateBookingSessionPathParams(request.pathParams);
+    return handleGetHoldState(bookingSessionId, request, config);
+  }, { abuseProtection: "portalRead" });
 
   router.post(
     "/api/paypal/order",

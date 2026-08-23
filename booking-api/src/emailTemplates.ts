@@ -24,6 +24,8 @@ export interface EmailTemplateInput {
   totalAmountCents?: number;
   holdExpiresAt?: string;
   paypalOrderId?: string;
+  /** Link back to the booking page with this hold resumed, so the guest can approve the PayPal payment. */
+  paypalResumeUrl?: string;
   paypalCaptureId?: string;
   confirmedAt?: string;
   cancellationReason?: string;
@@ -419,11 +421,15 @@ export function renderPaymentPendingEmail(input: EmailTemplateInput): RenderedEm
       : []),
   ];
 
+  const cta = input.paypalResumeUrl
+    ? `<a href="${input.paypalResumeUrl}" style="color:#294F44;font-weight:600">${t.cta}</a>`
+    : t.cta;
+
   const html = layout(
     `<p>${s.greeting(input.guestFirstName)}</p>
 <p>${t.intro}</p>
 ${detailsTable(rows)}
-<p style="color:#294F44;font-weight:600">${t.cta}</p>
+<p style="color:#294F44;font-weight:600">${cta}</p>
 <p style="color:#888;font-size:13px">${t.warning}</p>`,
     s.footer,
     input.language
@@ -436,7 +442,7 @@ ${detailsTable(rows)}
     "",
     detailsText(rows),
     "",
-    t.cta,
+    input.paypalResumeUrl ? `${t.cta}: ${input.paypalResumeUrl}` : t.cta,
     "",
     t.warning,
     "",

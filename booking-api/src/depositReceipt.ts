@@ -12,7 +12,7 @@ import { HoldRepository } from "./holds";
 import { ApiError } from "./http/errors";
 import { jsonResponse } from "./http/response";
 import { BOOKING_PROPERTIES_BY_ID } from "./propertyCatalog";
-import { extractBearerToken, verifySignedToken } from "./signedTokens";
+import { extractBearerToken, SignedTokenPayload, verifySignedToken } from "./signedTokens";
 import { createSmoobuClient } from "./smoobuClient";
 import { ApiResponse, BookingApiConfig, HeadersMap, RouteObservability, S3UploadConfig } from "./types";
 
@@ -26,11 +26,11 @@ import { ApiResponse, BookingApiConfig, HeadersMap, RouteObservability, S3Upload
  * would let anyone holding (or guessing) an id attach files to someone else's
  * booking and have the link mailed to staff.
  */
-async function requireDepositAccess(
+export async function requireDepositAccess(
   bookingSessionId: string,
   authorizationHeader: string | undefined,
   config: BookingApiConfig
-): Promise<void> {
+): Promise<SignedTokenPayload> {
   const token = extractBearerToken(authorizationHeader);
   if (!token) {
     throw new ApiError(401, "unauthorized", "A deposit access token is required.");
@@ -42,6 +42,8 @@ async function requireDepositAccess(
   if (payload.sub !== bookingSessionId) {
     throw new ApiError(403, "forbidden", "This token is not valid for that booking.");
   }
+
+  return payload;
 }
 
 // Re-export for route wiring

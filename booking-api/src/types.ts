@@ -146,6 +146,12 @@ export interface BookingApiConfig {
   allowedOrigins: string[];
   maxBodyBytes: number;
   secrets: BookingSecretProvider;
+  /**
+   * Fallback frontend origin for guest-facing resume links (payment-pending /
+   * deposit-instructions emails), used only when a request has no `Origin`
+   * header to derive one from (see `buildBookingPageUrl` in frontendLinks.ts).
+   */
+  bookingPageBaseUrl?: string;
   smoobu: SmoobuClientConfig;
   paypal: PayPalClientConfig;
   email: EmailConfig;

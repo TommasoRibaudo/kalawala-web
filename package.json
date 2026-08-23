@@ -51,6 +51,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
+    "test:e2e:live": "bash scripts/booking-live-e2e.sh",
+    "test:e2e:live:sandbox": "bash scripts/booking-live-e2e.sh --sandbox",
     "eject": "react-scripts eject",
     "local:up": "docker compose up -d",
     "local:down": "docker compose down",

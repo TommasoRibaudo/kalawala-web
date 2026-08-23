@@ -1,0 +1,112 @@
+name: Booking full-flow (live)
+
+# End-to-end booking acceptance test against the REAL booking-api (not the
+# in-browser API mocks the default e2e suite uses). Smoobu is always mocked (it
+# has no sandbox — a real hold blocks live inventory), so this never touches
+# real inventory. PayPal is the only provider made real, in the `sandbox` job.
+#
+# Runs on every PR (gates the merge that precedes a deploy) and on demand.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: booking-e2e-live-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mock:
+    name: Full flow — mock PayPal (both paths)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+      - name: Install root deps
+        run: npm ci
+      - name: Install booking-api deps
+        run: npm ci --prefix booking-api
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Build frontend
+        # Bake the API origin as :4000 so the browser calls the API cross-origin
+        # exactly as production does (site -> API Gateway). This matters because
+        # the booking-api derives the PayPal return URL from the request Origin;
+        # behind a same-origin proxy the post-payment redirect lands on the API.
+        # CI: false keeps webpack warnings non-fatal (see main.yml's deploy job).
+        run: npm run build-local
+        env:
+          CI: false
+          REACT_APP_BOOKING_API_BASE_URL: http://localhost:4000
+          REACT_APP_CAPTCHA_SITE_KEY: test-site-key
+      - name: Run full flow (PayPal + deposit, mock PayPal)
+        run: bash scripts/booking-live-e2e.sh
+      - name: booking-api log (on failure)
+        if: failure()
+        run: tail -n 400 /tmp/booking-live-api.log || true
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: booking-live-report-mock
+          path: |
+            playwright-report-live/
+            test-results/
+          retention-days: 14
+
+  sandbox:
+    name: PayPal path — real sandbox
+    runs-on: ubuntu-latest
+    # Fork PRs cannot read secrets; run only on same-repo PRs and manual dispatch.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository }}
+    # Required gate: a broken live-PayPal integration must block the merge.
+    # PayPal drives its own sandbox pages (whose markup shifts and is localized),
+    # so the live config retries once in CI to absorb the occasional PayPal-UI
+    # hiccup — a genuine integration break still fails both attempts. If PayPal's
+    # markup changes, retune the selectors in tests/e2e/live/helpers/livePaypal.ts.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+      - name: Install root deps
+        run: npm ci
+      - name: Install booking-api deps
+        run: npm ci --prefix booking-api
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Build frontend
+        run: npm run build-local
+        env:
+          CI: false
+          REACT_APP_BOOKING_API_BASE_URL: http://localhost:4000
+          REACT_APP_CAPTCHA_SITE_KEY: test-site-key
+      - name: Run PayPal path against the real sandbox
+        # Only the PayPal spec — the deposit path uses no PayPal and is already
+        # covered by the mock job.
+        run: bash scripts/booking-live-e2e.sh --sandbox booking-full-flow.live
+        env:
+          PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
+          PAYPAL_CLIENT_SECRET: ${{ secrets.PAYPAL_CLIENT_SECRET }}
+          PAYPAL_SANDBOX_BUYER_EMAIL: ${{ secrets.PAYPAL_SANDBOX_BUYER_EMAIL }}
+          PAYPAL_SANDBOX_BUYER_PASSWORD: ${{ secrets.PAYPAL_SANDBOX_BUYER_PASSWORD }}
+      - name: booking-api log (on failure)
+        if: failure()
+        # Server-side PayPal errors keep their issue/description here (see
+        # observability.ts errorDetail) — the reason a create-order was rejected.
+        run: tail -n 400 /tmp/booking-live-api.log || true
+      - name: Upload report + trace
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: booking-live-report-sandbox
+          path: |
+            playwright-report-live/
+            test-results/
+          retention-days: 14

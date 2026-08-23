@@ -3512,6 +3512,8 @@ export interface BusHoursContent {
   tableDepartureHeader: string;
   tableWeekdayHeader: string;
   tableSundayHeader: string;
+  dayLabelFriSat: string;
+  dayLabelSatSun: string;
   tipsHeading: string;
   tipsListItems: [string, string, string, string, string];
   ticketsHeading: string;
@@ -3562,6 +3564,8 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
     tableDepartureHeader: 'Departure Times',
     tableWeekdayHeader: 'Monday - Saturday',
     tableSundayHeader: 'Sunday & Holidays',
+    dayLabelFriSat: '(Fri–Sat)',
+    dayLabelSatSun: '(Sat–Sun)',
     tipsHeading: 'Tips for Bus Travel in Puerto Viejo',
     tipsListItems: [
       'Arrive Early: Buses can fill up quickly, especially during peak tourist season',
@@ -3612,6 +3616,8 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
     tableDepartureHeader: 'Horarios de Salida',
     tableWeekdayHeader: 'Lunes - Sábado',
     tableSundayHeader: 'Domingo y Feriados',
+    dayLabelFriSat: '(vie–sáb)',
+    dayLabelSatSun: '(sáb–dom)',
     tipsHeading: 'Consejos para Viajar en Autobús en Puerto Viejo',
     tipsListItems: [
       'Llega Temprano: Los autobuses pueden llenarse rápidamente, especialmente durante la temporada alta turística',
@@ -3667,6 +3673,8 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
     tableDepartureHeader: 'Horaires de départ',
     tableWeekdayHeader: 'Lundi - Samedi',
     tableSundayHeader: 'Dimanche et jours fériés',
+    dayLabelFriSat: '(ven–sam)',
+    dayLabelSatSun: '(sam–dim)',
     tipsHeading: 'Conseils pour voyager en bus à Puerto Viejo',
     tipsListItems: [
       'Arrivez tôt : les bus peuvent se remplir rapidement, surtout en haute saison touristique',
@@ -3720,6 +3728,8 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
     tableDepartureHeader: 'Abfahrtszeiten',
     tableWeekdayHeader: 'Montag - Samstag',
     tableSundayHeader: 'Sonntag & Feiertage',
+    dayLabelFriSat: '(Fr–Sa)',
+    dayLabelSatSun: '(Sa–So)',
     tipsHeading: 'Tipps für Busreisen in Puerto Viejo',
     tipsListItems: [
       'Früh ankommen: Busse können sich schnell füllen, besonders während der Hauptreisesaison',
@@ -3770,6 +3780,8 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
     tableDepartureHeader: 'שעות יציאה',
     tableWeekdayHeader: 'שני - שבת',
     tableSundayHeader: 'ראשון וחגים',
+    dayLabelFriSat: '(שישי–שבת)',
+    dayLabelSatSun: '(שבת–ראשון)',
     tipsHeading: 'טיפים לנסיעה באוטובוס בפוארטו ויחו',
     tipsListItems: [
       'הגיעו מוקדם: האוטובוסים עלולים להתמלא במהירות, במיוחד בעונת התיירות השיא',
@@ -3820,6 +3832,8 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
     tableDepartureHeader: 'Orari di Partenza',
     tableWeekdayHeader: 'Lunedì - Sabato',
     tableSundayHeader: 'Domenica e Festivi',
+    dayLabelFriSat: '(ven–sab)',
+    dayLabelSatSun: '(sab–dom)',
     tipsHeading: 'Consigli per Viaggiare in Autobus a Puerto Viejo',
     tipsListItems: [
       "Arriva in anticipo: gli autobus possono riempirsi rapidamente, specialmente durante l'alta stagione turistica",
@@ -3870,6 +3884,8 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
     tableDepartureHeader: 'Horários de Partida',
     tableWeekdayHeader: 'Segunda a Sábado',
     tableSundayHeader: 'Domingo e Feriados',
+    dayLabelFriSat: '(sex–sáb)',
+    dayLabelSatSun: '(sáb–dom)',
     tipsHeading: 'Dicas para Viajar de Autocarro em Puerto Viejo',
     tipsListItems: [
       'Chegue Cedo: os autocarros podem encher rapidamente, especialmente durante a época alta turística',
@@ -3920,6 +3936,8 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
     tableDepartureHeader: 'प्रस्थान समय',
     tableWeekdayHeader: 'सोमवार - शनिवार',
     tableSundayHeader: 'रविवार और छुट्टियां',
+    dayLabelFriSat: '(शुक्र–शनि)',
+    dayLabelSatSun: '(शनि–रवि)',
     tipsHeading: 'प्वेर्तो वियेहो में बस यात्रा के लिए सुझाव',
     tipsListItems: [
       'जल्दी पहुंचें: बसें जल्दी भर सकती हैं, खासकर पीक पर्यटन मौसम के दौरान',
@@ -3970,6 +3988,8 @@ const busHours: Partial<Record<Locale, BusHoursContent>> = {
     tableDepartureHeader: 'Vertrektijden',
     tableWeekdayHeader: 'Maandag - zaterdag',
     tableSundayHeader: 'Zondag & feestdagen',
+    dayLabelFriSat: '(vr–za)',
+    dayLabelSatSun: '(za–zo)',
     tipsHeading: 'Tips voor busreizen in Puerto Viejo',
     tipsListItems: [
       'Kom vroeg: bussen kunnen snel vol raken, vooral tijdens het hoogseizoen',

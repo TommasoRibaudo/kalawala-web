@@ -158,8 +158,8 @@ const BusHours = () => {
                         <p>{content.sanJoseIntro}</p>
                         <br />
                         <SimpleScheduleTable content={content} rows={[
-                            ['San José → Puerto Viejo', ['6:00 AM', '8:00 AM', '10:00 AM', '2:00 PM', '4:00 PM']],
-                            ['Puerto Viejo → San José', ['3:00 AM', '5:30 AM', '9:00 AM', '12:00 PM', '4:00 PM']],
+                            ['San José → Puerto Viejo', ['6:00 AM', '8:00 AM', '10:00 AM', `12:00 PM ${content.dayLabelFriSat}`, '2:00 PM', '4:00 PM']],
+                            ['Puerto Viejo → San José', ['3:00 AM', '5:30 AM', `8:00 AM ${content.dayLabelSatSun}`, '9:00 AM', '12:00 PM', '4:00 PM']],
                         ]} />
                         <br />
                         <h4><strong>{content.limonHeading}</strong></h4>

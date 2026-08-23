@@ -1212,7 +1212,7 @@ function requirePetFriendlyIfPet(holdRequest: HoldRequest, property: BookingProp
   return true;
 }
 
-function requireQuotedPrice(session: BookingSessionRecord, propertyId: string): BookingSessionQuotedProperty {
+export function requireQuotedPrice(session: BookingSessionRecord, propertyId: string): BookingSessionQuotedProperty {
   const quotedPrice = session.quotedProperties.find((price) => price.propertyId === propertyId);
   if (!quotedPrice) {
     throw new ApiError(409, "property_no_longer_available", "This property is not part of the active quote.");
@@ -1357,17 +1357,18 @@ function buildSmoobuNotice(
   return parts.join("\n").slice(0, 2000);
 }
 
-function buildHoldResponse(
+export function buildHoldResponse(
   session: BookingSessionRecord,
   hold: HoldRecord,
   property: BookingProperty,
   price: BookingSessionQuotedProperty
 ) {
+  const paymentMethod = session.paymentMethod ?? "paypal";
   return {
     booking: {
       bookingSessionId: session.id,
       reservationPublicId: session.reservationPublicId,
-      status: "hold_active",
+      status: session.status,
       language: session.language,
       arrivalDate: session.arrivalDate,
       departureDate: session.departureDate,
@@ -1394,11 +1395,11 @@ function buildHoldResponse(
         expiresAt: hold.expiresAt,
       },
       payment: {
-        method: "paypal",
+        method: paymentMethod,
         status: "pending",
       },
     },
-    nextAction: "create_paypal_order",
+    nextAction: paymentMethod === "manual_deposit" ? "upload_deposit_receipt" : "create_paypal_order",
   };
 }
 

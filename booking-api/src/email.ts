@@ -148,12 +148,14 @@ export class EmailClient {
   async sendPaymentPending(
     session: BookingSessionRecord,
     propertyName: string,
-    paypalOrderId: string
+    paypalOrderId: string,
+    paypalResumeUrl?: string
   ): Promise<void> {
     if (!session.guest?.email) return;
     const input: EmailTemplateInput = {
       ...buildTemplateInput(session, propertyName),
       paypalOrderId,
+      ...(paypalResumeUrl ? { paypalResumeUrl } : {}),
     };
     const { subject, html, text } = renderPaymentPendingEmail(input);
     await this.send(session.guest.email, subject, html, text, {

@@ -22,6 +22,7 @@ import {
   createDepositHold,
   createPayPalHold,
   createPayPalOrder,
+  fetchHoldState,
   getDepositHandoff,
   portalLogin,
   recordDepositHandoffEvent,
@@ -200,6 +201,21 @@ const BookingPage = () => {
   }
   const resumedDeposit = resumedDepositRef.current;
 
+  // A guest who opens a payment-pending/deposit-instructions email link cold
+  // (different device, cleared storage) carries no local resume state at all —
+  // rebuild it from the API instead, keyed off a bookingSessionId (and, for a
+  // manual-deposit hold, a depositAccessToken) URL param (#325). Read once via
+  // a ref, same as resumedDepositRef above, and skip it entirely when
+  // localStorage already resolved the deposit case.
+  const resumeFromUrlRef = React.useRef<{ bookingSessionId: string; depositAccessToken?: string } | null>();
+  if (resumeFromUrlRef.current === undefined) {
+    const paramBookingSessionId = searchParams.get('bookingSessionId');
+    resumeFromUrlRef.current = (!resumedDeposit && !isPayPalReturnRoute && !isConfirmationRoute && paramBookingSessionId)
+      ? { bookingSessionId: paramBookingSessionId, depositAccessToken: searchParams.get('depositAccessToken') ?? undefined }
+      : null;
+  }
+  const [isResumingHold, setIsResumingHold] = React.useState(() => resumeFromUrlRef.current !== null);
+
   const [arrivalDate, setArrivalDate] = React.useState(() => getInitialArrivalDate(searchParams.get('arrivalDate'), today));
   const [departureDate, setDepartureDate] = React.useState(() => getInitialDepartureDate(searchParams.get('departureDate'), searchParams.get('arrivalDate'), today));
   const [guests, setGuests] = React.useState(() => getInitialGuestCount(searchParams.get('guests')));
@@ -279,6 +295,45 @@ const BookingPage = () => {
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [wizardStep]);
+
+  // Fetches the resume state kicked off by resumeFromUrlRef above, then drops
+  // the guest straight into the checkout/deposit step for their hold instead
+  // of the blank search form (#325). Runs once — resumeFromUrlRef is set
+  // during the first render and never changes after.
+  React.useEffect(() => {
+    const resumeParams = resumeFromUrlRef.current;
+    if (!resumeParams) return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const state = await fetchHoldState(resumeParams.bookingSessionId, resumeParams.depositAccessToken);
+        if (cancelled) return;
+        setResult(searchResultFromHold(state));
+        if (state.booking.payment.method === 'manual_deposit') {
+          const deposit = state as DepositHoldResponse;
+          persistDepositCheckoutState(deposit);
+          setDepositProperty(depositPropertyFromHold(deposit));
+          setDepositHoldResponse(deposit);
+        } else {
+          setCheckoutProperty(depositPropertyFromHold(state));
+          setHoldResponse(state);
+        }
+      } catch {
+        // Expired hold, invalid/expired token, or the booking already
+        // completed — fall through to a normal blank search, same as opening
+        // the booking page with no params at all.
+      } finally {
+        if (!cancelled) {
+          setIsResumingHold(false);
+          navigate(pathForKey('book', language), { replace: true });
+        }
+      }
+    })();
+
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Once the deposit hold expires it is released server-side, so drop the
   // persisted copy — a later reload should not resume a dead hold (#308).
@@ -595,7 +650,7 @@ const BookingPage = () => {
             {/* Step 1: Search */}
             <div className={`booking-wizard-slide${wizardStep === 'search' ? ' booking-wizard-slide--active' : ' booking-wizard-slide--left'}`} aria-hidden={wizardStep !== 'search'}>
               <Row className="justify-content-center"><Col lg={10} xl={9}>
-                {isAutoSearching ? (
+                {isAutoSearching || isResumingHold ? (
                   <div className="booking-search-loading" role="status" aria-live="polite">
                     <Spinner animation="border" />
                     <p>{strings.searching}</p>
@@ -1369,17 +1424,23 @@ function readDepositCheckoutState(): DepositHoldResponse | null {
     return p;
   } catch { return null; }
 }
-/** The result card the deposit panel needs, rebuilt from a persisted hold. */
-function depositPropertyFromHold(hold: DepositHoldResponse): BookingAvailableProperty {
+/**
+ * The result card the checkout/deposit panel needs, rebuilt from a persisted
+ * or resumed hold. Takes the shared PayPalHoldResponse base shape so it works
+ * for both a deposit resume (localStorage or the API) and a PayPal resume
+ * from the API (#325) — only DepositHoldResponse's extra bankInfo/token
+ * fields are deposit-specific, and this never reads those.
+ */
+function depositPropertyFromHold(hold: PayPalHoldResponse): BookingAvailableProperty {
   const p = hold.booking.property;
   return { propertyId: p.propertyId, slug: p.slug, listingUrl: p.listingUrl, name: p.name, guestCapacity: p.guestCapacity, thumbnailUrl: p.thumbnailUrl, amenities: p.amenities, price: hold.booking.price };
 }
 /**
- * Just enough BookingSearchResponse to drive the deposit panel (it only reads
- * the dates). There is no live search behind a resumed hold, and the held view
- * never re-submits, so quoteId is deliberately empty.
+ * Just enough BookingSearchResponse to drive the checkout/deposit panel (it
+ * only reads the dates). There is no live search behind a resumed hold, and
+ * the held view never re-submits, so quoteId is deliberately empty.
  */
-function searchResultFromHold(hold: DepositHoldResponse): BookingSearchResponse {
+function searchResultFromHold(hold: PayPalHoldResponse): BookingSearchResponse {
   const b = hold.booking;
   return { bookingSessionId: b.bookingSessionId, quoteId: '', quoteExpiresAt: b.hold.expiresAt, arrivalDate: b.arrivalDate, departureDate: b.departureDate, guests: b.guests, language: b.language, resultsCount: 1, properties: [depositPropertyFromHold(hold)], availabilityWarnings: [] };
 }

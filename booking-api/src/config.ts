@@ -104,6 +104,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): BookingApiConf
     allowedOrigins: splitCsv(env.BOOKING_API_ALLOWED_ORIGINS),
     maxBodyBytes: parseMaxBodyBytes(env.BOOKING_API_MAX_BODY_BYTES),
     secrets,
+    bookingPageBaseUrl: env.BOOKING_PAGE_BASE_URL?.trim() || "",
     smoobu: {
       baseUrl: normalizeBaseUrl(env.SMOOBU_BASE_URL, DEFAULT_SMOOBU_BASE_URL),
       customerId: parseOptionalPositiveInteger(env.SMOOBU_CUSTOMER_ID, "SMOOBU_CUSTOMER_ID"),

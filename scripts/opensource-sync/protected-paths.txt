@@ -1,0 +1,20 @@
+# Files in the PUBLIC repo that hold generalized demo data / config and must
+# NEVER be overwritten by a sync. If a booking-api change touches the monorepo
+# equivalent of one of these, the sync script drops that file's hunks and lists
+# it for manual reconciliation — you port the *logic* by hand and keep the demo
+# data. Paths are relative to the public repo root.
+api/src/branding.ts
+api/src/propertyCatalog.ts
+api/migrations/0002_properties.sql
+api/migrations/0010_seed_properties.sql
+api/migrations/0015_pet_reservations.sql
+api/.env.example
+api/.env.local.example
+api/package.json
+api/package-lock.json
+api/README.md
+README.md
+AGENTS.md
+LICENSE
+NOTICE.md
+docker-compose.yml

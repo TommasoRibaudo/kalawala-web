@@ -1,0 +1,33 @@
+kalawala
+\bgeco\b
+\brana\b
+pappagallo
+tucano
+villamar
+villacoral
+\bareka\b
+plumeria
+giulia
+delfines
+301061
+301058
+301064
+301055
+1829402
+1819085
+1516846
+1516849
+1597723
+b8a1f2e7
+a75f112f
+d06f7d50
+puerto viejo
+\$kalawala-
+#
+# NOTE: real guest PII (names/emails/phones) and real reservation/incident IDs
+# are deliberately NOT listed here. This repo is public — writing those values
+# into this file just creates a second plaintext copy of the thing we're trying
+# to keep out (see .gitleaks.toml and the "no real guest PII" rule in CLAUDE.md).
+# There is no reliable regex for "is this a real name/ID"; catching it is a
+# human-review responsibility. The tokens above are non-sensitive business data
+# (already public in booking-api/) used only to keep the fork generic.

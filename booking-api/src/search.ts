@@ -392,14 +392,14 @@ function localizeAmenityLabel(amenity: BookingProperty["amenities"][number], lan
   }
 
   if (amenity.code === "parking") {
+    // Every home's parking is private — the only distinction is whether it is
+    // fenced. Check "unfenced" before "fenced" since the former contains the
+    // latter as a substring.
     if (amenity.label.toLowerCase().includes("unfenced")) {
-      return "Parqueo sin cerca";
+      return "Parqueo privado sin cerca";
     }
     if (amenity.label.toLowerCase().includes("fenced")) {
       return "Parqueo privado cercado";
-    }
-    if (amenity.label.toLowerCase().includes("outside")) {
-      return "Parqueo exterior";
     }
     return "Parqueo privado";
   }

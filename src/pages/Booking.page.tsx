@@ -100,6 +100,53 @@ function getPropertyLocation(slug: string, strings: BookingStrings): string {
     : strings.locationPlayaChiquita;
 }
 
+type LocationFilter = 'all' | 'center' | 'chiquita';
+
+function locationBucket(slug: string): Exclude<LocationFilter, 'all'> {
+  return PUERTO_VIEJO_CENTER_SLUGS.has(slug.toLowerCase()) ? 'center' : 'chiquita';
+}
+
+// Casa Geco, Rana and Delfin are the homes with private *fenced* parking — the
+// same set the marketing catalog marks with `parking: true` and the booking
+// catalog labels "Private fenced parking". The search API only sends a generic
+// `parking` amenity whose label is already localized, so the fenced distinction
+// is matched here by slug rather than by parsing that label back apart.
+const FENCED_PARKING_SLUGS = new Set(['geco', 'rana', 'delfin']);
+
+function hasPool(property: BookingAvailableProperty): boolean {
+  return property.amenities.some((amenity) => amenity.code === 'pool');
+}
+
+function hasFencedParking(property: BookingAvailableProperty): boolean {
+  return FENCED_PARKING_SLUGS.has(property.slug.toLowerCase());
+}
+
+type SortOption = 'price_asc' | 'price_desc' | 'size_asc' | 'size_desc';
+const SORT_OPTIONS: readonly SortOption[] = ['price_asc', 'price_desc', 'size_asc', 'size_desc'];
+
+function parseSortParam(value: string | null): SortOption | null {
+  return (SORT_OPTIONS as readonly string[]).includes(value ?? '') ? (value as SortOption) : null;
+}
+
+function sortProperties(properties: BookingAvailableProperty[], sort: SortOption): BookingAvailableProperty[] {
+  const sorted = [...properties];
+  sorted.sort((a, b) => {
+    if (sort === 'size_asc' || sort === 'size_desc') {
+      const diff = a.guestCapacity - b.guestCapacity;
+      return sort === 'size_asc' ? diff : -diff;
+    }
+    // Price sorts push a home whose quote is missing a price to the end in both
+    // directions, so a priceless result never leads the list.
+    const pa = a.price?.totalAmountCents ?? null;
+    const pb = b.price?.totalAmountCents ?? null;
+    if (pa === null && pb === null) return 0;
+    if (pa === null) return 1;
+    if (pb === null) return -1;
+    return sort === 'price_asc' ? pa - pb : pb - pa;
+  });
+  return sorted;
+}
+
 // Room-by-room photo sets, keyed the same way as PROPERTY_DISPLAY_NAMES —
 // reused from the listing pages' galleries so the result card can show more
 // than the single search-response thumbnail.
@@ -288,8 +335,20 @@ const BookingPage = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [nonRefundable, setNonRefundable] = React.useState(false);
   // Filters the results down to the pet-friendly homes and rides along to the
-  // hold so the booking itself records the pet.
-  const [withPet, setWithPet] = React.useState(false);
+  // hold so the booking itself records the pet. Seeded from the URL like the
+  // other filters so a shared link restores it, but kept as its own toggle
+  // because it also declares the pet on the booking.
+  const [withPet, setWithPet] = React.useState(() => searchParams.get('pets') === '1');
+  // Results-refinement filters and sort. Unlike dates/guests they never re-run
+  // the search — they narrow and reorder the quote already on screen — but they
+  // live in the URL so a filtered, sorted view is a shareable link.
+  const [poolOnly, setPoolOnly] = React.useState(() => searchParams.get('pool') === '1');
+  const [fencedParkingOnly, setFencedParkingOnly] = React.useState(() => searchParams.get('parking') === '1');
+  const [locationFilter, setLocationFilter] = React.useState<LocationFilter>(() => {
+    const value = searchParams.get('location');
+    return value === 'center' || value === 'chiquita' ? value : 'all';
+  });
+  const [sortOption, setSortOption] = React.useState<SortOption | null>(() => parseSortParam(searchParams.get('sort')));
   const minDepartureDate = addDays(arrivalDate || today, 1);
   // Distinguishes "just landed here from the widget/a shared link and the very
   // first search is still in flight" from a guest manually resubmitting this
@@ -387,6 +446,28 @@ const BookingPage = () => {
     Object.entries(updates).forEach(([key, value]) => { nextParams.set(key, String(value)); });
     setSearchParams(nextParams, { replace: true });
   }, [searchParams, setSearchParams]);
+
+  // A filter at its default (off / "all" / no sort) drops out of the URL rather
+  // than lingering as `pool=0`, so a shared link only ever carries the filters
+  // the guest actually set. replace:true keeps every filter tap out of the back
+  // button's history, same as the date/guest writes above.
+  const setFilterParam = React.useCallback((key: string, value: string | null) => {
+    const nextParams = new URLSearchParams(searchParams.toString());
+    if (value === null || value === '') { nextParams.delete(key); } else { nextParams.set(key, value); }
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  const handleWithPetChange = (value: boolean) => { setWithPet(value); setFilterParam('pets', value ? '1' : null); };
+  const handlePoolChange = (value: boolean) => { setPoolOnly(value); setFilterParam('pool', value ? '1' : null); };
+  const handleFencedParkingChange = (value: boolean) => { setFencedParkingOnly(value); setFilterParam('parking', value ? '1' : null); };
+  const handleLocationChange = (value: LocationFilter) => { setLocationFilter(value); setFilterParam('location', value === 'all' ? null : value); };
+  const handleSortChange = (value: SortOption | null) => { setSortOption(value); setFilterParam('sort', value); };
+  const handleClearFilters = () => {
+    setWithPet(false); setPoolOnly(false); setFencedParkingOnly(false); setLocationFilter('all'); setSortOption(null);
+    const nextParams = new URLSearchParams(searchParams.toString());
+    ['pets', 'pool', 'parking', 'location', 'sort'].forEach((key) => nextParams.delete(key));
+    setSearchParams(nextParams, { replace: true });
+  };
 
   // PayPal return capture
   React.useEffect(() => {
@@ -697,7 +778,7 @@ const BookingPage = () => {
                       <h1 id="booking-search-title">{strings.title}</h1>
                       <p>{strings.subtitle}</p>
                     </section>
-                    <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={false} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} withPet={withPet} onWithPetChange={setWithPet} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} />
+                    <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={false} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} withPet={withPet} onWithPetChange={handleWithPetChange} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} />
                     {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
                   </>
                 )}
@@ -706,11 +787,11 @@ const BookingPage = () => {
             {/* Step 2: Results */}
             <div className={`booking-wizard-slide${wizardStep === 'results' ? ' booking-wizard-slide--active' : stepIndex(wizardStep) > stepIndex('results') ? ' booking-wizard-slide--left' : ' booking-wizard-slide--right'}`} aria-hidden={wizardStep !== 'results'}>
               <Row className="justify-content-center"><Col lg={10} xl={9}>
-                <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={true} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} withPet={withPet} onWithPetChange={setWithPet} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} onBack={handleBackToSearch} />
+                <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={true} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} withPet={withPet} onWithPetChange={handleWithPetChange} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} onBack={handleBackToSearch} />
                 {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
                 {depositError && <Alert className="booking-search-alert" variant="danger" role="alert">{depositError}</Alert>}
                 <div ref={resultsAnchorRef} className="booking-results-anchor" />
-                {result && <BookingSearchResults result={result} strings={strings} language={language} nonRefundable={nonRefundable} withPet={withPet} onManualDepositHandoff={handleStartDepositCheckout} onStartPayPalHold={handleStartPayPalHold} selectedPropertyId={checkoutProperty?.propertyId ?? null} featuredSlug={featuredSlug} />}
+                {result && <BookingSearchResults result={result} strings={strings} language={language} nonRefundable={nonRefundable} withPet={withPet} poolOnly={poolOnly} fencedParkingOnly={fencedParkingOnly} locationFilter={locationFilter} sortOption={sortOption} onPoolChange={handlePoolChange} onFencedParkingChange={handleFencedParkingChange} onLocationChange={handleLocationChange} onSortChange={handleSortChange} onClearFilters={handleClearFilters} onManualDepositHandoff={handleStartDepositCheckout} onStartPayPalHold={handleStartPayPalHold} selectedPropertyId={checkoutProperty?.propertyId ?? null} featuredSlug={featuredSlug} />}
               </Col></Row>
             </div>
             {/* Step 3: Checkout / Deposit */}
@@ -827,22 +908,77 @@ const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDat
   );
 };
 
+// ResultsFilterBar — client-side refinement of the quote already on screen.
+// Never re-runs the search; every control writes to the URL so the refined view
+// is shareable.
+interface ResultsFilterBarProps {
+  strings: BookingStrings;
+  poolOnly: boolean; fencedParkingOnly: boolean; locationFilter: LocationFilter; sortOption: SortOption | null;
+  onPoolChange: (v: boolean) => void; onFencedParkingChange: (v: boolean) => void;
+  onLocationChange: (v: LocationFilter) => void; onSortChange: (v: SortOption | null) => void;
+}
+
+const ResultsFilterBar = ({ strings, poolOnly, fencedParkingOnly, locationFilter, sortOption, onPoolChange, onFencedParkingChange, onLocationChange, onSortChange }: ResultsFilterBarProps) => {
+  const locations: { value: LocationFilter; label: string }[] = [
+    { value: 'all', label: strings.filterLocationAll },
+    { value: 'center', label: strings.locationPuertoViejo },
+    { value: 'chiquita', label: strings.locationPlayaChiquita },
+  ];
+  return (
+    <div className="booking-filter-bar">
+      <div className="booking-filter-bar__group booking-filter-bar__group--location" role="group" aria-label={strings.filterLocationLabel}>
+        <span className="booking-filter-bar__label"><FontAwesomeIcon icon={faLocationDot} /> {strings.filterLocationLabel}</span>
+        <div className="booking-filter-pills">
+          {locations.map((loc) => (
+            <button key={loc.value} type="button" className={`booking-filter-pill${locationFilter === loc.value ? ' booking-filter-pill--active' : ''}`} aria-pressed={locationFilter === loc.value} onClick={() => onLocationChange(loc.value)}>{loc.label}</button>
+          ))}
+        </div>
+      </div>
+      <div className="booking-filter-bar__group booking-filter-bar__group--amenities" role="group" aria-label={strings.filterAmenitiesLabel}>
+        <Form.Check type="checkbox" id="filterPool" className="booking-filter-check" label={<><FontAwesomeIcon icon={faSwimmingPool} /> {strings.filterPool}</>} checked={poolOnly} onChange={(e) => onPoolChange(e.target.checked)} />
+        <Form.Check type="checkbox" id="filterParking" className="booking-filter-check" label={<><FontAwesomeIcon icon={faCar} /> {strings.filterFencedParking}</>} checked={fencedParkingOnly} onChange={(e) => onFencedParkingChange(e.target.checked)} />
+      </div>
+      <div className="booking-filter-bar__group booking-filter-bar__group--sort">
+        <Form.Label htmlFor="filterSort" className="booking-filter-bar__label">{strings.sortLabel}</Form.Label>
+        <Form.Select id="filterSort" size="sm" className="booking-filter-sort" value={sortOption ?? ''} onChange={(e) => onSortChange(e.target.value === '' ? null : (e.target.value as SortOption))}>
+          <option value="">{strings.sortFeatured}</option>
+          <option value="price_asc">{strings.sortPriceAsc}</option>
+          <option value="price_desc">{strings.sortPriceDesc}</option>
+          <option value="size_asc">{strings.sortSizeAsc}</option>
+          <option value="size_desc">{strings.sortSizeDesc}</option>
+        </Form.Select>
+      </div>
+    </div>
+  );
+};
+
 // BookingSearchResults
-const BookingSearchResults = ({ result, strings, language, nonRefundable, withPet, onManualDepositHandoff, onStartPayPalHold, selectedPropertyId, featuredSlug }: { result: BookingSearchResponse; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean; withPet: boolean; onManualDepositHandoff: (p: BookingAvailableProperty) => void; onStartPayPalHold: (p: BookingAvailableProperty) => void; selectedPropertyId: string | null; featuredSlug: string | null }) => {
-  // Filtering here rather than in the search request keeps the toggle instant on
-  // this step: flipping it re-renders the same quote instead of spending another
-  // search. The hold route re-checks the home server-side before anything is
-  // reserved.
-  const properties = withPet ? result.properties.filter(isPetFriendly) : result.properties;
-  const hiddenByPetFilter = result.properties.length - properties.length;
-  const hasResults = properties.length > 0;
+interface BookingSearchResultsProps {
+  result: BookingSearchResponse; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean;
+  withPet: boolean; poolOnly: boolean; fencedParkingOnly: boolean; locationFilter: LocationFilter; sortOption: SortOption | null;
+  onPoolChange: (v: boolean) => void; onFencedParkingChange: (v: boolean) => void;
+  onLocationChange: (v: LocationFilter) => void; onSortChange: (v: SortOption | null) => void; onClearFilters: () => void;
+  onManualDepositHandoff: (p: BookingAvailableProperty) => void; onStartPayPalHold: (p: BookingAvailableProperty) => void;
+  selectedPropertyId: string | null; featuredSlug: string | null;
+}
+
+const BookingSearchResults = ({ result, strings, language, nonRefundable, withPet, poolOnly, fencedParkingOnly, locationFilter, sortOption, onPoolChange, onFencedParkingChange, onLocationChange, onSortChange, onClearFilters, onManualDepositHandoff, onStartPayPalHold, selectedPropertyId, featuredSlug }: BookingSearchResultsProps) => {
+  // Filtering here rather than in the search request keeps every control instant
+  // on this step: flipping one re-renders the same quote instead of spending
+  // another search. The hold route re-checks the home server-side before
+  // anything is reserved.
+  //
+  // The pet filter is a first-class step, not one of the refinement filters: it
+  // also declares the pet on the eventual booking, so it narrows the featured
+  // home too. The amenity/location filters and the sort only refine the
+  // *alternatives* — the home a guest clicked in from a listing page stays
+  // pinned on top regardless.
+  const petFiltered = withPet ? result.properties.filter(isPetFriendly) : result.properties;
+  const hiddenByPetFilter = result.properties.length - petFiltered.length;
+  const hasAvailability = result.properties.length > 0;
   const warnings = result.availabilityWarnings.map((w) => warningMessages[w.code]).filter((k): k is WarningStringKey => Boolean(k));
 
-  // A guest who searched from a listing page came here for that home. Lift it
-  // out of the grid and lead with it; the portfolio-wide alternatives still
-  // follow underneath so a taken home never dead-ends the search.
-  const featured = featuredSlug ? properties.find((p) => p.slug.toLowerCase() === featuredSlug.toLowerCase()) ?? null : null;
-  const others = featured ? properties.filter((p) => p.propertyId !== featured.propertyId) : properties;
+  const featured = featuredSlug ? petFiltered.find((p) => p.slug.toLowerCase() === featuredSlug.toLowerCase()) ?? null : null;
   const featuredMissing = Boolean(featuredSlug) && !featured;
   const featuredName = featuredSlug ? displayNameForSlug(featuredSlug, result.properties) : '';
   // The home is free — it just does not take pets. Saying "not available" there
@@ -850,62 +986,94 @@ const BookingSearchResults = ({ result, strings, language, nonRefundable, withPe
   const featuredHiddenByPetFilter =
     featuredMissing && withPet && result.properties.some((p) => p.slug.toLowerCase() === featuredSlug?.toLowerCase());
 
-  if (!hasResults) {
-    // A pet search that filtered everything out is a different dead end from no
-    // availability at all, and it has a different way out.
-    if (withPet && hiddenByPetFilter > 0) {
-      return (
-        <section className="booking-results-empty" aria-live="polite">
-          <h2>{strings.petFilterEmptyTitle}</h2>
-          <p>{strings.petFilterEmptyBody}</p>
-        </section>
-      );
-    }
+  let others = featured ? petFiltered.filter((p) => p.propertyId !== featured.propertyId) : petFiltered;
+  others = others.filter((p) =>
+    (!poolOnly || hasPool(p)) &&
+    (!fencedParkingOnly || hasFencedParking(p)) &&
+    (locationFilter === 'all' || locationBucket(p.slug) === locationFilter));
+  if (sortOption) others = sortProperties(others, sortOption);
 
+  const anyRefineActive = poolOnly || fencedParkingOnly || locationFilter !== 'all';
+  const visibleCount = (featured ? 1 : 0) + others.length;
+
+  // No home is available for these dates at all — filtering is moot, so skip the
+  // bar and send the guest back to their dates.
+  if (!hasAvailability) {
     return (<section className="booking-results-empty" aria-live="polite"><h2>{strings.noResultsTitle}</h2><p>{strings.noResultsBody}</p><WarningList warnings={warnings} strings={strings} /></section>);
   }
+
+  const filterBar = (
+    <ResultsFilterBar
+      strings={strings}
+      poolOnly={poolOnly} fencedParkingOnly={fencedParkingOnly} locationFilter={locationFilter} sortOption={sortOption}
+      onPoolChange={onPoolChange} onFencedParkingChange={onFencedParkingChange} onLocationChange={onLocationChange} onSortChange={onSortChange}
+    />
+  );
+
   return (
     <section className="booking-results" aria-live="polite" aria-labelledby="booking-results-title">
-      <div className="booking-results-summary"><div><p className="booking-results-kicker">{strings.resultCount(properties.length)}</p><h2 id="booking-results-title">{strings.resultsTitle}</h2>{withPet && hiddenByPetFilter > 0 && <p className="booking-results-pet-note"><FontAwesomeIcon icon={faPaw} /> {strings.petFilterHidden(hiddenByPetFilter)}</p>}</div><p className="booking-quote-expiry">{strings.quoteExpires}: {formatDateTime(result.quoteExpiresAt, language)}</p></div>
+      <div className="booking-results-summary"><div><p className="booking-results-kicker">{strings.resultCount(visibleCount)}</p><h2 id="booking-results-title">{strings.resultsTitle}</h2>{withPet && hiddenByPetFilter > 0 && <p className="booking-results-pet-note"><FontAwesomeIcon icon={faPaw} /> {strings.petFilterHidden(hiddenByPetFilter)}</p>}</div><p className="booking-quote-expiry">{strings.quoteExpires}: {formatDateTime(result.quoteExpiresAt, language)}</p></div>
 
-      {featured && (
-        <div className="booking-results-featured">
-          <h3 className="booking-results-section-title">{strings.featuredTitle}</h3>
-          <Row className="booking-results-grid g-4">
-            <Col className="booking-results-col" md={8} xl={6}>
-              <BookingPropertyCard property={featured} strings={strings} language={language} nonRefundable={nonRefundable} onManualDepositHandoff={onManualDepositHandoff} onStartPayPalHold={onStartPayPalHold} isSelectedForCheckout={selectedPropertyId === featured.propertyId} isFeatured />
-            </Col>
-          </Row>
-        </div>
-      )}
+      {filterBar}
 
-      {featuredMissing && (
-        <div className="booking-results-featured-missing" role="status">
-          <p className="booking-results-featured-missing__title">{featuredHiddenByPetFilter ? strings.featuredNotPetFriendly(featuredName) : strings.featuredUnavailable(featuredName)}</p>
-          <p className="booking-results-featured-missing__body">{featuredHiddenByPetFilter ? strings.featuredNotPetFriendlyBody : strings.featuredUnavailableBody}</p>
-        </div>
-      )}
-
-      {others.length > 0 && (
+      {visibleCount === 0 ? (
+        // Everything on screen was narrowed out. A pet-only dead end has its own
+        // way out (different dates); the amenity/location filters are clearable
+        // right here.
+        (withPet && !anyRefineActive) ? (
+          <section className="booking-results-empty" aria-live="polite">
+            <h2>{strings.petFilterEmptyTitle}</h2>
+            <p>{strings.petFilterEmptyBody}</p>
+          </section>
+        ) : (
+          <section className="booking-results-empty" aria-live="polite">
+            <h2>{strings.filtersEmptyTitle}</h2>
+            <p>{strings.filtersEmptyBody}</p>
+            <Button variant="outline-secondary" size="sm" className="booking-filters-clear" onClick={onClearFilters}>{strings.clearFilters}</Button>
+          </section>
+        )
+      ) : (
         <>
-          {(featured || featuredMissing) && (
-            <div className="booking-results-section">
-              <h3 className="booking-results-section-title">{strings.otherHomesTitle}</h3>
-              <p className="booking-results-section-count">{strings.otherHomesCount(others.length)}</p>
+          {featured && (
+            <div className="booking-results-featured">
+              <h3 className="booking-results-section-title">{strings.featuredTitle}</h3>
+              <Row className="booking-results-grid g-4">
+                <Col className="booking-results-col" md={8} xl={6}>
+                  <BookingPropertyCard property={featured} strings={strings} language={language} nonRefundable={nonRefundable} onManualDepositHandoff={onManualDepositHandoff} onStartPayPalHold={onStartPayPalHold} isSelectedForCheckout={selectedPropertyId === featured.propertyId} isFeatured />
+                </Col>
+              </Row>
             </div>
           )}
-          <Row className="booking-results-grid g-4">
-            {others.map((property) => (<Col className="booking-results-col" key={property.propertyId} md={6} xl={4}><BookingPropertyCard property={property} strings={strings} language={language} nonRefundable={nonRefundable} onManualDepositHandoff={onManualDepositHandoff} onStartPayPalHold={onStartPayPalHold} isSelectedForCheckout={selectedPropertyId === property.propertyId} /></Col>))}
-          </Row>
+
+          {featuredMissing && (
+            <div className="booking-results-featured-missing" role="status">
+              <p className="booking-results-featured-missing__title">{featuredHiddenByPetFilter ? strings.featuredNotPetFriendly(featuredName) : strings.featuredUnavailable(featuredName)}</p>
+              <p className="booking-results-featured-missing__body">{featuredHiddenByPetFilter ? strings.featuredNotPetFriendlyBody : strings.featuredUnavailableBody}</p>
+            </div>
+          )}
+
+          {others.length > 0 && (
+            <>
+              {(featured || featuredMissing) && (
+                <div className="booking-results-section">
+                  <h3 className="booking-results-section-title">{strings.otherHomesTitle}</h3>
+                  <p className="booking-results-section-count">{strings.otherHomesCount(others.length)}</p>
+                </div>
+              )}
+              <Row className="booking-results-grid g-4">
+                {others.map((property) => (<Col className="booking-results-col" key={property.propertyId} md={6} xl={4}><BookingPropertyCard property={property} strings={strings} language={language} nonRefundable={nonRefundable} onManualDepositHandoff={onManualDepositHandoff} onStartPayPalHold={onStartPayPalHold} isSelectedForCheckout={selectedPropertyId === property.propertyId} /></Col>))}
+              </Row>
+            </>
+          )}
+
+          <ColonesEstimateNote strings={strings} language={language} />
+
+          {/* Homes filtered out by Smoobu are explained after the available ones,
+              so a restriction on a home the guest cannot book never overshadows
+              the homes they can. */}
+          <WarningList warnings={warnings} strings={strings} title={strings.excludedHomesTitle} />
         </>
       )}
-
-      <ColonesEstimateNote strings={strings} language={language} />
-
-      {/* Homes filtered out by Smoobu are explained after the available ones, so
-          a restriction on a home the guest cannot book never overshadows the
-          homes they can. */}
-      <WarningList warnings={warnings} strings={strings} title={strings.excludedHomesTitle} />
     </section>
   );
 };

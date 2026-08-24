@@ -1388,3 +1388,169 @@ test('a quote with no discount shows a single price and no slashed rate', async 
   expect(document.querySelector('.booking-result-card__price del')).toBeNull();
   expect(screen.queryByText(/Long-stay/)).not.toBeInTheDocument();
 });
+
+// ---------------------------------------------------------------------------
+// Results filter bar + sort — client-side refinement of the quote on screen,
+// mirrored into the URL so a filtered/sorted view is a shareable link.
+// ---------------------------------------------------------------------------
+
+function property(overrides: Record<string, unknown>) {
+  return {
+    propertyId: `id-${overrides.slug}`,
+    slug: overrides.slug,
+    listingUrl: `/${overrides.slug}`,
+    name: overrides.name,
+    guestCapacity: overrides.guestCapacity,
+    thumbnailUrl: 'https://example.com/x.jpg',
+    amenities: overrides.amenities ?? [{ code: 'wifi', label: '100Mbps WiFi' }],
+    price: {
+      currency: 'USD',
+      totalAmountCents: overrides.totalAmountCents,
+      nightlyAverageCents: 10000,
+      nights: 4,
+      includesTaxes: false,
+      rateSource: 'smoobu',
+    },
+    actions: { viewListingUrl: `/${overrides.slug}`, canCreatePayPalHold: true, canUseManualDepositHandoff: true },
+  };
+}
+
+// Geco = Puerto Viejo Center + private fenced parking (by slug), no pool.
+// Villa Mar = Playa Chiquita + pool. Areka = Playa Chiquita, neither.
+const FILTER_SEARCH_FIXTURE = {
+  bookingSessionId: '3d0f8ac0-5c30-4b09-bb49-12fd1df120f1',
+  quoteId: 'qt_TEST',
+  quoteExpiresAt: '2099-06-01T12:00:00Z',
+  arrivalDate: '2099-06-10',
+  departureDate: '2099-06-14',
+  guests: 2,
+  language: 'en',
+  resultsCount: 3,
+  properties: [
+    property({ slug: 'Geco', name: 'Casa Geco', guestCapacity: 5, totalAmountCents: 51000, amenities: [{ code: 'wifi', label: '100Mbps WiFi' }, { code: 'parking', label: 'Private fenced parking' }] }),
+    property({ slug: 'VillaMar', name: 'Villa Mar', guestCapacity: 2, totalAmountCents: 40000, amenities: [{ code: 'pool', label: 'Private pool' }, { code: 'parking', label: 'Private unfenced parking' }] }),
+    property({ slug: 'Areka', name: 'Casa Areka', guestCapacity: 4, totalAmountCents: 60000, amenities: [{ code: 'wifi', label: 'WiFi' }, { code: 'parking', label: 'Private unfenced parking' }] }),
+  ],
+  availabilityWarnings: [],
+};
+
+function visibleHomeNames(): string[] {
+  return Array.from(document.querySelectorAll('.booking-result-card__content-title')).map((el) => el.textContent ?? '');
+}
+
+function currentSearch(): string {
+  return screen.getByTestId('location').textContent?.split('?')[1] ?? '';
+}
+
+async function searchWithFilterFixture() {
+  mockJsonResponse(FILTER_SEARCH_FIXTURE);
+  renderBookingPage();
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  await screen.findByText('Villa Mar');
+}
+
+test('pool filter narrows the results to homes with a pool and writes pool=1', async () => {
+  await searchWithFilterFixture();
+  expect(visibleHomeNames()).toEqual(['Casa Geco', 'Villa Mar', 'Casa Areka']);
+
+  fireEvent.click(activeSlide().getByRole('checkbox', { name: /pool/i }));
+
+  expect(visibleHomeNames()).toEqual(['Villa Mar']);
+  expect(new URLSearchParams(currentSearch()).get('pool')).toBe('1');
+  expect(screen.getByText('1 home is available')).toBeInTheDocument();
+
+  // Un-checking clears both the filter and the param.
+  fireEvent.click(activeSlide().getByRole('checkbox', { name: /pool/i }));
+  expect(visibleHomeNames()).toHaveLength(3);
+  expect(new URLSearchParams(currentSearch()).get('pool')).toBeNull();
+});
+
+test('fenced-parking filter matches only Geco/Rana/Delfin and writes parking=1', async () => {
+  await searchWithFilterFixture();
+
+  fireEvent.click(activeSlide().getByRole('checkbox', { name: /fenced parking/i }));
+
+  expect(visibleHomeNames()).toEqual(['Casa Geco']);
+  expect(new URLSearchParams(currentSearch()).get('parking')).toBe('1');
+});
+
+test('area filter splits Center from Playa Chiquita and writes location', async () => {
+  await searchWithFilterFixture();
+
+  fireEvent.click(activeSlide().getByRole('button', { name: 'Playa Chiquita' }));
+  expect(visibleHomeNames()).toEqual(['Villa Mar', 'Casa Areka']);
+  expect(new URLSearchParams(currentSearch()).get('location')).toBe('chiquita');
+
+  fireEvent.click(activeSlide().getByRole('button', { name: 'Puerto Viejo Center' }));
+  expect(visibleHomeNames()).toEqual(['Casa Geco']);
+  expect(new URLSearchParams(currentSearch()).get('location')).toBe('center');
+
+  // "All areas" is the default, so it drops back out of the URL.
+  fireEvent.click(activeSlide().getByRole('button', { name: 'All areas' }));
+  expect(visibleHomeNames()).toHaveLength(3);
+  expect(new URLSearchParams(currentSearch()).get('location')).toBeNull();
+});
+
+test('sort reorders the grid and writes the sort param', async () => {
+  await searchWithFilterFixture();
+  const sort = activeSlide().getByLabelText('Sort by');
+
+  fireEvent.change(sort, { target: { value: 'price_asc' } });
+  expect(visibleHomeNames()).toEqual(['Villa Mar', 'Casa Geco', 'Casa Areka']);
+  expect(new URLSearchParams(currentSearch()).get('sort')).toBe('price_asc');
+
+  fireEvent.change(sort, { target: { value: 'price_desc' } });
+  expect(visibleHomeNames()).toEqual(['Casa Areka', 'Casa Geco', 'Villa Mar']);
+
+  fireEvent.change(sort, { target: { value: 'size_desc' } });
+  expect(visibleHomeNames()).toEqual(['Casa Geco', 'Casa Areka', 'Villa Mar']);
+
+  fireEvent.change(sort, { target: { value: 'size_asc' } });
+  expect(visibleHomeNames()).toEqual(['Villa Mar', 'Casa Areka', 'Casa Geco']);
+
+  // Back to "Featured" restores the server order and clears the param.
+  fireEvent.change(sort, { target: { value: '' } });
+  expect(visibleHomeNames()).toEqual(['Casa Geco', 'Villa Mar', 'Casa Areka']);
+  expect(new URLSearchParams(currentSearch()).get('sort')).toBeNull();
+});
+
+test('the pet toggle now rides along in the URL as pets=1', async () => {
+  await searchWithFilterFixture();
+
+  fireEvent.click(activeSlide().getByRole('checkbox', { name: /travelling with a pet/i }));
+  expect(new URLSearchParams(currentSearch()).get('pets')).toBe('1');
+});
+
+test('a shared link with filters restores them and pre-filters on first render', async () => {
+  mockJsonResponse(FILTER_SEARCH_FIXTURE);
+  renderBookingPage('/en/book?arrivalDate=2099-06-10&departureDate=2099-06-14&guests=2&pool=1&sort=price_asc');
+
+  await screen.findByText('Villa Mar');
+
+  // pool=1 pre-applied, so only the home with a pool shows, and the checkbox
+  // reflects the shared state.
+  expect(visibleHomeNames()).toEqual(['Villa Mar']);
+  expect(activeSlide().getByRole('checkbox', { name: /pool/i })).toBeChecked();
+  expect((activeSlide().getByLabelText('Sort by') as HTMLSelectElement).value).toBe('price_asc');
+});
+
+test('an over-narrow filter combination shows an empty state with Clear filters', async () => {
+  await searchWithFilterFixture();
+
+  // Pool + Center: Villa Mar has a pool but sits in Chiquita, Geco is in the
+  // Center but has no pool — nothing satisfies both.
+  fireEvent.click(activeSlide().getByRole('checkbox', { name: /pool/i }));
+  fireEvent.click(activeSlide().getByRole('button', { name: 'Puerto Viejo Center' }));
+
+  expect(visibleHomeNames()).toHaveLength(0);
+  expect(screen.getByText('No homes match your filters')).toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole('button', { name: /clear filters/i }));
+
+  expect(visibleHomeNames()).toHaveLength(3);
+  const params = new URLSearchParams(currentSearch());
+  expect(params.get('pool')).toBeNull();
+  expect(params.get('location')).toBeNull();
+});

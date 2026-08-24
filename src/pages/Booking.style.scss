@@ -578,6 +578,120 @@
 }
 
 // ---------------------------------------------------------------------------
+// Results filter bar — client-side refinement of the quote already on screen
+// (pool / fenced parking / area + sort). Every control writes to the URL.
+// ---------------------------------------------------------------------------
+.booking-filter-bar {
+  align-items: center;
+  background: rgba(138, 162, 136, 0.1);
+  border: 1px solid rgba(41, 79, 68, 0.14);
+  border-radius: 14px;
+  column-gap: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  padding: 14px 18px;
+  row-gap: 12px;
+
+  &__group {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    &--sort {
+      margin-inline-start: auto;
+    }
+  }
+
+  &__label {
+    align-items: center;
+    color: $kalawala-darker-green;
+    display: inline-flex;
+    font-size: 14px;
+    font-weight: 700;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .booking-filter-check {
+    margin-bottom: 0;
+
+    .form-check-label {
+      align-items: center;
+      color: $kalawala-darker-green;
+      display: inline-flex;
+      font-size: 14px;
+      font-weight: 600;
+      gap: 6px;
+    }
+
+    .form-check-input {
+      cursor: pointer;
+
+      &:checked {
+        background-color: $kalawala-darker-green;
+        border-color: $kalawala-darker-green;
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
+      }
+    }
+  }
+
+  .booking-filter-sort {
+    border-color: rgba(41, 79, 68, 0.3);
+    color: $kalawala-darker-green;
+    font-size: 14px;
+    font-weight: 600;
+    width: auto;
+
+    &:focus {
+      border-color: $kalawala-darker-green;
+      box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
+    }
+  }
+}
+
+.booking-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.booking-filter-pill {
+  background: #ffffff;
+  border: 1px solid rgba(41, 79, 68, 0.28);
+  border-radius: 999px;
+  color: $kalawala-darker-green;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 14px;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    border-color: $kalawala-darker-green;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
+    outline: none;
+  }
+
+  &--active {
+    background: $kalawala-darker-green;
+    border-color: $kalawala-darker-green;
+    color: #ffffff;
+  }
+}
+
+.booking-filters-clear {
+  margin-top: 12px;
+}
+
+// ---------------------------------------------------------------------------
 // Featured home — the listing the guest searched from, promoted above the rest
 // ---------------------------------------------------------------------------
 .booking-results-section-title {

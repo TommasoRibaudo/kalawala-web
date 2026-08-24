@@ -1165,7 +1165,7 @@ export const houseDataEngList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Private Outside Parking",
+                name: "Private unfenced Parking",
                 icon: "parking"
             },
             {
@@ -1204,7 +1204,7 @@ export const houseDataEngList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Private Outside Parking",
+                name: "Private unfenced Parking",
                 icon: "parking"
             },
             {
@@ -1353,7 +1353,7 @@ export const houseDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Outside Parking",
+                name: "Private unfenced Parking",
                 icon: "parking"
             },
             {
@@ -1392,7 +1392,7 @@ export const houseDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Outside Parking",
+                name: "Private unfenced Parking",
                 icon: "parking"
             },
             {
@@ -1504,7 +1504,7 @@ export const houseDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Parqueo Externo",
+                name: "Parqueo Privado Sin Cerca",
                 icon: "parking"
             },
             {
@@ -1543,7 +1543,7 @@ export const houseDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Parqueo Externo",
+                name: "Parqueo Privado Sin Cerca",
                 icon: "parking"
             },
             {
@@ -1725,7 +1725,7 @@ export const VillasDataListES: HouseDataType[] = [
                 icon: "ac"
             },
             {
-                name: "Parqueo Externo",
+                name: "Parqueo Privado Sin Cerca",
                 icon: "parking"
             },
             {
@@ -1762,7 +1762,7 @@ export const VillasDataListES: HouseDataType[] = [
                 icon: "ac"
             },
             {
-                name: "Parqueo Externo",
+                name: "Parqueo Privado Sin Cerca",
                 icon: "parking"
             },
             {
@@ -1802,7 +1802,7 @@ export const NamDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Unfenced Parking",
+                name: "Private unfenced Parking",
                 icon: "parking"
             }
         ],
@@ -1835,7 +1835,7 @@ export const NamDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Unfenced Parking",
+                name: "Private unfenced Parking",
                 icon: "parking"
             }
         ],
@@ -1868,7 +1868,7 @@ export const NamDataList: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Unfenced Parking",
+                name: "Private unfenced Parking",
                 icon: "parking"
             }
         ],
@@ -1905,7 +1905,7 @@ export const NamDataListES: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Parqueo Externo",
+                name: "Parqueo Privado Sin Cerca",
                 icon: "parking"
             }
         ],
@@ -1938,7 +1938,7 @@ export const NamDataListES: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Parqueo Externo",
+                name: "Parqueo Privado Sin Cerca",
                 icon: "parking"
             }
         ],
@@ -1971,7 +1971,7 @@ export const NamDataListES: HouseDataType[] = [
                 icon: "wifi"
             },
             {
-                name: "Parqueo Externo",
+                name: "Parqueo Privado Sin Cerca",
                 icon: "parking"
             }
         ],
@@ -2603,63 +2603,63 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '💑 Intimate space perfect for couples',
                 '❄️ A/C for comfortable nights',
                 '💻 WiFi for staying connected',
-                '🚗 Outside Private parking available'
+                '🚗 Private parking available'
             ],
             es: [
                 '🏖️ 2 min en carro de playa Punta Uva',
                 '💑 Espacio íntimo perfecto para parejas',
                 '❄️ A/C para noches cómodas',
                 '💻 WiFi para mantenerse conectado',
-                '🚗 Parqueo privado externo disponible'
+                '🚗 Parqueo privado disponible'
             ],
             de: [
                 '🏖️ 2 Minuten mit dem Auto vom Strand Punta Uva entfernt',
                 '💑 Intimer Raum, perfekt für Paare',
                 '❄️ Klimaanlage für angenehme Nächte',
                 '💻 WLAN, um in Verbindung zu bleiben',
-                '🚗 Privater Außenparkplatz vorhanden'
+                '🚗 Privater Parkplatz vorhanden'
             ],
             fr: [
                 '🏖️ À 2 minutes en voiture de la plage de Punta Uva',
                 '💑 Espace intime parfait pour les couples',
                 '❄️ Climatisation pour des nuits confortables',
                 '💻 WiFi pour rester connecté',
-                '🚗 Parking privé extérieur disponible'
+                '🚗 Parking privé disponible'
             ],
             it: [
                 '🏖️ A 2 minuti in auto dalla spiaggia di Punta Uva',
                 '💑 Spazio intimo perfetto per coppie',
                 '❄️ Aria condizionata per notti confortevoli',
                 '💻 WiFi per restare connessi',
-                '🚗 Parcheggio privato esterno disponibile'
+                '🚗 Parcheggio privato disponibile'
             ],
             pt: [
                 '🏖️ A 2 minutos de carro da praia de Punta Uva',
                 '💑 Espaço íntimo, perfeito para casais',
                 '❄️ Ar condicionado para noites confortáveis',
                 '💻 Wi-Fi para se manter ligado',
-                '🚗 Estacionamento privado exterior disponível'
+                '🚗 Estacionamento privado disponível'
             ],
             he: [
                 '🏖️ נסיעה של 2 דקות מחוף פונטה אובה',
                 '💑 מרחב אינטימי ומושלם לזוגות',
                 '❄️ מיזוג אוויר ללילות נעימים',
                 '💻 WiFi להישארות מחוברים',
-                '🚗 חניה פרטית בחוץ זמינה'
+                '🚗 חניה פרטית זמינה'
             ],
             hi: [
                 '🏖️ Punta Uva समुद्र तट से 2 मिनट की ड्राइव',
                 '💑 जोड़ों के लिए बिल्कुल सही अंतरंग स्थान',
                 '❄️ आरामदायक रातों के लिए A/C',
                 '💻 जुड़े रहने के लिए वाई-फाई',
-                '🚗 बाहरी निजी पार्किंग उपलब्ध'
+                '🚗 निजी पार्किंग उपलब्ध'
             ],
             nl: [
                 '🏖️ 2 minuten rijden van het strand van Punta Uva',
                 '💑 Intieme ruimte, perfect voor stellen',
                 '❄️ Airco voor comfortabele nachten',
                 '💻 Wifi om verbonden te blijven',
-                '🚗 Eigen parkeerplaats buiten beschikbaar'
+                '🚗 Eigen parkeerplaats beschikbaar'
             ]
         }
     },
@@ -2694,63 +2694,63 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
                 '💑 Intimate space perfect for couples',
                 '❄️ A/C for comfortable nights',
                 '💻 WiFi for staying connected',
-                '🚗 Outside Private parking available'
+                '🚗 Private parking available'
             ],
             es: [
                 '🏖️ 2 min en carro de playa Punta Uva',
                 '💑 Espacio íntimo perfecto para parejas',
                 '❄️ A/C para noches cómodas',
                 '💻 WiFi para mantenerse conectado',
-                '🚗 Parqueo privado externo disponible'
+                '🚗 Parqueo privado disponible'
             ],
             de: [
                 '🏖️ 2 Minuten mit dem Auto vom Strand Punta Uva entfernt',
                 '💑 Intimer Raum, perfekt für Paare',
                 '❄️ Klimaanlage für angenehme Nächte',
                 '💻 WLAN, um in Verbindung zu bleiben',
-                '🚗 Privater Außenparkplatz vorhanden'
+                '🚗 Privater Parkplatz vorhanden'
             ],
             fr: [
                 '🏖️ À 2 minutes en voiture de la plage de Punta Uva',
                 '💑 Espace intime parfait pour les couples',
                 '❄️ Climatisation pour des nuits confortables',
                 '💻 WiFi pour rester connecté',
-                '🚗 Parking privé extérieur disponible'
+                '🚗 Parking privé disponible'
             ],
             it: [
                 '🏖️ A 2 minuti in auto dalla spiaggia di Punta Uva',
                 '💑 Spazio intimo perfetto per coppie',
                 '❄️ Aria condizionata per notti confortevoli',
                 '💻 WiFi per restare connessi',
-                '🚗 Parcheggio privato esterno disponibile'
+                '🚗 Parcheggio privato disponibile'
             ],
             pt: [
                 '🏖️ A 2 minutos de carro da praia de Punta Uva',
                 '💑 Espaço íntimo, perfeito para casais',
                 '❄️ Ar condicionado para noites confortáveis',
                 '💻 Wi-Fi para se manter ligado',
-                '🚗 Estacionamento privado exterior disponível'
+                '🚗 Estacionamento privado disponível'
             ],
             he: [
                 '🏖️ נסיעה של 2 דקות מחוף פונטה אובה',
                 '💑 מרחב אינטימי ומושלם לזוגות',
                 '❄️ מיזוג אוויר ללילות נעימים',
                 '💻 WiFi להישארות מחוברים',
-                '🚗 חניה פרטית בחוץ זמינה'
+                '🚗 חניה פרטית זמינה'
             ],
             hi: [
                 '🏖️ Punta Uva समुद्र तट से 2 मिनट की ड्राइव',
                 '💑 जोड़ों के लिए बिल्कुल सही अंतरंग स्थान',
                 '❄️ आरामदायक रातों के लिए A/C',
                 '💻 जुड़े रहने के लिए वाई-फाई',
-                '🚗 बाहरी निजी पार्किंग उपलब्ध'
+                '🚗 निजी पार्किंग उपलब्ध'
             ],
             nl: [
                 '🏖️ 2 minuten rijden van het strand van Punta Uva',
                 '💑 Intieme ruimte, perfect voor stellen',
                 '❄️ Airco voor comfortabele nachten',
                 '💻 Wifi om verbonden te blijven',
-                '🚗 Eigen parkeerplaats buiten beschikbaar'
+                '🚗 Eigen parkeerplaats beschikbaar'
             ]
         }
     },

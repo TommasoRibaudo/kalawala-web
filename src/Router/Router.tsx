@@ -41,6 +41,10 @@ const ROUTE_ELEMENTS: React.ReactNode[] = (Object.keys(ROUTES) as RouteKey[]).fl
 // Component to capture pageviews on route changes and manage PostHog consent
 const PostHogPageView = () => {
   const location = useLocation();
+  // gtag's own 'config' call already sends GA4's automatic page_view for the
+  // first URL of the session (see public/index.html); this ref skips that
+  // first render so client-side route changes don't double-count it.
+  const isFirstRender = React.useRef(true);
 
   // Opt-in/out when consent changes
   React.useEffect(() => {
@@ -59,6 +63,18 @@ const PostHogPageView = () => {
     if (CookieConsentService.hasConsent('analytics')) {
       PostHog.capture('$pageview');
     }
+
+    // GA4 only auto-tracks the initial full page load; without this, every
+    // client-side route change (e.g. a blog post linking into /book) is
+    // invisible to GA4 pageview-based reports and explorations.
+    if (!isFirstRender.current && CookieConsentService.hasConsent('analytics') && typeof window.gtag === 'function') {
+      window.gtag('event', 'page_view', {
+        page_location: window.location.href,
+        page_path: location.pathname + location.search,
+        page_title: document.title,
+      });
+    }
+    isFirstRender.current = false;
   }, [location]);
 
   return null;

@@ -496,8 +496,14 @@
     color: $kalawala-darker-green;
     font-size: 16px;
     font-weight: 700;
-    height: 34px;
-    width: 34px;
+    // 44px is the touch-target floor (WCAG/iOS HIG) — was 34px, the smallest
+    // tap target in the whole booking flow despite sitting on the control
+    // guests actually operate post-search. Kept below the full form's 48px
+    // guest buttons since this bar shares a single tight row with the date
+    // fields and the search button; 44px is the largest bump that still fits
+    // a 320px-wide viewport without squeezing the date inputs unreadably.
+    height: 44px;
+    width: 44px;
     padding: 0;
     display: flex;
     align-items: center;

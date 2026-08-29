@@ -1122,7 +1122,7 @@ const BookingSearchResults = ({ result, strings, language, nonRefundable, onNonR
             </>
           )}
 
-          <ColonesEstimateNote strings={strings} language={language} />
+          <ColonesEstimateNote strings={strings} language={language} chargedInDollars={false} />
 
           {/* Homes filtered out by Smoobu are explained after the available ones,
               so a restriction on a home the guest cannot book never overshadows
@@ -1310,7 +1310,7 @@ const PayPalCheckoutPanel = ({ result, property, strings, language, withPet, non
         {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={nonRefundable && !holdResponse} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
         {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
-      <ColonesEstimateNote strings={strings} language={language} />
+      <ColonesEstimateNote strings={strings} language={language} chargedInDollars />
       {holdError && <Alert className="booking-search-alert" variant="danger" role="alert">{holdError}</Alert>}
       {holdResponse ? (
         <div className="booking-checkout-panel__hold" aria-live="polite">
@@ -1409,7 +1409,7 @@ const DepositCheckoutPanel = ({ result, property, strings, language, withPet, no
         {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
 
-      <ColonesEstimateNote strings={strings} language={language} />
+      <ColonesEstimateNote strings={strings} language={language} chargedInDollars={false} />
 
       {holdError && <Alert className="booking-search-alert" variant="danger" role="alert">{holdError}</Alert>}
 
@@ -1589,13 +1589,20 @@ const ColonesTransferAmount = ({ amountCents, currency, strings, language }: { a
 };
 
 /** The one line that makes every "≈" above it an estimate rather than a quote. */
-const ColonesEstimateNote = ({ strings, language }: { strings: BookingStrings; language: BookingLanguage }) => {
+// `chargedInDollars` is only true for the PayPal panel, where the card charge
+// really is USD with no alternative. Everywhere else — browsing results
+// before a payment method is chosen, and the bank transfer/SINPE panel,
+// which has its own colones bank account — a guest can pay real colones, so
+// the note must not claim otherwise.
+const ColonesEstimateNote = ({ strings, language, chargedInDollars }: { strings: BookingStrings; language: BookingLanguage; chargedInDollars: boolean }) => {
   const { status, data } = useExchangeRate(language === 'es');
   if (status !== 'ready' || !data) return null;
 
+  const rate = formatExchangeRate(data.rate, language);
+  const date = formatDate(data.fetchedAt.slice(0, 10), language);
   return (
     <p className="booking-colones-note">
-      {strings.colonesEstimateNote(formatExchangeRate(data.rate, language), formatDate(data.fetchedAt.slice(0, 10), language))}
+      {chargedInDollars ? strings.colonesEstimateNote(rate, date) : strings.colonesEstimateNoteFlexible(rate, date)}
     </p>
   );
 };

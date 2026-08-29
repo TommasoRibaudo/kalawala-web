@@ -245,6 +245,13 @@ const StepIndicator = ({ currentStep, strings }: { currentStep: WizardStep; stri
           );
         })}
       </ol>
+      {/* Below the tablet breakpoint the four labels above collapse to
+          screen-reader-only text (see .booking-wizard-step__label's mobile
+          rule) — this is the sighted replacement, naming just the active step
+          so a guest who left mid-flow and came back isn't reading a bare dot.
+          aria-hidden since the list above already announces the same name to
+          assistive tech. */}
+      <p className="booking-wizard-steps__current" aria-hidden="true">{strings[WIZARD_STEPS[current].labelKey]}</p>
     </nav>
   );
 };

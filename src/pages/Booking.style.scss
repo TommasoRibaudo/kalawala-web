@@ -197,6 +197,12 @@
   }
 }
 
+// Sighted replacement for the labels above once they go screen-reader-only
+// below the tablet breakpoint — see the mobile rule further down.
+.booking-wizard-steps__current {
+  display: none;
+}
+
 // ---------------------------------------------------------------------------
 // Back button (used in checkout / deposit slides)
 // ---------------------------------------------------------------------------
@@ -2021,13 +2027,34 @@ li.booking-result-card__amenities-toggle {
     align-items: flex-start;
   }
 
-  // Step indicator: hide labels on tablet, show only dots
+  // Step indicator: four full labels don't fit a tablet/mobile-width row, so
+  // the dots become the primary visual structure — but screen-reader-only
+  // (not display:none) keeps each step's name in the accessible tree, and
+  // .booking-wizard-steps__current below surfaces the active one for sighted
+  // guests too: a bare numbered dot gave a guest interrupted mid-flow nothing
+  // to reorient from on return.
   .booking-wizard-step__label {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .booking-wizard-step {
     gap: 0;
+  }
+
+  .booking-wizard-steps__current {
+    display: block;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: $kalawala-darker-green;
   }
 }
 

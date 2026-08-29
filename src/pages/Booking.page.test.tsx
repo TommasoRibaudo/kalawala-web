@@ -1077,7 +1077,7 @@ test('a persisted deposit hold is resumed on mount after the SINPE round-trip (#
 
   await screen.findByText('KWL-DEP12345');
   expect(screen.getByText('8772 7355')).toBeInTheDocument();
-  expect(screen.getByText('Upload only the receipt for this deposit. Any other picture will cancel your reservation automatically.')).toBeInTheDocument();
+  expect(screen.getByText("Upload only the receipt for this deposit — our team checks it before confirming your booking. Uploaded the wrong file? Contact us below and we'll help you fix it.")).toBeInTheDocument();
 });
 
 test('an expired persisted deposit hold is not resumed (#308)', async () => {
@@ -1148,8 +1148,8 @@ test('deposit receipt upload goes to S3 and then confirms with the API', async (
   fireEvent.click(screen.getByRole('button', { name: 'Reserve these dates' }));
   await screen.findByText('CR61010200009629385364');
 
-  // The guest is warned before picking a file that a non-receipt upload cancels the booking.
-  screen.getByText('Upload only the receipt for this deposit. Any other picture will cancel your reservation automatically.');
+  // The guest is warned before picking a file that a wrong upload needs staff to sort out.
+  screen.getByText("Upload only the receipt for this deposit — our team checks it before confirming your booking. Uploaded the wrong file? Contact us below and we'll help you fix it.");
 
   const file = new File(['receipt'], 'receipt.jpg', { type: 'image/jpeg' });
   const input = document.querySelector('input[type="file"]') as HTMLInputElement;

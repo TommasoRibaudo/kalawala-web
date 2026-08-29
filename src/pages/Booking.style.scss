@@ -245,6 +245,18 @@
     line-height: 1.6;
     margin: 0;
   }
+
+  // Same claim the homepage hero leads with (hero.trust in the global
+  // catalog) — this is the page a guest reaches right before paying, so it
+  // carries the same reassurance rather than none at all. Its own color/size
+  // (overriding the generic header `p` two lines up) keeps it reading as a
+  // distinct credibility line, not a continuation of the subtitle sentence.
+  .booking-search-trust {
+    color: $kalawala-dark-green;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 10px;
+  }
 }
 
 .booking-search-eyebrow,

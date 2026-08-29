@@ -788,6 +788,7 @@ const BookingPage = () => {
                       <p className="booking-search-eyebrow">{strings.eyebrow}</p>
                       <h1 id="booking-search-title">{strings.title}</h1>
                       <p>{strings.subtitle}</p>
+                      <p className="booking-search-trust">{strings.trustLine}</p>
                     </section>
                     <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={false} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} />
                     {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}

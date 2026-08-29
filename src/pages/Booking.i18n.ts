@@ -8,6 +8,12 @@ export const bookingStrings = {
     eyebrow: 'Kalawala',
     title: 'Book directly with Kalawala',
     subtitle: 'Choose your dates and see which homes are available for your stay.',
+    // Same claim as the homepage hero's trust line (src/i18n/messages/en.ts,
+    // `hero.trust`) — kept in this page's own catalog rather than cross-
+    // importing the global 9-locale message system, since everything else on
+    // /book already sources from BookingStrings and this only needs the two
+    // languages the booking flow supports.
+    trustLine: '✓ Instant confirmation · ✓ Secure booking · ✓ No platform fees',
     checkIn: 'Check-in',
     checkOut: 'Check-out',
     guests: 'Guests',
@@ -191,6 +197,7 @@ export const bookingStrings = {
     eyebrow: 'Kalawala',
     title: 'Reserva directamente con Kalawala',
     subtitle: 'Elige tus fechas y mira cu\u00e1les casas est\u00e1n disponibles para tu estad\u00eda.',
+    trustLine: '\u2713 Confirmaci\u00f3n instant\u00e1nea \u00b7 \u2713 Reserva segura \u00b7 \u2713 Sin comisiones',
     checkIn: 'Llegada',
     checkOut: 'Salida',
     guests: 'Hu\u00e9spedes',

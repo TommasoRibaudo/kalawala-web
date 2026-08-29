@@ -188,6 +188,12 @@ export const bookingStrings = {
     colonesEstimateAria: (amount: string) => `Approximately ${amount} — estimate`,
     colonesEstimateNote: (rate: string, date: string) =>
       `Colón amounts are an estimate at the ${date} exchange rate (${rate} per US$1). Payment is charged in US dollars.`,
+    // Same disclaimer without the dollars-only claim — for the results list
+    // (payment method not chosen yet) and the bank transfer/SINPE panel,
+    // where a guest can and does pay in real colones via the colones bank
+    // account below, not just an FX-converted estimate.
+    colonesEstimateNoteFlexible: (rate: string, date: string) =>
+      `Colón amounts are an estimate at the ${date} exchange rate (${rate} per US$1).`,
     colonesTransferAmount: (amount: string) => `Estimated amount to transfer: ${amount}`,
   },
   es: {
@@ -367,6 +373,8 @@ export const bookingStrings = {
     colonesEstimateAria: (amount: string) => `Aproximadamente ${amount} — estimado`,
     colonesEstimateNote: (rate: string, date: string) =>
       `Los montos en colones son una estimación al tipo de cambio del ${date} (${rate} por US$1). El cobro se realiza en dólares estadounidenses.`,
+    colonesEstimateNoteFlexible: (rate: string, date: string) =>
+      `Los montos en colones son una estimación al tipo de cambio del ${date} (${rate} por US$1).`,
     colonesTransferAmount: (amount: string) => `Monto estimado a transferir: ${amount}`,
     rateToggleLabel: 'Pol\u00edtica de cancelaci\u00f3n',
     nonRefundableSave: 'Ahorra 10%',

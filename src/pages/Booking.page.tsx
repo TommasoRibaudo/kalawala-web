@@ -911,6 +911,14 @@ const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDat
 // the URL so the refined view is shareable. Collapses to a single toggle
 // button below the tablet breakpoint — five control groups do not fit a
 // mobile screen at once, so only an active-filter count shows until expanded.
+//
+// Beyond the collapse, each facet is itself only rendered when it could
+// change today's result set: a homes-with-a-pool checkbox is dead weight when
+// none of the homes free for these dates have one, same for a single-area
+// result set or a one-home sort. A facet a guest already switched on stays
+// visible regardless (via the *show* flags below, which are `active || any
+// match`), so nothing disappears out from under an applied filter — only the
+// never-useful-today ones don't get offered in the first place.
 interface ResultsFilterBarProps {
   strings: BookingStrings;
   nonRefundable: boolean; onNonRefundableChange: (v: boolean) => void;
@@ -918,9 +926,10 @@ interface ResultsFilterBarProps {
   poolOnly: boolean; fencedParkingOnly: boolean; locationFilter: LocationFilter; sortOption: SortOption | null;
   onPoolChange: (v: boolean) => void; onFencedParkingChange: (v: boolean) => void;
   onLocationChange: (v: LocationFilter) => void; onSortChange: (v: SortOption | null) => void;
+  showLocationFilter: boolean; showPoolFilter: boolean; showFencedParkingFilter: boolean; showSortFilter: boolean;
 }
 
-const ResultsFilterBar = ({ strings, nonRefundable, onNonRefundableChange, withPet, onWithPetChange, poolOnly, fencedParkingOnly, locationFilter, sortOption, onPoolChange, onFencedParkingChange, onLocationChange, onSortChange }: ResultsFilterBarProps) => {
+const ResultsFilterBar = ({ strings, nonRefundable, onNonRefundableChange, withPet, onWithPetChange, poolOnly, fencedParkingOnly, locationFilter, sortOption, onPoolChange, onFencedParkingChange, onLocationChange, onSortChange, showLocationFilter, showPoolFilter, showFencedParkingFilter, showSortFilter }: ResultsFilterBarProps) => {
   const [expanded, setExpanded] = React.useState(false);
   const locations: { value: LocationFilter; label: string }[] = [
     { value: 'all', label: strings.filterLocationAll },
@@ -946,30 +955,34 @@ const ResultsFilterBar = ({ strings, nonRefundable, onNonRefundableChange, withP
           </div>
           <small className="booking-filter-bar__note">{nonRefundable ? strings.nonRefundableNote : strings.flexibleNote}</small>
         </div>
-        <div className="booking-filter-bar__group booking-filter-bar__group--location" role="group" aria-label={strings.filterLocationLabel}>
-          <span className="booking-filter-bar__label"><FontAwesomeIcon icon={faLocationDot} /> {strings.filterLocationLabel}</span>
-          <div className="booking-filter-pills">
-            {locations.map((loc) => (
-              <button key={loc.value} type="button" className={`booking-filter-pill${locationFilter === loc.value ? ' booking-filter-pill--active' : ''}`} aria-pressed={locationFilter === loc.value} onClick={() => onLocationChange(loc.value)}>{loc.label}</button>
-            ))}
+        {showLocationFilter && (
+          <div className="booking-filter-bar__group booking-filter-bar__group--location" role="group" aria-label={strings.filterLocationLabel}>
+            <span className="booking-filter-bar__label"><FontAwesomeIcon icon={faLocationDot} /> {strings.filterLocationLabel}</span>
+            <div className="booking-filter-pills">
+              {locations.map((loc) => (
+                <button key={loc.value} type="button" className={`booking-filter-pill${locationFilter === loc.value ? ' booking-filter-pill--active' : ''}`} aria-pressed={locationFilter === loc.value} onClick={() => onLocationChange(loc.value)}>{loc.label}</button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         <div className="booking-filter-bar__group booking-filter-bar__group--amenities" role="group" aria-label={strings.filterAmenitiesLabel}>
-          <Form.Check type="checkbox" id="filterPool" className="booking-filter-check" label={<><FontAwesomeIcon icon={faSwimmingPool} /> {strings.filterPool}</>} checked={poolOnly} onChange={(e) => onPoolChange(e.target.checked)} />
-          <Form.Check type="checkbox" id="filterParking" className="booking-filter-check" label={<><FontAwesomeIcon icon={faCar} /> {strings.filterFencedParking}</>} checked={fencedParkingOnly} onChange={(e) => onFencedParkingChange(e.target.checked)} />
+          {showPoolFilter && <Form.Check type="checkbox" id="filterPool" className="booking-filter-check" label={<><FontAwesomeIcon icon={faSwimmingPool} /> {strings.filterPool}</>} checked={poolOnly} onChange={(e) => onPoolChange(e.target.checked)} />}
+          {showFencedParkingFilter && <Form.Check type="checkbox" id="filterParking" className="booking-filter-check" label={<><FontAwesomeIcon icon={faCar} /> {strings.filterFencedParking}</>} checked={fencedParkingOnly} onChange={(e) => onFencedParkingChange(e.target.checked)} />}
           <Form.Check type="checkbox" id="filterPet" className="booking-filter-check" label={<><FontAwesomeIcon icon={faPaw} /> {strings.petToggle}</>} checked={withPet} onChange={(e) => onWithPetChange(e.target.checked)} />
           {withPet && <small className="booking-filter-bar__note">{strings.petToggleNote}</small>}
         </div>
-        <div className="booking-filter-bar__group booking-filter-bar__group--sort">
-          <Form.Label htmlFor="filterSort" className="booking-filter-bar__label">{strings.sortLabel}</Form.Label>
-          <Form.Select id="filterSort" size="sm" className="booking-filter-sort" value={sortOption ?? ''} onChange={(e) => onSortChange(e.target.value === '' ? null : (e.target.value as SortOption))}>
-            <option value="">{strings.sortFeatured}</option>
-            <option value="price_asc">{strings.sortPriceAsc}</option>
-            <option value="price_desc">{strings.sortPriceDesc}</option>
-            <option value="size_asc">{strings.sortSizeAsc}</option>
-            <option value="size_desc">{strings.sortSizeDesc}</option>
-          </Form.Select>
-        </div>
+        {showSortFilter && (
+          <div className="booking-filter-bar__group booking-filter-bar__group--sort">
+            <Form.Label htmlFor="filterSort" className="booking-filter-bar__label">{strings.sortLabel}</Form.Label>
+            <Form.Select id="filterSort" size="sm" className="booking-filter-sort" value={sortOption ?? ''} onChange={(e) => onSortChange(e.target.value === '' ? null : (e.target.value as SortOption))}>
+              <option value="">{strings.sortFeatured}</option>
+              <option value="price_asc">{strings.sortPriceAsc}</option>
+              <option value="price_desc">{strings.sortPriceDesc}</option>
+              <option value="size_asc">{strings.sortSizeAsc}</option>
+              <option value="size_desc">{strings.sortSizeDesc}</option>
+            </Form.Select>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1021,6 +1034,20 @@ const BookingSearchResults = ({ result, strings, language, nonRefundable, onNonR
   const anyRefineActive = poolOnly || fencedParkingOnly || locationFilter !== 'all';
   const visibleCount = (featured ? 1 : 0) + others.length;
 
+  // Facet visibility is judged against the full result set for these dates,
+  // not the already-filtered `others` — a facet already switched on stays
+  // offered even if it alone would now zero out the list (the empty state
+  // below has its own "Clear filters" escape hatch for that). The pet toggle
+  // is exempt: it declares a persistent guest need rather than refining
+  // today's homes, and a search where nothing free happens to be pet-friendly
+  // is exactly the case where a guest travelling with a pet most needs to
+  // find that out (see petFilterEmptyBody below) — hiding the toggle there
+  // would hide the one control that tells them.
+  const showPoolFilter = poolOnly || result.properties.some(hasPool);
+  const showFencedParkingFilter = fencedParkingOnly || result.properties.some(hasFencedParking);
+  const showLocationFilter = locationFilter !== 'all' || new Set(result.properties.map((p) => locationBucket(p.slug))).size > 1;
+  const showSortFilter = sortOption !== null || result.properties.length > 1;
+
   // No home is available for these dates at all — filtering is moot, so skip the
   // bar and send the guest back to their dates.
   if (!hasAvailability) {
@@ -1034,6 +1061,7 @@ const BookingSearchResults = ({ result, strings, language, nonRefundable, onNonR
       withPet={withPet} onWithPetChange={onWithPetChange}
       poolOnly={poolOnly} fencedParkingOnly={fencedParkingOnly} locationFilter={locationFilter} sortOption={sortOption}
       onPoolChange={onPoolChange} onFencedParkingChange={onFencedParkingChange} onLocationChange={onLocationChange} onSortChange={onSortChange}
+      showLocationFilter={showLocationFilter} showPoolFilter={showPoolFilter} showFencedParkingFilter={showFencedParkingFilter} showSortFilter={showSortFilter}
     />
   );
 

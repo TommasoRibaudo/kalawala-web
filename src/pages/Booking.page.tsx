@@ -3,7 +3,7 @@ import { Alert, Button, Col, Container, Form, Row, Spinner } from 'react-bootstr
 import { Helmet } from 'react-helmet';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarDays, faUser, faWifi, faSnowflake, faCar, faKitchenSet, faArrowLeft, faCheck, faPlus, faLocationDot, faBath, faPaw, faSwimmingPool, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarDays, faUser, faWifi, faSnowflake, faCar, faKitchenSet, faArrowLeft, faCheck, faPlus, faLocationDot, faBath, faPaw, faSwimmingPool, faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
 import { bookingLanguage, useLocale } from '../i18n';
@@ -333,7 +333,10 @@ const BookingPage = () => {
   const [searchCaptchaRequired, setSearchCaptchaRequired] = React.useState(false);
   const [holdCaptchaRequired, setHoldCaptchaRequired] = React.useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
-  const [nonRefundable, setNonRefundable] = React.useState(false);
+  // Cancellation policy is a filter-bar control like the rest below, not a
+  // search-time input — it only changes the displayed price/what rides along
+  // to the hold, so it is seeded from and written back to the URL the same way.
+  const [nonRefundable, setNonRefundable] = React.useState(() => searchParams.get('rate') === 'nonrefundable');
   // Filters the results down to the pet-friendly homes and rides along to the
   // hold so the booking itself records the pet. Seeded from the URL like the
   // other filters so a shared link restores it, but kept as its own toggle
@@ -457,15 +460,16 @@ const BookingPage = () => {
     setSearchParams(nextParams, { replace: true });
   }, [searchParams, setSearchParams]);
 
+  const handleNonRefundableChange = (value: boolean) => { setNonRefundable(value); setFilterParam('rate', value ? 'nonrefundable' : null); };
   const handleWithPetChange = (value: boolean) => { setWithPet(value); setFilterParam('pets', value ? '1' : null); };
   const handlePoolChange = (value: boolean) => { setPoolOnly(value); setFilterParam('pool', value ? '1' : null); };
   const handleFencedParkingChange = (value: boolean) => { setFencedParkingOnly(value); setFilterParam('parking', value ? '1' : null); };
   const handleLocationChange = (value: LocationFilter) => { setLocationFilter(value); setFilterParam('location', value === 'all' ? null : value); };
   const handleSortChange = (value: SortOption | null) => { setSortOption(value); setFilterParam('sort', value); };
   const handleClearFilters = () => {
-    setWithPet(false); setPoolOnly(false); setFencedParkingOnly(false); setLocationFilter('all'); setSortOption(null);
+    setNonRefundable(false); setWithPet(false); setPoolOnly(false); setFencedParkingOnly(false); setLocationFilter('all'); setSortOption(null);
     const nextParams = new URLSearchParams(searchParams.toString());
-    ['pets', 'pool', 'parking', 'location', 'sort'].forEach((key) => nextParams.delete(key));
+    ['rate', 'pets', 'pool', 'parking', 'location', 'sort'].forEach((key) => nextParams.delete(key));
     setSearchParams(nextParams, { replace: true });
   };
 
@@ -778,7 +782,7 @@ const BookingPage = () => {
                       <h1 id="booking-search-title">{strings.title}</h1>
                       <p>{strings.subtitle}</p>
                     </section>
-                    <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={false} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} withPet={withPet} onWithPetChange={handleWithPetChange} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} />
+                    <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={false} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} />
                     {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
                   </>
                 )}
@@ -787,11 +791,11 @@ const BookingPage = () => {
             {/* Step 2: Results */}
             <div className={`booking-wizard-slide${wizardStep === 'results' ? ' booking-wizard-slide--active' : stepIndex(wizardStep) > stepIndex('results') ? ' booking-wizard-slide--left' : ' booking-wizard-slide--right'}`} aria-hidden={wizardStep !== 'results'}>
               <Row className="justify-content-center"><Col lg={10} xl={9}>
-                <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={true} nonRefundable={nonRefundable} onNonRefundableChange={setNonRefundable} withPet={withPet} onWithPetChange={handleWithPetChange} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} onBack={handleBackToSearch} />
+                <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={true} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} onBack={handleBackToSearch} />
                 {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
                 {depositError && <Alert className="booking-search-alert" variant="danger" role="alert">{depositError}</Alert>}
                 <div ref={resultsAnchorRef} className="booking-results-anchor" />
-                {result && <BookingSearchResults result={result} strings={strings} language={language} nonRefundable={nonRefundable} withPet={withPet} poolOnly={poolOnly} fencedParkingOnly={fencedParkingOnly} locationFilter={locationFilter} sortOption={sortOption} onPoolChange={handlePoolChange} onFencedParkingChange={handleFencedParkingChange} onLocationChange={handleLocationChange} onSortChange={handleSortChange} onClearFilters={handleClearFilters} onManualDepositHandoff={handleStartDepositCheckout} onStartPayPalHold={handleStartPayPalHold} selectedPropertyId={checkoutProperty?.propertyId ?? null} featuredSlug={featuredSlug} />}
+                {result && <BookingSearchResults result={result} strings={strings} language={language} nonRefundable={nonRefundable} onNonRefundableChange={handleNonRefundableChange} withPet={withPet} onWithPetChange={handleWithPetChange} poolOnly={poolOnly} fencedParkingOnly={fencedParkingOnly} locationFilter={locationFilter} sortOption={sortOption} onPoolChange={handlePoolChange} onFencedParkingChange={handleFencedParkingChange} onLocationChange={handleLocationChange} onSortChange={handleSortChange} onClearFilters={handleClearFilters} onManualDepositHandoff={handleStartDepositCheckout} onStartPayPalHold={handleStartPayPalHold} selectedPropertyId={checkoutProperty?.propertyId ?? null} featuredSlug={featuredSlug} />}
               </Col></Row>
             </div>
             {/* Step 3: Checkout / Deposit */}
@@ -819,14 +823,12 @@ interface SearchFormProps {
   arrivalDate: string; departureDate: string; guests: number; today: string; minDepartureDate: string;
   fieldErrors: Record<string, string>; isSubmitting: boolean; searchCaptchaRequired: boolean;
   strings: BookingStrings; compact: boolean;
-  nonRefundable: boolean; onNonRefundableChange: (value: boolean) => void;
-  withPet: boolean; onWithPetChange: (value: boolean) => void;
   onArrivalChange: (value: string) => void; onDepartureChange: (value: string) => void;
   onGuestInputChange: (value: number) => void; onGuestStepChange: (value: number) => void;
   onSubmit: (event: React.FormEvent) => void; onBack?: () => void;
 }
 
-const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDate, fieldErrors, isSubmitting, searchCaptchaRequired, strings, compact, nonRefundable, onNonRefundableChange, withPet, onWithPetChange, onArrivalChange, onDepartureChange, onGuestInputChange, onGuestStepChange, onSubmit, onBack }: SearchFormProps) => {
+const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDate, fieldErrors, isSubmitting, searchCaptchaRequired, strings, compact, onArrivalChange, onDepartureChange, onGuestInputChange, onGuestStepChange, onSubmit, onBack }: SearchFormProps) => {
   if (compact) {
     return (
       <div className="booking-search-compact">
@@ -852,16 +854,13 @@ const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDat
               </Form.Group>
               <Button className="booking-search-compact__submit" type="submit" disabled={isSubmitting}>
                 {isSubmitting ? <Spinner animation="border" size="sm" /> : <FontAwesomeIcon icon={faCalendarDays} />}
-                <span className="visually-hidden">{strings.search}</span>
+                {/* Hidden above 575px to keep the compact bar icon-only; shown as
+                    real text below it, where an unlabelled square reads as an
+                    unclear button — see .booking-search-compact__submit__label. */}
+                <span className="booking-search-compact__submit__label">{strings.search}</span>
               </Button>
             </div>
           </Form>
-        </div>
-        <div className="booking-search-compact__rate-row">
-          <Form.Check type="switch" id="rateToggleCompact" className="booking-rate-toggle" label={nonRefundable ? strings.rateNonRefundable : strings.rateFlexible} checked={nonRefundable} onChange={(e) => onNonRefundableChange(e.target.checked)} />
-          {nonRefundable && <span className="booking-rate-toggle__badge">{strings.nonRefundableSave}</span>}
-          <Form.Check type="switch" id="petToggleCompact" className="booking-rate-toggle booking-pet-toggle" label={<><FontAwesomeIcon icon={faPaw} /> {strings.petToggle}</>} checked={withPet} onChange={(e) => onWithPetChange(e.target.checked)} />
-          {withPet && <span className="booking-rate-toggle__badge">{strings.petToggleBadge}</span>}
         </div>
         {searchCaptchaRequired && <div className="booking-captcha-widget" aria-live="polite"><Spinner animation="border" size="sm" /> {strings.searching}</div>}
       </div>
@@ -872,9 +871,9 @@ const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDat
     <>
       <Form className="booking-search-form" onSubmit={onSubmit} noValidate>
         <Row className="g-3 align-items-end">
-          <Col md={3}><Form.Group controlId="bookingArrivalDate"><Form.Label>{strings.checkIn}</Form.Label><Form.Control type="date" value={arrivalDate} min={today} isInvalid={Boolean(fieldErrors.arrivalDate)} onChange={(e) => onArrivalChange(e.target.value)} /><Form.Control.Feedback type="invalid">{fieldErrors.arrivalDate}</Form.Control.Feedback></Form.Group></Col>
-          <Col md={3}><Form.Group controlId="bookingDepartureDate"><Form.Label>{strings.checkOut}</Form.Label><Form.Control type="date" value={departureDate} min={minDepartureDate} isInvalid={Boolean(fieldErrors.departureDate)} onChange={(e) => onDepartureChange(e.target.value)} /><Form.Control.Feedback type="invalid">{fieldErrors.departureDate}</Form.Control.Feedback></Form.Group></Col>
-          <Col md={3}>
+          <Col md={6} lg={3}><Form.Group controlId="bookingArrivalDate"><Form.Label>{strings.checkIn}</Form.Label><Form.Control type="date" value={arrivalDate} min={today} isInvalid={Boolean(fieldErrors.arrivalDate)} onChange={(e) => onArrivalChange(e.target.value)} /><Form.Control.Feedback type="invalid">{fieldErrors.arrivalDate}</Form.Control.Feedback></Form.Group></Col>
+          <Col md={6} lg={3}><Form.Group controlId="bookingDepartureDate"><Form.Label>{strings.checkOut}</Form.Label><Form.Control type="date" value={departureDate} min={minDepartureDate} isInvalid={Boolean(fieldErrors.departureDate)} onChange={(e) => onDepartureChange(e.target.value)} /><Form.Control.Feedback type="invalid">{fieldErrors.departureDate}</Form.Control.Feedback></Form.Group></Col>
+          <Col md={6} lg={3}>
             <Form.Group controlId="bookingGuestCount">
               <Form.Label>{strings.guests}</Form.Label>
               <div className="booking-guest-control">
@@ -886,67 +885,84 @@ const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDat
               {fieldErrors.guests && <div className="booking-field-error">{fieldErrors.guests}</div>}
             </Form.Group>
           </Col>
-          <Col md={3}>
+          <Col md={6} lg={3}>
             <Button className="booking-search-submit" type="submit" disabled={isSubmitting}>
               {isSubmitting ? <><Spinner animation="border" size="sm" /> {strings.searching}</> : <><FontAwesomeIcon icon={faCalendarDays} /> {strings.search}</>}
             </Button>
           </Col>
         </Row>
-        <div className="booking-rate-toggle-row">
-          <Form.Check type="switch" id="rateToggleFull" className="booking-rate-toggle" label={nonRefundable ? strings.rateNonRefundable : strings.rateFlexible} checked={nonRefundable} onChange={(e) => onNonRefundableChange(e.target.checked)} />
-          {nonRefundable && <span className="booking-rate-toggle__badge">{strings.nonRefundableSave}</span>}
-          <small className="booking-rate-toggle__note">{nonRefundable ? strings.nonRefundableNote : strings.flexibleNote}</small>
-        </div>
-        <div className="booking-rate-toggle-row">
-          <Form.Check type="switch" id="petToggleFull" className="booking-rate-toggle booking-pet-toggle" label={<><FontAwesomeIcon icon={faPaw} /> {strings.petToggle}</>} checked={withPet} onChange={(e) => onWithPetChange(e.target.checked)} />
-          {withPet && <span className="booking-rate-toggle__badge">{strings.petToggleBadge}</span>}
-          {withPet && <small className="booking-rate-toggle__note">{strings.petToggleNote}</small>}
-        </div>
       </Form>
       {searchCaptchaRequired && <div className="booking-captcha-widget" aria-live="polite"><Spinner animation="border" size="sm" /> {strings.searching}</div>}
     </>
   );
 };
 
-// ResultsFilterBar — client-side refinement of the quote already on screen.
-// Never re-runs the search; every control writes to the URL so the refined view
-// is shareable.
+// ResultsFilterBar — every guest-facing refinement in one place: cancellation
+// policy and the pet declaration used to live in the search bar above the
+// results, separate from area/amenities/sort here. Unified so a guest reads
+// one panel instead of two. Never re-runs the search; every control writes to
+// the URL so the refined view is shareable. Collapses to a single toggle
+// button below the tablet breakpoint — five control groups do not fit a
+// mobile screen at once, so only an active-filter count shows until expanded.
 interface ResultsFilterBarProps {
   strings: BookingStrings;
+  nonRefundable: boolean; onNonRefundableChange: (v: boolean) => void;
+  withPet: boolean; onWithPetChange: (v: boolean) => void;
   poolOnly: boolean; fencedParkingOnly: boolean; locationFilter: LocationFilter; sortOption: SortOption | null;
   onPoolChange: (v: boolean) => void; onFencedParkingChange: (v: boolean) => void;
   onLocationChange: (v: LocationFilter) => void; onSortChange: (v: SortOption | null) => void;
 }
 
-const ResultsFilterBar = ({ strings, poolOnly, fencedParkingOnly, locationFilter, sortOption, onPoolChange, onFencedParkingChange, onLocationChange, onSortChange }: ResultsFilterBarProps) => {
+const ResultsFilterBar = ({ strings, nonRefundable, onNonRefundableChange, withPet, onWithPetChange, poolOnly, fencedParkingOnly, locationFilter, sortOption, onPoolChange, onFencedParkingChange, onLocationChange, onSortChange }: ResultsFilterBarProps) => {
+  const [expanded, setExpanded] = React.useState(false);
   const locations: { value: LocationFilter; label: string }[] = [
     { value: 'all', label: strings.filterLocationAll },
     { value: 'center', label: strings.locationPuertoViejo },
     { value: 'chiquita', label: strings.locationPlayaChiquita },
   ];
+  const activeCount = [nonRefundable, withPet, poolOnly, fencedParkingOnly, locationFilter !== 'all', sortOption !== null].filter(Boolean).length;
   return (
     <div className="booking-filter-bar">
-      <div className="booking-filter-bar__group booking-filter-bar__group--location" role="group" aria-label={strings.filterLocationLabel}>
-        <span className="booking-filter-bar__label"><FontAwesomeIcon icon={faLocationDot} /> {strings.filterLocationLabel}</span>
-        <div className="booking-filter-pills">
-          {locations.map((loc) => (
-            <button key={loc.value} type="button" className={`booking-filter-pill${locationFilter === loc.value ? ' booking-filter-pill--active' : ''}`} aria-pressed={locationFilter === loc.value} onClick={() => onLocationChange(loc.value)}>{loc.label}</button>
-          ))}
+      <button type="button" className="booking-filter-bar__toggle" aria-expanded={expanded} aria-controls="booking-filter-panel" onClick={() => setExpanded((v) => !v)}>
+        <FontAwesomeIcon icon={faFilter} /> {strings.filtersToggle}
+        {activeCount > 0 && <span className="booking-filter-bar__count">{activeCount}</span>}
+        <FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} className="booking-filter-bar__chevron" />
+      </button>
+      <div id="booking-filter-panel" className={`booking-filter-bar__panel${expanded ? ' booking-filter-bar__panel--expanded' : ''}`}>
+        <div className="booking-filter-bar__group booking-filter-bar__group--rate" role="group" aria-label={strings.rateToggleLabel}>
+          <span className="booking-filter-bar__label">{strings.rateToggleLabel}</span>
+          <div className="booking-filter-pills">
+            <button type="button" className={`booking-filter-pill${!nonRefundable ? ' booking-filter-pill--active' : ''}`} aria-pressed={!nonRefundable} onClick={() => onNonRefundableChange(false)}>{strings.rateFlexible}</button>
+            <button type="button" className={`booking-filter-pill booking-filter-pill--rate${nonRefundable ? ' booking-filter-pill--active' : ''}`} aria-pressed={nonRefundable} onClick={() => onNonRefundableChange(true)}>
+              {strings.rateNonRefundable} <span className="booking-filter-pill__badge">{strings.nonRefundableSave}</span>
+            </button>
+          </div>
+          <small className="booking-filter-bar__note">{nonRefundable ? strings.nonRefundableNote : strings.flexibleNote}</small>
         </div>
-      </div>
-      <div className="booking-filter-bar__group booking-filter-bar__group--amenities" role="group" aria-label={strings.filterAmenitiesLabel}>
-        <Form.Check type="checkbox" id="filterPool" className="booking-filter-check" label={<><FontAwesomeIcon icon={faSwimmingPool} /> {strings.filterPool}</>} checked={poolOnly} onChange={(e) => onPoolChange(e.target.checked)} />
-        <Form.Check type="checkbox" id="filterParking" className="booking-filter-check" label={<><FontAwesomeIcon icon={faCar} /> {strings.filterFencedParking}</>} checked={fencedParkingOnly} onChange={(e) => onFencedParkingChange(e.target.checked)} />
-      </div>
-      <div className="booking-filter-bar__group booking-filter-bar__group--sort">
-        <Form.Label htmlFor="filterSort" className="booking-filter-bar__label">{strings.sortLabel}</Form.Label>
-        <Form.Select id="filterSort" size="sm" className="booking-filter-sort" value={sortOption ?? ''} onChange={(e) => onSortChange(e.target.value === '' ? null : (e.target.value as SortOption))}>
-          <option value="">{strings.sortFeatured}</option>
-          <option value="price_asc">{strings.sortPriceAsc}</option>
-          <option value="price_desc">{strings.sortPriceDesc}</option>
-          <option value="size_asc">{strings.sortSizeAsc}</option>
-          <option value="size_desc">{strings.sortSizeDesc}</option>
-        </Form.Select>
+        <div className="booking-filter-bar__group booking-filter-bar__group--location" role="group" aria-label={strings.filterLocationLabel}>
+          <span className="booking-filter-bar__label"><FontAwesomeIcon icon={faLocationDot} /> {strings.filterLocationLabel}</span>
+          <div className="booking-filter-pills">
+            {locations.map((loc) => (
+              <button key={loc.value} type="button" className={`booking-filter-pill${locationFilter === loc.value ? ' booking-filter-pill--active' : ''}`} aria-pressed={locationFilter === loc.value} onClick={() => onLocationChange(loc.value)}>{loc.label}</button>
+            ))}
+          </div>
+        </div>
+        <div className="booking-filter-bar__group booking-filter-bar__group--amenities" role="group" aria-label={strings.filterAmenitiesLabel}>
+          <Form.Check type="checkbox" id="filterPool" className="booking-filter-check" label={<><FontAwesomeIcon icon={faSwimmingPool} /> {strings.filterPool}</>} checked={poolOnly} onChange={(e) => onPoolChange(e.target.checked)} />
+          <Form.Check type="checkbox" id="filterParking" className="booking-filter-check" label={<><FontAwesomeIcon icon={faCar} /> {strings.filterFencedParking}</>} checked={fencedParkingOnly} onChange={(e) => onFencedParkingChange(e.target.checked)} />
+          <Form.Check type="checkbox" id="filterPet" className="booking-filter-check" label={<><FontAwesomeIcon icon={faPaw} /> {strings.petToggle}</>} checked={withPet} onChange={(e) => onWithPetChange(e.target.checked)} />
+          {withPet && <small className="booking-filter-bar__note">{strings.petToggleNote}</small>}
+        </div>
+        <div className="booking-filter-bar__group booking-filter-bar__group--sort">
+          <Form.Label htmlFor="filterSort" className="booking-filter-bar__label">{strings.sortLabel}</Form.Label>
+          <Form.Select id="filterSort" size="sm" className="booking-filter-sort" value={sortOption ?? ''} onChange={(e) => onSortChange(e.target.value === '' ? null : (e.target.value as SortOption))}>
+            <option value="">{strings.sortFeatured}</option>
+            <option value="price_asc">{strings.sortPriceAsc}</option>
+            <option value="price_desc">{strings.sortPriceDesc}</option>
+            <option value="size_asc">{strings.sortSizeAsc}</option>
+            <option value="size_desc">{strings.sortSizeDesc}</option>
+          </Form.Select>
+        </div>
       </div>
     </div>
   );
@@ -955,14 +971,16 @@ const ResultsFilterBar = ({ strings, poolOnly, fencedParkingOnly, locationFilter
 // BookingSearchResults
 interface BookingSearchResultsProps {
   result: BookingSearchResponse; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean;
-  withPet: boolean; poolOnly: boolean; fencedParkingOnly: boolean; locationFilter: LocationFilter; sortOption: SortOption | null;
+  onNonRefundableChange: (v: boolean) => void;
+  withPet: boolean; onWithPetChange: (v: boolean) => void;
+  poolOnly: boolean; fencedParkingOnly: boolean; locationFilter: LocationFilter; sortOption: SortOption | null;
   onPoolChange: (v: boolean) => void; onFencedParkingChange: (v: boolean) => void;
   onLocationChange: (v: LocationFilter) => void; onSortChange: (v: SortOption | null) => void; onClearFilters: () => void;
   onManualDepositHandoff: (p: BookingAvailableProperty) => void; onStartPayPalHold: (p: BookingAvailableProperty) => void;
   selectedPropertyId: string | null; featuredSlug: string | null;
 }
 
-const BookingSearchResults = ({ result, strings, language, nonRefundable, withPet, poolOnly, fencedParkingOnly, locationFilter, sortOption, onPoolChange, onFencedParkingChange, onLocationChange, onSortChange, onClearFilters, onManualDepositHandoff, onStartPayPalHold, selectedPropertyId, featuredSlug }: BookingSearchResultsProps) => {
+const BookingSearchResults = ({ result, strings, language, nonRefundable, onNonRefundableChange, withPet, onWithPetChange, poolOnly, fencedParkingOnly, locationFilter, sortOption, onPoolChange, onFencedParkingChange, onLocationChange, onSortChange, onClearFilters, onManualDepositHandoff, onStartPayPalHold, selectedPropertyId, featuredSlug }: BookingSearchResultsProps) => {
   // Filtering here rather than in the search request keeps every control instant
   // on this step: flipping one re-renders the same quote instead of spending
   // another search. The hold route re-checks the home server-side before
@@ -1005,6 +1023,8 @@ const BookingSearchResults = ({ result, strings, language, nonRefundable, withPe
   const filterBar = (
     <ResultsFilterBar
       strings={strings}
+      nonRefundable={nonRefundable} onNonRefundableChange={onNonRefundableChange}
+      withPet={withPet} onWithPetChange={onWithPetChange}
       poolOnly={poolOnly} fencedParkingOnly={fencedParkingOnly} locationFilter={locationFilter} sortOption={sortOption}
       onPoolChange={onPoolChange} onFencedParkingChange={onFencedParkingChange} onLocationChange={onLocationChange} onSortChange={onSortChange}
     />

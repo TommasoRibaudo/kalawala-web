@@ -53,7 +53,7 @@
 // ---------------------------------------------------------------------------
 
 .booking-wizard {
-  padding: 100px 0 70px;
+  padding: 40px 0 70px;
   overflow: hidden;
 }
 
@@ -110,7 +110,7 @@
 // ---------------------------------------------------------------------------
 
 .booking-wizard-steps {
-  margin-bottom: 32px;
+  margin-bottom: 20px;
 
   ol {
     display: flex;
@@ -126,7 +126,7 @@
 .booking-wizard-step {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex: 1;
   position: relative;
 
@@ -136,7 +136,7 @@
     flex: 1;
     height: 2px;
     background: rgba(41, 79, 68, 0.18);
-    margin: 0 8px;
+    margin: 0 6px;
   }
 
   &:last-child::after {
@@ -160,11 +160,11 @@
   color: rgba(23, 23, 23, 0.5);
   display: flex;
   flex: 0 0 auto;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  height: 32px;
+  height: 26px;
   justify-content: center;
-  width: 32px;
+  width: 26px;
   transition: all 0.3s ease;
 
   .booking-wizard-step--active & {
@@ -183,7 +183,7 @@
 
 .booking-wizard-step__label {
   color: rgba(23, 23, 23, 0.5);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
   transition: color 0.3s ease;
@@ -343,10 +343,16 @@
 
 .booking-search-submit {
   align-items: center;
-  background: $kalawala-light-green;
+  // !important: the `.booking-page .btn` reset above outranks this single-class
+  // selector (0-2-0 vs 0-1-0) and would otherwise always win, leaving the
+  // button transparent instead of the primary green — see booking-search-widget's
+  // __submit rule for the same fix applied to the homepage/listing widget.
+  // Matches booking-search-compact__submit's resting color below, so the
+  // button reads the same whether the search bar is full-size or collapsed.
+  background: $kalawala-darker-green !important;
   border: 0;
   border-radius: 8px;
-  color: #ffffff;
+  color: #ffffff !important;
   display: inline-flex;
   gap: 10px;
   font-weight: 700;
@@ -357,15 +363,15 @@
 
   &:hover,
   &:disabled {
-    background: $kalawala-dark-green;
-    color: #ffffff;
+    background: $kalawala-dark-green !important;
+    color: #ffffff !important;
   }
 
   &:focus,
   &:focus-visible {
-    background: $kalawala-dark-green;
+    background: $kalawala-dark-green !important;
     box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.35);
-    color: #ffffff;
+    color: #ffffff !important;
   }
 }
 
@@ -519,28 +525,62 @@
 
 .booking-search-compact__submit {
   align-items: center;
-  background: $kalawala-darker-green;
+  // !important: see .booking-search-submit above — the `.booking-page .btn`
+  // reset otherwise always wins on specificity and leaves this transparent.
+  background: $kalawala-darker-green !important;
   border: 0;
   border-radius: 8px;
-  color: #ffffff;
+  color: #ffffff !important;
   display: flex;
   flex: 0 0 auto;
   font-size: 16px;
+  gap: 8px;
   height: 40px;
   justify-content: center;
+  padding: 0 12px;
   width: 40px;
 
   &:hover,
   &:disabled {
-    background: $kalawala-dark-green;
-    color: #ffffff;
+    background: $kalawala-dark-green !important;
+    color: #ffffff !important;
   }
 
   &:focus,
   &:focus-visible {
-    background: $kalawala-dark-green;
+    background: $kalawala-dark-green !important;
     box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.35);
-    color: #ffffff;
+    color: #ffffff !important;
+  }
+
+  // Below 576px this is the only search control on screen (step 2+), so an
+  // icon-only 40px square reads as an unlabelled mystery button. Widen it to
+  // fit the label instead of keeping it screen-reader-only — see
+  // __submit__label below, which flips from hidden to visible at the same
+  // breakpoint.
+  @media (max-width: 575px) {
+    width: auto;
+  }
+}
+
+// Screen-reader-only above 575px, matching Bootstrap's .visually-hidden
+// recipe, so the compact bar stays icon-only on wider screens; real visible
+// text below it, where the button has no other label on screen.
+.booking-search-compact__submit__label {
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+
+  @media (max-width: 575px) {
+    clip: auto;
+    height: auto;
+    overflow: visible;
+    position: static;
+    white-space: normal;
+    width: auto;
   }
 }
 
@@ -578,20 +618,59 @@
 }
 
 // ---------------------------------------------------------------------------
-// Results filter bar — client-side refinement of the quote already on screen
-// (pool / fenced parking / area + sort). Every control writes to the URL.
+// Results filter bar — every guest-facing refinement in one place: cancellation
+// policy and the pet declaration, plus area / amenities / sort. Every control
+// writes to the URL. The toggle button only shows below the mobile breakpoint,
+// where the panel starts collapsed.
 // ---------------------------------------------------------------------------
 .booking-filter-bar {
-  align-items: center;
   background: rgba(138, 162, 136, 0.1);
   border: 1px solid rgba(41, 79, 68, 0.14);
   border-radius: 14px;
-  column-gap: 24px;
-  display: flex;
-  flex-wrap: wrap;
   margin-bottom: 24px;
   padding: 14px 18px;
-  row-gap: 12px;
+
+  &__toggle {
+    align-items: center;
+    background: none;
+    border: 0;
+    color: $kalawala-darker-green;
+    cursor: pointer;
+    display: none;
+    font-size: 15px;
+    font-weight: 700;
+    gap: 8px;
+    padding: 0;
+    width: 100%;
+
+    &:focus-visible {
+      outline: 2px solid $kalawala-darker-green;
+      outline-offset: 3px;
+    }
+  }
+
+  &__count {
+    background: $kalawala-darker-green;
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 20px;
+    padding: 2px 6px;
+    text-align: center;
+  }
+
+  &__chevron {
+    margin-inline-start: auto;
+  }
+
+  &__panel {
+    align-items: center;
+    column-gap: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
 
   &__group {
     align-items: center;
@@ -612,6 +691,13 @@
     font-weight: 700;
     gap: 6px;
     margin: 0;
+  }
+
+  &__note {
+    color: rgba(23, 23, 23, 0.65);
+    flex-basis: 100%;
+    font-size: 13px;
+    line-height: 1.4;
   }
 
   .booking-filter-check {
@@ -685,6 +771,22 @@
     border-color: $kalawala-darker-green;
     color: #ffffff;
   }
+}
+
+// Sits inside the non-refundable pill so the discount reads at a glance next
+// to both rate choices, not only once the guest has already picked one.
+.booking-filter-pill__badge {
+  background: rgba(11, 48, 40, 0.12);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-inline-start: 4px;
+  padding: 2px 6px;
+}
+
+.booking-filter-pill--active .booking-filter-pill__badge {
+  background: rgba(255, 255, 255, 0.24);
 }
 
 .booking-filters-clear {
@@ -1818,74 +1920,6 @@ li.booking-result-card__amenities-toggle {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Rate toggle (refundable / non-refundable)
-// ---------------------------------------------------------------------------
-
-.booking-rate-toggle-row {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 16px;
-
-  .form-switch {
-    margin-bottom: 0;
-  }
-
-  .form-switch .form-check-input {
-    margin-top: 0.1em;
-  }
-
-  .form-check-label {
-    color: $kalawala-darker-green;
-    font-weight: 700;
-    font-size: 15px;
-  }
-
-  .form-switch .form-check-input {
-    background-color: rgba(41, 79, 68, 0.2);
-    border-color: rgba(41, 79, 68, 0.3);
-    cursor: pointer;
-    height: 1.4em;
-    width: 2.6em;
-
-    &:checked {
-      background-color: $kalawala-darker-green;
-      border-color: $kalawala-darker-green;
-    }
-
-    &:focus {
-      box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
-    }
-  }
-}
-
-.booking-rate-toggle__badge {
-  background: $kalawala-darker-green;
-  border-radius: 6px;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  padding: 4px 8px;
-}
-
-.booking-rate-toggle__note {
-  color: rgba(23, 23, 23, 0.65);
-  flex-basis: 100%;
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-// Pet toggle — same switch treatment as the rate toggle, with the paw sitting
-// ahead of the label so the row scans as "🐾 travelling with a pet".
-.booking-pet-toggle {
-  .form-check-label svg {
-    margin-inline-end: 6px;
-  }
-}
-
 // Sits under the result count when the pet filter hid homes that are otherwise
 // free, so the shorter list never looks like missing availability.
 .booking-results-pet-note {
@@ -1895,52 +1929,6 @@ li.booking-result-card__amenities-toggle {
   font-size: 13px;
   gap: 6px;
   margin: 6px 0 0;
-}
-
-// Compact form rate toggle — own row below the search fields
-.booking-search-compact__rate-row {
-  align-items: center;
-  border-top: 1px solid rgba(41, 79, 68, 0.12);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
-  padding-top: 10px;
-
-  .form-switch {
-    margin-bottom: 0;
-  }
-
-  .form-switch .form-check-input {
-    background-color: rgba(41, 79, 68, 0.2);
-    border-color: rgba(41, 79, 68, 0.3);
-    cursor: pointer;
-    height: 1.4em;
-    margin-top: 0.1em;
-    width: 2.6em;
-
-    &:checked {
-      background-color: $kalawala-darker-green;
-      border-color: $kalawala-darker-green;
-    }
-
-    &:focus {
-      box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.24);
-    }
-  }
-
-  .form-check-label {
-    color: $kalawala-darker-green;
-    font-size: 13px;
-    font-weight: 700;
-    margin-inline-start: 6px;
-    white-space: nowrap;
-  }
-
-  .booking-rate-toggle__badge {
-    font-size: 11px;
-    padding: 3px 6px;
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -1971,7 +1959,7 @@ li.booking-result-card__amenities-toggle {
 
 @media (max-width: 992px) {
   .booking-wizard {
-    padding: 90px 0 52px;
+    padding: 28px 0 52px;
   }
 
   .booking-search-header h1 {
@@ -1985,6 +1973,32 @@ li.booking-result-card__amenities-toggle {
 
   .booking-quote-expiry {
     text-align: start;
+  }
+
+  // Five filter groups (rate, area, amenities, sort) don't fit a tablet/mobile
+  // width side by side, so the panel starts collapsed behind a single toggle
+  // button and stacks full-width once expanded.
+  .booking-filter-bar__toggle {
+    display: flex;
+  }
+
+  .booking-filter-bar__panel {
+    align-items: stretch;
+    display: none;
+    flex-direction: column;
+
+    &--expanded {
+      display: flex;
+      margin-top: 14px;
+    }
+  }
+
+  .booking-filter-bar__group {
+    flex-basis: 100%;
+
+    &--sort {
+      margin-inline-start: 0;
+    }
   }
 
   .booking-deposit-handoff__contacts {
@@ -2087,9 +2101,9 @@ li.booking-result-card__amenities-toggle {
   }
 
   .booking-wizard-step__dot {
-    height: 28px;
-    width: 28px;
-    font-size: 12px;
+    height: 24px;
+    width: 24px;
+    font-size: 11px;
   }
 }
 

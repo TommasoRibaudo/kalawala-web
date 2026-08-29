@@ -171,7 +171,7 @@ test('submits availability search and renders available properties', async () =>
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
   fireEvent.change(activeSlide().getByLabelText('Guests'), { target: { value: '2' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
 
   await screen.findByText('Casa Geco');
 
@@ -216,7 +216,7 @@ test('renders Spanish no-availability state for bookES route', async () => {
 
   fireEvent.change(activeSlide().getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
   fireEvent.change(activeSlide().getByLabelText('Salida'), { target: { value: '2099-07-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /buscar disponibilidad/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^buscar$/i }));
 
   await screen.findByText('No hay casas disponibles para estas fechas');
 
@@ -281,7 +281,7 @@ async function runSpanishSearch() {
   renderBookingPage('/es/book');
   fireEvent.change(activeSlide().getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
   fireEvent.change(activeSlide().getByLabelText('Salida'), { target: { value: '2099-07-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /buscar disponibilidad/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^buscar$/i }));
   await screen.findByText('Casa Geco');
 }
 
@@ -317,7 +317,7 @@ test('does not request an exchange rate on the English booking flow', async () =
   renderBookingPage('/en/book');
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-07-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-07-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
   await screen.findByText('Casa Geco');
 
   const requestedUrls = (global.fetch as jest.Mock).mock.calls.map(([url]) => String(url));
@@ -402,7 +402,7 @@ test('builds Spanish listing links from the property slug and opens them in a ne
 
   fireEvent.change(activeSlide().getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
   fireEvent.change(activeSlide().getByLabelText('Salida'), { target: { value: '2099-07-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /buscar disponibilidad/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^buscar$/i }));
 
   await screen.findByText('Casa Geco');
 
@@ -538,7 +538,7 @@ test('creates a PayPal hold from the property result card and shows the live hol
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
   await screen.findByText('Casa Geco');
 
   fireEvent.click(screen.getByRole('button', { name: /book with paypal/i }));
@@ -659,7 +659,7 @@ test('shows a clear message when PayPal hold creation loses the availability rac
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
   await screen.findByText('Casa Geco');
 
   fireEvent.click(screen.getByRole('button', { name: /book with paypal/i }));
@@ -899,7 +899,7 @@ test('validates past arrival date before calling the booking API', async () => {
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2020-01-01' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
 
   await waitFor(() => {
     expect(screen.getByText('Choose today or a future check-in date.')).toBeInTheDocument();
@@ -913,7 +913,7 @@ test('validates departure date before calling the booking API', async () => {
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-10' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
 
   await waitFor(() => {
     expect(screen.getByText('Check-out must be after check-in.')).toBeInTheDocument();
@@ -928,7 +928,7 @@ test('validates guest count before calling the booking API', async () => {
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
   fireEvent.change(activeSlide().getByLabelText('Guests'), { target: { value: '0' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
 
   await waitFor(() => {
     expect(screen.getByText('Guest count must be at least 1.')).toBeInTheDocument();
@@ -952,7 +952,7 @@ test('shows provider-unavailable message for retryable API errors', async () => 
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-08-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-08-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
 
   await activeSlide().findByText('We cannot check availability right now. Please try again in a moment.');
 });
@@ -973,7 +973,7 @@ test('shows generic message for non-retryable API errors', async () => {
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-09-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-09-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
 
   await activeSlide().findByText('We could not search availability right now. Please try again.');
 });
@@ -1052,7 +1052,7 @@ async function reachDepositCheckout() {
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
   await screen.findByText('Casa Geco');
 
   fireEvent.click(screen.getByRole('button', { name: 'Bank transfer / SINPE' }));
@@ -1087,7 +1087,7 @@ test('an expired persisted deposit hold is not resumed (#308)', async () => {
   renderBookingPage();
 
   // Falls back to the ordinary search entry point; the dead hold is gone.
-  expect(await screen.findByRole('button', { name: /search availability/i })).toBeInTheDocument();
+  expect(await screen.findByRole('button', { name: /^search$/i })).toBeInTheDocument();
   expect(screen.queryByText('KWL-DEP12345')).not.toBeInTheDocument();
   expect(window.localStorage.getItem('kalawala_deposit_checkout')).toBeNull();
 });
@@ -1200,7 +1200,7 @@ async function searchWith(fixture: unknown, extraResponses: Array<{ body: unknow
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
   await screen.findByText('Casa Geco');
 }
 
@@ -1238,7 +1238,7 @@ test('a pet search with no pet-friendly home free explains itself', async () => 
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
   await screen.findByText('Casa Delfin');
 
   togglePet();
@@ -1328,7 +1328,7 @@ test('a long-stay discount is shown as a slashed rack rate on the result card', 
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-17' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
   await screen.findByText('Casa Geco');
 
   expect(screen.getByText('Long-stay −15%')).toBeInTheDocument();
@@ -1345,10 +1345,10 @@ test('a long-stay discount stacks with the non-refundable rate', async () => {
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-17' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
   await screen.findByText('Casa Geco');
 
-  fireEvent.click(activeSlide().getByRole('checkbox', { name: /non-refundable|flexible/i }));
+  fireEvent.click(activeSlide().getByRole('button', { name: /non-refundable/i }));
 
   // Both reductions are named, and the total is 10% off Smoobu's already
   // long-stay-discounted price — not off the rack rate.
@@ -1363,7 +1363,7 @@ test('the discount follows the guest into the checkout summary', async () => {
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-17' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
   await screen.findByText('Casa Geco');
 
   fireEvent.click(screen.getByRole('button', { name: /book with paypal/i }));
@@ -1381,7 +1381,7 @@ test('a quote with no discount shows a single price and no slashed rate', async 
 
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
   await screen.findByText('Casa Geco');
 
   expect(screen.getByText('$510.00')).toBeInTheDocument();
@@ -1447,7 +1447,7 @@ async function searchWithFilterFixture() {
   renderBookingPage();
   fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
   fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /search availability/i }));
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
   await screen.findByText('Villa Mar');
 }
 

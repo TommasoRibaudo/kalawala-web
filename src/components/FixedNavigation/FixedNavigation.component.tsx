@@ -3,7 +3,7 @@ import './FixedNavigation.style.scss';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SolidBars from "../../assets/images/bars-solid.svg";
 import KalawalaLogo from "../../assets/images/logo-cream.png";
 import { LanguageSwitcher } from "../FlagComponent/Flag.component";
@@ -77,6 +77,7 @@ const FixedNavigation = ({ isBlog, locale: localeOverride }: IFixedNavigation) =
   };
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Takes a full path now. It used to take a bare segment and prepend the
   // slash, which meant the caller wrote "book" while the href next to it read
@@ -86,6 +87,21 @@ const FixedNavigation = ({ isBlog, locale: localeOverride }: IFixedNavigation) =
     navigate(path);
     setIsActive(false);
     closeMenu();
+  };
+
+  // The booking wizard's step is derived from the URL's query string, so
+  // navigating to the bare booking path while already on it (e.g. a guest
+  // tapping "Book now" again mid-search) would silently rewind them to step
+  // 1 and drop their dates/results. Only close the menu in that case.
+  const isOnBookingPage = location.pathname === bookingPath(locale);
+  const handleBookNowClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isOnBookingPage) {
+      setIsActive(false);
+      closeMenu();
+      return;
+    }
+    handleLinkClick(bookingPath(locale));
   };
 
   const closeMenu = () => {
@@ -113,7 +129,7 @@ const FixedNavigation = ({ isBlog, locale: localeOverride }: IFixedNavigation) =
           />
         </Navbar.Brand>
         <div className="mobile-controls">
-          <a href={bookingPath(locale)} className="nav-cta-btn" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick(bookingPath(locale)) }}>
+          <a href={bookingPath(locale)} className="nav-cta-btn" aria-current={isOnBookingPage ? 'page' : undefined} onClick={handleBookNowClick}>
             {m.nav.bookNow}
           </a>
           <Navbar.Toggle aria-controls="basic-navbar-nav" className="dark-nav" onClick={handleToggleClick}>
@@ -145,7 +161,7 @@ const FixedNavigation = ({ isBlog, locale: localeOverride }: IFixedNavigation) =
             <LanguageSwitcher />
           </div>
         <div className="navbar-flag">
-            <a href={bookingPath(locale)} className="nav-cta-btn" onClick={(e: React.MouseEvent) => { e.preventDefault(); handleLinkClick(bookingPath(locale)) }}>
+            <a href={bookingPath(locale)} className="nav-cta-btn" aria-current={isOnBookingPage ? 'page' : undefined} onClick={handleBookNowClick}>
               {m.nav.bookNow}
             </a>
             <LanguageSwitcher />

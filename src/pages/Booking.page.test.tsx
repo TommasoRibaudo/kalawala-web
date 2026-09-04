@@ -1357,6 +1357,36 @@ test('a long-stay discount stacks with the non-refundable rate', async () => {
   expect(screen.getByText('$1,050.00')).toBeInTheDocument();
 });
 
+test('the non-refundable label survives once the hold is created, not just the preview', async () => {
+  await searchWith(SEARCH_RESULT_FIXTURE, [
+    {
+      body: {
+        booking: {
+          ...DEPOSIT_HOLD_FIXTURE.booking,
+          price: { ...DEPOSIT_HOLD_FIXTURE.booking.price, totalAmountCents: 45900 },
+          payment: { method: 'paypal', status: 'pending' },
+        },
+        nextAction: 'create_paypal_order',
+      },
+    },
+  ]);
+
+  fireEvent.click(activeSlide().getByRole('button', { name: /non-refundable/i }));
+  fireEvent.click(screen.getByRole('button', { name: /book with paypal/i }));
+  await screen.findByRole('heading', { name: 'Checkout' });
+
+  fillGuestDetails();
+  fireEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
+  await screen.findByText('Your stay is on hold');
+
+  // Once the server returns the real (already-discounted) total, the summary
+  // must keep saying why it's discounted, not just show a bare struck price.
+  const summary = document.querySelector('.booking-checkout-panel__summary') as HTMLElement;
+  expect(within(summary).getByText(/Save 10%/)).toBeInTheDocument();
+  expect(within(summary).getByText('$459.00')).toBeInTheDocument();
+  expect(within(summary).getByText('$510.00')).toBeInTheDocument();
+});
+
 test('the discount follows the guest into the checkout summary', async () => {
   mockJsonResponse(LONG_STAY_SEARCH_FIXTURE);
   renderBookingPage();

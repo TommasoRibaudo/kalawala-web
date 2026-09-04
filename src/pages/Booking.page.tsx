@@ -1307,7 +1307,7 @@ const PayPalCheckoutPanel = ({ result, property, strings, language, withPet, non
       <div className="booking-checkout-panel__header"><p className="booking-results-kicker">{strings.paypalTitle}</p><h2 id="booking-checkout-title">{strings.checkoutTitle}</h2><p>{strings.paypalDescription}</p></div>
       <div className="booking-checkout-panel__summary" aria-label={strings.checkoutSummary}>
         <div><span>{strings.depositContextTitle}</span><strong>{property.name}</strong><small>{strings.depositDates(formatDate(result.arrivalDate, language), formatDate(result.departureDate, language))}</small></div>
-        {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={nonRefundable && !holdResponse} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
+        {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={nonRefundable} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
         {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
       <ColonesEstimateNote strings={strings} language={language} chargedInDollars />
@@ -1405,7 +1405,7 @@ const DepositCheckoutPanel = ({ result, property, strings, language, withPet, no
 
       <div className="booking-checkout-panel__summary" aria-label={strings.checkoutSummary}>
         <div><span>{strings.depositContextTitle}</span><strong>{property.name}</strong><small>{strings.depositDates(formatDate(result.arrivalDate, language), formatDate(result.departureDate, language))}</small></div>
-        {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={nonRefundable && !holdResponse} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
+        {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={nonRefundable} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
         {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
 
@@ -1671,7 +1671,7 @@ function getInitialGuestCount(value: string | null): number { const p = Number(v
 function isYmd(value: string): boolean { if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false; const d = new Date(`${value}T00:00:00Z`); return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value; }
 
 function getSearchErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError && (error.status === 503 || error.retryable)) return strings.providerUnavailable; return strings.genericError; }
-function getHoldErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError) { if (error.code === 'property_not_pet_friendly') return strings.petNotAllowedError; if (error.code === 'property_no_longer_available' || error.code === 'no_longer_available') return strings.propertyNoLongerAvailable; if (error.status === 503 || error.retryable) return strings.providerUnavailable; } return strings.checkoutUnavailable; }
+function getHoldErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError) { if (error.code === 'property_not_pet_friendly') return strings.petNotAllowedError; if (error.code === 'property_no_longer_available' || error.code === 'no_longer_available') return strings.propertyNoLongerAvailable; if (error.status === 503 || error.retryable) return strings.holdProviderHiccup; } return strings.checkoutUnavailable; }
 function getPayPalOrderErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError) { if (error.code === 'hold_expired') return strings.bookingExpired; if (error.status === 503 || error.retryable) return strings.providerUnavailable; } return strings.paymentNotReady; }
 function getReceiptErrorMessage(error: unknown, strings: BookingStrings): string {
   if (error instanceof BookingApiError) {

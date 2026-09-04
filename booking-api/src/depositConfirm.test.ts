@@ -13,6 +13,7 @@
 
 import { createBookingApiHandler } from "./app";
 import { InMemoryBookingSessionRepository } from "./bookingSessions";
+import { EmailClient } from "./email";
 import { InMemoryHoldRepository } from "./holds";
 import { StaticSecretProvider } from "./secrets";
 import { issueSignedToken } from "./signedTokens";
@@ -122,6 +123,13 @@ async function seedSession(): Promise<{ id: string; reservationPublicId: string 
 function confirmToken(bookingSessionId: string, reservationPublicId: string): string {
   return issueSignedToken(
     { bookingSessionId, reservationPublicId, purpose: "deposit_confirm", ttlSeconds: 3600 },
+    PORTAL_SECRET
+  );
+}
+
+function rejectToken(bookingSessionId: string, reservationPublicId: string): string {
+  return issueSignedToken(
+    { bookingSessionId, reservationPublicId, purpose: "deposit_reject", ttlSeconds: 3600 },
     PORTAL_SECRET
   );
 }
@@ -251,4 +259,66 @@ it("promotes the Smoobu reservation to the Homepage channel on confirm, instead 
 
   const hold = await bookingSessions.getById(bookingSessionId);
   expect(hold?.status).toBe("booking_confirmed");
+});
+
+// ─── Guest notification on reject ───────────────────────────────────────────
+//
+// Rejecting releases the Smoobu hold and the dates, but until now the guest
+// was never told — they'd just watch their hold silently vanish. Confirm
+// already emails the guest (sendDepositConfirmed); reject must too.
+
+it("emails the guest when staff reject the deposit", async () => {
+  const fetchFn = jest.fn(async (url: string | URL, init?: RequestInit) => {
+    const { hostname, pathname } = new URL(url.toString());
+    const method = init?.method ?? "GET";
+
+    if (hostname === "login.smoobu.com") {
+      if (pathname === "/booking/checkApartmentAvailability") {
+        return jsonResp({
+          availableApartments: [301061],
+          prices: { "301061": { price: 510, currency: "USD" } },
+          errorMessages: {},
+        });
+      }
+      if (pathname === "/api/reservations" && method === "POST") {
+        return jsonResp({ id: 555222 });
+      }
+      if (pathname === "/api/reservations/555222" && method === "DELETE") {
+        return jsonResp({ success: true });
+      }
+    }
+
+    return jsonResp({ detail: "unexpected" }, { status: 500 });
+  });
+  global.fetch = fetchFn as typeof fetch;
+
+  const sendDepositRejectedSpy = jest.spyOn(EmailClient.prototype, "sendDepositRejected");
+
+  const searchResp = await handler(makeSearchEvent());
+  const searchBody = JSON.parse(searchResp.body);
+
+  const holdResp = await handler(
+    makeDepositHoldEvent({
+      quoteId: searchBody.quoteId,
+      bookingSessionId: searchBody.bookingSessionId,
+      propertyId: searchBody.properties[0].propertyId,
+      guest: { firstName: "Ivan", lastName: "Reyes", email: "ivan@example.com" },
+      portalPassword: "correct horse battery staple",
+      termsAccepted: true,
+    })
+  );
+  expect(holdResp.statusCode).toBe(200);
+  const { bookingSessionId, reservationPublicId } = JSON.parse(holdResp.body).booking;
+
+  const token = rejectToken(bookingSessionId, reservationPublicId);
+  const rejectResp = await handler(postDepositReviewSubmit(token));
+  expect(rejectResp.statusCode).toBe(200);
+  expect(rejectResp.body).toContain("was rejected");
+
+  expect(sendDepositRejectedSpy).toHaveBeenCalledWith(
+    expect.objectContaining({ reservationPublicId }),
+    expect.any(String)
+  );
+
+  sendDepositRejectedSpy.mockRestore();
 });

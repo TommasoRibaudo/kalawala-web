@@ -191,6 +191,16 @@ export async function handleStaffDepositReviewSubmit(
       bookingSessionId: session.id,
     });
 
+    try {
+      const emailClient = createEmailClient(config.email, request.observability.logger);
+      await emailClient.sendDepositRejected(rejectedSession, propertyName);
+    } catch (error) {
+      request.observability.logger.error("deposit_rejected_email_failed", {
+        bookingSessionId: session.id,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+
     return htmlResponse(
       200,
       renderPage({

@@ -135,6 +135,13 @@ const strings = {
         "You can now manage your booking online using your reservation ID and the password you chose during checkout.",
       note: "If anything about your stay changes, contact us and we will help.",
     },
+    depositRejected: {
+      subject: (id: string) => `We could not confirm your deposit: ${id}`,
+      intro:
+        "We were unable to confirm your bank transfer or SINPE Móvil payment, so we released your held dates.",
+      cta: "If you already sent the transfer, please contact us with your receipt so we can look into it.",
+      note: "You are welcome to search for new dates or start a new booking on our website.",
+    },
     staffDepositReview: {
       subject: (id: string) => `[ACTION] Deposit booking awaiting confirmation: ${id}`,
       intro:
@@ -245,6 +252,13 @@ const strings = {
       portalCta:
         "Ya puedes gestionar tu reserva en línea con tu ID de reserva y la contraseña que elegiste durante el proceso de pago.",
       note: "Si algo cambia en tu estadía, contáctanos y te ayudamos.",
+    },
+    depositRejected: {
+      subject: (id: string) => `No pudimos confirmar tu depósito: ${id}`,
+      intro:
+        "No pudimos confirmar tu transferencia bancaria o pago por SINPE Móvil, así que liberamos las fechas reservadas.",
+      cta: "Si ya realizaste la transferencia, contáctanos con tu comprobante para que podamos revisarlo.",
+      note: "Puedes buscar nuevas fechas o iniciar una nueva reserva en nuestro sitio web.",
     },
     staffDepositReview: {
       subject: (id: string) => `[ACCIÓN] Reserva por depósito pendiente de confirmar: ${id}`,
@@ -640,6 +654,51 @@ ${detailsTable(rows)}
   );
 
   const text = [s.greeting(input.guestFirstName), "", t.intro, "", detailsText(rows), "", t.portalCta, "", t.note, "", s.footer].join("\n");
+
+  return { subject: t.subject(input.reservationPublicId), html, text };
+}
+
+// ─── Template: deposit_rejected ──────────────────────────────────────────────
+
+/**
+ * Guest-facing, sent when staff reject a manual deposit (no matching transfer
+ * found). Distinct from renderCancelledEmail, which is worded for a hold that
+ * simply lapsed with no guest-facing reason to give.
+ */
+export function renderDepositRejectedEmail(input: EmailTemplateInput): RenderedEmail {
+  const s = strings[input.language];
+  const t = s.depositRejected;
+
+  const rows: Array<[string, string]> = [
+    [s.reservationId, input.reservationPublicId],
+    [s.property, input.propertyName],
+    [s.arrival, formatDate(input.arrivalDate)],
+    [s.departure, formatDate(input.departureDate)],
+  ];
+
+  const html = layout(
+    `<p>${s.greeting(input.guestFirstName)}</p>
+<p>${t.intro}</p>
+${detailsTable(rows)}
+<p style="color:#294F44;font-weight:600">${t.cta}</p>
+<p style="color:#888;font-size:13px">${t.note}</p>`,
+    s.footer,
+    input.language
+  );
+
+  const text = [
+    s.greeting(input.guestFirstName),
+    "",
+    t.intro,
+    "",
+    detailsText(rows),
+    "",
+    t.cta,
+    "",
+    t.note,
+    "",
+    s.footer,
+  ].join("\n");
 
   return { subject: t.subject(input.reservationPublicId), html, text };
 }

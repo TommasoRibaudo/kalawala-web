@@ -19,6 +19,7 @@ import {
   renderDepositConfirmedEmail,
   renderDepositHandoffEmail,
   renderDepositInstructionsEmail,
+  renderDepositRejectedEmail,
   renderGuestCancellationEmail,
   renderStaffDepositReviewEmail,
   renderHoldCreatedEmail,
@@ -336,6 +337,17 @@ export class EmailClient {
     const { subject, html, text } = renderDepositConfirmedEmail(buildTemplateInput(session, propertyName));
     await this.send(session.guest.email, subject, html, text, {
       template: "deposit_confirmed",
+      reservationPublicId: session.reservationPublicId,
+      bookingSessionId: session.id,
+    });
+  }
+
+  /** Guest-facing notice when staff reject a manual deposit (no matching transfer found). */
+  async sendDepositRejected(session: BookingSessionRecord, propertyName: string): Promise<void> {
+    if (!session.guest?.email) return;
+    const { subject, html, text } = renderDepositRejectedEmail(buildTemplateInput(session, propertyName));
+    await this.send(session.guest.email, subject, html, text, {
+      template: "deposit_rejected",
       reservationPublicId: session.reservationPublicId,
       bookingSessionId: session.id,
     });

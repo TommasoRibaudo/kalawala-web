@@ -13,6 +13,7 @@ import {
   renderDepositHandoffEmail,
   renderStaffDepositReviewEmail,
   renderDepositInstructionsEmail,
+  renderDepositRejectedEmail,
 } from "./emailTemplates";
 import { EmailClient } from "./email";
 import type { BookingSessionRecord } from "./bookingSessions";
@@ -270,6 +271,40 @@ describe("renderCancelledEmail", () => {
   });
 });
 
+describe("renderDepositRejectedEmail", () => {
+  it("EN: includes reservation ID and property name", () => {
+    const result = renderDepositRejectedEmail({
+      language: "en",
+      guestFirstName: "Ivan",
+      guestEmail: "ivan@example.com",
+      reservationPublicId: "KWL-REJ001",
+      propertyName: "Areka",
+      arrivalDate: "2026-12-01",
+      departureDate: "2026-12-05",
+      guests: 1,
+    });
+
+    expect(result.subject).toContain("KWL-REJ001");
+    expect(result.html).toContain("Areka");
+    expect(result.html).toContain("SINPE");
+  });
+
+  it("ES: uses Spanish strings", () => {
+    const result = renderDepositRejectedEmail({
+      language: "es",
+      guestFirstName: "Julia",
+      guestEmail: "julia@example.com",
+      reservationPublicId: "KWL-ES-REJ",
+      propertyName: "Plumeria",
+      arrivalDate: "2026-12-10",
+      departureDate: "2026-12-14",
+      guests: 2,
+    });
+
+    expect(result.html).toContain("liberamos");
+  });
+});
+
 describe("renderDepositHandoffEmail", () => {
   it("EN: includes all three steps and warning", () => {
     const result = renderDepositHandoffEmail({
@@ -416,6 +451,15 @@ describe("EmailClient (disabled)", () => {
     expect(noopLogger.info).toHaveBeenCalledWith(
       "email_send_skipped_disabled",
       expect.objectContaining({ template: "cancelled" })
+    );
+  });
+
+  it("sendDepositRejected: logs skip and does not throw", async () => {
+    const session = makeSession({ status: "cancelled" });
+    await expect(client.sendDepositRejected(session, "Casa Geco")).resolves.toBeUndefined();
+    expect(noopLogger.info).toHaveBeenCalledWith(
+      "email_send_skipped_disabled",
+      expect.objectContaining({ template: "deposit_rejected" })
     );
   });
 

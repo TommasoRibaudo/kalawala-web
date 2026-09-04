@@ -574,7 +574,12 @@ const PortalDetailPage = () => {
                       {reservation.price && (
                         <div className="portal-detail-summary__row">
                           <dt>{strings.totalPrice}</dt>
-                          <dd>{formatCents(reservation.price.totalAmountCents, reservation.price.currency)}</dd>
+                          <dd>
+                            {formatCents(reservation.price.totalAmountCents, reservation.price.currency)}
+                            {reservation.ratePlan === 'non_refundable' && (
+                              <span className="portal-detail-summary__rate-note"> · {strings.nonRefundableRateLabel}</span>
+                            )}
+                          </dd>
                         </div>
                       )}
 

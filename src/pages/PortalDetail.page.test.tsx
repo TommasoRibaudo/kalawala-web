@@ -104,6 +104,16 @@ test('hides cancellation and explains why for a non-refundable booking', async (
   expect(screen.queryByRole('button', { name: 'Cancel booking' })).not.toBeInTheDocument();
   // A missing button with no explanation would just generate a support email.
   expect(screen.getByText(/non-refundable rate and cannot be cancelled online/i)).toBeInTheDocument();
+  // The total price row must say why, too — not just the cancellation notice.
+  expect(screen.getByText(/Non-refundable rate/)).toBeInTheDocument();
+});
+
+test('does not label the price as non-refundable for a flexible booking', async () => {
+  mockResponses([{ body: reservationFixture() }]);
+  renderPortal();
+
+  await screen.findByText('Casa Geco');
+  expect(screen.queryByText(/Non-refundable rate/)).not.toBeInTheDocument();
 });
 
 test('hides cancellation inside the 24-hour window and points at staff', async () => {

@@ -398,6 +398,21 @@
   margin-top: 24px;
 }
 
+// Recovery guidance appended to every wizard-level error alert (WizardAlert
+// in Booking.page.tsx) — a lighter weight than the error text itself since
+// it's instructional, not the error, but still legible against the alert's
+// own background rather than a low-contrast muted gray.
+.booking-wizard-alert__help {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+
+  a {
+    color: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+}
+
 // Shown in place of the "pick your dates" form while a search started
 // elsewhere (the homepage/listing widget, or a shared link) is still in
 // flight, so guests never see that form flash with their own dates already

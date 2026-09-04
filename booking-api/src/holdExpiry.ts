@@ -100,6 +100,24 @@ async function processOneHold(
     return;
   }
 
+  // 0b. Same idea for a manual-deposit guest who already uploaded their receipt:
+  // the TTL exists to bound how long *they* take, not staff. Once a receipt is
+  // in and the session is still hold_active, the ball is in staff's court —
+  // they resolve it explicitly via the confirm/reject link, never by timeout.
+  // RDS's listExpiredHolds already excludes these; this is the in-memory repo's
+  // only guard for it, plus the same race-condition backstop as the check above.
+  if (
+    guardSession?.status === "hold_active" &&
+    guardSession.paymentMethod === "manual_deposit" &&
+    guardSession.depositReceiptS3Key
+  ) {
+    logger.info("hold_expiry_skipped_awaiting_deposit_review", {
+      holdId: hold.id,
+      bookingSessionId: hold.bookingSessionId,
+    });
+    return;
+  }
+
   // 1. Mark hold as expired in DB
   try {
     await holds.expireHold(hold.id);

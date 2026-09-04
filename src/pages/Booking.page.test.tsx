@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import * as PostHogService from '../services/PostHog.service';
 import { CookieConsentService } from '../services/CookieConsent.service';
@@ -1150,12 +1150,16 @@ test('deposit receipt upload goes to S3 and then confirms with the API', async (
 
   // The guest is warned before picking a file that a wrong upload needs staff to sort out.
   screen.getByText("Upload only the receipt for this deposit — our team checks it before confirming your booking. Uploaded the wrong file? Contact us below and we'll help you fix it.");
+  // The countdown still applies while the guest hasn't uploaded anything yet.
+  expect(screen.getByText('Your reservation expires in')).toBeInTheDocument();
 
   const file = new File(['receipt'], 'receipt.jpg', { type: 'image/jpeg' });
   const input = document.querySelector('input[type="file"]') as HTMLInputElement;
   fireEvent.change(input, { target: { files: [file] } });
 
   await screen.findByText('Receipt received. Our team will verify it and confirm your booking.');
+  // Once uploaded the wait is on staff, not the guest, so no more countdown.
+  expect(screen.queryByText('Your reservation expires in')).not.toBeInTheDocument();
 
   const calls = (global.fetch as jest.Mock).mock.calls;
   expect(calls[2][0]).toBe('/api/deposit-receipt/upload-url');
@@ -1167,6 +1171,113 @@ test('deposit receipt upload goes to S3 and then confirms with the API', async (
   // Both API calls carry the scoped deposit token.
   const uploadHeaders = (calls[2][1] as RequestInit).headers as Record<string, string>;
   expect(uploadHeaders.Authorization).toBe('Bearer deposit-access-token-value');
+});
+
+test('an open deposit-checkout tab picks up a staff rejection via polling (#332)', async () => {
+  mockJsonResponses([{ body: SEARCH_RESULT_FIXTURE }, { body: DEPOSIT_HOLD_FIXTURE }]);
+
+  // Captures every interval registered (the poll's, plus HoldCountdown's own
+  // 1s ticker) so the test can drive the poll deterministically instead of
+  // waiting on its real 20s cadence.
+  const registeredIntervals: Array<{ handler: TimerHandler; timeout?: number }> = [];
+  const realSetInterval = window.setInterval.bind(window);
+  const setIntervalSpy = jest.spyOn(window, 'setInterval').mockImplementation(((handler: TimerHandler, timeout?: number) => {
+    registeredIntervals.push({ handler, timeout });
+    // Forwards to the real timer (rather than faking the return id) — RTL's
+    // own findByText/waitFor polling relies on window.setInterval too, and a
+    // stubbed-out call breaks its ability to detect DOM updates.
+    return realSetInterval(handler as TimerHandler, timeout);
+  }) as typeof window.setInterval);
+
+  await reachDepositCheckout();
+  fillGuestDetails();
+  fireEvent.click(screen.getByRole('button', { name: 'Reserve these dates' }));
+  await screen.findByText('CR61010200009629385364');
+
+  // The poll effect commits as a passive effect, which can flush a tick after
+  // findByText's own MutationObserver-driven resolution — wait for it rather
+  // than assuming it has already landed.
+  await waitFor(() => expect(registeredIntervals.some((entry) => entry.timeout === 20_000)).toBe(true));
+  const pollEntry = registeredIntervals.find((entry) => entry.timeout === 20_000);
+  const pollCallback = pollEntry!.handler;
+
+  const rejected = { ...DEPOSIT_HOLD_FIXTURE, booking: { ...DEPOSIT_HOLD_FIXTURE.booking, status: 'cancelled' } };
+  mockJsonResponses([{ body: rejected }]);
+
+  await act(async () => {
+    (pollCallback as () => void)();
+    await Promise.resolve();
+  });
+
+  await screen.findByText('Booking cancelled');
+  expect(screen.getByText(/We were unable to confirm your bank transfer/)).toBeInTheDocument();
+  // The stale pending panel — timer, bank details, upload form — is gone.
+  expect(screen.queryByText('Your reservation expires in')).not.toBeInTheDocument();
+  expect(screen.queryByText('CR61010200009629385364')).not.toBeInTheDocument();
+
+  setIntervalSpy.mockRestore();
+});
+
+// ── Error visibility (#333) ──────────────────────────────────────────────────
+//
+// A guest scrolled down into the results grid never saw an error banner that
+// rendered above their current scroll position — from their end it looked
+// like nothing happened at all when a house wasn't clickable. Every wizard
+// error now scrolls itself into view, takes focus, and carries the same
+// reload/contact-us guidance.
+
+test('a wizard error scrolls itself into view, takes focus, and shows recovery guidance', async () => {
+  mockJsonResponse(
+    { error: { code: 'validation_failed', message: 'Validation failed', retryable: false } },
+    422
+  );
+
+  const scrollIntoViewSpy = jest.fn();
+  // jsdom has no scrollIntoView implementation at all — stub one so the call
+  // is observable instead of throwing.
+  (window.HTMLElement.prototype as any).scrollIntoView = scrollIntoViewSpy;
+
+  renderBookingPage();
+
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-09-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-09-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
+
+  const alert = await activeSlide().findByText('We could not search availability right now. Please try again.');
+  expect(scrollIntoViewSpy).toHaveBeenCalled();
+  expect(alert.closest('[role="alert"]')).toHaveFocus();
+
+  // The same recovery instructions and contact links accompany every error.
+  expect(screen.getByText(/Please reload the page and try again/)).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Contact by WhatsApp' })).toHaveAttribute('href', 'https://wa.me/50684632276');
+  expect(screen.getByRole('link', { name: 'Contact by email' })).toHaveAttribute('href', 'mailto:reservas.kalawala@gmail.com');
+
+  delete (window.HTMLElement.prototype as any).scrollIntoView;
+});
+
+test('a stale quote clicking "Book with PayPal" shows a visible error instead of doing nothing (#333)', async () => {
+  // bookingSessionId missing mirrors whatever "for some reason" state the
+  // guard in handleStartPayPalHold exists to catch — the point under test is
+  // that the resulting error is actually visible, not what triggers it.
+  const staleResult = { ...SEARCH_RESULT_FIXTURE, bookingSessionId: '' };
+  mockJsonResponse(staleResult);
+
+  renderBookingPage();
+
+  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-06-10' } });
+  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-06-14' } });
+  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
+  await screen.findByText('Casa Geco');
+
+  fireEvent.click(screen.getByRole('button', { name: 'Book with PayPal' }));
+
+  // Previously this set an error with nowhere to render (PayPalCheckoutPanel
+  // never mounts, since the guard returns before advancing the wizard) — the
+  // click looked completely inert. It must now show up right on the results
+  // step the guest is already looking at.
+  await screen.findByText('We could not create the booking hold right now. Please try again.');
+  // Still on results — the wizard never silently advanced anywhere.
+  expect(screen.getByText('Casa Geco')).toBeInTheDocument();
 });
 
 // ── Pet-friendly bookings ────────────────────────────────────────────────────

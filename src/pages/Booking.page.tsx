@@ -85,6 +85,13 @@ const PUERTO_VIEJO_CENTER_SLUGS = new Set(['geco', 'rana', 'tucano', 'pappagallo
 // into view.
 const RESULTS_SCROLL_OFFSET = 96;
 
+// How often an open deposit-checkout tab re-checks its hold while waiting on
+// the guest (to upload a receipt) or on staff (to review one). Staff can
+// reject a deposit at any time via the emailed link — without this poll, an
+// already-open tab has no way to learn that happened and keeps showing a hold
+// that no longer exists (#332).
+const DEPOSIT_HOLD_POLL_INTERVAL_MS = 20_000;
+
 /**
  * Mirrors `isPetFriendly` in the backend catalog: the `pet` amenity is what
  * makes a home pet friendly, so the badge on the card and the pet filter can
@@ -228,6 +235,45 @@ function stepIndex(step: WizardStep): number {
   if (step === 'deposit') return 2;
   return WIZARD_STEPS.findIndex((s) => s.key === step);
 }
+
+/**
+ * Every step of the wizard renders its error inline, in normal document flow
+ * — nothing hides it, but nothing brings it to the guest's attention either.
+ * A guest scrolled down into the results grid, or mid-form lower on the page,
+ * never sees an alert that appears above their current scroll position (#333).
+ * This scrolls a newly-appeared alert into view and moves focus to it (so
+ * screen readers announce it immediately, not just eventually via
+ * `role="alert"`), and always carries the same recovery instructions — reload
+ * and retry, then contact us — since by the time a guest sees any of these
+ * they're already stuck, whatever the underlying cause.
+ */
+const WizardAlert = ({ message, strings, className, variant = 'danger' }: { message: string | null | undefined; strings: BookingStrings; className?: string; variant?: 'danger' | 'warning' }) => {
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!message) return;
+    // Optional-chained on the method itself, not just the ref: jsdom (and
+    // conceivably some real old browser) has no scrollIntoView at all, which
+    // throws synchronously rather than silently no-op'ing — that would crash
+    // the whole page via the error boundary instead of just skipping the scroll.
+    ref.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+    ref.current?.focus();
+  }, [message]);
+
+  if (!message) return null;
+
+  return (
+    <Alert ref={ref} tabIndex={-1} className={className} variant={variant} role="alert">
+      <span>{message}</span>
+      <p className="booking-wizard-alert__help">
+        {strings.errorRecoveryHelp}{' '}
+        <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">{strings.contactByWhatsapp}</a>
+        {' · '}
+        <a href="mailto:reservas.kalawala@gmail.com">{strings.contactByEmail}</a>
+      </p>
+    </Alert>
+  );
+};
 
 const StepIndicator = ({ currentStep, strings }: { currentStep: WizardStep; strings: BookingStrings }) => {
   const current = stepIndex(currentStep);
@@ -451,6 +497,29 @@ const BookingPage = () => {
     return () => window.clearTimeout(id);
   }, [depositHoldResponse]);
 
+  // Staff can confirm or reject a manual-deposit hold at any time via the
+  // signed link in their email — entirely outside this tab. Without a poll,
+  // an already-open tab has no way to learn that happened and just keeps
+  // showing the upload/awaiting-review panel for a booking that is already
+  // cancelled server-side. Stops once the hold leaves 'hold_active' (rejected,
+  // expired, or converted to a confirmed booking).
+  React.useEffect(() => {
+    if (!depositHoldResponse || depositHoldResponse.booking.status !== 'hold_active') return;
+    let cancelled = false;
+    const poll = async () => {
+      try {
+        const state = await fetchHoldState(depositHoldResponse.booking.bookingSessionId, depositHoldResponse.depositAccessToken);
+        if (!cancelled && state.booking.status !== depositHoldResponse.booking.status) {
+          setDepositHoldResponse(state as DepositHoldResponse);
+        }
+      } catch {
+        // Transient network/API hiccup — the next tick retries.
+      }
+    };
+    const id = window.setInterval(poll, DEPOSIT_HOLD_POLL_INTERVAL_MS);
+    return () => { cancelled = true; window.clearInterval(id); };
+  }, [depositHoldResponse]);
+
   const updateBookingQuery = React.useCallback((updates: Record<string, string | number>) => {
     const nextParams = new URLSearchParams(searchParams.toString());
     Object.entries(updates).forEach(([key, value]) => { nextParams.set(key, String(value)); });
@@ -667,7 +736,13 @@ const BookingPage = () => {
   };
 
   const handleStartPayPalHold = (property: BookingAvailableProperty) => {
-    if (!result?.quoteId || !result.bookingSessionId) { setHoldError(strings.checkoutUnavailable); return; }
+    // Guards a stale/missing quote before the wizard ever advances to the
+    // checkout step, so `holdError` has nowhere to render yet — PayPalCheckoutPanel
+    // only mounts once checkoutProperty is set below, which this path never
+    // reaches. Routing it through depositError instead surfaces it on the results
+    // step the guest is actually looking at (#333) — clicking the property card
+    // would otherwise do nothing visible at all.
+    if (!result?.quoteId || !result.bookingSessionId) { setDepositError(strings.checkoutUnavailable); return; }
     setDepositError(null); setCheckoutProperty(property); setHoldForm(initialPayPalHoldForm); setHoldFieldErrors({}); setHoldError(null); setHoldResponse(null); setPayPalOrderError(null);
     if (property.price) { trackPaymentMethodSelected({ quote_id: result.quoteId, property_id: property.propertyId, payment_type: 'paypal', value_cents: property.price.totalAmountCents, currency: property.price.currency, language }); }
     formStartTrackedRef.current = false;
@@ -791,7 +866,13 @@ const BookingPage = () => {
                       <p className="booking-search-trust">{strings.trustLine}</p>
                     </section>
                     <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={false} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} />
-                    {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
+                    {/* Both this slide and the results slide below are always
+                        mounted (the wizard is a CSS-toggled carousel, not a
+                        conditional render) — gating on wizardStep keeps only
+                        one live copy of this alert on screen at a time, so
+                        its scroll/focus effect doesn't fight a hidden twin
+                        for focus. */}
+                    {wizardStep === 'search' && <WizardAlert message={error} strings={strings} className="booking-search-alert" />}
                   </>
                 )}
               </Col></Row>
@@ -800,8 +881,8 @@ const BookingPage = () => {
             <div className={`booking-wizard-slide${wizardStep === 'results' ? ' booking-wizard-slide--active' : stepIndex(wizardStep) > stepIndex('results') ? ' booking-wizard-slide--left' : ' booking-wizard-slide--right'}`} aria-hidden={wizardStep !== 'results'}>
               <Row className="justify-content-center"><Col lg={10} xl={9}>
                 <SearchForm arrivalDate={arrivalDate} departureDate={departureDate} guests={guests} today={today} minDepartureDate={minDepartureDate} fieldErrors={fieldErrors} isSubmitting={isSubmitting} searchCaptchaRequired={searchCaptchaRequired} strings={strings} compact={true} onArrivalChange={handleArrivalChange} onDepartureChange={(v) => { setDepartureDate(v); setSearchCaptchaRequired(false); updateBookingQuery({ departureDate: v }); }} onGuestInputChange={handleGuestInputChange} onGuestStepChange={handleGuestStepChange} onSubmit={handleSubmit} onBack={handleBackToSearch} />
-                {error && <Alert className="booking-search-alert" variant="danger" role="alert">{error}</Alert>}
-                {depositError && <Alert className="booking-search-alert" variant="danger" role="alert">{depositError}</Alert>}
+                {wizardStep === 'results' && <WizardAlert message={error} strings={strings} className="booking-search-alert" />}
+                {wizardStep === 'results' && <WizardAlert message={depositError} strings={strings} className="booking-search-alert" />}
                 <div ref={resultsAnchorRef} className="booking-results-anchor" />
                 {result && <BookingSearchResults result={result} strings={strings} language={language} nonRefundable={nonRefundable} onNonRefundableChange={handleNonRefundableChange} withPet={withPet} onWithPetChange={handleWithPetChange} poolOnly={poolOnly} fencedParkingOnly={fencedParkingOnly} locationFilter={locationFilter} sortOption={sortOption} onPoolChange={handlePoolChange} onFencedParkingChange={handleFencedParkingChange} onLocationChange={handleLocationChange} onSortChange={handleSortChange} onClearFilters={handleClearFilters} onManualDepositHandoff={handleStartDepositCheckout} onStartPayPalHold={handleStartPayPalHold} selectedPropertyId={checkoutProperty?.propertyId ?? null} featuredSlug={featuredSlug} />}
               </Col></Row>
@@ -1311,13 +1392,13 @@ const PayPalCheckoutPanel = ({ result, property, strings, language, withPet, non
         {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
       <ColonesEstimateNote strings={strings} language={language} chargedInDollars />
-      {holdError && <Alert className="booking-search-alert" variant="danger" role="alert">{holdError}</Alert>}
+      <WizardAlert message={holdError} strings={strings} className="booking-search-alert" />
       {holdResponse ? (
         <div className="booking-checkout-panel__hold" aria-live="polite">
           <h3>{strings.holdActiveTitle}</h3><p>{strings.holdActiveBody}</p>
           <div className="booking-checkout-panel__timer"><span>{strings.holdExpiring}</span><HoldCountdown expiresAt={holdResponse.booking.hold.expiresAt} /><small>{strings.holdExpiresAt(formatDateTime(holdResponse.booking.hold.expiresAt, language))}</small></div>
           <p className="booking-checkout-panel__reservation">{strings.reservationId}: <strong>{holdResponse.booking.reservationPublicId}</strong></p>
-          {paypalOrderError && <Alert className="booking-checkout-panel__notice" variant="danger" role="alert">{paypalOrderError}</Alert>}
+          <WizardAlert message={paypalOrderError} strings={strings} className="booking-checkout-panel__notice" />
           <div className="booking-checkout-panel__actions"><Button className="booking-search-submit" type="button" disabled={isCreatingPayPalOrder} onClick={() => onCreatePayPalOrder()}>{isCreatingPayPalOrder ? <><Spinner animation="border" size="sm" /> {strings.creatingPayPalOrder}</> : strings.continueToPayment}</Button></div>
         </div>
       ) : (
@@ -1352,7 +1433,7 @@ const PayPalReturnPanel = ({ strings, language, isProcessing, error, result }: {
     <section className="booking-return-panel" aria-labelledby="booking-return-title" aria-live="polite">
       <p className="booking-results-kicker">{strings.paypalTitle}</p><h1 id="booking-return-title">{strings.paypalReturnTitle}</h1>
       {isProcessing && <div className="booking-return-panel__status"><Spinner animation="border" role="status" /><div><h2>{strings.paypalReturnProcessing}</h2><p>{strings.paypalReturnProcessingBody}</p></div></div>}
-      {!isProcessing && error && <Alert className="booking-return-panel__notice" variant="danger" role="alert">{error}</Alert>}
+      {!isProcessing && <WizardAlert message={error} strings={strings} className="booking-return-panel__notice" />}
       {!isProcessing && result && <div className="booking-return-panel__confirmed"><h2>{strings.confirmationTitle}</h2><p>{strings.paypalReturnSuccessBody}</p><dl><div><dt>{strings.reservationId}</dt><dd>{result.booking.reservationPublicId}</dd></div>{propertyName && <div><dt>{strings.depositContextTitle}</dt><dd>{propertyName}</dd></div>}<div><dt>{strings.status}</dt><dd>{formatPaymentStatus(result.payment.status, strings)}</dd></div><div><dt>{strings.depositDates(formatDate(result.booking.arrivalDate, language), formatDate(result.booking.departureDate, language))}</dt><dd>{strings.depositGuests(result.booking.guests)}</dd></div></dl></div>}
     </section>
   );
@@ -1411,20 +1492,34 @@ const DepositCheckoutPanel = ({ result, property, strings, language, withPet, no
 
       <ColonesEstimateNote strings={strings} language={language} chargedInDollars={false} />
 
-      {holdError && <Alert className="booking-search-alert" variant="danger" role="alert">{holdError}</Alert>}
+      <WizardAlert message={holdError} strings={strings} className="booking-search-alert" />
 
-      {holdResponse ? (
+      {holdResponse && holdResponse.booking.status !== 'hold_active' ? (
+        <div className="booking-deposit-checkout__resolved" aria-live="polite">
+          <Alert variant={holdResponse.booking.status === 'cancelled' ? 'danger' : 'warning'} role="alert">
+            <strong>{holdResponse.booking.status === 'cancelled' ? strings.bookingCancelled : strings.bookingExpired}</strong>
+            <span>{holdResponse.booking.status === 'cancelled' ? strings.depositRejectedBody : strings.depositExpiredBody}</span>
+          </Alert>
+          <p className="booking-checkout-panel__reservation">{strings.reservationId}: <strong>{holdResponse.booking.reservationPublicId}</strong></p>
+        </div>
+      ) : holdResponse ? (
         <div className="booking-deposit-checkout__held" aria-live="polite">
           <Alert variant="warning" className="booking-deposit-handoff__notice">
             <strong>{strings.depositNotConfirmedTitle}</strong>
             <span>{strings.depositNotConfirmed}</span>
           </Alert>
 
-          <div className="booking-checkout-panel__timer">
-            <span>{strings.holdExpiring}</span>
-            <HoldCountdown expiresAt={holdResponse.booking.hold.expiresAt} />
-            <small>{strings.holdExpiresAt(formatDateTime(holdResponse.booking.hold.expiresAt, language))}</small>
-          </div>
+          {/* Once the receipt is uploaded the guest has nothing left to do
+              before their deadline — the wait is on staff review, which has
+              no deadline of its own, so a ticking countdown here would just
+              pressure the guest over something no longer theirs to act on. */}
+          {receiptState.status !== 'uploaded' && (
+            <div className="booking-checkout-panel__timer">
+              <span>{strings.holdExpiring}</span>
+              <HoldCountdown expiresAt={holdResponse.booking.hold.expiresAt} />
+              <small>{strings.holdExpiresAt(formatDateTime(holdResponse.booking.hold.expiresAt, language))}</small>
+            </div>
+          )}
 
           <p className="booking-checkout-panel__reservation">{strings.reservationId}: <strong>{holdResponse.booking.reservationPublicId}</strong></p>
 
@@ -1470,7 +1565,7 @@ const DepositCheckoutPanel = ({ result, property, strings, language, withPet, no
                   }}
                 />
                 {receiptState.status === 'uploading' && <p className="booking-deposit-checkout__uploading"><Spinner animation="border" size="sm" /> {strings.depositUploading}</p>}
-                {receiptState.status === 'error' && <Alert variant="danger" role="alert">{receiptState.message}</Alert>}
+                {receiptState.status === 'error' && <WizardAlert message={receiptState.message} strings={strings} />}
               </>
             )}
             <p className="booking-deposit-checkout__staff-note">{strings.depositStaffWillConfirm}</p>
@@ -1772,11 +1867,67 @@ function persistPortalAutoLogin(password: string): void { try { window.sessionSt
 function readPortalAutoLogin(): string | null { try { return window.sessionStorage.getItem(portalAutoLoginKey); } catch { return null; } }
 function clearPortalAutoLogin(): void { try { window.sessionStorage.removeItem(portalAutoLoginKey); } catch { /* non-critical */ } }
 
+/**
+ * A guest clicking through the wizard and hitting a JS exception (as opposed
+ * to a handled API error, which WizardAlert above covers) previously saw
+ * nothing at all — no boundary existed anywhere in the app, so React just
+ * unmounted the tree, leaving a blank, unclickable page with no on-screen
+ * indication anything went wrong (#333). This is the last line of defence
+ * for every step of /book: whatever broke, the guest still sees a message
+ * and a way forward instead of silence.
+ */
+class BookingErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError(): { hasError: boolean } {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: unknown, info: React.ErrorInfo): void {
+    // eslint-disable-next-line no-console
+    console.error('Booking page crashed', error, info.componentStack);
+  }
+
+  render(): React.ReactNode {
+    if (this.state.hasError) return <BookingCrashPanel />;
+    return this.props.children;
+  }
+}
+
+const BookingCrashPanel = () => {
+  const locale = useLocale();
+  const language = bookingLanguage(locale);
+  const strings = bookingStrings[language];
+  return (
+    <div id="body" className="booking-page">
+      <FixedNavigation isBlog={false} locale={language} />
+      <main className="booking-wizard"><Container><Row className="justify-content-center"><Col lg={8} xl={7}>
+        <section className="booking-checkout-panel" aria-labelledby="booking-crash-title">
+          <h1 id="booking-crash-title">{strings.crashTitle}</h1>
+          <p>{strings.crashBody}</p>
+          <div className="booking-checkout-panel__actions">
+            <Button className="booking-search-submit" type="button" onClick={() => window.location.reload()}>{strings.reloadPage}</Button>
+          </div>
+          <p className="booking-wizard-alert__help">
+            {strings.errorRecoveryHelp}{' '}
+            <a href="https://wa.me/50684632276" target="_blank" rel="noopener noreferrer">{strings.contactByWhatsapp}</a>
+            {' · '}
+            <a href="mailto:reservas.kalawala@gmail.com">{strings.contactByEmail}</a>
+          </p>
+        </section>
+      </Col></Row></Container></main>
+    </div>
+  );
+};
+
 // Wrapper with reCAPTCHA provider
 const BookingPageWithCaptcha = () => {
   const siteKey = process.env.REACT_APP_CAPTCHA_SITE_KEY || '';
-  if (!siteKey) return <BookingPage />;
-  return <GoogleReCaptchaProvider reCaptchaKey={siteKey}><BookingPage /></GoogleReCaptchaProvider>;
+  return (
+    <BookingErrorBoundary>
+      {siteKey ? <GoogleReCaptchaProvider reCaptchaKey={siteKey}><BookingPage /></GoogleReCaptchaProvider> : <BookingPage />}
+    </BookingErrorBoundary>
+  );
 };
 
 export default BookingPageWithCaptcha;

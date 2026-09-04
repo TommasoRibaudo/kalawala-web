@@ -1351,9 +1351,14 @@ const BookingPropertyCard = ({ property, strings, language, nonRefundable, onMan
           </li>
         </ul>
         {property.price && <PropertyPrice price={property.price} strings={strings} language={language} nonRefundable={nonRefundable} />}
+        {/* Three-tier hierarchy: SINPE/bank-transfer books directly with no
+            processor fees, so it carries the solid primary treatment; PayPal
+            is the outline secondary next to it; "view listing" is a plain
+            link, not a button — it just opens the gallery page, it doesn't
+            book anything (#334). */}
         <a className="booking-result-card__link" href={listingUrl} target="_blank" rel="noopener noreferrer" onClick={handleListingOpen}>{strings.viewListing}</a>
-        {canCreatePayPalHold && <Button className="booking-result-card__book-button" type="button" variant="primary" aria-pressed={isSelectedForCheckout} onClick={() => onStartPayPalHold(property)}>{strings.bookNow}</Button>}
-        {canUseManualDeposit && <Button className="booking-result-card__deposit-button" type="button" variant="outline-secondary" onClick={() => onManualDepositHandoff(property)}>{strings.manualDepositButton}</Button>}
+        {canUseManualDeposit && <Button className="booking-result-card__deposit-button" type="button" variant="primary" onClick={() => onManualDepositHandoff(property)}>{strings.manualDepositButton}</Button>}
+        {canCreatePayPalHold && <Button className="booking-result-card__book-button" type="button" variant="outline-secondary" aria-pressed={isSelectedForCheckout} onClick={() => onStartPayPalHold(property)}>{strings.bookNow}</Button>}
       </div>
     </article>
   );

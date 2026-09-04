@@ -13,7 +13,19 @@
   // Neutralise the global .btn overrides from _common.scss so that
   // Bootstrap variant classes (btn-primary, btn-outline-secondary, etc.)
   // work correctly inside the booking page.
-  .btn {
+  //
+  // :where() keeps this selector's specificity at .btn alone (0-1-0) instead
+  // of .booking-page .btn (0-2-0). At 0-2-0 this reset out-ranked every
+  // single-class button rule below it in this same file — not just the
+  // legacy pollution it was meant to neutralise — so any button styled with
+  // one custom class (.booking-result-card__book-button,
+  // .booking-confirmation-panel__manage, .booking-wizard-back, etc.) silently
+  // lost its background/color unless someone remembered to fight back with
+  // `!important` (see .booking-search-submit below). At 0-1-0 it still beats
+  // the legacy rule — same specificity, later in the cascade, since this
+  // page's stylesheet loads after it — but a same-page, later-declared,
+  // equally-specific button rule now wins the way a normal cascade expects.
+  :where(&) .btn {
     background-color: transparent;
     color: inherit;
     padding: 0.375rem 0.75rem;
@@ -1339,33 +1351,34 @@ li.booking-result-card__amenities-toggle {
   }
 }
 
+// Plain text link, not a button — it opens the listing's own gallery page in
+// a new tab, it doesn't book anything, so it must read as the lightest
+// action on the card, not compete with the two buttons below it (#334).
 .booking-result-card__link {
-  align-items: center;
-  background: $kalawala-darker-green;
-  border-radius: 8px;
-  color: $white;
-  display: inline-flex;
+  color: $kalawala-darker-green;
+  display: inline-block;
   font-weight: 700;
-  justify-content: center;
-  min-height: 44px;
-  padding: 10px 14px;
-  text-decoration: none;
+  padding: 2px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  width: fit-content;
 
-  &:hover {
-    background: $kalawala-dark-green;
-    color: $white;
-    text-decoration: none;
+  &:hover,
+  &:focus-visible {
+    color: $kalawala-dark-green;
+    text-decoration: underline;
   }
 
   &:focus-visible {
-    background: $kalawala-dark-green;
-    box-shadow: 0 0 0 3px rgba(138, 162, 136, 0.35);
-    color: $white;
-    text-decoration: none;
+    border-radius: 2px;
+    outline: 2px solid $kalawala-light-green;
+    outline-offset: 2px;
   }
 }
 
-.booking-result-card__book-button {
+// Solid primary: books directly with no payment-processor fees, so it's the
+// action the card should push guests toward (#334).
+.booking-result-card__deposit-button {
   background: $kalawala-darker-green;
   border: 0;
   border-radius: 8px;
@@ -1375,14 +1388,20 @@ li.booking-result-card__amenities-toggle {
 
   &:hover,
   &:focus,
-  &:focus-visible,
-  &[aria-pressed='true'] {
+  &:focus-visible {
     background: $kalawala-dark-green;
     color: #ffffff;
   }
+
+  &:disabled {
+    background-color: #f5f5f5;
+    color: rgba(23, 23, 23, 0.55);
+  }
 }
 
-.booking-result-card__deposit-button {
+// Outline secondary: still a real, equally clickable booking action, just
+// one visual step down from the primary above it (#334).
+.booking-result-card__book-button {
   background-color: #ffffff;
   border-color: rgba(41, 79, 68, 0.45);
   border-radius: 8px;
@@ -1391,7 +1410,9 @@ li.booking-result-card__amenities-toggle {
   min-height: 44px;
 
   &:hover,
-  &:focus-visible {
+  &:focus,
+  &:focus-visible,
+  &[aria-pressed='true'] {
     background: $kalawala-light-green;
     border-color: $kalawala-light-green;
     color: #ffffff;

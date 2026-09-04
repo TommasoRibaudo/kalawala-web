@@ -382,4 +382,58 @@ describe("processExpiredHolds — race-condition regression (R1)", () => {
     const after = await holds.getByBookingSessionId(session.id);
     expect(after?.status).toBe("active");
   });
+
+  it("does not expire or cancel a manual-deposit hold once a receipt is uploaded and awaiting staff review", async () => {
+    const holds = new InMemoryHoldRepository();
+    const sessions = new InMemoryBookingSessionRepository();
+    const smoobuClient = createMockSmoobuClient();
+
+    const quoted = await sessions.createQuotedSession({
+      arrivalDate: "2026-05-01",
+      departureDate: "2026-05-05",
+      guests: 2,
+      language: "en",
+      quotedProperties: [
+        { propertyId: "areka", currency: "USD", totalAmountCents: 40000, nightlyAverageCents: 10000, nights: 4, includesTaxes: false, rateSource: "smoobu" },
+      ],
+    });
+
+    const createdHold = await holds.createCreatingHold({
+      bookingSessionId: quoted.id,
+      propertyId: "areka",
+      arrivalDate: "2026-05-01",
+      departureDate: "2026-05-05",
+      expiresAt: PAST,
+      smoobuChannelId: 11,
+      smoobuCreatePayloadHash: "test-hash",
+    });
+    const activatedHold = await holds.activateHold({ holdId: createdHold.id, smoobuReservationId: 99002 });
+
+    await sessions.markHoldCreating({
+      bookingSessionId: quoted.id,
+      propertyId: "areka",
+      paymentMethod: "manual_deposit",
+      ratePlan: "flexible",
+      price: quoted.quotedProperties[0],
+      guest: { firstName: "Test", lastName: "Guest", email: "test@example.com" },
+      portalPasswordHash: "hash",
+      expiresAt: PAST,
+    });
+    await sessions.markHoldActive({ bookingSessionId: quoted.id, expiresAt: PAST });
+
+    // Guest sent the transfer and uploaded proof before the TTL lapsed — the
+    // wait is now on staff, not the guest, so the timeout must stop applying.
+    await sessions.setDepositReceiptS3Key({ bookingSessionId: quoted.id, s3Key: `deposit-receipts/${quoted.id}/receipt.jpg` });
+
+    const deps = createDeps({ holds, bookingSessions: sessions, smoobuClient });
+    const result = await processExpiredHolds(deps);
+
+    expect(smoobuClient.cancelReservation).not.toHaveBeenCalled();
+    expect(result.expired).toBe(0);
+    expect(result.smoobuCancelled).toBe(0);
+    const after = await holds.getByBookingSessionId(quoted.id);
+    expect(after?.status).toBe(activatedHold.status);
+    const afterSession = await sessions.getById(quoted.id);
+    expect(afterSession?.status).toBe("hold_active");
+  });
 });

@@ -526,6 +526,12 @@ export class RdsHoldRepository implements HoldRepository {
             -- here if the confirming path's promotion has not yet flipped it — the
             -- session status is the authoritative signal. See markHoldConfirmed.
             and coalesce(bs.status, 'quoted') <> 'booking_confirmed'
+            -- A manual-deposit guest's only deadline is uploading the receipt.
+            -- Once it's in, the booking is waiting on staff review, not on the
+            -- guest, so the original TTL must stop applying — otherwise a slow
+            -- review gets the reservation auto-cancelled out from under staff.
+            -- Staff resolve it explicitly via the confirm/reject link instead.
+            and not (bs.payment_method = 'manual_deposit' and bs.deposit_receipt_s3_key is not null)
           order by h.expires_at asc
           for update of h skip locked
         )

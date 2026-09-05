@@ -40,21 +40,24 @@ const bookingFlowKeys = [
   'checkoutUnavailable',
 ] as const;
 
-test('Booking.i18n exposes the same booking-flow keys in English and Spanish', () => {
-  expect(Object.keys(bookingStrings.es).sort()).toEqual(Object.keys(bookingStrings.en).sort());
-});
+const locales = Object.keys(bookingStrings) as Array<keyof typeof bookingStrings>;
 
-test('Booking.i18n has non-empty EN/ES copy for checkout, hold, PayPal return, and confirmation UI', () => {
-  for (const key of bookingFlowKeys) {
-    expect(bookingStrings.en[key]).toBeDefined();
-    expect(bookingStrings.es[key]).toBeDefined();
+test.each(locales.filter((locale) => locale !== 'en'))(
+  'Booking.i18n exposes the same booking-flow keys in English and %s',
+  (locale) => {
+    expect(Object.keys(bookingStrings[locale]).sort()).toEqual(Object.keys(bookingStrings.en).sort());
+  }
+);
 
-    if (typeof bookingStrings.en[key] === 'string') {
-      expect(bookingStrings.en[key]).toEqual(expect.stringMatching(/\S/));
-    }
+test.each(locales)(
+  'Booking.i18n has non-empty %s copy for checkout, hold, PayPal return, and confirmation UI',
+  (locale) => {
+    for (const key of bookingFlowKeys) {
+      expect(bookingStrings[locale][key]).toBeDefined();
 
-    if (typeof bookingStrings.es[key] === 'string') {
-      expect(bookingStrings.es[key]).toEqual(expect.stringMatching(/\S/));
+      if (typeof bookingStrings[locale][key] === 'string') {
+        expect(bookingStrings[locale][key]).toEqual(expect.stringMatching(/\S/));
+      }
     }
   }
-});
+);

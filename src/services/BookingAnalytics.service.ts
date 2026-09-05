@@ -53,7 +53,7 @@ import { CookieConsentService } from './CookieConsent.service';
 // Types
 // ---------------------------------------------------------------------------
 
-export type BookingAnalyticsLanguage = 'en' | 'es';
+export type BookingAnalyticsLanguage = 'en' | 'es' | 'de' | 'fr' | 'it' | 'pt' | 'he' | 'hi' | 'nl';
 export type PaymentType =
   | 'paypal'
   /** Deposit booking that creates a real hold and awaits staff confirmation. */

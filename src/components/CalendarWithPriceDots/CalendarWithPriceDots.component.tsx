@@ -10,6 +10,7 @@ import { CookieConsentService } from '../../services/CookieConsent.service';
 import { useCalendarMonth } from '../../hooks/useCalendarMonth';
 import { addDays, getCostaRicaToday } from '../../utils/dates';
 import { formatBookingMoney } from '../../utils/money';
+import { intlLocaleTag } from '../../i18n/locales';
 import './CalendarWithPriceDots.style.scss';
 
 interface CalendarWithPriceDotsProps {
@@ -42,7 +43,7 @@ const lowPriceThreshold = 0.85;
 const highPriceThreshold = 1.15;
 const maxLookaheadDays = 400;
 
-const calendarStrings = {
+export const calendarStrings = {
   en: {
     title: 'Nightly prices',
     subtitle: 'Dots compare each available night with this month.',
@@ -86,6 +87,160 @@ const calendarStrings = {
     unableToLoad: 'Los precios del calendario no están disponibles temporalmente.',
     pickCheckOut: 'Ahora elige tu fecha de salida, o toca una fecha anterior para empezar de nuevo.',
     clearDates: 'Borrar fechas',
+  },
+  de: {
+    title: 'Preise pro Nacht',
+    subtitle: 'Die Punkte vergleichen jede verfügbare Nacht mit diesem Monat.',
+    previousMonth: 'Vorheriger Monat',
+    nextMonth: 'Nächster Monat',
+    loading: 'Preise werden geladen',
+    unavailable: 'Nicht verfügbar',
+    past: 'Nicht mehr verfügbar',
+    notCheckOut: 'Nicht als Abreisedatum verfügbar',
+    noPrice: 'Preis nicht verfügbar',
+    lowPrice: 'niedriger Preis',
+    averagePrice: 'durchschnittlicher Preis',
+    highPrice: 'hoher Preis',
+    minStay: (nights: number) => `Mindestens ${nights} Nächte`,
+    legendLow: 'Niedrig',
+    legendAverage: 'Durchschnitt',
+    legendHigh: 'Hoch',
+    legendUnavailable: 'Nicht verfügbar',
+    unableToLoad: 'Kalenderpreise sind vorübergehend nicht verfügbar.',
+    pickCheckOut: 'Wähle jetzt dein Abreisedatum, oder tippe auf ein früheres Datum, um neu zu beginnen.',
+    clearDates: 'Daten löschen',
+  },
+  fr: {
+    title: 'Prix par nuit',
+    subtitle: 'Les points comparent chaque nuit disponible avec ce mois.',
+    previousMonth: 'Mois précédent',
+    nextMonth: 'Mois suivant',
+    loading: 'Chargement des prix',
+    unavailable: 'Indisponible',
+    past: 'Plus disponible',
+    notCheckOut: 'Non disponible comme date de départ',
+    noPrice: 'Prix non disponible',
+    lowPrice: 'prix bas',
+    averagePrice: 'prix moyen',
+    highPrice: 'prix élevé',
+    minStay: (nights: number) => `Minimum ${nights} nuits`,
+    legendLow: 'Bas',
+    legendAverage: 'Moyen',
+    legendHigh: 'Élevé',
+    legendUnavailable: 'Indisponible',
+    unableToLoad: 'Les prix du calendrier sont temporairement indisponibles.',
+    pickCheckOut: 'Choisissez maintenant votre date de départ, ou touchez une date antérieure pour recommencer.',
+    clearDates: 'Effacer les dates',
+  },
+  it: {
+    title: 'Prezzi per notte',
+    subtitle: 'I punti confrontano ogni notte disponibile con questo mese.',
+    previousMonth: 'Mese precedente',
+    nextMonth: 'Mese successivo',
+    loading: 'Caricamento prezzi',
+    unavailable: 'Non disponibile',
+    past: 'Non più disponibile',
+    notCheckOut: 'Non disponibile come data di partenza',
+    noPrice: 'Prezzo non disponibile',
+    lowPrice: 'prezzo basso',
+    averagePrice: 'prezzo medio',
+    highPrice: 'prezzo alto',
+    minStay: (nights: number) => `Minimo ${nights} notti`,
+    legendLow: 'Basso',
+    legendAverage: 'Medio',
+    legendHigh: 'Alto',
+    legendUnavailable: 'Non disponibile',
+    unableToLoad: 'I prezzi del calendario non sono temporaneamente disponibili.',
+    pickCheckOut: 'Ora scegli la tua data di partenza, oppure tocca una data precedente per ricominciare.',
+    clearDates: 'Cancella date',
+  },
+  pt: {
+    title: 'Preços por noite',
+    subtitle: 'Os pontos comparam cada noite disponível com este mês.',
+    previousMonth: 'Mês anterior',
+    nextMonth: 'Próximo mês',
+    loading: 'Carregando preços',
+    unavailable: 'Indisponível',
+    past: 'Não disponível mais',
+    notCheckOut: 'Não disponível como data de saída',
+    noPrice: 'Preço não disponível',
+    lowPrice: 'preço baixo',
+    averagePrice: 'preço médio',
+    highPrice: 'preço alto',
+    minStay: (nights: number) => `Mínimo de ${nights} noites`,
+    legendLow: 'Baixo',
+    legendAverage: 'Médio',
+    legendHigh: 'Alto',
+    legendUnavailable: 'Indisponível',
+    unableToLoad: 'Os preços do calendário estão temporariamente indisponíveis.',
+    pickCheckOut: 'Agora escolha sua data de saída, ou toque em uma data anterior para recomeçar.',
+    clearDates: 'Limpar datas',
+  },
+  he: {
+    title: 'מחירים ללילה',
+    subtitle: 'הנקודות משוות כל לילה זמין לממוצע החודש הזה.',
+    previousMonth: 'חודש קודם',
+    nextMonth: 'חודש הבא',
+    loading: 'טוען מחירים',
+    unavailable: 'לא זמין',
+    past: 'כבר לא זמין',
+    notCheckOut: 'לא זמין כתאריך עזיבה',
+    noPrice: 'מחיר לא זמין',
+    lowPrice: 'מחיר נמוך',
+    averagePrice: 'מחיר ממוצע',
+    highPrice: 'מחיר גבוה',
+    minStay: (nights: number) => `מינימום ${nights} לילות`,
+    legendLow: 'נמוך',
+    legendAverage: 'ממוצע',
+    legendHigh: 'גבוה',
+    legendUnavailable: 'לא זמין',
+    unableToLoad: 'מחירי הלוח השנה אינם זמינים כרגע.',
+    pickCheckOut: 'עכשיו בחרו את תאריך העזיבה, או הקישו על תאריך מוקדם יותר כדי להתחיל מחדש.',
+    clearDates: 'נקה תאריכים',
+  },
+  hi: {
+    title: 'प्रति रात कीमतें',
+    subtitle: 'बिंदु हर उपलब्ध रात की तुलना इस महीने के औसत से करते हैं।',
+    previousMonth: 'पिछला महीना',
+    nextMonth: 'अगला महीना',
+    loading: 'कीमतें लोड हो रही हैं',
+    unavailable: 'अनुपलब्ध',
+    past: 'अब उपलब्ध नहीं',
+    notCheckOut: 'चेक-आउट तिथि के रूप में उपलब्ध नहीं',
+    noPrice: 'कीमत उपलब्ध नहीं',
+    lowPrice: 'कम कीमत',
+    averagePrice: 'औसत कीमत',
+    highPrice: 'अधिक कीमत',
+    minStay: (nights: number) => `न्यूनतम ${nights} रातें`,
+    legendLow: 'कम',
+    legendAverage: 'औसत',
+    legendHigh: 'अधिक',
+    legendUnavailable: 'अनुपलब्ध',
+    unableToLoad: 'कैलेंडर की कीमतें अस्थायी रूप से उपलब्ध नहीं हैं।',
+    pickCheckOut: 'अब अपनी चेक-आउट तिथि चुनें, या फिर से शुरू करने के लिए किसी पहले की तिथि पर टैप करें।',
+    clearDates: 'तारीखें साफ़ करें',
+  },
+  nl: {
+    title: 'Prijzen per nacht',
+    subtitle: 'De stippen vergelijken elke beschikbare nacht met deze maand.',
+    previousMonth: 'Vorige maand',
+    nextMonth: 'Volgende maand',
+    loading: 'Prijzen laden',
+    unavailable: 'Niet beschikbaar',
+    past: 'Niet meer beschikbaar',
+    notCheckOut: 'Niet beschikbaar als vertrekdatum',
+    noPrice: 'Prijs niet beschikbaar',
+    lowPrice: 'lage prijs',
+    averagePrice: 'gemiddelde prijs',
+    highPrice: 'hoge prijs',
+    minStay: (nights: number) => `Minimaal ${nights} nachten`,
+    legendLow: 'Laag',
+    legendAverage: 'Gemiddeld',
+    legendHigh: 'Hoog',
+    legendUnavailable: 'Niet beschikbaar',
+    unableToLoad: 'Kalenderprijzen zijn tijdelijk niet beschikbaar.',
+    pickCheckOut: 'Kies nu je vertrekdatum, of tik op een eerdere datum om opnieuw te beginnen.',
+    clearDates: 'Data wissen',
   },
 };
 
@@ -513,7 +668,7 @@ function getCalendarDays(month: string): Array<{ date: string; day: number } | n
 }
 
 function getWeekdayLabels(language: BookingLanguage): string[] {
-  const formatter = new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
+  const formatter = new Intl.DateTimeFormat(intlLocaleTag(language), {
     weekday: 'short',
     timeZone: 'UTC',
   });
@@ -534,7 +689,7 @@ function addMonths(month: string, months: number): string {
 
 function formatMonthLabel(month: string, language: BookingLanguage): string {
   const [year, monthIndex] = month.split('-').map(Number);
-  const label = new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
+  const label = new Intl.DateTimeFormat(intlLocaleTag(language), {
     month: 'long',
     year: 'numeric',
     timeZone: 'UTC',
@@ -546,7 +701,7 @@ function formatMonthLabel(month: string, language: BookingLanguage): string {
 }
 
 function formatDateLabel(date: string, language: BookingLanguage): string {
-  return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
+  return new Intl.DateTimeFormat(intlLocaleTag(language), {
     month: 'long',
     day: 'numeric',
     timeZone: 'UTC',

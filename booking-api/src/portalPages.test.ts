@@ -17,6 +17,7 @@ import { createBookingApiHandler } from "./app";
 import { InMemoryBookingSessionRepository } from "./bookingSessions";
 import { InMemoryHoldRepository } from "./holds";
 import { InMemoryPaymentRepository } from "./payments";
+import { portalStrings } from "./portalPages";
 import { StaticSecretProvider } from "./secrets";
 import { InMemoryPortalSessionRepository, issuePortalSessionToken } from "./portalSessions";
 import { BookingApiConfig, LambdaHttpRequest } from "./types";
@@ -363,7 +364,7 @@ describe("GET /api/portal/reservation/:reservationPublicId", () => {
 
     expect(response.statusCode).toBe(200);
     const body = JSON.parse(response.body);
-    expect(body.reservation.property.listingUrl).toBe("/GecoES");
+    expect(body.reservation.property.listingUrl).toBe("/es/Geco");
   });
 
   it("returns 401 when no Authorization header is provided", async () => {
@@ -609,4 +610,30 @@ describe("POST /api/portal/reservation/:reservationPublicId/cancellation-request
 
     expect(response.statusCode).toBe(422);
   });
+});
+
+// ── portalStrings i18n parity ──────────────────────────────────────────────────
+
+function keyShape(value: unknown): unknown {
+  if (typeof value === "function") return "function";
+  if (typeof value !== "object" || value === null) return typeof value;
+  const entries = Object.keys(value as Record<string, unknown>)
+    .sort()
+    .map((key) => [key, keyShape((value as Record<string, unknown>)[key])] as const);
+  return Object.fromEntries(entries);
+}
+
+const portalStringsLocales = Object.keys(portalStrings) as Array<keyof typeof portalStrings>;
+
+test.each(portalStringsLocales.filter((locale) => locale !== "en"))(
+  "portalStrings exposes the same keys in English and %s",
+  (locale) => {
+    expect(keyShape(portalStrings[locale])).toEqual(keyShape(portalStrings.en));
+  }
+);
+
+test.each(portalStringsLocales)("portalStrings has non-empty %s copy", (locale) => {
+  for (const value of Object.values(portalStrings[locale])) {
+    expect(value).toEqual(expect.stringMatching(/\S/));
+  }
 });

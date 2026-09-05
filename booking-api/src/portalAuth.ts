@@ -15,7 +15,7 @@
  */
 
 import { randomUUID, scrypt as scryptCallback, ScryptOptions, timingSafeEqual } from "crypto";
-import { BookingSessionRepository } from "./bookingSessions";
+import { BookingLanguage, BookingSessionRepository } from "./bookingSessions";
 import { ApiError } from "./http/errors";
 import { getHeader } from "./http/request";
 import { jsonResponse } from "./http/response";
@@ -35,7 +35,7 @@ const SCRYPT_KEY_LENGTH = 64;
 const DUMMY_HASH = `${SCRYPT_VERSION_TAG}${"0".repeat(SCRYPT_SALT_HEX_LENGTH)}${Buffer.alloc(SCRYPT_KEY_LENGTH).toString("base64")}`;
 
 export async function handlePortalLogin(
-  body: { reservationPublicId: string; password: string; language: "en" | "es" },
+  body: { reservationPublicId: string; password: string; language: BookingLanguage },
   request: RouteRequest,
   config: BookingApiConfig
 ): Promise<ApiResponse> {

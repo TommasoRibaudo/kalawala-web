@@ -1,3 +1,4 @@
+import { BookingLanguage } from "./bookingSessions";
 import { ApiError } from "./http/errors";
 import { reportServerConversion } from "./serverConversions";
 import { jsonResponse } from "./http/response";
@@ -357,7 +358,7 @@ function enumerateStayNights(arrivalDate: string, departureDate: string): string
   return dates;
 }
 
-function buildPublicProperty(property: BookingProperty, price: PriceQuote, language: "en" | "es") {
+function buildPublicProperty(property: BookingProperty, price: PriceQuote, language: BookingLanguage) {
   const listingUrl = listingUrlForLanguage(property.slug, language);
 
   return {
@@ -382,38 +383,78 @@ function buildPublicProperty(property: BookingProperty, price: PriceQuote, langu
   };
 }
 
-function localizeAmenityLabel(amenity: BookingProperty["amenities"][number], language: "en" | "es"): string {
+type AmenityLabels = { ac: string; bath: string; kitchen: string; pet: string; pool: string; wifi: string };
+type ParkingLabels = { unfenced: string; fenced: string; default: string };
+
+const AMENITY_LABELS: Partial<Record<BookingLanguage, AmenityLabels>> = {
+  es: { ac: "A/C", bath: "Ba\u00f1o privado equipado", kitchen: "Cocina privada equipada", pet: "Acepta mascotas", pool: "Piscina privada", wifi: "WiFi 100Mbps" },
+  de: { ac: "Klimaanlage", bath: "Eigenes ausgestattetes Bad", kitchen: "Eigene ausgestattete K\u00fcche", pet: "Haustiere erlaubt", pool: "Privater Pool", wifi: "WLAN 100Mbps" },
+  fr: { ac: "Climatisation", bath: "Salle de bain priv\u00e9e \u00e9quip\u00e9e", kitchen: "Cuisine priv\u00e9e \u00e9quip\u00e9e", pet: "Animaux accept\u00e9s", pool: "Piscine priv\u00e9e", wifi: "WiFi 100Mbps" },
+  it: { ac: "Aria condizionata", bath: "Bagno privato attrezzato", kitchen: "Cucina privata attrezzata", pet: "Animali ammessi", pool: "Piscina privata", wifi: "WiFi 100Mbps" },
+  pt: { ac: "Ar-condicionado", bath: "Banheiro privativo equipado", kitchen: "Cozinha privativa equipada", pet: "Aceita animais de estima\u00e7\u00e3o", pool: "Piscina privativa", wifi: "WiFi 100Mbps" },
+  he: { ac: "\u05de\u05d9\u05d6\u05d5\u05d2 \u05d0\u05d5\u05d5\u05d9\u05e8", bath: "\u05d7\u05d3\u05e8 \u05e8\u05d7\u05e6\u05d4 \u05e4\u05e8\u05d8\u05d9 \u05de\u05d0\u05d5\u05d1\u05d6\u05df", kitchen: "\u05de\u05d8\u05d1\u05d7 \u05e4\u05e8\u05d8\u05d9 \u05de\u05d0\u05d5\u05d1\u05d6\u05df", pet: "\u05de\u05ea\u05d0\u05d9\u05dd \u05dc\u05d1\u05e2\u05dc\u05d9 \u05d7\u05d9\u05d9\u05dd", pool: "\u05d1\u05e8\u05d9\u05db\u05d4 \u05e4\u05e8\u05d8\u05d9\u05ea", wifi: "\u05d0\u05d9\u05e0\u05d8\u05e8\u05e0\u05d8 \u05d0\u05dc\u05d7\u05d5\u05d8\u05d9 100Mbps" },
+  hi: { ac: "\u090f\u0938\u0940", bath: "\u0928\u093f\u091c\u0940 \u0938\u0941\u0938\u091c\u094d\u091c\u093f\u0924 \u092c\u093e\u0925\u0930\u0942\u092e", kitchen: "\u0928\u093f\u091c\u0940 \u0938\u0941\u0938\u091c\u094d\u091c\u093f\u0924 \u0930\u0938\u094b\u0908", pet: "\u092a\u093e\u0932\u0924\u0942 \u091c\u093e\u0928\u0935\u0930\u094b\u0902 \u0915\u0940 \u0905\u0928\u0941\u092e\u0924\u093f", pool: "\u0928\u093f\u091c\u0940 \u0938\u094d\u0935\u093f\u092e\u093f\u0902\u0917 \u092a\u0942\u0932", wifi: "\u0935\u093e\u0908\u092b\u093c\u093e\u0908 100Mbps" },
+  nl: { ac: "Airco", bath: "Eigen uitgeruste badkamer", kitchen: "Eigen uitgeruste keuken", pet: "Huisdieren toegestaan", pool: "Priv\u00e9zwembad", wifi: "WiFi 100Mbps" },
+};
+
+const TWO_BATH_LABELS: Partial<Record<BookingLanguage, string>> = {
+  es: "2 ba\u00f1os",
+  de: "2 B\u00e4der",
+  fr: "2 salles de bain",
+  it: "2 bagni",
+  pt: "2 banheiros",
+  he: "2 \u05d7\u05d3\u05e8\u05d9 \u05e8\u05d7\u05e6\u05d4",
+  hi: "2 \u092c\u093e\u0925\u0930\u0942\u092e",
+  nl: "2 badkamers",
+};
+
+const PARKING_LABELS: Partial<Record<BookingLanguage, ParkingLabels>> = {
+  es: { unfenced: "Parqueo privado sin cerca", fenced: "Parqueo privado cercado", default: "Parqueo privado" },
+  de: { unfenced: "Privater Parkplatz ohne Zaun", fenced: "Privater eingez\u00e4unter Parkplatz", default: "Privatparkplatz" },
+  fr: { unfenced: "Parking priv\u00e9 non cl\u00f4tur\u00e9", fenced: "Parking priv\u00e9 cl\u00f4tur\u00e9", default: "Parking priv\u00e9" },
+  it: { unfenced: "Parcheggio privato non recintato", fenced: "Parcheggio privato recintato", default: "Parcheggio privato" },
+  pt: { unfenced: "Estacionamento privativo sem cerca", fenced: "Estacionamento privativo cercado", default: "Estacionamento privativo" },
+  he: { unfenced: "\u05d7\u05e0\u05d9\u05d4 \u05e4\u05e8\u05d8\u05d9\u05ea \u05dc\u05dc\u05d0 \u05d2\u05d3\u05e8", fenced: "\u05d7\u05e0\u05d9\u05d4 \u05e4\u05e8\u05d8\u05d9\u05ea \u05de\u05d5\u05d2\u05d3\u05e8\u05ea", default: "\u05d7\u05e0\u05d9\u05d4 \u05e4\u05e8\u05d8\u05d9\u05ea" },
+  hi: { unfenced: "\u0928\u093f\u091c\u0940 \u092a\u093e\u0930\u094d\u0915\u093f\u0902\u0917 (\u092c\u093f\u0928\u093e \u092c\u093e\u0921\u093c\u0947 \u0915\u0947)", fenced: "\u0928\u093f\u091c\u0940 \u092c\u093e\u0921\u093c\u0947\u0926\u093e\u0930 \u092a\u093e\u0930\u094d\u0915\u093f\u0902\u0917", default: "\u0928\u093f\u091c\u0940 \u092a\u093e\u0930\u094d\u0915\u093f\u0902\u0917" },
+  nl: { unfenced: "Priv\u00e9parkeerplaats zonder omheining", fenced: "Omheinde priv\u00e9parkeerplaats", default: "Priv\u00e9parkeerplaats" },
+};
+
+function localizeAmenityLabel(amenity: BookingProperty["amenities"][number], language: BookingLanguage): string {
   if (language === "en") {
     return amenity.label;
   }
 
   if (amenity.code === "bath" && amenity.label.startsWith("2 ")) {
-    return "2 ba\u00f1os";
+    return TWO_BATH_LABELS[language] ?? amenity.label;
   }
 
   if (amenity.code === "parking") {
+    const parking = PARKING_LABELS[language];
+    if (!parking) {
+      return amenity.label;
+    }
     // Every home's parking is private — the only distinction is whether it is
     // fenced. Check "unfenced" before "fenced" since the former contains the
     // latter as a substring.
     if (amenity.label.toLowerCase().includes("unfenced")) {
-      return "Parqueo privado sin cerca";
+      return parking.unfenced;
     }
     if (amenity.label.toLowerCase().includes("fenced")) {
-      return "Parqueo privado cercado";
+      return parking.fenced;
     }
-    return "Parqueo privado";
+    return parking.default;
   }
 
-  const labels: Record<string, string> = {
-    ac: "A/C",
-    bath: "Ba\u00f1o privado equipado",
-    kitchen: "Cocina privada equipada",
-    pet: "Acepta mascotas",
-    pool: "Piscina privada",
-    wifi: amenity.label === "WiFi" ? "WiFi" : "WiFi 100Mbps",
-  };
+  if (amenity.code === "wifi" && amenity.label === "WiFi") {
+    return "WiFi";
+  }
 
-  return labels[amenity.code] ?? amenity.label;
+  const labels = AMENITY_LABELS[language];
+  if (!labels) {
+    return amenity.label;
+  }
+
+  return labels[amenity.code as keyof AmenityLabels] ?? amenity.label;
 }
 
 function parseAvailableApartmentIds(value: unknown): number[] {

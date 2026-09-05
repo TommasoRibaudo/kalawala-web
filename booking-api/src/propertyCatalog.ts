@@ -1,3 +1,5 @@
+import { BookingLanguage } from "./bookingSessions";
+
 export interface PublicAmenity {
   code: string;
   label: string;
@@ -187,6 +189,14 @@ export const BOOKING_PROPERTIES_BY_SMOOBU_ID = new Map(
 
 export const BOOKING_PROPERTIES_BY_ID = new Map(BOOKING_PROPERTIES.map((property) => [property.propertyId, property]));
 
-export function listingUrlForLanguage(slug: string, language: "en" | "es"): string {
-  return `/${slug}${language === "es" ? "ES" : ""}`;
+/**
+ * Mirrors the frontend's `pathForKey` rule (src/routes.config.ts): English
+ * keeps the bare root, every other locale gets a `/:locale/` prefix on the
+ * same slug — listing slugs are not translated per locale (routes.manifest.json
+ * only defines `en`/`es` slugs and every other locale falls back to the
+ * English one). Booking-api can't import frontend code directly (separate
+ * package/deploy), so the rule is duplicated here rather than shared.
+ */
+export function listingUrlForLanguage(slug: string, language: BookingLanguage): string {
+  return language === "en" ? `/${slug}` : `/${language}/${slug}`;
 }

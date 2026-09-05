@@ -1,4 +1,5 @@
 import { ApiError, validationError } from "./http/errors";
+import { BOOKING_LANGUAGES, BookingLanguage } from "./bookingSessions";
 import { FieldErrors, JsonBody } from "./types";
 
 /**
@@ -20,7 +21,7 @@ export interface SearchRequest {
   arrivalDate: string;
   departureDate: string;
   guests: number;
-  language: "en" | "es";
+  language: BookingLanguage;
   discountCode?: string;
   source?: string;
   tracking?: TrackingIdentifiersInput;
@@ -128,7 +129,7 @@ export function validateSearchRequest(value: unknown): SearchRequest {
 export function validateCalendarRequest(
   params: Record<string, string>,
   query: Record<string, string>
-): { apartmentSlug: string; month: string; language: "en" | "es" } {
+): { apartmentSlug: string; month: string; language: BookingLanguage } {
   const errors: FieldErrors = {};
   const apartmentSlug = normalizeSlug(params.apartmentSlug, errors);
   const month = query.month;
@@ -308,7 +309,7 @@ export function validatePayPalCapturePathRequest(
 }
 
 export function validateDepositHandoffQuery(query: Record<string, string>): {
-  language: "en" | "es";
+  language: BookingLanguage;
   quoteId?: string;
   propertyId?: string;
 } {
@@ -323,7 +324,7 @@ export function validateDepositHandoffQuery(query: Record<string, string>): {
 export function validateDepositHandoffEvent(value: unknown): {
   quoteId: string;
   propertyId: string;
-  language: "en" | "es";
+  language: BookingLanguage;
   contactMethod: string;
   analyticsConsent: boolean;
 } {
@@ -376,7 +377,7 @@ export function validateDepositReceiptConfirmRequest(value: unknown): {
 export function validatePortalLogin(value: unknown): {
   reservationPublicId: string;
   password: string;
-  language: "en" | "es";
+  language: BookingLanguage;
 } {
   const body = assertJsonObject(value);
   const errors: FieldErrors = {};
@@ -530,32 +531,36 @@ function requirePositiveInteger(body: JsonBody, key: string, errors: FieldErrors
   return Number(value);
 }
 
-function requireLanguage(body: JsonBody, key: string, errors: FieldErrors): "en" | "es" {
+function isBookingLanguage(value: unknown): value is BookingLanguage {
+  return typeof value === "string" && (BOOKING_LANGUAGES as readonly string[]).includes(value);
+}
+
+function requireLanguage(body: JsonBody, key: string, errors: FieldErrors): BookingLanguage {
   const value = body[key];
-  if (value !== "en" && value !== "es") {
-    addError(errors, key, "language_must_be_en_or_es");
+  if (!isBookingLanguage(value)) {
+    addError(errors, key, "language_not_supported");
     return "en";
   }
 
   return value;
 }
 
-function requireQueryLanguage(value: string | undefined, errors: FieldErrors): "en" | "es" {
-  if (value !== "en" && value !== "es") {
-    addError(errors, "language", "language_must_be_en_or_es");
+function requireQueryLanguage(value: string | undefined, errors: FieldErrors): BookingLanguage {
+  if (!isBookingLanguage(value)) {
+    addError(errors, "language", "language_not_supported");
     return "en";
   }
 
   return value;
 }
 
-function optionalLanguage(value: string | undefined, errors: FieldErrors): "en" | "es" {
+function optionalLanguage(value: string | undefined, errors: FieldErrors): BookingLanguage {
   if (!value) {
     return "en";
   }
 
-  if (value !== "en" && value !== "es") {
-    addError(errors, "language", "language_must_be_en_or_es");
+  if (!isBookingLanguage(value)) {
+    addError(errors, "language", "language_not_supported");
     return "en";
   }
 

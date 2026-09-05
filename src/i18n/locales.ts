@@ -52,3 +52,14 @@ export function isLocale(value: string): value is Locale {
 export function directionOf(locale: Locale): Direction {
   return LOCALE_META[locale].dir;
 }
+
+/**
+ * BCP-47 tag for `Intl.NumberFormat`/`Intl.DateTimeFormat` calls in the
+ * booking flow — `${locale}-${flag}` for every locale except Spanish, which
+ * intentionally resolves to Costa Rica (`es-CR`) rather than Spain (`es-ES`):
+ * see `formatBookingMoney` in `src/utils/money.ts` for why.
+ */
+export function intlLocaleTag(locale: Locale): string {
+  if (locale === 'es') return 'es-CR';
+  return `${locale}-${LOCALE_META[locale].flag}`;
+}

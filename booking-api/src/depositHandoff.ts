@@ -1,3 +1,4 @@
+import { BookingLanguage } from "./bookingSessions";
 import { createEmailClient } from "./email";
 import { ApiError } from "./http/errors";
 import { jsonResponse } from "./http/response";
@@ -5,7 +6,7 @@ import { BookingProperty, BOOKING_PROPERTIES_BY_ID, listingUrlForLanguage } from
 import { ApiResponse, BookingApiConfig, HeadersMap, RouteObservability } from "./types";
 
 export interface DepositHandoffQuery {
-  language: "en" | "es";
+  language: BookingLanguage;
   quoteId?: string;
   propertyId?: string;
 }
@@ -13,7 +14,7 @@ export interface DepositHandoffQuery {
 export interface DepositHandoffEventRequest {
   quoteId: string;
   propertyId: string;
-  language: "en" | "es";
+  language: BookingLanguage;
   contactMethod: string;
   analyticsConsent: boolean;
 }

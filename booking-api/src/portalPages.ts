@@ -705,7 +705,7 @@ function portalSessionPersistenceRequired(config: BookingApiConfig): boolean {
 
 // ── i18n strings ──────────────────────────────────────────────────────────────
 
-const portalStrings = {
+export const portalStrings = {
   en: {
     helpRequestReceived:
       "We have your message. Our team will get back to you as soon as possible.",
@@ -725,5 +725,75 @@ const portalStrings = {
       "Cancelamos tu reserva y liberamos las fechas. Nuestro equipo procesa a mano cualquier reembolso que corresponda.",
     guestCountUpdated:
       "Número de huéspedes actualizado.",
+  },
+  de: {
+    helpRequestReceived:
+      "Wir haben deine Nachricht erhalten. Unser Team meldet sich so schnell wie möglich bei dir.",
+    cancellationRequestReceived:
+      "Wir haben deine Stornierungsanfrage erhalten. Unser Team prüft sie und meldet sich in Kürze bei dir.",
+    bookingCancelled:
+      "Wir haben deine Buchung storniert und die Termine freigegeben. Unser Team bearbeitet eine etwaige Rückerstattung manuell.",
+    guestCountUpdated:
+      "Anzahl der Gäste aktualisiert.",
+  },
+  fr: {
+    helpRequestReceived:
+      "Nous avons bien reçu votre message. Notre équipe vous répondra dès que possible.",
+    cancellationRequestReceived:
+      "Nous avons bien reçu votre demande d'annulation. Notre équipe l'examinera et vous contactera sous peu.",
+    bookingCancelled:
+      "Nous avons annulé votre réservation et libéré les dates. Notre équipe traite manuellement tout remboursement dû.",
+    guestCountUpdated:
+      "Nombre de voyageurs mis à jour.",
+  },
+  it: {
+    helpRequestReceived:
+      "Abbiamo ricevuto il tuo messaggio. Il nostro team ti risponderà al più presto.",
+    cancellationRequestReceived:
+      "Abbiamo ricevuto la tua richiesta di cancellazione. Il nostro team la esaminerà e ti contatterà a breve.",
+    bookingCancelled:
+      "Abbiamo cancellato la tua prenotazione e liberato le date. Il nostro team elabora manualmente eventuali rimborsi dovuti.",
+    guestCountUpdated:
+      "Numero di ospiti aggiornato.",
+  },
+  pt: {
+    helpRequestReceived:
+      "Recebemos sua mensagem. Nossa equipe entrará em contato o mais breve possível.",
+    cancellationRequestReceived:
+      "Recebemos sua solicitação de cancelamento. Nossa equipe irá analisá-la e entrará em contato em breve.",
+    bookingCancelled:
+      "Cancelamos sua reserva e liberamos as datas. Nossa equipe processa manualmente qualquer reembolso devido.",
+    guestCountUpdated:
+      "Número de hóspedes atualizado.",
+  },
+  he: {
+    helpRequestReceived:
+      "קיבלנו את ההודעה שלך. הצוות שלנו יחזור אליך בהקדם האפשרי.",
+    cancellationRequestReceived:
+      "קיבלנו את בקשת הביטול שלך. הצוות שלנו יבדוק אותה ויחזור אליך בקרוב.",
+    bookingCancelled:
+      "ביטלנו את ההזמנה שלך ושחררנו את התאריכים. הצוות שלנו מטפל באופן ידני בכל החזר כספי המגיע.",
+    guestCountUpdated:
+      "מספר האורחים עודכן.",
+  },
+  hi: {
+    helpRequestReceived:
+      "हमें आपका संदेश मिल गया है। हमारी टीम जल्द से जल्द आपसे संपर्क करेगी।",
+    cancellationRequestReceived:
+      "हमें आपका रद्दीकरण अनुरोध मिल गया है। हमारी टीम इसकी समीक्षा करेगी और शीघ्र ही आपसे संपर्क करेगी।",
+    bookingCancelled:
+      "हमने आपकी बुकिंग रद्द कर दी है और तारीखें जारी कर दी हैं। हमारी टीम किसी भी देय धनवापसी को स्वयं संसाधित करती है।",
+    guestCountUpdated:
+      "मेहमानों की संख्या अपडेट की गई।",
+  },
+  nl: {
+    helpRequestReceived:
+      "We hebben je bericht ontvangen. Ons team neemt zo snel mogelijk contact met je op.",
+    cancellationRequestReceived:
+      "We hebben je annuleringsverzoek ontvangen. Ons team beoordeelt het en neemt binnenkort contact met je op.",
+    bookingCancelled:
+      "We hebben je boeking geannuleerd en de data vrijgegeven. Ons team verwerkt eventuele terugbetalingen handmatig.",
+    guestCountUpdated:
+      "Aantal gasten bijgewerkt.",
   },
 } as const;

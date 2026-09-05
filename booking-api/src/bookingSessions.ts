@@ -1,6 +1,7 @@
 import { randomBytes, randomUUID } from "crypto";
 
-export type BookingLanguage = "en" | "es";
+export const BOOKING_LANGUAGES = ["en", "es", "de", "fr", "it", "pt", "he", "hi", "nl"] as const;
+export type BookingLanguage = (typeof BOOKING_LANGUAGES)[number];
 // Full mirror of the booking_status DB enum. All values must be listed here
 // even if the application does not yet transition to every state, so that
 // mapBookingSessionRow never throws on a valid row returned from the database.

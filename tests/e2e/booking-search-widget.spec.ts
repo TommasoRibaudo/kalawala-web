@@ -99,8 +99,13 @@ test.describe('Booking Search Widget', () => {
 
     await selectDateRange(appPage, checkIn, checkOut);
 
-    // Increase guests from default (5 for Geco) to 6
-    await bookingWidget.increaseGuests(appPage).click();
+    // Decrease guests from default (5 for Geco) to 4. Geco's maxGuests is 5
+    // (PROPERTY_CAPACITY in src/utils/constants.ts), so the increment button
+    // is disabled at the default and clicking it would hang forever waiting
+    // for a state change that can't happen — decrementing is the only
+    // direction with headroom regardless of which property this ever runs
+    // against.
+    await bookingWidget.decreaseGuests(appPage).click();
 
     await bookingWidget.submitButton(appPage).click();
 
@@ -111,7 +116,7 @@ test.describe('Booking Search Widget', () => {
     expect(url.pathname).toBe('/en/book');
     expect(url.searchParams.get('arrivalDate')).toBe(checkIn);
     expect(url.searchParams.get('departureDate')).toBe(checkOut);
-    expect(url.searchParams.get('guests')).toBe('6');
+    expect(url.searchParams.get('guests')).toBe('4');
   });
 
   test('submitting without a check-in date shows a validation error', async ({ appPage }) => {
@@ -137,13 +142,20 @@ test.describe('Booking Search Widget', () => {
     // guest count by one.
 
     // The widget renders the guest count inside a span with a user icon.
-    // Default guest count on the /Geco listing page is 5 (property guestNumber).
+    // Default guest count on the /Geco listing page is 5 (property guestNumber),
+    // which is also Geco's maxGuests cap (PROPERTY_CAPACITY in
+    // src/utils/constants.ts) — the increment button is disabled right at the
+    // default, so decrement once first to free up headroom before testing
+    // that increment moves the count up by one.
     const guestCount = appPage.locator('.booking-search-widget__guest-count');
     await expect(guestCount).toContainText('5');
 
+    await bookingWidget.decreaseGuests(appPage).click();
+    await expect(guestCount).toContainText('4');
+
     await bookingWidget.increaseGuests(appPage).click();
 
-    await expect(guestCount).toContainText('6');
+    await expect(guestCount).toContainText('5');
   });
 
   test('clicking the guest decrement button at count 1 keeps the count at 1', async ({ appPage }) => {

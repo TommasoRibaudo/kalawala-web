@@ -3,7 +3,7 @@ import { Alert, Button, Col, Container, Form, Row, Spinner } from 'react-bootstr
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router-dom';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
-import { useLocale } from '../i18n';
+import { bookingLanguage, useLocale } from '../i18n';
 import {
   BookingApiError,
   BookingLanguage,
@@ -14,6 +14,7 @@ import {
   updatePortalGuests,
 } from '../services/BookingApi.service';
 import { clearPortalSession, readPortalToken } from '../services/PortalSession.service';
+import { intlLocaleTag } from '../i18n/locales';
 import { trackContactWhatsappClicked } from '../services/BookingAnalytics.service';
 import { portalDetailStrings, PortalDetailStrings } from './PortalDetail.i18n';
 import './PortalDetail.style.scss';
@@ -59,7 +60,7 @@ function formatDateTime(value: string, language: BookingLanguage): string {
   if (Number.isNaN(date.getTime())) {
     return value;
   }
-  return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
+  return new Intl.DateTimeFormat(intlLocaleTag(language), {
     dateStyle: 'medium',
     timeStyle: 'short',
     timeZone: 'America/Costa_Rica',
@@ -71,7 +72,7 @@ function formatDate(value: string, language: BookingLanguage): string {
   if (Number.isNaN(date.getTime())) {
     return value;
   }
-  return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
+  return new Intl.DateTimeFormat(intlLocaleTag(language), {
     dateStyle: 'medium',
     timeZone: 'UTC',
   }).format(date);
@@ -184,13 +185,14 @@ interface CancellationFormState {
  * MSN Weather doesn't allow iframe embedding, so we provide a branded link-out.
  */
 const WeatherWidget = ({ language }: { language: BookingLanguage }) => {
-  const msnUrl =
-    language === 'es'
-      ? 'https://www.msn.com/es-xl/clima/pronostico/in-Puerto-Viejo-de-Talamanca,Limón,Costa-Rica'
-      : 'https://www.msn.com/en-us/weather/forecast/in-Puerto-Viejo-de-Talamanca,Limón,Costa-Rica';
+  const strings = portalDetailStrings[language];
+  // MSN's path segment is only verified localized for Spanish (clima/pronostico);
+  // every other locale, including the newer ones, uses the English-style path.
+  const msnPath = language === 'es' ? 'clima/pronostico' : 'weather/forecast';
+  const msnUrl = `https://www.msn.com/${strings.weatherUrlLocale}/${msnPath}/in-Puerto-Viejo-de-Talamanca,Limón,Costa-Rica`;
 
-  const label = language === 'es' ? 'Ver pronóstico del clima' : 'View weather forecast';
-  const poweredBy = language === 'es' ? 'Con tecnología de' : 'Powered by';
+  const label = strings.weatherLabel;
+  const poweredBy = strings.weatherPoweredBy;
 
   return (
     <a
@@ -214,11 +216,8 @@ const PortalDetailPage = () => {
   const { reservationPublicId } = useParams<{ reservationPublicId: string }>();
   const navigate = useNavigate();
   const locale = useLocale();
-  const language: BookingLanguage = locale === 'es' ? 'es' : 'en';
+  const language: BookingLanguage = bookingLanguage(locale);
   const strings = portalDetailStrings[language];
-  // Phase 3a collapsed the two navigation components into one. `language` is
-  // passed explicitly rather than left to useLocale(): on this page it can be
-  // Spanish while the URL is not (see the lowercase /bookes fallback above).
 
   const [data, setData] = React.useState<PortalReservationResponse | null>(null);
   const [loadError, setLoadError] = React.useState<string | null>(null);

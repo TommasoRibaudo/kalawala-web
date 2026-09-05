@@ -172,7 +172,12 @@ const PROPERTY_GALLERY_IMAGES: Record<string, { en: IImageDescription[]; es: IIm
 
 function getPropertyGalleryImages(property: BookingAvailableProperty, language: BookingLanguage): IImageDescription[] {
   const key = Object.keys(PROPERTY_GALLERY_IMAGES).find((k) => k.toLowerCase() === property.slug.toLowerCase());
-  const images = key ? PROPERTY_GALLERY_IMAGES[key][language] : undefined;
+  const gallery = key ? PROPERTY_GALLERY_IMAGES[key] : undefined;
+  // Photo alt-text/room descriptions only exist in English and Spanish
+  // site-wide (the listing pages' own ImagesContainer has the same gap) —
+  // every other locale falls back to English, matching that existing
+  // convention rather than inventing a different one here.
+  const images = gallery ? (language === 'es' ? gallery.es : gallery.en) : undefined;
   return images && images.length > 0 ? images : [{ roomType: property.name, roomDescription: '', imageLink: property.thumbnailUrl }];
 }
 

@@ -3,7 +3,7 @@ import { Alert, Button, Col, Container, Form, Row, Spinner } from 'react-bootstr
 import { Helmet } from 'react-helmet';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import FixedNavigation from '../components/FixedNavigation/FixedNavigation.component';
-import { useLocale } from '../i18n';
+import { bookingLanguage, useLocale } from '../i18n';
 import { canonicalUrl } from '../i18n/seo';
 import { BookingApiError, BookingLanguage, portalLogin } from '../services/BookingApi.service';
 import { persistPortalSession, readLatestPortalCredentials, readPortalCredentials, removePortalCredentials } from '../services/PortalSession.service';
@@ -36,11 +36,8 @@ const PortalLoginPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const locale = useLocale();
-  const language: BookingLanguage = locale === 'es' ? 'es' : 'en';
+  const language: BookingLanguage = bookingLanguage(locale);
   const strings = portalStrings[language];
-  // Phase 3a collapsed the two navigation components into one. `language` is
-  // passed explicitly rather than left to useLocale(): on this page it can be
-  // Spanish while the URL is not (see the lowercase /bookes fallback above).
 
   const [reservationPublicId, setReservationPublicId] = React.useState(
     () => searchParams.get('reservationId') ?? ''

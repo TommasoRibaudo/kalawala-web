@@ -124,9 +124,9 @@ test("validateSearchRequest: rejects zero guests", () => {
 
 test("validateSearchRequest: rejects invalid language", () => {
   assertValidationError(
-    () => validateSearchRequest({ ...validSearch, language: "fr" }),
+    () => validateSearchRequest({ ...validSearch, language: "klingon" }),
     "language",
-    "language_must_be_en_or_es"
+    "language_not_supported"
   );
 });
 
@@ -349,7 +349,7 @@ test("validateDepositHandoffQuery: rejects missing language", () => {
   assertValidationError(
     () => validateDepositHandoffQuery({}),
     "language",
-    "language_must_be_en_or_es"
+    "language_not_supported"
   );
 });
 

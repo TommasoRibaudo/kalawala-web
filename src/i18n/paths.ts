@@ -45,14 +45,11 @@ export function portalPath(locale: Locale): string {
 }
 
 /**
- * Language for the booking flow, which is translated only into English and
- * Spanish — its strings live in `bookingStrings`, not in the message catalogs,
- * because the booking widget and the portal share them.
- *
- * Deliberately narrower than `Locale`: a German visitor gets the English
- * booking UI rather than a missing one. When the booking flow is translated,
- * widen the return type and the call sites will tell you what needs updating.
+ * Language for the booking flow. Its strings live in `bookingStrings`, not
+ * in the message catalogs, because the booking widget and the portal share
+ * them — but the flow now covers every released `Locale`, so this is just
+ * an identity mapping kept as a named call site for readability.
  */
-export function bookingLanguage(locale: Locale): 'en' | 'es' {
-  return locale === 'es' ? 'es' : 'en';
+export function bookingLanguage(locale: Locale): Locale {
+  return locale;
 }

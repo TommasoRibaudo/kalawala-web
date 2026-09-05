@@ -1,3 +1,4 @@
+import { BookingLanguage } from "./bookingSessions";
 import { ApiError } from "./http/errors";
 import { jsonResponse } from "./http/response";
 import { BOOKING_PROPERTIES, BookingProperty } from "./propertyCatalog";
@@ -16,7 +17,7 @@ type CacheStatus = "hit" | "miss";
 interface CalendarRequest {
   apartmentSlug: string;
   month: string;
-  language: "en" | "es";
+  language: BookingLanguage;
 }
 
 interface SmoobuRatesResponse {

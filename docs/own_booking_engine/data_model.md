@@ -62,7 +62,8 @@ create extension if not exists btree_gist;
 ## Enum Types
 
 ```sql
-create type booking_language as enum ('en', 'es');
+-- Widened from ('en', 'es') to all 9 site locales by migrations/0017_widen_booking_language.sql.
+create type booking_language as enum ('en', 'es', 'de', 'fr', 'it', 'pt', 'he', 'hi', 'nl');
 
 create type booking_status as enum (
   'search_started',

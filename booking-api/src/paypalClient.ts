@@ -1,3 +1,4 @@
+import { BookingLanguage } from "./bookingSessions";
 import { ApiError } from "./http/errors";
 import { BookingApiConfig, PayPalClientConfig, RouteObservability } from "./types";
 
@@ -20,7 +21,7 @@ export interface PayPalOrderInput {
   currency: string;
   totalAmountCents: number;
   propertyName: string;
-  language: "en" | "es";
+  language: BookingLanguage;
   returnUrl?: string;
   cancelUrl?: string;
 }

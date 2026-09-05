@@ -192,7 +192,7 @@ test("GET /api/deposit-handoff includes localized booking context when quote and
     property: {
       propertyId: property.propertyId,
       slug: property.slug,
-      listingUrl: "/GecoES",
+      listingUrl: "/es/Geco",
       name: property.name,
     },
   });

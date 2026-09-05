@@ -8,7 +8,9 @@
  * there is no ambiguity to reintroduce.
  */
 
-type BookingLocale = 'en' | 'es';
+import { intlLocaleTag, Locale } from '../i18n/locales';
+
+type BookingLocale = Locale;
 
 /**
  * Colón amounts are rounded to the nearest 100 before display.
@@ -26,7 +28,7 @@ export function formatBookingMoney(
   language: BookingLocale,
   options: { hideZeroCents?: boolean } = {}
 ): string {
-  const locale = language === 'es' ? 'es-CR' : 'en-US';
+  const locale = intlLocaleTag(language);
   const fractionDigits = options.hideZeroCents && amountCents % 100 === 0 ? 0 : 2;
   const base: Intl.NumberFormatOptions = {
     style: 'currency',
@@ -71,7 +73,7 @@ export function formatExchangeRate(colonesPerDollar: number, language: BookingLo
 }
 
 function formatColonesAmount(colones: number, language: BookingLocale, fractionDigits: number): string {
-  const locale = language === 'es' ? 'es-CR' : 'en-US';
+  const locale = intlLocaleTag(language);
   const base: Intl.NumberFormatOptions = {
     style: 'currency',
     currency: 'CRC',

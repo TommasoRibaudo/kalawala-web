@@ -133,7 +133,7 @@ test("POST /api/search calls Smoobu availability and returns safe property summa
   expect(body.resultsCount).toBe(2);
   expect(body.properties[0]).toMatchObject({
     slug: "Geco",
-    listingUrl: "/GecoES",
+    listingUrl: "/es/Geco",
     name: "Casa Geco",
     guestCapacity: 5,
     amenities: [
@@ -153,7 +153,7 @@ test("POST /api/search calls Smoobu availability and returns safe property summa
       rateSource: "smoobu",
     },
     actions: {
-      viewListingUrl: "/GecoES",
+      viewListingUrl: "/es/Geco",
       canCreatePayPalHold: true,
       canUseManualDepositHandoff: true,
     },

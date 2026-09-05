@@ -10,6 +10,7 @@ import { getCostaRicaToday, nightsBetween } from '../../utils/dates';
 import './BookingSearchWidget.style.scss';
 import type { Locale } from '../../i18n';
 import { bookingPath, bookingLanguage } from '../../i18n';
+import { intlLocaleTag } from '../../i18n/locales';
 
 interface BookingSearchWidgetProps {
   /** Whether the current page is Spanish */
@@ -42,7 +43,7 @@ export interface BookingSearchWidgetHandle {
 const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
-const strings = {
+export const strings = {
   en: {
     title: 'Check Availability',
     subtitle: 'Book directly for the best price, guaranteed',
@@ -80,6 +81,139 @@ const strings = {
     selectDates: 'Elige tus fechas',
     selectCheckOut: 'elige la salida',
     nights: (count: number) => `${count} ${count === 1 ? 'noche' : 'noches'}`,
+  },
+  de: {
+    title: 'Verfügbarkeit prüfen',
+    subtitle: 'Buche direkt zum garantiert besten Preis',
+    dates: 'Daten',
+    guests: 'Gäste',
+    search: 'Verfügbarkeit suchen',
+    searching: 'Suche läuft…',
+    decreaseGuests: 'Weniger Gäste',
+    increaseGuests: 'Mehr Gäste',
+    maxGuests: 'Unser größtes Haus bietet Platz für {max}. Für größere Gruppen schreib uns.',
+    maxGuestsListing: 'Dieses Haus bietet Platz für bis zu {max}.',
+    searchAllHomes: 'Durchsuche alle unsere Häuser für eine größere Gruppe.',
+    arrivalRequired: 'Bitte wähle ein Anreisedatum.',
+    departureRequired: 'Bitte wähle ein Abreisedatum.',
+    departureTooEarly: 'Die Abreise muss nach der Anreise liegen.',
+    selectDates: 'Wähle deine Daten',
+    selectCheckOut: 'Abreise wählen',
+    nights: (count: number) => `${count} ${count === 1 ? 'Nacht' : 'Nächte'}`,
+  },
+  fr: {
+    title: 'Vérifier la disponibilité',
+    subtitle: 'Réservez directement au meilleur prix garanti',
+    dates: 'Dates',
+    guests: 'Voyageurs',
+    search: 'Rechercher la disponibilité',
+    searching: 'Recherche en cours…',
+    decreaseGuests: 'Moins de voyageurs',
+    increaseGuests: 'Plus de voyageurs',
+    maxGuests: 'Notre plus grande maison accueille {max} personnes. Contactez-nous pour des groupes plus grands.',
+    maxGuestsListing: 'Cette maison accueille jusqu’à {max} personnes.',
+    searchAllHomes: 'Recherchez parmi toutes nos maisons pour un groupe plus grand.',
+    arrivalRequired: 'Veuillez sélectionner une date d’arrivée.',
+    departureRequired: 'Veuillez sélectionner une date de départ.',
+    departureTooEarly: 'Le départ doit être après l’arrivée.',
+    selectDates: 'Choisissez vos dates',
+    selectCheckOut: 'choisir le départ',
+    nights: (count: number) => `${count} ${count === 1 ? 'nuit' : 'nuits'}`,
+  },
+  it: {
+    title: 'Verifica disponibilità',
+    subtitle: 'Prenota direttamente al miglior prezzo garantito',
+    dates: 'Date',
+    guests: 'Ospiti',
+    search: 'Cerca disponibilità',
+    searching: 'Ricerca in corso…',
+    decreaseGuests: 'Meno ospiti',
+    increaseGuests: 'Più ospiti',
+    maxGuests: 'La nostra casa più grande ospita {max} persone. Scrivici per gruppi più numerosi.',
+    maxGuestsListing: 'Questa casa ospita fino a {max} persone.',
+    searchAllHomes: 'Cerca tra tutte le nostre case per un gruppo più numeroso.',
+    arrivalRequired: 'Seleziona una data di arrivo.',
+    departureRequired: 'Seleziona una data di partenza.',
+    departureTooEarly: 'La partenza deve essere successiva all’arrivo.',
+    selectDates: 'Scegli le tue date',
+    selectCheckOut: 'scegli la partenza',
+    nights: (count: number) => `${count} ${count === 1 ? 'notte' : 'notti'}`,
+  },
+  pt: {
+    title: 'Verificar disponibilidade',
+    subtitle: 'Reserve diretamente com o melhor preço garantido',
+    dates: 'Datas',
+    guests: 'Hóspedes',
+    search: 'Buscar disponibilidade',
+    searching: 'Buscando…',
+    decreaseGuests: 'Menos hóspedes',
+    increaseGuests: 'Mais hóspedes',
+    maxGuests: 'Nossa maior casa acomoda {max}. Fale conosco para grupos maiores.',
+    maxGuestsListing: 'Esta casa acomoda até {max}.',
+    searchAllHomes: 'Busque em todas as nossas casas para um grupo maior.',
+    arrivalRequired: 'Selecione uma data de chegada.',
+    departureRequired: 'Selecione uma data de saída.',
+    departureTooEarly: 'A saída deve ser depois da chegada.',
+    selectDates: 'Escolha suas datas',
+    selectCheckOut: 'escolher saída',
+    nights: (count: number) => `${count} ${count === 1 ? 'noite' : 'noites'}`,
+  },
+  he: {
+    title: 'בדיקת זמינות',
+    subtitle: 'הזמינו ישירות במחיר הטוב ביותר ומובטח',
+    dates: 'תאריכים',
+    guests: 'אורחים',
+    search: 'חיפוש זמינות',
+    searching: 'מחפשים…',
+    decreaseGuests: 'פחות אורחים',
+    increaseGuests: 'יותר אורחים',
+    maxGuests: 'הבית הגדול שלנו מתאים עד {max} אורחים. לקבוצות גדולות יותר צרו קשר.',
+    maxGuestsListing: 'בית זה מתאים עד {max} אורחים.',
+    searchAllHomes: 'חפשו בכל הבתים שלנו לקבוצה גדולה יותר.',
+    arrivalRequired: 'אנא בחרו תאריך הגעה.',
+    departureRequired: 'אנא בחרו תאריך עזיבה.',
+    departureTooEarly: 'תאריך העזיבה חייב להיות אחרי תאריך ההגעה.',
+    selectDates: 'בחרו את התאריכים שלכם',
+    selectCheckOut: 'בחרו תאריך עזיבה',
+    nights: (count: number) => `${count} ${count === 1 ? 'לילה' : 'לילות'}`,
+  },
+  hi: {
+    title: 'उपलब्धता जांचें',
+    subtitle: 'सीधे बुक करें और सर्वोत्तम कीमत पाएं',
+    dates: 'तारीखें',
+    guests: 'मेहमान',
+    search: 'उपलब्धता खोजें',
+    searching: 'खोज रहे हैं…',
+    decreaseGuests: 'मेहमान घटाएं',
+    increaseGuests: 'मेहमान बढ़ाएं',
+    maxGuests: 'हमारा सबसे बड़ा घर {max} तक समा सकता है। बड़े समूह के लिए हमें संदेश भेजें।',
+    maxGuestsListing: 'यह घर {max} तक समा सकता है।',
+    searchAllHomes: 'बड़े समूह के लिए हमारे सभी घरों में खोजें।',
+    arrivalRequired: 'कृपया एक चेक-इन तिथि चुनें।',
+    departureRequired: 'कृपया एक चेक-आउट तिथि चुनें।',
+    departureTooEarly: 'चेक-आउट, चेक-इन के बाद होनी चाहिए।',
+    selectDates: 'अपनी तारीखें चुनें',
+    selectCheckOut: 'चेक-आउट चुनें',
+    nights: (count: number) => `${count} ${count === 1 ? 'रात' : 'रातें'}`,
+  },
+  nl: {
+    title: 'Beschikbaarheid controleren',
+    subtitle: 'Boek rechtstreeks voor de beste gegarandeerde prijs',
+    dates: 'Data',
+    guests: 'Gasten',
+    search: 'Beschikbaarheid zoeken',
+    searching: 'Zoeken…',
+    decreaseGuests: 'Minder gasten',
+    increaseGuests: 'Meer gasten',
+    maxGuests: 'Ons grootste huis biedt plaats aan {max}. Stuur ons een bericht voor grotere groepen.',
+    maxGuestsListing: 'Dit huis biedt plaats aan maximaal {max}.',
+    searchAllHomes: 'Doorzoek al onze huizen voor een grotere groep.',
+    arrivalRequired: 'Selecteer een aankomstdatum.',
+    departureRequired: 'Selecteer een vertrekdatum.',
+    departureTooEarly: 'Vertrek moet na aankomst zijn.',
+    selectDates: 'Kies je data',
+    selectCheckOut: 'vertrek kiezen',
+    nights: (count: number) => `${count} ${count === 1 ? 'nacht' : 'nachten'}`,
   },
 };
 
@@ -441,8 +575,8 @@ const BookingSearchWidget = forwardRef<BookingSearchWidgetHandle, BookingSearchW
 
 BookingSearchWidget.displayName = 'BookingSearchWidget';
 
-function formatShortDate(date: string, language: 'en' | 'es'): string {
-  return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', {
+function formatShortDate(date: string, language: Locale): string {
+  return new Intl.DateTimeFormat(intlLocaleTag(language), {
     month: 'short',
     day: 'numeric',
     timeZone: 'UTC',

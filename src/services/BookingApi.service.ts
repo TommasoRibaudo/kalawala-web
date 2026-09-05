@@ -1,6 +1,6 @@
 import { getTrackingIdentifiers, TrackingIdentifiers } from '../utils/trackingIdentifiers';
 
-export type BookingLanguage = 'en' | 'es';
+export type BookingLanguage = 'en' | 'es' | 'de' | 'fr' | 'it' | 'pt' | 'he' | 'hi' | 'nl';
 
 export interface BookingSearchRequest {
   arrivalDate: string;

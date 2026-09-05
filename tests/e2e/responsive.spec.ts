@@ -100,8 +100,12 @@ test.describe('Responsive Behavior', () => {
     await expect(decreaseBtn).toBeEnabled();
     await expect(increaseBtn).toBeEnabled();
 
-    // Verify the submit button is visible and enabled (tappable, not clipped)
-    const submitBtn = bookingWidget.submitButton(mobilePage);
+    // Verify the submit button is visible and enabled (tappable, not clipped).
+    // Not bookingWidget.submitButton — that matches "Search Availability",
+    // the accessible name of the *other* search widget (the listing-page
+    // sidebar one). This page's own compact search form's button is just
+    // "Search"/"Buscar" (Booking.i18n.ts's `search` string).
+    const submitBtn = mobilePage.getByRole('button', { name: /^search$|^buscar$/i });
     await expect(submitBtn).toBeVisible();
     await expect(submitBtn).toBeEnabled();
   });

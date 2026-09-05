@@ -112,18 +112,12 @@ jobs:
           REACT_APP_CAPTCHA_SITE_KEY: 'test-site-key'
           # See the deploy job's build step for why warnings are not fatal here.
           CI: false
-      # Report-only. This suite has never passed in CI, so gating on it meant the
-      # site could not deploy at all — it last shipped 2026-04-13. Seven tests
-      # fail for reasons predating this change: the search widget was redesigned
-      # into a calendar popover while its tests still target the old text inputs,
-      # and the visual-regression baselines were generated on Windows so they can
-      # never match Linux font rasterisation.
-      #
-      # It still runs on every push and still uploads its report, so regressions
-      # stay visible. Restore blocking (drop continue-on-error) once the suite is
-      # repaired and the baselines are regenerated inside a Linux container.
+      # Was report-only (continue-on-error) for ~6 weeks: the two failing causes
+      # above were fixed and the visual-regression baselines were regenerated
+      # inside an ubuntu-latest runner (not locally — cross-platform font
+      # rasterisation makes a locally-generated baseline useless here), so this
+      # now blocks deploys again like every other required check.
       - name: Run E2E Tests
-        continue-on-error: true
         run: npx playwright test --project=chromium
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4

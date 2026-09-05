@@ -95,6 +95,26 @@ else
   FAIL=$(( FAIL + 1 ))
 fi
 
+# 3b. Search endpoint with a non-English/Spanish language.
+#
+# Incident: migration 0017 widened the booking_language ENUM to all 9 site
+# locales, but missed a separate, redundant CHECK constraint on
+# booking_sessions that still hardcoded ('en', 'es') — every search in the 7
+# new locales 500'd in production for a full deploy cycle before this was
+# caught manually, because check #3 above only ever exercised "en". Fixed in
+# migration 0018; this check is what should have caught it at deploy time.
+SEARCH_BODY_DE='{"arrivalDate":"2099-11-10","departureDate":"2099-11-14","guests":2,"language":"de","source":"smoke_test"}'
+STATUS=$(http_post "$BASE_URL/api/search" "$SEARCH_BODY_DE")
+BODY=$(body)
+if [[ "$STATUS" == "200" || "$STATUS" == "503" ]]; then
+  green "POST /api/search (language=de) (HTTP $STATUS)"
+  PASS=$(( PASS + 1 ))
+else
+  red "POST /api/search (language=de) — unexpected status $STATUS"
+  echo "  Response body: $BODY" >&2
+  FAIL=$(( FAIL + 1 ))
+fi
+
 # 4. Hold creation + PayPal order creation (opt-in, off by default)
 #
 # /api/health, /api/calendar and /api/search never touch the hold -> PayPal

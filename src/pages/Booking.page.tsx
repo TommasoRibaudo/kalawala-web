@@ -85,6 +85,8 @@ const PUERTO_VIEJO_CENTER_SLUGS = new Set(['geco', 'rana', 'tucano', 'pappagallo
 // into view.
 const RESULTS_SCROLL_OFFSET = 96;
 
+const BOOKING_TERMS_URL = 'https://drive.google.com/file/d/13eURKhO8Bazf3UN-K3U-q9mMguow4Mf4/view?usp=drive_link';
+
 // How often an open deposit-checkout tab re-checks its hold while waiting on
 // the guest (to upload a receipt) or on staff (to review one). Staff can
 // reject a deposit at any time via the emailed link — without this poll, an
@@ -1385,7 +1387,10 @@ const GuestDetailsFields = ({ idPrefix, form, fieldErrors, strings, onChange }: 
     <Col md={6}><Form.Group controlId={`${idPrefix}Country`}><Form.Label>{strings.country}</Form.Label><Form.Control value={form.country} onChange={(e) => onChange({ country: e.target.value })} /></Form.Group></Col>
     <Col md={6}><Form.Group controlId={`${idPrefix}PortalPassword`}><Form.Label>{strings.portalPassword}</Form.Label><Form.Control type="password" autoComplete="new-password" value={form.portalPassword} isInvalid={Boolean(fieldErrors.portalPassword)} onChange={(e) => onChange({ portalPassword: e.target.value })} /><Form.Text>{strings.portalPasswordHelp}</Form.Text><Form.Control.Feedback type="invalid">{fieldErrors.portalPassword}</Form.Control.Feedback></Form.Group></Col>
     <Col xs={12}><Form.Group controlId={`${idPrefix}Message`}><Form.Label>{strings.specialRequests}</Form.Label><Form.Control as="textarea" rows={3} value={form.message} onChange={(e) => onChange({ message: e.target.value })} /></Form.Group></Col>
-    <Col xs={12}><Form.Check id={`${idPrefix}TermsAccepted`} label={strings.termsAccepted} checked={form.termsAccepted} isInvalid={Boolean(fieldErrors.termsAccepted)} feedback={fieldErrors.termsAccepted} feedbackType="invalid" onChange={(e) => onChange({ termsAccepted: e.target.checked })} /></Col>
+    <Col xs={12}>
+      <Form.Check id={`${idPrefix}TermsAccepted`} label={strings.termsAccepted} checked={form.termsAccepted} isInvalid={Boolean(fieldErrors.termsAccepted)} feedback={fieldErrors.termsAccepted} feedbackType="invalid" onChange={(e) => onChange({ termsAccepted: e.target.checked })} />
+      <a href={BOOKING_TERMS_URL} target="_blank" rel="noopener noreferrer" className="booking-terms-link">{strings.termsLinkLabel}</a>
+    </Col>
   </Row>
 );
 

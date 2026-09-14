@@ -261,11 +261,20 @@ jobs:
               });
             }
 
+      # Also carries the archive_file placeholder zips (infra/lambda/*.zip):
+      # `terraform apply` runs in a separate job on a fresh checkout, and for
+      # any Lambda not yet created it needs the actual zip bytes on disk (a
+      # first-ever create isn't covered by that resource's lifecycle
+      # ignore_changes on filename/source_code_hash — there's no prior state
+      # to ignore against). Without this, a brand-new worker Lambda like
+      # availability_watchdog fails apply with "no such file or directory".
       - name: Upload plan artifact
         uses: actions/upload-artifact@v4
         with:
           name: tfplan-${{ needs.setup.outputs.environment }}
-          path: infra/tfplan
+          path: |
+            infra/tfplan
+            infra/lambda/*.zip
           retention-days: 1
 
   # ---------------------------------------------------------------------------

@@ -93,6 +93,36 @@ variable "smoobu_customer_id" {
   type        = number
 }
 
+variable "smoobu_hold_channel_id" {
+  description = <<-EOT
+    Smoobu channel that unpaid website holds are created on.
+
+      11  Blocked        (default) — confirming the booking must DELETE this
+                         reservation and CREATE a channel-70 one, because Smoobu
+                         cannot change a reservation's channelId. That pair emits
+                         an "open" then a "close" availability push to every
+                         connected channel. On 2026-09-12 Booking.com applied
+                         them out of order for one night of a Geco booking and
+                         sold the room.
+      13  Direct booking — same hazard as 11.
+      70  Homepage       — the website sales channel. A hold created here is
+                         confirmed with a single PUT: no delete, no create, no
+                         availability transition at all. This removes the cause.
+
+    Before switching to 70, retarget or disable any Smoobu guest-message template
+    that fires on "new booking" — with holds on channel 70 an unpaid hold is a new
+    booking, so such a template would email the guest a confirmation before they
+    have paid. The booking API sends its own confirmation after payment.
+  EOT
+  type        = number
+  default     = 11
+
+  validation {
+    condition     = contains([11, 13, 70], var.smoobu_hold_channel_id)
+    error_message = "smoobu_hold_channel_id must be 11 (Blocked), 13 (Direct booking) or 70 (Homepage/website)."
+  }
+}
+
 variable "booking_api_log_level" {
   description = "Log level for the booking API (debug | info | warn | error | silent)."
   type        = string

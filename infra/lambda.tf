@@ -164,6 +164,13 @@ locals {
     DB_SECRET_NAME          = var.db_secret_name
     SMOOBU_SECRET           = var.smoobu_secret_name
     SMOOBU_CUSTOMER_ID      = tostring(var.smoobu_customer_id)
+
+    # Which Smoobu channel unpaid website holds are created on. 70 (Homepage)
+    # makes confirmation a single PUT and removes the delete-then-create window
+    # that caused the 2026-09-12 Geco overbooking — see variables.tf for the
+    # Smoobu guest-message check to do first. config.ts ignores anything that is
+    # not 11, 13 or 70 and falls back to 11.
+    SMOOBU_HOLD_CHANNEL_ID  = tostring(var.smoobu_hold_channel_id)
     PAYPAL_SECRET           = var.paypal_secret_name
     PAYPAL_BASE_URL         = var.paypal_base_url
     PAYPAL_HOLD_TTL_MINUTES = tostring(var.paypal_hold_ttl_minutes)

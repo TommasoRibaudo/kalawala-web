@@ -236,6 +236,17 @@ async function handleNewReservation(
         { action: "updateRates", data: { apartmentId } },
         request.observability
       );
+
+      // Does this reservation land on nights we have already sold?
+      //
+      // Smoobu will not raise this for us. In the 2026-09-12 Geco incident the
+      // incoming Booking.com reservation covered two rooms; Smoobu imported the
+      // free one and dropped the leg that collided with our website booking,
+      // without an error, a webhook or an overbooking flag. Only a human noticing
+      // the guest's message caught it. Checking every inbound reservation against
+      // our own holds is the cheapest place to catch the next one.
+      await warnOnConflictingReservation(payload, property.propertyId, config, request);
+
       request.observability.recordStateTransition({
         entityType: "webhook_event",
         toState: "processed",
@@ -265,6 +276,82 @@ async function handleNewReservation(
       errorCode: "missing_apartment_id",
     });
   }
+}
+
+/**
+ * Compares an inbound Smoobu reservation against our own holds and raises a
+ * critical alert if they overlap. Never mutates anything — an inbound guest
+ * reservation is not ours to cancel, and which side gets relocated is an
+ * operational decision.
+ */
+async function warnOnConflictingReservation(
+  payload: SmoobuWebhookPayload,
+  propertyId: string,
+  config: BookingApiConfig,
+  request: RouteRequest
+): Promise<void> {
+  const arrivalDate = typeof payload.data?.arrival === "string" ? payload.data.arrival : undefined;
+  const departureDate = typeof payload.data?.departure === "string" ? payload.data.departure : undefined;
+  const reservationId = payload.data?.reservationId ?? payload.data?.id;
+
+  if (!arrivalDate || !departureDate) {
+    // Without dates there is nothing to compare. Worth knowing, because it means
+    // this safety net is not covering that reservation.
+    request.observability.logger.warn("smoobu_webhook_conflict_check_skipped", {
+      reservationId: reservationId != null ? String(reservationId) : undefined,
+      propertyId,
+      reason: "missing_dates_in_webhook_payload",
+    });
+    return;
+  }
+
+  const holds = config.holds;
+  if (!holds) {
+    return;
+  }
+
+  let overlapping: HoldRecord[];
+  try {
+    overlapping = await holds.findOverlappingHolds({
+      propertyId,
+      arrivalDate,
+      departureDate,
+      ...(typeof reservationId === "number" ? { excludeSmoobuReservationId: reservationId } : {}),
+    });
+  } catch (err) {
+    request.observability.logger.warn("smoobu_webhook_conflict_check_failed", {
+      reservationId: reservationId != null ? String(reservationId) : undefined,
+      propertyId,
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return;
+  }
+
+  if (overlapping.length === 0) {
+    return;
+  }
+
+  request.observability.logger.error("smoobu_webhook_reservation_conflicts_with_hold", {
+    incomingSmoobuReservationId: reservationId != null ? String(reservationId) : undefined,
+    propertyId,
+    incomingArrivalDate: arrivalDate,
+    incomingDepartureDate: departureDate,
+    conflictingHolds: overlapping.map((hold) => ({
+      holdId: hold.id,
+      bookingSessionId: hold.bookingSessionId,
+      status: hold.status,
+      arrivalDate: hold.arrivalDate,
+      departureDate: hold.departureDate,
+      smoobuReservationId: hold.smoobuReservationId,
+    })),
+    action: "manual_intervention_required",
+  });
+
+  request.observability.recordSecurityEvent({
+    name: "channel_reservation_conflicts_with_website_booking",
+    severity: "error",
+    route: "/api/webhooks/smoobu",
+  });
 }
 
 // ─── updateReservation ────────────────────────────────────────────────────────

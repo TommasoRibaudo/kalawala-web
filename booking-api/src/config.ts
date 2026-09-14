@@ -204,18 +204,42 @@ function validateIdempotencyLockWindow(config: BookingApiConfig): void {
   }
 }
 
+/**
+ * SMOOBU_HOLD_CHANNEL_ID — which Smoobu channel new holds are created on.
+ *
+ *   11  Blocked        (default) — promotion at confirmation must DELETE this
+ *                      reservation and CREATE a channel-70 one, which emits an
+ *                      "open" push followed by a "close" push to Booking.com and
+ *                      Airbnb. On 2026-09-12 Booking.com applied that pair out of
+ *                      order for one night of a Geco booking and sold the room.
+ *                      See the header of smoobuPromotion.ts.
+ *   13  Direct booking — same hazard as 11.
+ *   70  Homepage       — the website sales channel, and the channel a confirmed
+ *                      booking ends up on anyway. A hold created here is
+ *                      confirmed with a single idempotent PUT: no delete, no
+ *                      create, no availability transition, nothing for a channel
+ *                      to apply out of order. This removes the incident's root
+ *                      cause rather than narrowing it.
+ *
+ * Before switching to 70, check Smoobu -> Settings -> guest messages: any template
+ * that fires on "new booking" will reach the guest as soon as the hold is made,
+ * i.e. before payment. Either retarget those templates to an arrival-relative
+ * trigger, or turn them off and rely on the booking-api's own confirmation mail
+ * (email.ts sendBookingConfirmed / sendDepositConfirmed), which only sends once
+ * the money has actually arrived.
+ */
 function parseSmoobuHoldChannelId(value: string | undefined): SmoobuHoldChannelId {
   if (!value) {
     return DEFAULT_SMOOBU_HOLD_CHANNEL_ID;
   }
 
   const parsed = Number(value);
-  if (parsed === 11 || parsed === 13) {
+  if (parsed === 11 || parsed === 13 || parsed === 70) {
     return parsed;
   }
 
   // eslint-disable-next-line no-console
-  console.warn(`[booking-api] Ignoring invalid SMOOBU_HOLD_CHANNEL_ID value: expected 11 or 13, got "${value}"`);
+  console.warn(`[booking-api] Ignoring invalid SMOOBU_HOLD_CHANNEL_ID value: expected 11, 13 or 70, got "${value}"`);
   return DEFAULT_SMOOBU_HOLD_CHANNEL_ID;
 }
 

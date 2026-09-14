@@ -1218,6 +1218,48 @@ test('an open deposit-checkout tab picks up a staff rejection via polling (#332)
   setIntervalSpy.mockRestore();
 });
 
+test('an open deposit-checkout tab picks up a staff confirmation via polling instead of showing it as expired (#331)', async () => {
+  mockJsonResponses([{ body: SEARCH_RESULT_FIXTURE }, { body: DEPOSIT_HOLD_FIXTURE }]);
+
+  const registeredIntervals: Array<{ handler: TimerHandler; timeout?: number }> = [];
+  const realSetInterval = window.setInterval.bind(window);
+  const setIntervalSpy = jest.spyOn(window, 'setInterval').mockImplementation(((handler: TimerHandler, timeout?: number) => {
+    registeredIntervals.push({ handler, timeout });
+    return realSetInterval(handler as TimerHandler, timeout);
+  }) as typeof window.setInterval);
+
+  await reachDepositCheckout();
+  fillGuestDetails();
+  fireEvent.click(screen.getByRole('button', { name: 'Reserve these dates' }));
+  await screen.findByText('CR61010200009629385364');
+
+  await waitFor(() => expect(registeredIntervals.some((entry) => entry.timeout === 20_000)).toBe(true));
+  const pollEntry = registeredIntervals.find((entry) => entry.timeout === 20_000);
+  const pollCallback = pollEntry!.handler;
+
+  // Staff confirmed the manual-deposit hold from the signed link in their own
+  // email — this tab only learns about it on the next poll tick.
+  const confirmed = { ...DEPOSIT_HOLD_FIXTURE, booking: { ...DEPOSIT_HOLD_FIXTURE.booking, status: 'booking_confirmed' } };
+  mockJsonResponses([{ body: confirmed }]);
+
+  await act(async () => {
+    (pollCallback as () => void)();
+    await Promise.resolve();
+  });
+
+  await screen.findByText('Booking confirmed');
+  expect(activeSlide().getByText('KWL-DEP12345')).toBeInTheDocument();
+  // The deposit-checkout slide — whose "resolved" branch is what wrongly
+  // rendered the expired copy for any non-'hold_active', non-'cancelled'
+  // status — is no longer the one the guest is looking at.
+  const depositSlide = document.querySelector('.booking-deposit-checkout')?.closest('.booking-wizard-slide');
+  expect(depositSlide).toHaveAttribute('aria-hidden', 'true');
+  expect(activeSlide().queryByText('Booking expired')).not.toBeInTheDocument();
+  expect(activeSlide().queryByText(/we released the dates/)).not.toBeInTheDocument();
+
+  setIntervalSpy.mockRestore();
+});
+
 // ── Error visibility (#333) ──────────────────────────────────────────────────
 //
 // A guest scrolled down into the results grid never saw an error banner that

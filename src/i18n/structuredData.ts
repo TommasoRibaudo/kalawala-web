@@ -303,7 +303,6 @@ export function vacationRentalJsonLd(key: ListingKey, locale: Locale) {
       '@type': 'Offer',
       priceCurrency: 'USD',
       price: marketing.price.usd,
-      availability: 'https://schema.org/InStock',
     },
     ...(review.length ? { review } : {}),
     ...(aggregateRating ? { aggregateRating } : {}),

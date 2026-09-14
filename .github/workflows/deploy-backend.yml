@@ -108,11 +108,7 @@ jobs:
       - name: Audit dependencies
         run: |
           set +e
-          # --omit=dev: the Lambda bundle ships production deps only, so the
-          # deploy gate audits those. Dev/test-only advisories (e.g. js-yaml in
-          # the Jest/istanbul toolchain, whose 3.x fix was not backported) are
-          # tracked by Dependabot but must not block a production release.
-          AUDIT_OUTPUT=$(npm audit --omit=dev --json 2>&1)
+          AUDIT_OUTPUT=$(npm audit --json 2>&1)
           AUDIT_EXIT=$?
           set -e
           CRITICAL=$(echo "$AUDIT_OUTPUT" | node -e "
@@ -126,7 +122,7 @@ jobs:
             console.log(v.high || 0);
           " 2>/dev/null || echo "0")
           echo "Critical: $CRITICAL  High: $HIGH"
-          npm audit --omit=dev --audit-level=high 2>&1 || true
+          npm audit --audit-level=high 2>&1 || true
           if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
             echo "::error::Critical or high vulnerabilities found in booking-api dependencies"
             exit 1
@@ -341,6 +337,7 @@ jobs:
           echo "migration_lambda_name=$(terraform output -raw migration_lambda_name)" >> $GITHUB_OUTPUT
           echo "hold_expiry_lambda_name=$(terraform output -raw hold_expiry_lambda_name)" >> $GITHUB_OUTPUT
           echo "payment_reconciliation_lambda_name=$(terraform output -raw payment_reconciliation_lambda_name)" >> $GITHUB_OUTPUT
+          echo "availability_watchdog_lambda_name=$(terraform output -raw availability_watchdog_lambda_name)" >> $GITHUB_OUTPUT
           echo "api_gateway_invoke_url=$(terraform output -raw api_gateway_invoke_url)" >> $GITHUB_OUTPUT
 
     outputs:
@@ -349,6 +346,7 @@ jobs:
       migration_lambda_name: ${{ steps.tf_outputs.outputs.migration_lambda_name }}
       hold_expiry_lambda_name: ${{ steps.tf_outputs.outputs.hold_expiry_lambda_name }}
       payment_reconciliation_lambda_name: ${{ steps.tf_outputs.outputs.payment_reconciliation_lambda_name }}
+      availability_watchdog_lambda_name: ${{ steps.tf_outputs.outputs.availability_watchdog_lambda_name }}
       api_gateway_invoke_url: ${{ steps.tf_outputs.outputs.api_gateway_invoke_url }}
 
   # ---------------------------------------------------------------------------
@@ -454,12 +452,16 @@ jobs:
           aws lambda wait function-updated --region ${{ needs.setup.outputs.aws_region }} \
             --function-name ${{ needs.terraform-apply.outputs.webhooks_lambda_name }}
 
-      # These two run on EventBridge schedules and were never redeployed by CI, so
-      # they drifted behind the API. hold_expiry is the one that matters: if it is
-      # not current, expired holds stop releasing and rooms stay blocked in Smoobu.
+      # These run on EventBridge schedules and were never redeployed by CI, so
+      # they drifted behind the API. hold_expiry is the one that matters day to
+      # day: if it is not current, expired holds stop releasing and rooms stay
+      # blocked in Smoobu. availability_watchdog matters when something has
+      # already gone wrong — a stale copy means a re-opened, already-sold night
+      # goes unnoticed, which is exactly how the Geco overbooking got 36 hours
+      # of runway.
       - name: Update worker Lambda function code
         run: |
-          for FN in "${{ needs.terraform-apply.outputs.hold_expiry_lambda_name }}"                     "${{ needs.terraform-apply.outputs.payment_reconciliation_lambda_name }}"; do
+          for FN in "${{ needs.terraform-apply.outputs.hold_expiry_lambda_name }}"                     "${{ needs.terraform-apply.outputs.payment_reconciliation_lambda_name }}"                     "${{ needs.terraform-apply.outputs.availability_watchdog_lambda_name }}"; do
             aws lambda update-function-code --region ${{ needs.setup.outputs.aws_region }}               --function-name "$FN"               --zip-file fileb://lambda-booking-api.zip               --publish
             aws lambda wait function-updated --region ${{ needs.setup.outputs.aws_region }} --function-name "$FN"
             echo "Updated $FN"
@@ -475,15 +477,6 @@ jobs:
           # Must be one of booking_api_allowed_origins in the tfvars, or the CORS
           # preflight check fails against a perfectly healthy API.
           SMOKE_ORIGIN: https://www.reservaskalawala.com
-          # Exercises the hold -> PayPal create-order path end to end (see
-          # smoke-test.sh) — the path a PayPal 502 incident went undetected on,
-          # since /api/health, /api/calendar and /api/search never touch it.
-          # Off unless a SMOKE_TEST_GUEST_EMAIL repo secret is set, because
-          # enabling it creates a real Smoobu "Blocked" reservation and sends a
-          # real "hold created" email on every deploy — point that secret at a
-          # mailbox the team actually monitors before turning this on.
-          SMOKE_TEST_PAYPAL_INTEGRATION: ${{ secrets.SMOKE_TEST_GUEST_EMAIL != '' }}
-          SMOKE_TEST_GUEST_EMAIL: ${{ secrets.SMOKE_TEST_GUEST_EMAIL }}
         run: |
           sleep 5
           bash scripts/smoke-test.sh

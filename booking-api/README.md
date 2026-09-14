@@ -108,7 +108,7 @@ Two rules that are easy to trip over:
 | `SMOOBU_BASE_BACKOFF_MS` | Optional first retry backoff, defaults to `250`. |
 | `SMOOBU_MAX_BACKOFF_MS` | Optional max exponential backoff, defaults to `2000`. |
 | `SMOOBU_MAX_RATE_LIMIT_DELAY_MS` | Optional cap for honoring Smoobu retry-after waits, defaults to `60000`. |
-| `SMOOBU_HOLD_CHANNEL_ID` | Optional Smoobu channel for unpaid PayPal holds. Defaults to `11` (Blocked channel); `13` is the config-gated Direct booking fallback. |
+| `SMOOBU_HOLD_CHANNEL_ID` | Smoobu channel new holds are created on: `11` (Blocked, default), `13` (Direct booking) or `70` (Homepage/website). **`70` removes the delete-then-create inventory window entirely** — see "Inventory safety" below before switching. |
 | `PAYPAL_HOLD_TTL_MINUTES` | Optional PayPal hold duration, defaults to `60`. |
 | `BOOKING_API_IDEMPOTENCY_TTL_MINUTES` | Optional public write idempotency retention window, defaults to `1440`. |
 | `BOOKING_API_STALE_IDEMPOTENCY_LOCK_SECONDS` | Optional stale in-progress idempotency lock timeout, defaults to `120`. |
@@ -135,6 +135,86 @@ The Secrets Manager value must be a JSON object with this shape:
 For local tests only, `BOOKING_API_SECRETS_JSON` or individual raw env vars can
 be enabled with `BOOKING_API_ALLOW_INSECURE_ENV_SECRETS=true`. Do not use those
 raw secret modes for deployed environments.
+
+
+## Inventory safety
+
+A confirmed website booking has to end up on Smoobu's Homepage channel (70).
+Smoobu's `PUT /api/reservations` cannot change `channelId`, so promotion
+(`smoobuPromotion.ts`) deletes the blocked-channel hold and creates a new
+reservation. Smoobu pushes availability to Booking.com and Airbnb on every
+reservation change, so that pair emits an **"open" push immediately followed by a
+"close" push** — two opposing updates, milliseconds apart, into queues we do not
+control.
+
+On 2026-09-12 that bit. Website booking `KWL-AFFJYUR6` took Casa Geco for
+25–27 Sep. Both Smoobu calls succeeded and Smoobu's calendar was correct
+throughout; Airbnb applied both pushes correctly; Booking.com applied them out of
+order for the night of the 26th. Geco stayed bookable there for ~36 hours and was
+sold as part of a two-room reservation. Smoobu then dropped the colliding Geco
+leg on import without an error, so no overbooking was flagged anywhere — a human
+found it.
+
+### The fix
+
+Set `SMOOBU_HOLD_CHANNEL_ID=70`. A hold created on the website channel is
+confirmed with a single idempotent `PUT`: no delete, no create, **no availability
+transition at all**, so there is nothing for a channel to apply out of order.
+`promoteSmoobuReservation` already takes this path automatically when it sees a
+channel-70 hold.
+
+**Check this first.** Smoobu's own guest-message automation fires on *new
+booking*. With holds on channel 70, an unpaid hold is a new booking, so any such
+template would email the guest a confirmation before the money arrives. Either
+retarget those templates to an arrival-relative trigger, or turn them off and
+rely on the API's own `sendBookingConfirmed` / `sendDepositConfirmed`, which only
+send after payment. Until that is settled, leave the default at `11`.
+
+### Defence in depth (active regardless of channel)
+
+- `smoobuPromotion.ts` builds the create payload **before** the delete, runs on a
+  Smoobu client with the rate-limit sleep disabled (the shared client will
+  otherwise sleep up to 60s *between* the delete and the create), and logs
+  `inventoryExposureMs` for every promotion — with an alarm above 2s.
+- `availabilityGuard.ts` checks Smoobu's own state after a confirmation and
+  re-blocks if the stay is open there.
+- `availabilityWatchdog.ts` (Lambda `availability-watchdog`) runs two passes.
+- `smoobuWebhooks.ts` compares every inbound reservation against our own holds
+  and alarms on an overlap — the check Smoobu does not do for us.
+
+### What each safeguard can actually see
+
+This distinction matters and is easy to get wrong, so it is written down.
+
+| Safeguard | Reaches | Would it have caught Geco? |
+| --- | --- | --- |
+| Smoobu availability check | Smoobu only | **No.** Smoobu was correct for all 36 hours; it would have answered "fine". |
+| Corrective close-push (`reassert`) | Booking.com + Airbnb, blindly | **Probably.** It re-sends the close; it cannot confirm it landed. |
+| Inbound-reservation conflict check | Anything Smoobu imports | **No** — Smoobu silently dropped the conflicting leg. It would if Smoobu imported it. |
+| `SMOOBU_HOLD_CHANNEL_ID=70` | The cause | **Yes.** No transition, nothing to mis-order. |
+
+Nothing here can independently read Booking.com's or Airbnb's inventory: Smoobu
+holds the connectivity relationship with both, and neither exposes an ARI read to
+the property behind a channel manager. Verification of channel state is a manual
+extranet check, or an email to Smoobu.
+
+### Watchdog schedule and cost
+
+Two EventBridge rules invoke the same Lambda with different payloads:
+
+| Mode | Schedule | Scope | Cost on a healthy book |
+| --- | --- | --- | --- |
+| `reassert` | every 10 min | stays promoted in the last ~25 min | ~1 write per website confirmation; **zero** once holds are on channel 70 |
+| `sweep` | daily 09:00 UTC | every confirmed future stay | ~135 reads, **zero writes** |
+
+The obvious design — re-assert every confirmed stay on a short timer — was
+rejected. With ~135 future reservations that is ~12,900 writes a day, each
+fanning out to Booking.com and Airbnb: ~25,800 channel pushes daily, to mitigate
+a fault caused by two pushes arriving out of order. A re-assertion is only worth
+sending where a transition actually happened.
+
+Alarms and the EventBridge rule live in `infra/availability_watchdog.tf`.
+
 
 Provider integrations, durable repository adapters, Redis/WAF rate-limit backing,
 and Terraform-managed CloudWatch alarms/dashboards are implemented in later

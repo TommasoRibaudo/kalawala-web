@@ -22,8 +22,19 @@ const HOLD_IDEMPOTENCY_SCOPE = "booking.hold.create";
 type HoldStatus = "creating" | "active" | "failed" | "expired" | "cancelled" | "converted";
 type IdempotencyStatus = "in_progress" | "completed";
 
-/** Channel IDs used when creating holds (Blocked or Direct booking). */
-export type SmoobuHoldChannelId = 11 | 13;
+/**
+ * Channel IDs a hold may be CREATED on.
+ *
+ * 11 = Blocked, 13 = Direct booking, 70 = Homepage (the website sales channel).
+ *
+ * 70 is the safe choice: a hold born on the website channel is confirmed with a
+ * single PUT, so the confirmation emits no availability change at all and the
+ * delete-then-create window in smoobuPromotion.ts never opens. It is not the
+ * default only because Smoobu's own "new booking" guest auto-messages fire on
+ * creation — an unpaid hold on channel 70 would email the guest a booking
+ * confirmation before they have paid. See config.ts.
+ */
+export type SmoobuHoldChannelId = 11 | 13 | 70;
 /** All channel IDs that may appear on a hold record (includes promotion targets). */
 export type SmoobuChannelId = 11 | 13 | 70;
 
@@ -86,6 +97,11 @@ const HOLD_COLUMNS = `
 `;
 
 const HOLD_SELECT = `select ${HOLD_COLUMNS} from holds`;
+
+/** Same columns, aliased for queries that join booking_sessions. */
+const HOLD_COLUMNS_QUALIFIED = HOLD_COLUMNS.split(",")
+  .map((column) => `h.${column.trim()}`)
+  .join(",\n  ");
 
 export interface HoldRecord {
   id: string;
@@ -168,6 +184,40 @@ export interface HoldRepository {
   expireHold(holdId: string): Promise<HoldRecord>;
   cancelHold(holdId: string): Promise<HoldRecord>;
   listExpiredHolds(now: string): Promise<HoldRecord[]>;
+  /**
+   * Confirmed bookings whose stay has not ended yet — the availability
+   * watchdog's working set. These are the holds whose dates MUST be closed on
+   * Smoobu and on every connected channel; anything bookable here is either an
+   * overbooking waiting to happen or one that already has.
+   */
+  listConfirmedFutureStays(today: string): Promise<HoldRecord[]>;
+  /**
+   * Confirmed holds whose promotion landed inside the given window — the small,
+   * bounded set the watchdog re-asserts the channel block for shortly after a
+   * confirmation. Deliberately narrow: re-asserting is a write that fans out to
+   * every connected channel, so it is spent on the reservations that just went
+   * through a channel transition, not on the whole book.
+   */
+  listRecentlyConvertedStays(input: {
+    convertedAfter: string;
+    convertedBefore: string;
+    today: string;
+  }): Promise<HoldRecord[]>;
+  /**
+   * Holds occupying `propertyId` over any night in [arrivalDate, departureDate).
+   *
+   * Used to spot an incoming channel reservation that lands on inventory we
+   * already sold. Smoobu will not always tell us: when a multi-room channel
+   * reservation contains a room it considers occupied, it imports the other
+   * rooms and drops that leg silently, so its own overbooking indicator has
+   * nothing to show. See smoobuWebhooks.ts.
+   */
+  findOverlappingHolds(input: {
+    propertyId: string;
+    arrivalDate: string;
+    departureDate: string;
+    excludeSmoobuReservationId?: number;
+  }): Promise<HoldRecord[]>;
 }
 
 export class RdsHoldRepository implements HoldRepository {
@@ -512,6 +562,71 @@ export class RdsHoldRepository implements HoldRepository {
     throw new ApiError(500, "hold_state_invalid", `Hold ${holdId} is missing.`);
   }
 
+  async listRecentlyConvertedStays(input: {
+    convertedAfter: string;
+    convertedBefore: string;
+    today: string;
+  }): Promise<HoldRecord[]> {
+    const result = await this.pool.query<HoldRow>(
+      `
+        ${HOLD_SELECT}
+        where status = 'converted'
+          and smoobu_reservation_id is not null
+          and converted_at > $1
+          and converted_at <= $2
+          and departure_date > $3
+        order by converted_at asc
+      `,
+      [input.convertedAfter, input.convertedBefore, input.today]
+    );
+
+    return result.rows.map(mapHoldRow);
+  }
+
+  async findOverlappingHolds(input: {
+    propertyId: string;
+    arrivalDate: string;
+    departureDate: string;
+    excludeSmoobuReservationId?: number;
+  }): Promise<HoldRecord[]> {
+    // Half-open ranges: a departure on the same day as another arrival is a
+    // turnover, not a conflict.
+    const result = await this.pool.query<HoldRow>(
+      `
+        ${HOLD_SELECT}
+        where property_id = $1
+          and status in ('creating', 'active', 'converted')
+          and arrival_date < $3
+          and departure_date > $2
+          and ($4::bigint is null or smoobu_reservation_id is distinct from $4)
+        order by arrival_date asc
+      `,
+      [input.propertyId, input.arrivalDate, input.departureDate, input.excludeSmoobuReservationId ?? null]
+    );
+
+    return result.rows.map(mapHoldRow);
+  }
+
+  async listConfirmedFutureStays(today: string): Promise<HoldRecord[]> {
+    const result = await this.pool.query<HoldRow>(
+      `
+        select ${HOLD_COLUMNS_QUALIFIED}
+        from holds h
+        join booking_sessions bs on bs.id = h.booking_session_id
+        where bs.status = 'booking_confirmed'
+          and h.status = 'converted'
+          and h.smoobu_reservation_id is not null
+          -- departure, not arrival: a stay in progress can still be resold for
+          -- its remaining nights if a channel reopened them.
+          and h.departure_date > $1
+        order by h.arrival_date asc
+      `,
+      [today]
+    );
+
+    return result.rows.map(mapHoldRow);
+  }
+
   async listExpiredHolds(now: string): Promise<HoldRecord[]> {
     const result = await this.pool.query<HoldRow>(
       `
@@ -792,6 +907,53 @@ export class InMemoryHoldRepository implements HoldRepository {
       }
     }
     return results;
+  }
+
+  async listRecentlyConvertedStays(input: {
+    convertedAfter: string;
+    convertedBefore: string;
+    today: string;
+  }): Promise<HoldRecord[]> {
+    // HoldRecord carries no convertedAt, so the in-memory repo approximates with
+    // updatedAt. Good enough for tests; the RDS repository uses the real column.
+    return Array.from(this.holdsById.values())
+      .filter(
+        (hold) =>
+          hold.status === "converted" &&
+          hold.smoobuReservationId &&
+          hold.updatedAt > input.convertedAfter &&
+          hold.updatedAt <= input.convertedBefore &&
+          hold.departureDate > input.today
+      )
+      .sort((a, b) => (a.updatedAt < b.updatedAt ? -1 : a.updatedAt > b.updatedAt ? 1 : 0));
+  }
+
+  async findOverlappingHolds(input: {
+    propertyId: string;
+    arrivalDate: string;
+    departureDate: string;
+    excludeSmoobuReservationId?: number;
+  }): Promise<HoldRecord[]> {
+    return Array.from(this.holdsById.values())
+      .filter(
+        (hold) =>
+          hold.propertyId === input.propertyId &&
+          (hold.status === "creating" || hold.status === "active" || hold.status === "converted") &&
+          hold.arrivalDate < input.departureDate &&
+          hold.departureDate > input.arrivalDate &&
+          (input.excludeSmoobuReservationId === undefined ||
+            hold.smoobuReservationId !== input.excludeSmoobuReservationId)
+      )
+      .sort((a, b) => (a.arrivalDate < b.arrivalDate ? -1 : a.arrivalDate > b.arrivalDate ? 1 : 0));
+  }
+
+  async listConfirmedFutureStays(today: string): Promise<HoldRecord[]> {
+    // The in-memory repo has no booking_sessions to join, so `converted` is the
+    // best available proxy for "confirmed". Tests that need the session-status
+    // filter should exercise the RDS repository.
+    return Array.from(this.holdsById.values())
+      .filter((hold) => hold.status === "converted" && hold.smoobuReservationId && hold.departureDate > today)
+      .sort((a, b) => (a.arrivalDate < b.arrivalDate ? -1 : a.arrivalDate > b.arrivalDate ? 1 : 0));
   }
 
   private getRequiredHold(holdId: string): HoldRecord {

@@ -8,20 +8,57 @@
  * The Smoobu PUT /api/reservations endpoint does NOT support changing channelId,
  * so promotion requires deleting the old blocked reservation and creating a new
  * one on the Homepage channel with payment fields marked as complete.
+ *
+ * ─── Why this file is written so defensively ─────────────────────────────────
+ *
+ * That delete-then-create is an inventory hazard, not just a bookkeeping detail.
+ * Smoobu pushes availability to Booking.com and Airbnb on every reservation
+ * change, so the pair emits an "open these dates" push immediately followed by a
+ * "close these dates" push. Two opposing pushes, milliseconds apart, into queues
+ * we do not control.
+ *
+ * Incident 2026-09-12 (KWL-AFFJYUR6, Casa Geco, 25–27 Sep): both Smoobu calls
+ * succeeded and Smoobu's calendar was correct throughout. Airbnb applied both
+ * pushes correctly. Booking.com applied them out of order for ONE of the two
+ * nights — the 26th stayed bookable with 1 room to sell for about 36 hours and
+ * was sold to a different guest. Smoobu then refused to import that leg of the
+ * incoming Booking.com reservation (it correctly saw Geco as occupied) and
+ * imported only the guest's other room, so no overbooking was ever flagged
+ * anywhere. It was found by hand.
+ *
+ * Three consequences, all implemented below:
+ *
+ *   1. The gap must be as short as physically possible. The create payload is
+ *      built BEFORE the delete, and the promotion runs on a Smoobu client whose
+ *      rate-limit sleep is disabled — the shared client will happily sleep up to
+ *      maxRateLimitDelayMs (default 60s) before a call, and doing that between
+ *      the delete and the create would hold the room open for a minute.
+ *   2. The gap must be measured. Every promotion logs how long inventory was
+ *      actually exposed, so this stops being invisible.
+ *   3. The result must be checked against Smoobu, and a corrective close-push
+ *      sent to the channels a short while later.
+ *
+ *      Two different things, with different reach, and it matters not to
+ *      conflate them. The Smoobu check catches a promotion that did not take
+ *      (create failed, re-block failed) — it cannot see Booking.com, which in
+ *      the Geco incident was the only system that was wrong. The corrective
+ *      push is what reaches the channels, and it is sent by the watchdog a
+ *      minute or two later rather than here: firing it immediately would put it
+ *      in the same burst as the delete and the create, which is the ordering
+ *      problem, not the fix. See availabilityWatchdog.ts mode "reassert".
+ *
+ * The real fix is to not change channels at all: a hold created directly on
+ * channel 70 is confirmed with a single PUT and emits no availability change
+ * whatsoever. Set SMOOBU_HOLD_CHANNEL_ID=70 to take that path — see the note in
+ * config.ts about Smoobu's "new booking" guest auto-messages before doing so.
  */
 
-import { BookingSessionRecord, BookingSessionQuotedProperty } from "./bookingSessions";
-import { HoldRecord, HoldRepository, SmoobuChannelId } from "./holds";
+import { BookingSessionRecord } from "./bookingSessions";
+import { checkSmoobuHasStayBlocked, WEBSITE_CHANNEL_ID, BLOCKED_CHANNEL_ID } from "./availabilityGuard";
+import { HoldRecord, HoldRepository } from "./holds";
 import { BookingProperty, BOOKING_PROPERTIES_BY_ID } from "./propertyCatalog";
 import { createSmoobuClient, SmoobuClient } from "./smoobuClient";
 import { BookingApiConfig, ObservabilityLogger, RouteObservability } from "./types";
-
-/**
- * Smoobu channel ID 70 = "Homepage" — the website booking channel.
- * Confirmed reservations are promoted to this channel so they appear as
- * website reservations in the Smoobu dashboard, not blocked periods.
- */
-const WEBSITE_CHANNEL_ID: SmoobuChannelId = 70;
 
 interface SmoobuCreateReservationResponse {
   id?: unknown;
@@ -39,19 +76,23 @@ export interface PromoteSmoobuReservationResult {
   promoted: boolean;
   newSmoobuReservationId?: number;
   error?: string;
+  /** Milliseconds between the delete landing and the create landing. 0 when no gap existed. */
+  inventoryExposureMs?: number;
 }
 
 /**
  * Promotes a Smoobu blocked-channel hold to a Homepage (website) reservation.
  *
  * Steps:
- * 1. Delete the old blocked reservation on Smoobu.
- * 2. Create a new reservation with channelId 70 (Homepage) and payment
- *    fields set to paid.
- * 3. Update the local hold record to "converted" with the new reservation ID.
+ * 1. Build the replacement payload (before anything is deleted).
+ * 2. Delete the old blocked reservation on Smoobu.
+ * 3. Create the new reservation with channelId 70 and payment fields set to paid.
+ * 4. Update the local hold record to "converted" with the new reservation ID.
+ * 5. Check Smoobu's own state, and alert/re-block if the stay is open there.
  *
- * This is non-fatal: if any step fails, the booking is still confirmed in our
- * DB and the error is logged. The reconciliation worker can retry later.
+ * All five are non-fatal: if any fails, the booking is still confirmed in our DB
+ * and the error is logged. Step 5 is Smoobu-side only — the corrective push to
+ * Booking.com and Airbnb is the watchdog's job, a minute or two later.
  */
 export async function promoteSmoobuReservation(
   input: PromoteSmoobuReservationInput,
@@ -99,7 +140,7 @@ export async function promoteSmoobuReservation(
 
   let smoobuClient: SmoobuClient;
   try {
-    smoobuClient = await createSmoobuClient(config);
+    smoobuClient = await createPromotionClient(config);
   } catch (err) {
     logger.warn("smoobu_promotion_client_init_failed", {
       bookingSessionId: session.id,
@@ -108,12 +149,32 @@ export async function promoteSmoobuReservation(
     return { promoted: false, error: "smoobu_client_init_failed" };
   }
 
-  // If the hold is already on the website channel, just update payment fields.
+  // ── The no-gap path ────────────────────────────────────────────────────────
+  // The hold is already on the website channel, so confirming it is a single
+  // idempotent PUT: no delete, no create, no availability transition, nothing
+  // for a channel to apply out of order. This is what SMOOBU_HOLD_CHANNEL_ID=70
+  // buys, and it is why that setting is the actual fix rather than a tweak.
   if (hold.smoobuChannelId === WEBSITE_CHANNEL_ID) {
-    return updateExistingWebsiteBooking(smoobuClient, hold, session, notice, amountCents, observability, logger);
+    const result = await updateExistingWebsiteBooking(
+      smoobuClient,
+      hold,
+      session,
+      notice,
+      amountCents,
+      observability,
+      logger
+    );
+    await checkSmoobuSide(smoobuClient, { hold, property, session, notice }, config, logger, observability);
+    return { ...result, inventoryExposureMs: 0 };
   }
 
-  // Step 1: Delete the old blocked reservation
+  // ── The delete-then-create path ────────────────────────────────────────────
+  // Everything between the two awaits below is time the room is on sale. Build
+  // the payload first so no JSON work, catalog lookup or string formatting
+  // happens inside the window.
+  const payload = buildConfirmedReservationPayload(session, property, notice, amountCents);
+
+  const deletedAtMs = Date.now();
   try {
     await smoobuClient.cancelReservation(hold.smoobuReservationId, observability);
     logger.info("smoobu_promotion_old_reservation_deleted", {
@@ -126,39 +187,69 @@ export async function promoteSmoobuReservation(
       smoobuReservationId: hold.smoobuReservationId,
       error: err instanceof Error ? err.message : String(err),
     });
-    // Fall back to just updating the existing reservation's payment fields
+    // The block is still standing, so inventory was never exposed. Fall back to
+    // updating the existing reservation's payment fields.
     return fallbackUpdateReservation(smoobuClient, hold, session, notice, amountCents, observability, logger);
   }
 
-  // Step 2: Create a new reservation on the Homepage (website) channel
   let newReservationId: number;
   try {
-    const payload = buildConfirmedReservationPayload(session, property, notice, amountCents);
     const response = await smoobuClient.createReservation<SmoobuCreateReservationResponse>(payload, observability);
     newReservationId = parseSmoobuReservationId(response.data);
-
-    logger.info("smoobu_promotion_new_reservation_created", {
-      bookingSessionId: session.id,
-      oldSmoobuReservationId: hold.smoobuReservationId,
-      newSmoobuReservationId: newReservationId,
-      channelId: WEBSITE_CHANNEL_ID,
-    });
   } catch (err) {
+    const exposureMs = Date.now() - deletedAtMs;
     logger.error("smoobu_promotion_create_failed", {
       bookingSessionId: session.id,
       oldSmoobuReservationId: hold.smoobuReservationId,
+      inventoryExposureMs: exposureMs,
       error: err instanceof Error ? err.message : String(err),
     });
     // The old blocked reservation was deleted but the website one failed — the
-    // dates would be back on sale for a booking that is already paid. Smoobu
-    // rejects creating a reservation over a still-existing block, so we can't
+    // dates are back on sale for a booking that is already paid. Smoobu rejects
+    // creating a reservation over a still-existing block, so we can't
     // create-before-delete; instead we compensate by re-blocking the dates so
     // the inventory stays held. A later promotion retry can finish the move to
     // the website channel (R2).
-    return reblockAfterCreateFailure(smoobuClient, holds, hold, session, property, notice, amountCents, observability, logger);
+    const reblock = await reblockAfterCreateFailure(
+      smoobuClient,
+      holds,
+      hold,
+      session,
+      property,
+      notice,
+      amountCents,
+      observability,
+      logger
+    );
+    return { ...reblock, inventoryExposureMs: exposureMs };
   }
 
-  // Step 3: Update local hold to converted with new reservation ID
+  const inventoryExposureMs = Date.now() - deletedAtMs;
+
+  // Make the window visible. An exposure that suddenly jumps from ~400ms to
+  // several seconds is the early warning that this path is degrading — it is the
+  // difference between "a channel might drop a push" and "a guest can buy it".
+  logger.info("smoobu_promotion_new_reservation_created", {
+    bookingSessionId: session.id,
+    oldSmoobuReservationId: hold.smoobuReservationId,
+    newSmoobuReservationId: newReservationId,
+    channelId: WEBSITE_CHANNEL_ID,
+    inventoryExposureMs,
+  });
+
+  if (inventoryExposureMs > INVENTORY_EXPOSURE_WARN_MS) {
+    logger.error("smoobu_promotion_inventory_exposure_exceeded", {
+      bookingSessionId: session.id,
+      propertyId: hold.propertyId,
+      propertyName: property.name,
+      arrivalDate: hold.arrivalDate,
+      departureDate: hold.departureDate,
+      inventoryExposureMs,
+      thresholdMs: INVENTORY_EXPOSURE_WARN_MS,
+      note: "Dates were on sale on the connected channels for longer than expected during promotion.",
+    });
+  }
+
   try {
     await holds.convertHold({
       holdId: hold.id,
@@ -187,10 +278,88 @@ export async function promoteSmoobuReservation(
     providerObjectId: String(newReservationId),
   });
 
-  return { promoted: true, newSmoobuReservationId: newReservationId };
+  // Check Smoobu's own state. This catches the half of the failure space where
+  // the create silently did not take; it says nothing about whether Booking.com
+  // and Airbnb applied the close-push, which is the half that actually bit on
+  // 12 September. The corrective push for that is the watchdog's "reassert"
+  // pass, deliberately delayed so it does not join this same burst.
+  await checkSmoobuSide(
+    smoobuClient,
+    {
+      hold: { ...hold, smoobuReservationId: newReservationId, smoobuChannelId: WEBSITE_CHANNEL_ID },
+      property,
+      session,
+      notice,
+    },
+    config,
+    logger,
+    observability
+  );
+
+  return { promoted: true, newSmoobuReservationId: newReservationId, inventoryExposureMs };
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Above this, the delete→create window is long enough that a guest could
+ * realistically complete a booking inside it. 2s is generous for two sequential
+ * Smoobu calls; anything slower deserves a look rather than a shrug.
+ */
+const INVENTORY_EXPOSURE_WARN_MS = 2_000;
+
+/**
+ * A Smoobu client for the promotion path specifically, with the rate-limit
+ * sleep disabled.
+ *
+ * The shared client calls waitForKnownRateLimitWindow() before every attempt and
+ * will sleep up to maxRateLimitDelayMs (60s by default) if a previous response
+ * reported x-ratelimit-remaining: 0. Between the delete and the create that
+ * sleep is not backpressure, it is a minute of a paid booking being on sale.
+ * With the cap at 0 the client throws instead, which lands in the create-failed
+ * branch and re-blocks immediately.
+ */
+async function createPromotionClient(config: BookingApiConfig): Promise<SmoobuClient> {
+  return createSmoobuClient({
+    ...config,
+    smoobu: { ...config.smoobu, maxRateLimitDelayMs: 0 },
+  });
+}
+
+/**
+ * Smoobu-side sanity check after a confirmation. Never fails the confirmation:
+ * the booking is already paid and recorded, and a provider hiccup here must not
+ * change that.
+ */
+async function checkSmoobuSide(
+  smoobuClient: SmoobuClient,
+  input: { hold: HoldRecord; property: BookingProperty; session: BookingSessionRecord; notice: string },
+  config: BookingApiConfig,
+  logger: ObservabilityLogger,
+  observability: RouteObservability
+): Promise<void> {
+  try {
+    await checkSmoobuHasStayBlocked(
+      smoobuClient,
+      {
+        hold: input.hold,
+        property: input.property,
+        notice: input.notice,
+        customerId: config.smoobu.customerId,
+        guests: input.session.guests,
+      },
+      logger,
+      observability
+    );
+  } catch (err) {
+    // The check must never turn a successful confirmation into a failure.
+    logger.warn("smoobu_promotion_smoobu_check_error", {
+      bookingSessionId: input.session.id,
+      holdId: input.hold.id,
+      error: err instanceof Error ? err.message : String(err),
+    });
+  }
+}
 
 /**
  * When the hold is already on the website channel, just update payment fields.
@@ -259,14 +428,14 @@ async function fallbackUpdateReservation(
       smoobuReservationId: hold.smoobuReservationId,
       note: "Reservation remains on Blocked channel but payment fields updated",
     });
-    return { promoted: false, error: "delete_failed_fallback_update_applied" };
+    return { promoted: false, error: "delete_failed_fallback_update_applied", inventoryExposureMs: 0 };
   } catch (updateErr) {
     logger.error("smoobu_promotion_fallback_update_also_failed", {
       bookingSessionId: session.id,
       smoobuReservationId: hold.smoobuReservationId,
       error: updateErr instanceof Error ? updateErr.message : String(updateErr),
     });
-    return { promoted: false, error: "delete_and_update_both_failed" };
+    return { promoted: false, error: "delete_and_update_both_failed", inventoryExposureMs: 0 };
   }
 }
 
@@ -277,8 +446,6 @@ async function fallbackUpdateReservation(
  * the local hold at the restored reservation. If even this fails, logs a critical
  * alert for manual intervention.
  */
-const BLOCKED_CHANNEL_ID: SmoobuChannelId = 11;
-
 async function reblockAfterCreateFailure(
   smoobuClient: SmoobuClient,
   holds: HoldRepository,

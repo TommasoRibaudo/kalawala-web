@@ -32,7 +32,9 @@ services:
   # Stands in for the deposit-receipt S3 bucket. The AWS SDK talks to it over the
   # same API, so presigned PUT/GET behave as they do against S3.
   minio:
-    image: minio/minio:latest
+    # Docker Hub no longer serves minio/minio to anonymous pulls; Quay is the
+    # publisher-maintained mirror.
+    image: quay.io/minio/minio:latest
     container_name: kalawala-minio
     command: server /data --console-address ":9001"
     environment:
@@ -51,7 +53,7 @@ services:
 
   # Creates the receipts bucket on first boot, then exits.
   minio-init:
-    image: minio/mc:latest
+    image: quay.io/minio/mc:latest
     container_name: kalawala-minio-init
     depends_on:
       minio:

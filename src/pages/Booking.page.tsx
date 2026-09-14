@@ -425,11 +425,17 @@ const BookingPage = () => {
   const wizardStep: WizardStep = React.useMemo(() => {
     if (isConfirmationRoute || bookingConfirmation) return 'confirmation';
     if (isPayPalReturnRoute) return 'confirmation';
+    // Staff confirms a manual-deposit hold from a signed link in their own
+    // email, entirely outside this tab (see the poll below). Without this
+    // check the guest — whether waiting on this tab or reopening a resume
+    // link afterwards — stayed on the deposit step, which reads any
+    // non-'hold_active' status other than 'cancelled' as expired (#331).
+    if (depositHoldResponse?.booking.status === 'booking_confirmed') return 'confirmation';
     if (depositProperty) return 'deposit';
     if (checkoutProperty) return 'checkout';
     if (result) return 'results';
     return 'search';
-  }, [isConfirmationRoute, bookingConfirmation, isPayPalReturnRoute, depositProperty, checkoutProperty, result]);
+  }, [isConfirmationRoute, bookingConfirmation, isPayPalReturnRoute, depositHoldResponse, depositProperty, checkoutProperty, result]);
 
   React.useEffect(() => {
     // Landing on results: scroll past the (re-openable) search bar and
@@ -904,7 +910,11 @@ const BookingPage = () => {
             {/* Step 4: Confirmation */}
             <div className={`booking-wizard-slide${wizardStep === 'confirmation' ? ' booking-wizard-slide--active' : ' booking-wizard-slide--right'}`} aria-hidden={wizardStep !== 'confirmation'}>
               <Row className="justify-content-center"><Col lg={8} xl={7}>
-                <BookingConfirmationPanel result={bookingConfirmation} strings={strings} language={language} onManageBooking={handleManageBooking} />
+                <BookingConfirmationPanel
+                  result={bookingConfirmation ?? (depositHoldResponse?.booking.status === 'booking_confirmed' ? depositHoldResponse : null)}
+                  kicker={bookingConfirmation ? strings.paypalTitle : strings.manualDepositTitle}
+                  strings={strings} language={language} onManageBooking={handleManageBooking}
+                />
               </Col></Row>
             </div>
           </div>
@@ -1454,16 +1464,19 @@ const PayPalReturnPanel = ({ strings, language, isProcessing, error, result }: {
   );
 };
 
-// BookingConfirmationPanel — with auto-login
-const BookingConfirmationPanel = ({ result, strings, language, onManageBooking }: { result: PayPalCaptureResponse | null; strings: BookingStrings; language: BookingLanguage; onManageBooking: (id: string) => void }) => {
+// BookingConfirmationPanel — with auto-login. Fed by either a PayPal capture
+// or a staff-confirmed manual-deposit hold (#331) — both share this booking
+// shape, so `kicker` is the only bit that differs by payment method.
+type ConfirmedBookingSummary = { booking: { reservationPublicId: string; arrivalDate: string; departureDate: string; guests: number; property?: { name: string } } };
+const BookingConfirmationPanel = ({ result, kicker, strings, language, onManageBooking }: { result: ConfirmedBookingSummary | null; kicker: string; strings: BookingStrings; language: BookingLanguage; onManageBooking: (id: string) => void }) => {
   const [isNavigating, setIsNavigating] = React.useState(false);
-  if (!result) return (<section className="booking-confirmation-panel" aria-labelledby="booking-confirmation-title"><p className="booking-results-kicker">{strings.paypalTitle}</p><h1 id="booking-confirmation-title">{strings.confirmationTitle}</h1><Alert className="booking-return-panel__notice" variant="warning" role="alert">{strings.confirmationMissing}</Alert></section>);
+  if (!result) return (<section className="booking-confirmation-panel" aria-labelledby="booking-confirmation-title"><p className="booking-results-kicker">{kicker}</p><h1 id="booking-confirmation-title">{strings.confirmationTitle}</h1><Alert className="booking-return-panel__notice" variant="warning" role="alert">{strings.confirmationMissing}</Alert></section>);
   const propertyName = result.booking.property?.name ?? strings.notAvailable;
   const handleManageClick = () => { setIsNavigating(true); onManageBooking(result.booking.reservationPublicId); };
   return (
     <section className="booking-confirmation-panel" aria-labelledby="booking-confirmation-title">
       <div className="booking-confirmation-panel__icon"><FontAwesomeIcon icon={faCheck} /></div>
-      <p className="booking-results-kicker">{strings.paypalTitle}</p><h1 id="booking-confirmation-title">{strings.confirmationTitle}</h1><p>{strings.confirmationSubtitle}</p>
+      <p className="booking-results-kicker">{kicker}</p><h1 id="booking-confirmation-title">{strings.confirmationTitle}</h1><p>{strings.confirmationSubtitle}</p>
       <dl className="booking-confirmation-panel__details">
         <div><dt>{strings.reservationId}</dt><dd>{result.booking.reservationPublicId}</dd></div>
         <div><dt>{strings.depositContextTitle}</dt><dd>{propertyName}</dd></div>

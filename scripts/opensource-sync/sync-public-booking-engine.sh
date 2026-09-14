@@ -104,8 +104,12 @@ set -e
 REJECTS="$(find "$PUB/api" -name '*.rej' 2>/dev/null || true)"
 
 # ── Leak audit: the real gate ────────────────────────────────────────────────
+# leak-tokens.txt carries trailing '#'-comment lines for humans; strip those
+# (and blanks) before handing patterns to grep, or a bare '#' line matches
+# any line containing a hash (hex colors, "(#325)" issue refs, ...).
 bold "==> Leak audit (scanning changes for private tokens)"
-LEAKS="$(git -C "$PUB" diff | grep -E '^\+' | grep -inEf "$LEAK_TOKENS" \
+LEAKS="$(git -C "$PUB" diff | grep -E '^\+' \
+          | grep -inE -f <(grep -vE '^[[:space:]]*(#|$)' "$LEAK_TOKENS") \
           | grep -viE 'booking_engine|SITE_NAME|\$booking-' || true)"
 
 echo
@@ -127,7 +131,7 @@ cat <<EOF
   1. cd "$PUB"
   2. Resolve any *.rej hunks, then delete the .rej files.
   3. Re-run the leak audit until clean:
-       git diff | grep -E '^\+' | grep -inEf "$LEAK_TOKENS" | grep -viE 'booking_engine|SITE_NAME|\\\$booking-'
+       git diff | grep -E '^\+' | grep -inE -f <(grep -vE '^[[:space:]]*(#|\$)' "$LEAK_TOKENS") | grep -viE 'booking_engine|SITE_NAME|\\\$booking-'
   4. Manually review new test fixtures for guest PII (names/emails/phones) — sed cannot catch those.
   5. cd api && npm install && npm test && npm run typecheck
   6. git commit + git push -u origin "$BRANCH", then open a PR against $PUB_DEFAULT.

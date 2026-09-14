@@ -74,14 +74,44 @@ s/Delfines/Palm Cottage/g
 s#api\.kalawala\.com#api.booking.test#g
 s#staff@kalawala\.test#staff@example.com#g
 s#test@kalawala\.com#test@example.com#g
+s#reservas\.kalawala@gmail\.com#reservations@example.com#g
 s#kalawala\.com#example.com#g
 s#kalawala\.test#booking.test#g
 s#5432/kalawala#5432/booking_engine#g
 #
 # ── Brand name → SITE_NAME (files that use it must import it from ./branding) ──
-# Matches the brand word only when followed by a space (i.e. inside prose /
-# template literals like `Kalawala PayPal ...`), leaving compounds alone.
-s/Kalawala /${SITE_NAME} /g
+# Bare match (no trailing-space requirement): within booking-api/ "Kalawala"
+# never appears as a substring of another identifier (checked at extraction
+# and re-checked 2026-09-14), so this is safe as a catch-all. It must run
+# before the sentence-final translated strings (subject/intro/note in
+# non-en/es locales) get to the leak audit — those end the word in
+# punctuation ("... de Kalawala.", "... Kalawala\"") rather than a space,
+# which a space-anchored rule misses.
+s/Kalawala/${SITE_NAME}/g
+#
+# ── Brand name, transliterated into non-Latin locale scripts ──────────────────
+# he/hi translate "Kalawala" phonetically instead of keeping it Latin, so the
+# rule above can't see it. This is a best-effort text swap only — it does NOT
+# fix the string-literal-vs-template-literal issue below, and Hebrew grammar
+# sometimes glues a preposition directly onto the word (e.g. "מקלאוואלה" =
+# "מ" + the brand, no space) which needs a hyphen after swapping in the Latin
+# placeholder ("מ-${SITE_NAME}") — sed can't tell those apart, check by hand.
+s/קלאוואלה/${SITE_NAME}/g
+s/कलावाला/${SITE_NAME}/g
+#
+# NOTE: every substitution in this file is a blind text swap — it has no idea
+# whether it just inserted "${SITE_NAME}" into a double-quoted string (where
+# it's literal dead text, NOT interpolated) versus a backtick template literal
+# (where it works). Check every line this file touches that now contains
+# "${SITE_NAME}", "${dir}" or similar: if the enclosing quotes aren't
+# backticks, the placeholder will ship to guests literally instead of
+# resolving. This bit real 7-new-locale email copy during the 2026-09-14 sync.
+#
+# ── Property ids as lowercase test-fixture strings (propertyId: "…") ──────────
+# These are opaque handles inside isolated unit-test mocks, not the real
+# BOOKING_PROPERTIES catalog, so any demo slug is a valid substitute — pick
+# the canonical mapping above for consistency.
+s/"areka"/"oceanbreeze"/g
 #
 # ── Frontend theme variables (web-widgets only) ───────────────────────────────
 s/\$kalawala-/$booking-/g

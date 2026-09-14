@@ -23,6 +23,8 @@ a75f112f
 d06f7d50
 puerto viejo
 \$kalawala-
+קלאוואלה
+कलावाला
 #
 # NOTE: real guest PII (names/emails/phones) and real reservation/incident IDs
 # are deliberately NOT listed here. This repo is public — writing those values

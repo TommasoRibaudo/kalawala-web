@@ -496,6 +496,18 @@ resource "aws_launch_template" "fck_nat" {
     }
   }
 
+  # default_tags does not propagate to resources launched by an ASG/launch
+  # template at runtime — only explicit tag_specifications do. Without this
+  # block the instance's root EBS volume is created with zero tags and its
+  # cost shows up untagged in Cost Explorer.
+  tag_specifications {
+    resource_type = "volume"
+    tags = {
+      Name    = "${var.project}-${var.environment}-fck-nat"
+      Project = var.project
+    }
+  }
+
   lifecycle {
     create_before_destroy = true
   }

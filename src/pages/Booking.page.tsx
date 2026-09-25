@@ -935,6 +935,26 @@ interface SearchFormProps {
 }
 
 const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDate, fieldErrors, isSubmitting, searchCaptchaRequired, strings, compact, onArrivalChange, onDepartureChange, onGuestInputChange, onGuestStepChange, onSubmit, onBack }: SearchFormProps) => {
+  const departureInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  // Mirrors the homepage widget's two-tap flow (pick check-in, land straight
+  // on check-out) for these two independent native date inputs: once a
+  // check-in is chosen, jump focus to check-out and, where the browser
+  // supports it, open its picker immediately rather than making the guest
+  // tap it separately (#book date picker parity, especially on mobile).
+  const handleArrivalInputChange = (value: string) => {
+    onArrivalChange(value);
+    if (!value) return;
+    window.setTimeout(() => {
+      const input = departureInputRef.current;
+      if (!input) return;
+      input.focus();
+      if (typeof input.showPicker === 'function') {
+        try { input.showPicker(); } catch { /* requires a user-gesture context the browser doesn't consider this to be in; focus() above is still the fallback */ }
+      }
+    }, 0);
+  };
+
   if (compact) {
     return (
       <div className="booking-search-compact">
@@ -944,11 +964,11 @@ const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDat
             <div className="booking-search-compact__fields">
               <Form.Group controlId="bookingArrivalDateCompact" className="booking-search-compact__field">
                 <Form.Label className="visually-hidden">{strings.checkIn}</Form.Label>
-                <Form.Control type="date" value={arrivalDate} min={today} isInvalid={Boolean(fieldErrors.arrivalDate)} onChange={(e) => onArrivalChange(e.target.value)} />
+                <Form.Control type="date" value={arrivalDate} min={today} isInvalid={Boolean(fieldErrors.arrivalDate)} onChange={(e) => handleArrivalInputChange(e.target.value)} />
               </Form.Group>
               <Form.Group controlId="bookingDepartureDateCompact" className="booking-search-compact__field">
                 <Form.Label className="visually-hidden">{strings.checkOut}</Form.Label>
-                <Form.Control type="date" value={departureDate} min={minDepartureDate} isInvalid={Boolean(fieldErrors.departureDate)} onChange={(e) => onDepartureChange(e.target.value)} />
+                <Form.Control ref={departureInputRef} type="date" value={departureDate} min={minDepartureDate} isInvalid={Boolean(fieldErrors.departureDate)} onChange={(e) => onDepartureChange(e.target.value)} />
               </Form.Group>
               <Form.Group controlId="bookingGuestCountCompact" className="booking-search-compact__field booking-search-compact__field--guests">
                 <Form.Label className="visually-hidden">{strings.guests}</Form.Label>
@@ -977,8 +997,8 @@ const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDat
     <>
       <Form className="booking-search-form" onSubmit={onSubmit} noValidate>
         <Row className="g-3 align-items-end">
-          <Col md={6} lg={3}><Form.Group controlId="bookingArrivalDate"><Form.Label>{strings.checkIn}</Form.Label><Form.Control type="date" value={arrivalDate} min={today} isInvalid={Boolean(fieldErrors.arrivalDate)} onChange={(e) => onArrivalChange(e.target.value)} /><Form.Control.Feedback type="invalid">{fieldErrors.arrivalDate}</Form.Control.Feedback></Form.Group></Col>
-          <Col md={6} lg={3}><Form.Group controlId="bookingDepartureDate"><Form.Label>{strings.checkOut}</Form.Label><Form.Control type="date" value={departureDate} min={minDepartureDate} isInvalid={Boolean(fieldErrors.departureDate)} onChange={(e) => onDepartureChange(e.target.value)} /><Form.Control.Feedback type="invalid">{fieldErrors.departureDate}</Form.Control.Feedback></Form.Group></Col>
+          <Col md={6} lg={3}><Form.Group controlId="bookingArrivalDate"><Form.Label>{strings.checkIn}</Form.Label><Form.Control type="date" value={arrivalDate} min={today} isInvalid={Boolean(fieldErrors.arrivalDate)} onChange={(e) => handleArrivalInputChange(e.target.value)} /><Form.Control.Feedback type="invalid">{fieldErrors.arrivalDate}</Form.Control.Feedback></Form.Group></Col>
+          <Col md={6} lg={3}><Form.Group controlId="bookingDepartureDate"><Form.Label>{strings.checkOut}</Form.Label><Form.Control ref={departureInputRef} type="date" value={departureDate} min={minDepartureDate} isInvalid={Boolean(fieldErrors.departureDate)} onChange={(e) => onDepartureChange(e.target.value)} /><Form.Control.Feedback type="invalid">{fieldErrors.departureDate}</Form.Control.Feedback></Form.Group></Col>
           <Col md={6} lg={3}>
             <Form.Group controlId="bookingGuestCount">
               <Form.Label>{strings.guests}</Form.Label>

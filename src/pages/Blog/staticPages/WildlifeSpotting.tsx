@@ -15,14 +15,14 @@ import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { pathForKey } from "../../../routes.config";
 import { internalLinkLabel } from "../../../i18n/content/internalLinks";
-import { gandocaRefugeContent } from "../../../i18n/content/blog";
+import { wildlifeSpottingContent } from "../../../i18n/content/blog";
 
-const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg";
+const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Three-toed_sloth_crossing_road_in_Costa_Rica.jpg/1280px-Three-toed_sloth_crossing_road_in_Costa_Rica.jpg";
 
-const GandocaManzanilloRefuge = () => {
+const WildlifeSpotting = () => {
     const locale = useLocale();
     const m = useMessages();
-    const content = gandocaRefugeContent(locale);
+    const content = wildlifeSpottingContent(locale);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -34,8 +34,8 @@ const GandocaManzanilloRefuge = () => {
                 <meta charSet="utf-8" />
                 <title>{content.seoTitle}</title>
                 <meta name="description" content={content.seoDescription} />
-                <link rel="canonical" href={canonicalUrl('blogGandocaRefuge', locale)} />
-                {hreflangLinks('blogGandocaRefuge')}
+                <link rel="canonical" href={canonicalUrl('blogWildlife', locale)} />
+                {hreflangLinks('blogWildlife')}
             </Helmet>
 
             <FixedNavigation isBlog={true} />
@@ -66,32 +66,29 @@ const GandocaManzanilloRefuge = () => {
                         <p>{content.introParagraphs[1]}</p>
                         <br />
 
-                        <h2>{content.wildlifeHeading}</h2>
-                        <p>{content.wildlifeIntro}</p>
-                        <ul>{content.wildlifeItems.map((item, i) => <li key={i}>{item}</li>)}</ul>
-                        <p>
-                            <Link to={pathForKey('blogWildlife', locale)}><strong>{internalLinkLabel('blogWildlife', locale)}</strong></Link>
-                        </p>
+                        <h2>{content.animalsHeading}</h2>
+                        <p>{content.animalsIntro}</p>
+                        <ul>
+                            {content.animals.map((animal, i) => (
+                                <li key={i}><strong>{animal.name}</strong> — {animal.description}</li>
+                            ))}
+                        </ul>
                         <br />
 
                         <StayRecommendation title={content.stayRecommendationTitle} properties={generalPuertoViejoRecommendations(locale)} />
                         <br />
 
-                        <h2>{content.beachesHeading}</h2>
-                        <p>{content.beachesParagraphs[0]}</p>
-                        <p>{content.beachesParagraphs[1]}</p>
+                        <h2>{content.whereHeading}</h2>
+                        <p>{content.whereParagraphs[0]}</p>
                         <p>
-                            <Link to={pathForKey('blogBeaches', locale)}><strong>{internalLinkLabel('blogBeaches', locale)}</strong></Link>
+                            <Link to={pathForKey('blogCahuitapark', locale)}><strong>{internalLinkLabel('blogCahuitapark', locale)}</strong></Link>
                         </p>
-                        <br />
-
-                        <h2>{content.thingsHeading}</h2>
-                        <p>{content.thingsIntro}</p>
-                        <ul>{content.thingsItems.map((item, i) => <li key={i}>{item}</li>)}</ul>
-                        <br />
-
-                        <h2>{content.practicalHeading}</h2>
-                        <ul>{content.practicalItems.map((item, i) => <li key={i}>{item}</li>)}</ul>
+                        <p>{content.whereParagraphs[1]}</p>
+                        <p>
+                            <Link to={pathForKey('blogGandocaRefuge', locale)}><strong>{internalLinkLabel('blogGandocaRefuge', locale)}</strong></Link>
+                        </p>
+                        <p>{content.whereParagraphs[2]}</p>
+                        <p>{content.whereParagraphs[3]}</p>
                         <br />
 
                         <div style={{ maxWidth: 1000 }}>
@@ -99,9 +96,14 @@ const GandocaManzanilloRefuge = () => {
                         </div>
                         <br />
 
-                        <h2>{content.gettingThereHeading}</h2>
-                        <p>{content.gettingThereParagraph}</p>
-                        <p><Link to={pathForKey('blogGandoca', locale)}><strong>{content.gettingThereLinkText}</strong></Link></p>
+                        <h2>{content.tipsHeading}</h2>
+                        <ul>
+                            {content.tipsItems.map((item, i) => <li key={i}>{item}</li>)}
+                        </ul>
+                        <br />
+
+                        <h2>{content.safetyHeading}</h2>
+                        <p>{content.safetyParagraph}</p>
                         <br />
 
                         <h2>{content.takeawaysHeading}</h2>
@@ -115,7 +117,7 @@ const GandocaManzanilloRefuge = () => {
                         </div>
                     </div>
 
-                    <OtherBlogs currentBlog="gandoca-manzanillo-refuge" locale={locale} />
+                    <OtherBlogs currentBlog="wildlife-puerto-viejo" locale={locale} />
                 </Col>
             </Row>
 
@@ -124,4 +126,4 @@ const GandocaManzanilloRefuge = () => {
     );
 };
 
-export default GandocaManzanilloRefuge;
+export default WildlifeSpotting;

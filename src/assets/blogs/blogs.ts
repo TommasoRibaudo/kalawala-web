@@ -201,6 +201,13 @@ export const blogs = [
         text: "From Salsa Brava's legendary reef break to sloth sanctuaries and jungle waterfalls — everything worth doing in Puerto Viejo de Talamanca, Costa Rica's laid-back Caribbean coast.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205",
         pictures: ["", ""]
+    },
+    {
+        id: "wildlife-puerto-viejo",
+        title: "Wildlife Spotting Near Puerto Viejo: Sloths, Monkeys & More",
+        text: "A practical guide to seeing sloths, howler monkeys, toucans and poison dart frogs near Puerto Viejo de Talamanca — where to look, the best time of day, and how to spot animals other visitors miss.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Three-toed_sloth_crossing_road_in_Costa_Rica.jpg/960px-Three-toed_sloth_crossing_road_in_Costa_Rica.jpg",
+        pictures: ["", ""]
     }
 ]
 export const blogsES = [

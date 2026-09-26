@@ -15,6 +15,7 @@ import { handleStaffDepositReviewPage, handleStaffDepositReviewSubmit } from "./
 import { handleCreatePayPalOrder, handleCapturePayPalOrder } from "./paypalOrders";
 import { handlePayPalWebhook } from "./paypalWebhooks";
 import { handleAvailabilitySearch } from "./search";
+import { handleRecordPageview } from "./siteMetrics";
 import { handleSmoobuWebhook } from "./smoobuWebhooks";
 import { BookingApiConfig, RouteRequest } from "./types";
 import {
@@ -34,6 +35,7 @@ import {
   validateHoldRequest,
   validatePayPalCaptureRequest,
   validatePayPalCapturePathRequest,
+  validateMetricsPageviewRequest,
   validatePortalLogin,
   validatePortalMessage,
   validateReservationPublicId,
@@ -64,6 +66,17 @@ export function createRouter(config: BookingApiConfig): Router {
     const calendarRequest = validateCalendarRequest(request.pathParams, request.query);
     return handleCalendarRequest(calendarRequest, config, request.responseHeaders, request.observability);
   }, { abuseProtection: "publicRead" });
+
+  // Anonymous, consent-exempt pageview beacon — see siteMetrics.ts for why
+  // this never checks CookieConsentService state on the frontend.
+  router.post(
+    "/api/metrics/pageview",
+    async (request) => {
+      const body = validateMetricsPageviewRequest(request.body);
+      return handleRecordPageview(body, request, config);
+    },
+    { requireJsonBody: true, abuseProtection: "metricsIngest" }
+  );
 
   router.post(
     "/api/holds",

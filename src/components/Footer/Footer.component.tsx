@@ -101,6 +101,9 @@ const Footer: React.FC<IFooter> = ({ locale }) => {
           <span className="footer-copyright">
             &copy; {new Date().getFullYear()} Reservas Kalawala. {m.footer.copyrightNotice}
           </span>
+          <Link to={pathForKey('privacy', locale)} className="footer-privacy-link">
+            {m.footer.privacyPolicy}
+          </Link>
         </div>
       </div>
     </footer>

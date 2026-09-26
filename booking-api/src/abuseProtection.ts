@@ -162,6 +162,14 @@ const DEFAULT_POLICIES: Record<AbuseProtectionPolicyName, AbusePolicy> = {
       { scope: "device", limit: 8, windowSeconds: 10 * 60 },
     ],
   },
+  // IP-scoped only: this route must never touch a device identifier (see
+  // siteMetrics.ts), and every real pageview fires one call, so the ceiling
+  // is far higher than publicRead. Abuse here just inflates a harmless
+  // counter, not a protected resource, so there is no captchaAfter step.
+  metricsIngest: {
+    name: "metricsIngest",
+    rules: [{ scope: "ip", limit: 600, windowSeconds: 60 }],
+  },
 };
 
 export class AbuseGuard {

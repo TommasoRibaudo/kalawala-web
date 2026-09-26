@@ -89,7 +89,7 @@ export async function presignReceiptDownload(s3Config: S3UploadConfig, s3Key: st
 /**
  * In AWS this is just the region — the SDK resolves the regional endpoint and
  * picks up credentials from the Lambda execution role. `endpointUrl` is set only
- * for local development against MinIO, which also needs path-style addressing
+ * for local development against S3Mock, which also needs path-style addressing
  * because `bucket.localhost` doesn't resolve.
  */
 function buildS3ClientConfig(s3Config: S3UploadConfig): {

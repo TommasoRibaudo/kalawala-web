@@ -12,7 +12,7 @@ search → hold → PayPal approve → capture → confirmation
 
 **`deposit-full-flow.live.ts` — bank transfer / SINPE** (no PayPal, no money)
 ```
-search → deposit hold → receipt upload (S3/MinIO) → portal refused
+search → deposit hold → receipt upload (S3/S3Mock) → portal refused
        → staff confirms via signed link → portal works → cancel → dates released
 ```
 

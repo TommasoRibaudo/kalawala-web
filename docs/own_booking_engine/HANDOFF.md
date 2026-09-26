@@ -99,7 +99,7 @@ plausible single point of failure that looks perfect locally.
 ## Start here
 
 ```bash
-npm run local:up        # Postgres + MinIO
+npm run local:up        # Postgres + S3Mock
 npm run local:migrate
 npm run local:api       # mock providers :4010 + booking API :4000
 npm start               # CRA :3000

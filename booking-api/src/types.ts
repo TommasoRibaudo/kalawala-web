@@ -136,7 +136,7 @@ export interface S3UploadConfig {
   /** Allowed MIME types for deposit receipt uploads. */
   allowedMimeTypes: string[];
   /**
-   * Override the S3 endpoint. Only set for local development against MinIO —
+   * Override the S3 endpoint. Only set for local development against S3Mock —
    * unset in AWS so the SDK resolves the real regional endpoint.
    */
   endpointUrl?: string;

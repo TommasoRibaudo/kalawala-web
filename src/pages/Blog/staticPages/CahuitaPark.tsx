@@ -111,6 +111,9 @@ const CahuitaPark = () => {
                         <br />
                         <h3><strong>{content.wildlifeHeading}</strong></h3>
                         {content.wildlifeParagraphs.map((p, i) => <p key={i}>{p}</p>)}
+                        <p>
+                            <Link to={pathForKey('blogWildlife', locale)}><strong>{internalLinkLabel('blogWildlife', locale)}</strong></Link>
+                        </p>
 
                         <br />
                         <h3><strong>{content.scheduleHeading}</strong></h3>

@@ -29,6 +29,7 @@ import {
   beachesContent,
   bocasDelToroContent,
   thingsToDoContent,
+  wildlifeSpottingContent,
   foodContent,
   resolveMonthlyWeatherYear,
 } from './content/blog';
@@ -72,6 +73,7 @@ const BLOG_HEADING_BY_ROUTE_KEY: Partial<Record<RouteKey, (locale: Locale) => st
   blogBeaches: (l) => beachesContent(l).heading,
   blogBocas: (l) => bocasDelToroContent(l).heading,
   blogThingsToDo: (l) => thingsToDoContent(l).heading,
+  blogWildlife: (l) => wildlifeSpottingContent(l).heading,
   blogFood: (l) => foodContent(l).heading,
 };
 

@@ -11860,6 +11860,43 @@ export function thingsToDoContent(locale: Locale): ThingsToDoContent {
 }
 
 /* ------------------------------------------------------------------ *
+ * Wildlife spotting guide
+ *
+ * Content gap found via Search Console: nothing on the site is dedicated
+ * to the animals themselves, even though "sloth sanctuaries" is already
+ * used as a hook in thingsToDoContent's meta description and the Cahuita/
+ * Gandoca-Manzanillo articles both describe wildlife in passing. This is
+ * the dedicated page those two should point readers to. Ships with real
+ * content in all nine released locales.
+ * ------------------------------------------------------------------ */
+
+export interface WildlifeEntry {
+  name: string;
+  description: string;
+}
+
+export interface WildlifeSpottingContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: [string, string];
+  stayRecommendationTitle: string;
+  animalsHeading: string;
+  animalsIntro: string;
+  animals: WildlifeEntry[];
+  whereHeading: string;
+  whereParagraphs: [string, string, string, string];
+  tipsHeading: string;
+  tipsItems: [string, string, string, string];
+  safetyHeading: string;
+  safetyParagraph: string;
+  takeawaysHeading: string;
+  takeawaysParagraph: string;
+}
+
+/* ------------------------------------------------------------------ *
  * Where to eat guide
  *
  * Another content gap found via Search Console review: nothing on the
@@ -11889,6 +11926,400 @@ export interface FoodContent {
   tipsItems: [string, string, string, string];
   takeawaysHeading: string;
   takeawaysParagraph: string;
+}
+
+const wildlifeSpotting: Partial<Record<Locale, WildlifeSpottingContent>> = {
+  en: {
+    seoTitle: 'Wildlife Spotting in Puerto Viejo, Costa Rica: Sloths, Monkeys & More (Local Guide)',
+    seoDescription:
+      'A practical guide to seeing sloths, howler monkeys, toucans and poison dart frogs near Puerto Viejo de Talamanca — where to look, the best time of day, and how to spot animals other visitors miss.',
+    heading: 'Wildlife Spotting Near Puerto Viejo: Sloths, Monkeys & More',
+    heroAlt: 'Three-toed sloth crossing a road near Puerto Viejo, Costa Rica',
+    photoCredit: <>Photo: Ian D. Keating, <a href="https://commons.wikimedia.org/wiki/File:Three-toed_sloth_crossing_road_in_Costa_Rica.jpg" target="_blank" rel="noopener noreferrer">CC BY 2.0, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      'You do not need a jungle trek or a 5am tour to see wildlife around Puerto Viejo — a lot of it is right along the road. Howler monkeys move through the canopy over Playa Cocles, sloths hang in the almond trees on the way to Punta Uva, and toucans show up in gardens without much notice.',
+      'This guide covers what you are likely to see, the best places to look, and a few habits that make the difference between driving past and actually spotting something.',
+    ],
+    stayRecommendationTitle: 'Where to stay for the best wildlife spotting',
+    animalsHeading: "What you're likely to see",
+    animalsIntro: 'The South Caribbean coast packs a surprising amount of wildlife into a small area:',
+    animals: [
+      { name: 'Mantled howler monkeys', description: "Loud before they're visible — their roar carries over a kilometer. Look and listen for movement in the tall trees early morning and at dusk." },
+      { name: 'White-faced capuchins', description: 'Curious, quick, and more likely to be seen moving through the canopy near trails and gardens than howlers are.' },
+      { name: 'Three-toed and two-toed sloths', description: "The animal most visitors come hoping to see. They move so little that guides often know the same individual's tree for weeks at a time." },
+      { name: 'Red-eyed tree frogs & strawberry poison dart frogs', description: "Easiest to find after dark or right after rain — the tiny red-and-blue 'blue jeans' frog is common on the forest floor near Cahuita and Gandoca-Manzanillo." },
+      { name: 'Keel-billed and chestnut-mandibled toucans', description: 'Often heard before seen, moving between fruiting trees in the early morning.' },
+      { name: 'Caimans and iguanas', description: 'Along the calmer water and canals near Gandoca-Manzanillo.' },
+    ],
+    whereHeading: 'Where to look',
+    whereParagraphs: [
+      "Cahuita National Park's coastal trail is the single best low-effort option — flat, shaded, and walkable in under two hours, with monkeys, sloths and coatis a regular sight for anyone who goes early.",
+      'The Gandoca-Manzanillo refuge trail south of Manzanillo covers denser jungle and adds caimans and a wider range of birds to the mix.',
+      "The Jaguar Rescue Center in Playa Chiquita is not a zoo — it's a rescue and rehabilitation centre for injured and orphaned animals, and the only reliable way to see some species up close. Tours run by reservation, and the proceeds go toward the animals' care.",
+      "And honestly, some of the best sightings happen from the road itself. The stretch between town and Punta Uva runs right through the tree canopy, and sloths cross it often enough that it's a genuine local hazard, not a rare event.",
+    ],
+    tipsHeading: 'How to actually spot something',
+    tipsItems: [
+      'Go early or late. Most activity happens in the first two hours after sunrise and the last two before sunset; the middle of the day is quiet.',
+      "Watch the road, not just the trees. If you see cars slowing down or people pulled over and looking up, stop too — that's usually a sloth or a troop of monkeys someone else already spotted, and it's the fastest way to see wildlife you'd otherwise miss.",
+      "Hire a local guide for the parks. They track individual sloths and know which tree a troop of monkeys has been using that week — a far better hit rate than walking the trail alone.",
+      'Bring binoculars or a zoom lens. Sloths in particular are often 20-30 metres up and easy to miss without one.',
+    ],
+    safetyHeading: "A few rules worth following",
+    safetyParagraph:
+      "Don't touch, feed, or get close enough to a wild animal to force it to move — it's stressful for them and, with monkeys especially, can end with a bite. Poison dart frogs are safe to photograph from a normal distance but shouldn't be handled. And if you're driving and see a sloth crossing the road, slow down and give it room: they move at their own pace and can't hurry out of the way.",
+    takeawaysHeading: 'The short version',
+    takeawaysParagraph:
+      "You don't need to book a specialist tour to see real wildlife near Puerto Viejo — go early, keep an eye on the road as much as the trees, and treat the Cahuita and Gandoca-Manzanillo trails as your best structured options. The animals are genuinely part of daily life here, not something you have to chase.",
+  },
+  es: {
+    seoTitle: 'Avistamiento de Fauna en Puerto Viejo, Costa Rica: Perezosos, Monos y Más (Guía Local)',
+    seoDescription:
+      'Guía práctica para ver perezosos, monos aulladores, tucanes y ranas venenosas cerca de Puerto Viejo de Talamanca: dónde mirar, la mejor hora del día y cómo detectar animales que otros visitantes se pierden.',
+    heading: 'Avistamiento de Fauna Cerca de Puerto Viejo: Perezosos, Monos y Más',
+    heroAlt: 'Perezoso de tres dedos cruzando una carretera cerca de Puerto Viejo, Costa Rica',
+    photoCredit: <>Foto: Ian D. Keating, <a href="https://commons.wikimedia.org/wiki/File:Three-toed_sloth_crossing_road_in_Costa_Rica.jpg" target="_blank" rel="noopener noreferrer">CC BY 2.0, vía Wikimedia Commons</a></>,
+    introParagraphs: [
+      'No hace falta una caminata en la selva ni un tour a las 5 de la mañana para ver fauna cerca de Puerto Viejo: mucha está justo al lado de la carretera. Los monos aulladores se mueven por el dosel sobre Playa Cocles, los perezosos cuelgan de los almendros camino a Punta Uva, y los tucanes aparecen en los jardines sin mucho aviso.',
+      'Esta guía cubre qué es probable que veas, los mejores lugares para buscar, y algunos hábitos que marcan la diferencia entre pasar de largo en el carro y realmente ver algo.',
+    ],
+    stayRecommendationTitle: 'Dónde hospedarte para el mejor avistamiento de fauna',
+    animalsHeading: 'Qué es probable que veas',
+    animalsIntro: 'La costa del Caribe Sur reúne una cantidad sorprendente de fauna en un área pequeña:',
+    animals: [
+      { name: 'Monos aulladores', description: 'Se escuchan antes de verse: su rugido se oye a más de un kilómetro. Busca movimiento en los árboles altos al amanecer y al atardecer.' },
+      { name: 'Monos carablanca', description: 'Curiosos y rápidos, es más probable verlos moviéndose por el dosel cerca de senderos y jardines que a los aulladores.' },
+      { name: 'Perezosos de tres y de dos dedos', description: 'El animal que la mayoría de los visitantes espera ver. Se mueven tan poco que los guías a veces conocen el mismo árbol de un mismo individuo durante semanas.' },
+      { name: "Ranas de ojos rojos y ranas venenosas 'blue jeans'", description: 'Más fáciles de ver de noche o justo después de la lluvia; la pequeña rana roja y azul es común en el suelo del bosque cerca de Cahuita y Gandoca-Manzanillo.' },
+      { name: 'Tucanes pico iris y tucanes de pico grande', description: 'Se escuchan antes de verse, moviéndose entre árboles frutales temprano en la mañana.' },
+      { name: 'Caimanes e iguanas', description: 'En las aguas y canales más tranquilos cerca de Gandoca-Manzanillo.' },
+    ],
+    whereHeading: 'Dónde buscar',
+    whereParagraphs: [
+      'El sendero costero del Parque Nacional Cahuita es la mejor opción sin mucho esfuerzo: plano, con sombra y caminable en menos de dos horas, con monos, perezosos y pizotes como algo habitual para quien entra temprano.',
+      'El sendero del refugio Gandoca-Manzanillo, al sur de Manzanillo, atraviesa selva más densa y suma caimanes y más variedad de aves.',
+      'El Jaguar Rescue Center en Playa Chiquita no es un zoológico: es un centro de rescate y rehabilitación para animales heridos o huérfanos, y la forma más segura de ver de cerca algunas especies. Los tours son con reserva, y lo recaudado va al cuidado de los animales.',
+      'Y, sinceramente, algunos de los mejores avistamientos pasan desde la misma carretera. El tramo entre el pueblo y Punta Uva atraviesa el dosel de árboles, y los perezosos lo cruzan lo suficientemente seguido como para ser un riesgo real de tránsito, no una rareza.',
+    ],
+    tipsHeading: 'Cómo lograr ver algo de verdad',
+    tipsItems: [
+      'Sal temprano o tarde. La mayor parte de la actividad pasa en las primeras dos horas después del amanecer y las últimas dos antes del atardecer; al mediodía todo está tranquilo.',
+      'Mira la carretera, no solo los árboles. Si ves carros bajando la velocidad o gente detenida mirando hacia arriba, párate tú también: casi siempre es un perezoso o una tropa de monos que alguien ya vio, y es la forma más rápida de ver fauna que de otra forma te perderías.',
+      'Contrata un guía local en los parques. Conocen el árbol donde ha estado cada perezoso y qué tropa de monos anduvo por ahí esa semana, algo mucho más efectivo que caminar solo el sendero.',
+      'Lleva binoculares o un lente con zoom. Los perezosos en particular suelen estar a 20-30 metros de altura y son fáciles de pasar por alto sin uno.',
+    ],
+    safetyHeading: 'Algunas reglas que vale la pena seguir',
+    safetyParagraph:
+      'No toques, alimentes ni te acerques tanto a un animal silvestre como para obligarlo a moverse: es estresante para ellos y, sobre todo con los monos, puede terminar en una mordida. Las ranas venenosas son seguras para fotografiar a una distancia normal, pero no deben manipularse. Y si vas manejando y ves un perezoso cruzando la carretera, reduce la velocidad y dale espacio: se mueven a su propio ritmo y no pueden apurarse para quitarse del camino.',
+    takeawaysHeading: 'En resumen',
+    takeawaysParagraph:
+      'No necesitas reservar un tour especializado para ver fauna de verdad cerca de Puerto Viejo: sal temprano, presta atención a la carretera tanto como a los árboles, y toma los senderos de Cahuita y Gandoca-Manzanillo como tus mejores opciones estructuradas. Los animales aquí son parte genuina de la vida diaria, no algo que tengas que perseguir.',
+  },
+  de: {
+    seoTitle: 'Tierbeobachtung in Puerto Viejo, Costa Rica: Faultiere, Affen und mehr (Insider-Guide)',
+    seoDescription:
+      'Ein praktischer Guide, um Faultiere, Brüllaffen, Tukane und Pfeilgiftfrösche in der Nähe von Puerto Viejo de Talamanca zu sehen — wo man hinschaut, die beste Tageszeit, und wie man Tiere entdeckt, die andere Besucher verpassen.',
+    heading: 'Tierbeobachtung bei Puerto Viejo: Faultiere, Affen und mehr',
+    heroAlt: 'Ein Dreifinger-Faultier überquert eine Straße bei Puerto Viejo, Costa Rica',
+    photoCredit: <>Foto: Ian D. Keating, <a href="https://commons.wikimedia.org/wiki/File:Three-toed_sloth_crossing_road_in_Costa_Rica.jpg" target="_blank" rel="noopener noreferrer">CC BY 2.0, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Man braucht keine Dschungelwanderung oder eine Tour um 5 Uhr morgens, um Wildtiere rund um Puerto Viejo zu sehen — vieles davon ist direkt an der Straße. Brüllaffen bewegen sich durch das Kronendach über Playa Cocles, Faultiere hängen in den Mandelbäumen auf dem Weg nach Punta Uva, und Tukane tauchen ohne große Ankündigung in Gärten auf.',
+      'Dieser Guide zeigt, was man wahrscheinlich zu sehen bekommt, die besten Orte zum Hinschauen, und ein paar Gewohnheiten, die den Unterschied machen zwischen Vorbeifahren und tatsächlich etwas entdecken.',
+    ],
+    stayRecommendationTitle: 'Wo man für die beste Tierbeobachtung übernachtet',
+    animalsHeading: 'Was Sie wahrscheinlich sehen werden',
+    animalsIntro: 'Die Südkaribikküste vereint eine überraschende Menge an Wildtieren auf kleinem Raum:',
+    animals: [
+      { name: 'Mantelbrüllaffen', description: 'Laut, bevor man sie sieht — ihr Gebrüll trägt über einen Kilometer weit. Achten Sie am frühen Morgen und in der Dämmerung auf Bewegung in den hohen Bäumen.' },
+      { name: 'Weißschulter-Kapuzineraffen', description: 'Neugierig und schnell, eher im Kronendach in der Nähe von Wegen und Gärten zu sehen als Brüllaffen.' },
+      { name: 'Drei- und Zweifinger-Faultiere', description: 'Das Tier, das die meisten Besucher zu sehen hoffen. Sie bewegen sich so wenig, dass Guides oft wochenlang wissen, in welchem Baum ein bestimmtes Tier sitzt.' },
+      { name: 'Rotaugenlaubfrosch und Erdbeer-Pfeilgiftfrosch', description: 'Am leichtesten nach Einbruch der Dunkelheit oder direkt nach dem Regen zu finden — der kleine rot-blaue „Blue-Jeans-Frosch" ist am Waldboden bei Cahuita und Gandoca-Manzanillo häufig.' },
+      { name: 'Fischertukan und Bergtukan', description: 'Oft zuerst zu hören, bevor man sie sieht, wenn sie sich am frühen Morgen zwischen fruchttragenden Bäumen bewegen.' },
+      { name: 'Kaimane und Leguane', description: 'Entlang der ruhigeren Gewässer und Kanäle bei Gandoca-Manzanillo.' },
+    ],
+    whereHeading: 'Wo man hinschaut',
+    whereParagraphs: [
+      'Der Küstenweg im Cahuita-Nationalpark ist die beste Option mit wenig Aufwand — flach, schattig und in unter zwei Stunden begehbar, mit Affen, Faultieren und Nasenbären als regelmäßiger Anblick für alle, die früh losgehen.',
+      'Der Wanderweg im Schutzgebiet Gandoca-Manzanillo südlich von Manzanillo führt durch dichteren Dschungel und bringt Kaimane sowie eine größere Vielfalt an Vögeln dazu.',
+      'Das Jaguar Rescue Center in Playa Chiquita ist kein Zoo — es ist ein Rettungs- und Rehabilitationszentrum für verletzte und verwaiste Tiere, und die einzige zuverlässige Möglichkeit, manche Arten aus der Nähe zu sehen. Touren finden nur mit Reservierung statt, und der Erlös fließt in die Pflege der Tiere.',
+      'Und ehrlich gesagt, manche der besten Sichtungen passieren direkt von der Straße aus. Der Abschnitt zwischen dem Ort und Punta Uva verläuft mitten durch das Kronendach, und Faultiere überqueren ihn oft genug, dass es ein echtes lokales Verkehrsrisiko ist, kein seltenes Ereignis.',
+    ],
+    tipsHeading: 'Wie man wirklich etwas entdeckt',
+    tipsItems: [
+      'Früh oder spät losgehen. Die meiste Aktivität findet in den ersten zwei Stunden nach Sonnenaufgang und den letzten zwei vor Sonnenuntergang statt; mittags ist es ruhig.',
+      'Achten Sie auf die Straße, nicht nur auf die Bäume. Wenn Autos langsamer werden oder Leute anhalten und nach oben schauen, halten Sie auch an — meist ist es ein Faultier oder eine Affengruppe, die schon jemand entdeckt hat, und es ist der schnellste Weg, Tiere zu sehen, die man sonst verpassen würde.',
+      'Engagieren Sie in den Parks einen lokalen Guide. Sie verfolgen einzelne Faultiere und wissen, in welchem Baum eine Affengruppe diese Woche unterwegs war — eine weit bessere Trefferquote, als allein den Weg entlangzugehen.',
+      'Bringen Sie ein Fernglas oder ein Zoomobjektiv mit. Besonders Faultiere sind oft 20-30 Meter hoch oben und ohne eines leicht zu übersehen.',
+    ],
+    safetyHeading: 'Ein paar Regeln, die sich zu befolgen lohnen',
+    safetyParagraph:
+      'Berühren oder füttern Sie kein Wildtier, und kommen Sie ihm nicht so nahe, dass es sich bewegen muss — das ist stressig für die Tiere und kann besonders bei Affen mit einem Biss enden. Pfeilgiftfrösche kann man aus normalem Abstand gefahrlos fotografieren, sollte sie aber nicht anfassen. Und wenn Sie fahren und ein Faultier die Straße überqueren sehen, bremsen Sie ab und geben Sie ihm Raum: Es bewegt sich in seinem eigenen Tempo und kann nicht schneller aus dem Weg gehen.',
+    takeawaysHeading: 'Kurz gesagt',
+    takeawaysParagraph:
+      'Man muss keine spezialisierte Tour buchen, um bei Puerto Viejo echte Wildtiere zu sehen — früh losgehen, genauso auf die Straße wie auf die Bäume achten, und die Wege in Cahuita und Gandoca-Manzanillo als beste strukturierte Optionen nutzen. Die Tiere hier sind wirklich Teil des Alltags, nicht etwas, dem man hinterherjagen muss.',
+  },
+  fr: {
+    seoTitle: 'Observation de la Faune à Puerto Viejo, Costa Rica : Paresseux, Singes et Plus (Guide Local)',
+    seoDescription:
+      "Un guide pratique pour observer paresseux, singes hurleurs, toucans et grenouilles venimeuses près de Puerto Viejo de Talamanca — où regarder, le meilleur moment de la journée, et comment repérer des animaux que d'autres visiteurs ratent.",
+    heading: 'Observation de la Faune Près de Puerto Viejo : Paresseux, Singes et Plus',
+    heroAlt: 'Un paresseux à trois doigts traversant une route près de Puerto Viejo, Costa Rica',
+    photoCredit: <>Photo : Ian D. Keating, <a href="https://commons.wikimedia.org/wiki/File:Three-toed_sloth_crossing_road_in_Costa_Rica.jpg" target="_blank" rel="noopener noreferrer">CC BY 2.0, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      "Pas besoin d'une randonnée en jungle ou d'un tour à 5h du matin pour voir de la faune autour de Puerto Viejo : une bonne partie se trouve juste au bord de la route. Les singes hurleurs se déplacent dans la canopée au-dessus de Playa Cocles, les paresseux se suspendent aux amandiers sur la route de Punta Uva, et les toucans apparaissent dans les jardins sans grand préavis.",
+      "Ce guide couvre ce que vous verrez probablement, les meilleurs endroits où regarder, et quelques habitudes qui font la différence entre passer devant et repérer réellement quelque chose.",
+    ],
+    stayRecommendationTitle: 'Où loger pour la meilleure observation de la faune',
+    animalsHeading: 'Ce que vous verrez probablement',
+    animalsIntro: 'La côte du Caraïbe Sud concentre une quantité surprenante de faune sur une petite zone :',
+    animals: [
+      { name: 'Singes hurleurs', description: "Bruyants avant d'être visibles — leur rugissement porte sur plus d'un kilomètre. Cherchez et écoutez les mouvements dans les grands arbres tôt le matin et au crépuscule." },
+      { name: 'Singes capucins à face blanche', description: 'Curieux et rapides, plus susceptibles d\'être vus se déplaçant dans la canopée près des sentiers et des jardins que les hurleurs.' },
+      { name: 'Paresseux à trois doigts et à deux doigts', description: "L'animal que la plupart des visiteurs espèrent voir. Ils bougent si peu que les guides connaissent souvent l'arbre d'un même individu pendant des semaines." },
+      { name: "Rainettes aux yeux rouges et grenouilles venimeuses « blue jeans »", description: "Plus faciles à trouver après la tombée de la nuit ou juste après la pluie — la petite grenouille rouge et bleue est commune au sol de la forêt près de Cahuita et Gandoca-Manzanillo." },
+      { name: 'Toucans à carène et toucans à bec noir', description: "Souvent entendus avant d'être vus, se déplaçant entre les arbres fruitiers tôt le matin." },
+      { name: 'Caïmans et iguanes', description: 'Le long des eaux plus calmes et des canaux près de Gandoca-Manzanillo.' },
+    ],
+    whereHeading: 'Où regarder',
+    whereParagraphs: [
+      "Le sentier côtier du parc national de Cahuita est la meilleure option, sans grand effort : plat, ombragé, et praticable en moins de deux heures, avec singes, paresseux et coatis régulièrement visibles pour qui part tôt.",
+      "Le sentier du refuge Gandoca-Manzanillo, au sud de Manzanillo, traverse une jungle plus dense et ajoute des caïmans ainsi qu'une plus grande variété d'oiseaux.",
+      "Le Jaguar Rescue Center à Playa Chiquita n'est pas un zoo : c'est un centre de sauvetage et de réhabilitation pour animaux blessés ou orphelins, et le seul moyen fiable de voir certaines espèces de près. Les visites se font sur réservation, et les recettes financent les soins des animaux.",
+      "Et honnêtement, certaines des meilleures observations se font depuis la route elle-même. Le tronçon entre le village et Punta Uva traverse directement la canopée, et les paresseux le traversent assez souvent pour que ce soit un vrai risque routier local, pas un événement rare.",
+    ],
+    tipsHeading: 'Comment repérer quelque chose pour de vrai',
+    tipsItems: [
+      "Sortez tôt ou tard. La majorité de l'activité se produit dans les deux heures après le lever du soleil et les deux heures avant le coucher ; le milieu de journée est calme.",
+      "Surveillez la route, pas seulement les arbres. Si vous voyez des voitures ralentir ou des gens arrêtés en train de regarder vers le haut, arrêtez-vous aussi : c'est généralement un paresseux ou une troupe de singes que quelqu'un a déjà repéré, et c'est le moyen le plus rapide de voir une faune que vous rateriez sinon.",
+      "Engagez un guide local dans les parcs. Ils suivent des paresseux individuels et savent dans quel arbre une troupe de singes a passé la semaine, un bien meilleur taux de réussite que de marcher seul sur le sentier.",
+      "Prenez des jumelles ou un téléobjectif. Les paresseux en particulier sont souvent à 20-30 mètres de haut et faciles à rater sans cela.",
+    ],
+    safetyHeading: 'Quelques règles à respecter',
+    safetyParagraph:
+      "Ne touchez pas, ne nourrissez pas et ne vous approchez pas assez d'un animal sauvage pour le forcer à bouger — c'est stressant pour lui et, avec les singes en particulier, cela peut finir par une morsure. Les grenouilles venimeuses peuvent être photographiées sans danger à distance normale, mais ne doivent pas être manipulées. Et si vous conduisez et voyez un paresseux traverser la route, ralentissez et laissez-lui de la place : il se déplace à son propre rythme et ne peut pas se dépêcher pour s'écarter.",
+    takeawaysHeading: 'En bref',
+    takeawaysParagraph:
+      "Pas besoin de réserver un tour spécialisé pour voir une vraie faune près de Puerto Viejo : sortez tôt, surveillez la route autant que les arbres, et considérez les sentiers de Cahuita et Gandoca-Manzanillo comme vos meilleures options structurées. Les animaux font ici véritablement partie du quotidien, ce n'est pas quelque chose qu'il faut traquer.",
+  },
+  it: {
+    seoTitle: 'Avvistamento della Fauna a Puerto Viejo, Costa Rica: Bradipi, Scimmie e Altro (Guida Locale)',
+    seoDescription:
+      "Una guida pratica per vedere bradipi, scimmie urlatrici, tucani e rane velenose vicino a Puerto Viejo de Talamanca: dove guardare, il momento migliore della giornata, e come individuare animali che altri visitatori si perdono.",
+    heading: 'Avvistamento della Fauna Vicino a Puerto Viejo: Bradipi, Scimmie e Altro',
+    heroAlt: 'Un bradipo dalla gola marrone attraversa una strada vicino a Puerto Viejo, Costa Rica',
+    photoCredit: <>Foto: Ian D. Keating, <a href="https://commons.wikimedia.org/wiki/File:Three-toed_sloth_crossing_road_in_Costa_Rica.jpg" target="_blank" rel="noopener noreferrer">CC BY 2.0, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      "Non serve un trekking nella giungla o un tour alle 5 del mattino per vedere la fauna intorno a Puerto Viejo: molta si trova proprio lungo la strada. Le scimmie urlatrici si muovono nella chioma sopra Playa Cocles, i bradipi si appendono ai mandorli sulla strada per Punta Uva, e i tucani compaiono nei giardini senza troppo preavviso.",
+      "Questa guida copre cosa è probabile vedere, i posti migliori dove guardare, e alcune abitudini che fanno la differenza tra passare oltre in auto e avvistare davvero qualcosa.",
+    ],
+    stayRecommendationTitle: "Dove alloggiare per il miglior avvistamento della fauna",
+    animalsHeading: 'Cosa è probabile che tu veda',
+    animalsIntro: "La costa del Caribe Sur racchiude una quantità sorprendente di fauna in un'area piccola:",
+    animals: [
+      { name: 'Scimmie urlatrici', description: "Rumorose prima ancora di essere visibili: il loro ruggito si sente per oltre un chilometro. Cerca e ascolta il movimento tra gli alberi alti la mattina presto e al tramonto." },
+      { name: 'Scimmie cappuccine dalla faccia bianca', description: 'Curiose e veloci, più probabile vederle muoversi nella chioma vicino a sentieri e giardini rispetto alle urlatrici.' },
+      { name: 'Bradipi a tre e a due dita', description: "L'animale che la maggior parte dei visitatori spera di vedere. Si muovono così poco che le guide spesso conoscono l'albero dello stesso individuo per settimane." },
+      { name: "Rane dagli occhi rossi e rane veleno «blue jeans»", description: "Più facili da trovare dopo il tramonto o subito dopo la pioggia; la piccola rana rosso-blu è comune sul terreno della foresta vicino a Cahuita e Gandoca-Manzanillo." },
+      { name: 'Tucani dal becco arcobaleno e tucani dal becco grande', description: "Spesso si sentono prima di vederli, mentre si spostano tra gli alberi da frutto la mattina presto." },
+      { name: 'Caimani e iguane', description: 'Lungo le acque più calme e i canali vicino a Gandoca-Manzanillo.' },
+    ],
+    whereHeading: 'Dove guardare',
+    whereParagraphs: [
+      "Il sentiero costiero del Parco Nazionale di Cahuita è di gran lunga l'opzione migliore senza troppo sforzo: piatto, ombreggiato e percorribile in meno di due ore, con scimmie, bradipi e coati come avvistamento regolare per chi entra presto.",
+      "Il sentiero del rifugio Gandoca-Manzanillo, a sud di Manzanillo, attraversa una giungla più fitta e aggiunge caimani e una varietà più ampia di uccelli.",
+      "Il Jaguar Rescue Center a Playa Chiquita non è uno zoo: è un centro di soccorso e riabilitazione per animali feriti o orfani, e l'unico modo affidabile per vedere da vicino alcune specie. I tour si svolgono su prenotazione, e il ricavato va alla cura degli animali.",
+      "E sinceramente, alcuni dei migliori avvistamenti avvengono proprio dalla strada. Il tratto tra il paese e Punta Uva attraversa proprio la chioma degli alberi, e i bradipi lo attraversano abbastanza spesso da essere un vero rischio stradale locale, non un evento raro.",
+    ],
+    tipsHeading: 'Come avvistare davvero qualcosa',
+    tipsItems: [
+      "Esci presto o tardi. La maggior parte dell'attività avviene nelle prime due ore dopo l'alba e nelle ultime due prima del tramonto; nel mezzo della giornata è tutto tranquillo.",
+      "Guarda la strada, non solo gli alberi. Se vedi auto che rallentano o persone ferme a guardare in alto, fermati anche tu: di solito è un bradipo o un gruppo di scimmie che qualcuno ha già avvistato, ed è il modo più veloce per vedere fauna che altrimenti ti perderesti.",
+      "Assumi una guida locale nei parchi. Seguono i bradipi individualmente e sanno su quale albero si è spostato un gruppo di scimmie quella settimana, una percentuale di successo molto migliore rispetto a camminare da soli sul sentiero.",
+      "Porta un binocolo o un obiettivo con zoom. I bradipi in particolare sono spesso a 20-30 metri di altezza e facili da perdere senza uno.",
+    ],
+    safetyHeading: 'Alcune regole che vale la pena seguire',
+    safetyParagraph:
+      "Non toccare, non dare da mangiare e non avvicinarti tanto a un animale selvatico da costringerlo a muoversi: è stressante per loro e, soprattutto con le scimmie, può finire con un morso. Le rane velenose si possono fotografare in sicurezza a distanza normale, ma non vanno maneggiate. E se stai guidando e vedi un bradipo attraversare la strada, rallenta e dagli spazio: si muove al proprio ritmo e non può affrettarsi per togliersi di mezzo.",
+    takeawaysHeading: 'In breve',
+    takeawaysParagraph:
+      "Non serve prenotare un tour specializzato per vedere vera fauna vicino a Puerto Viejo: esci presto, presta attenzione alla strada tanto quanto agli alberi, e considera i sentieri di Cahuita e Gandoca-Manzanillo le tue migliori opzioni strutturate. Gli animali qui fanno davvero parte della vita quotidiana, non è qualcosa che devi inseguire.",
+  },
+  pt: {
+    seoTitle: 'Observação de Fauna em Puerto Viejo, Costa Rica: Preguiças, Macacos e Mais (Guia Local)',
+    seoDescription:
+      'Um guia prático para ver preguiças, macacos-uivadores, tucanos e sapos venenosos perto de Puerto Viejo de Talamanca — onde procurar, a melhor hora do dia, e como avistar animais que outros visitantes perdem.',
+    heading: 'Observação de Fauna Perto de Puerto Viejo: Preguiças, Macacos e Mais',
+    heroAlt: 'Uma preguiça-de-três-dedos atravessando uma estrada perto de Puerto Viejo, Costa Rica',
+    photoCredit: <>Foto: Ian D. Keating, <a href="https://commons.wikimedia.org/wiki/File:Three-toed_sloth_crossing_road_in_Costa_Rica.jpg" target="_blank" rel="noopener noreferrer">CC BY 2.0, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Você não precisa de uma trilha na selva nem de um tour às 5 da manhã para ver fauna perto de Puerto Viejo: muita coisa está bem na beira da estrada. Macacos-uivadores se movem pelo dossel acima da Playa Cocles, preguiças ficam penduradas nas amendoeiras a caminho de Punta Uva, e tucanos aparecem em jardins sem muito aviso.',
+      'Este guia cobre o que você provavelmente verá, os melhores lugares para procurar, e alguns hábitos que fazem a diferença entre passar direto de carro e realmente avistar algo.',
+    ],
+    stayRecommendationTitle: 'Onde se hospedar para a melhor observação de fauna',
+    animalsHeading: 'O que você provavelmente vai ver',
+    animalsIntro: 'A costa do Caribe Sul reúne uma quantidade surpreendente de fauna numa área pequena:',
+    animals: [
+      { name: 'Macacos-uivadores', description: 'Barulhentos antes de serem vistos — o rugido deles alcança mais de um quilômetro. Procure e escute movimento nas árvores altas de manhã cedo e ao entardecer.' },
+      { name: 'Macacos-prego de cara branca', description: 'Curiosos e rápidos, mais fáceis de ver se movendo pelo dossel perto de trilhas e jardins do que os uivadores.' },
+      { name: 'Preguiças-de-três-dedos e de-dois-dedos', description: 'O animal que a maioria dos visitantes espera ver. Se movem tão pouco que os guias muitas vezes sabem em qual árvore está o mesmo indivíduo durante semanas.' },
+      { name: "Pererecas-de-olhos-vermelhos e sapinhos-venenosos 'blue jeans'", description: 'Mais fáceis de encontrar depois de escurecer ou logo após a chuva; o pequeno sapo vermelho e azul é comum no chão da floresta perto de Cahuita e Gandoca-Manzanillo.' },
+      { name: 'Tucanos-de-bico-verde e tucanos-de-bico-preto', description: 'Muitas vezes ouvidos antes de vistos, movendo-se entre árvores frutíferas de manhã cedo.' },
+      { name: 'Jacarés e iguanas', description: 'Ao longo das águas mais calmas e canais perto de Gandoca-Manzanillo.' },
+    ],
+    whereHeading: 'Onde procurar',
+    whereParagraphs: [
+      'A trilha costeira do Parque Nacional Cahuita é a melhor opção com pouco esforço: plana, com sombra, e percorrível em menos de duas horas, com macacos, preguiças e quatis à vista regularmente para quem entra cedo.',
+      'A trilha do refúgio Gandoca-Manzanillo, ao sul de Manzanillo, atravessa selva mais densa e soma jacarés e uma variedade maior de aves.',
+      'O Jaguar Rescue Center em Playa Chiquita não é um zoológico: é um centro de resgate e reabilitação para animais feridos ou órfãos, e a forma mais segura de ver algumas espécies de perto. Os tours são com reserva, e o valor arrecadado vai para o cuidado dos animais.',
+      'E, sinceramente, alguns dos melhores avistamentos acontecem na própria estrada. O trecho entre o vilarejo e Punta Uva atravessa bem o dossel das árvores, e as preguiças o cruzam com frequência suficiente para ser um risco real de trânsito, não uma raridade.',
+    ],
+    tipsHeading: 'Como realmente avistar algo',
+    tipsItems: [
+      'Saia cedo ou tarde. A maior parte da atividade acontece nas duas primeiras horas depois do nascer do sol e nas duas últimas antes do pôr do sol; no meio do dia tudo fica quieto.',
+      'Preste atenção na estrada, não só nas árvores. Se você ver carros diminuindo a velocidade ou pessoas paradas olhando para cima, pare também: geralmente é uma preguiça ou um bando de macacos que alguém já avistou, e é a forma mais rápida de ver fauna que você perderia de outra maneira.',
+      'Contrate um guia local nos parques. Eles acompanham preguiças individualmente e sabem em qual árvore um bando de macacos andou naquela semana, uma taxa de sucesso muito melhor do que caminhar sozinho pela trilha.',
+      'Leve binóculos ou uma lente com zoom. As preguiças em particular costumam estar a 20-30 metros de altura e são fáceis de não notar sem um.',
+    ],
+    safetyHeading: 'Algumas regras que vale a pena seguir',
+    safetyParagraph:
+      'Não toque, não alimente nem se aproxime tanto de um animal selvagem a ponto de obrigá-lo a se mover: isso é estressante para eles e, principalmente com macacos, pode acabar numa mordida. Sapos venenosos são seguros para fotografar a uma distância normal, mas não devem ser manuseados. E se você estiver dirigindo e ver uma preguiça atravessando a estrada, reduza a velocidade e dê espaço a ela: ela se move no próprio ritmo e não consegue se apressar para sair do caminho.',
+    takeawaysHeading: 'Em resumo',
+    takeawaysParagraph:
+      'Você não precisa reservar um tour especializado para ver fauna de verdade perto de Puerto Viejo: saia cedo, preste atenção na estrada tanto quanto nas árvores, e trate as trilhas de Cahuita e Gandoca-Manzanillo como suas melhores opções estruturadas. Os animais aqui são genuinamente parte do dia a dia, não algo que você precisa perseguir.',
+  },
+  he: {
+    seoTitle: 'צפייה בחיות בר בפוארטו ויאחו, קוסטה ריקה: עצלנים, קופים ועוד (מדריך מקומי)',
+    seoDescription:
+      'מדריך מעשי לראות עצלנים, קופים שאגנים, טוקנים וצפרדעי רעל ליד פוארטו ויאחו דה טלמנקה: היכן להסתכל, השעה הטובה ביותר ביום, ואיך לאתר חיות שמבקרים אחרים מפספסים.',
+    heading: 'צפייה בחיות בר ליד פוארטו ויאחו: עצלנים, קופים ועוד',
+    heroAlt: 'עצלן תלת-אצבעי חוצה כביש ליד פוארטו ויאחו, קוסטה ריקה',
+    photoCredit: <>צילום: Ian D. Keating, <a href="https://commons.wikimedia.org/wiki/File:Three-toed_sloth_crossing_road_in_Costa_Rica.jpg" target="_blank" rel="noopener noreferrer">CC BY 2.0, ויקימדיה קומונס</a></>,
+    introParagraphs: [
+      'אין צורך בטרק בג\'ונגל או בסיור בשעה 5 בבוקר כדי לראות חיות בר סביב פוארטו ויאחו: חלק גדול מהן נמצא ממש לאורך הכביש. קופים שאגנים נעים בין צמרות העצים מעל פלאיה קוקלס, עצלנים תלויים בעצי השקד בדרך לפונטה אובה, וטוקנים מופיעים בגינות כמעט בלי אזהרה.',
+      'המדריך הזה מכסה מה סביר שתראו, המקומות הטובים ביותר להסתכל בהם, וכמה הרגלים שעושים את ההבדל בין לנסוע מעבר לבין לאתר משהו בפועל.',
+    ],
+    stayRecommendationTitle: 'היכן להתארח לצפייה הטובה ביותר בחיות בר',
+    animalsHeading: 'מה שסביר שתראו',
+    animalsIntro: 'חוף הקריביים הדרומי מרכז כמות מפתיעה של חיות בר בשטח קטן:',
+    animals: [
+      { name: 'קופים שאגנים', description: 'רועשים לפני שהם נראים: השאגה שלהם נשמעת למרחק של יותר מקילומטר. חפשו והקשיבו לתנועה בעצים הגבוהים מוקדם בבוקר ובדמדומים.' },
+      { name: 'קופי קפוצ\'ין לבני-פנים', description: 'סקרנים ומהירים, סביר יותר לראות אותם נעים בין הצמרות ליד שבילים וגינות מאשר את השאגנים.' },
+      { name: 'עצלנים תלת-אצבעיים ודו-אצבעיים', description: 'החיה שרוב המבקרים מקווים לראות. הם זזים כה מעט שמדריכים לרוב יודעים על אותו עץ של אותו פרט במשך שבועות.' },
+      { name: 'צפרדעי עץ אדומות-עיניים וצפרדעי רעל "ג\'ינס כחול"', description: 'הכי קל למצוא אחרי החשיכה או ממש אחרי הגשם; הצפרדע הקטנה האדומה-כחולה נפוצה על קרקעית היער ליד קאהויטה וגנדוקה-מנזנייו.' },
+      { name: 'טוקנים מקורקעים וטוקנים גדולי-מקור', description: 'לרוב נשמעים לפני שהם נראים, נעים בין עצי פרי מוקדם בבוקר.' },
+      { name: 'תניניים ואיגואנות', description: 'לאורך המים הרגועים יותר והתעלות ליד גנדוקה-מנזנייו.' },
+    ],
+    whereHeading: 'איפה להסתכל',
+    whereParagraphs: [
+      'השביל החופי בפארק הלאומי קאהויטה הוא האפשרות הטובה ביותר בלי הרבה מאמץ: שטוח, מוצל, וניתן לעבור אותו תוך פחות משעתיים, עם קופים, עצלנים ופיזוטים כמראה קבוע למי שיוצא מוקדם.',
+      'שביל שמורת גנדוקה-מנזנייו, מדרום למנזנייו, עובר בג\'ונגל צפוף יותר ומוסיף תניניים ומגוון רחב יותר של ציפורים.',
+      'ה-Jaguar Rescue Center בפלאיה צ\'יקיטה אינו גן חיות: זהו מרכז הצלה ושיקום לבעלי חיים פצועים או יתומים, והדרך היחידה האמינה לראות מקרוב מינים מסוימים. הסיורים מתקיימים בהזמנה מראש, וההכנסות הולכות לטיפול בבעלי החיים.',
+      'ובכנות, חלק מהתצפיות הטובות ביותר קורות מהכביש עצמו. הקטע שבין העיירה לפונטה אובה עובר ממש דרך צמרות העצים, ועצלנים חוצים אותו לעיתים קרובות מספיק כדי שזה יהיה סיכון תנועה מקומי אמיתי, לא אירוע נדיר.',
+    ],
+    tipsHeading: 'איך באמת לאתר משהו',
+    tipsItems: [
+      'צאו מוקדם או מאוחר. רוב הפעילות מתרחשת בשעתיים הראשונות אחרי הזריחה ובשעתיים האחרונות לפני השקיעה; באמצע היום הכול שקט.',
+      'שימו לב לכביש, לא רק לעצים. אם אתם רואים מכוניות מאטות או אנשים עוצרים ומסתכלים למעלה, עצרו גם אתם: לרוב זה עצלן או להקת קופים שמישהו כבר איתר, וזו הדרך המהירה ביותר לראות חיות בר שאחרת הייתם מפספסים.',
+      'שכרו מדריך מקומי בפארקים. הם עוקבים אחרי עצלנים בודדים ויודעים על איזה עץ שהתה להקת קופים באותו שבוע, אחוז הצלחה הרבה יותר טוב מאשר ללכת בשביל לבד.',
+      'קחו משקפת או עדשת זום. עצלנים בפרט נמצאים לרוב בגובה 20-30 מטר וקל לפספס אותם בלעדיה.',
+    ],
+    safetyHeading: 'כמה כללים ששווה לעקוב אחריהם',
+    safetyParagraph:
+      'אל תיגעו, תאכילו או תתקרבו מספיק לחיית בר כדי לאלץ אותה לזוז: זה מלחיץ עבורה, ובמיוחד עם קופים, זה עלול להסתיים בנשיכה. צפרדעי רעל בטוחות לצילום ממרחק רגיל אך אסור לטפל בהן. ואם אתם נוהגים ורואים עצלן חוצה את הכביש, האטו ותנו לו מקום: הוא זז בקצב שלו ולא יכול למהר כדי לפנות את הדרך.',
+    takeawaysHeading: 'בקצרה',
+    takeawaysParagraph:
+      'אין צורך להזמין סיור מיוחד כדי לראות חיות בר אמיתיות ליד פוארטו ויאחו: צאו מוקדם, שימו לב לכביש בדיוק כמו לעצים, והתייחסו לשבילי קאהויטה וגנדוקה-מנזנייו כאל האפשרויות המובנות הטובות ביותר שלכם. החיות כאן הן חלק אמיתי מהחיים היומיומיים, לא משהו שצריך לרדוף אחריו.',
+  },
+  hi: {
+    seoTitle: 'प्वेर्तो विएखो, कोस्टा रिका में वन्यजीव देखना: स्लॉथ, बंदर और अन्य (स्थानीय गाइड)',
+    seoDescription:
+      'प्वेर्तो विएखो दे तालामांका के पास स्लॉथ, हाउलर बंदर, टूकन और ज़हरीले मेंढक देखने की एक व्यावहारिक गाइड — कहाँ देखें, दिन का सबसे अच्छा समय, और अन्य पर्यटक जो जानवर चूक जाते हैं उन्हें कैसे देखें।',
+    heading: 'प्वेर्तो विएखो के पास वन्यजीव देखना: स्लॉथ, बंदर और अन्य',
+    heroAlt: 'प्वेर्तो विएखो, कोस्टा रिका के पास सड़क पार करता एक तीन-उँगली वाला स्लॉथ',
+    photoCredit: <>फ़ोटो: Ian D. Keating, <a href="https://commons.wikimedia.org/wiki/File:Three-toed_sloth_crossing_road_in_Costa_Rica.jpg" target="_blank" rel="noopener noreferrer">CC BY 2.0, विकिमीडिया कॉमन्स के माध्यम से</a></>,
+    introParagraphs: [
+      'प्वेर्तो विएखो के आसपास वन्यजीव देखने के लिए आपको जंगल की यात्रा या सुबह 5 बजे के टूर की ज़रूरत नहीं है: इसमें से बहुत कुछ सड़क के किनारे ही है। हाउलर बंदर प्लाया कोकलेस के ऊपर पेड़ों की छतरी में घूमते हैं, स्लॉथ पुंता उवा जाने वाले रास्ते के बादाम के पेड़ों पर लटके रहते हैं, और टूकन बिना ज़्यादा चेतावनी के बगीचों में दिखाई देते हैं।',
+      'यह गाइड बताती है कि आप क्या देखने की संभावना रखते हैं, देखने के लिए सबसे अच्छी जगहें, और कुछ आदतें जो गाड़ी चलाकर निकल जाने और वाकई कुछ देख पाने के बीच का फ़र्क बनाती हैं।',
+    ],
+    stayRecommendationTitle: 'बेहतरीन वन्यजीव अवलोकन के लिए कहाँ ठहरें',
+    animalsHeading: 'आप संभवतः क्या देखेंगे',
+    animalsIntro: 'दक्षिण कैरिबियन तट एक छोटे से क्षेत्र में वन्यजीवों की आश्चर्यजनक मात्रा समेटे हुए है:',
+    animals: [
+      { name: 'हाउलर बंदर', description: 'दिखने से पहले सुनाई देते हैं — इनकी दहाड़ एक किलोमीटर से भी ज़्यादा दूर तक सुनाई देती है। सुबह जल्दी और शाम ढलते समय ऊँचे पेड़ों में हलचल देखें और सुनें।' },
+      { name: 'सफ़ेद-चेहरे वाले कैपुचिन बंदर', description: 'जिज्ञासु और तेज़, हाउलर की तुलना में रास्तों और बगीचों के पास छतरी में घूमते हुए दिखने की संभावना ज़्यादा है।' },
+      { name: 'तीन-उँगली और दो-उँगली वाले स्लॉथ', description: 'वह जानवर जिसे ज़्यादातर पर्यटक देखने की उम्मीद रखते हैं। ये इतना कम हिलते हैं कि गाइड अक्सर हफ़्तों तक एक ही जानवर के पेड़ को जानते हैं।' },
+      { name: "लाल आँखों वाले पेड़ मेंढक और 'ब्लू जींस' ज़हरीले मेंढक", description: 'अंधेरा होने के बाद या बारिश के ठीक बाद ढूँढना सबसे आसान; छोटा लाल-नीला मेंढक काहूइता और गंदोका-मंज़ानियो के पास जंगल की ज़मीन पर आम है।' },
+      { name: 'कील-बिल और चेस्टनट-मैंडिबल्ड टूकन', description: 'अक्सर दिखने से पहले सुनाई देते हैं, सुबह जल्दी फल वाले पेड़ों के बीच घूमते हुए।' },
+      { name: 'मगरमच्छ और इगुआना', description: 'गंदोका-मंज़ानियो के पास शांत पानी और नहरों के किनारे।' },
+    ],
+    whereHeading: 'कहाँ देखें',
+    whereParagraphs: [
+      'काहूइता नेशनल पार्क का तटीय रास्ता सबसे कम मेहनत वाला सबसे अच्छा विकल्प है: समतल, छायादार, और दो घंटे से कम में पैदल पार किया जा सकता है, जल्दी जाने वालों के लिए बंदर, स्लॉथ और कोआती नियमित रूप से दिखते हैं।',
+      'मंज़ानियो के दक्षिण में गंदोका-मंज़ानियो शरण का रास्ता घने जंगल से होकर गुज़रता है और मगरमच्छों तथा पक्षियों की व्यापक विविधता जोड़ता है।',
+      'प्लाया चिकीता में Jaguar Rescue Center कोई चिड़ियाघर नहीं है — यह घायल और अनाथ जानवरों के लिए एक बचाव और पुनर्वास केंद्र है, और कुछ प्रजातियों को क़रीब से देखने का एकमात्र भरोसेमंद तरीका है। टूर आरक्षण पर चलते हैं, और आय जानवरों की देखभाल में जाती है।',
+      'और सच कहें तो, कुछ सबसे अच्छे नज़ारे सड़क से ही दिखते हैं। कस्बे और पुंता उवा के बीच का हिस्सा सीधे पेड़ों की छतरी से होकर गुज़रता है, और स्लॉथ इसे इतनी बार पार करते हैं कि यह एक असली स्थानीय जोखिम है, कोई दुर्लभ घटना नहीं।',
+    ],
+    tipsHeading: 'वाकई कुछ देखने का तरीका',
+    tipsItems: [
+      'जल्दी या देर से निकलें। ज़्यादातर गतिविधि सूर्योदय के बाद के पहले दो घंटों और सूर्यास्त से पहले के आखिरी दो घंटों में होती है; दिन के बीच का समय शांत रहता है।',
+      'सिर्फ़ पेड़ों को नहीं, सड़क को भी देखें। अगर आप कारों को धीमा होते या लोगों को रुककर ऊपर देखते हुए पाएं, तो आप भी रुक जाएं: यह अक्सर एक स्लॉथ या बंदरों का झुंड होता है जिसे किसी और ने पहले ही देख लिया है, और यह उस वन्यजीव को देखने का सबसे तेज़ तरीका है जिसे आप अन्यथा चूक जाते।',
+      'पार्कों में स्थानीय गाइड करें। वे अलग-अलग स्लॉथ पर नज़र रखते हैं और जानते हैं कि उस हफ़्ते बंदरों का झुंड किस पेड़ पर रहा है, अकेले रास्ते पर चलने से कहीं बेहतर सफलता दर।',
+      'दूरबीन या ज़ूम लेंस साथ लाएं। ख़ासकर स्लॉथ अक्सर 20-30 मीटर ऊपर होते हैं और बिना दूरबीन के चूकना आसान है।',
+    ],
+    safetyHeading: 'कुछ नियम जिनका पालन करना उचित है',
+    safetyParagraph:
+      'किसी जंगली जानवर को छुएं नहीं, खिलाएं नहीं, या इतना क़रीब न जाएं कि उसे हिलने पर मजबूर करना पड़े — यह उनके लिए तनावपूर्ण है, और ख़ासकर बंदरों के साथ, यह काटने पर ख़त्म हो सकता है। ज़हरीले मेंढकों को सामान्य दूरी से फ़ोटो खींचना सुरक्षित है, पर उन्हें छूना नहीं चाहिए। और अगर आप गाड़ी चला रहे हैं और सड़क पार करता हुआ स्लॉथ दिखे, तो धीमा करें और उसे जगह दें: वह अपनी ही रफ़्तार से चलता है और रास्ते से हटने के लिए जल्दी नहीं कर सकता।',
+    takeawaysHeading: 'संक्षेप में',
+    takeawaysParagraph:
+      'प्वेर्तो विएखो के पास असली वन्यजीव देखने के लिए आपको कोई विशेष टूर बुक करने की ज़रूरत नहीं है: जल्दी निकलें, पेड़ों जितना ही सड़क पर भी ध्यान दें, और काहूइता तथा गंदोका-मंज़ानियो के रास्तों को अपने सबसे अच्छे व्यवस्थित विकल्प मानें। यहाँ के जानवर वाकई रोज़मर्रा की ज़िंदगी का हिस्सा हैं, कोई ऐसी चीज़ नहीं जिसका आपको पीछा करना पड़े।',
+  },
+  nl: {
+    seoTitle: 'Wildlife Spotten bij Puerto Viejo, Costa Rica: Luiaards, Apen en Meer (Lokale Gids)',
+    seoDescription:
+      'Een praktische gids om luiaards, brulapen, toekans en gifkikkers te zien bij Puerto Viejo de Talamanca — waar te kijken, het beste moment van de dag, en hoe je dieren spot die andere bezoekers missen.',
+    heading: 'Wildlife Spotten bij Puerto Viejo: Luiaards, Apen en Meer',
+    heroAlt: 'Een drietenige luiaard steekt een weg over bij Puerto Viejo, Costa Rica',
+    photoCredit: <>Foto: Ian D. Keating, <a href="https://commons.wikimedia.org/wiki/File:Three-toed_sloth_crossing_road_in_Costa_Rica.jpg" target="_blank" rel="noopener noreferrer">CC BY 2.0, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      "Je hebt geen jungletrektocht of een tour om 5 uur 's ochtends nodig om dieren te zien rond Puerto Viejo — veel daarvan zit gewoon langs de weg. Brulapen bewegen door het bladerdak boven Playa Cocles, luiaards hangen in de amandelbomen op weg naar Punta Uva, en toekans duiken zomaar op in tuinen.",
+      'Deze gids behandelt wat je waarschijnlijk zult zien, de beste plekken om te kijken, en een paar gewoontes die het verschil maken tussen voorbijrijden en daadwerkelijk iets spotten.',
+    ],
+    stayRecommendationTitle: 'Waar te verblijven voor het beste wildlife spotten',
+    animalsHeading: 'Wat je waarschijnlijk zult zien',
+    animalsIntro: 'De Zuid-Caribische kust bundelt een verrassende hoeveelheid dierenleven in een klein gebied:',
+    animals: [
+      { name: 'Brulapen', description: 'Luidruchtig voordat ze zichtbaar zijn — hun gebrul draagt meer dan een kilometer ver. Kijk en luister naar beweging in de hoge bomen vroeg in de ochtend en bij schemering.' },
+      { name: 'Witkopkapucijnapen', description: 'Nieuwsgierig en snel, vaker te zien bewegend door het bladerdak bij paden en tuinen dan brulapen.' },
+      { name: 'Drie- en tweetenige luiaards', description: 'Het dier dat de meeste bezoekers hopen te zien. Ze bewegen zo weinig dat gidsen vaak wekenlang weten in welke boom hetzelfde dier zit.' },
+      { name: 'Roodoogmakikikkers en aardbeigifkikkers', description: 'Het makkelijkst te vinden na het invallen van de duisternis of net na de regen — de kleine rood-blauwe "blue jeans"-kikker komt veel voor op de bosbodem bij Cahuita en Gandoca-Manzanillo.' },
+      { name: 'Kieltoekans en zwartbuiktoekans', description: 'Vaak eerder gehoord dan gezien, terwijl ze vroeg in de ochtend tussen vruchtdragende bomen bewegen.' },
+      { name: 'Kaaimannen en leguanen', description: 'Langs het rustigere water en de kanalen bij Gandoca-Manzanillo.' },
+    ],
+    whereHeading: 'Waar te kijken',
+    whereParagraphs: [
+      'Het kustpad van Cahuita National Park is verreweg de beste optie zonder veel moeite: vlak, beschaduwd, en in minder dan twee uur te lopen, met apen, luiaards en neusberen als vast beeld voor wie er vroeg op uit trekt.',
+      'Het pad van het Gandoca-Manzanillo-reservaat ten zuiden van Manzanillo doorkruist dichtere jungle en voegt kaaimannen en een grotere variëteit aan vogels toe.',
+      'Het Jaguar Rescue Center in Playa Chiquita is geen dierentuin — het is een opvang- en revalidatiecentrum voor gewonde en verweesde dieren, en de enige betrouwbare manier om sommige soorten van dichtbij te zien. Rondleidingen zijn op reservering, en de opbrengst gaat naar de verzorging van de dieren.',
+      'En eerlijk gezegd gebeuren sommige van de beste waarnemingen gewoon vanaf de weg zelf. Het stuk tussen het dorp en Punta Uva loopt recht door het bladerdak, en luiaards steken het vaak genoeg over om een echt lokaal verkeersrisico te zijn, geen zeldzaamheid.',
+    ],
+    tipsHeading: 'Hoe je echt iets spot',
+    tipsItems: [
+      "Ga er vroeg of laat op uit. De meeste activiteit vindt plaats in de eerste twee uur na zonsopgang en de laatste twee voor zonsondergang; midden op de dag is het rustig.",
+      "Let op de weg, niet alleen op de bomen. Zie je auto's vertragen of mensen die stilstaan en omhoog kijken, stop dan ook: meestal is het een luiaard of een troep apen die iemand anders al heeft gespot, en het is de snelste manier om dieren te zien die je anders zou missen.",
+      'Huur een lokale gids in de parken. Zij volgen individuele luiaards en weten in welke boom een apentroep die week heeft gezeten — een veel betere trefkans dan alleen over het pad lopen.',
+      'Neem een verrekijker of een zoomlens mee. Vooral luiaards zitten vaak 20-30 meter hoog en zijn zonder een verrekijker makkelijk te missen.',
+    ],
+    safetyHeading: 'Een paar regels die de moeite waard zijn',
+    safetyParagraph:
+      'Raak een wild dier niet aan, voer het niet en kom niet zo dichtbij dat het gedwongen wordt te bewegen — dat is stressvol voor het dier en kan, vooral bij apen, eindigen in een beet. Gifkikkers zijn veilig te fotograferen op normale afstand, maar mogen niet worden vastgehouden. En als je aan het rijden bent en een luiaard de weg ziet oversteken, rem dan af en geef het de ruimte: het beweegt op zijn eigen tempo en kan niet sneller uit de weg gaan.',
+    takeawaysHeading: 'Kort samengevat',
+    takeawaysParagraph:
+      'Je hoeft geen gespecialiseerde tour te boeken om echt wildlife te zien bij Puerto Viejo — ga er vroeg op uit, let net zo goed op de weg als op de bomen, en beschouw de paden van Cahuita en Gandoca-Manzanillo als je beste gestructureerde opties. De dieren hier maken écht deel uit van het dagelijks leven, het is niet iets waar je achteraan hoeft te jagen.',
+  },
+};
+
+export function wildlifeSpottingContent(locale: Locale): WildlifeSpottingContent {
+  return wildlifeSpotting[locale] ?? wildlifeSpotting.en!;
 }
 
 const food: Partial<Record<Locale, FoodContent>> = {

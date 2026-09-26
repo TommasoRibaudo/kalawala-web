@@ -145,6 +145,17 @@ const LABELS: Partial<Record<RouteKey, Record<Locale, string>>> = {
     hi: 'महीने-दर-महीने मौसम गाइड देखें →',
     nl: 'Bekijk de maandelijkse weergids →',
   },
+  blogWildlife: {
+    en: 'See our full guide to spotting sloths, monkeys and more →',
+    es: 'Ver nuestra guía completa para ver perezosos, monos y más →',
+    de: 'Unseren vollständigen Guide zum Aufspüren von Faultieren, Affen und mehr ansehen →',
+    fr: 'Voir notre guide complet pour repérer paresseux, singes et plus →',
+    it: 'Vedi la nostra guida completa per avvistare bradipi, scimmie e altro →',
+    pt: 'Veja nosso guia completo para avistar preguiças, macacos e mais →',
+    he: 'צפו במדריך המלא שלנו לאיתור עצלנים, קופים ועוד ←',
+    hi: 'स्लॉथ, बंदर और अन्य वन्यजीव देखने की हमारी पूरी गाइड देखें →',
+    nl: 'Bekijk onze volledige gids om luiaards, apen en meer te spotten →',
+  },
   blogFood: {
     en: 'See our full guide to where to eat in Puerto Viejo →',
     es: 'Ver nuestra guía completa de dónde comer en Puerto Viejo →',

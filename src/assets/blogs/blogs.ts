@@ -201,6 +201,13 @@ export const blogs = [
         text: "From Salsa Brava's legendary reef break to sloth sanctuaries and jungle waterfalls — everything worth doing in Puerto Viejo de Talamanca, Costa Rica's laid-back Caribbean coast.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205",
         pictures: ["", ""]
+    },
+    {
+        id: "where-to-eat-puerto-viejo",
+        title: "Where to Eat in Puerto Viejo: Restaurants, Sodas & Caribbean Food",
+        text: "A local's guide to eating in Puerto Viejo de Talamanca: where to find real Caribbean cooking, rondón, fresh seafood and the best breakfast spot, plus practical tips on cash, hours and reservations.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_-_Rice_and_Beans.jpg/960px-Lim%C3%B3n_-_Rice_and_Beans.jpg",
+        pictures: ["", ""]
     }
 ]
 export const blogsES = [

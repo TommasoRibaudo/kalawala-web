@@ -3123,6 +3123,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
   { key: 'beaches', routeKey: 'blogBeaches' },
   { key: 'bocas', routeKey: 'blogBocas' },
   { key: 'thingsToDo', routeKey: 'blogThingsToDo' },
+  { key: 'food', routeKey: 'blogFood' },
 ];
 
 /**

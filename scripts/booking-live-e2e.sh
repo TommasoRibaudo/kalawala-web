@@ -94,7 +94,7 @@ else
 fi
 
 # ── 3. Stack up ───────────────────────────────────────────────────────────────
-echo "→ docker up (Postgres + MinIO)"
+echo "→ docker up (Postgres + S3Mock)"
 npm run local:up
 # Postgres on host :5433 (see docker-compose.yml / .env.local.example)
 echo -n "→ waiting for Postgres :5433 "

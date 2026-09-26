@@ -208,6 +208,13 @@ export const blogs = [
         text: "A practical guide to seeing sloths, howler monkeys, toucans and poison dart frogs near Puerto Viejo de Talamanca — where to look, the best time of day, and how to spot animals other visitors miss.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Three-toed_sloth_crossing_road_in_Costa_Rica.jpg/960px-Three-toed_sloth_crossing_road_in_Costa_Rica.jpg",
         pictures: ["", ""]
+    },
+    {
+        id: "where-to-eat-puerto-viejo",
+        title: "Where to Eat in Puerto Viejo: Restaurants, Sodas & Caribbean Food",
+        text: "A local's guide to eating in Puerto Viejo de Talamanca: where to find real Caribbean cooking, rondón, fresh seafood and the best breakfast spot, plus practical tips on cash, hours and reservations.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_-_Rice_and_Beans.jpg/960px-Lim%C3%B3n_-_Rice_and_Beans.jpg",
+        pictures: ["", ""]
     }
 ]
 export const blogsES = [

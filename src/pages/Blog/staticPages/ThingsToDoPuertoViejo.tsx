@@ -14,6 +14,7 @@ import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
 import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { pathForKey, RouteKey } from "../../../routes.config";
+import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { thingsToDoContent } from "../../../i18n/content/blog";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG/960px-Puerto_Viejo_de_Talamanca%2C_Costa_Rica_2012.JPG?20120902175205";
@@ -131,6 +132,7 @@ const ThingsToDoPuertoViejo = () => {
                         <p>{content.itineraryParagraphs[0]}</p>
                         <p>{content.itineraryParagraphs[1]}</p>
                         <p><Link to={pathForKey('blogSanjoseOptions', locale)}><strong>{content.itineraryLinkText}</strong></Link></p>
+                        <p><Link to={pathForKey('blogFood', locale)}><strong>{internalLinkLabel('blogFood', locale)}</strong></Link></p>
                         <br />
 
                         <h2>{content.takeawaysHeading}</h2>

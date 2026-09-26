@@ -46,6 +46,7 @@
     { "key": "blogBocas", "chunk": "route-puerto-viejo-to-bocas-del-toro", "slugs": { "en": "puerto-viejo-to-bocas-del-toro", "es": "puerto-viejo-to-bocas-del-toro" } },
     { "key": "blogThingsToDo", "chunk": "route-things-to-do-puerto-viejo", "slugs": { "en": "things-to-do-puerto-viejo", "es": "things-to-do-puerto-viejo" } },
     { "key": "blogWildlife", "chunk": "route-wildlife-puerto-viejo", "slugs": { "en": "wildlife-puerto-viejo", "es": "wildlife-puerto-viejo" } },
+    { "key": "blogFood", "chunk": "route-where-to-eat-puerto-viejo", "slugs": { "en": "where-to-eat-puerto-viejo", "es": "where-to-eat-puerto-viejo" } },
     { "key": "blogVacationRentals", "chunk": "route-vacation-rentals-puerto-viejo", "slugs": { "en": "vacation-rentals-puerto-viejo", "es": "vacation-rentals-puerto-viejo" } },
     { "key": "blogHousesCentro", "chunk": "route-puerto-viejo-centro-houses", "slugs": { "en": "puerto-viejo-centro-houses", "es": "puerto-viejo-centro-houses" } },
     { "key": "blogHousesPuntaUva", "chunk": "route-punta-uva-vacation-homes", "slugs": { "en": "punta-uva-vacation-homes", "es": "punta-uva-vacation-homes" } },

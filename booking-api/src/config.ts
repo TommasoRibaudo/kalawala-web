@@ -385,7 +385,7 @@ function parseS3UploadConfig(env: NodeJS.ProcessEnv): S3UploadConfig | undefined
     allowedMimeTypes: env.S3_ALLOWED_MIME_TYPES
       ? splitCsv(env.S3_ALLOWED_MIME_TYPES)
       : DEFAULT_S3_ALLOWED_MIME_TYPES,
-    // Local development only (MinIO). Never set in AWS.
+    // Local development only (S3Mock). Never set in AWS.
     ...(env.S3_ENDPOINT_URL?.trim() ? { endpointUrl: env.S3_ENDPOINT_URL.trim() } : {}),
   };
 }

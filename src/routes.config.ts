@@ -56,7 +56,7 @@ export type RouteKey =
   | 'blog' | 'blogTwodays' | 'blogGandoca' | 'blogSanjose' | 'blogByplane' | 'blogTenhours' | 'blogBushours' | 'blogCahuitapark' | 'blogIndigenous' | 'blogBesttime' | 'blogHiddengems' | 'blogWeather'
   | 'blogWeatherJan' | 'blogWeatherFeb' | 'blogWeatherMar' | 'blogWeatherApr' | 'blogWeatherMay' | 'blogWeatherJun' | 'blogWeatherJul' | 'blogWeatherAug'
   | 'blogWeatherSep' | 'blogWeatherOct' | 'blogWeatherNov' | 'blogWeatherDec' | 'blogSanjoseOptions'
-  | 'blogGandocaRefuge' | 'blogBeaches' | 'blogBocas' | 'blogThingsToDo' | 'blogWildlife'
+  | 'blogGandocaRefuge' | 'blogBeaches' | 'blogBocas' | 'blogThingsToDo' | 'blogWildlife' | 'blogFood'
   | 'blogVacationRentals' | 'blogHousesCentro' | 'blogHousesPuntaUva' | 'blogFamilyHouses' | 'blogCouplesHouses' | 'blogPetFriendlyHouses'
   | 'success';
 
@@ -131,6 +131,7 @@ export const LOADERS: Record<RouteKey, () => Promise<{ default: ComponentType<an
   blogBocas: () => import(/* webpackChunkName: "route-puerto-viejo-to-bocas-del-toro" */ './pages/Blog/staticPages/BocasDelToro'),
   blogThingsToDo: () => import(/* webpackChunkName: "route-things-to-do-puerto-viejo" */ './pages/Blog/staticPages/ThingsToDoPuertoViejo'),
   blogWildlife: () => import(/* webpackChunkName: "route-wildlife-puerto-viejo" */ './pages/Blog/staticPages/WildlifeSpotting'),
+  blogFood: () => import(/* webpackChunkName: "route-where-to-eat-puerto-viejo" */ './pages/Blog/staticPages/WhereToEat'),
   blogVacationRentals: () => import(/* webpackChunkName: "route-vacation-rentals-puerto-viejo" */ './pages/Blog/staticPages/VacationRentalsHub'),
   blogHousesCentro: () => import(/* webpackChunkName: "route-puerto-viejo-centro-houses" */ './pages/Blog/staticPages/HousesCentro'),
   blogHousesPuntaUva: () => import(/* webpackChunkName: "route-punta-uva-vacation-homes" */ './pages/Blog/staticPages/HousesPuntaUva'),

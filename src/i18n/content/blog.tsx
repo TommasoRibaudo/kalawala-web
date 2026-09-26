@@ -11866,9 +11866,8 @@ export function thingsToDoContent(locale: Locale): ThingsToDoContent {
  * to the animals themselves, even though "sloth sanctuaries" is already
  * used as a hook in thingsToDoContent's meta description and the Cahuita/
  * Gandoca-Manzanillo articles both describe wildlife in passing. This is
- * the dedicated page those two should point readers to. EN/ES only for
- * now, matching the interim-fallback behaviour documented in locales.ts —
- * other locales render this in English until translated.
+ * the dedicated page those two should point readers to. Ships with real
+ * content in all nine released locales.
  * ------------------------------------------------------------------ */
 
 export interface WildlifeEntry {
@@ -11893,6 +11892,38 @@ export interface WildlifeSpottingContent {
   tipsItems: [string, string, string, string];
   safetyHeading: string;
   safetyParagraph: string;
+  takeawaysHeading: string;
+  takeawaysParagraph: string;
+}
+
+/* ------------------------------------------------------------------ *
+ * Where to eat guide
+ *
+ * Another content gap found via Search Console review: nothing on the
+ * site is dedicated to food, even though restaurant names already show
+ * up by name in the older twodaysinpuertoviejo copy (Selvin's, Café
+ * Viejo). This centralises them plus a few more into one page, in all
+ * nine released locales from the start.
+ * ------------------------------------------------------------------ */
+
+export interface RestaurantEntry {
+  name: string;
+  description: string;
+}
+
+export interface FoodContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: [string, string];
+  stayRecommendationTitle: string;
+  restaurantsHeading: string;
+  restaurantsIntro: string;
+  restaurants: RestaurantEntry[];
+  tipsHeading: string;
+  tipsItems: [string, string, string, string];
   takeawaysHeading: string;
   takeawaysParagraph: string;
 }
@@ -12289,4 +12320,326 @@ const wildlifeSpotting: Partial<Record<Locale, WildlifeSpottingContent>> = {
 
 export function wildlifeSpottingContent(locale: Locale): WildlifeSpottingContent {
   return wildlifeSpotting[locale] ?? wildlifeSpotting.en!;
+}
+
+const food: Partial<Record<Locale, FoodContent>> = {
+  en: {
+    seoTitle: 'Where to Eat in Puerto Viejo, Costa Rica: Restaurants, Sodas & Caribbean Food (Local Guide)',
+    seoDescription:
+      "A local's guide to eating in Puerto Viejo de Talamanca: where to find real Caribbean cooking, rondón, fresh seafood and the best breakfast spot, plus practical tips on cash, hours and reservations.",
+    heading: 'Where to Eat in Puerto Viejo: Restaurants, Sodas & Caribbean Food',
+    heroAlt: 'A plate of Caribbean-style rice and beans from Limón, Costa Rica',
+    photoCredit: <>Photo: AndSalx95, <a href="https://commons.wikimedia.org/wiki/File:Lim%C3%B3n_-_Rice_and_Beans.jpg" target="_blank" rel="noopener noreferrer">public domain, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      "Puerto Viejo's food is different from the rest of Costa Rica, and that's the point. This is Afro-Caribbean cooking — coconut milk, rondón, fresh-caught fish, and rice and beans done the South Caribbean way — sitting alongside the international spots that have opened up around it.",
+      "Here's the list we actually send guests to, from a plate of rondón at a beachside soda to a proper Italian dinner in town, plus a few practical notes on hours, cash and reservations.",
+    ],
+    stayRecommendationTitle: 'Where to stay near the best eating',
+    restaurantsHeading: 'Where to eat',
+    restaurantsIntro: "A working list, not a ranking — each one earns its place for something different:",
+    restaurants: [
+      { name: 'Madre Tierra', description: 'Caribbean and Latin fusion in the center of town, best known for dishes like breadfruit gnocchi that mix Italian technique with local ingredients. A good pick when you want something a step above casual.' },
+      { name: 'Restaurante Caribeño 1872', description: 'Classic South Caribbean cooking — rice and beans and coconut-based sauces, the kind of plate that shows up on a family table here, not a tourist menu.' },
+      { name: "Selvyn's", description: "In Punta Uva, about 6km south of town, and worth the trip for the rondón — a coconut-milk seafood stew that's one of the signature dishes of this coast. The rice and beans here are excellent too." },
+      { name: 'Bakery Degustibus', description: 'The breakfast stop. Coffee and a ham-and-cheese croissant fresh out of the oven, best eaten before a hike or a bus.' },
+      { name: 'Café Viejo', description: 'An Italian restaurant right in the center of town — a reliable choice on a night you want pasta instead of Caribbean food. The fritto misto, a mix of fried fish and seafood, is a good order.' },
+      { name: 'KOKi Beach', description: 'Oceanfront, dinner only, and the best sunset table in town. Fresh seafood and cocktails; worth booking ahead in high season.' },
+      { name: 'Jammin', description: 'Fully plant-based Caribbean food, and good enough that it works for non-vegetarians too. The jerk jackfruit is the dish to order.' },
+      { name: 'Que Quilombo', description: 'A short drive out in Playa Chiquita — steaks and pizza in a family-run spot, a change of pace from the Caribbean seafood everywhere else.' },
+    ],
+    tipsHeading: 'A few practical notes',
+    tipsItems: [
+      'Cash still matters. Card readers are common now, but plenty of the smaller sodas and beachside spots are cash-only — carry colones.',
+      'Book ahead for dinner in high season. The oceanfront and fine-dining spots fill up fast from December through March.',
+      "Rice and beans isn't a side dish here. Cooked in coconut milk with the local spice blend, it's the base of Caribbean cooking on this coast — order it as the main, not an add-on.",
+      'Most places close one or two days a week. Puerto Viejo runs on a slower schedule than San José — check hours before you walk over, especially on Sundays and Mondays.',
+    ],
+    takeawaysHeading: 'The short version',
+    takeawaysParagraph:
+      "Eat Caribbean while you're here — rondón at Selvyn's, rice and beans at Caribeño 1872 or Madre Tierra — and use the international spots, Café Viejo, Jammin, KOKi Beach, to mix it up. Bring cash, book ahead in high season, and don't expect San José hours.",
+  },
+  es: {
+    seoTitle: 'Dónde Comer en Puerto Viejo, Costa Rica: Restaurantes, Sodas y Comida Caribeña (Guía Local)',
+    seoDescription:
+      'Guía local para comer en Puerto Viejo de Talamanca: dónde encontrar comida caribeña de verdad, rondón, mariscos frescos y el mejor desayuno, además de consejos prácticos sobre efectivo, horarios y reservas.',
+    heading: 'Dónde Comer en Puerto Viejo: Restaurantes, Sodas y Comida Caribeña',
+    heroAlt: 'Un plato de rice and beans al estilo caribeño de Limón, Costa Rica',
+    photoCredit: <>Foto: AndSalx95, <a href="https://commons.wikimedia.org/wiki/File:Lim%C3%B3n_-_Rice_and_Beans.jpg" target="_blank" rel="noopener noreferrer">dominio público, vía Wikimedia Commons</a></>,
+    introParagraphs: [
+      'La comida de Puerto Viejo es distinta al resto de Costa Rica, y esa es la gracia. Es cocina afrocaribeña: leche de coco, rondón, pescado recién sacado del mar, y rice and beans al estilo del Caribe Sur, conviviendo con los lugares internacionales que han abierto alrededor.',
+      'Aquí está la lista que de verdad recomendamos a nuestros huéspedes, desde un plato de rondón en una soda junto a la playa hasta una buena cena italiana en el pueblo, más algunas notas prácticas sobre horarios, efectivo y reservas.',
+    ],
+    stayRecommendationTitle: 'Dónde hospedarte cerca de los mejores lugares para comer',
+    restaurantsHeading: 'Dónde comer',
+    restaurantsIntro: 'Una lista de trabajo, no un ranking: cada uno se gana su lugar por algo distinto:',
+    restaurants: [
+      { name: 'Madre Tierra', description: 'Fusión caribeña y latina en el centro del pueblo, conocido sobre todo por platos como el gnocchi de fruta de pan, que mezcla técnica italiana con ingredientes locales. Buena opción cuando quieres algo un poco más elegante que lo casual.' },
+      { name: 'Restaurante Caribeño 1872', description: 'Cocina clásica del Caribe Sur: rice and beans y salsas a base de coco, el tipo de plato que aparece en una mesa familiar de acá, no en un menú turístico.' },
+      { name: "Selvyn's", description: 'En Punta Uva, unos 6 km al sur del pueblo, y vale la pena el viaje por el rondón: un guiso de mariscos con leche de coco que es uno de los platos insignia de esta costa. El rice and beans acá también es excelente.' },
+      { name: 'Bakery Degustibus', description: 'La parada del desayuno. Café y un croissant de jamón y queso recién salido del horno, ideal antes de una caminata o un bus.' },
+      { name: 'Café Viejo', description: 'Un restaurante italiano justo en el centro del pueblo: una opción segura para una noche en la que prefieres pasta en lugar de comida caribeña. El fritto misto, una mezcla de pescado y mariscos fritos, es buena elección.' },
+      { name: 'KOKi Beach', description: 'Frente al mar, solo para cenar, y la mejor mesa para ver el atardecer del pueblo. Mariscos frescos y buenos cócteles; vale la pena reservar en temporada alta.' },
+      { name: 'Jammin', description: 'Comida caribeña 100% a base de plantas, y suficientemente buena como para que también funcione para quienes no son vegetarianos. El jerk jackfruit es el plato para pedir.' },
+      { name: 'Que Quilombo', description: 'Un corto viaje hasta Playa Chiquita: carnes y pizza en un lugar familiar, un cambio de ritmo frente a los mariscos caribeños que dominan el resto del pueblo.' },
+    ],
+    tipsHeading: 'Algunas notas prácticas',
+    tipsItems: [
+      'El efectivo todavía importa. Los datáfonos son comunes ahora, pero muchas de las sodas más pequeñas y los lugares junto a la playa solo aceptan efectivo: lleva colones.',
+      'Reserva con anticipación para cenar en temporada alta. Los lugares frente al mar y de cocina más elaborada se llenan rápido entre diciembre y marzo.',
+      'El rice and beans aquí no es un acompañamiento. Cocinado en leche de coco con la mezcla de especias local, es la base de la cocina caribeña de esta costa: pídelo como plato principal, no como extra.',
+      'La mayoría de los lugares cierran uno o dos días a la semana. Puerto Viejo funciona con un ritmo más lento que San José: revisa los horarios antes de ir, sobre todo los domingos y lunes.',
+    ],
+    takeawaysHeading: 'En resumen',
+    takeawaysParagraph:
+      "Come caribeño mientras estés aquí: rondón en Selvyn's, rice and beans en Caribeño 1872 o Madre Tierra, y usa los lugares internacionales (Café Viejo, Jammin, KOKi Beach) para variar. Lleva efectivo, reserva con anticipación en temporada alta, y no esperes los horarios de San José.",
+  },
+  de: {
+    seoTitle: 'Wo man in Puerto Viejo isst, Costa Rica: Restaurants, Sodas & karibische Küche (Insider-Guide)',
+    seoDescription:
+      'Ein Insider-Guide zum Essen in Puerto Viejo de Talamanca: wo es echte karibische Küche, Rondón, frischen Fisch und das beste Frühstück gibt, plus praktische Tipps zu Bargeld, Öffnungszeiten und Reservierungen.',
+    heading: 'Wo man in Puerto Viejo isst: Restaurants, Sodas & karibische Küche',
+    heroAlt: 'Ein Teller karibischer Reis mit Bohnen aus Limón, Costa Rica',
+    photoCredit: <>Foto: AndSalx95, <a href="https://commons.wikimedia.org/wiki/File:Lim%C3%B3n_-_Rice_and_Beans.jpg" target="_blank" rel="noopener noreferrer">gemeinfrei, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Das Essen in Puerto Viejo unterscheidet sich vom Rest Costa Ricas, und genau das ist der Punkt. Das ist afrokaribische Küche: Kokosmilch, Rondón, frisch gefangener Fisch und Reis mit Bohnen nach Art der Südkaribik, direkt neben den internationalen Lokalen, die drumherum entstanden sind.',
+      'Hier ist die Liste, die wir unseren Gästen wirklich empfehlen, von einem Teller Rondón in einer Strand-Soda bis zu einem richtigen italienischen Abendessen im Ort, dazu ein paar praktische Hinweise zu Öffnungszeiten, Bargeld und Reservierungen.',
+    ],
+    stayRecommendationTitle: 'Wo man in der Nähe der besten Restaurants übernachtet',
+    restaurantsHeading: 'Wo man isst',
+    restaurantsIntro: 'Eine Arbeitsliste, kein Ranking — jedes Lokal hat sich seinen Platz für etwas anderes verdient:',
+    restaurants: [
+      { name: 'Madre Tierra', description: 'Karibisch-lateinamerikanische Fusionsküche mitten im Ort, bekannt für Gerichte wie Brotfrucht-Gnocchi, die italienische Technik mit lokalen Zutaten verbinden. Eine gute Wahl, wenn es etwas gehobener als leger sein soll.' },
+      { name: 'Restaurante Caribeño 1872', description: 'Klassische Küche der Südkaribik: Reis mit Bohnen und Saucen auf Kokosbasis, die Art von Gericht, die hier auf einem Familientisch landet, nicht auf einer Touristenkarte.' },
+      { name: "Selvyn's", description: 'In Punta Uva, etwa 6 km südlich des Orts, und die Fahrt lohnt sich für den Rondón — einen Meeresfrüchte-Eintopf mit Kokosmilch, eines der Signature-Gerichte dieser Küste. Auch der Reis mit Bohnen ist hier hervorragend.' },
+      { name: 'Bakery Degustibus', description: 'Die Frühstücksadresse. Kaffee und ein frisch gebackenes Schinken-Käse-Croissant, ideal vor einer Wanderung oder einer Busfahrt.' },
+      { name: 'Café Viejo', description: 'Ein italienisches Restaurant direkt im Zentrum — eine verlässliche Wahl für einen Abend, an dem man lieber Pasta statt karibische Küche möchte. Das Fritto Misto, eine Mischung aus frittiertem Fisch und Meeresfrüchten, ist eine gute Wahl.' },
+      { name: 'KOKi Beach', description: 'Direkt am Meer, nur abends geöffnet, und der beste Tisch für den Sonnenuntergang im Ort. Frische Meeresfrüchte und Cocktails; in der Hochsaison lohnt sich eine Reservierung.' },
+      { name: 'Jammin', description: 'Vollständig pflanzliche karibische Küche, die gut genug ist, um auch für Nicht-Vegetarier zu funktionieren. Das Jerk-Jackfruit ist das Gericht, das man bestellen sollte.' },
+      { name: 'Que Quilombo', description: 'Eine kurze Fahrt entfernt in Playa Chiquita — Steaks und Pizza in einem familiengeführten Lokal, ein Tempowechsel gegenüber den karibischen Meeresfrüchten überall sonst.' },
+    ],
+    tipsHeading: 'Ein paar praktische Hinweise',
+    tipsItems: [
+      'Bargeld zählt noch immer. Kartenlesegeräte sind inzwischen üblich, aber viele der kleineren Sodas und Strandlokale nehmen nur Bargeld — Colones dabeihaben.',
+      'Für das Abendessen in der Hochsaison im Voraus reservieren. Die Lokale direkt am Meer und die gehobeneren Küchen sind von Dezember bis März schnell ausgebucht.',
+      'Reis mit Bohnen ist hier keine Beilage. In Kokosmilch mit der lokalen Gewürzmischung gekocht, ist es die Basis der karibischen Küche an dieser Küste — als Hauptgericht bestellen, nicht als Zugabe.',
+      'Die meisten Lokale haben ein oder zwei Tage pro Woche geschlossen. Puerto Viejo läuft langsamer als San José — vor dem Losgehen die Öffnungszeiten prüfen, besonders sonntags und montags.',
+    ],
+    takeawaysHeading: 'Kurz gesagt',
+    takeawaysParagraph:
+      "Essen Sie karibisch, solange Sie hier sind — Rondón bei Selvyn's, Reis mit Bohnen bei Caribeño 1872 oder Madre Tierra — und nutzen Sie die internationalen Lokale (Café Viejo, Jammin, KOKi Beach) zur Abwechslung. Bargeld mitnehmen, in der Hochsaison reservieren, und keine Öffnungszeiten wie in San José erwarten.",
+  },
+  fr: {
+    seoTitle: 'Où Manger à Puerto Viejo, Costa Rica : Restaurants, Sodas et Cuisine Caribéenne (Guide Local)',
+    seoDescription:
+      "Un guide local pour manger à Puerto Viejo de Talamanca : où trouver une vraie cuisine caribéenne, le rondón, des fruits de mer frais et le meilleur petit-déjeuner, avec des conseils pratiques sur l'argent liquide, les horaires et les réservations.",
+    heading: 'Où Manger à Puerto Viejo : Restaurants, Sodas et Cuisine Caribéenne',
+    heroAlt: 'Une assiette de riz aux haricots à la caribéenne, à Limón, Costa Rica',
+    photoCredit: <>Photo : AndSalx95, <a href="https://commons.wikimedia.org/wiki/File:Lim%C3%B3n_-_Rice_and_Beans.jpg" target="_blank" rel="noopener noreferrer">domaine public, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      "La cuisine de Puerto Viejo est différente du reste du Costa Rica, et c'est bien le but. C'est une cuisine afro-caribéenne : lait de coco, rondón, poisson tout juste pêché, et riz aux haricots à la façon du Caraïbe Sud, aux côtés des adresses internationales qui se sont installées autour.",
+      "Voici la liste qu'on recommande vraiment à nos hôtes, d'une assiette de rondón dans une soda en bord de plage à un vrai dîner italien en ville, avec quelques conseils pratiques sur les horaires, l'argent liquide et les réservations.",
+    ],
+    stayRecommendationTitle: 'Où loger près des meilleures adresses',
+    restaurantsHeading: 'Où manger',
+    restaurantsIntro: "Une liste de travail, pas un classement : chacune mérite sa place pour une raison différente :",
+    restaurants: [
+      { name: 'Madre Tierra', description: "Fusion caribéenne et latino-américaine en plein centre du village, réputée pour des plats comme les gnocchis à l'arbre à pain, qui mêlent technique italienne et ingrédients locaux. Un bon choix pour une soirée un peu plus habillée que le casual." },
+      { name: 'Restaurante Caribeño 1872', description: "Cuisine classique du Caraïbe Sud : riz aux haricots et sauces à base de coco, le genre de plat qu'on trouve sur une table de famille ici, pas sur une carte touristique." },
+      { name: "Selvyn's", description: "À Punta Uva, à environ 6 km au sud du village, et le déplacement vaut le coup pour le rondón, un ragoût de fruits de mer au lait de coco qui est l'un des plats emblématiques de cette côte. Le riz aux haricots y est aussi excellent." },
+      { name: 'Bakery Degustibus', description: "L'adresse du petit-déjeuner. Un café et un croissant jambon-fromage tout juste sorti du four, parfait avant une randonnée ou un bus." },
+      { name: 'Café Viejo', description: "Un restaurant italien en plein centre du village, un choix sûr pour un soir où l'on préfère des pâtes à la cuisine caribéenne. Le fritto misto, un mélange de poisson et de fruits de mer frits, est un bon choix." },
+      { name: 'KOKi Beach', description: "En bord de mer, ouvert le soir seulement, et la meilleure table pour le coucher de soleil du village. Fruits de mer frais et bons cocktails ; mieux vaut réserver en haute saison." },
+      { name: 'Jammin', description: "Cuisine caribéenne entièrement végétale, et assez bonne pour convaincre les non-végétariens aussi. Le jerk jackfruit est le plat à commander." },
+      { name: 'Que Quilombo', description: "Un peu plus loin, à Playa Chiquita : viandes et pizzas dans une adresse familiale, un vrai changement par rapport aux fruits de mer caribéens omniprésents ailleurs." },
+    ],
+    tipsHeading: 'Quelques conseils pratiques',
+    tipsItems: [
+      "L'argent liquide compte encore. Les terminaux de carte sont désormais courants, mais beaucoup de petites sodas et d'adresses en bord de plage n'acceptent que le liquide : prévoyez des colones.",
+      "Réservez à l'avance pour le dîner en haute saison. Les adresses en bord de mer et les tables plus soignées se remplissent vite de décembre à mars.",
+      "Le riz aux haricots n'est pas un accompagnement ici. Cuisiné au lait de coco avec le mélange d'épices local, c'est la base de la cuisine caribéenne sur cette côte : commandez-le comme plat principal, pas en supplément.",
+      "La plupart des adresses ferment un ou deux jours par semaine. Puerto Viejo vit à un rythme plus lent que San José : vérifiez les horaires avant de vous déplacer, surtout le dimanche et le lundi.",
+    ],
+    takeawaysHeading: 'En bref',
+    takeawaysParagraph:
+      "Mangez caribéen pendant votre séjour ici : rondón chez Selvyn's, riz aux haricots chez Caribeño 1872 ou Madre Tierra, et utilisez les adresses internationales (Café Viejo, Jammin, KOKi Beach) pour varier. Prévoyez du liquide, réservez à l'avance en haute saison, et n'attendez pas les horaires de San José.",
+  },
+  it: {
+    seoTitle: 'Dove Mangiare a Puerto Viejo, Costa Rica: Ristoranti, Sodas e Cucina Caraibica (Guida Locale)',
+    seoDescription:
+      'Una guida locale per mangiare a Puerto Viejo de Talamanca: dove trovare vera cucina caraibica, rondón, pesce fresco e la migliore colazione, più consigli pratici su contanti, orari e prenotazioni.',
+    heading: 'Dove Mangiare a Puerto Viejo: Ristoranti, Sodas e Cucina Caraibica',
+    heroAlt: 'Un piatto di riso e fagioli in stile caraibico da Limón, Costa Rica',
+    photoCredit: <>Foto: AndSalx95, <a href="https://commons.wikimedia.org/wiki/File:Lim%C3%B3n_-_Rice_and_Beans.jpg" target="_blank" rel="noopener noreferrer">dominio pubblico, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      "Il cibo di Puerto Viejo è diverso dal resto della Costa Rica, ed è proprio questo il punto. È cucina afro-caraibica: latte di cocco, rondón, pesce appena pescato e riso e fagioli alla maniera del Caribe Sur, accanto ai locali internazionali che sono nati intorno.",
+      'Ecco la lista che consigliamo davvero ai nostri ospiti, da un piatto di rondón in una soda sulla spiaggia a una vera cena italiana in paese, più qualche nota pratica su orari, contanti e prenotazioni.',
+    ],
+    stayRecommendationTitle: 'Dove alloggiare vicino ai posti migliori per mangiare',
+    restaurantsHeading: 'Dove mangiare',
+    restaurantsIntro: 'Una lista di lavoro, non una classifica: ognuno si merita il suo posto per un motivo diverso:',
+    restaurants: [
+      { name: 'Madre Tierra', description: "Fusion caraibica e latina nel centro del paese, conosciuta soprattutto per piatti come gli gnocchi di frutto dell'albero del pane, che uniscono tecnica italiana e ingredienti locali. Una buona scelta quando si vuole qualcosa di un po' più elegante del casual." },
+      { name: 'Restaurante Caribeño 1872', description: 'Cucina classica del Caribe Sur: riso e fagioli e salse a base di cocco, il tipo di piatto che qui finisce sulla tavola di famiglia, non su un menu turistico.' },
+      { name: "Selvyn's", description: 'A Punta Uva, circa 6 km a sud del paese, e vale il viaggio per il rondón: uno stufato di frutti di mare al latte di cocco, uno dei piatti simbolo di questa costa. Anche il riso e fagioli qui è ottimo.' },
+      { name: 'Bakery Degustibus', description: "La tappa della colazione. Caffè e un croissant al prosciutto e formaggio appena sfornato, ideale prima di un'escursione o di un autobus." },
+      { name: 'Café Viejo', description: 'Un ristorante italiano proprio nel centro del paese: una scelta sicura per una sera in cui si preferisce la pasta alla cucina caraibica. Il fritto misto, un misto di pesce e frutti di mare fritti, è una buona scelta.' },
+      { name: 'KOKi Beach', description: 'Sul mare, aperto solo la sera, e il miglior tavolo per il tramonto in paese. Pesce fresco e buoni cocktail; conviene prenotare in alta stagione.' },
+      { name: 'Jammin', description: 'Cucina caraibica completamente vegetale, e abbastanza buona da funzionare anche per chi non è vegetariano. Il jerk jackfruit è il piatto da ordinare.' },
+      { name: 'Que Quilombo', description: 'Una breve corsa fino a Playa Chiquita: carne alla griglia e pizza in un locale a conduzione familiare, un cambio di ritmo rispetto ai frutti di mare caraibici che dominano altrove.' },
+    ],
+    tipsHeading: 'Alcune note pratiche',
+    tipsItems: [
+      'I contanti contano ancora. I POS ormai sono comuni, ma molte delle sodas più piccole e i locali sulla spiaggia accettano solo contanti: porta colones.',
+      'Prenota in anticipo per la cena in alta stagione. I locali sul mare e quelli più curati si riempiono in fretta da dicembre a marzo.',
+      'Il riso e fagioli qui non è un contorno. Cotto nel latte di cocco con il mix di spezie locale, è la base della cucina caraibica su questa costa: ordinalo come piatto principale, non come aggiunta.',
+      'La maggior parte dei locali chiude uno o due giorni a settimana. Puerto Viejo va a un ritmo più lento di San José: controlla gli orari prima di uscire, specialmente di domenica e lunedì.',
+    ],
+    takeawaysHeading: 'In breve',
+    takeawaysParagraph:
+      "Mangia caraibico mentre sei qui: rondón da Selvyn's, riso e fagioli da Caribeño 1872 o Madre Tierra, e usa i locali internazionali (Café Viejo, Jammin, KOKi Beach) per variare. Porta contanti, prenota in anticipo in alta stagione, e non aspettarti gli orari di San José.",
+  },
+  pt: {
+    seoTitle: 'Onde Comer em Puerto Viejo, Costa Rica: Restaurantes, Sodas e Comida Caribenha (Guia Local)',
+    seoDescription:
+      'Um guia local para comer em Puerto Viejo de Talamanca: onde encontrar comida caribenha de verdade, rondón, frutos do mar frescos e o melhor café da manhã, além de dicas práticas sobre dinheiro, horários e reservas.',
+    heading: 'Onde Comer em Puerto Viejo: Restaurantes, Sodas e Comida Caribenha',
+    heroAlt: 'Um prato de arroz com feijão ao estilo caribenho, de Limón, Costa Rica',
+    photoCredit: <>Foto: AndSalx95, <a href="https://commons.wikimedia.org/wiki/File:Lim%C3%B3n_-_Rice_and_Beans.jpg" target="_blank" rel="noopener noreferrer">domínio público, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      'A comida de Puerto Viejo é diferente do resto da Costa Rica, e é exatamente esse o ponto. É cozinha afro-caribenha: leite de coco, rondón, peixe recém-pescado e arroz com feijão à moda do Caribe Sul, ao lado dos lugares internacionais que surgiram em volta.',
+      'Aqui está a lista que realmente recomendamos aos nossos hóspedes, de um prato de rondón numa soda à beira-mar a um jantar italiano de verdade no vilarejo, mais algumas notas práticas sobre horários, dinheiro e reservas.',
+    ],
+    stayRecommendationTitle: 'Onde se hospedar perto dos melhores lugares para comer',
+    restaurantsHeading: 'Onde comer',
+    restaurantsIntro: 'Uma lista de trabalho, não um ranking: cada um merece seu lugar por um motivo diferente:',
+    restaurants: [
+      { name: 'Madre Tierra', description: 'Fusão caribenha e latina no centro do vilarejo, conhecida sobretudo por pratos como o nhoque de fruta-pão, que mistura técnica italiana com ingredientes locais. Uma boa escolha quando você quer algo um pouco mais elegante que o casual.' },
+      { name: 'Restaurante Caribeño 1872', description: 'Cozinha clássica do Caribe Sul: arroz com feijão e molhos à base de coco, o tipo de prato que aparece numa mesa de família por aqui, não num cardápio turístico.' },
+      { name: "Selvyn's", description: 'Em Punta Uva, cerca de 6 km ao sul do vilarejo, e vale a viagem pelo rondón: um ensopado de frutos do mar com leite de coco, um dos pratos símbolo desta costa. O arroz com feijão daqui também é excelente.' },
+      { name: 'Bakery Degustibus', description: 'A parada do café da manhã. Café e um croissant de presunto e queijo saído do forno, ideal antes de uma trilha ou de um ônibus.' },
+      { name: 'Café Viejo', description: 'Um restaurante italiano bem no centro do vilarejo: uma escolha segura para uma noite em que você prefere massa em vez de comida caribenha. O fritto misto, uma mistura de peixe e frutos do mar fritos, é uma boa pedida.' },
+      { name: 'KOKi Beach', description: 'De frente para o mar, aberto só à noite, e a melhor mesa para o pôr do sol do vilarejo. Frutos do mar frescos e bons coquetéis; vale reservar na alta temporada.' },
+      { name: 'Jammin', description: 'Comida caribenha totalmente à base de plantas, e boa o suficiente para funcionar também para quem não é vegetariano. O jerk jackfruit é o prato para pedir.' },
+      { name: 'Que Quilombo', description: 'Um curto trajeto até Playa Chiquita: carnes e pizza num lugar familiar, uma mudança de ritmo em relação aos frutos do mar caribenhos que dominam o resto do vilarejo.' },
+    ],
+    tipsHeading: 'Algumas notas práticas',
+    tipsItems: [
+      'Dinheiro ainda importa. As maquininhas de cartão já são comuns, mas muitas das sodas menores e lugares à beira-mar só aceitam dinheiro: leve colones.',
+      'Reserve com antecedência para jantar na alta temporada. Os lugares à beira-mar e os mais elaborados lotam rápido de dezembro a março.',
+      'Arroz com feijão aqui não é acompanhamento. Cozido em leite de coco com a mistura de temperos local, é a base da cozinha caribenha desta costa: peça como prato principal, não como extra.',
+      'A maioria dos lugares fecha um ou dois dias por semana. Puerto Viejo funciona num ritmo mais lento que San José: confira os horários antes de ir, especialmente aos domingos e segundas.',
+    ],
+    takeawaysHeading: 'Em resumo',
+    takeawaysParagraph:
+      "Coma caribenho enquanto estiver por aqui: rondón no Selvyn's, arroz com feijão no Caribeño 1872 ou no Madre Tierra, e use os lugares internacionais (Café Viejo, Jammin, KOKi Beach) para variar. Leve dinheiro, reserve com antecedência na alta temporada, e não espere os horários de San José.",
+  },
+  he: {
+    seoTitle: 'איפה לאכול בפוארטו ויאחו, קוסטה ריקה: מסעדות, סודות ואוכל קריבי (מדריך מקומי)',
+    seoDescription:
+      'מדריך מקומי לאכילה בפוארטו ויאחו דה טלמנקה: היכן למצוא בישול קריבי אמיתי, רונדון, דגים טריים וארוחת הבוקר הטובה ביותר, בתוספת טיפים מעשיים על מזומן, שעות פתיחה והזמנות.',
+    heading: 'איפה לאכול בפוארטו ויאחו: מסעדות, סודות ואוכל קריבי',
+    heroAlt: 'צלחת אורז ושעועית בסגנון קריבי מלימון, קוסטה ריקה',
+    photoCredit: <>צילום: AndSalx95, <a href="https://commons.wikimedia.org/wiki/File:Lim%C3%B3n_-_Rice_and_Beans.jpg" target="_blank" rel="noopener noreferrer">נחלת הכלל, ויקימדיה קומונס</a></>,
+    introParagraphs: [
+      'האוכל בפוארטו ויאחו שונה משאר קוסטה ריקה, וזו בדיוק הנקודה. זהו בישול אפרו-קריבי: חלב קוקוס, רונדון, דגים שנתפסו זה עתה, ואורז ושעועית בסגנון הקריביים הדרומי, לצד המקומות הבינלאומיים שנפתחו סביב.',
+      'הנה הרשימה שאנחנו באמת ממליצים עליה לאורחים שלנו, מצלחת רונדון בסודה ליד החוף ועד ארוחת ערב איטלקית אמיתית בעיירה, ועוד כמה הערות מעשיות על שעות פתיחה, מזומן והזמנות.',
+    ],
+    stayRecommendationTitle: 'היכן להתארח ליד מקומות האוכל הטובים ביותר',
+    restaurantsHeading: 'איפה לאכול',
+    restaurantsIntro: 'רשימת עבודה, לא דירוג: כל מקום מרוויח את מקומו בזכות משהו אחר:',
+    restaurants: [
+      { name: 'Madre Tierra', description: "פיוז'ן קריבי ולטיני במרכז העיירה, ידוע בעיקר בזכות מנות כמו גנוצ'י מפרי לחם, שמשלבות טכניקה איטלקית עם מרכיבים מקומיים. בחירה טובה כשרוצים משהו מעט יותר מהודר מהיומיומי." },
+      { name: 'Restaurante Caribeño 1872', description: 'בישול קלאסי של הקריביים הדרומי: אורז ושעועית ורטבים על בסיס קוקוס, סוג המנה שמגיעה כאן לשולחן משפחתי, לא לתפריט תיירים.' },
+      { name: "Selvyn's", description: 'בפונטה אובה, כ-6 ק"מ דרומית לעיירה, וכדאי לנסוע לשם בשביל הרונדון: תבשיל פירות ים בחלב קוקוס שהוא אחת המנות המזוהות ביותר עם החוף הזה. גם האורז והשעועית כאן מצוינים.' },
+      { name: 'Bakery Degustibus', description: 'תחנת ארוחת הבוקר. קפה וקרואסון גבינה וחזיר טרי מהתנור, הכי טוב לפני טיול או נסיעה באוטובוס.' },
+      { name: 'Café Viejo', description: 'מסעדה איטלקית ממש במרכז העיירה: בחירה בטוחה לערב שבו מתחשק פסטה במקום אוכל קריבי. ה-fritto misto, תערובת של דגים ופירות ים מטוגנים, היא בחירה טובה.' },
+      { name: 'KOKi Beach', description: 'ממש על החוף, פתוחה לארוחת ערב בלבד, והשולחן הכי טוב לשקיעה בעיירה. פירות ים טריים וקוקטיילים טובים; כדאי להזמין מקום מראש בעונה הגבוהה.' },
+      { name: 'Jammin', description: "אוכל קריבי טבעוני לחלוטין, וטוב מספיק כדי לעבוד גם עבור מי שאינו טבעוני. ה-jerk jackfruit היא המנה שכדאי להזמין." },
+      { name: 'Que Quilombo', description: "נסיעה קצרה עד פלאיה צ'יקיטה: סטייקים ופיצה במקום משפחתי, שינוי קצב מפירות הים הקריביים שמככבים בכל מקום אחר." },
+    ],
+    tipsHeading: 'כמה הערות מעשיות',
+    tipsItems: [
+      'מזומן עדיין חשוב. מכשירי אשראי נפוצים כיום, אבל הרבה מהסודות הקטנות והמקומות ליד החוף מקבלים רק מזומן: קחו איתכם קולונס.',
+      'הזמינו מקום מראש לארוחת ערב בעונה הגבוהה. המקומות על החוף והמתוחכמים יותר מתמלאים מהר בין דצמבר למרץ.',
+      'אורז ושעועית כאן הן לא תוספת. מבושלות בחלב קוקוס עם תערובת התבלינים המקומית, הן הבסיס של הבישול הקריבי בחוף הזה: הזמינו אותן כמנה עיקרית, לא כתוספת.',
+      'רוב המקומות סגורים יום או יומיים בשבוע. פוארטו ויאחו פועלת בקצב איטי יותר מסן חוזה: בדקו שעות פתיחה לפני שיוצאים, במיוחד בימי ראשון ושני.',
+    ],
+    takeawaysHeading: 'בקצרה',
+    takeawaysParagraph:
+      "תאכלו קריבי בזמן שאתם כאן: רונדון ב-Selvyn's, אורז ושעועית ב-Caribeño 1872 או ב-Madre Tierra, והשתמשו במקומות הבינלאומיים (Café Viejo, Jammin, KOKi Beach) כדי לגוון. קחו מזומן, הזמינו מקום מראש בעונה הגבוהה, ואל תצפו לשעות הפתיחה של סן חוזה.",
+  },
+  hi: {
+    seoTitle: 'प्वेर्तो विएखो, कोस्टा रिका में कहाँ खाएं: रेस्तरां, सोदा और कैरिबियन खाना (स्थानीय गाइड)',
+    seoDescription:
+      'प्वेर्तो विएखो दे तालामांका में खाने के लिए एक स्थानीय गाइड: असली कैरिबियन खाना, रोंदोन, ताज़ी समुद्री भोजन और सबसे अच्छा नाश्ता कहाँ मिलेगा, साथ ही नकदी, समय और आरक्षण पर व्यावहारिक सुझाव।',
+    heading: 'प्वेर्तो विएखो में कहाँ खाएं: रेस्तरां, सोदा और कैरिबियन खाना',
+    heroAlt: 'लिमोन, कोस्टा रिका से कैरिबियन-शैली का चावल और बीन्स का एक प्लेट',
+    photoCredit: <>फ़ोटो: AndSalx95, <a href="https://commons.wikimedia.org/wiki/File:Lim%C3%B3n_-_Rice_and_Beans.jpg" target="_blank" rel="noopener noreferrer">सार्वजनिक डोमेन, विकिमीडिया कॉमन्स के माध्यम से</a></>,
+    introParagraphs: [
+      'प्वेर्तो विएखो का खाना बाकी कोस्टा रिका से अलग है, और यही बात खास है। यह अफ्रो-कैरिबियन खाना है: नारियल का दूध, रोंदोन, ताज़ा पकड़ी गई मछली, और दक्षिण कैरिबियन तरीके से बने चावल और बीन्स, उन अंतरराष्ट्रीय जगहों के साथ जो आसपास खुल गई हैं।',
+      'यहाँ वह सूची है जो हम वाकई अपने मेहमानों को भेजते हैं, समुद्र तट की एक सोदा में रोंदोन की थाली से लेकर कस्बे में एक असली इतालवी डिनर तक, साथ ही समय, नकदी और आरक्षण पर कुछ व्यावहारिक बातें।',
+    ],
+    stayRecommendationTitle: 'सबसे अच्छी जगहों के पास कहाँ ठहरें',
+    restaurantsHeading: 'कहाँ खाएं',
+    restaurantsIntro: 'एक काम की सूची, रैंकिंग नहीं: हर जगह किसी न किसी वजह से अपनी जगह बनाती है:',
+    restaurants: [
+      { name: 'Madre Tierra', description: 'कस्बे के बीचोंबीच कैरिबियन और लैटिन फ़्यूज़न, ब्रेडफ्रूट न्योकी जैसे व्यंजनों के लिए मशहूर, जो इतालवी तकनीक को स्थानीय सामग्री के साथ मिलाते हैं। जब कुछ सामान्य से थोड़ा बेहतर चाहिए हो तो अच्छा विकल्प।' },
+      { name: 'Restaurante Caribeño 1872', description: 'दक्षिण कैरिबियन की पारंपरिक रसोई: चावल और बीन्स तथा नारियल आधारित सॉस, वह तरह की थाली जो यहाँ पर्यटकों के मेन्यू में नहीं, बल्कि पारिवारिक मेज़ पर दिखती है।' },
+      { name: "Selvyn's", description: 'पुंता उवा में, कस्बे से लगभग 6 किमी दक्षिण में, और रोंदोन के लिए यह सफ़र करने लायक है: नारियल के दूध में बना समुद्री भोजन का स्ट्यू, इस तट के सबसे खास व्यंजनों में से एक। यहाँ चावल और बीन्स भी बेहतरीन हैं।' },
+      { name: 'Bakery Degustibus', description: 'नाश्ते का ठिकाना। कॉफ़ी और ओवन से ताज़ा निकला हैम-चीज़ क्रोइसां, किसी हाइक या बस से पहले खाने के लिए सबसे अच्छा।' },
+      { name: 'Café Viejo', description: 'कस्बे के बीचोंबीच एक इतालवी रेस्तरां: उस रात के लिए भरोसेमंद विकल्प जब कैरिबियन खाने की बजाय पास्ता खाने का मन हो। फ़्रित्तो मिस्तो, तली हुई मछली और समुद्री भोजन का मिश्रण, एक अच्छा ऑर्डर है।' },
+      { name: 'KOKi Beach', description: 'समुद्र के किनारे, सिर्फ़ डिनर के लिए खुला, और कस्बे में सूर्यास्त देखने के लिए सबसे अच्छी मेज़। ताज़ा समुद्री भोजन और कॉकटेल; पीक सीज़न में पहले से बुकिंग करना बेहतर।' },
+      { name: 'Jammin', description: 'पूरी तरह से पौधों पर आधारित कैरिबियन खाना, और इतना अच्छा कि शाकाहारी न होने वालों के लिए भी काम करता है। जर्क जैकफ़्रूट वह व्यंजन है जो ऑर्डर करना चाहिए।' },
+      { name: 'Que Quilombo', description: 'प्लाया चिकीता में थोड़ी दूर: एक पारिवारिक जगह में स्टेक और पिज़्ज़ा, बाकी हर जगह छाए कैरिबियन समुद्री भोजन से एक बदलाव।' },
+    ],
+    tipsHeading: 'कुछ व्यावहारिक बातें',
+    tipsItems: [
+      'नकदी अभी भी मायने रखती है। कार्ड रीडर अब आम हैं, लेकिन कई छोटी सोदा और समुद्र तट की जगहें सिर्फ़ नकद लेती हैं: कोलोन साथ रखें।',
+      'पीक सीज़न में डिनर के लिए पहले से बुकिंग करें। समुद्र किनारे और बेहतर रसोई वाली जगहें दिसंबर से मार्च तक जल्दी भर जाती हैं।',
+      'यहाँ चावल और बीन्स कोई साइड डिश नहीं है। नारियल के दूध में स्थानीय मसालों के साथ पकाया गया, यह इस तट की कैरिबियन रसोई का आधार है: इसे मुख्य व्यंजन के रूप में ऑर्डर करें, अतिरिक्त के रूप में नहीं।',
+      'ज़्यादातर जगहें हफ़्ते में एक या दो दिन बंद रहती हैं। प्वेर्तो विएखो सैन होज़े से धीमी रफ़्तार पर चलता है: जाने से पहले समय जाँच लें, खासकर रविवार और सोमवार को।',
+    ],
+    takeawaysHeading: 'संक्षेप में',
+    takeawaysParagraph:
+      "यहाँ रहते हुए कैरिबियन खाना खाएं: Selvyn's में रोंदोन, Caribeño 1872 या Madre Tierra में चावल और बीन्स, और बदलाव के लिए अंतरराष्ट्रीय जगहों (Café Viejo, Jammin, KOKi Beach) का इस्तेमाल करें। नकदी साथ रखें, पीक सीज़न में पहले से बुकिंग करें, और सैन होज़े जैसे समय की उम्मीद न रखें।",
+  },
+  nl: {
+    seoTitle: "Waar te Eten in Puerto Viejo, Costa Rica: Restaurants, Soda's & Caribische Keuken (Lokale Gids)",
+    seoDescription:
+      "Een lokale gids voor eten in Puerto Viejo de Talamanca: waar je echte Caribische keuken, rondón, verse zeevruchten en het beste ontbijt vindt, plus praktische tips over contant geld, openingstijden en reserveringen.",
+    heading: "Waar te Eten in Puerto Viejo: Restaurants, Soda's & Caribische Keuken",
+    heroAlt: 'Een bord Caribische rijst met bonen uit Limón, Costa Rica',
+    photoCredit: <>Foto: AndSalx95, <a href="https://commons.wikimedia.org/wiki/File:Lim%C3%B3n_-_Rice_and_Beans.jpg" target="_blank" rel="noopener noreferrer">publiek domein, via Wikimedia Commons</a></>,
+    introParagraphs: [
+      'Het eten in Puerto Viejo verschilt van de rest van Costa Rica, en dat is precies het punt. Dit is Afro-Caribische keuken: kokosmelk, rondón, vers gevangen vis, en rijst met bonen op zijn Zuid-Caribisch, naast de internationale tentjes die er omheen zijn ontstaan.',
+      'Hier is de lijst die we onze gasten echt aanraden, van een bord rondón bij een strand-soda tot een echt Italiaans diner in het dorp, plus een paar praktische tips over openingstijden, contant geld en reserveringen.',
+    ],
+    stayRecommendationTitle: 'Waar te verblijven vlakbij de beste eetadresjes',
+    restaurantsHeading: 'Waar te eten',
+    restaurantsIntro: 'Een werklijst, geen ranglijst: elke plek verdient zijn plaats om een andere reden:',
+    restaurants: [
+      { name: 'Madre Tierra', description: 'Caribische en Latijnse fusion in het centrum van het dorp, vooral bekend om gerechten als broodvrucht-gnocchi, die Italiaanse techniek combineren met lokale ingrediënten. Een goede keuze als je iets net wat chiquer wilt dan casual.' },
+      { name: 'Restaurante Caribeño 1872', description: 'Klassieke Zuid-Caribische keuken: rijst met bonen en sauzen op basis van kokos, het soort gerecht dat hier op een familietafel belandt, niet op een toeristenmenu.' },
+      { name: "Selvyn's", description: "In Punta Uva, zo'n 6 km ten zuiden van het dorp, en de rit is het waard voor de rondón: een zeevruchtenstoofpot met kokosmelk, een van de kenmerkende gerechten van deze kust. De rijst met bonen hier is ook uitstekend." },
+      { name: 'Bakery Degustibus', description: "Het ontbijtadres. Koffie en een vers gebakken ham-kaascroissant, het lekkerst vóór een wandeling of een busrit." },
+      { name: 'Café Viejo', description: 'Een Italiaans restaurant middenin het dorp — een betrouwbare keuze voor een avond dat je liever pasta wilt dan Caribisch eten. De fritto misto, een mix van gefrituurde vis en zeevruchten, is een goede keuze.' },
+      { name: 'KOKi Beach', description: "Aan zee, alleen 's avonds open, en de beste tafel voor de zonsondergang in het dorp. Verse zeevruchten en goede cocktails; in het hoogseizoen is reserveren aan te raden." },
+      { name: 'Jammin', description: 'Volledig plantaardige Caribische keuken, en goed genoeg om ook niet-vegetariërs te overtuigen. De jerk jackfruit is het gerecht om te bestellen.' },
+      { name: 'Que Quilombo', description: 'Een kort ritje verderop in Playa Chiquita: steaks en pizza op een familieadresje, een ander tempo dan de Caribische zeevruchten die verder overal domineren.' },
+    ],
+    tipsHeading: 'Een paar praktische tips',
+    tipsItems: [
+      "Contant geld blijft belangrijk. Pinapparaten zijn nu gangbaar, maar veel van de kleinere soda's en strandtentjes accepteren alleen contant — neem colones mee.",
+      'Reserveer vooraf voor het diner in het hoogseizoen. De adressen aan zee en de fijnere keukens zitten van december tot maart snel vol.',
+      'Rijst met bonen is hier geen bijgerecht. Gekookt in kokosmelk met de lokale kruidenmix, is het de basis van de Caribische keuken aan deze kust — bestel het als hoofdgerecht, niet als extra.',
+      'De meeste adresjes zijn een of twee dagen per week dicht. Puerto Viejo gaat op een trager tempo dan San José — check de openingstijden voordat je gaat, vooral op zondag en maandag.',
+    ],
+    takeawaysHeading: 'Kort samengevat',
+    takeawaysParagraph:
+      "Eet Caribisch zolang je hier bent — rondón bij Selvyn's, rijst met bonen bij Caribeño 1872 of Madre Tierra — en gebruik de internationale adressen (Café Viejo, Jammin, KOKi Beach) voor de afwisseling. Neem contant geld mee, reserveer vooraf in het hoogseizoen, en verwacht geen openingstijden zoals in San José.",
+  },
+};
+
+export function foodContent(locale: Locale): FoodContent {
+  return food[locale] ?? food.en!;
 }

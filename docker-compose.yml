@@ -30,41 +30,40 @@ services:
       retries: 20
 
   # Stands in for the deposit-receipt S3 bucket. The AWS SDK talks to it over the
-  # same API, so presigned PUT/GET behave as they do against S3.
-  minio:
-    # Docker Hub no longer serves minio/minio to anonymous pulls; Quay is the
-    # publisher-maintained mirror.
-    image: quay.io/minio/minio:latest
-    container_name: kalawala-minio
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: kalawala
-      MINIO_ROOT_PASSWORD: kalawala-local-secret
+  # same API, so presigned PUT/GET behave as they do against S3. Doesn't check
+  # credentials or signatures, so the dummy AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY
+  # in .env.local.example work as-is.
+  s3mock:
+    # MinIO locked its images down (already gone from Docker Hub; Quay started
+    # 401ing every tag too, including pinned RELEASE ones) — S3Mock is a
+    # maintained, freely-pullable stand-in that speaks the same S3 API.
+    image: adobe/s3mock:latest
+    container_name: kalawala-s3mock
     ports:
-      - "9000:9000"
-      - "9001:9001"
-    volumes:
-      - minio-data:/data
+      # Container listens on 9090 (HTTP); kept on host :9000 so
+      # S3_ENDPOINT_URL and everything downstream needs no change.
+      - "9000:9090"
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9090/"]
       interval: 5s
       timeout: 5s
       retries: 20
 
-  # Creates the receipts bucket on first boot, then exits.
-  minio-init:
-    image: quay.io/minio/mc:latest
-    container_name: kalawala-minio-init
+  # Creates the receipts bucket on first boot, then exits. (S3Mock's own
+  # initialBuckets env var only takes effect on first PVC-backed boot, which
+  # this ephemeral in-memory setup never has — a plain S3 PUT Bucket call is
+  # simpler and works every time.)
+  s3mock-init:
+    image: curlimages/curl:latest
+    container_name: kalawala-s3mock-init
     depends_on:
-      minio:
+      s3mock:
         condition: service_healthy
     entrypoint: >
       /bin/sh -c "
-      mc alias set local http://minio:9000 kalawala kalawala-local-secret &&
-      mc mb --ignore-existing local/kalawala-deposit-receipts &&
+      curl -sf -X PUT http://s3mock:9090/kalawala-deposit-receipts &&
       echo 'bucket ready'
       "
 
 volumes:
   postgres-data:
-  minio-data:

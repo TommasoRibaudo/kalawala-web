@@ -5,11 +5,11 @@ import { mintDepositConfirmUrl } from './helpers/staffLink';
  * Full-flow MANUAL DEPOSIT acceptance test — the bank-transfer / SINPE path,
  * which involves no PayPal at all:
  *
- *   search -> Bank transfer/SINPE -> deposit hold -> receipt upload (S3/MinIO)
+ *   search -> Bank transfer/SINPE -> deposit hold -> receipt upload (S3/S3Mock)
  *          -> portal refused (not yet confirmed) -> staff confirms via signed
  *             link -> portal works -> cancel -> dates released
  *
- * Runs entirely against the local stack (real booking-api + mock Smoobu + MinIO
+ * Runs entirely against the local stack (real booking-api + mock Smoobu + S3Mock
  * standing in for the receipts S3 bucket). No money moves in this flow at all —
  * the "payment" is a bank transfer the guest just asserts with a receipt image,
  * and staff confirm it out of band. So this needs no PayPal credentials and is
@@ -61,7 +61,7 @@ async function acceptCookieConsent(page: Page): Promise<void> {
   });
 }
 
-test.describe('Manual deposit full flow (real API, mock Smoobu + MinIO)', () => {
+test.describe('Manual deposit full flow (real API, mock Smoobu + S3Mock)', () => {
   test.setTimeout(120_000);
 
   test('reserves by deposit, uploads a receipt, staff confirms, then cancels', async ({ page }) => {
@@ -103,7 +103,7 @@ test.describe('Manual deposit full flow (real API, mock Smoobu + MinIO)', () => 
     expect(reservationPublicId, 'no reservationPublicId in deposit hold response').toBeTruthy();
     expect(bookingSessionId, 'no bookingSessionId in deposit hold response').toBeTruthy();
 
-    // ── 4. Receipt upload (browser -> presigned URL -> MinIO) ─────────────────
+    // ── 4. Receipt upload (browser -> presigned URL -> S3Mock) ────────────────
     const uploadSection = page.locator('.booking-deposit-checkout__upload');
     await expect(uploadSection).toBeVisible({ timeout: 15_000 });
     await uploadSection.locator('input[type="file"]').setInputFiles({
@@ -111,7 +111,7 @@ test.describe('Manual deposit full flow (real API, mock Smoobu + MinIO)', () => 
       mimeType: 'image/png',
       buffer: RECEIPT_PNG,
     });
-    // The success alert only renders after the PUT to S3/MinIO resolves — this
+    // The success alert only renders after the PUT to S3/S3Mock resolves — this
     // is the check that catches a missing/wrong CORS rule on the bucket.
     await expect(uploadSection.locator('.alert-success')).toBeVisible({ timeout: 30_000 });
 

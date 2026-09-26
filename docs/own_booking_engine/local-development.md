@@ -39,7 +39,7 @@ looking for AWS Secrets Manager.
 ## Running
 
 ```bash
-npm run local:up        # Postgres 15 + MinIO in Docker
+npm run local:up        # Postgres 15 + S3Mock in Docker
 npm run local:migrate   # apply booking-api/migrations to the local database
 npm run local:api       # builds, then starts mock providers (:4010) + API (:4000)
 npm start               # CRA on :3000
@@ -60,7 +60,7 @@ the database volume and start from an empty schema.
 | 4000 | booking API | `scripts/devServer.js` wraps the Lambda handler |
 | 4010 | Smoobu + PayPal mocks | one process; the two path spaces don't overlap |
 | 5432 | Postgres 15 | matches `infra/database.tf` |
-| 9000 / 9001 | MinIO + console | stands in for the deposit-receipt S3 bucket |
+| 9000 | S3Mock | stands in for the deposit-receipt S3 bucket |
 
 `scripts/devServer.js` translates Node requests into API Gateway payload-format
 2.0 events, so the same handler code path runs locally and in AWS with no
@@ -99,10 +99,8 @@ the database volume with `npm run local:down -- -v`.
 1. Search, then choose **Bank transfer / SINPE** on a property.
 2. Fill in the guest form and reserve — the dates come off sale immediately and
    the bank details, hold countdown and receipt upload appear.
-3. Upload any JPG, PNG or PDF. It goes straight to MinIO; confirm it landed with
-   `docker exec kalawala-minio mc ls --recursive local/kalawala-deposit-receipts`
-   (run `mc alias set local http://localhost:9000 kalawala kalawala-local-secret`
-   once first).
+3. Upload any JPG, PNG or PDF. It goes straight to S3Mock; confirm it landed with
+   `curl -s "http://localhost:9000/kalawala-deposit-receipts?list-type=2"`.
 4. Portal login is refused at this point — the booking is not confirmed yet.
 5. The staff link normally arrives by email, which is disabled locally. Mint one:
 
@@ -122,7 +120,7 @@ a deployed environment cannot fall into them by accident:
 
 - `BOOKING_API_DB_SSL=false` — local Postgres speaks plaintext. Requires the
   exact string `false`; anything else keeps TLS verification on.
-- `S3_ENDPOINT_URL` — points the S3 client at MinIO and switches on path-style
+- `S3_ENDPOINT_URL` — points the S3 client at S3Mock and switches on path-style
   addressing. Unset in AWS, where the SDK resolves the real regional endpoint.
 - `BOOKING_API_ALLOW_INSECURE_ENV_SECRETS=true` — permits provider secrets from
   environment variables instead of Secrets Manager.

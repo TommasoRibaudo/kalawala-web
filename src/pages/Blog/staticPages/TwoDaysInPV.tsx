@@ -98,6 +98,9 @@ const TwoDaysInPV = () => {
                         <p>
                             <Link to={pathForKey('blogBeaches', locale)}><strong>{internalLinkLabel('blogBeaches', locale)}</strong></Link>
                         </p>
+                        <p>
+                            <Link to={pathForKey('blogFood', locale)}><strong>{internalLinkLabel('blogFood', locale)}</strong></Link>
+                        </p>
                         <br />
 
                         {/* Why Stay With Us Component - after main content, before OtherBlogs */}

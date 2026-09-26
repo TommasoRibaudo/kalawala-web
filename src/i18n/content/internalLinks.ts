@@ -145,6 +145,17 @@ const LABELS: Partial<Record<RouteKey, Record<Locale, string>>> = {
     hi: 'महीने-दर-महीने मौसम गाइड देखें →',
     nl: 'Bekijk de maandelijkse weergids →',
   },
+  blogFood: {
+    en: 'See our full guide to where to eat in Puerto Viejo →',
+    es: 'Ver nuestra guía completa de dónde comer en Puerto Viejo →',
+    de: 'Unseren vollständigen Guide dazu, wo man in Puerto Viejo isst, ansehen →',
+    fr: 'Voir notre guide complet sur où manger à Puerto Viejo →',
+    it: 'Vedi la nostra guida completa su dove mangiare a Puerto Viejo →',
+    pt: 'Veja nosso guia completo sobre onde comer em Puerto Viejo →',
+    he: 'צפו במדריך המלא שלנו לאיפה לאכול בפוארטו ויאחו ←',
+    hi: 'प्वेर्तो विएखो में कहाँ खाएं, इसकी हमारी पूरी गाइड देखें →',
+    nl: 'Bekijk onze volledige gids over waar te eten in Puerto Viejo →',
+  },
   blogVacationRentals: {
     en: 'Browse all our vacation rentals in Puerto Viejo →',
     es: 'Explora todas nuestras casas vacacionales en Puerto Viejo →',

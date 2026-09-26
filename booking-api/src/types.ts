@@ -75,7 +75,8 @@ export type AbuseProtectionPolicyName =
   | "webhook"
   | "portalLogin"
   | "portalRead"
-  | "portalWrite";
+  | "portalWrite"
+  | "metricsIngest";
 
 export interface RouteOptions {
   requireJsonBody?: boolean;

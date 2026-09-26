@@ -148,6 +148,29 @@ export function validateCalendarRequest(
   return { apartmentSlug, month: month as string, language };
 }
 
+export interface MetricsPageviewRequest {
+  path: string;
+  language: BookingLanguage;
+}
+
+/**
+ * Validates the body of the anonymous, consent-exempt pageview beacon
+ * (POST /api/metrics/pageview — see siteMetrics.ts). Only `path` and
+ * `language` are ever accepted from the client: device category and referrer
+ * category are derived server-side from headers so a caller cannot inject
+ * arbitrary bucket labels into the aggregate counters.
+ */
+export function validateMetricsPageviewRequest(value: unknown): MetricsPageviewRequest {
+  const body = assertJsonObject(value);
+  const errors: FieldErrors = {};
+
+  const path = requireTrimmedString(body, "path", errors, 200);
+  const language = requireLanguage(body, "language", errors);
+
+  assertNoErrors(errors);
+  return { path, language };
+}
+
 export function validateHoldRequest(value: unknown): HoldRequest {
   const body = assertJsonObject(value);
   const errors: FieldErrors = {};

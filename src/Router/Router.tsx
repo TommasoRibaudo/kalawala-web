@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { CookieConsentService } from '../services/CookieConsent.service';
 import * as PostHog from '../services/PostHog.service';
+import { recordPageview } from '../services/SiteMetrics.service';
 import MessageTipContainer from '../components/MessageTip/MessageTipContainer.component';
 import { useRandomPopup } from '../hooks/useRandomPopup';
 import PortalGuard from '../components/PortalGuard/PortalGuard.component';
@@ -80,6 +81,21 @@ const PostHogPageView = () => {
   return null;
 };
 
+// Records an anonymous, consent-exempt pageview count on every route change.
+// Deliberately does NOT check CookieConsentService anywhere in this
+// component — see SiteMetrics.service.ts for why this one beacon is allowed
+// to run for every visitor regardless of consent state.
+const SiteMetricsPageView = () => {
+  const location = useLocation();
+  const locale = useLocale();
+
+  React.useEffect(() => {
+    recordPageview(location.pathname, locale);
+  }, [location.pathname, locale]);
+
+  return null;
+};
+
 // Component to handle random popup logic inside Router context
 const RandomPopupHandler = () => {
   // Was a fourth hand-rolled copy of the Spanish-route check; now the shared
@@ -97,6 +113,7 @@ const AppRouter = () => {
     <BrowserRouter>
       <LocaleHtmlAttrs />
       <PostHogPageView />
+      <SiteMetricsPageView />
       <RandomPopupHandler />
       <Routes>
         {ROUTE_ELEMENTS}

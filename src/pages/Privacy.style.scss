@@ -1,0 +1,66 @@
+@use '../styles/mixins';
+@import '../styles/styles.scss';
+
+.privacy-page {
+    .privacy-container {
+        padding-top: 120px;
+        padding-bottom: 60px;
+
+        @include mixins.mobile {
+            padding-top: 90px;
+        }
+    }
+
+    .privacy-header {
+        margin-bottom: 1.5rem;
+
+        .title {
+            color: $kalawala-darker-green;
+            margin-bottom: 0.5rem;
+        }
+
+        .privacy-effective-date {
+            color: $kalawala-text-gray;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+    }
+
+    .privacy-intro {
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .privacy-section {
+        margin-bottom: 2rem;
+        line-height: 1.6;
+
+        h2 {
+            color: $kalawala-dark-green;
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+        }
+
+        ul {
+            padding-left: 1.25rem;
+
+            li {
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        p {
+            margin-bottom: 0.75rem;
+        }
+
+        a {
+            color: $kalawala-dark-green;
+            text-decoration: underline;
+        }
+    }
+
+    .privacy-contact {
+        border-top: 1px solid $border-color;
+        padding-top: 1.5rem;
+    }
+}

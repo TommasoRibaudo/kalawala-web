@@ -53,6 +53,7 @@
     { "key": "blogFamilyHouses", "chunk": "route-family-houses-puerto-viejo", "slugs": { "en": "family-houses-puerto-viejo", "es": "family-houses-puerto-viejo" } },
     { "key": "blogCouplesHouses", "chunk": "route-couples-retreats-puerto-viejo", "slugs": { "en": "couples-retreats-puerto-viejo", "es": "couples-retreats-puerto-viejo" } },
     { "key": "blogPetFriendlyHouses", "chunk": "route-pet-friendly-houses-puerto-viejo", "slugs": { "en": "pet-friendly-houses-puerto-viejo", "es": "pet-friendly-houses-puerto-viejo" } },
-    { "key": "success", "chunk": "route-success", "slugs": { "en": "success", "es": "success" }, "prerender": false, "sitemap": false }
+    { "key": "success", "chunk": "route-success", "slugs": { "en": "success", "es": "success" }, "prerender": false, "sitemap": false },
+    { "key": "privacy", "chunk": "route-privacy", "slugs": { "en": "privacy", "es": "privacy" } }
   ]
 }

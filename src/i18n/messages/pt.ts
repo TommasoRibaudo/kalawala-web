@@ -27,6 +27,7 @@ export const pt: Messages = {
     contact: 'Contacto',
     chatOnWhatsApp: 'Conversar no WhatsApp',
     copyrightNotice: 'Todos os direitos reservados. Textos e fotos não podem ser copiados ou reutilizados sem autorização por escrito.',
+    privacyPolicy: 'Política de Privacidade',
   },
 
   callToAction: {

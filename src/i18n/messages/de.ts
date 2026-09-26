@@ -29,6 +29,7 @@ export const de: Messages = {
     contact: 'Kontakt',
     chatOnWhatsApp: 'Auf WhatsApp chatten',
     copyrightNotice: 'Alle Rechte vorbehalten. Texte und Fotos dürfen ohne schriftliche Genehmigung nicht kopiert oder weiterverwendet werden.',
+    privacyPolicy: 'Datenschutzerklärung',
   },
 
   callToAction: {

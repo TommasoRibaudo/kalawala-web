@@ -35,6 +35,7 @@ export const he: Messages = {
     contact: 'צרו קשר',
     chatOnWhatsApp: 'צ׳אט בוואטסאפ',
     copyrightNotice: 'כל הזכויות שמורות. אין להעתיק או לעשות שימוש חוזר בטקסטים ובתמונות ללא אישור בכתב.',
+    privacyPolicy: 'מדיניות פרטיות',
   },
 
   callToAction: {

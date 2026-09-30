@@ -104,6 +104,14 @@ const Footer: React.FC<IFooter> = ({ locale }) => {
           <Link to={pathForKey('privacy', locale)} className="footer-privacy-link">
             {m.footer.privacyPolicy}
           </Link>
+          <a
+            href="https://coastalcode.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-privacy-link"
+          >
+            {m.footer.siteBy}
+          </a>
         </div>
       </div>
     </footer>

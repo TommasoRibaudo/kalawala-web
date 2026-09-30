@@ -25,6 +25,7 @@ export const es: Messages = {
     chatOnWhatsApp: 'Chatear por WhatsApp',
     copyrightNotice: 'Todos los derechos reservados. El texto y las fotos no pueden copiarse ni reutilizarse sin permiso escrito.',
     privacyPolicy: 'Política de Privacidad',
+    siteBy: 'Sitio por CoastalCode',
   },
 
   callToAction: {

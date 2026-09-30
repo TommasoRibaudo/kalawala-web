@@ -27,6 +27,7 @@ export const it: Messages = {
     chatOnWhatsApp: 'Scrivici su WhatsApp',
     copyrightNotice: 'Tutti i diritti riservati. Testi e foto non possono essere copiati o riutilizzati senza autorizzazione scritta.',
     privacyPolicy: 'Informativa sulla privacy',
+    siteBy: 'Sito di CoastalCode',
   },
 
   callToAction: {

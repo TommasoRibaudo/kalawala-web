@@ -942,9 +942,18 @@ const SearchForm = ({ arrivalDate, departureDate, guests, today, minDepartureDat
   // check-in is chosen, jump focus to check-out and, where the browser
   // supports it, open its picker immediately rather than making the guest
   // tap it separately (#book date picker parity, especially on mobile).
+  //
+  // A native date input also fires change when the guest pages months in its
+  // picker while a date is already set: the browser keeps the day-of-month and
+  // moves the month/year. That's navigation, not a selection, so it must not
+  // steal focus. Same day-of-month as before (same-year/month or not) on an
+  // already-filled input is treated as navigation; a first pick or a different
+  // day is a real selection.
   const handleArrivalInputChange = (value: string) => {
+    const previous = arrivalDate;
     onArrivalChange(value);
     if (!value) return;
+    if (previous && previous.slice(8, 10) === value.slice(8, 10)) return;
     window.setTimeout(() => {
       const input = departureInputRef.current;
       if (!input) return;

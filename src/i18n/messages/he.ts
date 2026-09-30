@@ -36,6 +36,7 @@ export const he: Messages = {
     chatOnWhatsApp: 'צ׳אט בוואטסאפ',
     copyrightNotice: 'כל הזכויות שמורות. אין להעתיק או לעשות שימוש חוזר בטקסטים ובתמונות ללא אישור בכתב.',
     privacyPolicy: 'מדיניות פרטיות',
+    siteBy: 'האתר נבנה על ידי CoastalCode',
   },
 
   callToAction: {

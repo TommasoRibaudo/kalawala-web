@@ -29,6 +29,7 @@ export const fr: Messages = {
     chatOnWhatsApp: 'Discuter sur WhatsApp',
     copyrightNotice: 'Tous droits réservés. Les textes et photos ne peuvent être copiés ni réutilisés sans autorisation écrite.',
     privacyPolicy: 'Politique de confidentialité',
+    siteBy: 'Site par CoastalCode',
   },
 
   callToAction: {

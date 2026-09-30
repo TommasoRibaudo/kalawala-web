@@ -37,6 +37,7 @@ export const en = {
     chatOnWhatsApp: 'Chat on WhatsApp',
     copyrightNotice: 'All rights reserved. Text and photos may not be copied or reused without written permission.',
     privacyPolicy: 'Privacy Policy',
+    siteBy: 'Site by CoastalCode',
   },
 
   callToAction: {

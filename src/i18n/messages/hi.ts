@@ -30,6 +30,7 @@ export const hi: Messages = {
     chatOnWhatsApp: 'व्हाट्सएप पर चैट करें',
     copyrightNotice: 'सर्वाधिकार सुरक्षित। लिखित अनुमति के बिना टेक्स्ट और फ़ोटो की नकल या पुन: उपयोग नहीं किया जा सकता।',
     privacyPolicy: 'गोपनीयता नीति',
+    siteBy: 'साइट CoastalCode द्वारा',
   },
 
   callToAction: {

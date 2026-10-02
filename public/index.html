@@ -403,6 +403,14 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+  <!-- coastal-bot chat widget. Lives here, outside #root, so React never
+       unmounts it on route changes; the widget mounts its own <coastal-bot>
+       element and persists the conversation in localStorage. Must load from
+       coastal-bot.vercel.app as-is (it reads data-bot-id from currentScript
+       and derives its API host from src) — do not bundle, proxy or defer it.
+       react-snap's skipThirdPartyRequests blocks it during pre-rendering, so
+       no widget DOM is baked into the snapshots. -->
+  <script src="https://coastal-bot.vercel.app/widget.js" data-bot-id="5e911985-7c2d-40b7-8357-887ba4341f1d" async></script>
 </body>
 
 </html>

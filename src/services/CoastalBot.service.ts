@@ -89,15 +89,26 @@ function injectScript(): void {
   document.body.appendChild(script);
 }
 
-/** Consent withdrawn: drop the bubble and the saved conversation. */
-function withdraw(): void {
-  withdrawn = true;
-  document.querySelectorAll('coastal-bot').forEach((el) => el.remove());
+function clearSavedConversation(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
   } catch {
     // Storage unavailable; nothing was saved there either.
   }
+}
+
+/**
+ * Consent withdrawn: drop the bubble and the saved conversation. The widget
+ * still holds the conversation in memory, and a reply that was arriving at
+ * the time saves all of it again when it finishes — so the saved copy is
+ * also cleared on every later route change (syncCoastalBot) and when the
+ * page is left, for as long as this page load lasts.
+ */
+function withdraw(): void {
+  withdrawn = true;
+  document.querySelectorAll('coastal-bot').forEach((el) => el.remove());
+  clearSavedConversation();
+  window.addEventListener('pagehide', clearSavedConversation);
 }
 
 /**
@@ -110,6 +121,7 @@ export function syncCoastalBot(pathname: string = window.location.pathname): voi
 
   const consent = hasConsent();
   if (!consent && isInjected() && !withdrawn) withdraw();
+  else if (withdrawn) clearSavedConversation();
 
   const show = consent && !withdrawn && !isExcluded(pathname);
   if (show) injectScript();

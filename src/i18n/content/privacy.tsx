@@ -36,7 +36,7 @@ export interface PrivacyContent {
   contactIntro: React.ReactNode;
 }
 
-const EFFECTIVE_DATE = '2026-09-25';
+const EFFECTIVE_DATE = '2026-10-02';
 
 const privacy: Partial<Record<Locale, PrivacyContent>> = {
   en: {
@@ -120,6 +120,7 @@ const privacy: Partial<Record<Locale, PrivacyContent>> = {
               <li>
                 <strong>Analytics (opt-in).</strong> Helps us understand which pages are useful and how visitors
                 move through the booking flow, using Google Analytics and PostHog. Only active if you say yes.
+                Accepting analytics also turns on our chat assistant (see below).
               </li>
               <li>
                 <strong>Marketing (opt-in).</strong> Lets us and our advertising partners (Google, Meta) measure and
@@ -130,6 +131,14 @@ const privacy: Partial<Record<Locale, PrivacyContent>> = {
               You can change your choice at any time, and we remember your preference for up to 12 months. If you
               decline analytics and marketing cookies, none of those tools run — we simply won't have that data
               about your visit.
+            </p>
+            <p>
+              <strong>Chat assistant.</strong> If you accept analytics cookies, a chat button appears in the corner
+              of the page (except on the booking and guest-portal pages). The assistant is provided by coastal-bot: when it loads, and whenever you send a
+              message, your IP address, the page you're on and what you type are sent to coastal-bot to answer
+              you. The conversation is kept in your browser for 30 minutes after your last message so it follows
+              you between pages, and it's saved so we can review it. If you decline analytics, the chat never
+              loads. Please don't share payment details in the chat.
             </p>
           </>
         ),
@@ -163,6 +172,7 @@ const privacy: Partial<Record<Locale, PrivacyContent>> = {
               <li><strong>Amazon Web Services (AWS)</strong>, which hosts our booking system and website infrastructure.</li>
               <li><strong>Google and Meta</strong>, for analytics and advertising — only if you've given consent.</li>
               <li><strong>PostHog</strong>, for site analytics — only if you've given consent.</li>
+              <li><strong>coastal-bot</strong>, which runs our chat assistant — only if you've given consent.</li>
             </ul>
             <p>We do not sell your personal information to anyone.</p>
           </>
@@ -336,7 +346,7 @@ const privacy: Partial<Record<Locale, PrivacyContent>> = {
               <li>
                 <strong>Analíticas (opcionales).</strong> Nos ayudan a entender qué páginas son útiles y cómo se
                 mueven los visitantes por el proceso de reserva, usando Google Analytics y PostHog. Solo se activan
-                si aceptas.
+                si aceptas. Aceptarlas también activa nuestro asistente de chat (ver abajo).
               </li>
               <li>
                 <strong>Marketing (opcionales).</strong> Nos permiten a nosotros y a nuestros socios publicitarios
@@ -347,6 +357,14 @@ const privacy: Partial<Record<Locale, PrivacyContent>> = {
               Puedes cambiar tu elección en cualquier momento, y recordamos tu preferencia hasta por 12 meses. Si
               rechazas las cookies de analítica y marketing, ninguna de esas herramientas se ejecuta — simplemente
               no tendremos esos datos sobre tu visita.
+            </p>
+            <p>
+              <strong>Asistente de chat.</strong> Si aceptas las cookies analíticas, aparece un botón de chat en la
+              esquina de la página (excepto en las páginas de reserva y del portal de huéspedes). El asistente lo provee coastal-bot: al cargarse, y cada vez que envías un
+              mensaje, tu dirección IP, la página en la que estás y lo que escribes se envían a coastal-bot para
+              responderte. La conversación se guarda en tu navegador durante 30 minutos desde tu último mensaje para
+              que te acompañe entre páginas, y se almacena para que podamos revisarla. Si rechazas las analíticas,
+              el chat nunca se carga. Por favor no compartas datos de pago en el chat.
             </p>
           </>
         ),
@@ -380,6 +398,7 @@ const privacy: Partial<Record<Locale, PrivacyContent>> = {
               <li><strong>Amazon Web Services (AWS)</strong>, que aloja nuestro sistema de reservas e infraestructura web.</li>
               <li><strong>Google y Meta</strong>, para analítica y publicidad — solo si has dado tu consentimiento.</li>
               <li><strong>PostHog</strong>, para analítica del sitio — solo si has dado tu consentimiento.</li>
+              <li><strong>coastal-bot</strong>, que opera nuestro asistente de chat — solo si has dado tu consentimiento.</li>
             </ul>
             <p>No vendemos tu información personal a nadie.</p>
           </>

@@ -11,3 +11,47 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/*
+ * coastal-bot chat bubble (see src/services/CoastalBot.service.ts). The widget
+ * pins its button 20px from the bottom-right corner, 58px square, above
+ * everything else, and has no setting to move it — so the site's own elements
+ * make room instead of the chat being hidden:
+ *   - the mobile Reserve bar keeps its button clear of the bubble (below);
+ *   - MessageTips are lifted above it (MessageTipContainer, .with-chat-bubble).
+ * Physical `right`, not inline-end: the widget sits on the right in RTL too.
+ */
+body:not(.coastal-bot-off):has(coastal-bot) .sticky-cta-mobile {
+  padding-right: 90px; /* 20px offset + 58px bubble + 12px gap */
+}
+
+/*
+ * That costs the button 78px, so win it back from the label rather than let
+ * it wrap — a second line makes the bar taller and covers the page behind it.
+ * Measured in Urbanist 700 against every locale's stickyCta: the longest, NL
+ * "Beschikbaarheid controleren", fits on one line from 320px up with these
+ * values, where it wrapped below ~410px and at 480–500px with the padding
+ * alone. Wrapping stays allowed as the fallback, so nothing is ever clipped.
+ */
+body:not(.coastal-bot-off):has(coastal-bot) .sticky-cta-mobile .sticky-cta-button {
+  letter-spacing: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+@media (max-width: 479.98px) {
+  body:not(.coastal-bot-off):has(coastal-bot) .sticky-cta-mobile .sticky-cta-button {
+    font-size: min(16px, 3.8vw);
+  }
+}
+
+/*
+ * Hidden outright only where it must not be used: on the booking and portal
+ * routes, or after consent is withdrawn (the service sets the class), and
+ * while the cookie banner is up, whose stacked mobile buttons reach the corner.
+ * Light-DOM rules on the host element beat the widget's own `:host` styles.
+ */
+body.coastal-bot-off coastal-bot,
+body:has(.cookie-consent-banner) coastal-bot {
+  display: none !important;
+}

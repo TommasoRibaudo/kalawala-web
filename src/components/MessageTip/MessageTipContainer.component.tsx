@@ -19,6 +19,9 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
   const [messageTips, setMessageTips] = useState<MessageTipData[]>([]);
   const [isCookieBannerVisible, setIsCookieBannerVisible] = useState(false);
   const [stickyCTAHeight, setStickyCTAHeight] = useState(0);
+  // The coastal-bot chat button (CoastalBot.service.ts) sits in the same
+  // corner and above everything; tips are lifted clear of it while it shows.
+  const [isChatBubbleVisible, setIsChatBubbleVisible] = useState(false);
   // Seeded from window.innerWidth, this read react-snap's puppeteer viewport
   // at prerender time and a real visitor's actual viewport at hydration time
   // — two different numbers baked into the same first render, so the mobile
@@ -72,16 +75,20 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
 
       const cookieBanner = document.querySelector('.cookie-consent-banner');
       const stickyCTA = document.querySelector('.sticky-cta-mobile');
+      const chatBubble = document.querySelector('coastal-bot');
+      const chatBubbleVisible = !!chatBubble && getComputedStyle(chatBubble).display !== 'none';
 
       // Use React.startTransition to avoid act() warnings in tests
       if (typeof React.startTransition === 'function') {
         React.startTransition(() => {
           setIsCookieBannerVisible(!!cookieBanner);
           setStickyCTAHeight(stickyCTA ? stickyCTA.getBoundingClientRect().height : 0);
+          setIsChatBubbleVisible(chatBubbleVisible);
         });
       } else {
         setIsCookieBannerVisible(!!cookieBanner);
         setStickyCTAHeight(stickyCTA ? stickyCTA.getBoundingClientRect().height : 0);
+        setIsChatBubbleVisible(chatBubbleVisible);
       }
     };
 
@@ -127,7 +134,7 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
   }, [addMessageTip, getMessageTipsCount]);
 
   const containerClassName = `message-tip-container ${className || ''} ${isCookieBannerVisible ? 'cookie-banner-visible' : ''
-    } ${stickyCTAHeight > 0 ? 'with-sticky-cta' : ''}`.trim();
+    } ${stickyCTAHeight > 0 ? 'with-sticky-cta' : ''} ${isChatBubbleVisible ? 'with-chat-bubble' : ''}`.trim();
 
   // Calculate dynamic bottom position
   const containerStyle: React.CSSProperties = {};
@@ -144,6 +151,12 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
     if (isCookieBannerVisible) {
       // Add additional offset for cookie banner (typical height ~100px)
       bottomOffset += 100;
+    }
+
+    if (isChatBubbleVisible) {
+      // Clear the chat button: 20px offset + 58px button + 12px gap. Usually
+      // already met above the sticky CTA, which the button sits beside.
+      bottomOffset = Math.max(bottomOffset, 90);
     }
     
     containerStyle.bottom = `calc(${bottomOffset}px + env(safe-area-inset-bottom))`;

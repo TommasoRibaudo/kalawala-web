@@ -10,6 +10,8 @@ import { useLocale, RELEASED_LOCALES } from '../i18n';
 import LocaleHtmlAttrs from '../components/LocaleHtmlAttrs/LocaleHtmlAttrs.component';
 import { ROUTES, pathForKey, RouteKey } from '../routes.config';
 import { RouteLoader } from '../routeLoader';
+import { syncCoastalBot } from '../services/CoastalBot.service';
+import { isPrerender } from '../utils/isPrerender';
 
 /*
  * Every routed page is declared once in src/routes.config.ts — key,
@@ -96,6 +98,21 @@ const SiteMetricsPageView = () => {
   return null;
 };
 
+// Loads, shows or hides the coastal-bot chat widget for the current route and
+// consent state. Lives in the router, not index.tsx, because the widget must be
+// hidden on the booking and portal routes even when it was loaded elsewhere —
+// see CoastalBot.service.ts.
+const CoastalBotGate = () => {
+  const location = useLocation();
+
+  React.useEffect(() => {
+    if (isPrerender()) return;
+    syncCoastalBot(location.pathname);
+  }, [location.pathname]);
+
+  return null;
+};
+
 // Component to handle random popup logic inside Router context
 const RandomPopupHandler = () => {
   // Was a fourth hand-rolled copy of the Spanish-route check; now the shared
@@ -114,6 +131,7 @@ const AppRouter = () => {
       <LocaleHtmlAttrs />
       <PostHogPageView />
       <SiteMetricsPageView />
+      <CoastalBotGate />
       <RandomPopupHandler />
       <Routes>
         {ROUTE_ELEMENTS}

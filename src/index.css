@@ -11,3 +11,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/*
+ * coastal-bot chat bubble (see src/services/CoastalBot.service.ts). The widget
+ * pins itself 20px from the bottom-right corner above everything else, and has
+ * no setting to move it, so it is hidden whenever something the visitor needs
+ * to tap already occupies that corner. Each of these is only in the DOM while
+ * it is showing, so the bubble comes back as soon as it goes away:
+ *   - the mobile Reserve bar on listing pages (rendered only on small screens);
+ *   - the cookie banner;
+ *   - a MessageTip, whose close button sits under the bubble.
+ * Light-DOM rules on the host element beat the widget's own `:host` styles.
+ */
+body:has(.sticky-cta-mobile) coastal-bot,
+body:has(.cookie-consent-banner) coastal-bot,
+body:has(.message-tip--visible) coastal-bot {
+  display: none !important;
+}

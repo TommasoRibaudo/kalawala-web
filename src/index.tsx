@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { CookieConsentService } from './services/CookieConsent.service';
 import { initPostHogIfConsented } from './services/PostHog.service';
+import { initCoastalBotIfConsented } from './services/CoastalBot.service';
 import { routeKeyForPath } from './routes.config';
 import { preloadRoute, type LoadableKey } from './routeLoader';
 import './index.css';
@@ -29,6 +30,9 @@ if (storedConsent) {
 // visitors who have already accepted analytics cookies — everyone else never
 // downloads the library. See services/PostHog.service.ts.
 initPostHogIfConsented();
+
+// Chat widget: third-party, so also opt-in. See services/CoastalBot.service.ts.
+initCoastalBotIfConsented();
 
 const rootElement = document.getElementById('root') as HTMLElement;
 

@@ -128,4 +128,8 @@ export async function setupApiMocks(
 
   // Google Tag Manager
   await page.route('**/www.googletagmanager.com/**', (route) => route.abort());
+
+  // coastal-bot chat widget — its bubble sits over the sticky Reserve bar and
+  // cookie banner buttons, and would also hit the live chat API.
+  await page.route('**/coastal-bot.vercel.app/**', (route) => route.abort());
 }

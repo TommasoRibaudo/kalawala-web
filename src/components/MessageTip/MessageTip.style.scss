@@ -10,6 +10,12 @@
   &.cookie-banner-visible {
     bottom: 120px; // Adjust based on typical cookie banner height
   }
+
+  // Above the coastal-bot chat button (20px offset + 58px + 12px gap), whose
+  // corner this is. Mobile gets the same offset inline from the container.
+  &.with-chat-bubble {
+    bottom: calc(90px + env(safe-area-inset-bottom));
+  }
   
   // Mobile adjustments
   @media (max-width: 768px) {

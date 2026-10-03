@@ -134,7 +134,7 @@ const privacy: Partial<Record<Locale, PrivacyContent>> = {
             </p>
             <p>
               <strong>Chat assistant.</strong> If you accept analytics cookies, a chat button appears in the corner
-              of the page. The assistant is provided by coastal-bot: when it loads, and whenever you send a
+              of the page (except on the booking and guest-portal pages). The assistant is provided by coastal-bot: when it loads, and whenever you send a
               message, your IP address, the page you're on and what you type are sent to coastal-bot to answer
               you. The conversation is kept in your browser for 30 minutes after your last message so it follows
               you between pages, and it's saved so we can review it. If you decline analytics, the chat never
@@ -360,7 +360,7 @@ const privacy: Partial<Record<Locale, PrivacyContent>> = {
             </p>
             <p>
               <strong>Asistente de chat.</strong> Si aceptas las cookies analíticas, aparece un botón de chat en la
-              esquina de la página. El asistente lo provee coastal-bot: al cargarse, y cada vez que envías un
+              esquina de la página (excepto en las páginas de reserva y del portal de huéspedes). El asistente lo provee coastal-bot: al cargarse, y cada vez que envías un
               mensaje, tu dirección IP, la página en la que estás y lo que escribes se envían a coastal-bot para
               responderte. La conversación se guarda en tu navegador durante 30 minutos desde tu último mensaje para
               que te acompañe entre páginas, y se almacena para que podamos revisarla. Si rechazas las analíticas,

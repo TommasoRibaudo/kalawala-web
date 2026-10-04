@@ -1,25 +1,25 @@
 # Reservas Kalawala — Vacation Rentals in Puerto Viejo, Costa Rica
 
-> Kalawala is a family-run vacation rental company offering fully equipped houses and villas in Puerto Viejo de Talamanca, Limón, Costa Rica. We manage 10 properties sleeping 2–8 guests, all with private kitchens, bathrooms, A/C, and free WiFi. Book directly on our website for the best rates — cheaper than Airbnb or Booking.com. Bilingual site (English and Spanish).
+> Kalawala is a family-run vacation rental company offering fully equipped houses and villas in Puerto Viejo de Talamanca, Limón, Costa Rica. We manage 10 properties sleeping 2–6 guests, all with private kitchens, bathrooms, A/C, and free WiFi. Book directly on our website for the best rates — cheaper than Airbnb or Booking.com. Bilingual site (English and Spanish).
 
 ## Properties — Puerto Viejo Town (Kalawala Houses)
 
-- [Casa Geco](https://www.reservaskalawala.com/Geco): 2-bedroom house, sleeps 5, private fenced parking, pet friendly, in the heart of town. Fully equipped kitchen, 2 A/C units, 100Mbps WiFi.
-- [Casa Rana](https://www.reservaskalawala.com/Rana): 2-bedroom house, sleeps 5, private fenced parking, pet friendly, fenced garden — ideal for traveling with pets. Fully equipped kitchen, 2 A/C units, 100Mbps WiFi.
-- [Casa Tucano](https://www.reservaskalawala.com/Tucano): 2-bedroom wooden apartment above Italian bakery, sleeps 5, terrace, pet friendly. Fully equipped kitchen, 2 A/C units, 100Mbps WiFi.
-- [Casa Pappagallo](https://www.reservaskalawala.com/Pappagallo): 2-bedroom wooden apartment above Italian bakery, sleeps 5, terrace, pet friendly. Remodeled by Spanish interior designer in 2021. Fully equipped kitchen, 2 A/C units, 100Mbps WiFi.
-- [Casa Delfin](https://www.reservaskalawala.com/Delfin): 3-bedroom house, sleeps 6, 2 bathrooms, private parking. Fully equipped kitchen, 2 A/C units, 100Mbps WiFi.
+- [Casa Geco](https://www.reservaskalawala.com/Geco): 2-bedroom house, sleeps 5, private fenced parking, pet friendly (max 2 pets, no extra fee), tiny fenced garden, in the heart of town. Fully equipped kitchen, A/C, WiFi.
+- [Casa Rana](https://www.reservaskalawala.com/Rana): 2-bedroom house, sleeps 5, private fenced parking, pet friendly (max 2 pets, no extra fee), tiny fenced garden — ideal for traveling with pets. Fully equipped kitchen, A/C, WiFi.
+- [Casa Tucano](https://www.reservaskalawala.com/Tucano): 2-bedroom wooden apartment above Italian bakery, sleeps 5, terrace, pet friendly (max 2 pets, no extra fee). Fully equipped kitchen, A/C, WiFi.
+- [Casa Pappagallo](https://www.reservaskalawala.com/Pappagallo): 2-bedroom wooden apartment above Italian bakery, sleeps 5, terrace, pet friendly (max 2 pets, no extra fee). Remodeled by Spanish interior designer in 2021. Fully equipped kitchen, A/C, WiFi.
+- [Casa Delfines](https://www.reservaskalawala.com/Delfin): 2-bedroom house, sleeps 6, 2 bathrooms, private fenced parking for 2 vehicles. Fully equipped kitchen, A/C in the bedrooms, WiFi. No pets.
 
-## Properties — Playa Negra (Nam Houses)
+## Properties — Playa Chiquita (Bungalows)
 
-- [Casa Areka](https://www.reservaskalawala.com/Areka): Located in Playa Negra area, near black sand beach.
-- [Casa Giulia](https://www.reservaskalawala.com/Giulia): Located in Playa Negra area, near black sand beach.
-- [Casa Plumeria](https://www.reservaskalawala.com/Plumeria): Located in Playa Negra area, near black sand beach.
+- [Casa Areka](https://www.reservaskalawala.com/Areka): 1-bedroom bungalow, sleeps 2, about 200 m from Playa Chiquita beach. Fully equipped kitchen, A/C, WiFi, small porch, private parking outside the property.
+- [Casa Giulia](https://www.reservaskalawala.com/Giulia): 2-bedroom house, sleeps 4, 2 bathrooms, about 200 m from Playa Chiquita beach. Gas kitchen, A/C, WiFi, private covered patio, parking for one car outside the property.
+- [Casa Plumeria](https://www.reservaskalawala.com/Plumeria): 1-bedroom bungalow, sleeps 2, about 200 m from Playa Chiquita beach. Fully equipped kitchen, A/C, WiFi, small porch, private parking outside the property.
 
-## Properties — Villas with Private Pool
+## Properties — Villas with Private Pool (Playa Chiquita)
 
-- [Villa Mar](https://www.reservaskalawala.com/VillaMar): Villa with private pool, king-size bed, dedicated workspace with ethernet, fully equipped kitchen.
-- [Villa Coral](https://www.reservaskalawala.com/VillaCoral): Villa with private pool, king-size bed, dedicated workspace with ethernet, fully equipped kitchen.
+- [Villa Mar](https://www.reservaskalawala.com/VillaMar): 1-bedroom villa, sleeps 2, private pool, king-size bed, dedicated workspace with ethernet, fully equipped kitchen, A/C, WiFi.
+- [Villa Coral](https://www.reservaskalawala.com/VillaCoral): 1-bedroom villa, sleeps 2, private pool, king-size bed, dedicated workspace with ethernet, fully equipped kitchen, A/C, WiFi.
 
 ## Location & Area
 
@@ -31,12 +31,13 @@ Getting around: bike or scooter rental recommended. Public bus service connects 
 
 - Fully equipped private kitchen (microwave, coffeemaker, blender)
 - Private bathroom with towels and toiletries
-- Air conditioning (2 units per property)
-- 100Mbps free WiFi
+- Air conditioning
+- Free WiFi
 - Bed linens included
 - Roku TV with entertainment system and HDMI port
-- Cleaning service for stays of 5+ nights
+- Cleaning service for stays of 5+ nights (all homes except Areka, Giulia and Plumeria)
 - Pack-and-play crib available on request
+- Pets welcome only at Casa Geco, Rana, Tucano and Pappagallo: max 2 pets, no extra fee
 - 15% discount at on-site Italian bakery
 
 ## Booking

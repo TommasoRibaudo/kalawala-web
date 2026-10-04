@@ -164,6 +164,7 @@ async function seedConfirmedHold(
 afterEach(() => {
   global.fetch = originalFetch;
   jest.restoreAllMocks();
+  jest.useRealTimers();
 });
 
 // ─── The fix: a website-channel hold never reopens inventory ─────────────────
@@ -354,6 +355,10 @@ test("REGRESSION: a Smoobu check reports 'closed' in exactly the Geco situation"
 // ─── The watchdog: reassert mode ─────────────────────────────────────────────
 
 test("reassert sends exactly one corrective push per recently promoted stay", async () => {
+  // The seeded stay (2026-09-25 → 27) must not have ended yet, or reassert skips
+  // it as past. Pin the clock before it; only Date is faked, so fetch mocks and
+  // timers behave normally.
+  jest.useFakeTimers({ now: new Date("2026-09-20T12:00:00.000Z"), doNotFake: ["nextTick", "setImmediate", "setTimeout", "setInterval", "clearTimeout", "clearInterval", "queueMicrotask"] });
   const calls = mockSmoobu({});
 
   const holds = new InMemoryHoldRepository();

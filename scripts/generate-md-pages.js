@@ -27,7 +27,7 @@ const properties = [
     parking: 'Private fenced parking',
     petFriendly: true,
     description: 'Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, A/C, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer. Most shops and restaurants are just a short walk away, and there is a nearby jungle path that runs along the ocean and leads to natural pools in the coral and to Cocles.',
-    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C', 'Private Fenced Parking', 'WiFi', 'Pet Friendly (max 2 pets, no extra fee)', 'Tiny garden for dogs next to the parking', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', 'Crib on request'],
+    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C', 'Private Fenced Parking', 'WiFi', 'Pet Friendly (max 2 pets, no extra fee)', 'Tiny Fenced Garden', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', 'Crib on request'],
     neighborhood: 'Close to beach access leading to Cocles. Spot wildlife and natural coral pools along the jungle path. Two National Parks nearby: Manzanillo and Cahuita. Vibrant nightlife in town.'
   },
   {
@@ -40,7 +40,7 @@ const properties = [
     parking: 'Private fenced parking',
     petFriendly: true,
     description: 'Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, A/C, and a private parking space. Strongly recommended if you are planning to travel with your pet, as it offers a small, fenced garden.',
-    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C', 'Private Fenced Parking', 'WiFi', 'Pet Friendly (max 2 pets, no extra fee)', 'Fenced Garden', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', 'Crib on request'],
+    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C', 'Private Fenced Parking', 'WiFi', 'Pet Friendly (max 2 pets, no extra fee)', 'Tiny Fenced Garden', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', 'Crib on request'],
     neighborhood: 'Near beach path to Cocles with diverse wildlife and natural coral pools. Two National Parks nearby: Manzanillo and Cahuita.'
   },
   {

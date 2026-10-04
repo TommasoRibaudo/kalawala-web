@@ -26,8 +26,8 @@ const properties = [
     location: 'Puerto Viejo de Talamanca, Limón, Costa Rica',
     parking: 'Private fenced parking',
     petFriendly: true,
-    description: 'Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, 2 A/C units, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer. Most shops and restaurants are just a short walk away, and there is a nearby jungle path that runs along the ocean and leads to natural pools in the coral and to Cocles.',
-    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C (2 units)', 'Private Fenced Parking', '100Mbps WiFi', 'Pet Friendly', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', '15% bakery discount'],
+    description: 'Located in the heart of town, this house has space for up to 5 people and features a fully equipped kitchen, a bathroom, A/C, and a private parking lot. Our prime location offers easy access to both the town center and the most beautiful beaches that Puerto Viejo has to offer. Most shops and restaurants are just a short walk away, and there is a nearby jungle path that runs along the ocean and leads to natural pools in the coral and to Cocles.',
+    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C', 'Private Fenced Parking', 'WiFi', 'Pet Friendly (max 2 pets, no extra fee)', 'Tiny garden for dogs next to the parking', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', 'Crib on request'],
     neighborhood: 'Close to beach access leading to Cocles. Spot wildlife and natural coral pools along the jungle path. Two National Parks nearby: Manzanillo and Cahuita. Vibrant nightlife in town.'
   },
   {
@@ -39,8 +39,8 @@ const properties = [
     location: 'Puerto Viejo de Talamanca, Limón, Costa Rica',
     parking: 'Private fenced parking',
     petFriendly: true,
-    description: 'Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, two A/C units, and a private parking space. Strongly recommended if you are planning to travel with your pet, as it offers a small, fenced garden.',
-    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C (2 units)', 'Private Fenced Parking', '100Mbps WiFi', 'Pet Friendly', 'Fenced Garden', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens'],
+    description: 'Nestled in the heart of town, this charming house comfortably accommodates up to 5 guests. It boasts a fully equipped kitchen, a bathroom, A/C, and a private parking space. Strongly recommended if you are planning to travel with your pet, as it offers a small, fenced garden.',
+    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C', 'Private Fenced Parking', 'WiFi', 'Pet Friendly (max 2 pets, no extra fee)', 'Fenced Garden', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', 'Crib on request'],
     neighborhood: 'Near beach path to Cocles with diverse wildlife and natural coral pools. Two National Parks nearby: Manzanillo and Cahuita.'
   },
   {
@@ -50,10 +50,10 @@ const properties = [
     bedrooms: 2,
     bathrooms: 1,
     location: 'Puerto Viejo de Talamanca, Limón, Costa Rica',
-    parking: 'Outside parking',
+    parking: 'Private unfenced parking',
     petFriendly: true,
-    description: 'Charming wooden apartment located above an Italian bakery in the heart of Puerto Viejo. Features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and two A/C units. Complimentary cleaning services for stays of 5 nights or more.',
-    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C (2 units)', 'Outside Parking', '100Mbps WiFi', 'Pet Friendly', 'Terrace', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', '15% bakery discount'],
+    description: 'Charming wooden apartment located above an Italian bakery in the heart of Puerto Viejo. Features two comfortable bedrooms, a well-equipped bathroom, a fully equipped kitchen, a lovely terrace, and A/C. Complimentary cleaning services for stays of 5 nights or more.',
+    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C', 'Private Unfenced Parking', 'WiFi', 'Pet Friendly (max 2 pets, no extra fee)', 'Terrace', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', 'Crib on request', '15% bakery discount'],
     neighborhood: 'Above Italian bakery in town center. Near beach path to Cocles. Two National Parks nearby: Manzanillo and Cahuita.'
   },
   {
@@ -63,89 +63,89 @@ const properties = [
     bedrooms: 2,
     bathrooms: 1,
     location: 'Puerto Viejo de Talamanca, Limón, Costa Rica',
-    parking: 'Outside parking',
+    parking: 'Private unfenced parking',
     petFriendly: true,
-    description: 'Charming wooden apartment above an Italian bakery in the heart of Puerto Viejo. Built entirely of wood, remodeled by a Spanish interior designer in June 2021. Equipped with a fully equipped kitchen, two cozy bedrooms, a lovely terrace, two A/C units, and one well-equipped bathroom.',
-    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C (2 units)', 'Outside Parking', '100Mbps WiFi', 'Pet Friendly', 'Terrace', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', '15% bakery discount'],
+    description: 'Charming wooden apartment above an Italian bakery in the heart of Puerto Viejo. Built entirely of wood, remodeled by a Spanish interior designer in June 2021. Equipped with a fully equipped kitchen, two cozy bedrooms, a lovely terrace, A/C, and one well-equipped bathroom.',
+    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C', 'Private Unfenced Parking', 'WiFi', 'Pet Friendly (max 2 pets, no extra fee)', 'Terrace', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', 'Crib on request', '15% bakery discount'],
     neighborhood: 'Above Italian bakery in town center. Near beach path to Cocles. Two National Parks nearby: Manzanillo and Cahuita.'
   },
   {
     slug: 'Delfin',
-    name: 'Casa Delfin',
+    name: 'Casa Delfines',
     guests: 6,
-    bedrooms: 3,
+    bedrooms: 2,
     bathrooms: 2,
     location: 'Puerto Viejo de Talamanca, Limón, Costa Rica',
-    parking: 'Private parking',
+    parking: 'Private fenced parking for 2 vehicles',
     petFriendly: false,
-    description: 'Located in the heart of town, this house accommodates up to 6 guests with a fully equipped kitchen, bathroom, 2 A/C units (not in kitchen or living room), and private parking.',
-    amenities: ['2 Private Equipped Bathrooms', 'Private Equipped Kitchen', 'A/C (2 units)', 'Private Parking', '100Mbps WiFi', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens'],
+    description: 'Located in the heart of town, this house accommodates up to 6 guests with a fully equipped kitchen, 2 bathrooms, A/C in the bedrooms (not in the kitchen or living room), and private fenced parking for 2 vehicles.',
+    amenities: ['2 Private Equipped Bathrooms', 'Private Equipped Kitchen', 'Bedrooms with A/C', 'Private Fenced Parking for 2 Vehicles', 'WiFi', 'Roku TV with HDMI', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', 'Crib on request'],
     neighborhood: 'Close to beach access leading to Cocles. Two National Parks nearby: Manzanillo and Cahuita. Vibrant nightlife.'
   },
   {
     slug: 'Areka',
     name: 'Casa Areka',
-    guests: null,
-    bedrooms: null,
-    bathrooms: null,
-    location: 'Playa Negra, Puerto Viejo de Talamanca, Limón, Costa Rica',
-    parking: null,
-    petFriendly: null,
-    description: 'Vacation rental in the Playa Negra area, near the beautiful black sand beach of Puerto Viejo.',
-    amenities: ['Fully Equipped Kitchen', 'A/C', '100Mbps WiFi', 'Towels & Toiletries', 'Bed Linens'],
-    neighborhood: 'Playa Negra area, near black sand beach.'
+    guests: 2,
+    bedrooms: 1,
+    bathrooms: 1,
+    location: 'Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica',
+    parking: 'Private unfenced parking, outside the property',
+    petFriendly: false,
+    description: 'New, fully equipped bungalow with A/C, 200 m from the beautiful Playa Chiquita beach, in one of the safest and calmest neighborhoods in the Caribbean. The space is completely private: A/C, fully equipped kitchen, a private bathroom with hot water and a small porch.',
+    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C', 'Private Unfenced Parking', 'WiFi', 'Small porch', 'Towels & Toiletries', 'Bed Linens', 'Crib on request'],
+    neighborhood: 'Playa Chiquita, 200 m from the beach. A few minutes from Puerto Viejo and Manzanillo, close to Punta Uva beach and Arrecife.'
   },
   {
     slug: 'Giulia',
     name: 'Casa Giulia',
-    guests: null,
-    bedrooms: null,
-    bathrooms: null,
-    location: 'Playa Negra, Puerto Viejo de Talamanca, Limón, Costa Rica',
-    parking: null,
-    petFriendly: null,
-    description: 'Vacation rental in the Playa Negra area, near the beautiful black sand beach of Puerto Viejo.',
-    amenities: ['Fully Equipped Kitchen', 'A/C', '100Mbps WiFi', 'Towels & Toiletries', 'Bed Linens'],
-    neighborhood: 'Playa Negra area, near black sand beach.'
+    guests: 4,
+    bedrooms: 2,
+    bathrooms: 2,
+    location: 'Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica',
+    parking: 'Private unfenced parking for one car, outside the property',
+    petFriendly: false,
+    description: 'Family-friendly house 200 m from the stunning Playa Chiquita beach, in one of the safest and calmest neighborhoods in the Caribbean. Two bedrooms, two private bathrooms with hot water, a gas kitchen, a spacious closet and a private covered patio.',
+    amenities: ['2 Private Equipped Bathrooms', 'Private Equipped Kitchen', 'A/C', 'Private Unfenced Parking', 'WiFi', 'Private covered patio', 'Towels & Toiletries', 'Bed Linens', 'Crib on request'],
+    neighborhood: 'Playa Chiquita, 200 m from the beach. Close to Puerto Viejo, Manzanillo, Punta Uva beach and Arrecife.'
   },
   {
     slug: 'Plumeria',
     name: 'Casa Plumeria',
-    guests: null,
-    bedrooms: null,
-    bathrooms: null,
-    location: 'Playa Negra, Puerto Viejo de Talamanca, Limón, Costa Rica',
-    parking: null,
-    petFriendly: null,
-    description: 'Vacation rental in the Playa Negra area, near the beautiful black sand beach of Puerto Viejo.',
-    amenities: ['Fully Equipped Kitchen', 'A/C', '100Mbps WiFi', 'Towels & Toiletries', 'Bed Linens'],
-    neighborhood: 'Playa Negra area, near black sand beach.'
+    guests: 2,
+    bedrooms: 1,
+    bathrooms: 1,
+    location: 'Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica',
+    parking: 'Private unfenced parking, outside the property',
+    petFriendly: false,
+    description: 'New, fully equipped bungalow with A/C, 200 m from the beautiful Playa Chiquita beach, in one of the safest and calmest neighborhoods in the Caribbean. The space is completely private: A/C, fully equipped kitchen, a private bathroom with hot water and a small porch.',
+    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchen', 'A/C', 'Private Unfenced Parking', 'WiFi', 'Small porch', 'Towels & Toiletries', 'Bed Linens', 'Crib on request'],
+    neighborhood: 'Playa Chiquita, 200 m from the beach. A few minutes from Puerto Viejo and Manzanillo, close to Punta Uva beach and Arrecife.'
   },
   {
     slug: 'VillaMar',
     name: 'Villa Mar',
-    guests: null,
+    guests: 2,
     bedrooms: 1,
     bathrooms: 1,
-    location: 'Puerto Viejo de Talamanca, Limón, Costa Rica',
-    parking: null,
-    petFriendly: null,
-    description: 'Villa with private pool, king-size bed with 10-inch thick mattress, dedicated workspace with ethernet connection, and fully equipped kitchen. All spaces are completely private.',
-    amenities: ['Private Pool', 'King Size Bed', 'Dedicated Workspace with Ethernet', 'Fully Equipped Kitchen', 'A/C', '100Mbps WiFi', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service for longer stays'],
-    neighborhood: 'Puerto Viejo de Talamanca, near beaches and national parks.'
+    location: 'Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica',
+    parking: 'Private unfenced parking',
+    petFriendly: false,
+    description: 'Villa with private pool, king-size bed with 10-inch thick mattress, dedicated workspace with ethernet connection, and fully equipped kitchen. The bedroom and living room both have A/C. All spaces are completely private.',
+    amenities: ['Private Pool', 'King Size Bed', 'Dedicated Workspace with Ethernet', 'Fully Equipped Kitchen', 'A/C', 'WiFi', 'Private Unfenced Parking', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', 'Crib on request'],
+    neighborhood: 'Playa Chiquita, close to the beach. A few minutes from Puerto Viejo and Punta Uva.'
   },
   {
     slug: 'VillaCoral',
     name: 'Villa Coral',
-    guests: null,
+    guests: 2,
     bedrooms: 1,
     bathrooms: 1,
-    location: 'Puerto Viejo de Talamanca, Limón, Costa Rica',
-    parking: null,
-    petFriendly: null,
-    description: 'Villa with private pool, king-size bed with 10-inch thick mattress, dedicated workspace with ethernet connection, and fully equipped kitchen. All spaces are completely private.',
-    amenities: ['Private Pool', 'King Size Bed', 'Dedicated Workspace with Ethernet', 'Fully Equipped Kitchen', 'A/C', '100Mbps WiFi', 'Towels & Toiletries', 'Bed Linens'],
-    neighborhood: 'Puerto Viejo de Talamanca, near beaches and national parks.'
+    location: 'Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica',
+    parking: 'Private unfenced parking',
+    petFriendly: false,
+    description: 'Villa with private pool, king-size bed with 10-inch thick mattress, dedicated workspace with ethernet connection, and fully equipped kitchen. The bedroom and living room both have A/C. All spaces are completely private.',
+    amenities: ['Private Pool', 'King Size Bed', 'Dedicated Workspace with Ethernet', 'Fully Equipped Kitchen', 'A/C', 'WiFi', 'Private Unfenced Parking', 'Towels & Toiletries', 'Bed Linens', 'Cleaning service (5+ nights)', 'Crib on request'],
+    neighborhood: 'Playa Chiquita, close to the beach. A few minutes from Puerto Viejo and Punta Uva.'
   }
 ];
 
@@ -170,7 +170,7 @@ function generatePropertyMd(prop) {
   if (prop.bedrooms) md += `- **Bedrooms**: ${prop.bedrooms}\n`;
   if (prop.bathrooms) md += `- **Bathrooms**: ${prop.bathrooms}\n`;
   if (prop.parking) md += `- **Parking**: ${prop.parking}\n`;
-  if (prop.petFriendly !== null) md += `- **Pet Friendly**: ${prop.petFriendly ? 'Yes' : 'No'}\n`;
+  if (prop.petFriendly !== null) md += `- **Pet Friendly**: ${prop.petFriendly ? 'Yes, max 2 pets, no extra fee' : 'No'}\n`;
   md += `- **Location**: ${prop.location}\n`;
   md += `\n## Description\n\n${prop.description}\n`;
   md += `\n## Amenities\n\n`;

@@ -116,7 +116,7 @@ export const nl: Messages = {
   home: {
     pageTitle: 'Reservas Kalawala | Huisverhuur in Puerto Viejo',
     pageDescription:
-      "Ontdek onze huizen, goedkoper dan op elk ander platform! Welkom bij Kalawala, wij bieden volledig uitgeruste vakantiehuizen in het hart van Puerto Viejo de Talamanca, Costa Rica. Onze huizen bieden ruimte voor maximaal 5 personen, 2 airco's, een volledig uitgeruste eigen badkamer en keuken, en gratis wifi-internetverbinding.",
+      "Ontdek onze huizen, goedkoper dan op elk ander platform! Welkom bij Kalawala, wij bieden volledig uitgeruste vakantiehuizen in het hart van Puerto Viejo de Talamanca, Costa Rica. Onze huizen bieden ruimte voor maximaal 6 personen, airco, een volledig uitgeruste eigen badkamer en keuken, en gratis wifi-internetverbinding.",
     helpMeChooseTitle: 'Vind je',
     helpMeChooseTitleHighlight: 'ideale verblijf',
     optionCouples: 'Ideaal voor stellen',

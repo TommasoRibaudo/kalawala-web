@@ -39,6 +39,9 @@ interface PropertyStructuredDataMeta {
   streetAddress: string;
   bed: BedDetail[];
   petsAllowed?: boolean;
+  /** 24-hour HH:MM, as shown on the listing page (listings.ts checkIn/checkOut). */
+  checkinTime: string;
+  checkoutTime: string;
 }
 
 const POSTAL_CODE = '70403';
@@ -66,6 +69,8 @@ const PROPERTY_META: Record<ListingKey, PropertyStructuredDataMeta> = {
       { numberOfBeds: 1, typeOfBed: 'Single' },
     ],
     petsAllowed: true,
+    checkinTime: '14:00',
+    checkoutTime: '11:00',
   },
   Rana: {
     routeKey: 'rana',
@@ -79,6 +84,8 @@ const PROPERTY_META: Record<ListingKey, PropertyStructuredDataMeta> = {
       { numberOfBeds: 1, typeOfBed: 'Single' },
     ],
     petsAllowed: true,
+    checkinTime: '14:00',
+    checkoutTime: '11:00',
   },
   Tucano: {
     routeKey: 'tucano',
@@ -92,6 +99,8 @@ const PROPERTY_META: Record<ListingKey, PropertyStructuredDataMeta> = {
       { numberOfBeds: 1, typeOfBed: 'Single' },
     ],
     petsAllowed: true,
+    checkinTime: '14:00',
+    checkoutTime: '11:00',
   },
   Pappagallo: {
     routeKey: 'pappagallo',
@@ -105,6 +114,8 @@ const PROPERTY_META: Record<ListingKey, PropertyStructuredDataMeta> = {
       { numberOfBeds: 1, typeOfBed: 'Single' },
     ],
     petsAllowed: true,
+    checkinTime: '14:00',
+    checkoutTime: '11:00',
   },
   Delfin: {
     routeKey: 'delfin',
@@ -114,6 +125,8 @@ const PROPERTY_META: Record<ListingKey, PropertyStructuredDataMeta> = {
     streetAddress: 'Street behind Bakery Degustibus',
     bed: [{ numberOfBeds: 3, typeOfBed: 'Double' }],
     petsAllowed: false,
+    checkinTime: '15:00',
+    checkoutTime: '12:00',
   },
   Areka: {
     routeKey: 'areka',
@@ -122,6 +135,9 @@ const PROPERTY_META: Record<ListingKey, PropertyStructuredDataMeta> = {
     addressLocality: 'Playa Chiquita, Puerto Viejo de Talamanca',
     streetAddress: 'Musa Villas, behind Arena Blanca',
     bed: [{ numberOfBeds: 1, typeOfBed: 'Queen' }],
+    petsAllowed: false,
+    checkinTime: '15:00',
+    checkoutTime: '12:00',
   },
   Giulia: {
     routeKey: 'giulia',
@@ -130,6 +146,9 @@ const PROPERTY_META: Record<ListingKey, PropertyStructuredDataMeta> = {
     addressLocality: 'Playa Chiquita, Puerto Viejo de Talamanca',
     streetAddress: 'Musa Villas, behind Arena Blanca',
     bed: [{ numberOfBeds: 2, typeOfBed: 'Queen' }],
+    petsAllowed: false,
+    checkinTime: '15:00',
+    checkoutTime: '12:00',
   },
   Plumeria: {
     routeKey: 'plumeria',
@@ -138,6 +157,9 @@ const PROPERTY_META: Record<ListingKey, PropertyStructuredDataMeta> = {
     addressLocality: 'Playa Chiquita, Puerto Viejo de Talamanca',
     streetAddress: 'Musa Villas, behind Arena Blanca',
     bed: [{ numberOfBeds: 1, typeOfBed: 'Queen' }],
+    petsAllowed: false,
+    checkinTime: '15:00',
+    checkoutTime: '12:00',
   },
   VillaMar: {
     routeKey: 'villamar',
@@ -146,6 +168,9 @@ const PROPERTY_META: Record<ListingKey, PropertyStructuredDataMeta> = {
     addressLocality: 'Playa Chiquita, Puerto Viejo de Talamanca',
     streetAddress: 'Musa Villas, behind Arena Blanca',
     bed: [{ numberOfBeds: 1, typeOfBed: 'King' }],
+    petsAllowed: false,
+    checkinTime: '15:00',
+    checkoutTime: '12:00',
   },
   VillaCoral: {
     routeKey: 'villacoral',
@@ -154,6 +179,9 @@ const PROPERTY_META: Record<ListingKey, PropertyStructuredDataMeta> = {
     addressLocality: 'Playa Chiquita, Puerto Viejo de Talamanca',
     streetAddress: 'Musa Villas, behind Arena Blanca',
     bed: [{ numberOfBeds: 1, typeOfBed: 'King' }],
+    petsAllowed: false,
+    checkinTime: '15:00',
+    checkoutTime: '12:00',
   },
 };
 
@@ -295,8 +323,8 @@ export function vacationRentalJsonLd(key: ListingKey, locale: Locale) {
       addressCountry: 'CR',
     },
     geo: { '@type': 'GeoCoordinates', latitude: 9.6561, longitude: -82.7539 },
-    checkinTime: '15:00',
-    checkoutTime: '11:00',
+    checkinTime: meta.checkinTime,
+    checkoutTime: meta.checkoutTime,
     containsPlace,
     tourBookingPage: url,
     offers: {

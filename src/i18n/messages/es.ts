@@ -122,7 +122,7 @@ export const es: Messages = {
   home: {
     pageTitle: 'Reservas Kalawala | Alquiler de Casas en Puerto Viejo',
     pageDescription:
-      '¡Descubre nuestras casas, más baratas que cualquier otra plataforma! Bienvenido a Kalawala, ofrecemos casas de vacaciones completamente equipadas ubicadas en el corazón de Puerto Viejo de Talamanca, Costa Rica. Nuestras casas ofrecen espacio para hasta 5 personas, 2 unidades de A/C, baño privado completamente equipado y cocina y conexión gratuita a internet Wi-Fi.',
+      '¡Descubre nuestras casas, más baratas que cualquier otra plataforma! Bienvenido a Kalawala, ofrecemos casas de vacaciones completamente equipadas ubicadas en el corazón de Puerto Viejo de Talamanca, Costa Rica. Nuestras casas ofrecen espacio para hasta 6 personas, A/C, baño privado completamente equipado y cocina y conexión gratuita a internet Wi-Fi.',
     helpMeChooseTitle: 'Elige tu',
     helpMeChooseTitleHighlight: 'Estadía Ideal',
     optionCouples: 'Ideal para parejas',

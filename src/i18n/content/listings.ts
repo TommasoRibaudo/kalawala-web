@@ -78,6 +78,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Close by you may find restaurants, supermarkets, and bike rentals. We trust our guests to follow common sense when leaving our house, that's why we have 0 check-out rules and no check-out list.",
         "Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.",
         "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.",
+        "If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
       ],
     },
     es: {
@@ -95,6 +96,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Cerca puedes encontrar restaurantes, supermercados y alquiler de bicicletas. Confiamos en nuestros huéspedes para seguir el sentido común al salir de nuestra casa, por eso tenemos 0 reglas de salida y ninguna lista de salida.",
         "¿Tienes alguna petición especial? Estaríamos más que felices de acomodarte si podemos. Por favor, no dudes en hacérnoslo saber.",
         "Puerto Viejo es un destino popular para turistas de todo el mundo, gracias a sus impresionantes alrededores. El pueblo cuenta con inmensas playas que están rodeadas de selva tropical, así como dos Parques Nacionales (Manzanillo y Cahuita). Por la noche, el pueblo cobra vida con una escena nocturna animada y activa. Cuando te hospedas aquí, podrás sumergirte completamente en todo lo que hace único a Puerto Viejo.",
+        "Si requieres de una cuna durante tu estadía, háznoslo saber en tu reservación. Nos encargaremos de prepararla en la habitación antes de tu llegada.",
       ],
     },
     fr: {
@@ -112,6 +114,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "À proximité, vous trouverez des restaurants, des supermarchés et des loueurs de vélos. Nous faisons confiance à nos hôtes pour faire preuve de bon sens en quittant notre maison, c'est pourquoi nous n'avons aucune règle de départ ni liste de sortie.",
         "Avez-vous une demande particulière ? Nous serions plus que ravis de vous satisfaire si cela nous est possible. N'hésitez pas à nous le faire savoir.",
         "Puerto Viejo est une destination prisée des touristes du monde entier, grâce à ses environs à couper le souffle. La ville possède d'immenses plages entourées de forêt tropicale, ainsi que deux parcs nationaux (Manzanillo et Cahuita). La nuit, la ville s'anime avec une vie nocturne dynamique et animée. En séjournant ici, vous pourrez pleinement vous immerger dans tout ce qui rend Puerto Viejo unique.",
+        "Si vous avez besoin d'un lit parapluie pendant votre séjour, merci de nous en informer à l'avance. Nous nous chargerons de l'installer dans votre chambre lors de notre passage de ménage.",
       ],
     },
     it: {
@@ -129,6 +132,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Nelle vicinanze troverai ristoranti, supermercati e noleggio biciclette. Ci fidiamo che i nostri ospiti usino il buon senso quando lasciano la nostra casa, per questo non abbiamo regole di check-out né una lista di controllo al check-out.",
         "Hai una richiesta speciale? Saremo più che felici di accontentarti, se possibile. Non esitare a farcelo sapere.",
         "Puerto Viejo è una destinazione molto amata dai turisti di tutto il mondo, grazie ai suoi paesaggi mozzafiato. Il paese vanta spiagge immense circondate dalla foresta pluviale tropicale, oltre a due Parchi Nazionali (Manzanillo e Cahuita). Di notte, il paese si anima con una vivace e movimentata vita notturna. Soggiornando qui, potrai immergerti completamente in tutto ciò che rende Puerto Viejo unico.",
+        "Se hai bisogno di un lettino da campeggio (pack-and-play) durante il tuo soggiorno, faccelo sapere in anticipo. Ci assicureremo di sistemarlo nella tua camera durante il processo di pulizia.",
       ],
     },
     de: {
@@ -146,6 +150,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "In der Nähe finden Sie Restaurants, Supermärkte und Fahrradverleihe. Wir vertrauen darauf, dass unsere Gäste beim Verlassen unseres Hauses gesunden Menschenverstand walten lassen, weshalb wir keine Check-out-Regeln und keine Check-out-Liste haben.",
         "Haben Sie einen besonderen Wunsch? Wir erfüllen ihn Ihnen gerne, wenn es uns möglich ist. Zögern Sie nicht, es uns mitzuteilen.",
         "Puerto Viejo ist dank seiner atemberaubenden Umgebung ein beliebtes Reiseziel für Touristen aus aller Welt. Der Ort verfügt über weitläufige Strände, die von tropischem Regenwald umgeben sind, sowie über zwei Nationalparks (Manzanillo und Cahuita). Nachts erwacht der Ort mit einem lebendigen und aktiven Nachtleben zum Leben. Während Ihres Aufenthalts hier können Sie vollständig in alles eintauchen, was Puerto Viejo einzigartig macht.",
+        "Falls Sie während Ihres Aufenthalts ein Reisebett (Pack-and-Play) benötigen, teilen Sie uns dies bitte im Voraus mit. Wir sorgen dafür, dass es während unseres Reinigungsprozesses in Ihrem Zimmer aufgestellt wird.",
       ],
     },
     he: {
@@ -163,6 +168,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "בקרבת מקום תוכלו למצוא מסעדות, סופרמרקטים והשכרת אופניים. אנחנו סומכים על האורחים שלנו שינהגו בשכל ישר בעת עזיבת הבית, ולכן אין לנו כללי צ'ק-אאוט ואין רשימת בדיקה ביציאה.",
         "יש לכם בקשה מיוחדת? נשמח מאוד להיענות לה אם נוכל. אל תהססו לספר לנו.",
         "פוארטו ויחו הוא יעד מבוקש לתיירים מכל רחבי העולם, בזכות הנוף המרהיב שלו. לעיירה חופים עצומים המוקפים ביער גשם טרופי, וכן שני פארקים לאומיים (מנסניו וקאוויטה). בלילה, העיירה קמה לתחייה עם חיי לילה תוססים ופעילים. כשתתארחו כאן, תוכלו לחוות באופן מלא כל מה שהופך את פוארטו ויחו למקום כה מיוחד.",
+        "אם אתם זקוקים למיטת תינוק ניידת (pack-and-play) במהלך השהות, אנא עדכנו אותנו מראש. נדאג להציב אותה בחדרכם במהלך תהליך הניקיון.",
       ],
     },
     pt: {
@@ -180,6 +186,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Perto daqui poderá encontrar restaurantes, supermercados e aluguer de bicicletas. Confiamos que os nossos hóspedes seguirão o bom senso ao sair da nossa casa; por isso, não temos regras de saída nem lista de check-out.",
         "Tem algum pedido especial? Teremos todo o gosto em atendê-lo(a), se pudermos. Não hesite em informar-nos.",
         "Puerto Viejo é um destino popular para turistas de todo o mundo, graças à sua paisagem deslumbrante. A vila tem praias imensas rodeadas de floresta tropical, além de dois Parques Nacionais (Manzanillo e Cahuita). À noite, a vila ganha vida com uma animada e vibrante vida noturna. Ao ficar aqui, poderá mergulhar por completo em tudo o que torna Puerto Viejo único.",
+        "Se precisar de um berço de viagem durante a sua estadia, por favor informe-nos com antecedência. Iremos garantir que fica montado no seu quarto durante o processo de limpeza.",
       ],
     },
     hi: {
@@ -197,6 +204,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "आस-पास आपको रेस्तरां, सुपरमार्केट और बाइक किराए पर लेने की सुविधाएं मिल जाएंगी। हमें अपने मेहमानों पर भरोसा है कि वे घर छोड़ते समय सामान्य समझ का पालन करेंगे, इसीलिए हमारे यहां चेक-आउट के लिए कोई नियम नहीं हैं और कोई चेक-आउट सूची भी नहीं है।",
         "क्या आपका कोई विशेष अनुरोध है? यदि हम कर सकें, तो हमें आपकी मदद करके बेहद खुशी होगी। कृपया हमें बताने में संकोच न करें।",
         "प्वेर्तो वियेहो अपने शानदार प्राकृतिक परिवेश की बदौलत दुनियाभर के पर्यटकों के बीच एक लोकप्रिय गंतव्य है। इस कस्बे में विशाल समुद्र तट हैं जो उष्णकटिबंधीय वर्षावन से घिरे हुए हैं, साथ ही यहां दो राष्ट्रीय उद्यान भी हैं (मानसानियो और काहुइटा)। रात होते ही यह कस्बा जीवंत और सक्रिय नाइटलाइफ़ के साथ जाग उठता है। यहां ठहरने के दौरान आप उस हर चीज़ में पूरी तरह डूब सकेंगे, जो प्वेर्तो वियेहो को अनूठा बनाती है।",
+        "यदि आपको अपने ठहरने के दौरान पैक-एंड-प्ले क्रिब (बच्चों के लिए पालना) चाहिए, तो कृपया हमें पहले से सूचित करें। हम सफाई के दौरान इसे आपके कमरे में लगाना सुनिश्चित करेंगे।",
       ],
     },
     nl: {
@@ -214,6 +222,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Restaurants, supermarkten en fietsverhuur vind je op loopafstand. We vertrouwen erop dat onze gasten gezond verstand gebruiken bij het verlaten van het huis, daarom hanteren we geen uitcheckregels en geen uitchecklijst.",
         "Heb je een speciaal verzoek? We helpen je graag verder als het mogelijk is. Aarzel niet om het ons te laten weten.",
         "Puerto Viejo is dankzij zijn adembenemende omgeving een geliefde bestemming voor toeristen van over de hele wereld. Het dorp heeft uitgestrekte stranden omzoomd door tropisch regenwoud, en telt twee nationale parken (Manzanillo en Cahuita). 's Avonds komt het dorp tot leven met een levendig en actief nachtleven. Tijdens je verblijf hier ga je volledig op in alles wat Puerto Viejo uniek maakt.",
+        "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
       ],
     },
   },
@@ -223,7 +232,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       seoDescription:
         "Welcome to Reservas Kalawala. Located in the heart of town, this house accommodates up to 6 guests with fully equipped kitchen, 2 bathrooms, 2 A/C units, and private parking for 2 cars.",
       heading: "Casa Delfines",
-      featureName: "House Delfin",
+      featureName: "House Delfines",
       checkIn: "3:00 PM",
       checkOut: "12:00 PM (noon)",
       paragraphs: [
@@ -233,6 +242,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.",
         "The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!",
         "Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.",
+        "We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.",
+        "If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
       ],
     },
     es: {
@@ -240,7 +251,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       seoDescription:
         "Bienvenido a Reservas Kalawala. Ubicada en el corazón del pueblo, esta casa acomoda hasta 6 huéspedes con cocina totalmente equipada, 2 baños, 2 unidades de aire acondicionado y estacionamiento privado para hasta 2 carros.",
       heading: "Casa Delfines",
-      featureName: "Casa Delfín",
+      featureName: "Casa Delfines",
       checkIn: "3:00 PM",
       checkOut: "12:00 PM (mediodía)",
       paragraphs: [
@@ -259,7 +270,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       seoDescription:
         "Bienvenue à Reservas Kalawala. Située au cœur de la ville, cette maison accueille jusqu'à 6 personnes avec une cuisine entièrement équipée, 2 salles de bain, 2 unités de climatisation et un parking privé pour 2 voitures.",
       heading: "Casa Delfines",
-      featureName: "Maison Delfin",
+      featureName: "Maison Delfines",
       checkIn: "15h00",
       checkOut: "12h00 (midi)",
       paragraphs: [
@@ -278,7 +289,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       seoDescription:
         "Benvenuti a Reservas Kalawala. Situata nel cuore del paese, questa casa ospita fino a 6 persone e dispone di cucina completamente attrezzata, 2 bagni, 2 unità di aria condizionata e parcheggio privato per 2 auto.",
       heading: "Casa Delfines",
-      featureName: "Casa Delfin",
+      featureName: "Casa Delfines",
       checkIn: "15:00",
       checkOut: "12:00 (mezzogiorno)",
       paragraphs: [
@@ -288,6 +299,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Puerto Viejo è una destinazione molto amata dai turisti di tutto il mondo, grazie ai suoi paesaggi mozzafiato. Il paese vanta spiagge immense circondate dalla foresta pluviale tropicale, oltre a due Parchi Nazionali (Manzanillo e Cahuita). Di notte, il paese si anima con una vivace e movimentata vita notturna. Soggiornando qui, potrai immergerti completamente in tutto ciò che rende Puerto Viejo unico.",
         "La casa si trova vicino a un accesso alla spiaggia che porta infine a Cocles. Lungo il percorso avrai l'opportunità di avvistare diversi animali e ammirare le piscine naturali nella barriera corallina. C'è persino un punto panoramico nascosto tutto da scoprire!",
         "Il modo più semplice per spostarsi a Puerto Viejo e nei dintorni è noleggiare una bicicletta o uno scooter. È comunque disponibile anche un affidabile servizio di autobus pubblici che può portarti a Cahuita, Manzanillo e Sixaola. Se preferisci guidare, possiamo accogliere anche le auto. Offriamo parcheggio privato, ma facci sapere se hai un pick-up di grandi dimensioni che richiede spazio aggiuntivo.",
+        "Offriamo un servizio di pulizia per prenotazioni di 5 notti o più. Il nostro team ti contatterà durante il soggiorno per concordare un orario conveniente per le pulizie.",
+        "Se hai bisogno di un lettino da campeggio (pack-and-play) durante il tuo soggiorno, faccelo sapere in anticipo. Ci assicureremo di sistemarlo nella tua camera durante il processo di pulizia.",
       ],
     },
     de: {
@@ -295,7 +308,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       seoDescription:
         "Willkommen bei Reservas Kalawala. Dieses Haus liegt im Herzen der Stadt und bietet Platz für bis zu 6 Gäste mit voll ausgestatteter Küche, 2 Badezimmern, 2 Klimaanlagen und privatem Parkplatz für 2 Autos.",
       heading: "Casa Delfines",
-      featureName: "Haus Delfin",
+      featureName: "Haus Delfines",
       checkIn: "15:00 Uhr",
       checkOut: "12:00 Uhr (Mittag)",
       paragraphs: [
@@ -305,6 +318,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Puerto Viejo ist dank seiner atemberaubenden Umgebung ein beliebtes Reiseziel für Touristen aus aller Welt. Der Ort verfügt über weitläufige Strände, die von tropischem Regenwald umgeben sind, sowie über zwei Nationalparks (Manzanillo und Cahuita). Nachts erwacht der Ort mit einem lebendigen und aktiven Nachtleben zum Leben. Während Ihres Aufenthalts hier können Sie vollständig in alles eintauchen, was Puerto Viejo einzigartig macht.",
         "Das Haus liegt in der Nähe eines Strandzugangs, der schließlich nach Cocles führt. Unterwegs haben Sie die Möglichkeit, verschiedene Tiere zu entdecken und die natürlichen Pools im Korallenriff zu bewundern. Es gibt sogar einen versteckten Aussichtspunkt, der nur darauf wartet, entdeckt zu werden!",
         "Am einfachsten bewegen Sie sich in Puerto Viejo und Umgebung mit einem gemieteten Fahrrad oder Roller fort. Es gibt aber auch einen zuverlässigen öffentlichen Busservice, der Sie nach Cahuita, Manzanillo und Sixaola bringt. Wenn Sie lieber mit dem Auto fahren möchten, können wir das ebenfalls ermöglichen. Wir bieten privates Parken an, bitte teilen Sie uns jedoch mit, wenn Sie einen größeren Pickup-Truck haben, der zusätzlichen Platz benötigt.",
+        "Wir bieten Reinigungsservice für Aufenthalte ab 5 Nächten an. Unser Team wird sich während Ihres Aufenthalts mit Ihnen in Verbindung setzen, um einen passenden Termin für die Reinigung zu vereinbaren.",
+        "Falls Sie während Ihres Aufenthalts ein Reisebett (Pack-and-Play) benötigen, teilen Sie uns dies bitte im Voraus mit. Wir sorgen dafür, dass es während unseres Reinigungsprozesses in Ihrem Zimmer aufgestellt wird.",
       ],
     },
     he: {
@@ -312,7 +327,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       seoDescription:
         "ברוכים הבאים ל-Reservas Kalawala. הבית ממוקם בלב העיירה ומתאים עד 6 אורחים, עם מטבח מאובזר במלואו, 2 חדרי רחצה, 2 יחידות מיזוג אוויר וחניה פרטית לשני רכבים.",
       heading: "Casa Delfines",
-      featureName: "בית Delfin",
+      featureName: "בית Delfines",
       checkIn: "15:00",
       checkOut: "12:00 בצהריים",
       paragraphs: [
@@ -322,6 +337,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "פוארטו ויחו הוא יעד מבוקש לתיירים מכל רחבי העולם, בזכות הנוף המרהיב שלו. לעיירה חופים עצומים המוקפים ביער גשם טרופי, וכן שני פארקים לאומיים (מנסניו וקאוויטה). בלילה, העיירה קמה לתחייה עם חיי לילה תוססים ופעילים. כשתתארחו כאן, תוכלו לחוות באופן מלא כל מה שהופך את פוארטו ויחו למקום כה מיוחד.",
         "הבית ממוקם בקרבת גישה לחוף המובילה בסופו של דבר לקוקלס. בדרך, תהיה לכם הזדמנות להבחין במגוון בעלי חיים ולהתפעל מבריכות טבעיות באלמוגים. יש אפילו נקודת תצפית נסתרת המחכה להתגלות!",
         "הדרך הקלה ביותר להתנייד בפוארטו ויחו ובסביבתה היא באמצעות השכרת אופניים או קטנוע. עם זאת, קיים גם שירות אוטובוסים ציבורי אמין שיכול לקחת אתכם לקאוויטה, מנסניו וסיקסאולה. אם אתם מעדיפים לנסוע ברכב, נוכל להתאים גם לכך. אנחנו מציעים חניה פרטית, אך אנא הודיעו לנו אם ברשותכם טנדר גדול שדורש שטח חניה נוסף.",
+        "אנחנו מציעים שירותי ניקיון להזמנות של 5 לילות או יותר. הצוות שלנו ייצור איתכם קשר במהלך השהות כדי לתאם זמן נוח לניקיון.",
+        "אם אתם זקוקים למיטת תינוק ניידת (pack-and-play) במהלך השהות, אנא עדכנו אותנו מראש. נדאג להציב אותה בחדרכם במהלך תהליך הניקיון.",
       ],
     },
     pt: {
@@ -329,7 +346,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       seoDescription:
         "Bem-vindo à Reservas Kalawala. Situada no coração da vila, esta casa acomoda até 6 hóspedes, com cozinha totalmente equipada, 2 casas de banho, 2 unidades de A/C e estacionamento privado para 2 carros.",
       heading: "Casa Delfines",
-      featureName: "Casa Delfin",
+      featureName: "Casa Delfines",
       checkIn: "15h00",
       checkOut: "12h00 (meio-dia)",
       paragraphs: [
@@ -339,6 +356,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Puerto Viejo é um destino popular para turistas de todo o mundo, graças à sua paisagem deslumbrante. A vila tem praias imensas rodeadas de floresta tropical, além de dois Parques Nacionais (Manzanillo e Cahuita). À noite, a vila ganha vida com uma animada e vibrante vida noturna. Ao ficar aqui, poderá mergulhar por completo em tudo o que torna Puerto Viejo único.",
         "A casa está localizada perto de um acesso à praia que leva, eventualmente, até Cocles. Pelo caminho, terá a oportunidade de avistar uma variedade de animais e admirar piscinas naturais no coral. Há mesmo um miradouro escondido à espera de ser descoberto!",
         "A forma mais fácil de se deslocar em Puerto Viejo e arredores é alugando uma bicicleta ou uma scooter. No entanto, também existe um serviço de autocarro público fiável que o pode levar a Cahuita, Manzanillo e Sixaola. Se preferir conduzir, também podemos acomodar automóveis. Oferecemos estacionamento privado, mas avise-nos se tiver uma carrinha pick-up maior que precise de espaço adicional.",
+        "Oferecemos serviço de limpeza para reservas de 5 noites ou mais. A nossa equipa entrará em contacto consigo durante a sua estadia para combinar um horário conveniente para a limpeza.",
+        "Se precisar de um berço de viagem durante a sua estadia, por favor informe-nos com antecedência. Iremos garantir que fica montado no seu quarto durante o processo de limpeza.",
       ],
     },
     hi: {
@@ -346,7 +365,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       seoDescription:
         "Reservas Kalawala में आपका स्वागत है। कस्बे के बीचोंबीच स्थित यह घर पूरी तरह सुसज्जित रसोई, 2 बाथरूम, 2 ए/सी यूनिट और 2 गाड़ियों के लिए निजी पार्किंग के साथ 6 मेहमानों तक की मेज़बानी कर सकता है।",
       heading: "Casa Delfines",
-      featureName: "घर Delfin",
+      featureName: "घर Delfines",
       checkIn: "दोपहर 3:00 बजे",
       checkOut: "दोपहर 12:00 बजे (मध्याह्न)",
       paragraphs: [
@@ -356,6 +375,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "प्वेर्तो वियेहो अपने शानदार प्राकृतिक परिवेश की बदौलत दुनियाभर के पर्यटकों के बीच एक लोकप्रिय गंतव्य है। इस कस्बे में विशाल समुद्र तट हैं जो उष्णकटिबंधीय वर्षावन से घिरे हुए हैं, साथ ही यहां दो राष्ट्रीय उद्यान भी हैं (मानसानियो और काहुइटा)। रात होते ही यह कस्बा जीवंत और सक्रिय नाइटलाइफ़ के साथ जाग उठता है। यहां ठहरने के दौरान आप उस हर चीज़ में पूरी तरह डूब सकेंगे, जो प्वेर्तो वियेहो को अनूठा बनाती है।",
         "यह घर समुद्र तट के उस रास्ते के पास स्थित है जो अंततः कॉक्लेस तक ले जाता है। रास्ते में आपको विभिन्न प्रकार के जानवर देखने और प्रवाल में बने प्राकृतिक जलकुंडों को निहारने का मौका मिलेगा। यहां तक कि एक छिपा हुआ दर्शनीय स्थल भी है, जो खोजे जाने का इंतज़ार कर रहा है!",
         "प्वेर्तो वियेहो और इसके आसपास घूमने-फिरने का सबसे आसान तरीका है बाइक या स्कूटर किराए पर लेना। हालांकि, एक भरोसेमंद सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला तक ले जा सकती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम कारों की भी व्यवस्था कर सकते हैं। हम निजी पार्किंग की सुविधा देते हैं, लेकिन कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।",
+        "5 रातों या उससे अधिक की बुकिंग के लिए हम सफाई सेवा प्रदान करते हैं। सफाई के लिए सुविधाजनक समय तय करने हेतु हमारी टीम आपके ठहरने के दौरान आपसे संपर्क करेगी।",
+        "यदि आपको अपने ठहरने के दौरान पैक-एंड-प्ले क्रिब (बच्चों के लिए पालना) चाहिए, तो कृपया हमें पहले से सूचित करें। हम सफाई के दौरान इसे आपके कमरे में लगाना सुनिश्चित करेंगे।",
       ],
     },
     nl: {
@@ -363,7 +384,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
       seoDescription:
         "Welkom bij Reservas Kalawala. Dit huis, gelegen in het hart van het dorp, biedt plaats aan maximaal 6 gasten, met een volledig uitgeruste keuken, 2 badkamers, 2 airco-units en privéparkeren voor 2 auto's.",
       heading: "Casa Delfines",
-      featureName: "Huis Delfin",
+      featureName: "Huis Delfines",
       checkIn: "15:00",
       checkOut: "12:00 (middag)",
       paragraphs: [
@@ -373,6 +394,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Puerto Viejo is wereldwijd een geliefde bestemming dankzij de betoverende omgeving. Het dorp heeft immense stranden omringd door tropisch regenwoud, en telt twee nationale parken (Manzanillo en Cahuita). 's Avonds ontwaakt het dorp met een levendig en actief nachtleven. Tijdens je verblijf hier ga je volledig op in alles wat Puerto Viejo uniek maakt.",
         "Het huis ligt vlak bij een strandtoegang die uiteindelijk naar Cocles leidt. Onderweg kun je allerlei dieren spotten en genieten van natuurlijke zwembaden in het koraal. Er wacht zelfs een verborgen uitkijkpunt om ontdekt te worden!",
         "De makkelijkste manier om je in Puerto Viejo en omgeving te verplaatsen is met een gehuurde fiets of scooter. Er is ook een betrouwbare openbare busdienst die je naar Cahuita, Manzanillo en Sixaola brengt. Rijd je liever zelf, dan is dat ook mogelijk. We bieden privéparkeren aan, maar laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.",
+        "Voor boekingen van 5 nachten of langer bieden we schoonmaakdiensten aan. Ons team neemt tijdens je verblijf contact met je op om een geschikt moment voor de schoonmaak af te spreken.",
+        "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
       ],
     },
   },
@@ -574,6 +597,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Close by you may find restaurants, supermarkets, and bike rentals. We trust our guests to follow common sense when leaving our house, that's why we have 0 check-out rules and no check-out list.",
         "Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.",
         "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.",
+        "If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
       ],
     },
     es: {
@@ -590,6 +614,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Cerca puedes encontrar restaurantes, supermercados y alquiler de bicicletas. Confiamos en nuestros huéspedes para seguir el sentido común al salir de nuestra casa, por eso tenemos 0 reglas de salida y ninguna lista de salida.",
         "¿Tienes alguna petición especial? Estaríamos más que felices de acomodarte si podemos. Por favor, no dudes en hacérnoslo saber.",
         "Puerto Viejo es un destino popular para turistas de todo el mundo, gracias a sus impresionantes alrededores. El pueblo cuenta con inmensas playas que están rodeadas de selva tropical, así como dos Parques Nacionales (Manzanillo y Cahuita). Por la noche, el pueblo cobra vida con una escena nocturna animada y activa. Cuando te hospedas aquí, podrás sumergirte completamente en todo lo que hace único a Puerto Viejo.",
+        "Si requieres de una cuna durante tu estadía, háznoslo saber en tu reservación. Nos encargaremos de prepararla en la habitación antes de tu llegada.",
       ],
     },
     fr: {
@@ -607,6 +632,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "À proximité, vous trouverez des restaurants, des supermarchés et des locations de vélos. Nous faisons confiance à nos hôtes pour faire preuve de bon sens en quittant notre maison, c'est pourquoi nous n'avons aucune règle de départ ni liste de sortie.",
         "Avez-vous une demande particulière ? Nous serions plus que ravis de vous satisfaire si cela nous est possible. N'hésitez pas à nous le faire savoir.",
         "Puerto Viejo est une destination très prisée des touristes du monde entier, grâce à son cadre naturel exceptionnel. La ville s'enorgueillit de vastes plages bordées par la forêt tropicale, ainsi que de deux parcs nationaux (Manzanillo et Cahuita). La nuit, la ville s'anime grâce à une vie nocturne dynamique et animée. En séjournant ici, vous pourrez pleinement vous immerger dans tout ce qui fait l'unicité de Puerto Viejo.",
+        "Si vous avez besoin d'un lit parapluie pendant votre séjour, merci de nous en informer à l'avance. Nous nous chargerons de l'installer dans votre chambre lors de notre passage de ménage.",
       ],
     },
     de: {
@@ -624,6 +650,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "In der Nähe finden Sie Restaurants, Supermärkte und Fahrradverleihe. Wir vertrauen darauf, dass unsere Gäste beim Verlassen unseres Hauses gesunden Menschenverstand walten lassen, weshalb wir keine Check-out-Regeln und keine Check-out-Liste haben.",
         "Haben Sie einen besonderen Wunsch? Wir erfüllen ihn Ihnen gerne, wenn es uns möglich ist. Zögern Sie nicht, es uns mitzuteilen.",
         "Puerto Viejo ist dank seiner atemberaubenden Umgebung ein beliebtes Reiseziel für Touristen aus aller Welt. Der Ort verfügt über weitläufige Strände, die von tropischem Regenwald umgeben sind, sowie über zwei Nationalparks (Manzanillo und Cahuita). Nachts erwacht der Ort mit einem lebendigen und aktiven Nachtleben zum Leben. Während Ihres Aufenthalts hier können Sie vollständig in alles eintauchen, was Puerto Viejo einzigartig macht.",
+        "Falls Sie während Ihres Aufenthalts ein Reisebett (Pack-and-Play) benötigen, teilen Sie uns dies bitte im Voraus mit. Wir sorgen dafür, dass es während unseres Reinigungsprozesses in Ihrem Zimmer aufgestellt wird.",
       ],
     },
     he: {
@@ -641,6 +668,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "בקרבת מקום תוכלו למצוא מסעדות, סופרמרקטים והשכרת אופניים. אנחנו סומכים על האורחים שלנו שינהגו בשכל ישר בעת עזיבת הבית, ולכן אין לנו כללי צ'ק-אאוט ואין רשימת בדיקה ביציאה.",
         "יש לכם בקשה מיוחדת? נשמח מאוד להיענות לה אם נוכל. אל תהססו לספר לנו.",
         "פוארטו ויחו הוא יעד מבוקש לתיירים מכל רחבי העולם, בזכות הנוף המרהיב שלו. לעיירה חופים עצומים המוקפים ביער גשם טרופי, וכן שני פארקים לאומיים (מנסניו וקאוויטה). בלילה, העיירה קמה לתחייה עם חיי לילה תוססים ופעילים. כשתתארחו כאן, תוכלו לחוות באופן מלא כל מה שהופך את פוארטו ויחו למקום כה מיוחד.",
+        "אם אתם זקוקים למיטת תינוק ניידת (pack-and-play) במהלך השהות, אנא עדכנו אותנו מראש. נדאג להציב אותה בחדרכם במהלך תהליך הניקיון.",
       ],
     },
     it: {
@@ -658,6 +686,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Nelle vicinanze troverai ristoranti, supermercati e noleggio biciclette. Ci fidiamo che i nostri ospiti usino il buon senso quando lasciano la nostra casa, per questo non abbiamo regole di check-out né una lista di controllo al check-out.",
         "Hai una richiesta speciale? Saremo più che felici di accontentarti, se possibile. Non esitare a farcelo sapere.",
         "Puerto Viejo è una destinazione molto amata dai turisti di tutto il mondo, grazie ai suoi paesaggi mozzafiato. Il paese vanta spiagge immense circondate dalla foresta pluviale tropicale, oltre a due Parchi Nazionali (Manzanillo e Cahuita). Di notte, il paese si anima con una vivace e movimentata vita notturna. Soggiornando qui, potrai immergerti completamente in tutto ciò che rende Puerto Viejo unico.",
+        "Se hai bisogno di un lettino da campeggio (pack-and-play) durante il tuo soggiorno, faccelo sapere in anticipo. Ci assicureremo di sistemarlo nella tua camera durante il processo di pulizia.",
       ],
     },
     pt: {
@@ -675,6 +704,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Perto daqui poderá encontrar restaurantes, supermercados e aluguer de bicicletas. Confiamos que os nossos hóspedes seguirão o bom senso ao sair da nossa casa; por isso, não temos regras de saída nem lista de check-out.",
         "Tem algum pedido especial? Teremos todo o gosto em atendê-lo(a), se pudermos. Não hesite em informar-nos.",
         "Puerto Viejo é um destino popular para turistas de todo o mundo, graças à sua paisagem deslumbrante. A vila tem praias imensas rodeadas de floresta tropical, além de dois Parques Nacionais (Manzanillo e Cahuita). À noite, a vila ganha vida com uma animada e vibrante vida noturna. Ao ficar aqui, poderá mergulhar por completo em tudo o que torna Puerto Viejo único.",
+        "Se precisar de um berço de viagem durante a sua estadia, por favor informe-nos com antecedência. Iremos garantir que fica montado no seu quarto durante o processo de limpeza.",
       ],
     },
     hi: {
@@ -692,6 +722,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "आस-पास आपको रेस्तरां, सुपरमार्केट और बाइक किराए पर लेने की सुविधाएं मिल जाएंगी। हमें अपने मेहमानों पर भरोसा है कि वे घर छोड़ते समय सामान्य समझ का पालन करेंगे, इसीलिए हमारे यहां चेक-आउट के लिए कोई नियम नहीं हैं और कोई चेक-आउट सूची भी नहीं है।",
         "क्या आपका कोई विशेष अनुरोध है? यदि हम कर सकें, तो हमें आपकी मदद करके बेहद खुशी होगी। कृपया हमें बताने में संकोच न करें।",
         "प्वेर्तो वियेहो अपने शानदार प्राकृतिक परिवेश की बदौलत दुनियाभर के पर्यटकों के बीच एक लोकप्रिय गंतव्य है। इस कस्बे में विशाल समुद्र तट हैं जो उष्णकटिबंधीय वर्षावन से घिरे हुए हैं, साथ ही यहां दो राष्ट्रीय उद्यान भी हैं (मानसानियो और काहुइटा)। रात होते ही यह कस्बा जीवंत और सक्रिय नाइटलाइफ़ के साथ जाग उठता है। यहां ठहरने के दौरान आप उस हर चीज़ में पूरी तरह डूब सकेंगे, जो प्वेर्तो वियेहो को अनूठा बनाती है।",
+        "यदि आपको अपने ठहरने के दौरान पैक-एंड-प्ले क्रिब (बच्चों के लिए पालना) चाहिए, तो कृपया हमें पहले से सूचित करें। हम सफाई के दौरान इसे आपके कमरे में लगाना सुनिश्चित करेंगे।",
       ],
     },
     nl: {
@@ -709,6 +740,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Restaurants, supermarkten en fietsverhuur vind je op loopafstand. We vertrouwen erop dat onze gasten gezond verstand gebruiken bij het verlaten van het huis, daarom hanteren we geen uitcheckregels en geen uitchecklijst.",
         "Heb je een speciaal verzoek? We helpen je graag verder als het mogelijk is. Aarzel niet om het ons te laten weten.",
         "Puerto Viejo is dankzij zijn adembenemende omgeving een geliefde bestemming voor toeristen van over de hele wereld. Het dorp heeft uitgestrekte stranden omzoomd door tropisch regenwoud, en telt twee nationale parken (Manzanillo en Cahuita). 's Avonds komt het dorp tot leven met een levendig en actief nachtleven. Tijdens je verblijf hier ga je volledig op in alles wat Puerto Viejo uniek maakt.",
+        "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
       ],
     },
   },
@@ -900,6 +932,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Close by you may find restaurants, supermarkets, and bike rentals. We trust our guests to follow common sense when leaving our house, that's why we have 0 check-out rules and no check-out list.",
         "Do you have a special request? We would be more than happy to accommodate you if we can. Please don't hesitate to let us know.",
         "Puerto Viejo is a popular destination for tourists from all over the world, thanks to its stunning surroundings. The town boasts immense beaches that are surrounded by tropical rainforest, as well as two National Parks (Manzanillo and Cahuita). At night, the town comes alive with a lively and active nightlife scene. When you stay here, you'll be able to fully immerse yourself in everything that makes Puerto Viejo unique.",
+        "If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
       ],
     },
     es: {
@@ -917,6 +950,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Cerca puedes encontrar restaurantes, supermercados y alquiler de bicicletas. Confiamos en nuestros huéspedes para seguir el sentido común al salir de nuestra casa, por eso tenemos 0 reglas de salida y ninguna lista de salida.",
         "¿Tienes alguna petición especial? Estaríamos más que felices de acomodarte si podemos. Por favor, no dudes en hacérnoslo saber.",
         "Puerto Viejo es un destino popular para turistas de todo el mundo, gracias a sus impresionantes alrededores. El pueblo cuenta con inmensas playas que están rodeadas de selva tropical, así como dos Parques Nacionales (Manzanillo y Cahuita). Por la noche, el pueblo cobra vida con una escena nocturna animada y activa. Cuando te hospedas aquí, podrás sumergirte completamente en todo lo que hace único a Puerto Viejo.",
+        "Si requieres de una cuna durante tu estadía, háznoslo saber en tu reservación. Nos encargaremos de prepararla en la habitación antes de tu llegada.",
       ],
     },
     fr: {
@@ -933,6 +967,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "À proximité, vous trouverez des restaurants, des supermarchés et des locations de vélos. Nous faisons confiance à nos hôtes pour faire preuve de bon sens en quittant notre maison, c'est pourquoi nous n'avons aucune règle de départ ni liste de sortie.",
         "Avez-vous une demande particulière ? Nous serions plus que ravis de vous satisfaire si cela nous est possible. N'hésitez pas à nous le faire savoir.",
         "Puerto Viejo est une destination très prisée des touristes du monde entier, grâce à son cadre naturel exceptionnel. La ville s'enorgueillit de vastes plages bordées par la forêt tropicale, ainsi que de deux parcs nationaux (Manzanillo et Cahuita). La nuit, la ville s'anime grâce à une vie nocturne dynamique et animée. En séjournant ici, vous pourrez pleinement vous immerger dans tout ce qui fait l'unicité de Puerto Viejo.",
+        "Si vous avez besoin d'un lit parapluie pendant votre séjour, merci de nous en informer à l'avance. Nous nous chargerons de l'installer dans votre chambre lors de notre passage de ménage.",
       ],
     },
     de: {
@@ -949,6 +984,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "In der Nähe finden Sie Restaurants, Supermärkte und Fahrradverleihe. Wir vertrauen darauf, dass unsere Gäste beim Verlassen unseres Hauses gesunden Menschenverstand walten lassen, weshalb wir keine Check-out-Regeln und keine Check-out-Liste haben.",
         "Haben Sie einen besonderen Wunsch? Wir erfüllen ihn Ihnen gerne, wenn es uns möglich ist. Zögern Sie nicht, es uns mitzuteilen.",
         "Puerto Viejo ist dank seiner atemberaubenden Umgebung ein beliebtes Reiseziel für Touristen aus aller Welt. Der Ort verfügt über weitläufige Strände, die von tropischem Regenwald umgeben sind, sowie über zwei Nationalparks (Manzanillo und Cahuita). Nachts erwacht der Ort mit einem lebendigen und aktiven Nachtleben zum Leben. Während Ihres Aufenthalts hier können Sie vollständig in alles eintauchen, was Puerto Viejo einzigartig macht.",
+        "Falls Sie während Ihres Aufenthalts ein Reisebett (Pack-and-Play) benötigen, teilen Sie uns dies bitte im Voraus mit. Wir sorgen dafür, dass es während unseres Reinigungsprozesses in Ihrem Zimmer aufgestellt wird.",
       ],
     },
     he: {
@@ -965,6 +1001,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "בקרבת מקום תוכלו למצוא מסעדות, סופרמרקטים והשכרת אופניים. אנחנו סומכים על האורחים שלנו שינהגו בשכל ישר בעת עזיבת הבית, ולכן אין לנו כללי צ'ק-אאוט ואין רשימת בדיקה ביציאה.",
         "יש לכם בקשה מיוחדת? נשמח מאוד להיענות לה אם נוכל. אל תהססו לספר לנו.",
         "פוארטו ויחו הוא יעד מבוקש לתיירים מכל רחבי העולם, בזכות הנוף המרהיב שלו. לעיירה חופים עצומים המוקפים ביער גשם טרופי, וכן שני פארקים לאומיים (מנסניו וקאוויטה). בלילה, העיירה קמה לתחייה עם חיי לילה תוססים ופעילים. כשתתארחו כאן, תוכלו לחוות באופן מלא כל מה שהופך את פוארטו ויחו למקום כה מיוחד.",
+        "אם אתם זקוקים למיטת תינוק ניידת (pack-and-play) במהלך השהות, אנא עדכנו אותנו מראש. נדאג להציב אותה בחדרכם במהלך תהליך הניקיון.",
       ],
     },
     it: {
@@ -981,6 +1018,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Nelle vicinanze troverai ristoranti, supermercati e noleggio biciclette. Ci fidiamo che i nostri ospiti usino il buon senso quando lasciano la nostra casa, per questo non abbiamo regole di check-out né una lista di controllo al check-out.",
         "Hai una richiesta speciale? Saremo più che felici di accontentarti, se possibile. Non esitare a farcelo sapere.",
         "Puerto Viejo è una destinazione molto amata dai turisti di tutto il mondo, grazie ai suoi paesaggi mozzafiato. Il paese vanta spiagge immense circondate dalla foresta pluviale tropicale, oltre a due Parchi Nazionali (Manzanillo e Cahuita). Di notte, il paese si anima con una vivace e movimentata vita notturna. Soggiornando qui, potrai immergerti completamente in tutto ciò che rende Puerto Viejo unico.",
+        "Se hai bisogno di un lettino da campeggio (pack-and-play) durante il tuo soggiorno, faccelo sapere in anticipo. Ci assicureremo di sistemarlo nella tua camera durante il processo di pulizia.",
       ],
     },
     pt: {
@@ -997,6 +1035,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Perto daqui poderá encontrar restaurantes, supermercados e aluguer de bicicletas. Confiamos que os nossos hóspedes seguirão o bom senso ao sair da nossa casa; por isso, não temos regras de saída nem lista de check-out.",
         "Tem algum pedido especial? Teremos todo o gosto em atendê-lo(a), se pudermos. Não hesite em informar-nos.",
         "Puerto Viejo é um destino popular para turistas de todo o mundo, graças à sua paisagem deslumbrante. A vila tem praias imensas rodeadas de floresta tropical, além de dois Parques Nacionais (Manzanillo e Cahuita). À noite, a vila ganha vida com uma animada e vibrante vida noturna. Ao ficar aqui, poderá mergulhar por completo em tudo o que torna Puerto Viejo único.",
+        "Se precisar de um berço de viagem durante a sua estadia, por favor informe-nos com antecedência. Iremos garantir que fica montado no seu quarto durante o processo de limpeza.",
       ],
     },
     hi: {
@@ -1013,6 +1052,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "आस-पास आपको रेस्तरां, सुपरमार्केट और बाइक किराए पर लेने की सुविधाएं मिल जाएंगी। हमें अपने मेहमानों पर भरोसा है कि वे घर छोड़ते समय सामान्य समझ का पालन करेंगे, इसीलिए हमारे यहां चेक-आउट के लिए कोई नियम नहीं हैं और कोई चेक-आउट सूची भी नहीं है।",
         "क्या आपका कोई विशेष अनुरोध है? यदि हम कर सकें, तो हमें आपकी मदद करके बेहद खुशी होगी। कृपया हमें बताने में संकोच न करें।",
         "प्वेर्तो वियेहो अपने शानदार प्राकृतिक परिवेश की बदौलत दुनियाभर के पर्यटकों के बीच एक लोकप्रिय गंतव्य है। इस कस्बे में विशाल समुद्र तट हैं जो उष्णकटिबंधीय वर्षावन से घिरे हुए हैं, साथ ही यहां दो राष्ट्रीय उद्यान भी हैं (मानसानियो और काहुइटा)। रात होते ही यह कस्बा जीवंत और सक्रिय नाइटलाइफ़ के साथ जाग उठता है। यहां ठहरने के दौरान आप उस हर चीज़ में पूरी तरह डूब सकेंगे, जो प्वेर्तो वियेहो को अनूठा बनाती है।",
+        "यदि आपको अपने ठहरने के दौरान पैक-एंड-प्ले क्रिब (बच्चों के लिए पालना) चाहिए, तो कृपया हमें पहले से सूचित करें। हम सफाई के दौरान इसे आपके कमरे में लगाना सुनिश्चित करेंगे।",
       ],
     },
     nl: {
@@ -1029,6 +1069,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Restaurants, supermarkten en fietsverhuur vind je op loopafstand. We vertrouwen erop dat onze gasten gezond verstand gebruiken bij het verlaten van het huis, daarom hanteren we geen uitcheckregels en geen uitchecklijst.",
         "Heb je een speciaal verzoek? We helpen je graag verder als het mogelijk is. Aarzel niet om het ons te laten weten.",
         "Puerto Viejo is dankzij zijn adembenemende omgeving een geliefde bestemming voor toeristen van over de hele wereld. Het dorp heeft uitgestrekte stranden omzoomd door tropisch regenwoud, en telt twee nationale parken (Manzanillo en Cahuita). 's Avonds komt het dorp tot leven met een levendig en actief nachtleven. Tijdens je verblijf hier ga je volledig op in alles wat Puerto Viejo uniek maakt.",
+        "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
       ],
     },
   },
@@ -1051,6 +1092,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Getting around Puerto Viejo and its vicinity is best done by renting a bike or an electric bike. Additionally, the public bus service is available, connecting you to Cahuita, Manzanillo, and Sixaola. If you prefer driving, we can accommodate cars and provide private parking. Please inform us if you have a larger pickup truck that requires extra space.",
         "The house is located close to beach access that eventually leads to Cocles. Along the way, you'll have the opportunity to spot a variety of animals and admire natural pools in the coral. There's even a hidden sightseeing spot waiting to be discovered!",
         "Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.",
+        "We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.",
+        "If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
       ],
     },
     es: {
@@ -1091,6 +1134,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Pour se déplacer à Puerto Viejo et dans ses environs, le mieux est de louer un vélo ou un vélo électrique. Le service de bus public est également disponible et vous relie à Cahuita, Manzanillo et Sixaola. Si vous préférez conduire, nous pouvons accueillir des voitures et fournir un stationnement privé. Merci de nous informer si vous avez un pick-up de grande taille nécessitant un espace supplémentaire.",
         "La maison est située à proximité d'un accès à la plage qui mène finalement à Cocles. En chemin, vous aurez l'occasion d'observer une variété d'animaux et d'admirer les piscines naturelles dans le corail. Il existe même un point de vue caché qui n'attend que d'être découvert !",
         "Pour se déplacer à Puerto Viejo et dans ses environs, le plus simple est de louer un vélo ou un scooter. Il existe également un service de bus public fiable qui peut vous emmener à Cahuita, Manzanillo et Sixaola. Si vous préférez conduire, nous pouvons également accueillir des voitures. Nous proposons un stationnement privé, mais merci de nous prévenir si vous avez un pick-up de grande taille nécessitant un espace supplémentaire.",
+        "Nous proposons un service de ménage pour les réservations de 5 nuits ou plus. Notre équipe vous contactera pendant votre séjour pour convenir d'un horaire pratique pour le ménage.",
+        "Si vous avez besoin d'un lit parapluie pendant votre séjour, merci de nous en informer à l'avance. Nous nous chargerons de l'installer dans votre chambre lors de notre passage de ménage.",
       ],
     },
     de: {
@@ -1111,6 +1156,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Am besten bewegen Sie sich in Puerto Viejo und Umgebung mit einem gemieteten Fahrrad oder E-Bike fort. Zudem steht der öffentliche Busservice zur Verfügung, der Sie nach Cahuita, Manzanillo und Sixaola bringt. Wenn Sie lieber mit dem Auto fahren möchten, können wir das ebenfalls ermöglichen und bieten privates Parken an. Bitte teilen Sie uns mit, wenn Sie einen größeren Pickup-Truck haben, der zusätzlichen Platz benötigt.",
         "Das Haus liegt in der Nähe eines Strandzugangs, der schließlich nach Cocles führt. Unterwegs haben Sie die Möglichkeit, verschiedene Tiere zu entdecken und die natürlichen Pools im Korallenriff zu bewundern. Es gibt sogar einen versteckten Aussichtspunkt, der nur darauf wartet, entdeckt zu werden!",
         "Am einfachsten bewegen Sie sich in Puerto Viejo und Umgebung mit einem gemieteten Fahrrad oder Roller fort. Es gibt aber auch einen zuverlässigen öffentlichen Busservice, der Sie nach Cahuita, Manzanillo und Sixaola bringt. Wenn Sie lieber mit dem Auto fahren möchten, können wir das ebenfalls ermöglichen. Wir bieten privates Parken an, bitte teilen Sie uns jedoch mit, wenn Sie einen größeren Pickup-Truck haben, der zusätzlichen Platz benötigt.",
+        "Wir bieten Reinigungsservice für Aufenthalte ab 5 Nächten an. Unser Team wird sich während Ihres Aufenthalts mit Ihnen in Verbindung setzen, um einen passenden Termin für die Reinigung zu vereinbaren.",
+        "Falls Sie während Ihres Aufenthalts ein Reisebett (Pack-and-Play) benötigen, teilen Sie uns dies bitte im Voraus mit. Wir sorgen dafür, dass es während unseres Reinigungsprozesses in Ihrem Zimmer aufgestellt wird.",
       ],
     },
     he: {
@@ -1131,6 +1178,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "הדרך הטובה ביותר להתנייד בפוארטו ויחו ובסביבתה היא באמצעות השכרת אופניים או אופניים חשמליים. בנוסף, קיים שירות אוטובוסים ציבורי המחבר אתכם לקאוויטה, מנסניו וסיקסאולה. אם אתם מעדיפים לנהוג, נוכל להתאים רכבים ולספק חניה פרטית. אנא הודיעו לנו אם ברשותכם טנדר גדול שדורש שטח נוסף.",
         "הבית ממוקם בקרבת גישה לחוף המובילה בסופו של דבר לקוקלס. בדרך, תהיה לכם הזדמנות להבחין במגוון בעלי חיים ולהתפעל מבריכות טבעיות באלמוגים. יש אפילו נקודת תצפית נסתרת המחכה להתגלות!",
         "הדרך הקלה ביותר להתנייד בפוארטו ויחו ובסביבתה היא באמצעות השכרת אופניים או קטנוע. עם זאת, קיים גם שירות אוטובוסים ציבורי אמין שיכול לקחת אתכם לקאוויטה, מנסניו וסיקסאולה. אם אתם מעדיפים לנסוע ברכב, נוכל להתאים גם לכך. אנחנו מציעים חניה פרטית, אך אנא הודיעו לנו אם ברשותכם טנדר גדול שדורש שטח חניה נוסף.",
+        "אנחנו מציעים שירותי ניקיון להזמנות של 5 לילות או יותר. הצוות שלנו ייצור איתכם קשר במהלך השהות כדי לתאם זמן נוח לניקיון.",
+        "אם אתם זקוקים למיטת תינוק ניידת (pack-and-play) במהלך השהות, אנא עדכנו אותנו מראש. נדאג להציב אותה בחדרכם במהלך תהליך הניקיון.",
       ],
     },
     it: {
@@ -1151,6 +1200,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Il modo migliore per spostarsi a Puerto Viejo e nei dintorni è noleggiare una bicicletta o una bici elettrica. È inoltre disponibile il servizio di autobus pubblici, che ti collega a Cahuita, Manzanillo e Sixaola. Se preferisci guidare, possiamo accogliere le auto e offrire parcheggio privato. Ti preghiamo di avvisarci se hai un pick-up di grandi dimensioni che richiede spazio aggiuntivo.",
         "La casa si trova vicino a un accesso alla spiaggia che porta infine a Cocles. Lungo il percorso avrai l'opportunità di avvistare diversi animali e ammirare le piscine naturali nella barriera corallina. C'è persino un punto panoramico nascosto tutto da scoprire!",
         "Il modo più semplice per spostarsi a Puerto Viejo e nei dintorni è noleggiare una bicicletta o uno scooter. È comunque disponibile anche un affidabile servizio di autobus pubblici che può portarti a Cahuita, Manzanillo e Sixaola. Se preferisci guidare, possiamo accogliere anche le auto. Offriamo parcheggio privato, ma facci sapere se hai un pick-up di grandi dimensioni che richiede spazio aggiuntivo.",
+        "Offriamo un servizio di pulizia per prenotazioni di 5 notti o più. Il nostro team ti contatterà durante il soggiorno per concordare un orario conveniente per le pulizie.",
+        "Se hai bisogno di un lettino da campeggio (pack-and-play) durante il tuo soggiorno, faccelo sapere in anticipo. Ci assicureremo di sistemarlo nella tua camera durante il processo di pulizia.",
       ],
     },
     pt: {
@@ -1171,6 +1222,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "A melhor forma de se deslocar em Puerto Viejo e arredores é alugando uma bicicleta ou uma bicicleta elétrica. Além disso, está disponível o serviço de autocarro público, que o liga a Cahuita, Manzanillo e Sixaola. Se preferir conduzir, podemos acomodar automóveis e fornecer estacionamento privado. Por favor, informe-nos se tiver uma carrinha pick-up maior que precise de espaço extra.",
         "A casa está localizada perto de um acesso à praia que leva, eventualmente, até Cocles. Pelo caminho, terá a oportunidade de avistar uma variedade de animais e admirar piscinas naturais no coral. Há mesmo um miradouro escondido à espera de ser descoberto!",
         "A forma mais fácil de se deslocar em Puerto Viejo e arredores é alugando uma bicicleta ou uma scooter. No entanto, também existe um serviço de autocarro público fiável que o pode levar a Cahuita, Manzanillo e Sixaola. Se preferir conduzir, também podemos acomodar automóveis. Oferecemos estacionamento privado, mas avise-nos se tiver uma carrinha pick-up maior que precise de espaço adicional.",
+        "Oferecemos serviço de limpeza para reservas de 5 noites ou mais. A nossa equipa entrará em contacto consigo durante a sua estadia para combinar um horário conveniente para a limpeza.",
+        "Se precisar de um berço de viagem durante a sua estadia, por favor informe-nos com antecedência. Iremos garantir que fica montado no seu quarto durante o processo de limpeza.",
       ],
     },
     hi: {
@@ -1191,6 +1244,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "प्वेर्तो वियेहो और इसके आसपास घूमने-फिरने का सबसे अच्छा तरीका है बाइक या इलेक्ट्रिक बाइक किराए पर लेना। इसके अलावा, सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला से जोड़ती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम कारों की व्यवस्था और निजी पार्किंग की सुविधा दे सकते हैं। कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।",
         "यह घर समुद्र तट के उस रास्ते के पास स्थित है जो अंततः कॉक्लेस तक ले जाता है। रास्ते में आपको विभिन्न प्रकार के जानवर देखने और प्रवाल में बने प्राकृतिक जलकुंडों को निहारने का मौका मिलेगा। यहां तक कि एक छिपा हुआ दर्शनीय स्थल भी है, जो खोजे जाने का इंतज़ार कर रहा है!",
         "प्वेर्तो वियेहो और इसके आसपास घूमने-फिरने का सबसे आसान तरीका है बाइक या स्कूटर किराए पर लेना। हालांकि, एक भरोसेमंद सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला तक ले जा सकती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम कारों की भी व्यवस्था कर सकते हैं। हम निजी पार्किंग की सुविधा देते हैं, लेकिन कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।",
+        "5 रातों या उससे अधिक की बुकिंग के लिए हम सफाई सेवा प्रदान करते हैं। सफाई के लिए सुविधाजनक समय तय करने हेतु हमारी टीम आपके ठहरने के दौरान आपसे संपर्क करेगी।",
+        "यदि आपको अपने ठहरने के दौरान पैक-एंड-प्ले क्रिब (बच्चों के लिए पालना) चाहिए, तो कृपया हमें पहले से सूचित करें। हम सफाई के दौरान इसे आपके कमरे में लगाना सुनिश्चित करेंगे।",
       ],
     },
     nl: {
@@ -1211,6 +1266,8 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Je verplaatst je het best door de omgeving van Puerto Viejo met een gehuurde fiets of elektrische fiets. Daarnaast is er een openbare busdienst die je verbindt met Cahuita, Manzanillo en Sixaola. Rijd je liever zelf, dan bieden we ook privéparkeren aan. Laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.",
         "Het huis ligt vlak bij een strandtoegang die uiteindelijk naar Cocles leidt. Onderweg kun je allerlei dieren spotten en genieten van natuurlijke zwembaden in het koraal. Er wacht zelfs een verborgen uitkijkpunt om ontdekt te worden!",
         "De makkelijkste manier om je in Puerto Viejo en omgeving te verplaatsen is met een gehuurde fiets of scooter. Er is ook een betrouwbare openbare busdienst die je naar Cahuita, Manzanillo en Sixaola brengt. Rijd je liever zelf, dan is dat ook mogelijk. We bieden privéparkeren aan, maar laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.",
+        "Voor boekingen van 5 nachten of langer bieden we schoonmaakdiensten aan. Ons team neemt tijdens je verblijf contact met je op om een geschikt moment voor de schoonmaak af te spreken.",
+        "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
       ],
     },
   },
@@ -1387,6 +1444,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
         "Explore the beauty of Playa Chiquita, Punta Uva and the vibrant culture of Puerto Viejo, all while having a comfortable home base to return to. Make the most of your Costa Rican getaway with this inviting villa as your accommodation.",
         "Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.",
+        "We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.",
       ],
     },
     es: {
@@ -1406,6 +1464,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Si necesitas que preparemos una cuna de viaje para tu estadía, por favor infórmanos con anticipación. Nos aseguraremos de colocarla en tu habitación durante nuestro proceso de limpieza.",
         "Explora la belleza de Playa Chiquita, Punta Uva y la vibrante cultura de Puerto Viejo, todo mientras cuentas con un hogar comodo al cual regresar. Aprovecha al máximo tu escapada a Puerto Viejo con esta acogedora villa como tu alojamiento.",
         "Moverse por Puerto Viejo y sus alrededores es más fácil alquilando una bicicleta o una scooter. Sin embargo, también hay un servicio de autobús público confiable que puede llevarte a Cahuita, Manzanillo y Sixaola. Si prefieres conducir, también podemos coordinar la entrega de vehículos. Ofrecemos estacionamiento privado, pero avísanos si tienes una camioneta grande que requiera espacio adicional.",
+        "Ofrecemos servicios de limpieza para reservas de 5 noches o más. Nuestro equipo se comunicará con usted durante su estadía para coordinar un horario conveniente para la limpieza.",
       ],
     },
     de: {
@@ -1425,6 +1484,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Falls Sie während Ihres Aufenthalts ein Reisebett (Pack-and-Play) benötigen, teilen Sie uns dies bitte im Voraus mit. Wir sorgen dafür, dass es während unseres Reinigungsprozesses in Ihrem Zimmer aufgestellt wird.",
         "Erkunden Sie die Schönheit von Playa Chiquita, Punta Uva und die lebendige Kultur von Puerto Viejo, während Sie stets zu einem komfortablen Zuhause zurückkehren können. Holen Sie das Beste aus Ihrer Costa-Rica-Reise heraus mit dieser einladenden Villa als Unterkunft.",
         "Am einfachsten bewegen Sie sich in Puerto Viejo und Umgebung mit einem gemieteten Fahrrad oder Roller fort. Es gibt aber auch einen zuverlässigen öffentlichen Busservice, der Sie nach Cahuita, Manzanillo und Sixaola bringt. Wenn Sie lieber mit dem Auto fahren möchten, können wir das ebenfalls ermöglichen. Wir bieten privates Parken an, bitte teilen Sie uns jedoch mit, wenn Sie einen größeren Pickup-Truck haben, der zusätzlichen Platz benötigt.",
+        "Wir bieten Reinigungsservice für Aufenthalte ab 5 Nächten an. Unser Team wird sich während Ihres Aufenthalts mit Ihnen in Verbindung setzen, um einen passenden Termin für die Reinigung zu vereinbaren.",
       ],
     },
     fr: {
@@ -1444,6 +1504,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Si vous avez besoin d'un lit parapluie pendant votre séjour, merci de nous en informer à l'avance. Nous nous chargerons de l'installer dans votre chambre lors de notre passage de ménage.",
         "Explorez la beauté de Playa Chiquita, Punta Uva et la culture vibrante de Puerto Viejo, tout en ayant un point de chute confortable où revenir. Profitez au maximum de votre escapade au Costa Rica avec cette villa accueillante comme lieu d'hébergement.",
         "Pour se déplacer à Puerto Viejo et dans ses environs, le plus simple est de louer un vélo ou un scooter. Il existe également un service de bus public fiable qui peut vous emmener à Cahuita, Manzanillo et Sixaola. Si vous préférez conduire, nous pouvons également accueillir des voitures. Nous proposons un stationnement privé, mais merci de nous prévenir si vous avez un pick-up de grande taille nécessitant un espace supplémentaire.",
+        "Nous proposons un service de ménage pour les réservations de 5 nuits ou plus. Notre équipe vous contactera pendant votre séjour pour convenir d'un horaire pratique pour le ménage.",
       ],
     },
     he: {
@@ -1463,6 +1524,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "אם אתם זקוקים למיטת תינוק ניידת (pack-and-play) במהלך השהות, אנא עדכנו אותנו מראש. נדאג להציב אותה בחדרכם במהלך תהליך הניקיון.",
         "גלו את היופי של פלאיה צ'יקיטה, פונטה אובה והתרבות התוססת של פוארטו ויחו, כשיש לכם בסיס בית נוח לחזור אליו. נצלו את החופשה הקוסטריקנית שלכם עד תום עם הווילה המזמינה הזו כמקום האירוח שלכם.",
         "הדרך הקלה ביותר להתנייד בפוארטו ויחו ובסביבתה היא באמצעות השכרת אופניים או קטנוע. עם זאת, קיים גם שירות אוטובוסים ציבורי אמין שיכול לקחת אתכם לקאוויטה, מנסניו וסיקסאולה. אם אתם מעדיפים לנסוע ברכב, נוכל להתאים גם לכך. אנחנו מציעים חניה פרטית, אך אנא הודיעו לנו אם ברשותכם טנדר גדול שדורש שטח חניה נוסף.",
+        "אנחנו מציעים שירותי ניקיון להזמנות של 5 לילות או יותר. הצוות שלנו ייצור איתכם קשר במהלך השהות כדי לתאם זמן נוח לניקיון.",
       ],
     },
     it: {
@@ -1482,6 +1544,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Se hai bisogno di un lettino da campeggio (pack-and-play) durante il tuo soggiorno, faccelo sapere in anticipo. Ci assicureremo di sistemarlo nella tua camera durante il processo di pulizia.",
         "Esplora la bellezza di Playa Chiquita, Punta Uva e la vivace cultura di Puerto Viejo, avendo sempre una comoda base a cui tornare. Sfrutta al massimo la tua vacanza in Costa Rica scegliendo questa accogliente villa come tuo alloggio.",
         "Il modo più semplice per spostarsi a Puerto Viejo e nei dintorni è noleggiare una bicicletta o uno scooter. È comunque disponibile anche un affidabile servizio di autobus pubblici che può portarti a Cahuita, Manzanillo e Sixaola. Se preferisci guidare, possiamo accogliere anche le auto. Offriamo parcheggio privato, ma facci sapere se hai un pick-up di grandi dimensioni che richiede spazio aggiuntivo.",
+        "Offriamo un servizio di pulizia per prenotazioni di 5 notti o più. Il nostro team ti contatterà durante il soggiorno per concordare un orario conveniente per le pulizie.",
       ],
     },
     pt: {
@@ -1501,6 +1564,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Se precisar de um berço de viagem durante a sua estadia, por favor informe-nos com antecedência. Iremos garantir que fica montado no seu quarto durante o processo de limpeza.",
         "Explore a beleza de Playa Chiquita, Punta Uva e a vibrante cultura de Puerto Viejo, tendo sempre uma casa confortável para onde regressar. Aproveite ao máximo a sua escapada à Costa Rica com esta acolhedora vila como alojamento.",
         "A forma mais fácil de se deslocar em Puerto Viejo e arredores é alugando uma bicicleta ou uma scooter. No entanto, também existe um serviço de autocarro público fiável que o pode levar a Cahuita, Manzanillo e Sixaola. Se preferir conduzir, também podemos acomodar automóveis. Oferecemos estacionamento privado, mas avise-nos se tiver uma carrinha pick-up maior que precise de espaço adicional.",
+        "Oferecemos serviço de limpeza para reservas de 5 noites ou mais. A nossa equipa entrará em contacto consigo durante a sua estadia para combinar um horário conveniente para a limpeza.",
       ],
     },
     hi: {
@@ -1520,6 +1584,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "यदि आपको अपने ठहरने के दौरान पैक-एंड-प्ले क्रिब (बच्चों के लिए पालना) चाहिए, तो कृपया हमें पहले से सूचित करें। हम सफाई के दौरान इसे आपके कमरे में लगाना सुनिश्चित करेंगे।",
         "प्लाया चिकिता, पुंटा उवा की खूबसूरती और प्वेर्तो वियेहो की जीवंत संस्कृति का आनंद लें, और साथ ही लौटने के लिए एक आरामदायक ठिकाना भी पाएं। इस आकर्षक विला में ठहरकर अपनी कोस्टा रिका यात्रा का पूरा लुत्फ़ उठाएं।",
         "प्वेर्तो वियेहो और इसके आसपास घूमने-फिरने का सबसे आसान तरीका है बाइक या स्कूटर किराए पर लेना। हालांकि, एक भरोसेमंद सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला तक ले जा सकती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम कारों की भी व्यवस्था कर सकते हैं। हम निजी पार्किंग की सुविधा देते हैं, लेकिन कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।",
+        "5 रातों या उससे अधिक की बुकिंग के लिए हम सफाई सेवा प्रदान करते हैं। सफाई के लिए सुविधाजनक समय तय करने हेतु हमारी टीम आपके ठहरने के दौरान आपसे संपर्क करेगी।",
       ],
     },
     nl: {
@@ -1539,6 +1604,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
         "Ontdek de schoonheid van Playa Chiquita, Punta Uva en de levendige cultuur van Puerto Viejo, terwijl je steeds kunt terugkeren naar een comfortabele thuisbasis. Haal het maximale uit je Costa Ricaanse uitstapje met deze uitnodigende villa als onderkomen.",
         "De makkelijkste manier om je in Puerto Viejo en omgeving te verplaatsen is met een gehuurde fiets of scooter. Er is ook een betrouwbare openbare busdienst die je naar Cahuita, Manzanillo en Sixaola brengt. Rijd je liever zelf, dan is dat ook mogelijk. We bieden privéparkeren aan, maar laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.",
+        "Voor boekingen van 5 nachten of langer bieden we schoonmaakdiensten aan. Ons team neemt tijdens je verblijf contact met je op om een geschikt moment voor de schoonmaak af te spreken.",
       ],
     },
   },
@@ -1560,6 +1626,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "If you require a pack- and - play crib during your stay, please inform us ahead of time. We'll make sure to set it up in your room during our cleaning process.",
         "Explore the beauty of Playa Chiquita, Punta Uva and the vibrant culture of Puerto Viejo, all while having a comfortable home base to return to. Make the most of your Costa Rican getaway with this inviting villa as your accommodation.",
         { text: "Getting around in Puerto Viejo and its surroundings is easiest by renting a bike or a scooter. However, there is also a reliable public bus service available that can take you to Cahuita, Manzanillo, and Sixaola. If you prefer to drive, we can accommodate cars as well. We offer private parking but please let us know if you have a larger pickup truck that requires additional space.", trailingBreak: false },
+        "We offer cleaning services for reservations of 5 nights or longer. Our team will contact you during your stay to coordinate a convenient time for the cleaning.",
       ],
     },
     es: {
@@ -1579,6 +1646,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Si necesitas que preparemos una cuna de viaje para tu estadía, por favor infórmanos con anticipación. Nos aseguraremos de colocarla en tu habitación durante nuestro proceso de limpieza.",
         "Explora la belleza de Playa Chiquita, Punta Uva y la vibrante cultura de Puerto Viejo, todo mientras cuentas con un hogar comodo al cual regresar. Aprovecha al máximo tu escapada a Puerto Viejo con esta acogedora villa como tu alojamiento.",
         { text: "Moverse por Puerto Viejo y sus alrededores es más fácil alquilando una bicicleta o una scooter. Sin embargo, también hay un servicio de autobús público confiable que puede llevarte a Cahuita, Manzanillo y Sixaola. Si prefieres conducir, también podemos coordinar la entrega de vehículos. Ofrecemos estacionamiento privado, pero avísanos si tienes una camioneta grande que requiera espacio adicional.", trailingBreak: false },
+        "Ofrecemos servicios de limpieza para reservas de 5 noches o más. Nuestro equipo se comunicará con usted durante su estadía para coordinar un horario conveniente para la limpieza.",
       ],
     },
     de: {
@@ -1598,6 +1666,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Falls Sie während Ihres Aufenthalts ein Reisebett (Pack-and-Play) benötigen, teilen Sie uns dies bitte im Voraus mit. Wir sorgen dafür, dass es während unseres Reinigungsprozesses in Ihrem Zimmer aufgestellt wird.",
         "Erkunden Sie die Schönheit von Playa Chiquita, Punta Uva und die lebendige Kultur von Puerto Viejo, während Sie stets zu einem komfortablen Zuhause zurückkehren können. Holen Sie das Beste aus Ihrer Costa-Rica-Reise heraus mit dieser einladenden Villa als Unterkunft.",
         { text: "Am einfachsten bewegen Sie sich in Puerto Viejo und Umgebung mit einem gemieteten Fahrrad oder Roller fort. Es gibt aber auch einen zuverlässigen öffentlichen Busservice, der Sie nach Cahuita, Manzanillo und Sixaola bringt. Wenn Sie lieber mit dem Auto fahren möchten, können wir das ebenfalls ermöglichen. Wir bieten privates Parken an, bitte teilen Sie uns jedoch mit, wenn Sie einen größeren Pickup-Truck haben, der zusätzlichen Platz benötigt.", trailingBreak: false },
+        "Wir bieten Reinigungsservice für Aufenthalte ab 5 Nächten an. Unser Team wird sich während Ihres Aufenthalts mit Ihnen in Verbindung setzen, um einen passenden Termin für die Reinigung zu vereinbaren.",
       ],
     },
     fr: {
@@ -1617,6 +1686,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Si vous avez besoin d'un lit parapluie pendant votre séjour, merci de nous en informer à l'avance. Nous nous chargerons de l'installer dans votre chambre lors de notre passage de ménage.",
         "Explorez la beauté de Playa Chiquita, Punta Uva et la culture vibrante de Puerto Viejo, tout en ayant un point de chute confortable où revenir. Profitez au maximum de votre escapade au Costa Rica avec cette villa accueillante comme lieu d'hébergement.",
         { text: "Pour se déplacer à Puerto Viejo et dans ses environs, le plus simple est de louer un vélo ou un scooter. Il existe également un service de bus public fiable qui peut vous emmener à Cahuita, Manzanillo et Sixaola. Si vous préférez conduire, nous pouvons également accueillir des voitures. Nous proposons un stationnement privé, mais merci de nous prévenir si vous avez un pick-up de grande taille nécessitant un espace supplémentaire.", trailingBreak: false },
+        "Nous proposons un service de ménage pour les réservations de 5 nuits ou plus. Notre équipe vous contactera pendant votre séjour pour convenir d'un horaire pratique pour le ménage.",
       ],
     },
     he: {
@@ -1636,6 +1706,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "אם אתם זקוקים למיטת תינוק ניידת (pack-and-play) במהלך השהות, אנא עדכנו אותנו מראש. נדאג להציב אותה בחדרכם במהלך תהליך הניקיון.",
         "גלו את היופי של פלאיה צ'יקיטה, פונטה אובה והתרבות התוססת של פוארטו ויחו, כשיש לכם בסיס בית נוח לחזור אליו. נצלו את החופשה הקוסטריקנית שלכם עד תום עם הווילה המזמינה הזו כמקום האירוח שלכם.",
         { text: "הדרך הקלה ביותר להתנייד בפוארטו ויחו ובסביבתה היא באמצעות השכרת אופניים או קטנוע. עם זאת, קיים גם שירות אוטובוסים ציבורי אמין שיכול לקחת אתכם לקאוויטה, מנסניו וסיקסאולה. אם אתם מעדיפים לנסוע ברכב, נוכל להתאים גם לכך. אנחנו מציעים חניה פרטית, אך אנא הודיעו לנו אם ברשותכם טנדר גדול שדורש שטח חניה נוסף.", trailingBreak: false },
+        "אנחנו מציעים שירותי ניקיון להזמנות של 5 לילות או יותר. הצוות שלנו ייצור איתכם קשר במהלך השהות כדי לתאם זמן נוח לניקיון.",
       ],
     },
     it: {
@@ -1655,6 +1726,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Se hai bisogno di un lettino da campeggio (pack-and-play) durante il tuo soggiorno, faccelo sapere in anticipo. Ci assicureremo di sistemarlo nella tua camera durante il processo di pulizia.",
         "Esplora la bellezza di Playa Chiquita, Punta Uva e la vivace cultura di Puerto Viejo, avendo sempre una comoda base a cui tornare. Sfrutta al massimo la tua vacanza in Costa Rica scegliendo questa accogliente villa come tuo alloggio.",
         { text: "Il modo più semplice per spostarsi a Puerto Viejo e nei dintorni è noleggiare una bicicletta o uno scooter. È comunque disponibile anche un affidabile servizio di autobus pubblici che può portarti a Cahuita, Manzanillo e Sixaola. Se preferisci guidare, possiamo accogliere anche le auto. Offriamo parcheggio privato, ma facci sapere se hai un pick-up di grandi dimensioni che richiede spazio aggiuntivo.", trailingBreak: false },
+        "Offriamo un servizio di pulizia per prenotazioni di 5 notti o più. Il nostro team ti contatterà durante il soggiorno per concordare un orario conveniente per le pulizie.",
       ],
     },
     pt: {
@@ -1674,6 +1746,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Se precisar de um berço de viagem durante a sua estadia, por favor informe-nos com antecedência. Iremos garantir que fica montado no seu quarto durante o processo de limpeza.",
         "Explore a beleza de Playa Chiquita, Punta Uva e a vibrante cultura de Puerto Viejo, tendo sempre uma casa confortável para onde regressar. Aproveite ao máximo a sua escapada à Costa Rica com esta acolhedora vila como alojamento.",
         { text: "A forma mais fácil de se deslocar em Puerto Viejo e arredores é alugando uma bicicleta ou uma scooter. No entanto, também existe um serviço de autocarro público fiável que o pode levar a Cahuita, Manzanillo e Sixaola. Se preferir conduzir, também podemos acomodar automóveis. Oferecemos estacionamento privado, mas avise-nos se tiver uma carrinha pick-up maior que precise de espaço adicional.", trailingBreak: false },
+        "Oferecemos serviço de limpeza para reservas de 5 noites ou mais. A nossa equipa entrará em contacto consigo durante a sua estadia para combinar um horário conveniente para a limpeza.",
       ],
     },
     hi: {
@@ -1693,6 +1766,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "यदि आपको अपने ठहरने के दौरान पैक-एंड-प्ले क्रिब (बच्चों के लिए पालना) चाहिए, तो कृपया हमें पहले से सूचित करें। हम सफाई के दौरान इसे आपके कमरे में लगाना सुनिश्चित करेंगे।",
         "प्लाया चिकिता, पुंटा उवा की खूबसूरती और प्वेर्तो वियेहो की जीवंत संस्कृति का आनंद लें, और साथ ही लौटने के लिए एक आरामदायक ठिकाना भी पाएं। इस आकर्षक विला में ठहरकर अपनी कोस्टा रिका यात्रा का पूरा लुत्फ़ उठाएं।",
         { text: "प्वेर्तो वियेहो और इसके आसपास घूमने-फिरने का सबसे आसान तरीका है बाइक या स्कूटर किराए पर लेना। हालांकि, एक भरोसेमंद सार्वजनिक बस सेवा भी उपलब्ध है, जो आपको काहुइटा, मानसानियो और सिक्सोला तक ले जा सकती है। यदि आप गाड़ी चलाना पसंद करते हैं, तो हम कारों की भी व्यवस्था कर सकते हैं। हम निजी पार्किंग की सुविधा देते हैं, लेकिन कृपया हमें बताएं यदि आपके पास एक बड़ा पिकअप ट्रक है जिसे अतिरिक्त जगह चाहिए।", trailingBreak: false },
+        "5 रातों या उससे अधिक की बुकिंग के लिए हम सफाई सेवा प्रदान करते हैं। सफाई के लिए सुविधाजनक समय तय करने हेतु हमारी टीम आपके ठहरने के दौरान आपसे संपर्क करेगी।",
       ],
     },
     nl: {
@@ -1712,6 +1786,7 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
         "Ontdek de schoonheid van Playa Chiquita, Punta Uva en de levendige cultuur van Puerto Viejo, terwijl je steeds kunt terugkeren naar een comfortabele thuisbasis. Haal het maximale uit je Costa Ricaanse uitstapje met deze uitnodigende villa als onderkomen.",
         { text: "De makkelijkste manier om je in Puerto Viejo en omgeving te verplaatsen is met een gehuurde fiets of scooter. Er is ook een betrouwbare openbare busdienst die je naar Cahuita, Manzanillo en Sixaola brengt. Rijd je liever zelf, dan is dat ook mogelijk. We bieden privéparkeren aan, maar laat het ons weten als je een grotere pick-uptruck hebt die extra ruimte nodig heeft.", trailingBreak: false },
+        "Voor boekingen van 5 nachten of langer bieden we schoonmaakdiensten aan. Ons team neemt tijdens je verblijf contact met je op om een geschikt moment voor de schoonmaak af te spreken.",
       ],
     },
   },

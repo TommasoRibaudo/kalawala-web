@@ -114,7 +114,7 @@ export const de: Messages = {
   home: {
     pageTitle: 'Reservas Kalawala | Ferienhausvermietung in Puerto Viejo',
     pageDescription:
-      'Entdecken Sie unsere Häuser, günstiger als auf jeder anderen Plattform! Willkommen bei Kalawala – wir bieten voll ausgestattete Ferienhäuser im Herzen von Puerto Viejo de Talamanca, Costa Rica. Unsere Häuser bieten Platz für bis zu 5 Personen, 2 Klimaanlagen, ein voll ausgestattetes eigenes Bad und eine eigene Küche sowie kostenloses WLAN.',
+      'Entdecken Sie unsere Häuser, günstiger als auf jeder anderen Plattform! Willkommen bei Kalawala – wir bieten voll ausgestattete Ferienhäuser im Herzen von Puerto Viejo de Talamanca, Costa Rica. Unsere Häuser bieten Platz für bis zu 6 Personen, Klimaanlage, ein voll ausgestattetes eigenes Bad und eine eigene Küche sowie kostenloses WLAN.',
     helpMeChooseTitle: 'Finden Sie Ihren',
     helpMeChooseTitleHighlight: 'idealen Aufenthalt',
     optionCouples: 'Ideal für Paare',

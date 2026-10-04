@@ -161,7 +161,7 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
     propertyId: "bc2470e7-3f18-43e3-91eb-ac3bf3c82ca4",
     smoobuApartmentId: 2946826,
     slug: "Delfin",
-    name: "Casa Delfin",
+    name: "Casa Delfines",
     guestCapacity: 6,
     thumbnailUrl: "https://drive.google.com/thumbnail?id=1ui0cNzHTb2WM-k59OkwnJXw77m0P7PPW&sz=w1000",
     amenities: [

@@ -283,7 +283,7 @@ const housesCentro: Partial<Record<Locale, PropertyCategoryContent>> = {
     heading: 'Vacation Houses in Puerto Viejo Centro',
     introParagraphs: [
       'These 5 houses sit within walking distance of downtown Puerto Viejo de Talamanca: restaurants, bars, the bus stop and the beach are all a few minutes on foot, no car needed.',
-      'Each one is fully equipped with a kitchen, fast WiFi and air conditioning, and two of them, Casa Rana and Casa Geco, welcome pets.',
+      'Each one is fully equipped with a kitchen, fast WiFi and air conditioning, and four of them, Casa Rana, Casa Geco, Casa Tucano and Casa Pappagallo, welcome pets (max 2, no extra fee).',
     ],
     gridHeading: 'Our 5 houses in Puerto Viejo centro',
     backToHubLabel: 'See all vacation homes in Puerto Viejo →',
@@ -296,7 +296,7 @@ const housesCentro: Partial<Record<Locale, PropertyCategoryContent>> = {
     heading: 'Casas Vacacionales en Puerto Viejo Centro',
     introParagraphs: [
       'Estas 5 casas están a poca distancia caminando del centro de Puerto Viejo de Talamanca: restaurantes, bares, la parada de bus y la playa quedan a pocos minutos a pie, sin necesidad de carro.',
-      'Cada una está totalmente equipada con cocina, WiFi rápido y aire acondicionado, y dos de ellas, Casa Rana y Casa Geco, reciben mascotas.',
+      'Cada una está totalmente equipada con cocina, WiFi rápido y aire acondicionado, y cuatro de ellas, Casa Rana, Casa Geco, Casa Tucano y Casa Pappagallo, reciben mascotas (máximo 2, sin cargo extra).',
     ],
     gridHeading: 'Nuestras 5 casas en el centro de Puerto Viejo',
     backToHubLabel: 'Ver todas las casas vacacionales en Puerto Viejo →',
@@ -309,7 +309,7 @@ const housesCentro: Partial<Record<Locale, PropertyCategoryContent>> = {
     heading: 'Ferienhäuser im Zentrum von Puerto Viejo',
     introParagraphs: [
       'Diese 5 Häuser liegen fußläufig zum Zentrum von Puerto Viejo de Talamanca: Restaurants, Bars, die Bushaltestelle und der Strand sind wenige Gehminuten entfernt, kein Auto nötig.',
-      'Jedes ist voll ausgestattet mit Küche, schnellem WLAN und Klimaanlage, und zwei davon, Casa Rana und Casa Geco, heißen Haustiere willkommen.',
+      'Jedes ist voll ausgestattet mit Küche, schnellem WLAN und Klimaanlage, und vier davon, Casa Rana, Casa Geco, Casa Tucano und Casa Pappagallo, heißen Haustiere willkommen (maximal 2, ohne Aufpreis).',
     ],
     gridHeading: 'Unsere 5 Häuser im Zentrum von Puerto Viejo',
     backToHubLabel: 'Alle Ferienhäuser in Puerto Viejo ansehen →',
@@ -322,7 +322,7 @@ const housesCentro: Partial<Record<Locale, PropertyCategoryContent>> = {
     heading: 'Maisons de Vacances au Centre de Puerto Viejo',
     introParagraphs: [
       'Ces 5 maisons se trouvent à distance de marche du centre de Puerto Viejo de Talamanca : restaurants, bars, l’arrêt de bus et la plage sont à quelques minutes à pied, sans voiture.',
-      'Chacune est entièrement équipée avec cuisine, WiFi rapide et climatisation, et deux d’entre elles, Casa Rana et Casa Geco, acceptent les animaux.',
+      'Chacune est entièrement équipée avec cuisine, WiFi rapide et climatisation, et quatre d’entre elles, Casa Rana, Casa Geco, Casa Tucano et Casa Pappagallo, acceptent les animaux (2 maximum, sans supplément).',
     ],
     gridHeading: 'Nos 5 maisons au centre de Puerto Viejo',
     backToHubLabel: 'Voir toutes les maisons de vacances à Puerto Viejo →',
@@ -335,7 +335,7 @@ const housesCentro: Partial<Record<Locale, PropertyCategoryContent>> = {
     heading: 'Case Vacanza nel Centro di Puerto Viejo',
     introParagraphs: [
       'Queste 5 case si trovano a pochi passi dal centro di Puerto Viejo de Talamanca: ristoranti, bar, la fermata del bus e la spiaggia sono a pochi minuti a piedi, senza bisogno di auto.',
-      'Ognuna è completamente attrezzata con cucina, WiFi veloce e aria condizionata, e due di esse, Casa Rana e Casa Geco, accolgono animali.',
+      'Ognuna è completamente attrezzata con cucina, WiFi veloce e aria condizionata, e quattro di esse, Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo, accolgono animali (massimo 2, senza costi extra).',
     ],
     gridHeading: 'Le nostre 5 case nel centro di Puerto Viejo',
     backToHubLabel: 'Vedi tutte le case vacanza a Puerto Viejo →',
@@ -348,7 +348,7 @@ const housesCentro: Partial<Record<Locale, PropertyCategoryContent>> = {
     heading: 'Casas de Férias no Centro de Puerto Viejo',
     introParagraphs: [
       'Estas 5 casas ficam a poucos passos do centro de Puerto Viejo de Talamanca: restaurantes, bares, o ponto de ônibus e a praia ficam a poucos minutos a pé, sem precisar de carro.',
-      'Cada uma é totalmente equipada com cozinha, WiFi rápido e ar-condicionado, e duas delas, Casa Rana e Casa Geco, aceitam animais de estimação.',
+      'Cada uma é totalmente equipada com cozinha, WiFi rápido e ar-condicionado, e quatro delas, Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo, aceitam animais de estimação (máximo 2, sem taxa extra).',
     ],
     gridHeading: 'As nossas 5 casas no centro de Puerto Viejo',
     backToHubLabel: 'Ver todas as casas de férias em Puerto Viejo →',
@@ -606,7 +606,7 @@ const petFriendlyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
     seoDescription: 'Casa Rana, Casa Geco, Casa Tucano and Casa Pappagallo are our 4 pet-friendly vacation houses in downtown Puerto Viejo: no pet fee and a short walk to the beach.',
     heading: 'Pet-Friendly Houses in Puerto Viejo',
     introParagraphs: [
-      'Casa Rana, Casa Geco, Casa Tucano and Casa Pappagallo are the four houses in our portfolio that welcome guests traveling with a dog, with no pet fee. Casa Rana and Casa Geco each have a small fenced garden; Casa Tucano and Casa Pappagallo are central apartments above an Italian bakery.',
+      'Casa Rana, Casa Geco, Casa Tucano and Casa Pappagallo are the four houses in our portfolio that welcome guests traveling with a dog, with no pet fee and up to 2 pets per stay. Casa Rana has a small fenced garden and Casa Geco a tiny garden for dogs next to its parking; Casa Tucano and Casa Pappagallo are central apartments above an Italian bakery.',
       'All four sit in downtown Puerto Viejo, walking distance to the beach, handy for a pre-breakfast walk before it gets hot.',
     ],
     gridHeading: 'Our 4 pet-friendly houses',
@@ -619,7 +619,7 @@ const petFriendlyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
     seoDescription: 'Casa Rana, Casa Geco, Casa Tucano y Casa Pappagallo son nuestras 4 casas vacacionales pet friendly en el centro de Puerto Viejo: sin cargo por mascota y a pocos minutos caminando de la playa.',
     heading: 'Casas Pet Friendly en Puerto Viejo',
     introParagraphs: [
-      'Casa Rana, Casa Geco, Casa Tucano y Casa Pappagallo son las cuatro casas de nuestro portafolio que reciben huéspedes que viajan con perro, sin cargo por mascota. Casa Rana y Casa Geco tienen cada una un pequeño jardín cercado; Casa Tucano y Casa Pappagallo son apartamentos céntricos sobre una panadería italiana.',
+      'Casa Rana, Casa Geco, Casa Tucano y Casa Pappagallo son las cuatro casas de nuestro portafolio que reciben huéspedes que viajan con perro, sin cargo por mascota y con un máximo de 2 mascotas por estadía. Casa Rana tiene un pequeño jardín cercado y Casa Geco un jardincito para perros junto a su parqueo; Casa Tucano y Casa Pappagallo son apartamentos céntricos sobre una panadería italiana.',
       'Las cuatro están en el centro de Puerto Viejo, a pocos minutos caminando de la playa, ideal para un paseo antes del desayuno, antes de que empiece el calor.',
     ],
     gridHeading: 'Nuestras 4 casas pet friendly',
@@ -632,7 +632,7 @@ const petFriendlyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
     seoDescription: 'Casa Rana, Casa Geco, Casa Tucano und Casa Pappagallo sind unsere 4 haustierfreundlichen Ferienhäuser im Zentrum von Puerto Viejo: keine Haustiergebühr und wenige Gehminuten zum Strand.',
     heading: 'Haustierfreundliche Häuser in Puerto Viejo',
     introParagraphs: [
-      'Casa Rana, Casa Geco, Casa Tucano und Casa Pappagallo sind die vier Häuser in unserem Portfolio, die Gäste mit Hund willkommen heißen, ohne Haustiergebühr. Casa Rana und Casa Geco haben jeweils einen kleinen umzäunten Garten; Casa Tucano und Casa Pappagallo sind zentrale Apartments über einer italienischen Bäckerei.',
+      'Casa Rana, Casa Geco, Casa Tucano und Casa Pappagallo sind die vier Häuser in unserem Portfolio, die Gäste mit Hund willkommen heißen, ohne Haustiergebühr und mit maximal 2 Haustieren pro Aufenthalt. Casa Rana hat einen kleinen umzäunten Garten und Casa Geco einen winzigen Hundegarten neben dem Parkplatz; Casa Tucano und Casa Pappagallo sind zentrale Apartments über einer italienischen Bäckerei.',
       'Alle vier liegen im Zentrum von Puerto Viejo, fußläufig zum Strand, praktisch für einen Spaziergang vor dem Frühstück, bevor es heiß wird.',
     ],
     gridHeading: 'Unsere 4 haustierfreundlichen Häuser',
@@ -645,7 +645,7 @@ const petFriendlyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
     seoDescription: 'Casa Rana, Casa Geco, Casa Tucano et Casa Pappagallo sont nos 4 maisons de vacances acceptant les animaux au centre de Puerto Viejo : aucun supplément animal, et une courte marche jusqu’à la plage.',
     heading: 'Maisons Acceptant les Animaux à Puerto Viejo',
     introParagraphs: [
-      'Casa Rana, Casa Geco, Casa Tucano et Casa Pappagallo sont les quatre maisons de notre portefeuille qui accueillent les voyageurs accompagnés d’un chien, sans supplément animal. Casa Rana et Casa Geco ont chacune un petit jardin clôturé ; Casa Tucano et Casa Pappagallo sont des appartements centraux au-dessus d’une boulangerie italienne.',
+      'Casa Rana, Casa Geco, Casa Tucano et Casa Pappagallo sont les quatre maisons de notre portefeuille qui accueillent les voyageurs accompagnés d’un chien, sans supplément animal, avec 2 animaux maximum par séjour. Casa Rana a un petit jardin clôturé et Casa Geco un tout petit jardin pour chiens à côté de son parking ; Casa Tucano et Casa Pappagallo sont des appartements centraux au-dessus d’une boulangerie italienne.',
       'Les quatre se trouvent au centre de Puerto Viejo, à distance de marche de la plage, pratique pour une promenade avant le petit-déjeuner, avant que la chaleur ne s’installe.',
     ],
     gridHeading: 'Nos 4 maisons acceptant les animaux',
@@ -658,7 +658,7 @@ const petFriendlyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
     seoDescription: 'Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo sono le nostre 4 case vacanza pet friendly nel centro di Puerto Viejo: nessun costo extra per l’animale e pochi minuti a piedi dalla spiaggia.',
     heading: 'Case Pet Friendly a Puerto Viejo',
     introParagraphs: [
-      'Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo sono le quattro case del nostro portafoglio che accolgono ospiti che viaggiano con il cane, senza costi extra. Casa Rana e Casa Geco hanno ciascuna un piccolo giardino recintato; Casa Tucano e Casa Pappagallo sono appartamenti centrali sopra una panetteria italiana.',
+      'Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo sono le quattro case del nostro portafoglio che accolgono ospiti che viaggiano con il cane, senza costi extra, con un massimo di 2 animali per soggiorno. Casa Rana ha un piccolo giardino recintato e Casa Geco un minuscolo giardino per cani accanto al parcheggio; Casa Tucano e Casa Pappagallo sono appartamenti centrali sopra una panetteria italiana.',
       'Tutte e quattro si trovano nel centro di Puerto Viejo, a pochi minuti a piedi dalla spiaggia, comode per una passeggiata prima di colazione, prima che arrivi il caldo.',
     ],
     gridHeading: 'Le nostre 4 case pet friendly',
@@ -671,7 +671,7 @@ const petFriendlyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
     seoDescription: 'Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo são as nossas 4 casas de férias pet friendly no centro de Puerto Viejo: sem taxa extra por animal e a poucos minutos a pé da praia.',
     heading: 'Casas Pet Friendly em Puerto Viejo',
     introParagraphs: [
-      'Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo são as quatro casas do nosso portfólio que recebem hóspedes que viajam com cachorro, sem taxa extra. Casa Rana e Casa Geco têm cada uma um pequeno jardim cercado; Casa Tucano e Casa Pappagallo são apartamentos centrais sobre uma padaria italiana.',
+      'Casa Rana, Casa Geco, Casa Tucano e Casa Pappagallo são as quatro casas do nosso portfólio que recebem hóspedes que viajam com cachorro, sem taxa extra, com no máximo 2 animais por estadia. Casa Rana tem um pequeno jardim cercado e Casa Geco um jardinzinho para cães ao lado do estacionamento; Casa Tucano e Casa Pappagallo são apartamentos centrais sobre uma padaria italiana.',
       'As quatro ficam no centro de Puerto Viejo, a poucos minutos a pé da praia, ótimo para um passeio antes do café da manhã, antes de esquentar.',
     ],
     gridHeading: 'As nossas 4 casas pet friendly',

@@ -96,7 +96,9 @@
   "overrides": {
     "serialize-javascript": "6.0.2",
     "underscore": "1.13.8",
-    "minimist": "^1.2.8"
+    "minimist": "^1.2.8",
+    "proxy-addr": "^2.0.8",
+    "shell-quote": "^1.11.0"
   },
   "reactSnap": {
     "source": "build",

@@ -58,7 +58,7 @@ export type RouteKey =
   | 'blogWeatherSep' | 'blogWeatherOct' | 'blogWeatherNov' | 'blogWeatherDec' | 'blogSanjoseOptions'
   | 'blogGandocaRefuge' | 'blogBeaches' | 'blogBocas' | 'blogThingsToDo' | 'blogWildlife' | 'blogFood'
   | 'blogVacationRentals' | 'blogHousesCentro' | 'blogHousesPuntaUva' | 'blogFamilyHouses' | 'blogCouplesHouses' | 'blogPetFriendlyHouses'
-  | 'success' | 'privacy';
+  | 'success' | 'privacy' | 'chatbotPrivacy';
 
 export interface RouteDef {
   /** Stable internal id — never shown to a visitor, safe to keep even if the slug changes. */
@@ -140,6 +140,7 @@ export const LOADERS: Record<RouteKey, () => Promise<{ default: ComponentType<an
   blogPetFriendlyHouses: () => import(/* webpackChunkName: "route-pet-friendly-houses-puerto-viejo" */ './pages/Blog/staticPages/PetFriendlyHouses'),
   success: () => import(/* webpackChunkName: "route-success" */ './pages/Home/Success.page'),
   privacy: () => import(/* webpackChunkName: "route-privacy" */ './pages/Privacy.page'),
+  chatbotPrivacy: () => import(/* webpackChunkName: "route-chatbot-coastal-privacy" */ './pages/ChatbotPrivacy.page'),
 };
 
 interface ManifestEntry {

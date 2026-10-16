@@ -1636,7 +1636,8 @@ async function searchWithFilterFixture() {
 
 test('pool filter narrows the results to homes with a pool and writes pool=1', async () => {
   await searchWithFilterFixture();
-  expect(visibleHomeNames()).toEqual(['Casa Geco', 'Villa Mar', 'Casa Areka']);
+  // Default order is smallest capacity first (stable for ties).
+  expect(visibleHomeNames()).toEqual(['Villa Mar', 'Casa Areka', 'Casa Geco']);
 
   fireEvent.click(activeSlide().getByRole('checkbox', { name: /pool/i }));
 
@@ -1693,9 +1694,10 @@ test('sort reorders the grid and writes the sort param', async () => {
   fireEvent.change(sort, { target: { value: 'size_asc' } });
   expect(visibleHomeNames()).toEqual(['Villa Mar', 'Casa Areka', 'Casa Geco']);
 
-  // Back to "Featured" restores the server order and clears the param.
+  // Back to "Featured" restores the default (smallest capacity first) and clears the param.
+  fireEvent.change(sort, { target: { value: 'price_desc' } });
   fireEvent.change(sort, { target: { value: '' } });
-  expect(visibleHomeNames()).toEqual(['Casa Geco', 'Villa Mar', 'Casa Areka']);
+  expect(visibleHomeNames()).toEqual(['Villa Mar', 'Casa Areka', 'Casa Geco']);
   expect(new URLSearchParams(currentSearch()).get('sort')).toBeNull();
 });
 

@@ -33,6 +33,8 @@ import './ChatLauncher.style.scss';
 const SHOW_DELAY_MS = 1500;
 /** Gap between the launcher and the cookie banner it sits above. */
 const BANNER_GAP_PX = 16;
+/** Matches `.chat-launcher__button` in the stylesheet. */
+const BUTTON_SIZE_PX = 58;
 /** The speech bubble comes up this long after the button, and stays this long. */
 const TEASER_DELAY_MS = 2500;
 const TEASER_STAY_MS = 15000;
@@ -75,6 +77,8 @@ const ChatLauncher: React.FC = () => {
   const [asking, setAsking] = useState(false);
   const [teaser, setTeaser] = useState(false);
   const [bannerHeight, setBannerHeight] = useState(0);
+  /** Height of the sticky booking bar's CTA centre above the viewport bottom; 0 = no bar. */
+  const [ctaCentre, setCtaCentre] = useState(0);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -123,6 +127,19 @@ const ChatLauncher: React.FC = () => {
     const measure = () => {
       const banner = document.querySelector('.cookie-consent-banner');
       setBannerHeight(banner ? banner.getBoundingClientRect().height : 0);
+
+      // Listing pages pin a "Ver disponibilidad" bar to the bottom on mobile and
+      // leave its right gutter free for this button. Centre the button on the
+      // bar's CTA. Layout values (offsetHeight, padding) rather than a bounding
+      // rect, so the CTA's attention pulse (a transform) doesn't make it drift.
+      const bar = document.querySelector<HTMLElement>('.sticky-cta-mobile');
+      const cta = bar?.querySelector<HTMLElement>('.sticky-cta-button');
+      if (bar && cta && bar.offsetHeight > 0) {
+        const padBottom = parseFloat(getComputedStyle(bar).paddingBottom) || 0;
+        setCtaCentre(padBottom + cta.offsetHeight / 2);
+      } else {
+        setCtaCentre(0);
+      }
 
       if (banner === watched) return;
       resizeObserver?.disconnect();
@@ -216,7 +233,11 @@ const ChatLauncher: React.FC = () => {
 
   if (!visible) return null;
 
-  const bottom = bannerHeight > 0 ? bannerHeight + BANNER_GAP_PX : 20;
+  // Above the cookie banner while it is up; otherwise level with the sticky
+  // booking bar's CTA when the page has one; otherwise the widget's own 20px.
+  let bottom = 20;
+  if (bannerHeight > 0) bottom = bannerHeight + BANNER_GAP_PX;
+  else if (ctaCentre > 0) bottom = Math.max(0, Math.round(ctaCentre - BUTTON_SIZE_PX / 2));
 
   return (
     <div

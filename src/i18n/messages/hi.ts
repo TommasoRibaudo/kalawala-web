@@ -138,8 +138,6 @@ export const hi: Messages = {
   // Site-owned chat button shown before the visitor has consented to the
   // coastal-bot widget (src/components/ChatLauncher).
   chatLauncher: {
-    teaser: 'कीमतों और उपलब्धता के बारे में मुझसे पूछें!',
-    dismiss: 'बंद करें',
     open: 'हमसे चैट करें',
     consent: 'हमारे सहायक से चैट करने के लिए कृपया एनालिटिक्स कुकीज़ स्वीकार करें। आपके संदेश हमारे चैट प्रदाता, coastal-bot द्वारा संभाले जाते हैं।',
     accept: 'स्वीकार करें और चैट करें',

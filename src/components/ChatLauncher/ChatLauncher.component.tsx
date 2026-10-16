@@ -35,27 +35,6 @@ const SHOW_DELAY_MS = 1500;
 const BANNER_GAP_PX = 16;
 /** Matches `.chat-launcher__button` in the stylesheet. */
 const BUTTON_SIZE_PX = 58;
-/** The speech bubble comes up this long after the button, and stays this long. */
-const TEASER_DELAY_MS = 2500;
-const TEASER_STAY_MS = 15000;
-/** Once per visit, like the widget's own pop-up: not again on the next page. */
-const TEASER_SEEN_KEY = 'chat-launcher-teaser';
-
-function teaserSeen(): boolean {
-  try {
-    return sessionStorage.getItem(TEASER_SEEN_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
-function markTeaserSeen(): void {
-  try {
-    sessionStorage.setItem(TEASER_SEEN_KEY, '1');
-  } catch {
-    // Storage blocked: the bubble may show again on the next page, no harm.
-  }
-}
 
 type WidgetStatus = 'idle' | 'loading' | 'up' | 'failed';
 
@@ -75,7 +54,6 @@ const ChatLauncher: React.FC = () => {
   const [consented, setConsented] = useState(false);
   const [status, setStatus] = useState<WidgetStatus>('idle');
   const [asking, setAsking] = useState(false);
-  const [teaser, setTeaser] = useState(false);
   const [bannerHeight, setBannerHeight] = useState(0);
   /** Height of the sticky booking bar's CTA centre above the viewport bottom; 0 = no bar. */
   const [ctaCentre, setCtaCentre] = useState(0);
@@ -168,22 +146,6 @@ const ChatLauncher: React.FC = () => {
     status !== 'up' &&
     status !== 'failed';
 
-  // The speech bubble out of the button. Only while there is nothing else to
-  // read: not once consented (the real widget has its own pop-up) and not
-  // while the consent question is open in the same spot.
-  useEffect(() => {
-    if (!visible || consented || teaserSeen()) return;
-    const show = setTimeout(() => {
-      markTeaserSeen();
-      setTeaser(true);
-    }, TEASER_DELAY_MS);
-    const hide = setTimeout(() => setTeaser(false), TEASER_DELAY_MS + TEASER_STAY_MS);
-    return () => {
-      clearTimeout(show);
-      clearTimeout(hide);
-    };
-  }, [visible, consented]);
-
   const closeAsking = useCallback((returnFocus: boolean) => {
     setAsking(false);
     if (returnFocus) buttonRef.current?.focus();
@@ -212,7 +174,6 @@ const ChatLauncher: React.FC = () => {
   }, [asking, closeAsking]);
 
   const handleClick = () => {
-    setTeaser(false);
     if (consented) {
       void openCoastalBot();
       return;
@@ -245,23 +206,6 @@ const ChatLauncher: React.FC = () => {
       className="chat-launcher"
       style={{ '--chat-launcher-bottom': `${bottom}px` } as React.CSSProperties}
     >
-      {teaser && !asking && !consented && (
-        <div className="chat-launcher__teaser">
-          <button type="button" className="chat-launcher__teaser-text" onClick={handleClick}>
-            {m.teaser}
-          </button>
-          <button
-            type="button"
-            className="chat-launcher__teaser-close"
-            aria-label={m.dismiss}
-            onClick={() => setTeaser(false)}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      )}
       {asking && (
         <div className="chat-launcher__ask" role="dialog" aria-label={m.open}>
           <p className="chat-launcher__ask-text">{m.consent}</p>

@@ -349,7 +349,7 @@ describe("POST /api/portal/login", () => {
     expect(response.statusCode).toBe(422);
   });
 
-  it("returns 422 when password is too short (< 12 chars)", async () => {
+  it("returns 422 when password is too short (< 8 chars)", async () => {
     const response = await handler(loginRequest({
       reservationPublicId: "KWL-ABCD1234",
       password: "short",

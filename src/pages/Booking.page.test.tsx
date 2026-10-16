@@ -1129,7 +1129,7 @@ test('deposit checkout validates the portal password before calling the API', as
   fireEvent.click(screen.getByLabelText('I accept the booking terms.'));
   fireEvent.click(screen.getByRole('button', { name: 'Reserve these dates' }));
 
-  await screen.findByText('Use at least 12 characters.');
+  await screen.findByText('Use at least 8 characters.');
   // Only the search call — the hold was never attempted.
   expect((global.fetch as jest.Mock).mock.calls).toHaveLength(1);
 });

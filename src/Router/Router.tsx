@@ -4,7 +4,6 @@ import { CookieConsentService } from '../services/CookieConsent.service';
 import * as PostHog from '../services/PostHog.service';
 import { recordPageview } from '../services/SiteMetrics.service';
 import MessageTipContainer from '../components/MessageTip/MessageTipContainer.component';
-import { useRandomPopup } from '../hooks/useRandomPopup';
 import PortalGuard from '../components/PortalGuard/PortalGuard.component';
 import { useLocale, RELEASED_LOCALES } from '../i18n';
 import LocaleHtmlAttrs from '../components/LocaleHtmlAttrs/LocaleHtmlAttrs.component';
@@ -114,18 +113,6 @@ const CoastalBotGate = () => {
   return null;
 };
 
-// Component to handle random popup logic inside Router context
-const RandomPopupHandler = () => {
-  // Was a fourth hand-rolled copy of the Spanish-route check; now the shared
-  // detector. useRandomPopup still takes a boolean — it moves to a locale with
-  // the message catalogs in Phase 2.
-  const locale = useLocale();
-
-  useRandomPopup({ locale });
-
-  return null; // This component doesn't render anything
-};
-
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -134,7 +121,6 @@ const AppRouter = () => {
       <SiteMetricsPageView />
       <CoastalBotGate />
       <ChatLauncher />
-      <RandomPopupHandler />
       <Routes>
         {ROUTE_ELEMENTS}
 

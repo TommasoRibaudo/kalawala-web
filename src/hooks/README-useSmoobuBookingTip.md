@@ -84,7 +84,7 @@ Currently implemented in **ALL** listing pages:
 ## Adding to Other Listing Pages
 
 1. Import the hook at the top of your listing component
-2. Add the hook call after the `useRandomPopup` hook
+2. Add the hook call alongside the page's other hooks
 3. Use the appropriate `isSpanishPage` value and `propertyName`
 
 Example for a new listing:

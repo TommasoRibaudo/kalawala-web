@@ -2,32 +2,6 @@ import { HouseDataType, ListingType, PropertyCapacity, PropertyMarketingContent 
 import { pathForKey, type RouteKey } from "../routes.config";
 import { pickLocalized, type Locale, type LocalizedValue } from "../i18n";
 
-// Random popup configuration
-export const RANDOM_POPUP_CONFIG = {
-  // Probability of showing the popup (0-1, where 1 = 100% chance)
-  showProbability: 1, // 100% chance to show
-
-  // Time range in milliseconds for random delay
-  minDelay: 25000,
-  maxDelay: 50000,
-
-  // Duration the popup stays visible
-  duration: 8000, // 8 seconds
-
-  // Messages for different languages
-  messages: {
-    en: "Recent guests booked directly on our website.",
-    es: "Huéspedes recientes reservaron directamente en nuestra web.",
-    de: "Kürzlich haben Gäste direkt auf unserer Website gebucht.",
-    fr: "Des voyageurs ont récemment réservé directement sur notre site.",
-    it: "Ospiti recenti hanno prenotato direttamente sul nostro sito.",
-    pt: "Hóspedes recentes reservaram diretamente no nosso site.",
-    he: "אורחים הזמינו לאחרונה ישירות באתר שלנו.",
-    hi: "हाल ही में मेहमानों ने हमारी वेबसाइट पर सीधे बुकिंग की।",
-    nl: "Recente gasten hebben rechtstreeks via onze website geboekt."
-  }
-};
-
 export interface IImageDescription {
     roomType: string;
     roomDescription: string;

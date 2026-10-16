@@ -141,8 +141,6 @@ export const it: Messages = {
   // Site-owned chat button shown before the visitor has consented to the
   // coastal-bot widget (src/components/ChatLauncher).
   chatLauncher: {
-    teaser: 'Chiedimi prezzi e disponibilità!',
-    dismiss: 'Chiudi',
     open: 'Chatta con noi',
     consent: 'Per chattare con il nostro assistente, accetta i cookie di analisi. I tuoi messaggi sono gestiti dal nostro fornitore di chat, coastal-bot.',
     accept: 'Accetta e chatta',

@@ -43,8 +43,6 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
   // Clear all message tips when route changes (language switching)
   useEffect(() => {
     setMessageTips([]);
-    // Also clear the random popup session flag so it can show again on the new language page
-    sessionStorage.removeItem('randomPopupShown');
   }, [location.pathname]);
 
   const addMessageTip = useCallback((messageData: MessageTipData) => {
@@ -81,16 +79,10 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
       const stickyCTA = document.querySelector('.sticky-cta-mobile');
       const chatBubble = document.querySelector('coastal-bot');
       const chatBubbleVisible = !!chatBubble && getComputedStyle(chatBubble).display !== 'none';
-      // The speech bubble above the button counts too while it is showing.
       const chatLauncher = document.querySelector('.chat-launcher');
-      const launcherTop = chatLauncher
-        ? Math.min(
-            chatLauncher.getBoundingClientRect().top,
-            document.querySelector('.chat-launcher__teaser')?.getBoundingClientRect().top ?? Infinity
-          )
-        : null;
-      const launcherClearance =
-        launcherTop === null ? 0 : Math.ceil(window.innerHeight - launcherTop) + 12;
+      const launcherClearance = chatLauncher
+        ? Math.ceil(window.innerHeight - chatLauncher.getBoundingClientRect().top) + 12
+        : 0;
 
       // Use React.startTransition to avoid act() warnings in tests
       if (typeof React.startTransition === 'function') {

@@ -19,6 +19,16 @@
     }
   }
   
+  // The companion figure under the headline — dollars under colones/euros,
+  // colones under dollars. Quieter than the lead, and on its own line so the
+  // "from … per night" sentence stays unbroken in every language.
+  .price-display__secondary {
+    color: rgba(51, 51, 51, 0.6);
+    display: block;
+    font-size: 0.85em;
+    margin-top: 2px;
+  }
+
   .average-indicator {
     position: relative;
     display: inline-block;

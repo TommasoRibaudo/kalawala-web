@@ -203,6 +203,11 @@ export const bookingStrings = {
     colonesEstimateNoteFlexible: (rate: string, date: string) =>
       `Colón amounts are an estimate at the ${date} exchange rate (${rate} per US$1).`,
     colonesTransferAmount: (amount: string) => `Estimated amount to transfer: ${amount}`,
+    // Euro counterpart of the two colón notes above, for the languages that lead with euros.
+    eurosEstimateNote: (rate: string, date: string) =>
+      `Euro amounts are an estimate at the ${date} exchange rate (${rate} per US$1). Payment is charged in US dollars.`,
+    eurosEstimateNoteFlexible: (rate: string, date: string) =>
+      `Euro amounts are an estimate at the ${date} exchange rate (${rate} per US$1).`,
   },
   es: {
     siteTitle: 'Reservas Kalawala',
@@ -392,6 +397,10 @@ export const bookingStrings = {
     colonesEstimateNoteFlexible: (rate: string, date: string) =>
       `Los montos en colones son una estimación al tipo de cambio del ${date} (${rate} por US$1).`,
     colonesTransferAmount: (amount: string) => `Monto estimado a transferir: ${amount}`,
+    eurosEstimateNote: (rate: string, date: string) =>
+      `Los montos en euros son una estimación al tipo de cambio del ${date} (${rate} por US$1). El cobro se realiza en dólares estadounidenses.`,
+    eurosEstimateNoteFlexible: (rate: string, date: string) =>
+      `Los montos en euros son una estimación al tipo de cambio del ${date} (${rate} por US$1).`,
     rateToggleLabel: 'Pol\u00edtica de cancelaci\u00f3n',
     nonRefundableSave: 'Ahorra 10%',
     nonRefundableNote: '10% de descuento sobre el total. No se puede cancelar ni cambiar despu\u00e9s de reservar.',
@@ -586,6 +595,10 @@ export const bookingStrings = {
     colonesEstimateNoteFlexible: (rate: string, date: string) =>
       `Colón-Beträge sind eine Schätzung zum Wechselkurs vom ${date} (${rate} pro US$1).`,
     colonesTransferAmount: (amount: string) => `Geschätzter zu überweisender Betrag: ${amount}`,
+    eurosEstimateNote: (rate: string, date: string) =>
+      `Euro-Beträge sind eine Schätzung zum Wechselkurs vom ${date} (${rate} pro US$1). Die Zahlung erfolgt in US-Dollar.`,
+    eurosEstimateNoteFlexible: (rate: string, date: string) =>
+      `Euro-Beträge sind eine Schätzung zum Wechselkurs vom ${date} (${rate} pro US$1).`,
   },
   fr: {
     siteTitle: 'Réservations Kalawala',
@@ -776,6 +789,10 @@ export const bookingStrings = {
     colonesEstimateNoteFlexible: (rate: string, date: string) =>
       `Les montants en colones sont une estimation au taux de change du ${date} (${rate} par 1 $US).`,
     colonesTransferAmount: (amount: string) => `Montant estimé à transférer : ${amount}`,
+    eurosEstimateNote: (rate: string, date: string) =>
+      `Les montants en euros sont une estimation au taux de change du ${date} (${rate} par 1 $US). Le paiement est facturé en dollars américains.`,
+    eurosEstimateNoteFlexible: (rate: string, date: string) =>
+      `Les montants en euros sont une estimation au taux de change du ${date} (${rate} par 1 $US).`,
   },
   it: {
     siteTitle: 'Prenotazioni Kalawala',
@@ -966,6 +983,10 @@ export const bookingStrings = {
     colonesEstimateNoteFlexible: (rate: string, date: string) =>
       `Gli importi in colones sono una stima al tasso di cambio del ${date} (${rate} per 1 USD).`,
     colonesTransferAmount: (amount: string) => `Importo stimato da trasferire: ${amount}`,
+    eurosEstimateNote: (rate: string, date: string) =>
+      `Gli importi in euro sono una stima al tasso di cambio del ${date} (${rate} per 1 USD). Il pagamento viene addebitato in dollari statunitensi.`,
+    eurosEstimateNoteFlexible: (rate: string, date: string) =>
+      `Gli importi in euro sono una stima al tasso di cambio del ${date} (${rate} per 1 USD).`,
   },
   pt: {
     siteTitle: 'Reservas Kalawala',
@@ -1156,6 +1177,10 @@ export const bookingStrings = {
     colonesEstimateNoteFlexible: (rate: string, date: string) =>
       `Os valores em colones são uma estimativa com base na taxa de câmbio de ${date} (${rate} por US$1).`,
     colonesTransferAmount: (amount: string) => `Valor estimado para transferir: ${amount}`,
+    eurosEstimateNote: (rate: string, date: string) =>
+      `Os valores em euros são uma estimativa com base na taxa de câmbio de ${date} (${rate} por US$1). O pagamento é cobrado em dólares americanos.`,
+    eurosEstimateNoteFlexible: (rate: string, date: string) =>
+      `Os valores em euros são uma estimativa com base na taxa de câmbio de ${date} (${rate} por US$1).`,
   },
   he: {
     siteTitle: 'הזמנות קלאוואלה',
@@ -1346,6 +1371,10 @@ export const bookingStrings = {
     colonesEstimateNoteFlexible: (rate: string, date: string) =>
       `סכומי הקולון הם הערכה לפי שער החליפין מתאריך ${date} (${rate} ל-1 דולר).`,
     colonesTransferAmount: (amount: string) => `סכום משוער להעברה: ${amount}`,
+    eurosEstimateNote: (rate: string, date: string) =>
+      `סכומי האירו הם הערכה לפי שער החליפין מתאריך ${date} (${rate} ל-1 דולר). התשלום מחויב בדולרים אמריקאיים.`,
+    eurosEstimateNoteFlexible: (rate: string, date: string) =>
+      `סכומי האירו הם הערכה לפי שער החליפין מתאריך ${date} (${rate} ל-1 דולר).`,
   },
   hi: {
     siteTitle: 'कलावाला आरक्षण',
@@ -1536,6 +1565,10 @@ export const bookingStrings = {
     colonesEstimateNoteFlexible: (rate: string, date: string) =>
       `कोलोन राशि ${date} की विनिमय दर (${rate} प्रति US$1) पर एक अनुमान है।`,
     colonesTransferAmount: (amount: string) => `स्थानांतरित करने के लिए अनुमानित राशि: ${amount}`,
+    eurosEstimateNote: (rate: string, date: string) =>
+      `यूरो राशि ${date} की विनिमय दर (${rate} प्रति US$1) पर एक अनुमान है। भुगतान अमेरिकी डॉलर में लिया जाता है।`,
+    eurosEstimateNoteFlexible: (rate: string, date: string) =>
+      `यूरो राशि ${date} की विनिमय दर (${rate} प्रति US$1) पर एक अनुमान है।`,
   },
   nl: {
     siteTitle: 'Kalawala Reserveringen',
@@ -1726,6 +1759,10 @@ export const bookingStrings = {
     colonesEstimateNoteFlexible: (rate: string, date: string) =>
       `Colónbedragen zijn een schatting op basis van de wisselkoers van ${date} (${rate} per US$1).`,
     colonesTransferAmount: (amount: string) => `Geschat over te maken bedrag: ${amount}`,
+    eurosEstimateNote: (rate: string, date: string) =>
+      `Eurobedragen zijn een schatting op basis van de wisselkoers van ${date} (${rate} per US$1). Betaling wordt in Amerikaanse dollars afgeschreven.`,
+    eurosEstimateNoteFlexible: (rate: string, date: string) =>
+      `Eurobedragen zijn een schatting op basis van de wisselkoers van ${date} (${rate} per US$1).`,
   },
 };
 

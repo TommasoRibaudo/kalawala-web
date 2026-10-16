@@ -1,5 +1,5 @@
 import { createBookingApiHandler } from "./app";
-import { extractRate, resetExchangeRateCache } from "./exchangeRate";
+import { extractEurRate, extractRate, resetExchangeRateCache } from "./exchangeRate";
 import { StaticSecretProvider } from "./secrets";
 import { BookingApiConfig, LambdaHttpRequest } from "./types";
 
@@ -108,10 +108,27 @@ test("GET /api/exchange-rate returns the USD to CRC rate from the first provider
   const body = JSON.parse(response.body);
 
   expect(response.statusCode).toBe(200);
-  expect(body).toMatchObject({ base: "USD", quote: "CRC", rate: 512.35, stale: false, source: "primary.test" });
+  expect(body).toMatchObject({
+    base: "USD",
+    quote: "CRC",
+    rate: 512.35,
+    rates: { CRC: 512.35, EUR: 0.92 },
+    stale: false,
+    source: "primary.test",
+  });
   expect(body.cache.status).toBe("miss");
   expect(typeof body.fetchedAt).toBe("string");
   expect(fetchFn).toHaveBeenCalledTimes(1);
+});
+
+test("the euro rate is null, not an error, when the provider does not carry one", async () => {
+  global.fetch = (async () => jsonResponse({ rates: { CRC: 512.35 } })) as unknown as typeof fetch;
+
+  const handler = createBookingApiHandler(config);
+  const response = await handler(makeExchangeRateEvent());
+
+  expect(response.statusCode).toBe(200);
+  expect(JSON.parse(response.body).rates).toEqual({ CRC: 512.35, EUR: null });
 });
 
 test("a cached rate is reused instead of refetching on the next request", async () => {
@@ -209,5 +226,30 @@ describe("extractRate", () => {
 
   test("rounds to the two decimals providers actually publish", () => {
     expect(extractRate({ rates: { CRC: 512.3456789 } })).toBe(512.35);
+  });
+});
+
+describe("extractEurRate", () => {
+  test.each([
+    [{ rates: { EUR: 0.8649 } }, 0.8649],
+    [{ conversion_rates: { EUR: 0.92 } }, 0.92],
+    [{ usd: { eur: 0.9123 } }, 0.9123],
+    [{ data: { EUR: "0.92" } }, 0.92],
+  ])("reads euros per dollar out of %p", (body, expected) => {
+    expect(extractEurRate(body)).toBe(expected);
+  });
+
+  test.each([
+    [{ rates: { CRC: 512.35 } }],
+    [{ rates: { EUR: 1.16 * 40 } }],
+    [{ rates: { EUR: 0.01 } }],
+    [{ rates: { EUR: "n/a" } }],
+    [null],
+  ])("rejects %p", (body) => {
+    expect(extractEurRate(body)).toBeNull();
+  });
+
+  test("keeps four decimals, because a long stay turns the fourth into a visible euro", () => {
+    expect(extractEurRate({ rates: { EUR: 0.864912345 } })).toBe(0.8649);
   });
 });

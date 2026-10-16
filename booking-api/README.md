@@ -31,8 +31,10 @@ database, and webhook secrets never enter the browser bundle.
   - operational alert signals for webhook failures, rate limits, CAPTCHA
     escalations, provider degradation, and future state-transition failures.
 - Contract-level validators for the planned booking endpoints.
-- `GET /api/exchange-rate`: cached USD→CRC reference rate for the Spanish
-  booking pages. Display only — every quote, hold and payment stays in USD.
+- `GET /api/exchange-rate`: cached USD→CRC and USD→EUR reference rates
+  (`rates.CRC`, `rates.EUR`; `rate` is the colón rate, kept for older clients)
+  used to show colón and euro estimates beside dollar prices. Display only —
+  every quote, hold and payment stays in USD.
 - PayPal hold creation:
   - quote/session validation,
   - just-in-time Smoobu availability recheck,
@@ -113,7 +115,7 @@ Two rules that are easy to trip over:
 | `BOOKING_API_IDEMPOTENCY_TTL_MINUTES` | Optional public write idempotency retention window, defaults to `1440`. |
 | `BOOKING_API_STALE_IDEMPOTENCY_LOCK_SECONDS` | Optional stale in-progress idempotency lock timeout, defaults to `120`. |
 | `EXCHANGE_RATE_PROVIDER_URLS` | Optional comma-separated HTTPS rate sources for `GET /api/exchange-rate`, tried in order. Defaults to `open.er-api.com` then the jsDelivr currency API. |
-| `EXCHANGE_RATE_TTL_SECONDS` | Optional cache lifetime for the USD→CRC rate, defaults to `21600` (6 h). |
+| `EXCHANGE_RATE_TTL_SECONDS` | Optional cache lifetime for the exchange rates, defaults to `21600` (6 h). |
 | `EXCHANGE_RATE_TIMEOUT_MS` | Optional per-provider fetch timeout, defaults to `4000`. |
 | `EXCHANGE_RATE_STALE_MAX_AGE_SECONDS` | Optional age past which a cached rate is no longer served after providers fail, defaults to `172800` (48 h). |
 

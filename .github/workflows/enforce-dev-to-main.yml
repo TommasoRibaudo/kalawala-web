@@ -1,0 +1,31 @@
+name: Enforce dev-only merges to main
+
+# GitHub branch protection cannot restrict which branch a PR comes from, so this
+# check does it. It is a required status check on main: a PR into main only
+# becomes mergeable when its head branch is `dev` in this same repository.
+# Feature branches go to `dev` first, then `dev` is promoted to `main`.
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, synchronize, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  source-branch:
+    name: Source branch must be dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR head
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          THIS_REPO: ${{ github.repository }}
+        run: |
+          if [ "$HEAD_REPO" != "$THIS_REPO" ] || [ "$HEAD_REF" != "dev" ]; then
+            echo "::error::PRs into main must come from the dev branch of $THIS_REPO (got '$HEAD_REF' from '$HEAD_REPO'). Open the PR against dev instead."
+            exit 1
+          fi
+          echo "OK: dev -> main"

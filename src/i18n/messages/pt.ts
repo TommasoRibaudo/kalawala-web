@@ -133,6 +133,17 @@ export const pt: Messages = {
     upToGuests: (count: number) => `Até ${count} ${count === 1 ? 'hóspede' : 'hóspedes'}`,
     viewHomeCta: 'Ver casa →',
   },
+  // Site-owned chat button shown before the visitor has consented to the
+  // coastal-bot widget (src/components/ChatLauncher).
+  chatLauncher: {
+    teaser: 'Pergunte-me por preços e disponibilidade!',
+    dismiss: 'Fechar',
+    open: 'Converse connosco',
+    consent: 'Para conversar com o nosso assistente, aceite os cookies de análise. As suas mensagens são tratadas pelo nosso fornecedor de chat, coastal-bot.',
+    accept: 'Aceitar e conversar',
+    decline: 'Agora não',
+  },
+
   cookieBanner: {
     title: '🍪 Cookies',
     description: 'Utilizamos cookies para melhorar a sua experiência e analisar o tráfego.',

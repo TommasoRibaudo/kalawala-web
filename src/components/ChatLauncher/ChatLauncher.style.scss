@@ -1,0 +1,232 @@
+@import '../../styles/variables';
+
+// Same corner, size and look as the coastal-bot button it stands in for
+// (58px, 20px from the bottom-right; physical `right` because the widget sits
+// on the right in RTL too). Above the cookie banner (z-index 10000) on purpose.
+.chat-launcher {
+  position: fixed;
+  right: 20px;
+  bottom: var(--chat-launcher-bottom, 20px);
+  z-index: 10001;
+  font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  animation: chat-launcher-in 0.35s ease-out both;
+
+  &__button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: $kalawala-dark-green;
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    // Two soft rings after it appears, to catch the eye without nagging.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid $kalawala-light-green;
+      opacity: 0;
+      pointer-events: none;
+      animation: chat-launcher-pulse 1.8s ease-out 0.4s 2;
+    }
+
+    &:focus-visible {
+      outline: 3px solid $kalawala-light-green;
+      outline-offset: 2px;
+    }
+  }
+
+  // Speech bubble that grows out of the button (tail points at it).
+  &__teaser {
+    position: absolute;
+    right: 0;
+    bottom: 70px;
+    display: flex;
+    align-items: flex-start;
+    width: max-content;
+    max-width: min(260px, calc(100vw - 40px));
+    border-radius: 14px 14px 4px 14px;
+    background: #fff;
+    color: $kalawala-text-gray;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+    transform-origin: bottom right;
+    animation: chat-launcher-teaser-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+
+    // Tail, over the button's centre.
+    &::after {
+      content: '';
+      position: absolute;
+      right: 21px;
+      bottom: -7px;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      transform: rotate(45deg);
+      border-radius: 0 0 3px 0;
+      box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  &__teaser-text {
+    padding: 12px 4px 12px 16px;
+    border: none;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  &__teaser-close {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin: 6px 6px 0 0;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: none;
+    color: #6b7280;
+    cursor: pointer;
+
+    &:hover {
+      background: #f3f4f6;
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &__teaser-text:focus-visible,
+  &__teaser-close:focus-visible {
+    outline: 3px solid $kalawala-light-green;
+    outline-offset: 2px;
+  }
+
+  &__ask {
+    position: absolute;
+    right: 0;
+    bottom: 70px;
+    width: min(320px, calc(100vw - 40px));
+    padding: 16px;
+    border-radius: 14px;
+    background: #fff;
+    color: $kalawala-text-gray;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  &__ask-text {
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  &__ask-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+  }
+
+  &__accept {
+    padding: 9px 16px;
+    border: none;
+    border-radius: 10px;
+    background: $kalawala-dark-green;
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover {
+      background: $kalawala-darker-green;
+    }
+  }
+
+  &__decline {
+    padding: 0;
+    border: none;
+    background: none;
+    color: $kalawala-text-gray;
+    font: inherit;
+    font-size: 14px;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  &__accept:focus-visible,
+  &__decline:focus-visible {
+    outline: 3px solid $kalawala-light-green;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+
+    &__button::after {
+      animation: none;
+    }
+
+    &__teaser {
+      animation: none;
+    }
+  }
+}
+
+@keyframes chat-launcher-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes chat-launcher-teaser-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.6);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes chat-launcher-pulse {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}

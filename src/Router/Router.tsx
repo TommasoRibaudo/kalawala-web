@@ -11,6 +11,7 @@ import LocaleHtmlAttrs from '../components/LocaleHtmlAttrs/LocaleHtmlAttrs.compo
 import { ROUTES, pathForKey, RouteKey } from '../routes.config';
 import { RouteLoader } from '../routeLoader';
 import { syncCoastalBot } from '../services/CoastalBot.service';
+import ChatLauncher from '../components/ChatLauncher/ChatLauncher.component';
 import { isPrerender } from '../utils/isPrerender';
 
 /*
@@ -132,6 +133,7 @@ const AppRouter = () => {
       <PostHogPageView />
       <SiteMetricsPageView />
       <CoastalBotGate />
+      <ChatLauncher />
       <RandomPopupHandler />
       <Routes>
         {ROUTE_ELEMENTS}

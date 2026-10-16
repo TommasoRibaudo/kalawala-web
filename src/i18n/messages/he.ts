@@ -141,6 +141,17 @@ export const he: Messages = {
     upToGuests: (count: number) => `עד ${count} ${count === 1 ? 'אורח' : 'אורחים'}`,
     viewHomeCta: 'צפייה בבית →',
   },
+  // Site-owned chat button shown before the visitor has consented to the
+  // coastal-bot widget (src/components/ChatLauncher).
+  chatLauncher: {
+    teaser: 'שאלו אותי על מחירים וזמינות!',
+    dismiss: 'סגירה',
+    open: 'שוחחו איתנו',
+    consent: 'כדי לשוחח עם העוזר שלנו, יש לאשר עוגיות ניתוח. ההודעות שלכם מטופלות על ידי ספק הצ׳אט שלנו, coastal-bot.',
+    accept: 'אישור והתחלת צ׳אט',
+    decline: 'לא עכשיו',
+  },
+
   cookieBanner: {
     title: '🍪 עוגיות',
     description: 'אנו משתמשים בעוגיות כדי לשפר את חווייתך ולנתח את התנועה באתר.',

@@ -111,6 +111,48 @@ function withdraw(): void {
   window.addEventListener('pagehide', clearSavedConversation);
 }
 
+/** Whether the widget may be offered on this route (see EXCLUDED_ROUTES). */
+export function isCoastalBotRouteAllowed(pathname: string = window.location.pathname): boolean {
+  return !isExcluded(pathname);
+}
+
+/**
+ * Resolves with the widget's <coastal-bot> element once it is on the page, or
+ * null if it has not appeared within `timeoutMs`. It appears only after the
+ * script has loaded AND fetched its settings, and never if the bot is switched
+ * off or this site is not on its allowed list — hence the timeout.
+ */
+export function whenCoastalBotReady(timeoutMs = 12000): Promise<Element | null> {
+  return new Promise((resolve) => {
+    const existing = document.querySelector('coastal-bot');
+    if (existing) return resolve(existing);
+
+    const finish = (el: Element | null) => {
+      observer.disconnect();
+      clearTimeout(timer);
+      resolve(el);
+    };
+    const observer = new MutationObserver(() => {
+      const el = document.querySelector('coastal-bot');
+      if (el) finish(el);
+    });
+    observer.observe(document.body, { childList: true });
+    const timer = setTimeout(() => finish(null), timeoutMs);
+  });
+}
+
+/**
+ * Open the chat panel, waiting for the widget if it is still loading. The
+ * widget has no public API, but it draws into an open shadow root, so its
+ * launcher can be clicked like a visitor would. Does nothing if the widget
+ * never appears or has already been opened.
+ */
+export async function openCoastalBot(): Promise<void> {
+  const host = await whenCoastalBotReady();
+  const launcher = host?.shadowRoot?.querySelector<HTMLButtonElement>('.launcher');
+  if (launcher && launcher.getAttribute('aria-expanded') !== 'true') launcher.click();
+}
+
 /**
  * Bring the widget in line with the current consent state and route. Called
  * on every route change (CoastalBotGate in Router.tsx) and on every consent

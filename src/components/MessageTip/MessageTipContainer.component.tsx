@@ -22,6 +22,10 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
   // The coastal-bot chat button (CoastalBot.service.ts) sits in the same
   // corner and above everything; tips are lifted clear of it while it shows.
   const [isChatBubbleVisible, setIsChatBubbleVisible] = useState(false);
+  // The site's own stand-in for that button before consent (ChatLauncher) can
+  // sit anywhere above the cookie banner, so tips clear it by measurement
+  // rather than by a fixed offset. 0 when it isn't on the page.
+  const [chatLauncherClearance, setChatLauncherClearance] = useState(0);
   // Seeded from window.innerWidth, this read react-snap's puppeteer viewport
   // at prerender time and a real visitor's actual viewport at hydration time
   // — two different numbers baked into the same first render, so the mobile
@@ -77,6 +81,16 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
       const stickyCTA = document.querySelector('.sticky-cta-mobile');
       const chatBubble = document.querySelector('coastal-bot');
       const chatBubbleVisible = !!chatBubble && getComputedStyle(chatBubble).display !== 'none';
+      // The speech bubble above the button counts too while it is showing.
+      const chatLauncher = document.querySelector('.chat-launcher');
+      const launcherTop = chatLauncher
+        ? Math.min(
+            chatLauncher.getBoundingClientRect().top,
+            document.querySelector('.chat-launcher__teaser')?.getBoundingClientRect().top ?? Infinity
+          )
+        : null;
+      const launcherClearance =
+        launcherTop === null ? 0 : Math.ceil(window.innerHeight - launcherTop) + 12;
 
       // Use React.startTransition to avoid act() warnings in tests
       if (typeof React.startTransition === 'function') {
@@ -84,11 +98,13 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
           setIsCookieBannerVisible(!!cookieBanner);
           setStickyCTAHeight(stickyCTA ? stickyCTA.getBoundingClientRect().height : 0);
           setIsChatBubbleVisible(chatBubbleVisible);
+          setChatLauncherClearance(launcherClearance);
         });
       } else {
         setIsCookieBannerVisible(!!cookieBanner);
         setStickyCTAHeight(stickyCTA ? stickyCTA.getBoundingClientRect().height : 0);
         setIsChatBubbleVisible(chatBubbleVisible);
+        setChatLauncherClearance(launcherClearance);
       }
     };
 
@@ -160,6 +176,10 @@ const MessageTipContainer: React.FC<MessageTipContainerProps> = ({ className }) 
     }
     
     containerStyle.bottom = `calc(${bottomOffset}px + env(safe-area-inset-bottom))`;
+  }
+
+  if (chatLauncherClearance > 0) {
+    containerStyle.bottom = `${chatLauncherClearance}px`;
   }
 
   return (

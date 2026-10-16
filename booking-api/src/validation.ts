@@ -186,7 +186,7 @@ export function validateHoldRequest(value: unknown): HoldRequest {
     addError(errors, "paymentMethod", "payment_method_must_be_paypal");
   }
 
-  if (portalPassword && portalPassword.length < 12) {
+  if (portalPassword && portalPassword.length < 8) {
     addError(errors, "portalPassword", "portal_password_too_short");
   }
 
@@ -227,7 +227,7 @@ export function validateDepositHoldRequest(value: unknown): HoldRequest {
   const propertyId = requireUuid(body, "propertyId", errors);
   const portalPassword = requireTrimmedString(body, "portalPassword", errors, 256);
 
-  if (portalPassword && portalPassword.length < 12) {
+  if (portalPassword && portalPassword.length < 8) {
     addError(errors, "portalPassword", "portal_password_too_short");
   }
 

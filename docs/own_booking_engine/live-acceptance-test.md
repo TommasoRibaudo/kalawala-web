@@ -52,7 +52,7 @@ The quote lives **10 minutes**. If you stop for coffee here, start again.
 ### 2. Hold
 
 Choose a property, "Book with PayPal", fill in guest details and a portal
-password of at least 12 characters. **Write the password down** — you need it in
+password of at least 8 characters. **Write the password down** — you need it in
 step 6 and it is never recoverable.
 
 - Page shows a countdown and a reservation ID `KWL-XXXXXXXX`.

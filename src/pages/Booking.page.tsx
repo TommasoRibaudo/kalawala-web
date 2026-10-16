@@ -46,7 +46,9 @@ import {
 } from '../services/BookingAnalytics.service';
 import { CookieConsentService } from '../services/CookieConsent.service';
 import { useExchangeRate } from '../hooks/useExchangeRate';
-import { formatColones, formatExchangeRate } from '../utils/money';
+import { useDisplayRates } from '../hooks/useDisplayRates';
+import { isPrerender } from '../utils/isPrerender';
+import { formatColones, formatEuroRate, formatExchangeRate, localizePrice, primaryCurrencyFor, PriceFigure } from '../utils/money';
 import { addDays, getCostaRicaToday } from '../utils/dates';
 import {
   PROPERTY_DISPLAY_NAMES,
@@ -1252,7 +1254,7 @@ const BookingSearchResults = ({ result, strings, language, nonRefundable, onNonR
             </>
           )}
 
-          <ColonesEstimateNote strings={strings} language={language} chargedInDollars={false} />
+          <PriceEstimateNote strings={strings} language={language} chargedInDollars={false} />
 
           {/* Homes filtered out by Smoobu are explained after the available ones,
               so a restriction on a home the guest cannot book never overshadows
@@ -1448,7 +1450,7 @@ const PayPalCheckoutPanel = ({ result, property, strings, language, withPet, non
         {price && <CheckoutPrice price={price} strings={strings} language={language} nonRefundablePreview={nonRefundable} finalOverrideCents={holdResponse?.booking.price?.totalAmountCents} />}
         {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
-      <ColonesEstimateNote strings={strings} language={language} chargedInDollars />
+      <PriceEstimateNote strings={strings} language={language} chargedInDollars />
       <WizardAlert message={holdError} strings={strings} className="booking-search-alert" />
       {holdResponse ? (
         <div className="booking-checkout-panel__hold" aria-live="polite">
@@ -1550,7 +1552,7 @@ const DepositCheckoutPanel = ({ result, property, strings, language, withPet, no
         {withPet && <div><span>{strings.petSummaryLabel}</span><strong><FontAwesomeIcon icon={faPaw} /> {strings.petSummaryValue}</strong></div>}
       </div>
 
-      <ColonesEstimateNote strings={strings} language={language} chargedInDollars={false} />
+      <PriceEstimateNote strings={strings} language={language} chargedInDollars={false} />
 
       <WizardAlert message={holdError} strings={strings} className="booking-search-alert" />
 
@@ -1710,30 +1712,47 @@ function resolveDisplayPrice(
 }
 
 /**
- * "≈ ₡378.900" beside a dollar total, Spanish pages only.
+ * One figure of a price — "≈ ₡378.900" or "$740.00".
  *
- * Renders nothing when the rate has not arrived or its source was unreachable —
- * a missing estimate is invisible, a wrong one is a support ticket. Every price
- * on the page calls this; `useExchangeRate` collapses them into one request.
+ * Only the converted figures carry the "≈"; the dollar figure is what is
+ * actually charged. Screen readers get the spelled-out version in place of the
+ * glyph, which most announce as nothing at all.
  */
-const ColonesEstimate = ({ amountCents, currency, strings, language }: { amountCents: number; currency: string; strings: BookingStrings; language: BookingLanguage }) => {
-  const { status, data } = useExchangeRate(language === 'es');
-
-  // `currency !== base` guards the day a home is quoted in something other than
-  // dollars: converting it with a USD rate would be silently wrong.
-  if (status !== 'ready' || !data || currency !== data.base) return null;
-
-  const formatted = formatColones(amountCents, data.rate, language);
-  return (
-    <small className="booking-colones-estimate" aria-label={strings.colonesEstimateAria(formatted)}>
-      ≈ {formatted}
-    </small>
+const PriceFigureText = ({ figure, strings }: { figure: PriceFigure; strings: BookingStrings }) =>
+  figure.estimate ? (
+    <span aria-label={strings.colonesEstimateAria(figure.text)}>≈ {figure.text}</span>
+  ) : (
+    <>{figure.text}</>
   );
-};
+
+/**
+ * Each language's price as a lead figure plus a smaller companion — dollars
+ * under colones for Spanish, dollars under euros for German/French/Italian,
+ * colones under dollars everywhere else. See `localizePrice` for the policy and
+ * for why a missing rate quietly falls back to dollars alone.
+ */
+function useLocalizedPrice(currency: string, language: BookingLanguage) {
+  const rates = useDisplayRates();
+  return React.useCallback(
+    (amountCents: number) => localizePrice(amountCents, currency, language, rates),
+    [currency, language, rates]
+  );
+}
+
+/** The figure beneath the headline price. Nothing when there is no companion to show. */
+const SecondaryPrice = ({ figure, strings }: { figure: PriceFigure | null; strings: BookingStrings }) =>
+  figure ? (
+    <small className="booking-price-secondary">
+      <PriceFigureText figure={figure} strings={strings} />
+    </small>
+  ) : null;
 
 /** The colón figure spelled out beside the colón IBAN on the deposit page. */
 const ColonesTransferAmount = ({ amountCents, currency, strings, language }: { amountCents: number; currency: string; strings: BookingStrings; language: BookingLanguage }) => {
-  const { status, data } = useExchangeRate(language === 'es');
+  const { status, data } = useExchangeRate(!isPrerender());
+  // The colón IBAN is a Costa Rican bank account; a guest reading in euros has
+  // no colones anywhere else on the page to reconcile this against.
+  if (primaryCurrencyFor(language) === 'EUR') return null;
   if (status !== 'ready' || !data || currency !== data.base) return null;
 
   return (
@@ -1749,12 +1768,27 @@ const ColonesTransferAmount = ({ amountCents, currency, strings, language }: { a
 // before a payment method is chosen, and the bank transfer/SINPE panel,
 // which has its own colones bank account — a guest can pay real colones, so
 // the note must not claim otherwise.
-const ColonesEstimateNote = ({ strings, language, chargedInDollars }: { strings: BookingStrings; language: BookingLanguage; chargedInDollars: boolean }) => {
-  const { status, data } = useExchangeRate(language === 'es');
+const PriceEstimateNote = ({ strings, language, chargedInDollars }: { strings: BookingStrings; language: BookingLanguage; chargedInDollars: boolean }) => {
+  const { status, data } = useExchangeRate(!isPrerender());
+  const rates = useDisplayRates();
   if (status !== 'ready' || !data) return null;
 
-  const rate = formatExchangeRate(data.rate, language);
   const date = formatDate(data.fetchedAt.slice(0, 10), language);
+
+  // Which estimate is on screen decides which footnote explains it. A euro
+  // language whose euro rate is missing shows dollars alone, so no note.
+  if (primaryCurrencyFor(language) === 'EUR') {
+    if (rates.eurPerUsd === null) return null;
+    const rate = formatEuroRate(rates.eurPerUsd, language);
+    return (
+      <p className="booking-colones-note">
+        {chargedInDollars ? strings.eurosEstimateNote(rate, date) : strings.eurosEstimateNoteFlexible(rate, date)}
+      </p>
+    );
+  }
+
+  if (rates.crcPerUsd === null) return null;
+  const rate = formatExchangeRate(rates.crcPerUsd, language);
   return (
     <p className="booking-colones-note">
       {chargedInDollars ? strings.colonesEstimateNote(rate, date) : strings.colonesEstimateNoteFlexible(rate, date)}
@@ -1765,20 +1799,22 @@ const ColonesEstimateNote = ({ strings, language, chargedInDollars }: { strings:
 /** The price block on a result card: badges, struck rack rate, payable total. */
 const PropertyPrice = ({ price, strings, language, nonRefundable }: { price: BookingPrice; strings: BookingStrings; language: BookingLanguage; nonRefundable: boolean }) => {
   const display = resolveDisplayPrice(price, strings, { nonRefundablePreview: nonRefundable });
+  const localize = useLocalizedPrice(price.currency, language);
+  const total = localize(display.finalCents);
   return (
     <div className="booking-result-card__price">
       {display.hasSaving && (
         <>
           <span className="booking-result-card__price-label" title={price.discount?.source === 'long_stay' ? strings.longStayNote : undefined}>{display.labels.join(' · ')}</span>
-          <span className="booking-result-card__price-original"><del>{formatMoney(display.baseCents, price.currency, language)}</del></span>
+          <span className="booking-result-card__price-original"><del><PriceFigureText figure={localize(display.baseCents).primary} strings={strings} /></del></span>
         </>
       )}
       <span>{strings.priceForStay}</span>
-      <strong>{formatMoney(display.finalCents, price.currency, language)}</strong>
-      <ColonesEstimate amountCents={display.finalCents} currency={price.currency} strings={strings} language={language} />
+      <strong><PriceFigureText figure={total.primary} strings={strings} /></strong>
+      <SecondaryPrice figure={total.secondary} strings={strings} />
       <small>
-        {display.hasSaving && <del>{formatMoney(display.baseNightlyCents, price.currency, language)} </del>}
-        {formatMoney(display.finalNightlyCents, price.currency, language)} {strings.averageNight}
+        {display.hasSaving && <del><PriceFigureText figure={localize(display.baseNightlyCents).primary} strings={strings} /> </del>}
+        <PriceFigureText figure={localize(display.finalNightlyCents).primary} strings={strings} /> {strings.averageNight}
       </small>
     </div>
   );
@@ -1787,14 +1823,16 @@ const PropertyPrice = ({ price, strings, language, nonRefundable }: { price: Boo
 /** The price row in a checkout summary — same numbers, one line. */
 const CheckoutPrice = ({ price, strings, language, nonRefundablePreview, finalOverrideCents }: { price: BookingPrice; strings: BookingStrings; language: BookingLanguage; nonRefundablePreview: boolean; finalOverrideCents?: number }) => {
   const display = resolveDisplayPrice(price, strings, { nonRefundablePreview, finalOverrideCents });
+  const localize = useLocalizedPrice(price.currency, language);
+  const total = localize(display.finalCents);
   return (
     <div>
       <span>{strings.priceForStay}</span>
-      <strong>{formatMoney(display.finalCents, price.currency, language)}</strong>
-      <ColonesEstimate amountCents={display.finalCents} currency={price.currency} strings={strings} language={language} />
+      <strong><PriceFigureText figure={total.primary} strings={strings} /></strong>
+      <SecondaryPrice figure={total.secondary} strings={strings} />
       {display.hasSaving && (
         <small className="booking-checkout-panel__price-saving">
-          <del>{formatMoney(display.baseCents, price.currency, language)}</del> {display.labels.join(' · ')}
+          <del><PriceFigureText figure={localize(display.baseCents).primary} strings={strings} /></del> {display.labels.join(' · ')}
         </small>
       )}
     </div>
@@ -1838,7 +1876,6 @@ function getReceiptErrorMessage(error: unknown, strings: BookingStrings): string
 
 function getPayPalCaptureErrorMessage(error: unknown, strings: BookingStrings): string { if (error instanceof BookingApiError) { if (error.code === 'hold_expired') return strings.bookingExpired; if (error.code === 'paypal_order_not_approved') return strings.paymentNotReady; if (error.status === 503 || error.retryable) return strings.providerUnavailable; } return strings.paypalCaptureError; }
 
-function formatMoney(amountCents: number, currency: string, language: BookingLanguage): string { return new Intl.NumberFormat(language === 'es' ? 'es-CR' : 'en-US', { style: 'currency', currency }).format(amountCents / 100); }
 function formatDateTime(value: string, language: BookingLanguage): string { const d = new Date(value); if (Number.isNaN(d.getTime())) return value; return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', { dateStyle: 'medium', timeStyle: 'short' }).format(d); }
 function formatDate(value: string, language: BookingLanguage): string { const d = new Date(`${value}T00:00:00Z`); if (Number.isNaN(d.getTime())) return value; return new Intl.DateTimeFormat(language === 'es' ? 'es-CR' : 'en-US', { dateStyle: 'medium', timeZone: 'UTC' }).format(d); }
 /**

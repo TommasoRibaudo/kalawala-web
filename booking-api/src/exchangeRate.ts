@@ -1,6 +1,6 @@
 /**
- * USD → CRC reference rate, used only to show Spanish-speaking guests roughly
- * what a stay costs in colones.
+ * USD → CRC (and USD → EUR) reference rates, used only to show guests roughly
+ * what a stay costs in colones or euros.
  *
  * Nothing here touches money that is actually moved: every quote, hold, PayPal
  * order and Smoobu reservation stays in USD. The rate exists so a guest reading
@@ -20,6 +20,7 @@ import { ApiResponse, BookingApiConfig, ExchangeRateConfig, HeadersMap, RouteObs
 
 const BASE_CURRENCY = "USD";
 const QUOTE_CURRENCY = "CRC";
+const EURO_CURRENCY = "EUR";
 
 /**
  * Colones per dollar has sat between roughly ₡450 and ₡700 for two decades. The
@@ -30,6 +31,15 @@ const QUOTE_CURRENCY = "CRC";
  */
 const MIN_PLAUSIBLE_RATE = 300;
 const MAX_PLAUSIBLE_RATE = 1500;
+
+/**
+ * Euros per dollar has stayed between roughly 0.6 and 1.2 since the euro
+ * launched. Same idea as the colón band: wide enough never to reject a real
+ * rate, narrow enough to catch an inverted one (1.16 dollars per euro) or a
+ * different currency.
+ */
+const MIN_PLAUSIBLE_EUR_RATE = 0.4;
+const MAX_PLAUSIBLE_EUR_RATE = 2;
 
 export const DEFAULT_EXCHANGE_RATE_PROVIDER_URLS = [
   "https://open.er-api.com/v6/latest/USD",
@@ -57,6 +67,12 @@ interface ResolvedSettings {
 
 interface CachedRate {
   rate: number;
+  /**
+   * Euros per dollar. Null when the provider that supplied the colón rate did
+   * not carry a usable euro one — the colón rate is the one the deposit flow
+   * leans on, so a missing euro must never cost a guest the colón estimate.
+   */
+  eurRate: number | null;
   source: string;
   fetchedAtMs: number;
 }
@@ -73,8 +89,13 @@ let inFlightFetch: Promise<CachedRate | null> | null = null;
 export interface ExchangeRatePayload {
   base: string;
   quote: string;
-  /** Colones per one dollar. */
+  /** Colones per one dollar. Kept at the top level for clients that predate `rates`. */
   rate: number;
+  /** Units of each display currency per one dollar. `EUR` is null when no provider carried it. */
+  rates: {
+    CRC: number;
+    EUR: number | null;
+  };
   source: string;
   fetchedAt: string;
   /** True when every provider failed and this is the last known good rate. */
@@ -130,6 +151,7 @@ function respond(
     base: BASE_CURRENCY,
     quote: QUOTE_CURRENCY,
     rate: entry.rate,
+    rates: { CRC: entry.rate, EUR: entry.eurRate },
     source: entry.source,
     fetchedAt: new Date(entry.fetchedAtMs).toISOString(),
     stale,
@@ -166,14 +188,14 @@ async function loadRate(
     for (const url of settings.providerUrls) {
       const startedAt = Date.now();
       try {
-        const rate = await fetchRate(url, settings.timeoutMs);
+        const { rate, eurRate } = await fetchRates(url, settings.timeoutMs);
         observability.recordProviderCall({
           provider: "internal",
           operation: "exchange_rate_fetch",
           durationMs: Date.now() - startedAt,
           statusCode: 200,
         });
-        const entry: CachedRate = { rate, source: providerName(url), fetchedAtMs: nowMs };
+        const entry: CachedRate = { rate, eurRate, source: providerName(url), fetchedAtMs: nowMs };
         cachedRate = entry;
         return entry;
       } catch (error) {
@@ -195,7 +217,7 @@ async function loadRate(
   return inFlightFetch;
 }
 
-async function fetchRate(url: string, timeoutMs: number): Promise<number> {
+async function fetchRates(url: string, timeoutMs: number): Promise<{ rate: number; eurRate: number | null }> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -210,12 +232,13 @@ async function fetchRate(url: string, timeoutMs: number): Promise<number> {
       throw new Error(`exchange_rate_http_${response.status}`);
     }
 
-    const rate = extractRate(await response.json());
+    const body = await response.json();
+    const rate = extractRate(body);
     if (rate === null) {
       throw new Error("exchange_rate_not_in_payload");
     }
 
-    return rate;
+    return { rate, eurRate: extractEurRate(body) };
   } finally {
     clearTimeout(timeout);
   }
@@ -229,12 +252,23 @@ async function fetchRate(url: string, timeoutMs: number): Promise<number> {
  * wild. Probing the known shapes is what keeps the provider list configurable.
  */
 export function extractRate(body: unknown): number | null {
+  // Two decimals is all any provider publishes and all the UI shows.
+  return extractQuote(body, QUOTE_CURRENCY, MIN_PLAUSIBLE_RATE, MAX_PLAUSIBLE_RATE, 2);
+}
+
+/** Euros per dollar, from the same envelopes. Four decimals: 0.86 vs 0.8649 is a visible euro on a long stay. */
+export function extractEurRate(body: unknown): number | null {
+  return extractQuote(body, EURO_CURRENCY, MIN_PLAUSIBLE_EUR_RATE, MAX_PLAUSIBLE_EUR_RATE, 4);
+}
+
+function extractQuote(body: unknown, currency: string, min: number, max: number, decimals: number): number | null {
   if (!body || typeof body !== "object") {
     return null;
   }
 
   const root = body as Record<string, unknown>;
   const containers = [root.rates, root.conversion_rates, root.data, root.usd, root.USD, root];
+  const factor = 10 ** decimals;
 
   for (const container of containers) {
     if (!container || typeof container !== "object") {
@@ -242,12 +276,11 @@ export function extractRate(body: unknown): number | null {
     }
 
     const record = container as Record<string, unknown>;
-    for (const key of [QUOTE_CURRENCY, QUOTE_CURRENCY.toLowerCase()]) {
+    for (const key of [currency, currency.toLowerCase()]) {
       const value = record[key];
       const parsed = typeof value === "number" ? value : typeof value === "string" ? Number(value) : NaN;
-      if (Number.isFinite(parsed) && parsed >= MIN_PLAUSIBLE_RATE && parsed <= MAX_PLAUSIBLE_RATE) {
-        // Two decimals is all any provider publishes and all the UI shows.
-        return Math.round(parsed * 100) / 100;
+      if (Number.isFinite(parsed) && parsed >= min && parsed <= max) {
+        return Math.round(parsed * factor) / factor;
       }
     }
   }

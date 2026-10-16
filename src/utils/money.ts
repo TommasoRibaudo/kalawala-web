@@ -104,10 +104,10 @@ export type DisplayCurrency = 'USD' | 'CRC' | 'EUR';
  * Which currency leads the price in each language. The other figure is the
  * smaller one beneath it: dollars under colones/euros, colones under dollars.
  *
- * Spanish leads with colones (the local reader), Italian/German/French with
- * euros, everything else — English included — with dollars. Dutch and
- * Portuguese are euro-zone languages too but were not asked for; moving them is
- * a one-word change here.
+ * Spanish leads with colones (the local reader), German/French/Italian/Dutch
+ * with euros, everything else — English included — with dollars. Portuguese is
+ * a euro-zone language too but was not asked for; moving it is a one-word
+ * change here.
  */
 const PRIMARY_CURRENCY: Record<Locale, DisplayCurrency> = {
   en: 'USD',
@@ -118,7 +118,7 @@ const PRIMARY_CURRENCY: Record<Locale, DisplayCurrency> = {
   pt: 'USD',
   he: 'USD',
   hi: 'USD',
-  nl: 'USD',
+  nl: 'EUR',
 };
 
 export function primaryCurrencyFor(language: Locale): DisplayCurrency {

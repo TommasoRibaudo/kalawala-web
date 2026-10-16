@@ -68,6 +68,7 @@ describe('primaryCurrencyFor', () => {
     ['de', 'EUR'],
     ['fr', 'EUR'],
     ['it', 'EUR'],
+    ['nl', 'EUR'],
   ] as const)('%s leads with %s', (language, expected) => {
     expect(primaryCurrencyFor(language)).toBe(expected);
   });
@@ -89,7 +90,7 @@ describe('localizePrice', () => {
     expect(price.secondary).toEqual({ text: '$510,00', currency: 'USD', estimate: false });
   });
 
-  test.each(['de', 'fr', 'it'] as const)('%s leads with estimated euros and keeps exact dollars beneath', (language) => {
+  test.each(['de', 'fr', 'it', 'nl'] as const)('%s leads with estimated euros and keeps exact dollars beneath', (language) => {
     const price = localizePrice(51_000, 'USD', language, RATES);
     expect(price.primary.currency).toBe('EUR');
     expect(price.primary.estimate).toBe(true);

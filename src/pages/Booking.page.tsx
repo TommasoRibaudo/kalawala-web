@@ -1157,7 +1157,10 @@ const BookingSearchResults = ({ result, strings, language, nonRefundable, onNonR
     (!poolOnly || hasPool(p)) &&
     (!fencedParkingOnly || hasFencedParking(p)) &&
     (locationFilter === 'all' || locationBucket(p.slug) === locationFilter));
-  if (sortOption) others = sortProperties(others, sortOption);
+  // With no explicit sort, smallest homes lead so a couple searching for two
+  // sees the right-sized homes first. Array.sort is stable, so homes with the
+  // same capacity keep the server's order.
+  others = sortProperties(others, sortOption ?? 'size_asc');
 
   const anyRefineActive = poolOnly || fencedParkingOnly || locationFilter !== 'all';
   const visibleCount = (featured ? 1 : 0) + others.length;

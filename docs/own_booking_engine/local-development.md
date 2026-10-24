@@ -70,7 +70,7 @@ branching inside the handler.
 
 1. Open `http://localhost:3000/book`, pick dates far in the future, search.
 2. Choose a property and fill in the guest form. The portal password must be at
-   least 12 characters — remember it, you need it in step 6.
+   least 8 characters — remember it, you need it in step 6.
 3. Continue to payment. The mock PayPal approval page appears and redirects back
    to `/book/return` after a second, exactly as PayPal does.
 4. The return page captures the payment and lands on `/book/confirmed`.

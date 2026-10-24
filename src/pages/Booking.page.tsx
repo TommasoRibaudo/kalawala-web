@@ -1853,7 +1853,7 @@ function validatePayPalHoldForm(form: PayPalHoldFormState, strings: BookingStrin
   if (!form.firstName.trim()) errors.firstName = strings.validationRequired;
   if (!form.lastName.trim()) errors.lastName = strings.validationRequired;
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) errors.email = strings.validationEmail;
-  if (form.portalPassword.length < 12) errors.portalPassword = strings.validationPortalPassword;
+  if (form.portalPassword.length < 8) errors.portalPassword = strings.validationPortalPassword;
   if (!form.termsAccepted) errors.termsAccepted = strings.validationTerms;
   return errors;
 }

@@ -9,7 +9,7 @@ import OtherBlogs from "../Components/OtherBlogs.Component";
 import { puertoViejoBlogRecommendations } from "../../../utils/constants";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
-import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
 import { useLocale, useMessages } from "../../../i18n";
@@ -127,7 +127,7 @@ const TwoDaysInPV = () => {
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
                         <h2 className="smoobu-title">{m.blog.bookYourStay}</h2>
                         <div className="smoobu-wrapper">
-                            <Smoobu2 targetId="blogSmoobuBooking" />
+                            <BookingSearchWidget locale={locale} variant="hero" />
                         </div>
                     </div>
 

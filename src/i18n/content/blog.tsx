@@ -15,7 +15,7 @@ import { upcomingYearForMonth } from '../../utils/dates';
  *
  * Per the strings-vs-prose rule established in 3a, this file holds only the
  * paragraph text and headings that differ per locale. The React components
- * threaded between paragraphs (StayRecommendation, WhyStayWithUs, Smoobu2)
+ * threaded between paragraphs (StayRecommendation, WhyStayWithUs, BookingSearchWidget)
  * stay in the page component, with locale-appropriate props passed in from
  * there — they are not text to translate.
  */

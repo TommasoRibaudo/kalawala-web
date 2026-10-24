@@ -4,6 +4,7 @@ import * as PostHogService from '../services/PostHog.service';
 import { CookieConsentService } from '../services/CookieConsent.service';
 import { resetExchangeRateStore } from '../services/exchangeRateStore';
 import BookingPage from './Booking.page';
+import { bookingPath } from '../i18n';
 
 /**
  * posthog-js is loaded lazily behind PostHog.service, so mocking the library
@@ -84,8 +85,21 @@ function renderBookingRoutes(path = '/en/book') {
   );
 }
 
+/**
+ * Every language now asks for a display rate, so the generic helpers answer
+ * that call themselves — as "source unreachable" — instead of letting it drain
+ * a queue meant for the booking API. Prices in these tests stay in dollars.
+ */
+function rateUnavailableResponse() {
+  return new Response(JSON.stringify({ error: { code: 'exchange_rate_unavailable' } }), {
+    status: 503,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
 function mockJsonResponse(body: unknown, status = 200) {
-  global.fetch = jest.fn(async () =>
+  global.fetch = jest.fn(async (url?: unknown) =>
+    String(url).includes('/api/exchange-rate') ? rateUnavailableResponse() :
     new Response(JSON.stringify(body), {
       status,
       headers: { 'Content-Type': 'application/json' },
@@ -95,7 +109,11 @@ function mockJsonResponse(body: unknown, status = 200) {
 
 function mockJsonResponses(responses: Array<{ body: unknown; status?: number }>) {
   const queue = [...responses];
-  global.fetch = jest.fn(async () => {
+  global.fetch = jest.fn(async (url?: unknown) => {
+    if (String(url).includes('/api/exchange-rate')) {
+      return rateUnavailableResponse();
+    }
+
     const next = queue.shift();
     if (!next) {
       throw new Error('Unexpected fetch call');
@@ -106,6 +124,15 @@ function mockJsonResponses(responses: Array<{ body: unknown; status?: number }>)
       headers: { 'Content-Type': 'application/json' },
     });
   }) as typeof fetch;
+}
+
+/**
+ * The calls to the booking API, in order. The display-rate request fires on
+ * every page now and lands at an arbitrary point among them, so tests that
+ * index into the calls must not see it.
+ */
+function bookingApiCalls(): Array<[string, any]> {
+  return (global.fetch as jest.Mock).mock.calls.filter(([url]) => !String(url).includes('/api/exchange-rate'));
 }
 
 function activeSlide() {
@@ -220,7 +247,7 @@ test('renders Spanish no-availability state for bookES route', async () => {
 
   await screen.findByText('No hay casas disponibles para estas fechas');
 
-  const [, request] = (global.fetch as jest.Mock).mock.calls[0];
+  const [, request] = bookingApiCalls()[0];
   expect(request.headers['Accept-Language']).toBe('es');
   expect(JSON.parse(request.body)).toMatchObject({ language: 'es' });
 });
@@ -258,7 +285,10 @@ const spanishSearchResult = {
 };
 
 /** Routes by URL so the exchange-rate call can be answered — or refused — independently. */
-function mockSpanishSearchWithExchangeRate(exchangeRate: { body: unknown; status?: number } | null) {
+function mockSearchWithExchangeRate(
+  exchangeRate: { body: unknown; status?: number } | null,
+  language: 'en' | 'es' | 'de' = 'es'
+) {
   global.fetch = jest.fn(async (url: string) => {
     if (String(url).includes('/api/exchange-rate')) {
       if (!exchangeRate) {
@@ -270,59 +300,113 @@ function mockSpanishSearchWithExchangeRate(exchangeRate: { body: unknown; status
       });
     }
 
-    return new Response(JSON.stringify(spanishSearchResult), {
+    return new Response(JSON.stringify({ ...spanishSearchResult, language }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
   }) as unknown as typeof fetch;
 }
 
-async function runSpanishSearch() {
-  renderBookingPage('/es/book');
-  fireEvent.change(activeSlide().getByLabelText('Llegada'), { target: { value: '2099-07-10' } });
-  fireEvent.change(activeSlide().getByLabelText('Salida'), { target: { value: '2099-07-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /^buscar$/i }));
+const SEARCH_UI = {
+  en: { path: '/en/book', checkIn: 'Check-in', checkOut: 'Check-out', search: /^search$/i },
+  es: { path: '/es/book', checkIn: 'Llegada', checkOut: 'Salida', search: /^buscar$/i },
+  de: { path: `${bookingPath('de')}`, checkIn: 'Anreise', checkOut: 'Abreise', search: /^suchen$/i },
+} as const;
+
+async function runSearch(language: keyof typeof SEARCH_UI) {
+  const ui = SEARCH_UI[language];
+  renderBookingPage(ui.path);
+  fireEvent.change(activeSlide().getByLabelText(ui.checkIn), { target: { value: '2099-07-10' } });
+  fireEvent.change(activeSlide().getByLabelText(ui.checkOut), { target: { value: '2099-07-14' } });
+  fireEvent.click(screen.getByRole('button', { name: ui.search }));
   await screen.findByText('Casa Geco');
 }
 
-test('shows a colón estimate beside the dollar total on the Spanish results, flagged as an estimate', async () => {
-  mockSpanishSearchWithExchangeRate({
-    body: { base: 'USD', quote: 'CRC', rate: 512.35, source: 'open.er-api.com', fetchedAt: '2099-07-01T06:00:00Z', stale: false },
-  });
+const rateBody = (rates: { CRC: number; EUR: number | null }) => ({
+  base: 'USD',
+  quote: 'CRC',
+  rate: rates.CRC,
+  rates,
+  source: 'open.er-api.com',
+  fetchedAt: '2099-07-01T06:00:00Z',
+  stale: false,
+});
 
-  await runSpanishSearch();
+// The fixture home costs $510.00 for four nights, $127.50 a night.
+
+test('leads with colones on the Spanish results and keeps the dollar total beneath, flagged as an estimate', async () => {
+  mockSearchWithExchangeRate({ body: rateBody({ CRC: 512.35, EUR: 0.92 }) });
+
+  await runSearch('es');
 
   // $510.00 × 512.35 = ₡261,298.50, rounded to the nearest hundred colones.
   // es-CR groups thousands with a non-breaking space, which the default text
   // normalizer folds into the plain one written here.
-  expect(await screen.findByText('≈ ₡261 300')).toBeInTheDocument();
-  expect(screen.getByText('USD 510,00')).toBeInTheDocument();
+  const lead = await screen.findByText('≈ ₡261 300');
+  expect(lead.closest('strong')).not.toBeNull();
+  // Dollars are what is charged, so the companion figure is exact — no "≈".
+  const dollars = screen.getByText('$510,00');
+  expect(dollars.closest('.booking-price-secondary')).not.toBeNull();
   expect(screen.getByText(/Los montos en colones son una estimación/)).toBeInTheDocument();
   expect(screen.getByText(/₡512,35 por US\$1/)).toBeInTheDocument();
 });
 
-test('leaves the dollar prices alone when the exchange rate cannot be fetched', async () => {
-  mockSpanishSearchWithExchangeRate(null);
+test('falls back to dollars alone on the Spanish results when the exchange rate cannot be fetched', async () => {
+  mockSearchWithExchangeRate(null);
 
-  await runSpanishSearch();
+  await runSearch('es');
 
-  expect(screen.getByText('USD 510,00')).toBeInTheDocument();
+  expect(screen.getByText('$510,00').closest('strong')).not.toBeNull();
   await waitFor(() => expect(screen.queryByText(/≈ ₡/)).not.toBeInTheDocument());
   expect(screen.queryByText(/Los montos en colones/)).not.toBeInTheDocument();
 });
 
-test('does not request an exchange rate on the English booking flow', async () => {
-  mockJsonResponse({ ...spanishSearchResult, language: 'en' });
+test('leads with dollars on the English results and shows colones beneath', async () => {
+  mockSearchWithExchangeRate({ body: rateBody({ CRC: 512.35, EUR: 0.92 }) }, 'en');
 
-  renderBookingPage('/en/book');
-  fireEvent.change(activeSlide().getByLabelText('Check-in'), { target: { value: '2099-07-10' } });
-  fireEvent.change(activeSlide().getByLabelText('Check-out'), { target: { value: '2099-07-14' } });
-  fireEvent.click(screen.getByRole('button', { name: /^search$/i }));
-  await screen.findByText('Casa Geco');
+  await runSearch('en');
 
-  const requestedUrls = (global.fetch as jest.Mock).mock.calls.map(([url]) => String(url));
-  expect(requestedUrls.some((url) => url.includes('/api/exchange-rate'))).toBe(false);
-  expect(screen.queryByText(/≈ ₡/)).not.toBeInTheDocument();
+  expect((await screen.findByText('$510.00')).closest('strong')).not.toBeNull();
+  const colones = await screen.findByText('≈ ₡261,300');
+  expect(colones.closest('.booking-price-secondary')).not.toBeNull();
+  expect(screen.getByText(/Colón amounts are an estimate/)).toBeInTheDocument();
+  expect(screen.queryByText(/€/)).not.toBeInTheDocument();
+});
+
+test('leads with euros on the German results, dollars beneath, and no colones anywhere', async () => {
+  mockSearchWithExchangeRate({ body: rateBody({ CRC: 512.35, EUR: 0.92 }) }, 'de');
+
+  await runSearch('de');
+
+  // $510.00 × 0.92 = €469.20 → whole euros.
+  const lead = await screen.findByText('≈ 469 €');
+  expect(lead.closest('strong')).not.toBeNull();
+  expect(screen.getByText('510,00 $').closest('.booking-price-secondary')).not.toBeNull();
+  expect(screen.getByText(/Euro-Beträge sind eine Schätzung/)).toBeInTheDocument();
+  expect(screen.getByText(/0,92 € pro US\$1/)).toBeInTheDocument();
+  expect(screen.queryByText(/₡/)).not.toBeInTheDocument();
+});
+
+test('shows dollars alone in a euro language when the API has no euro rate', async () => {
+  mockSearchWithExchangeRate({ body: rateBody({ CRC: 512.35, EUR: null }) }, 'de');
+
+  await runSearch('de');
+
+  expect(screen.getByText('510,00 $').closest('strong')).not.toBeNull();
+  await waitFor(() => expect(screen.queryByText(/≈/)).not.toBeInTheDocument());
+  expect(screen.queryByText(/Euro-Beträge/)).not.toBeInTheDocument();
+});
+
+test('still shows the colón estimate when the API predates the euro rate', async () => {
+  // The frontend can reach production a minute before the backend does.
+  mockSearchWithExchangeRate(
+    { body: { base: 'USD', quote: 'CRC', rate: 512.35, source: 'open.er-api.com', fetchedAt: '2099-07-01T06:00:00Z', stale: false } },
+    'es'
+  );
+
+  await runSearch('es');
+
+  expect(await screen.findByText('≈ ₡261 300')).toBeInTheDocument();
 });
 
 test('language switcher toggles booking routes and preserves search query state', () => {
@@ -349,7 +433,7 @@ test('auto-searches when a shared link already carries arrival and departure dat
 
   await screen.findByText('Casa Geco');
 
-  const [, request] = (global.fetch as jest.Mock).mock.calls[0];
+  const [, request] = bookingApiCalls()[0];
   expect(JSON.parse(request.body)).toMatchObject({ arrivalDate: '2099-07-10', departureDate: '2099-07-14' });
 });
 
@@ -559,7 +643,7 @@ test('creates a PayPal hold from the property result card and shows the live hol
   expect(screen.getByText(/Hold expires at/)).toBeInTheDocument();
   expect(screen.getByText('res_PUBLIC123')).toBeInTheDocument();
 
-  const holdCall = (global.fetch as jest.Mock).mock.calls[1];
+  const holdCall = bookingApiCalls()[1];
   const holdOptions = holdCall[1] as RequestInit & { headers: Record<string, string>; body: string };
   expect(holdCall[0]).toBe('/api/holds');
   expect(holdOptions.method).toBe('POST');
@@ -592,7 +676,7 @@ test('creates a PayPal hold from the property result card and shows the live hol
   await waitFor(() => {
     expect(assign).toHaveBeenCalledWith('https://www.sandbox.paypal.com/checkoutnow?token=PAY-ORDER-123');
   });
-  const orderCall = (global.fetch as jest.Mock).mock.calls[2];
+  const orderCall = bookingApiCalls()[2];
   const orderOptions = orderCall[1] as RequestInit & { headers: Record<string, string> };
   expect(orderCall[0]).toBe('/api/bookings/3d0f8ac0-5c30-4b09-bb49-12fd1df120f1/paypal/create-order');
   expect(orderOptions.method).toBe('POST');
@@ -1103,7 +1187,7 @@ test('deposit checkout collects guest details and creates a real hold', async ()
   await screen.findByText('CR61010200009629385364');
   expect(screen.getByText('KWL-DEP12345')).toBeInTheDocument();
 
-  const holdCall = (global.fetch as jest.Mock).mock.calls[1];
+  const holdCall = bookingApiCalls()[1];
   expect(holdCall[0]).toBe('/api/deposit-holds');
   const holdBody = JSON.parse((holdCall[1] as RequestInit & { body: string }).body);
   expect(holdBody).toEqual(
@@ -1131,7 +1215,7 @@ test('deposit checkout validates the portal password before calling the API', as
 
   await screen.findByText('Use at least 8 characters.');
   // Only the search call — the hold was never attempted.
-  expect((global.fetch as jest.Mock).mock.calls).toHaveLength(1);
+  expect(bookingApiCalls()).toHaveLength(1);
 });
 
 test('deposit receipt upload goes to S3 and then confirms with the API', async () => {
@@ -1161,7 +1245,7 @@ test('deposit receipt upload goes to S3 and then confirms with the API', async (
   // Once uploaded the wait is on staff, not the guest, so no more countdown.
   expect(screen.queryByText('Your reservation expires in')).not.toBeInTheDocument();
 
-  const calls = (global.fetch as jest.Mock).mock.calls;
+  const calls = bookingApiCalls();
   expect(calls[2][0]).toBe('/api/deposit-receipt/upload-url');
   // The file goes straight to S3, never through the booking API.
   expect(calls[3][0]).toBe('https://s3.example.test/put');
@@ -1381,7 +1465,7 @@ test('the pet toggle narrows the results to pet-friendly homes', async () => {
   // Turning it back off restores the full list without a second search.
   togglePet();
   expect(screen.getByText('Casa Delfin')).toBeInTheDocument();
-  expect((global.fetch as jest.Mock).mock.calls).toHaveLength(1);
+  expect(bookingApiCalls()).toHaveLength(1);
 });
 
 test('a pet search with no pet-friendly home free explains itself', async () => {
@@ -1425,7 +1509,7 @@ test('the declared pet rides along to the PayPal hold', async () => {
   fireEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
   await screen.findByText('Your stay is on hold');
 
-  const holdCall = (global.fetch as jest.Mock).mock.calls[1];
+  const holdCall = bookingApiCalls()[1];
   expect(holdCall[0]).toBe('/api/holds');
   expect(JSON.parse((holdCall[1] as RequestInit & { body: string }).body)).toMatchObject({
     propertyId: 'b8a1f2e7-86d3-4c30-8f6a-8046a5f9a111',
@@ -1442,7 +1526,7 @@ test('no pet declared means no pet flag on the hold', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'Reserve these dates' }));
   await screen.findByText('CR61010200009629385364');
 
-  const holdCall = (global.fetch as jest.Mock).mock.calls[1];
+  const holdCall = bookingApiCalls()[1];
   expect(holdCall[0]).toBe('/api/deposit-holds');
   expect(JSON.parse((holdCall[1] as RequestInit & { body: string }).body)).not.toHaveProperty('withPet');
 });

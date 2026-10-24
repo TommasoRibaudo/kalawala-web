@@ -2,7 +2,8 @@ import React from 'react';
 import { PROPERTY_MARKETING_CONFIG } from '../../utils/constants';
 import { useCalendarMonth } from '../../hooks/useCalendarMonth';
 import { addDays, getCostaRicaToday } from '../../utils/dates';
-import { formatBookingMoney } from '../../utils/money';
+import { useDisplayRates } from '../../hooks/useDisplayRates';
+import { localizePrice } from '../../utils/money';
 import InstantConfirmationBadge from '../InstantConfirmationBadge/InstantConfirmationBadge.component';
 import './PriceConfirmationSection.style.scss';
 import type { Locale } from '../../i18n';
@@ -36,6 +37,7 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
   // Shares the cache with the search widget's calendar, so this costs no extra
   // request once that calendar has paged into next month too — and the
   // headline price can never contradict the dots below it.
+  const rates = useDisplayRates();
   const current = useCalendarMonth(config ? config.propertyKey : undefined, currentMonth, language);
   const next = useCalendarMonth(config ? config.propertyKey : undefined, nextMonth, language);
 
@@ -66,14 +68,18 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
     return null;
   }
 
-  // Prices are quoted and charged in USD across the whole booking engine, so
-  // the Spanish page shows USD too rather than a colón figure that would
-  // disagree with the calendar and the checkout total.
+  // Prices are quoted and charged in USD across the whole booking engine. Each
+  // language leads with its own currency and keeps the dollar figure beneath
+  // it (see `localizePrice`), so this headline agrees with the calendar and the
+  // checkout total to within the rate's rounding.
   const currency = current.data?.currency ?? next.data?.currency ?? 'USD';
-  const priceLabel =
+  const localized =
     liveLowestCents !== null
-      ? formatBookingMoney(liveLowestCents, currency, language, { hideZeroCents: true })
-      : `$${config.price.usd}`;
+      ? localizePrice(liveLowestCents, currency, language, rates, { hideZeroCents: true })
+      : localizePrice(config.price.usd * 100, 'USD', language, rates, { hideZeroCents: true });
+  const withEstimateMark = (figure: { text: string; estimate: boolean }) =>
+    figure.estimate ? `≈ ${figure.text}` : figure.text;
+  const priceLabel = withEstimateMark(localized.primary);
 
   const priceMessages = getMessages(locale).price;
   const tooltipText = priceMessages.tooltip;
@@ -85,6 +91,9 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
         <span className="info-icon">ⓘ</span>
         <span className="tooltip">{tooltipText}</span>
       </span>
+      {localized.secondary && (
+        <span className="price-display__secondary">{withEstimateMark(localized.secondary)}</span>
+      )}
     </>
   );
 

@@ -1045,6 +1045,11 @@ export interface ExchangeRateResponse {
   quote: string;
   /** Colones per one dollar. */
   rate: number;
+  /**
+   * Units of each display currency per one dollar. Absent on an API that
+   * predates the euro rate; `EUR` is null when no provider carried one.
+   */
+  rates?: { CRC: number; EUR: number | null };
   source: string;
   fetchedAt: string;
   /** The rate source was unreachable; this is the last one the API had. */

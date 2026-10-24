@@ -6,7 +6,7 @@ import '../../../components/OurHomes/OurHomes.style.scss';
 import FixedNavigation from "../../../components/FixedNavigation/FixedNavigation.component";
 import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
-import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import HomeCard from "../../../components/OurHomes/Components/HomeCard.component";
 import { houseDataByLangCode } from "../../../utils/constants";
 import { useLocale } from "../../../i18n";
@@ -90,7 +90,7 @@ const PropertyCategoryPage: React.FC<IPropertyCategoryPage> = ({ routeKey, categ
                         <h2 className="smoobu-title">{content.ctaHeading}</h2>
                         <p>{content.ctaText}</p>
                         <div className="smoobu-wrapper">
-                            <Smoobu2 targetId="blogSmoobuBooking" />
+                            <BookingSearchWidget locale={locale} variant="hero" />
                         </div>
                     </div>
                 </Col>

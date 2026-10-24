@@ -10,7 +10,7 @@ import ContactUs from "../../../components/ContactUs/ContactUs.component";
 import { Helmet } from "react-helmet";
 import StayRecommendation from "../../../components/StayRecommendation/StayRecommendation.component";
 import WhyStayWithUs from "../../../components/WhyStayWithUs/WhyStayWithUs.component";
-import Smoobu2 from "../../../components/Smoobu2/Smoobu2.component";
+import BookingSearchWidget from "../../../components/BookingSearchWidget/BookingSearchWidget.component";
 import { cahuitaAreaRecommendations } from "../../../utils/constants";
 import { useLocale, useMessages } from "../../../i18n";
 import { homePath } from "../../../i18n/paths";
@@ -122,12 +122,7 @@ const TenHoursInPuerto = () => {
                     <div className="blog-smoobu-container" style={{ maxWidth: 1000, marginTop: '2rem', marginBottom: '2rem' }}>
                         <h2 className="smoobu-title">{m.blog.bookYourStay}</h2>
                         <div className="smoobu-wrapper">
-                            {/* "blogSmoobuBooking" is the id Smoobu2.style.scss actually
-                                styles ("Blog-specific Smoobu container styling") — the
-                                pre-merge per-article ids (tenHoursSmoobuBooking,
-                                tenHoursESSmoobuBooking, ...) matched no selector, so every
-                                blog widget except one page rendered unstyled. */}
-                            <Smoobu2 targetId="blogSmoobuBooking" />
+                            <BookingSearchWidget locale={locale} variant="hero" />
                         </div>
                     </div>
 

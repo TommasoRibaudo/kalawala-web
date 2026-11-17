@@ -8,7 +8,10 @@ import path from 'node:path';
 import http from 'node:http';
 import { chromium } from '@playwright/test';
 
-const ROOT = 'C:/Users/User/Documents/ReactNativeApps/Medical/kalawala-web';
+import { fileURLToPath } from 'node:url';
+
+// Repo root, wherever it is checked out (scripts/ is one level down).
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BUILD = path.join(ROOT, 'build');
 const PORT = 5233;
 const ROUTE = process.argv.slice(2).find((a) => !a.startsWith('--')) || '/';

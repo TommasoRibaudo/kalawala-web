@@ -4,6 +4,8 @@ import { CookieConsentService } from './services/CookieConsent.service';
 import { initPostHogIfConsented } from './services/PostHog.service';
 import { routeKeyForPath } from './routes.config';
 import { preloadRoute, type LoadableKey } from './routeLoader';
+import { isPrerender } from './utils/isPrerender';
+import { registerSnapshotTextSeparators } from './utils/prerenderTextSeparators';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -31,6 +33,10 @@ if (storedConsent) {
 initPostHogIfConsented();
 
 const rootElement = document.getElementById('root') as HTMLElement;
+
+// Keep adjacent text nodes separate in the react-snap snapshot so hydration
+// can match them (see utils/prerenderTextSeparators.ts).
+if (isPrerender()) registerSnapshotTextSeparators(rootElement);
 
 /*
  * Hydration cause #3 (docs/i18n-rollout-plan.md, Phase 11 P2): resolve and

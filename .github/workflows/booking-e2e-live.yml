@@ -18,7 +18,7 @@ concurrency:
 jobs:
   mock:
     name: Full flow — mock PayPal (both paths)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned: Playwright 1.59 has no Chromium for ubuntu-latest (26.04)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -60,7 +60,7 @@ jobs:
 
   sandbox:
     name: PayPal path — real sandbox
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned: Playwright 1.59 has no Chromium for ubuntu-latest (26.04)
     # Fork PRs cannot read secrets; run only on same-repo PRs and manual dispatch.
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository }}
     # Required gate: a broken live-PayPal integration must block the merge.

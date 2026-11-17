@@ -18,7 +18,7 @@ on:
 jobs:
   secret-scan:
     name: Secret Scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned: Playwright 1.59 has no Chromium for ubuntu-latest (26.04)
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -31,7 +31,7 @@ jobs:
 
   audit:
     name: Dependency Audit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned: Playwright 1.59 has no Chromium for ubuntu-latest (26.04)
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -74,7 +74,7 @@ jobs:
 
   typecheck:
     name: Type Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned: Playwright 1.59 has no Chromium for ubuntu-latest (26.04)
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -91,7 +91,7 @@ jobs:
 
   e2e-tests:
     name: E2E Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned: Playwright 1.59 has no Chromium for ubuntu-latest (26.04)
     needs: [typecheck]
     steps:
       - name: Checkout Code
@@ -131,7 +131,7 @@ jobs:
 
   deploy:
     name: Build & Deploy
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # pinned: Playwright 1.59 has no Chromium for ubuntu-latest (26.04)
     needs: [secret-scan, audit, typecheck, e2e-tests]
     # Serialise the upload. There is one cPanel account and one
     # .ftp-deploy-sync-state.json living on it, so two deploys in flight race on

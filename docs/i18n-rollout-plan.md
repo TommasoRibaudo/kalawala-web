@@ -2954,3 +2954,43 @@ feature work this session:
   residual-hydration-warnings note as above still applies. Phase 10 GSC
   actions are done — see the 2026-08-09 "Phase 10: real GSC access, and
   monitoring automated" session log entry above.
+
+### 2026-11-17 — Residual hydration errors traced and fixed (adjacent text nodes, react-slick breakpoints)
+
+Prompted by the weekly website health check (2026-11-16: ~38 React
+#418/#423/#425 on the live homepage). Branch `fix/hydration-mismatches-nov`.
+
+- **How it was found.** The "non-minified dev bundle" follow-up from the
+  2026-08-11 entry: a Playwright harness loads the CRA dev server but serves
+  it a page whose `#root` is the prerendered markup, so `index.tsx` takes the
+  `hydrateRoot` branch with dev React and prints full mismatch details. Two
+  harness-only tweaks were needed: normalise `style` attribute whitespace, and
+  disable dev React's `didWarnInvalidHydration` latch (it prints only the
+  first hydration warning per page, and a harmless style-serialisation
+  warning was taking that slot).
+- **Cause 1 (every prerendered page): adjacent text nodes.** JSX such as
+  `<Icon /> {guests}` or `{title} {highlight}` renders sibling text nodes
+  (`" "` + `"2"`). react-snap serialises the live DOM, which merges them into
+  `" 2"`; hydration expects `" "`, fails, and client-renders the whole root.
+  React's own SSR avoids this with `<!-- -->` separators. Fix:
+  `src/utils/prerenderTextSeparators.ts` inserts the same separators right
+  before each snapshot via react-snap's `window.snapSaveState()` hook,
+  registered in `index.tsx` only under `isPrerender()`. One systemic fix
+  instead of rewriting dozens of JSX sites.
+- **Cause 2 (blog posts): react-slick `responsive`.** `OtherBlogs` guarded
+  its own `windowWidth`, but react-slick applies `responsive` breakpoints
+  itself in `componentDidMount`, so the crawl's 480px viewport baked the
+  1-slide layout into the snapshot. Fix: omit `responsive` under prerender.
+- **Result** (`scripts/hydration-diff.mjs`): 0 React errors and
+  `structure: IDENTICAL` on `/`, `/es/`, `/de/`, `/he/`, `/en/delfin`,
+  `/es/delfin`, `/en/blog`, `/en/besttimetovisitpuerto`,
+  `/en/weather-puerto-viejo-march`, `/fr/puerto-viejo-beaches`, `/404` at
+  412px; `/` also at `--cpu=4`; `/`, `/en/delfin` and a blog post at 1366px.
+  Before: 19 on the live `/` at 412px. Remaining console lines are local 404s
+  (no booking-api behind the static server). Build + crawl 451/451 (one
+  earlier run hit a flaky 30s navigation timeout and passed on retry).
+- Validation: `tsc --noEmit` clean; Jest 939/940, the one failure is the
+  data-driven `amenityLabels.test.ts` ("Outside Parking"/"Unfenced Parking"
+  no longer used by any listing), unrelated to this change.
+- `scripts/hydration-diff.mjs` now resolves the repo root from its own
+  location instead of a hard-coded old checkout path.

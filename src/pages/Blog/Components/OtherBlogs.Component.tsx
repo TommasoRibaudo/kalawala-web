@@ -72,22 +72,29 @@ const OtherBlogs: FC<IOtherBlogs> = ({ currentBlog, locale }) => {
     adaptiveHeight: true,
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
-    responsive: [
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
+    // Not under react-snap: react-slick applies these breakpoints itself in
+    // componentDidMount (matchMedia), which the windowWidth guard above can't
+    // stop. The crawl's 480px viewport then baked the 1-slide layout (and its
+    // clone order) into the snapshot, while the client's first render uses the
+    // base 4-slide settings: hydration error #418 on every blog post.
+    ...(isPrerender() ? {} : {
+      responsive: [
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+          }
+        },
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 1,
+          }
         }
-      },
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        }
-      }
-    ]
+      ],
+    }),
   }), [windowWidth, filteredBlogs.length])
 
   const handleBlogClick = useCallback((routeKey: ReturnType<typeof routeKeyForSlug>) => {

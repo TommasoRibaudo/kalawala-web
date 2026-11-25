@@ -16,6 +16,7 @@ import { canonicalUrl, hreflangLinks } from "../../../i18n/seo";
 import { pathForKey } from "../../../routes.config";
 import { internalLinkLabel } from "../../../i18n/content/internalLinks";
 import { busHoursContent, BusHoursContent } from "../../../i18n/content/blog";
+import { LIMON_PUERTO_VIEJO_SCHEDULE } from "../busSchedules";
 
 const HERO_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg";
 
@@ -165,14 +166,10 @@ const BusHours = () => {
                         <h4><strong>{content.limonHeading}</strong></h4>
                         <p>{content.limonIntro}</p>
                         <br />
-                        <SplitScheduleTable content={content} rows={[
-                            ['Limón → Puerto Viejo',
-                                ['5:30 AM', '6:30 AM', '7:30 AM', '8:30 AM', '9:30 AM', '10:30 AM', '11:30 AM', '12:30 PM', '1:30 PM', '2:30 PM', '3:30 PM', '4:30 PM', '6:30 PM', '7:00 PM', '8:00 PM'],
-                                ['6:30 AM', '8:30 AM', '9:30 AM', '10:30 AM', '11:30 AM', '12:30 PM', '2:30 PM', '4:30 PM', '6:30 PM', '7:00 PM', '8:00 PM']],
-                            ['Puerto Viejo → Limón',
-                                ['5:30 AM', '6:30 AM', '7:30 AM', '8:30 AM', '9:30 AM', '10:30 AM', '11:30 AM', '12:30 PM', '1:30 PM', '2:30 PM', '3:30 PM', '4:30 PM', '5:30 PM', '6:30 PM'],
-                                ['5:30 AM', '7:30 AM', '9:30 AM', '11:30 AM', '1:30 PM', '3:30 PM', '5:30 PM', '6:30 PM', '8:15 PM']],
-                        ]} />
+                        <SplitScheduleTable content={content} rows={LIMON_PUERTO_VIEJO_SCHEDULE} />
+                        <p>
+                            <Link to={pathForKey('blogCahuitaLimon', locale)}><strong>{internalLinkLabel('blogCahuitaLimon', locale)}</strong></Link>
+                        </p>
                         <br />
                         <h4><strong>{content.manzanilloHeading}</strong></h4>
                         <p>{content.manzanilloIntro}</p>

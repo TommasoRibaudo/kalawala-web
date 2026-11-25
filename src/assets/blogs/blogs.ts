@@ -215,6 +215,13 @@ export const blogs = [
         text: "A local's guide to eating in Puerto Viejo de Talamanca: where to find real Caribbean cooking, rondón, fresh seafood and the best breakfast spot, plus practical tips on cash, hours and reservations.",
         thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_-_Rice_and_Beans.jpg/960px-Lim%C3%B3n_-_Rice_and_Beans.jpg",
         pictures: ["", ""]
+    },
+    {
+        id: "puerto-viejo-to-cahuita-and-limon",
+        title: "Puerto Viejo to Cahuita and Limón: Buses, Taxis and Bikes",
+        text: "How to get from Puerto Viejo to Cahuita and Limón and back: the MEPE bus timetable, fares, taxis, cycling and how long each option takes.",
+        thumbnail:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg/960px-Lim%C3%B3n_Province%2C_Sixaola%2C_Costa_Rica_-_panoramio_%282%29.jpg",
+        pictures: ["", ""]
     }
 ]
 export const blogsES = [

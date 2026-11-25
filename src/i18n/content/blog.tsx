@@ -12643,3 +12643,219 @@ const food: Partial<Record<Locale, FoodContent>> = {
 export function foodContent(locale: Locale): FoodContent {
   return food[locale] ?? food.en!;
 }
+
+/* ------------------------------------------------------------------ *
+ * Puerto Viejo ↔ Cahuita & Limón transport guide
+ *
+ * Search Console gap (3 months to 2026-11-25): "limon puerto viejo",
+ * "puerto viejo to cahuita", "puerto viejo a cahuita", "puerto viejo to
+ * limon" and similar get impressions at positions ~10-12 with no page
+ * dedicated to them. The bus-hours page ranks for "mepe" queries but is a
+ * timetable, not a how-to for these two short trips. The timetable itself
+ * lives in pages/Blog/busSchedules.ts and is shared with the bus page.
+ *
+ * Fares: MEPE does not publish a current fare list and third-party sources
+ * disagree, so only the Limón fare is given (as an approximation) and the
+ * reader is pointed at the ticket window. The Limón airport transfer price
+ * matches the by-plane guide. EN/ES only for now; other locales fall back
+ * to English until translated.
+ * ------------------------------------------------------------------ */
+
+export interface CahuitaLimonTransportRow {
+  option: string;
+  cost: string;
+  time: string;
+  bestFor: string;
+}
+
+export interface CahuitaLimonTransportContent {
+  seoTitle: string;
+  seoDescription: string;
+  heading: string;
+  heroAlt: string;
+  photoCredit: React.ReactNode;
+  introParagraphs: [string, string];
+  compareHeading: string;
+  compareIntro: string;
+  colOption: string;
+  colCost: string;
+  colTime: string;
+  colBestFor: string;
+  rows: CahuitaLimonTransportRow[];
+  compareFootnote: string;
+  busHeading: string;
+  busParagraphs: [string, string, string];
+  tableRouteHeader: string;
+  tableWeekdayHeader: string;
+  tableSundayHeader: string;
+  busScheduleNote: string;
+  busLinkText: string;
+  cahuitaHeading: string;
+  cahuitaParagraphs: [string, string, string];
+  stayRecommendationTitle: string;
+  limonHeading: string;
+  limonParagraphs: [string, string, string];
+  byPlaneLinkText: string;
+  sanJoseLinkText: string;
+  taxiHeading: string;
+  taxiParagraphs: [string, string];
+  bikeHeading: string;
+  bikeParagraphs: [string, string];
+  tipsHeading: string;
+  tipsItems: [string, string, string, string, string];
+  takeawaysHeading: string;
+  takeawaysParagraph: string;
+}
+
+const cahuitaLimonTransport: Partial<Record<Locale, CahuitaLimonTransportContent>> = {
+  en: {
+    seoTitle: 'Puerto Viejo to Cahuita & Limón: Bus Schedule, Taxi & Bike Guide',
+    seoDescription:
+      'How to get from Puerto Viejo to Cahuita and Limón (and back): MEPE bus times, fares, taxis, bikes and how long each takes, from a local host in Puerto Viejo.',
+    heading: 'Puerto Viejo to Cahuita and Limón: Buses, Taxis and Bikes',
+    heroAlt: "MEPE bus on the road along Costa Rica's southern Caribbean coast",
+    photoCredit: <>Photo by <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a></>,
+    introParagraphs: [
+      'Cahuita and Limón are the two trips people from Puerto Viejo make most often: Cahuita for its national park and quiet beaches, Limón to catch a connection, a flight or a cruise ship. Both are on the same coastal road and the same bus line, so getting there is easy once you know how it works.',
+      'This guide covers every way to make the trip, the full bus timetable, what it costs and how long it takes, plus a few things we tell our own guests before they set off.',
+    ],
+    compareHeading: 'Your options at a glance',
+    compareIntro: 'Cahuita is about 14 km north of Puerto Viejo, and Limón is roughly an hour further up the coast. Here is how the options compare:',
+    colOption: 'Option',
+    colCost: 'Cost',
+    colTime: 'Time',
+    colBestFor: 'Best for',
+    rows: [
+      { option: 'MEPE bus to Cahuita', cost: 'Cheapest option, cash fare paid in colones', time: 'About 30 minutes', bestFor: 'Day trips to Cahuita National Park on a budget' },
+      { option: 'MEPE bus to Limón', cost: 'Around ₡2,300 one way', time: 'About 1 hour', bestFor: 'Onward connections, Limón airport, the cruise port' },
+      { option: 'Taxi to Cahuita', cost: 'Roughly US$25–30, agree the price first', time: 'About 20 minutes', bestFor: 'Groups, early park starts, beating the heat' },
+      { option: 'Private transfer from Limón', cost: 'About US$75', time: 'About 1 hour', bestFor: 'Arriving by plane with luggage' },
+      { option: 'Bicycle to Cahuita', cost: "A day's bike rental", time: 'About an hour at an easy pace', bestFor: 'Confident riders who start early' },
+    ],
+    compareFootnote: 'Prices are approximate and change from season to season. Bus fares are set by the operator and are posted at the ticket window, so check there before you travel.',
+    busHeading: 'Taking the bus',
+    busParagraphs: [
+      'The bus is how most locals make this trip. MEPE runs the Limón–Puerto Viejo route all day, and every bus stops in Cahuita on the way, so the same timetable works for both destinations.',
+      'In Puerto Viejo, buses leave from the main stop near the basketball court in the centre of town. Pay in cash, in colones; small notes make it easier. Larger bags go in the luggage hold under the bus.',
+      'On the way back, catch any southbound bus from the Cahuita terminal or from Limón. The buses from San José to Puerto Viejo also stop in Cahuita, which gives you a few more options during the day.',
+    ],
+    tableRouteHeader: 'Route',
+    tableWeekdayHeader: 'Monday – Saturday',
+    tableSundayHeader: 'Sunday & holidays',
+    busScheduleNote: 'Times are departures from the first stop. Add about 30 minutes for the bus to reach Cahuita from Puerto Viejo. Sundays and public holidays have fewer departures, so plan around the last bus.',
+    busLinkText: 'See the complete MEPE bus schedule, including San José, Manzanillo and Sixaola →',
+    cahuitaHeading: 'Cahuita as a day trip',
+    cahuitaParagraphs: [
+      'Cahuita makes an easy day trip from Puerto Viejo. The bus drops you at the terminal in town, a short walk from the Playa Blanca entrance of Cahuita National Park. That entrance runs on a donation basis, and the park is open from 8 am to 4 pm.',
+      'Take a morning bus so you are on the trail early, when it is cooler and the animals are more active. After the park, have lunch in town before heading back. Caribbean rice and beans, or a pati from one of the bakeries, is the local choice.',
+      "For the trip back, aim for a bus in the late afternoon rather than the last one of the day. Buses can fill up at weekends and in high season, and you don't want to be waiting by the road after dark.",
+    ],
+    stayRecommendationTitle: 'Where to stay for easy trips to Cahuita and Limón',
+    limonHeading: 'Getting to and from Limón',
+    limonParagraphs: [
+      "Limón is the main city on the Caribbean coast and the region's transport hub. Most people go there to connect: to buses heading inland, to the domestic airport, or back to a cruise ship docked in the port.",
+      'The bus takes about an hour and runs from early morning until the evening, roughly every hour from Monday to Saturday. If you are arriving by plane, a private transfer from Limón airport to Puerto Viejo costs about US$75 and is the simplest option if you have luggage.',
+      'If you are visiting from a cruise ship, Puerto Viejo and Cahuita both work as a day trip by bus or taxi. Leave yourself a generous buffer for the trip back to the port: the road is a single lane each way and traffic can be slow.',
+    ],
+    byPlaneLinkText: 'How to fly to Puerto Viejo via Limón →',
+    sanJoseLinkText: 'Every way to get from San José to Puerto Viejo, compared →',
+    taxiHeading: 'Taxis',
+    taxiParagraphs: [
+      'Official taxis in Costa Rica are red with a yellow triangle on the door. You will also be offered rides by informal drivers, known locally as piratas. Whichever you take, agree the price before you get in.',
+      'A taxi to Cahuita usually costs somewhere around US$25–30 and takes about 20 minutes. It is worth it for a group, or if you want to be at the park gate when it opens. For Limón, ask for a quote in advance; it is a longer ride and prices vary more.',
+    ],
+    bikeHeading: 'Cycling to Cahuita',
+    bikeParagraphs: [
+      'Plenty of people in Puerto Viejo get around by bike, and the road to Cahuita is mostly flat. At an easy pace the ride takes about an hour each way.',
+      'This is the main coastal road, though, and you will share it with buses and trucks. Ride early, bring water and lights, and stay well to the side. If you would rather cycle without traffic, the quieter road south toward Cocles, Playa Chiquita and Punta Uva is a better ride.',
+    ],
+    tipsHeading: 'Tips before you go',
+    tipsItems: [
+      "Carry colones in small notes for the bus; drivers often can't change large bills.",
+      'Check the Sunday timetable: there are fewer buses on Sundays and public holidays, especially in the early morning.',
+      'Head out early for Cahuita: the park and the trail are at their best in the morning.',
+      "Don't rely on the last bus of the day: leave yourself a later option in case a bus is full.",
+      'Keep valuables close on the bus and never leave them unattended at the beach or on the trail.',
+    ],
+    takeawaysHeading: 'The short version',
+    takeawaysParagraph:
+      'For Cahuita, the bus is cheap, frequent and takes about half an hour; a taxi saves time if there are a few of you. For Limón, the hourly MEPE bus is the simplest option, and a private transfer makes more sense if you are flying in with luggage. Whichever you choose, start early and keep some cash in colones on you.',
+  },
+  es: {
+    seoTitle: 'De Puerto Viejo a Cahuita y Limón: horarios de bus, taxi y bici',
+    seoDescription:
+      'Cómo ir de Puerto Viejo a Cahuita y a Limón (y volver): horarios de buses MEPE, tarifas, taxis, bicicleta y cuánto tarda cada opción, contado por anfitriones locales de Puerto Viejo.',
+    heading: 'De Puerto Viejo a Cahuita y Limón: buses, taxis y bicicleta',
+    heroAlt: 'Bus de MEPE en la carretera de la costa del Caribe Sur de Costa Rica',
+    photoCredit: <>Foto de <a href="https://web.archive.org/web/20161028110553/http://www.panoramio.com/user/4645711?with_photo_id=101824520" target="_blank" rel="noopener noreferrer">hh oldman</a></>,
+    introParagraphs: [
+      'Cahuita y Limón son los dos viajes que más se hacen desde Puerto Viejo: Cahuita por su parque nacional y sus playas tranquilas, y Limón para tomar una conexión, un vuelo o volver a un crucero. Los dos quedan sobre la misma carretera costera y la misma línea de bus, así que llegar es fácil una vez que sabes cómo funciona.',
+      'En esta guía te contamos todas las formas de hacer el viaje, el horario completo de buses, cuánto cuesta y cuánto tarda, además de algunos consejos que les damos a nuestros propios huéspedes antes de salir.',
+    ],
+    compareHeading: 'Tus opciones de un vistazo',
+    compareIntro: 'Cahuita está a unos 14 km al norte de Puerto Viejo, y Limón aproximadamente una hora más arriba por la costa. Así se comparan las opciones:',
+    colOption: 'Opción',
+    colCost: 'Costo',
+    colTime: 'Tiempo',
+    colBestFor: 'Ideal para',
+    rows: [
+      { option: 'Bus MEPE a Cahuita', cost: 'La opción más barata, se paga en efectivo en colones', time: 'Unos 30 minutos', bestFor: 'Ir al Parque Nacional Cahuita con poco presupuesto' },
+      { option: 'Bus MEPE a Limón', cost: 'Alrededor de ₡2.300 por trayecto', time: 'Cerca de 1 hora', bestFor: 'Conexiones, el aeropuerto de Limón, el puerto de cruceros' },
+      { option: 'Taxi a Cahuita', cost: 'Aproximadamente US$25–30, acuerda el precio antes', time: 'Unos 20 minutos', bestFor: 'Grupos, llegar temprano al parque, evitar el calor' },
+      { option: 'Transfer privado desde Limón', cost: 'Cerca de US$75', time: 'Cerca de 1 hora', bestFor: 'Llegar en avión con equipaje' },
+      { option: 'Bicicleta a Cahuita', cost: 'Un día de alquiler de bici', time: 'Cerca de una hora a ritmo tranquilo', bestFor: 'Ciclistas con experiencia que salen temprano' },
+    ],
+    compareFootnote: 'Los precios son aproximados y cambian según la temporada. Las tarifas del bus las fija la empresa y están publicadas en la boletería, así que confírmalas ahí antes de viajar.',
+    busHeading: 'En bus',
+    busParagraphs: [
+      'El bus es como la mayoría de la gente local hace este viaje. MEPE opera la ruta Limón–Puerto Viejo durante todo el día y todos los buses paran en Cahuita en el camino, así que el mismo horario sirve para los dos destinos.',
+      'En Puerto Viejo, los buses salen de la parada principal cerca de la cancha de básquet, en el centro del pueblo. Se paga en efectivo, en colones; mejor con billetes pequeños. Las maletas grandes van en la bodega del bus.',
+      'Para volver, toma cualquier bus que vaya hacia el sur desde la terminal de Cahuita o desde Limón. Los buses de San José a Puerto Viejo también paran en Cahuita, lo que te da algunas opciones más durante el día.',
+    ],
+    tableRouteHeader: 'Ruta',
+    tableWeekdayHeader: 'Lunes a sábado',
+    tableSundayHeader: 'Domingos y feriados',
+    busScheduleNote: 'Los horarios son de salida desde la primera parada. Suma unos 30 minutos para que el bus llegue a Cahuita desde Puerto Viejo. Los domingos y feriados hay menos salidas, así que organízate pensando en el último bus.',
+    busLinkText: 'Ver el horario completo de buses MEPE, incluyendo San José, Manzanillo y Sixaola →',
+    cahuitaHeading: 'Cahuita en un día',
+    cahuitaParagraphs: [
+      'Cahuita es un paseo de un día muy fácil desde Puerto Viejo. El bus te deja en la terminal del pueblo, a poca distancia a pie de la entrada de Playa Blanca del Parque Nacional Cahuita. En esa entrada se paga con una donación voluntaria, y el parque abre de 8 am a 4 pm.',
+      'Toma un bus en la mañana para estar temprano en el sendero, cuando hace menos calor y los animales están más activos. Después del parque, almuerza en el pueblo antes de volver: un rice and beans caribeño o un pati de alguna panadería es lo que elige la gente local.',
+      'Para el regreso, apunta a un bus a media tarde en vez del último del día. Los fines de semana y en temporada alta los buses se llenan, y no quieres quedarte esperando a la orilla de la carretera cuando ya oscureció.',
+    ],
+    stayRecommendationTitle: 'Dónde hospedarte para moverte fácil a Cahuita y Limón',
+    limonHeading: 'Ir y volver de Limón',
+    limonParagraphs: [
+      'Limón es la ciudad principal de la costa caribeña y el centro de transporte de la región. La mayoría va para hacer conexión: con buses hacia el interior, con el aeropuerto nacional o para volver a un crucero atracado en el puerto.',
+      'El bus tarda cerca de una hora y sale desde temprano en la mañana hasta la noche, más o menos cada hora de lunes a sábado. Si llegas en avión, un transfer privado desde el aeropuerto de Limón hasta Puerto Viejo cuesta cerca de US$75 y es lo más simple si traes equipaje.',
+      'Si vienes en crucero, Puerto Viejo y Cahuita se pueden visitar en un día en bus o taxi. Deja un buen margen de tiempo para volver al puerto: la carretera tiene un solo carril por sentido y el tránsito puede ser lento.',
+    ],
+    byPlaneLinkText: 'Cómo llegar a Puerto Viejo en avión vía Limón →',
+    sanJoseLinkText: 'Todas las formas de ir de San José a Puerto Viejo, comparadas →',
+    taxiHeading: 'Taxis',
+    taxiParagraphs: [
+      'Los taxis oficiales en Costa Rica son rojos con un triángulo amarillo en la puerta. También te van a ofrecer viajes conductores informales, los "piratas". Tomes el que tomes, acuerda el precio antes de subirte.',
+      'Un taxi a Cahuita suele costar alrededor de US$25–30 y tarda unos 20 minutos. Vale la pena si van en grupo o si quieres estar en la entrada del parque cuando abre. Para Limón, pide una cotización con anticipación: es un viaje más largo y los precios varían más.',
+    ],
+    bikeHeading: 'En bicicleta a Cahuita',
+    bikeParagraphs: [
+      'Mucha gente en Puerto Viejo se mueve en bici, y la carretera a Cahuita es casi toda plana. A ritmo tranquilo el viaje toma cerca de una hora por trayecto.',
+      'Eso sí, es la carretera principal de la costa y la vas a compartir con buses y camiones. Sal temprano, lleva agua y luces, y mantente bien a la orilla. Si prefieres pedalear sin tránsito, el camino hacia el sur, a Cocles, Playa Chiquita y Punta Uva, es mucho más tranquilo.',
+    ],
+    tipsHeading: 'Consejos antes de salir',
+    tipsItems: [
+      'Lleva colones en billetes pequeños para el bus; muchas veces los choferes no tienen cambio para billetes grandes.',
+      'Revisa el horario de domingo: los domingos y feriados hay menos buses, sobre todo temprano en la mañana.',
+      'Sal temprano hacia Cahuita: el parque y el sendero están en su mejor momento en la mañana.',
+      'No dependas del último bus del día: déjate una opción más tarde por si algún bus viene lleno.',
+      'Mantén tus cosas de valor cerca en el bus y nunca las dejes solas en la playa o en el sendero.',
+    ],
+    takeawaysHeading: 'En resumen',
+    takeawaysParagraph:
+      'Para Cahuita, el bus es barato, frecuente y tarda una media hora; el taxi te ahorra tiempo si van varias personas. Para Limón, el bus MEPE que sale cada hora es lo más simple, y el transfer privado tiene más sentido si llegas en avión con equipaje. Elijas lo que elijas, sal temprano y lleva algo de efectivo en colones.',
+  },
+};
+
+export function cahuitaLimonTransportContent(locale: Locale): CahuitaLimonTransportContent {
+  return cahuitaLimonTransport[locale] ?? cahuitaLimonTransport.en!;
+}

@@ -167,6 +167,17 @@ const LABELS: Partial<Record<RouteKey, Record<Locale, string>>> = {
     hi: 'प्वेर्तो विएखो में कहाँ खाएं, इसकी हमारी पूरी गाइड देखें →',
     nl: 'Bekijk onze volledige gids over waar te eten in Puerto Viejo →',
   },
+  blogCahuitaLimon: {
+    en: 'How to get to Cahuita and Limón by bus, taxi or bike →',
+    es: 'Cómo ir a Cahuita y Limón en bus, taxi o bicicleta →',
+    de: 'So kommen Sie mit Bus, Taxi oder Fahrrad nach Cahuita und Limón →',
+    fr: 'Comment aller à Cahuita et Limón en bus, taxi ou vélo →',
+    it: 'Come arrivare a Cahuita e Limón in autobus, taxi o bici →',
+    pt: 'Como ir a Cahuita e Limón de ônibus, táxi ou bicicleta →',
+    he: 'איך מגיעים לקאוויטה וללימון באוטובוס, מונית או אופניים ←',
+    hi: 'बस, टैक्सी या साइकिल से काहुइटा और लिमोन कैसे पहुँचें →',
+    nl: 'Zo kom je met de bus, taxi of fiets naar Cahuita en Limón →',
+  },
   blogVacationRentals: {
     en: 'Browse all our vacation rentals in Puerto Viejo →',
     es: 'Explora todas nuestras casas vacacionales en Puerto Viejo →',

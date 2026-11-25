@@ -26,6 +26,8 @@ import { puertoViejoByPlaneContent } from "../../../i18n/content/blog";
 const HERO_IMAGE =
   'https://lh3.googleusercontent.com/d/1kE3Zq-IbD47bdiLkW25IKuBncif7J7YR=w1000';
 
+const cell: React.CSSProperties = { border: '1px solid #ddd', padding: '10px 12px', verticalAlign: 'top' };
+
 const PuertoViejoByPlane = () => {
     const locale = useLocale();
     const m = useMessages();
@@ -88,6 +90,28 @@ const PuertoViejoByPlane = () => {
                         <p>{content.intro}</p>
                         <br />
 
+                        <h2>{content.quickFactsHeading}</h2>
+                        <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ddd' }}>
+                                <tbody>
+                                    {content.quickFacts.map(([label, value], i) => (
+                                        <tr key={label} style={i % 2 === 1 ? { backgroundColor: '#f9f9f9' } : undefined}>
+                                            <th scope="row" style={{ ...cell, textAlign: 'start', width: '40%' }}>{label}</th>
+                                            <td style={cell}>{value}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <br />
+
+                        <h2>{content.airportHeading}</h2>
+                        {content.airportParagraphs.map((p, i) => <p key={i}>{p}</p>)}
+                        <p>
+                            <Link to={pathForKey('blogBocas', locale)}><strong>{internalLinkLabel('blogBocas', locale)}</strong></Link>
+                        </p>
+                        <br />
+
                         {/* Stay Recommendation Component - positioned in middle of article */}
                         <StayRecommendation
                             title={content.stayRecommendationTitle}
@@ -97,10 +121,18 @@ const PuertoViejoByPlane = () => {
 
                         {content.bodyParagraphs.map((paragraph, i) => (
                             <React.Fragment key={i}>
+                                {content.bodyHeadings[i] && <h2>{content.bodyHeadings[i]}</h2>}
                                 <p>{paragraph}</p>
                                 <br />
                             </React.Fragment>
                         ))}
+                        <p>
+                            <Link to={pathForKey('blogCahuitaLimon', locale)}><strong>{internalLinkLabel('blogCahuitaLimon', locale)}</strong></Link>
+                        </p>
+                        <br />
+
+                        <h2>{content.compareHeading}</h2>
+                        <p>{content.compareParagraph}</p>
                         <p>
                             <Link to={pathForKey('blogBushours', locale)}><strong>{internalLinkLabel('blogBushours', locale)}</strong></Link>
                         </p>
@@ -113,6 +145,16 @@ const PuertoViejoByPlane = () => {
                                 ctaLink={homePath(locale)}
                             />
                         </div>
+                        <br />
+
+                        <h2>{content.faqHeading}</h2>
+                        {content.faqItems.map(({ q, a }) => (
+                            <React.Fragment key={q}>
+                                <h3 style={{ fontSize: '1.15rem', marginTop: '1.25rem' }}>{q}</h3>
+                                <p>{a}</p>
+                            </React.Fragment>
+                        ))}
+                        <br />
 
                         {content.closingParagraphs.map((paragraph, i) => (
                             <React.Fragment key={i}>

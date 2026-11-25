@@ -216,22 +216,66 @@ export interface PuertoViejoByPlaneContent {
   heroAlt: string;
   intro: React.ReactNode;
   stayRecommendationTitle: string;
+  /** Two-column "at a glance" table under the intro: [label, value]. */
+  quickFactsHeading: string;
+  quickFacts: [string, string][];
+  /** Answers "is there an airport in Puerto Viejo / which is closest". */
+  airportHeading: string;
+  airportParagraphs: React.ReactNode[];
+  /** One H2 per entry of bodyParagraphs, same order. */
+  bodyHeadings: string[];
   /** Booking the flight, the SJO layover, the Cessna leg, the Limón transfer. */
   bodyParagraphs: React.ReactNode[];
+  compareHeading: string;
+  compareParagraph: string;
+  faqHeading: string;
+  faqItems: { q: string; a: string }[];
   /** The wrap-up, after WhyStayWithUs. */
   closingParagraphs: React.ReactNode[];
 }
 
 const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
   en: {
-    seoTitle: 'Flights to Puerto Viejo, Costa Rica: how to fly to the Caribbean coast',
+    seoTitle: 'Flights to Puerto Viejo, Costa Rica: Closest Airport & How to Fly There',
     seoDescription:
-      "Looking for flights to Puerto Viejo? There's no airport in town, but a short domestic flight from San José (SJO) to Limón plus a quick transfer gets you to Costa Rica's Caribbean coast fast. Here's how.",
+      "No airport in Puerto Viejo: the closest is Limón (LIO), an hour away. Fly San José–Limón with Sansa in about 45 minutes, then transfer. Fares, times and tips.",
     heading: 'Flights to Puerto Viejo, Costa Rica',
     heroAlt: 'Flying to Puerto Viejo Costa Rica',
     intro:
       "Looking for flights to Puerto Viejo? There is no airport in Puerto Viejo itself, but you can fly most of the way: a short domestic flight from San José (SJO) to Limón, then a quick transfer down the coast. It is the fastest way to reach the Caribbean coast, and this guide walks through exactly how to do it.",
     stayRecommendationTitle: 'Where to stay when flying to Puerto Viejo?',
+    quickFactsHeading: 'Flying to Puerto Viejo at a glance',
+    quickFacts: [
+      ['Airport in Puerto Viejo?', 'No. The closest airport with scheduled flights is Limón (LIO).'],
+      ['Limón airport to Puerto Viejo', 'About 60 km, roughly 1 hour by car'],
+      ['Flight from San José (SJO)', 'Sansa Airlines, about 45 minutes'],
+      ['One-way fare', 'Often around US$100–150, depending on the date'],
+      ['Private transfer Limón → Puerto Viejo', 'About US$75'],
+      ['Total time from SJO', 'About 2.5 hours, versus 4–5 hours by road'],
+    ],
+    airportHeading: 'Is there an airport in Puerto Viejo?',
+    airportParagraphs: [
+      "No. Puerto Viejo de Talamanca has no airport, so the real question is which one is closest. That's Limón International Airport (LIO), on the southern edge of Limón city, about 60 km north of Puerto Viejo. It's small, but Sansa runs scheduled domestic flights there from San José.",
+      "If you're coming from Panama, Bocas del Toro (BOC) is the other option: from there it's a boat, a drive and the border crossing at Sixaola, which takes most of a day. For almost everyone else the route is San José to Limón by plane, then an hour down the coast road.",
+    ],
+    bodyHeadings: [
+      'How to book a flight to Limón',
+      'Changing planes at San José (SJO)',
+      'The flight from San José to Limón',
+      'From Limón airport to Puerto Viejo',
+    ],
+    compareHeading: 'Flying vs driving or taking the bus',
+    compareParagraph:
+      "By road, San José to Puerto Viejo takes about 4 to 5 hours over the mountains through Braulio Carrillo, and longer when Route 32 has roadwork or a landslide. The direct MEPE bus is the cheapest way down, and shared or private shuttles pick you up at your hotel. Flying cuts the trip to about 2.5 hours. For a group of three or four, though, a private shuttle can cost about the same as the flights plus the transfer, and it takes you door to door.",
+    faqHeading: 'Flights to Puerto Viejo: frequently asked questions',
+    faqItems: [
+      { q: 'What is the closest airport to Puerto Viejo, Costa Rica?', a: "Limón International Airport (LIO), about an hour north by car. It's the closest airport to Puerto Viejo with scheduled flights." },
+      { q: 'Are there international flights to Limón?', a: 'Not on a regular schedule. International flights land in San José (SJO) or Liberia (LIR), and you connect to Limón on a domestic flight from San José.' },
+      { q: 'How long is the flight from San José to Limón?', a: 'About 40 to 45 minutes in a small single-engine plane.' },
+      { q: 'How much does a flight to Limón cost?', a: 'One-way fares are often around US$100–150, but they change with the date and how early you book. Check flysansa.com for the current price.' },
+      { q: 'Can I land in San José and fly to Limón the same day?', a: "Yes, if you land early enough. Flights to Limón usually leave in the morning and early afternoon, so with a late arrival it's easier to spend the night near the airport and fly the next morning. Leave at least two to three hours between flights, and check the luggage allowance: small planes have strict weight limits." },
+      { q: 'How do I get from Limón airport to Puerto Viejo?', a: 'A pre-booked private transfer (about US$75) is the easiest. You can also take a taxi into Limón and catch the MEPE bus south, which stops in Cahuita on the way.' },
+    ],
     bodyParagraphs: [
       <>To book your flight, head to <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> and pick your travel dates and times, then enter your personal and payment details to confirm. Sansa Airlines runs several flights a day, so you can usually find one that fits your schedule.</>,
       <>The first leg is a flight to San Jose International Airport, also known as <a href="https://maps.app.goo.gl/4wEYh3ZHCWNWSrQo6" target="_blank" rel="noopener noreferrer">Juan Santamaría</a> (SJO), the largest airport in Costa Rica. It connects to plenty of international destinations, so it's a practical place to start. After you land, clear customs and head to the Domestic Gate: there is a big old airplane parked outside, so you can't miss it.</>,
@@ -244,9 +288,9 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     ],
   },
   es: {
-    seoTitle: 'Vuelos a Puerto Viejo, Costa Rica: cómo llegar en avión al Caribe',
+    seoTitle: 'Vuelos a Puerto Viejo, Costa Rica: aeropuerto más cercano y cómo llegar',
     seoDescription:
-      '¿Buscas vuelos a Puerto Viejo? No hay aeropuerto en el pueblo, pero un corto vuelo doméstico de San José (SJO) a Limón más un rápido traslado te llevan al Caribe de Costa Rica. Aquí te explicamos cómo.',
+      'Puerto Viejo no tiene aeropuerto: el más cercano es Limón (LIO), a una hora. Vuela San José–Limón con Sansa en unos 45 minutos y toma un traslado. Precios y consejos.',
     heading: 'Vuelos a Puerto Viejo, Costa Rica',
     // The pre-merge ES page's alt text ("Kayaking in Punta Uva") described a
     // different photo entirely; EN's alt was correct for this image.
@@ -254,6 +298,38 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     intro:
       '¿Buscas vuelos a Puerto Viejo? En Puerto Viejo no hay aeropuerto, pero puedes volar casi todo el camino: un corto vuelo doméstico de San José (SJO) a Limón y luego un rápido traslado por la costa. Es la forma más rápida de llegar al Caribe, y esta guía te explica exactamente cómo hacerlo.',
     stayRecommendationTitle: '¿Dónde hospedarte cuando vueles a Puerto Viejo?',
+    quickFactsHeading: 'Volar a Puerto Viejo en resumen',
+    quickFacts: [
+      ['¿Hay aeropuerto en Puerto Viejo?', 'No. El aeropuerto más cercano con vuelos regulares es Limón (LIO).'],
+      ['Del aeropuerto de Limón a Puerto Viejo', 'Unos 60 km, cerca de 1 hora en carro'],
+      ['Vuelo desde San José (SJO)', 'Sansa Airlines, unos 45 minutos'],
+      ['Tarifa de ida', 'Suele rondar los US$100–150, según la fecha'],
+      ['Traslado privado Limón → Puerto Viejo', 'Unos US$75'],
+      ['Tiempo total desde SJO', 'Unas 2,5 horas, frente a 4–5 horas por carretera'],
+    ],
+    airportHeading: '¿Hay aeropuerto en Puerto Viejo?',
+    airportParagraphs: [
+      'No. Puerto Viejo de Talamanca no tiene aeropuerto, así que la pregunta real es cuál es el más cercano. Es el Aeropuerto Internacional de Limón (LIO), en el extremo sur de la ciudad de Limón, a unos 60 km al norte de Puerto Viejo. Es pequeño, pero Sansa opera vuelos domésticos regulares desde San José.',
+      'Si vienes de Panamá, la otra opción es Bocas del Toro (BOC): desde ahí son un bote, un tramo en carro y el cruce de frontera en Sixaola, lo que lleva casi todo el día. Para casi todos los demás, la ruta es San José–Limón en avión y luego una hora por la carretera de la costa.',
+    ],
+    bodyHeadings: [
+      'Cómo reservar un vuelo a Limón',
+      'El cambio de avión en San José (SJO)',
+      'El vuelo de San José a Limón',
+      'Del aeropuerto de Limón a Puerto Viejo',
+    ],
+    compareHeading: 'Avión, carro o bus: cuál conviene',
+    compareParagraph:
+      'Por carretera, de San José a Puerto Viejo son unas 4 a 5 horas cruzando la montaña por Braulio Carrillo, y más si hay obras o un derrumbe en la Ruta 32. El bus directo de MEPE es la forma más barata, y los shuttles compartidos o privados te recogen en tu hotel. En avión el viaje baja a unas 2,5 horas. Eso sí, para un grupo de tres o cuatro personas, un shuttle privado puede costar casi lo mismo que los vuelos más el traslado, y te lleva puerta a puerta.',
+    faqHeading: 'Vuelos a Puerto Viejo: preguntas frecuentes',
+    faqItems: [
+      { q: '¿Cuál es el aeropuerto más cercano a Puerto Viejo, Costa Rica?', a: 'El Aeropuerto Internacional de Limón (LIO), a una hora al norte en carro. Es el aeropuerto más cercano a Puerto Viejo con vuelos regulares.' },
+      { q: '¿Hay vuelos internacionales a Limón?', a: 'No de forma regular. Los vuelos internacionales llegan a San José (SJO) o Liberia (LIR), y desde San José conectas a Limón con un vuelo doméstico.' },
+      { q: '¿Cuánto dura el vuelo de San José a Limón?', a: 'Unos 40 a 45 minutos en una avioneta monomotor.' },
+      { q: '¿Cuánto cuesta un vuelo a Limón?', a: 'La tarifa de ida suele rondar los US$100–150, pero cambia según la fecha y la antelación con que reserves. Consulta el precio actual en flysansa.com.' },
+      { q: '¿Puedo aterrizar en San José y volar a Limón el mismo día?', a: 'Sí, si llegas temprano. Los vuelos a Limón suelen salir en la mañana y a primera hora de la tarde, así que si aterrizas tarde es más fácil dormir cerca del aeropuerto y volar a la mañana siguiente. Deja al menos dos o tres horas entre vuelos y revisa la franquicia de equipaje: las avionetas tienen límites de peso estrictos.' },
+      { q: '¿Cómo llego del aeropuerto de Limón a Puerto Viejo?', a: 'Lo más fácil es un traslado privado reservado de antemano (unos US$75). También puedes tomar un taxi al centro de Limón y el bus de MEPE hacia el sur, que para en Cahuita en el camino.' },
+    ],
     bodyParagraphs: [
       <>Para reservar tu vuelo, entra en <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> y selecciona tus fechas y horarios de viaje. Después ingresas tus datos personales y de pago para completar la reserva. Sansa Airlines tiene varios vuelos al día, así que suele ser fácil encontrar uno que encaje con tu horario.</>,
       <>El primer tramo es un vuelo al Aeropuerto Internacional de San José, también conocido como <a href="https://maps.app.goo.gl/4wEYh3ZHCWNWSrQo6" target="_blank" rel="noopener noreferrer">Juan Santamaría</a> (SJO), el aeropuerto más grande de Costa Rica. Conecta con muchos destinos internacionales, así que es un buen punto de partida. Al aterrizar, pasa la aduana y dirígete al Gate Doméstico: afuera hay un avión antiguo grande, así que es fácil de reconocer.</>,
@@ -274,6 +350,38 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     intro:
       "Sie suchen Flüge nach Puerto Viejo? In Puerto Viejo selbst gibt es keinen Flughafen, aber Sie können den größten Teil der Strecke fliegen: ein kurzer Inlandsflug von San José (SJO) nach Limón und anschließend ein schneller Transfer die Küste hinunter. Es ist der schnellste Weg an die Karibikküste, und dieser Leitfaden zeigt Ihnen genau, wie es geht.",
     stayRecommendationTitle: 'Wo übernachten, wenn Sie nach Puerto Viejo fliegen?',
+    quickFactsHeading: 'Flug nach Puerto Viejo auf einen Blick',
+    quickFacts: [
+      ['Flughafen in Puerto Viejo?', 'Nein. Der nächste Flughafen mit Linienflügen ist Limón (LIO).'],
+      ['Flughafen Limón bis Puerto Viejo', 'Etwa 60 km, rund 1 Stunde mit dem Auto'],
+      ['Flug ab San José (SJO)', 'Sansa Airlines, etwa 45 Minuten'],
+      ['Preis einfache Strecke', 'Oft etwa 100–150 USD, je nach Datum'],
+      ['Privattransfer Limón → Puerto Viejo', 'Etwa 75 USD'],
+      ['Gesamtzeit ab SJO', 'Etwa 2,5 Stunden statt 4–5 Stunden auf der Straße'],
+    ],
+    airportHeading: 'Gibt es einen Flughafen in Puerto Viejo?',
+    airportParagraphs: [
+      'Nein. Puerto Viejo de Talamanca hat keinen Flughafen, die eigentliche Frage ist also, welcher am nächsten liegt. Das ist der Internationale Flughafen Limón (LIO) am südlichen Rand der Stadt Limón, etwa 60 km nördlich von Puerto Viejo. Er ist klein, aber Sansa fliegt ihn regelmäßig von San José aus an.',
+      'Wenn Sie aus Panama kommen, ist Bocas del Toro (BOC) die andere Möglichkeit: Von dort geht es per Boot, Auto und über den Grenzübergang in Sixaola weiter, was fast einen ganzen Tag dauert. Für fast alle anderen heißt die Route: mit dem Flugzeug von San José nach Limón, dann eine Stunde die Küstenstraße hinunter.',
+    ],
+    bodyHeadings: [
+      'So buchen Sie einen Flug nach Limón',
+      'Umsteigen in San José (SJO)',
+      'Der Flug von San José nach Limón',
+      'Vom Flughafen Limón nach Puerto Viejo',
+    ],
+    compareHeading: 'Flugzeug, Auto oder Bus im Vergleich',
+    compareParagraph:
+      'Auf der Straße dauert die Fahrt von San José nach Puerto Viejo etwa 4 bis 5 Stunden über die Berge durch Braulio Carrillo, bei Baustellen oder Erdrutschen auf der Ruta 32 auch länger. Der direkte MEPE-Bus ist die günstigste Option, und Shared- oder Privat-Shuttles holen Sie am Hotel ab. Mit dem Flugzeug verkürzt sich die Reise auf etwa 2,5 Stunden. Für eine Gruppe von drei oder vier Personen kann ein Privat-Shuttle allerdings ungefähr so viel kosten wie Flüge plus Transfer und bringt Sie direkt vor die Tür.',
+    faqHeading: 'Flüge nach Puerto Viejo: häufige Fragen',
+    faqItems: [
+      { q: 'Welcher Flughafen liegt Puerto Viejo, Costa Rica, am nächsten?', a: 'Der Internationale Flughafen Limón (LIO), etwa eine Autostunde nördlich. Er ist der nächstgelegene Flughafen mit Linienflügen.' },
+      { q: 'Gibt es internationale Flüge nach Limón?', a: 'Nicht regelmäßig. Internationale Flüge landen in San José (SJO) oder Liberia (LIR), und von San José geht es mit einem Inlandsflug weiter nach Limón.' },
+      { q: 'Wie lange dauert der Flug von San José nach Limón?', a: 'Etwa 40 bis 45 Minuten in einem kleinen einmotorigen Flugzeug.' },
+      { q: 'Was kostet ein Flug nach Limón?', a: 'Die einfache Strecke kostet oft etwa 100–150 USD, je nach Datum und wie früh Sie buchen. Den aktuellen Preis finden Sie auf flysansa.com.' },
+      { q: 'Kann ich in San José landen und am selben Tag nach Limón weiterfliegen?', a: 'Ja, wenn Sie früh genug landen. Flüge nach Limón starten meist morgens und am frühen Nachmittag. Bei später Ankunft ist es einfacher, in Flughafennähe zu übernachten und am nächsten Morgen zu fliegen. Planen Sie mindestens zwei bis drei Stunden Umsteigezeit ein und prüfen Sie die Gepäckregeln: Kleinflugzeuge haben strenge Gewichtsgrenzen.' },
+      { q: 'Wie komme ich vom Flughafen Limón nach Puerto Viejo?', a: 'Am einfachsten mit einem vorab gebuchten Privattransfer (etwa 75 USD). Alternativ fahren Sie mit dem Taxi ins Zentrum von Limón und nehmen den MEPE-Bus Richtung Süden, der unterwegs in Cahuita hält.' },
+    ],
     bodyParagraphs: [
       <>Um Ihren Flug zu buchen, gehen Sie auf <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> und wählen Sie Ihre Reisedaten und -zeiten aus. Danach geben Sie Ihre persönlichen Daten und Zahlungsinformationen ein, um die Buchung abzuschließen. Sansa Airlines fliegt mehrmals täglich, sodass sich meist ein Flug findet, der zu Ihrem Zeitplan passt.</>,
       <>Der erste Abschnitt ist der Flug zum Internationalen Flughafen von San José, auch bekannt als <a href="https://maps.app.goo.gl/4wEYh3ZHCWNWSrQo6" target="_blank" rel="noopener noreferrer">Juan Santamaría</a> (SJO), dem größten Flughafen Costa Ricas. Er ist gut mit vielen internationalen Zielen verbunden und damit ein bequemer Ausgangspunkt. Nach der Landung gehen Sie durch den Zoll zum Inlandsterminal: Draußen steht ein großes altes Flugzeug, das leicht zu erkennen ist.</>,
@@ -294,6 +402,38 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     intro:
       "Vous cherchez des vols pour Puerto Viejo ? Il n'y a pas d'aéroport à Puerto Viejo même, mais vous pouvez faire l'essentiel du trajet en avion : un court vol intérieur de San José (SJO) à Limón, puis un transfert rapide le long de la côte. C'est le moyen le plus rapide de rejoindre la côte caraïbe, et ce guide vous explique exactement comment procéder.",
     stayRecommendationTitle: "Où loger quand on prend l'avion pour Puerto Viejo ?",
+    quickFactsHeading: "Rejoindre Puerto Viejo en avion : l'essentiel",
+    quickFacts: [
+      ['Un aéroport à Puerto Viejo ?', "Non. L'aéroport le plus proche avec des vols réguliers est Limón (LIO)."],
+      ["De l'aéroport de Limón à Puerto Viejo", 'Environ 60 km, à peu près 1 heure en voiture'],
+      ['Vol depuis San José (SJO)', 'Sansa Airlines, environ 45 minutes'],
+      ['Tarif aller simple', 'Souvent autour de 100–150 USD, selon la date'],
+      ['Transfert privé Limón → Puerto Viejo', 'Environ 75 USD'],
+      ['Durée totale depuis SJO', 'Environ 2 h 30, contre 4 à 5 heures par la route'],
+    ],
+    airportHeading: 'Y a-t-il un aéroport à Puerto Viejo ?',
+    airportParagraphs: [
+      "Non. Puerto Viejo de Talamanca n'a pas d'aéroport, la vraie question est donc de savoir lequel est le plus proche. C'est l'aéroport international de Limón (LIO), en bordure sud de la ville de Limón, à environ 60 km au nord de Puerto Viejo. Il est petit, mais Sansa y assure des vols intérieurs réguliers depuis San José.",
+      "Si vous arrivez du Panama, l'autre option est Bocas del Toro (BOC) : de là, il faut un bateau, un trajet en voiture et le passage de la frontière à Sixaola, ce qui prend presque toute la journée. Pour presque tous les autres voyageurs, l'itinéraire est San José–Limón en avion, puis une heure sur la route côtière.",
+    ],
+    bodyHeadings: [
+      'Comment réserver un vol pour Limón',
+      "Changer d'avion à San José (SJO)",
+      'Le vol de San José à Limón',
+      "De l'aéroport de Limón à Puerto Viejo",
+    ],
+    compareHeading: 'Avion, voiture ou bus : que choisir ?',
+    compareParagraph:
+      "Par la route, San José–Puerto Viejo prend environ 4 à 5 heures à travers les montagnes de Braulio Carrillo, et davantage en cas de travaux ou de glissement de terrain sur la Route 32. Le bus direct MEPE est l'option la moins chère, et les navettes partagées ou privées viennent vous chercher à votre hôtel. L'avion réduit le trajet à environ 2 h 30. Pour un groupe de trois ou quatre personnes, en revanche, une navette privée peut coûter à peu près autant que les vols et le transfert, et vous dépose devant la porte.",
+    faqHeading: 'Vols pour Puerto Viejo : questions fréquentes',
+    faqItems: [
+      { q: "Quel est l'aéroport le plus proche de Puerto Viejo, au Costa Rica ?", a: "L'aéroport international de Limón (LIO), à environ une heure de route au nord. C'est l'aéroport le plus proche de Puerto Viejo avec des vols réguliers." },
+      { q: 'Y a-t-il des vols internationaux vers Limón ?', a: 'Pas de façon régulière. Les vols internationaux atterrissent à San José (SJO) ou à Liberia (LIR), et vous rejoignez Limón par un vol intérieur depuis San José.' },
+      { q: 'Combien de temps dure le vol San José–Limón ?', a: 'Environ 40 à 45 minutes à bord d’un petit avion monomoteur.' },
+      { q: 'Combien coûte un vol pour Limón ?', a: "L'aller simple coûte souvent autour de 100–150 USD, mais le prix varie selon la date et l'anticipation de la réservation. Consultez le tarif actuel sur flysansa.com." },
+      { q: 'Puis-je atterrir à San José et rejoindre Limón le même jour ?', a: "Oui, si vous arrivez assez tôt. Les vols pour Limón partent en général le matin et en début d'après-midi : en cas d'arrivée tardive, il est plus simple de dormir près de l'aéroport et de voler le lendemain matin. Prévoyez au moins deux à trois heures entre les vols et vérifiez la franchise bagages : les petits avions ont des limites de poids strictes." },
+      { q: "Comment aller de l'aéroport de Limón à Puerto Viejo ?", a: "Le plus simple est un transfert privé réservé à l'avance (environ 75 USD). Vous pouvez aussi prendre un taxi jusqu'au centre de Limón puis le bus MEPE vers le sud, qui s'arrête à Cahuita en chemin." },
+    ],
     bodyParagraphs: [
       <>Pour réserver votre vol, rendez-vous sur <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> et sélectionnez vos dates et horaires de voyage. Vous saisissez ensuite vos informations personnelles et de paiement pour finaliser la réservation. Sansa Airlines propose plusieurs vols par jour, il est donc facile d'en trouver un qui convienne à votre emploi du temps.</>,
       <>La première étape est un vol jusqu'à l'aéroport international de San José, également connu sous le nom de <a href="https://maps.app.goo.gl/4wEYh3ZHCWNWSrQo6" target="_blank" rel="noopener noreferrer">Juan Santamaría</a> (SJO), le plus grand aéroport du Costa Rica. Il est bien relié à de nombreuses destinations internationales, ce qui en fait un point de départ commode. Une fois arrivé, passez la douane et dirigez-vous vers la porte des vols intérieurs : un grand vieil avion trône à l'extérieur, difficile de le manquer.</>,
@@ -314,6 +454,38 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     intro:
       'מחפשים טיסות לפוארטו ויחו? בפוארטו ויחו עצמה אין שדה תעופה, אך אפשר לטוס את רוב הדרך: טיסה פנימית קצרה מסן חוזה (SJO) ללימון, ואז הסעה מהירה לאורך החוף. זו הדרך המהירה ביותר להגיע אל החוף הקריבי, והמדריך הזה מסביר לכם בדיוק כיצד לעשות זאת.',
     stayRecommendationTitle: 'היכן להתארח כשטסים לפוארטו ויחו?',
+    quickFactsHeading: 'טיסה לפוארטו ויחו במבט מהיר',
+    quickFacts: [
+      ['יש שדה תעופה בפוארטו ויחו?', 'לא. שדה התעופה הקרוב ביותר עם טיסות סדירות הוא לימון (LIO).'],
+      ['משדה התעופה של לימון לפוארטו ויחו', 'כ-60 ק"מ, בערך שעה ברכב'],
+      ['טיסה מסן חוזה (SJO)', 'Sansa Airlines, כ-45 דקות'],
+      ['מחיר לכיוון אחד', 'לרוב בסביבות 100–150 דולר, בהתאם לתאריך'],
+      ['הסעה פרטית לימון ← פוארטו ויחו', 'כ-75 דולר'],
+      ['זמן כולל מ-SJO', 'כשעתיים וחצי, לעומת 4–5 שעות בכביש'],
+    ],
+    airportHeading: 'יש שדה תעופה בפוארטו ויחו?',
+    airportParagraphs: [
+      'לא. בפוארטו ויחו דה טלמנקה אין שדה תעופה, כך שהשאלה האמיתית היא איזה שדה הכי קרוב. זהו נמל התעופה הבינלאומי של לימון (LIO), בקצה הדרומי של העיר לימון, כ-60 ק"מ צפונית לפוארטו ויחו. הוא קטן, אבל Sansa מפעילה אליו טיסות פנים סדירות מסן חוזה.',
+      'אם אתם מגיעים מפנמה, האפשרות האחרת היא בוקאס דל טורו (BOC): משם ממשיכים בסירה, ברכב ובמעבר הגבול בסיקסאולה, וזה לוקח כמעט יום שלם. לכל השאר המסלול הוא טיסה מסן חוזה ללימון, ואז שעה נסיעה בכביש החוף.',
+    ],
+    bodyHeadings: [
+      'איך מזמינים טיסה ללימון',
+      'החלפת מטוס בסן חוזה (SJO)',
+      'הטיסה מסן חוזה ללימון',
+      'משדה התעופה של לימון לפוארטו ויחו',
+    ],
+    compareHeading: 'מטוס, רכב או אוטובוס: מה משתלם',
+    compareParagraph:
+      'בכביש, הדרך מסן חוזה לפוארטו ויחו לוקחת כ-4 עד 5 שעות דרך ההרים של בראוליו קריו, ויותר כשיש עבודות או מפולת בכביש 32. האוטובוס הישיר של MEPE הוא האפשרות הזולה ביותר, ושאטלים משותפים או פרטיים אוספים אתכם מהמלון. בטיסה הנסיעה מתקצרת לכשעתיים וחצי. עם זאת, לקבוצה של שלושה או ארבעה אנשים, שאטל פרטי יכול לעלות בערך כמו הטיסות וההסעה יחד, והוא מביא אתכם עד הדלת.',
+    faqHeading: 'טיסות לפוארטו ויחו: שאלות נפוצות',
+    faqItems: [
+      { q: 'מהו שדה התעופה הקרוב ביותר לפוארטו ויחו, קוסטה ריקה?', a: 'נמל התעופה הבינלאומי של לימון (LIO), כשעת נסיעה צפונה. זהו שדה התעופה הקרוב ביותר לפוארטו ויחו עם טיסות סדירות.' },
+      { q: 'יש טיסות בינלאומיות ללימון?', a: 'לא באופן סדיר. טיסות בינלאומיות נוחתות בסן חוזה (SJO) או בליבריה (LIR), ומסן חוזה ממשיכים ללימון בטיסת פנים.' },
+      { q: 'כמה זמן נמשכת הטיסה מסן חוזה ללימון?', a: 'כ-40 עד 45 דקות במטוס קטן חד-מנועי.' },
+      { q: 'כמה עולה טיסה ללימון?', a: 'מחיר לכיוון אחד הוא לרוב בסביבות 100–150 דולר, אבל הוא משתנה לפי התאריך ולפי כמה מוקדם מזמינים. את המחיר העדכני תמצאו ב-flysansa.com.' },
+      { q: 'אפשר לנחות בסן חוזה ולטוס ללימון באותו יום?', a: 'כן, אם נוחתים מספיק מוקדם. הטיסות ללימון יוצאות בדרך כלל בבוקר ובתחילת אחר הצהריים, כך שאם נוחתים מאוחר קל יותר לישון ליד שדה התעופה ולטוס למחרת בבוקר. השאירו לפחות שעתיים-שלוש בין הטיסות ובדקו את מגבלות המטען: במטוסים קטנים יש מגבלות משקל קפדניות.' },
+      { q: 'איך מגיעים משדה התעופה של לימון לפוארטו ויחו?', a: 'הכי פשוט: הסעה פרטית שהוזמנה מראש (כ-75 דולר). אפשר גם לקחת מונית למרכז לימון ומשם את האוטובוס של MEPE דרומה, שעוצר בקאוויטה בדרך.' },
+    ],
     bodyParagraphs: [
       <>כדי להזמין את הטיסה, היכנסו לאתר <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> ובחרו את תאריכי ושעות הנסיעה. לאחר מכן תזינו את הפרטים האישיים ופרטי התשלום כדי להשלים את ההזמנה. ל-Sansa Airlines יש כמה טיסות ביום, כך שקל למצוא אחת שמתאימה ללוח הזמנים שלכם.</>,
       <>הקטע הראשון הוא טיסה לנמל התעופה הבינלאומי של סן חוזה, המוכר גם בשם <a href="https://maps.app.goo.gl/4wEYh3ZHCWNWSrQo6" target="_blank" rel="noopener noreferrer">חואן סנטמריה</a> (SJO), שדה התעופה הגדול ביותר בקוסטה ריקה. הוא מחובר היטב ליעדים בינלאומיים רבים, ולכן הוא נקודת פתיחה נוחה. אחרי הנחיתה תעברו את המכס ותפנו לשער הטיסות הפנימיות: בחוץ עומד מטוס ישן וגדול, כך שקשה לפספס אותו.</>,
@@ -334,6 +506,38 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     intro:
       "Cerchi voli per Puerto Viejo? A Puerto Viejo stessa non c'è un aeroporto, ma puoi percorrere in aereo gran parte del tragitto: un breve volo nazionale da San José (SJO) a Limón, poi un rapido trasferimento lungo la costa. È il modo più veloce per raggiungere la costa caraibica, e questa guida ti spiega esattamente come fare.",
     stayRecommendationTitle: 'Dove alloggiare quando si vola verso Puerto Viejo?',
+    quickFactsHeading: 'Volare a Puerto Viejo in breve',
+    quickFacts: [
+      ['Aeroporto a Puerto Viejo?', "No. L'aeroporto più vicino con voli di linea è Limón (LIO)."],
+      ["Dall'aeroporto di Limón a Puerto Viejo", 'Circa 60 km, più o meno 1 ora in auto'],
+      ['Volo da San José (SJO)', 'Sansa Airlines, circa 45 minuti'],
+      ['Tariffa solo andata', 'Spesso intorno ai 100–150 USD, a seconda della data'],
+      ['Transfer privato Limón → Puerto Viejo', 'Circa 75 USD'],
+      ['Tempo totale da SJO', 'Circa 2 ore e mezza, contro 4–5 ore su strada'],
+    ],
+    airportHeading: "C'è un aeroporto a Puerto Viejo?",
+    airportParagraphs: [
+      "No. Puerto Viejo de Talamanca non ha un aeroporto, quindi la vera domanda è quale sia il più vicino. È l'Aeroporto Internazionale di Limón (LIO), al margine sud della città di Limón, circa 60 km a nord di Puerto Viejo. È piccolo, ma Sansa lo collega con voli nazionali regolari da San José.",
+      "Se arrivi da Panama, l'altra opzione è Bocas del Toro (BOC): da lì servono una barca, un tratto in auto e il passaggio di frontiera a Sixaola, e se ne va quasi tutta la giornata. Per quasi tutti gli altri il percorso è San José–Limón in aereo, poi un'ora lungo la strada costiera.",
+    ],
+    bodyHeadings: [
+      'Come prenotare un volo per Limón',
+      'Il cambio aereo a San José (SJO)',
+      'Il volo da San José a Limón',
+      "Dall'aeroporto di Limón a Puerto Viejo",
+    ],
+    compareHeading: 'Aereo, auto o autobus: cosa conviene',
+    compareParagraph:
+      "Su strada, da San José a Puerto Viejo ci vogliono circa 4–5 ore attraverso le montagne di Braulio Carrillo, e di più se sulla Ruta 32 ci sono lavori o una frana. L'autobus diretto MEPE è l'opzione più economica, e gli shuttle condivisi o privati ti vengono a prendere in hotel. In aereo il viaggio scende a circa 2 ore e mezza. Per un gruppo di tre o quattro persone, però, uno shuttle privato può costare più o meno quanto voli e transfer, e ti porta fino alla porta.",
+    faqHeading: 'Voli per Puerto Viejo: domande frequenti',
+    faqItems: [
+      { q: "Qual è l'aeroporto più vicino a Puerto Viejo, in Costa Rica?", a: "L'Aeroporto Internazionale di Limón (LIO), circa un'ora a nord in auto. È l'aeroporto più vicino a Puerto Viejo con voli di linea." },
+      { q: 'Ci sono voli internazionali per Limón?', a: 'Non con regolarità. I voli internazionali atterrano a San José (SJO) o Liberia (LIR), e da San José prosegui per Limón con un volo nazionale.' },
+      { q: 'Quanto dura il volo da San José a Limón?', a: 'Circa 40–45 minuti su un piccolo aereo monomotore.' },
+      { q: 'Quanto costa un volo per Limón?', a: 'La tariffa di sola andata è spesso intorno ai 100–150 USD, ma cambia in base alla data e a quanto in anticipo prenoti. Controlla il prezzo aggiornato su flysansa.com.' },
+      { q: 'Posso atterrare a San José e volare a Limón lo stesso giorno?', a: "Sì, se arrivi abbastanza presto. I voli per Limón partono di solito al mattino e nel primo pomeriggio, quindi con un arrivo serale conviene dormire vicino all'aeroporto e volare la mattina dopo. Lascia almeno due o tre ore tra un volo e l'altro e controlla la franchigia bagagli: gli aerei piccoli hanno limiti di peso rigidi." },
+      { q: "Come arrivo dall'aeroporto di Limón a Puerto Viejo?", a: "La soluzione più comoda è un transfer privato prenotato in anticipo (circa 75 USD). In alternativa puoi prendere un taxi fino al centro di Limón e poi l'autobus MEPE verso sud, che ferma a Cahuita lungo il percorso." },
+    ],
     bodyParagraphs: [
       <>Per prenotare il tuo volo, vai su <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> e seleziona le date e gli orari del tuo viaggio. Poi inserisci i tuoi dati personali e di pagamento per completare la prenotazione. Sansa Airlines ha diversi voli al giorno, così è facile trovarne uno adatto ai tuoi orari.</>,
       <>La prima tappa è un volo fino all'Aeroporto Internazionale di San José, conosciuto anche come <a href="https://maps.app.goo.gl/4wEYh3ZHCWNWSrQo6" target="_blank" rel="noopener noreferrer">Juan Santamaría</a> (SJO), il più grande aeroporto della Costa Rica. È ben collegato con molte destinazioni internazionali, quindi è un comodo punto di partenza. Dopo l'atterraggio, passa la dogana e dirigiti verso il Gate Nazionale: fuori c'è un vecchio aereo di grandi dimensioni, difficile non notarlo.</>,
@@ -354,6 +558,38 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     intro:
       "À procura de voos para Puerto Viejo? Em Puerto Viejo não existe aeroporto, mas pode fazer a maior parte do percurso de avião: um curto voo doméstico de San José (SJO) para Limón e depois um transfer rápido ao longo da costa. É a forma mais rápida de chegar à costa caribenha, e este guia mostra-lhe exatamente como fazê-lo.",
     stayRecommendationTitle: 'Onde ficar hospedado ao voar para Puerto Viejo?',
+    quickFactsHeading: 'Voar para Puerto Viejo em resumo',
+    quickFacts: [
+      ['Há aeroporto em Puerto Viejo?', 'Não. O aeroporto mais próximo com voos regulares é Limón (LIO).'],
+      ['Do aeroporto de Limón a Puerto Viejo', 'Cerca de 60 km, aproximadamente 1 hora de carro'],
+      ['Voo a partir de San José (SJO)', 'Sansa Airlines, cerca de 45 minutos'],
+      ['Tarifa só de ida', 'Muitas vezes à volta de 100–150 USD, consoante a data'],
+      ['Transfer privado Limón → Puerto Viejo', 'Cerca de 75 USD'],
+      ['Tempo total a partir de SJO', 'Cerca de 2h30, contra 4–5 horas por estrada'],
+    ],
+    airportHeading: 'Há aeroporto em Puerto Viejo?',
+    airportParagraphs: [
+      'Não. Puerto Viejo de Talamanca não tem aeroporto, por isso a verdadeira pergunta é qual fica mais perto. É o Aeroporto Internacional de Limón (LIO), no limite sul da cidade de Limón, cerca de 60 km a norte de Puerto Viejo. É pequeno, mas a Sansa tem voos domésticos regulares a partir de San José.',
+      'Se vier do Panamá, a outra opção é Bocas del Toro (BOC): a partir daí são um barco, um troço de carro e a passagem da fronteira em Sixaola, o que ocupa quase um dia inteiro. Para quase todos os outros viajantes, o percurso é San José–Limón de avião e depois uma hora pela estrada costeira.',
+    ],
+    bodyHeadings: [
+      'Como reservar um voo para Limón',
+      'A ligação em San José (SJO)',
+      'O voo de San José para Limón',
+      'Do aeroporto de Limón a Puerto Viejo',
+    ],
+    compareHeading: 'Avião, carro ou autocarro: o que compensa',
+    compareParagraph:
+      'Por estrada, de San José a Puerto Viejo são cerca de 4 a 5 horas pelas montanhas de Braulio Carrillo, e mais se houver obras ou um deslizamento de terras na Ruta 32. O autocarro direto da MEPE é a opção mais barata, e os shuttles partilhados ou privados vão buscá-lo ao hotel. De avião, a viagem fica em cerca de 2h30. Para um grupo de três ou quatro pessoas, no entanto, um shuttle privado pode custar mais ou menos o mesmo que os voos e o transfer, e leva-o de porta a porta.',
+    faqHeading: 'Voos para Puerto Viejo: perguntas frequentes',
+    faqItems: [
+      { q: 'Qual é o aeroporto mais próximo de Puerto Viejo, na Costa Rica?', a: 'O Aeroporto Internacional de Limón (LIO), a cerca de uma hora de carro para norte. É o aeroporto mais próximo de Puerto Viejo com voos regulares.' },
+      { q: 'Há voos internacionais para Limón?', a: 'Não de forma regular. Os voos internacionais aterram em San José (SJO) ou Liberia (LIR), e a partir de San José segue para Limón num voo doméstico.' },
+      { q: 'Quanto tempo demora o voo de San José para Limón?', a: 'Cerca de 40 a 45 minutos num pequeno avião monomotor.' },
+      { q: 'Quanto custa um voo para Limón?', a: 'A tarifa só de ida ronda muitas vezes os 100–150 USD, mas varia com a data e a antecedência da reserva. Consulte o preço atual em flysansa.com.' },
+      { q: 'Posso aterrar em San José e voar para Limón no mesmo dia?', a: 'Sim, se chegar cedo. Os voos para Limón costumam partir de manhã e no início da tarde, por isso, se chegar tarde, é mais fácil dormir perto do aeroporto e voar na manhã seguinte. Deixe pelo menos duas a três horas entre voos e confirme a franquia de bagagem: os aviões pequenos têm limites de peso rigorosos.' },
+      { q: 'Como vou do aeroporto de Limón para Puerto Viejo?', a: 'O mais simples é um transfer privado reservado com antecedência (cerca de 75 USD). Também pode apanhar um táxi até ao centro de Limón e depois o autocarro da MEPE para sul, que para em Cahuita pelo caminho.' },
+    ],
     bodyParagraphs: [
       <>Para reservar o seu voo, aceda a <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> e selecione as suas datas e horários de viagem. A seguir, introduz os seus dados pessoais e de pagamento para concluir a reserva. A Sansa Airlines tem vários voos por dia, por isso é fácil encontrar um que se ajuste ao seu horário.</>,
       <>A primeira etapa é um voo até ao Aeroporto Internacional de San José, também conhecido como <a href="https://maps.app.goo.gl/4wEYh3ZHCWNWSrQo6" target="_blank" rel="noopener noreferrer">Juan Santamaría</a> (SJO), o maior aeroporto da Costa Rica. Está bem ligado a muitos destinos internacionais, por isso é um ponto de partida prático. Depois de aterrar, passe pela alfândega e dirija-se ao Portão Doméstico: há um grande avião antigo lá fora, difícil de não ver.</>,
@@ -374,6 +610,38 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     intro:
       "प्वेर्तो वियेहो के लिए उड़ानें ढूंढ रहे हैं? प्वेर्तो वियेहो में खुद कोई हवाई अड्डा नहीं है, लेकिन आप अधिकांश रास्ता हवाई जहाज़ से तय कर सकते हैं: सान होज़े (SJO) से लिमोन तक की एक छोटी घरेलू उड़ान, और फिर तट के किनारे एक त्वरित ट्रांसफर। कैरिबियन तट तक पहुंचने का यह सबसे तेज़ तरीका है, और यह गाइड आपको बिल्कुल यही बताती है कि इसे कैसे करना है।",
     stayRecommendationTitle: 'प्वेर्तो वियेहो के लिए उड़ान भरते समय कहां ठहरें?',
+    quickFactsHeading: 'प्वेर्तो वियेहो की उड़ान: एक नज़र में',
+    quickFacts: [
+      ['क्या प्वेर्तो वियेहो में हवाई अड्डा है?', 'नहीं। नियमित उड़ानों वाला सबसे नज़दीकी हवाई अड्डा लिमोन (LIO) है।'],
+      ['लिमोन हवाई अड्डे से प्वेर्तो वियेहो', 'लगभग 60 किमी, कार से करीब 1 घंटा'],
+      ['सान होज़े (SJO) से उड़ान', 'Sansa Airlines, लगभग 45 मिनट'],
+      ['एक तरफ़ का किराया', 'अक्सर लगभग 100–150 USD, तारीख के अनुसार'],
+      ['निजी ट्रांसफर लिमोन → प्वेर्तो वियेहो', 'लगभग 75 USD'],
+      ['SJO से कुल समय', 'लगभग 2.5 घंटे, सड़क से 4–5 घंटे की तुलना में'],
+    ],
+    airportHeading: 'क्या प्वेर्तो वियेहो में हवाई अड्डा है?',
+    airportParagraphs: [
+      'नहीं। प्वेर्तो वियेहो दे तालामांका में कोई हवाई अड्डा नहीं है, इसलिए असली सवाल यह है कि सबसे नज़दीकी कौन सा है। वह है लिमोन अंतरराष्ट्रीय हवाई अड्डा (LIO), जो लिमोन शहर के दक्षिणी किनारे पर, प्वेर्तो वियेहो से लगभग 60 किमी उत्तर में है। यह छोटा है, लेकिन Sansa यहां सान होज़े से नियमित घरेलू उड़ानें चलाती है।',
+      'अगर आप पनामा से आ रहे हैं, तो दूसरा विकल्प बोकास देल तोरो (BOC) है: वहां से नाव, कार और सिक्साओला में सीमा पार करनी होती है, जिसमें लगभग पूरा दिन लग जाता है। बाकी लगभग सभी यात्रियों के लिए रास्ता है: सान होज़े से लिमोन तक हवाई जहाज़, फिर तटीय सड़क पर एक घंटा।',
+    ],
+    bodyHeadings: [
+      'लिमोन की फ्लाइट कैसे बुक करें',
+      'सान होज़े (SJO) पर विमान बदलना',
+      'सान होज़े से लिमोन की उड़ान',
+      'लिमोन हवाई अड्डे से प्वेर्तो वियेहो',
+    ],
+    compareHeading: 'हवाई जहाज़, कार या बस: क्या बेहतर है',
+    compareParagraph:
+      'सड़क से सान होज़े से प्वेर्तो वियेहो तक ब्राउलियो कारियो के पहाड़ों से होकर लगभग 4 से 5 घंटे लगते हैं, और रूट 32 पर निर्माण कार्य या भूस्खलन हो तो इससे ज़्यादा। MEPE की सीधी बस सबसे सस्ता विकल्प है, और साझा या निजी शटल आपको होटल से ले जाती हैं। हवाई जहाज़ से यात्रा लगभग 2.5 घंटे की रह जाती है। हालांकि तीन या चार लोगों के समूह के लिए निजी शटल का खर्च लगभग उड़ानों और ट्रांसफर जितना ही हो सकता है, और वह आपको दरवाज़े तक पहुंचाती है।',
+    faqHeading: 'प्वेर्तो वियेहो की उड़ानें: अक्सर पूछे जाने वाले सवाल',
+    faqItems: [
+      { q: 'प्वेर्तो वियेहो, कोस्टा रिका का सबसे नज़दीकी हवाई अड्डा कौन सा है?', a: 'लिमोन अंतरराष्ट्रीय हवाई अड्डा (LIO), जो कार से लगभग एक घंटा उत्तर में है। नियमित उड़ानों वाला यही प्वेर्तो वियेहो का सबसे नज़दीकी हवाई अड्डा है।' },
+      { q: 'क्या लिमोन के लिए अंतरराष्ट्रीय उड़ानें हैं?', a: 'नियमित रूप से नहीं। अंतरराष्ट्रीय उड़ानें सान होज़े (SJO) या लाइबेरिया (LIR) में उतरती हैं, और सान होज़े से आप घरेलू उड़ान से लिमोन जाते हैं।' },
+      { q: 'सान होज़े से लिमोन की उड़ान कितनी लंबी है?', a: 'एक छोटे सिंगल-इंजन विमान में लगभग 40 से 45 मिनट।' },
+      { q: 'लिमोन की उड़ान कितने की है?', a: 'एक तरफ़ का किराया अक्सर लगभग 100–150 USD होता है, लेकिन यह तारीख और आप कितना पहले बुक करते हैं, इस पर निर्भर करता है। ताज़ा कीमत flysansa.com पर देखें।' },
+      { q: 'क्या सान होज़े उतरकर उसी दिन लिमोन की उड़ान ली जा सकती है?', a: 'हां, अगर आप जल्दी पहुंच जाएं। लिमोन की उड़ानें आमतौर पर सुबह और दोपहर की शुरुआत में निकलती हैं, इसलिए देर से पहुंचने पर हवाई अड्डे के पास रात बिताकर अगली सुबह उड़ान भरना आसान रहता है। दोनों उड़ानों के बीच कम से कम दो से तीन घंटे रखें और सामान की सीमा जांच लें: छोटे विमानों में वज़न की सख़्त सीमा होती है।' },
+      { q: 'लिमोन हवाई अड्डे से प्वेर्तो वियेहो कैसे पहुंचें?', a: 'सबसे आसान है पहले से बुक किया गया निजी ट्रांसफर (लगभग 75 USD)। आप टैक्सी से लिमोन शहर जाकर दक्षिण की ओर जाने वाली MEPE बस भी ले सकते हैं, जो रास्ते में काउइटा में रुकती है।' },
+    ],
     bodyParagraphs: [
       <>अपनी फ्लाइट बुक करने के लिए, <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> पर जाएं और अपनी यात्रा की तारीखें और समय चुनें। इसके बाद बुकिंग पूरी करने के लिए अपनी व्यक्तिगत और भुगतान जानकारी दर्ज करें। Sansa Airlines दिनभर में कई फ्लाइटें चलाती है, इसलिए अपने कार्यक्रम के अनुसार फ्लाइट ढूंढना आसान रहता है।</>,
       <>पहला चरण है सान होज़े अंतरराष्ट्रीय हवाई अड्डे तक की उड़ान, जिसे <a href="https://maps.app.goo.gl/4wEYh3ZHCWNWSrQo6" target="_blank" rel="noopener noreferrer">Juan Santamaría</a> (SJO) के नाम से भी जाना जाता है, जो कोस्टा रिका का सबसे बड़ा हवाई अड्डा है। यह कई अंतरराष्ट्रीय गंतव्यों से अच्छी तरह जुड़ा है, इसलिए यहां से शुरुआत करना सुविधाजनक है। उतरने के बाद सीमा शुल्क (कस्टम्स) पार करके घरेलू गेट की ओर जाएं: बाहर एक बड़ा पुराना हवाई जहाज़ रखा है, जिसे पहचानना मुश्किल नहीं।</>,
@@ -394,6 +662,38 @@ const puertoViejoByPlane: Partial<Record<Locale, PuertoViejoByPlaneContent>> = {
     intro:
       'Op zoek naar vluchten naar Puerto Viejo? In Puerto Viejo zelf is geen luchthaven, maar je kunt het grootste deel van de reis vliegen: een korte binnenlandse vlucht van San José (SJO) naar Limón en daarna een snelle transfer langs de kust. Het is de snelste manier om de Caribische kust te bereiken, en deze gids legt precies uit hoe je dat doet.',
     stayRecommendationTitle: 'Waar overnachten als je naar Puerto Viejo vliegt?',
+    quickFactsHeading: 'Vliegen naar Puerto Viejo in het kort',
+    quickFacts: [
+      ['Luchthaven in Puerto Viejo?', 'Nee. De dichtstbijzijnde luchthaven met lijnvluchten is Limón (LIO).'],
+      ['Luchthaven Limón naar Puerto Viejo', 'Ongeveer 60 km, zo’n 1 uur met de auto'],
+      ['Vlucht vanaf San José (SJO)', 'Sansa Airlines, ongeveer 45 minuten'],
+      ['Enkele reis', 'Vaak rond de 100–150 USD, afhankelijk van de datum'],
+      ['Privétransfer Limón → Puerto Viejo', 'Ongeveer 75 USD'],
+      ['Totale reistijd vanaf SJO', 'Ongeveer 2,5 uur, tegenover 4–5 uur over de weg'],
+    ],
+    airportHeading: 'Is er een luchthaven in Puerto Viejo?',
+    airportParagraphs: [
+      'Nee. Puerto Viejo de Talamanca heeft geen luchthaven, dus de echte vraag is welke het dichtstbij ligt. Dat is de internationale luchthaven van Limón (LIO), aan de zuidrand van de stad Limón, zo’n 60 km ten noorden van Puerto Viejo. Hij is klein, maar Sansa vliegt er geregeld naartoe vanuit San José.',
+      'Kom je uit Panama, dan is Bocas del Toro (BOC) de andere optie: vandaar gaat het per boot, auto en via de grensovergang bij Sixaola verder, wat bijna een hele dag kost. Voor bijna alle anderen is de route: San José–Limón met het vliegtuig en daarna een uur over de kustweg.',
+    ],
+    bodyHeadings: [
+      'Zo boek je een vlucht naar Limón',
+      'Overstappen in San José (SJO)',
+      'De vlucht van San José naar Limón',
+      'Van de luchthaven van Limón naar Puerto Viejo',
+    ],
+    compareHeading: 'Vliegtuig, auto of bus: wat is slim?',
+    compareParagraph:
+      'Over de weg duurt San José–Puerto Viejo zo’n 4 tot 5 uur over de bergen door Braulio Carrillo, en langer bij wegwerkzaamheden of een aardverschuiving op Ruta 32. De directe MEPE-bus is het goedkoopst, en gedeelde of privéshuttles halen je op bij je hotel. Met het vliegtuig wordt de reis zo’n 2,5 uur. Voor een groep van drie of vier kan een privéshuttle wel ongeveer evenveel kosten als de vluchten plus de transfer, en die zet je voor de deur af.',
+    faqHeading: 'Vluchten naar Puerto Viejo: veelgestelde vragen',
+    faqItems: [
+      { q: 'Wat is de dichtstbijzijnde luchthaven bij Puerto Viejo, Costa Rica?', a: 'De internationale luchthaven van Limón (LIO), ongeveer een uur rijden naar het noorden. Het is de dichtstbijzijnde luchthaven bij Puerto Viejo met lijnvluchten.' },
+      { q: 'Zijn er internationale vluchten naar Limón?', a: 'Niet volgens een vaste dienstregeling. Internationale vluchten landen in San José (SJO) of Liberia (LIR), en vanuit San José vlieg je met een binnenlandse vlucht door naar Limón.' },
+      { q: 'Hoe lang duurt de vlucht van San José naar Limón?', a: 'Ongeveer 40 tot 45 minuten in een klein eenmotorig vliegtuig.' },
+      { q: 'Wat kost een vlucht naar Limón?', a: 'Een enkele reis kost vaak rond de 100–150 USD, maar de prijs hangt af van de datum en hoe vroeg je boekt. Bekijk de actuele prijs op flysansa.com.' },
+      { q: 'Kan ik in San José landen en dezelfde dag naar Limón vliegen?', a: 'Ja, als je vroeg genoeg landt. Vluchten naar Limón vertrekken meestal ’s ochtends en vroeg in de middag, dus bij een late aankomst is het makkelijker om bij de luchthaven te overnachten en de volgende ochtend te vliegen. Houd minstens twee à drie uur tussen de vluchten aan en check de bagageregels: kleine vliegtuigen hebben strikte gewichtslimieten.' },
+      { q: 'Hoe kom ik van de luchthaven van Limón naar Puerto Viejo?', a: 'Het makkelijkst is een vooraf geboekte privétransfer (ongeveer 75 USD). Je kunt ook een taxi naar het centrum van Limón nemen en daar de MEPE-bus naar het zuiden pakken, die onderweg in Cahuita stopt.' },
+    ],
     bodyParagraphs: [
       <>Om je vlucht te boeken, ga je naar <a href="https://www.flysansa.com" target="_blank" rel="noopener noreferrer">flysansa.com</a> en kies je je reisdata en -tijden. Daarna voer je je persoonlijke gegevens en betaalgegevens in om je boeking af te ronden. Sansa Airlines vliegt meerdere keren per dag, dus je vindt meestal wel een vlucht die in je schema past.</>,
       <>Het eerste deel is de vlucht naar de internationale luchthaven van San José, ook bekend als <a href="https://maps.app.goo.gl/4wEYh3ZHCWNWSrQo6" target="_blank" rel="noopener noreferrer">Juan Santamaría</a> (SJO), de grootste luchthaven van Costa Rica. Hij is goed verbonden met veel internationale bestemmingen, dus een handig vertrekpunt. Na de landing ga je door de douane naar de binnenlandse gate: er staat buiten een groot, oud vliegtuig, dus je vindt het zo.</>,

@@ -45,6 +45,15 @@ export const AMENITY_LABELS: Record<string, Partial<Record<'de' | 'fr' | 'it' | 
     hi: '2 A/C यूनिट',
     nl: '2 airco-units',
   },
+  'Private Equipped Kitchenette': {
+    de: 'Private ausgestattete Küchenzeile',
+    fr: 'Kitchenette privée équipée',
+    it: 'Angolo cottura privato attrezzato',
+    pt: 'Kitchenette privativa equipada',
+    he: 'מטבחון פרטי ומאובזר',
+    hi: 'निजी सुसज्जित किचनेट',
+    nl: 'Eigen uitgeruste kitchenette',
+  },
   'Private unfenced Parking': {
     de: 'Privater unumzäunter Parkplatz',
     fr: 'Parking privé non clôturé',

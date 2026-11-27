@@ -122,6 +122,19 @@ const properties = [
     neighborhood: 'Playa Chiquita, 200 m from the beach. A few minutes from Puerto Viejo and Manzanillo, close to Punta Uva beach and Arrecife.'
   },
   {
+    slug: 'Lirio',
+    name: 'Casa Lirio',
+    guests: 2,
+    bedrooms: 1,
+    bathrooms: 1,
+    location: 'Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica',
+    parking: 'Private unfenced parking',
+    petFriendly: false,
+    description: 'One-bedroom suite in Playa Chiquita made for two: a large bed, air conditioning, a bathroom with a spacious shower, an equipped kitchenette (stovetop, microwave and fridge), a dining table and a small workspace. Sliding doors open onto a patio surrounded by tropical garden. Self check-in with lockbox.',
+    amenities: ['Private Equipped Bathroom', 'Private Equipped Kitchenette', 'A/C', 'Private Unfenced Parking', 'WiFi', 'Flat-screen TV', 'Coffee maker', 'Desk / workspace', 'Private patio with tropical garden', 'Towels & Toiletries', 'Bed Linens', 'Crib on request'],
+    neighborhood: 'Playa Chiquita, in the Musa Villas compound behind hotel Arena Blanca. Minutes from Chiquita and Punta Uva beaches, close to Puerto Viejo.'
+  },
+  {
     slug: 'VillaMar',
     name: 'Villa Mar',
     guests: 2,

@@ -5,7 +5,7 @@ import {
 } from "./propertyCatalog";
 
 test("booking property catalog uses real unique Smoobu apartment IDs", () => {
-  expect(BOOKING_PROPERTIES).toHaveLength(10);
+  expect(BOOKING_PROPERTIES).toHaveLength(11);
 
   const ids = BOOKING_PROPERTIES.map((property) => property.smoobuApartmentId);
   expect(new Set(ids).size).toBe(ids.length);
@@ -20,6 +20,7 @@ test("booking property catalog uses real unique Smoobu apartment IDs", () => {
     1516849,
     1597723,
     2946826,
+    3591242,
   ]);
   expect(ids).not.toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 });

@@ -32,6 +32,7 @@ const APARTMENTS = [
   { id: 1516849, name: "Plumeria" },
   { id: 1597723, name: "Giulia" },
   { id: 2946826, name: "Delfin" },
+  { id: 3591242, name: "Lirio" },
 ];
 
 const NIGHTLY_PRICE_BY_APARTMENT = new Map(APARTMENTS.map((apartment, index) => [apartment.id, 120 + index * 15]));

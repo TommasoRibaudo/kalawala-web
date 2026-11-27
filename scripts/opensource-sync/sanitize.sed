@@ -47,6 +47,7 @@ s/'VillaMar'/'SunsetVilla'/g
 s/'VillaCoral'/'PalmCottage'/g
 s/'Areka'/'OceanBreeze'/g
 s/'Plumeria'/'JungleLoft'/g
+s/'Lirio'/'OceanBreeze'/g
 s/'Giulia'/'SunsetVilla'/g
 s/'Delfines'/'PalmCottage'/g
 #
@@ -63,6 +64,7 @@ s/Rana/Ocean Breeze/g
 s/Tucano/Jungle Loft/g
 s/Areka/Ocean Breeze/g
 s/Plumeria/Jungle Loft/g
+s/Lirio/Ocean Breeze/g
 s/Giulia/Sunset Villa/g
 s/Delfines/Palm Cottage/g
 # NOTE: real reservation/incident IDs and guest PII are intentionally NOT

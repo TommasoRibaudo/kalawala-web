@@ -2,6 +2,7 @@ import React from 'react';
 import {
   ArekaImageDescriptions, ArekaImageDescriptionsES,
   PlumeriaImageDescriptions, PlumeriaImageDescriptionsES,
+  LirioImageDescriptions, LirioImageDescriptionsES,
   GiuliaImageDescriptions, GiuliaImageDescriptionsES,
   gecoImageDescriptions, gecoImageDescriptionsES,
   pappagalloImageDescriptions, pappagalloImageDescriptionsES,
@@ -42,6 +43,7 @@ const IMAGE_DESCRIPTIONS: Record<string, LocalizedValue<IImageDescription[]>> = 
   'Villa Coral': { en: VillaCoralImageDescriptions, es: VillaCoralImageDescriptionsES },
   Areka: { en: ArekaImageDescriptions, es: ArekaImageDescriptionsES },
   Plumeria: { en: PlumeriaImageDescriptions, es: PlumeriaImageDescriptionsES },
+  Lirio: { en: LirioImageDescriptions, es: LirioImageDescriptionsES },
   Giulia: { en: GiuliaImageDescriptions, es: GiuliaImageDescriptionsES },
   Delfin: { en: delfinImageDescriptions, es: delfinImageDescriptionsES },
 };

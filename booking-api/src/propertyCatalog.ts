@@ -172,6 +172,24 @@ export const BOOKING_PROPERTIES: BookingProperty[] = [
       { code: "parking", label: "Private fenced parking" },
     ],
   },
+  {
+    // [NMT] Lirio — Namaitami suite in the Musa Villas compound, Playa
+    // Chiquita (next to Areka/Plumeria/Giulia). Rates come from Smoobu
+    // (PriceLabs-managed); nothing price-related is configured here.
+    propertyId: "d82e8c11-7b76-4061-bddf-df6256ac6b07",
+    smoobuApartmentId: 3591242,
+    slug: "Lirio",
+    name: "Casa Lirio",
+    guestCapacity: 2,
+    thumbnailUrl: "https://drive.google.com/thumbnail?id=1a3HkaDeqSTwUOXsIBjwj84KrYqP6jPSL&sz=w1000",
+    amenities: [
+      { code: "bath", label: "Private equipped bathroom" },
+      { code: "kitchen", label: "Private equipped kitchenette" },
+      { code: "ac", label: "A/C" },
+      { code: "wifi", label: "WiFi" },
+      { code: "parking", label: "Private unfenced parking" },
+    ],
+  },
 ];
 
 /**

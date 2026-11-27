@@ -2,7 +2,7 @@ import type { Locale } from '../locales';
 import { DEFAULT_LOCALE } from '../locales';
 
 /**
- * Long-form copy for the ten property pages.
+ * Long-form copy for the property pages.
  *
  * Generated from the pre-merge page components rather than copied by hand:
  * Phase 3a's one content bug was a transcription slip while moving prose
@@ -54,6 +54,7 @@ export type ListingKey =
   | 'Delfin'
   | 'Geco'
   | 'Giulia'
+  | 'Lirio'
   | 'Pappagallo'
   | 'Plumeria'
   | 'Rana'
@@ -741,6 +742,134 @@ const CONTENT: Record<ListingKey, Partial<Record<Locale, ListingContent>>> = {
         "Heb je een speciaal verzoek? We helpen je graag verder als het mogelijk is. Aarzel niet om het ons te laten weten.",
         "Puerto Viejo is dankzij zijn adembenemende omgeving een geliefde bestemming voor toeristen van over de hele wereld. Het dorp heeft uitgestrekte stranden omzoomd door tropisch regenwoud, en telt twee nationale parken (Manzanillo en Cahuita). 's Avonds komt het dorp tot leven met een levendig en actief nachtleven. Tijdens je verblijf hier ga je volledig op in alles wat Puerto Viejo uniek maakt.",
         "Heb je tijdens je verblijf een reisbedje nodig? Laat het ons van tevoren weten, dan zorgen we dat het tijdens de schoonmaak in je kamer klaarstaat.",
+      ],
+    },
+  },
+  Lirio: {
+    en: {
+      seoTitle: "Casa Lirio - Garden Suite for Two in Playa Chiquita",
+      seoDescription:
+        "One-bedroom suite for two in Playa Chiquita with A/C, a large bed, an equipped kitchenette and a private patio surrounded by tropical garden. Minutes from Chiquita and Punta Uva beaches.",
+      heading: "Casa Lirio",
+      featureName: "House Lirio",
+      checkIn: "3:00 PM",
+      checkOut: "12:00 PM (noon)",
+      paragraphs: [
+        "Welcome to Reservas Kalawala. This one-bedroom suite in Playa Chiquita is made for two: a large bed, air conditioning, a bathroom with a spacious shower, an equipped kitchenette (stovetop, microwave and fridge), a dining table and a small workspace. Sliding doors open onto a patio surrounded by tropical garden. You're minutes from Chiquita and Punta Uva beaches and close to Puerto Viejo. A quiet, well-kept space made for resting.",
+        "Check-in is self-service with a lockbox, so you can arrive at your own pace from 3:00 PM.",
+        "If you require a pack-and-play crib during your stay, please let us know ahead of time and we'll have it ready before you arrive.",
+      ],
+    },
+    es: {
+      seoTitle: "Casa Lirio - Suite con Jardín para Dos en Playa Chiquita",
+      seoDescription:
+        "Suite de un dormitorio para dos en Playa Chiquita con A/C, cama grande, cocineta equipada y patio privado rodeado de jardín tropical. A minutos de las playas Chiquita y Punta Uva.",
+      heading: "Casa Lirio",
+      featureName: "Casa Lirio",
+      checkIn: "3:00 PM",
+      checkOut: "12:00 PM (mediodía)",
+      paragraphs: [
+        "Bienvenido a Reservas Kalawala. Esta suite de un dormitorio en Playa Chiquita es ideal para 2 personas: cama grande, aire acondicionado, baño con ducha amplia, cocineta equipada (placa, microondas y refrigeradora), mesa de comedor y un rincón de trabajo. Las puertas corredizas abren a un patio rodeado de jardín tropical. Estás a pocos minutos de las playas de Chiquita y Punta Uva, y cerca de Puerto Viejo. Un espacio tranquilo y cuidado, pensado para descansar.",
+        "El check-in es autónomo con caja de seguridad para llaves, así que puedes llegar a tu ritmo a partir de las 3:00 PM.",
+        "Si necesitas una cuna durante tu estadía, avísanos con anticipación y la tendremos lista antes de tu llegada.",
+      ],
+    },
+    fr: {
+      seoTitle: "Casa Lirio - Suite avec jardin pour deux à Playa Chiquita",
+      seoDescription:
+        "Suite d'une chambre pour deux à Playa Chiquita avec climatisation, grand lit, kitchenette équipée et patio privé entouré d'un jardin tropical. À quelques minutes des plages de Chiquita et de Punta Uva.",
+      heading: "Casa Lirio",
+      featureName: "Maison Lirio",
+      checkIn: "15h00",
+      checkOut: "12h00 (midi)",
+      paragraphs: [
+        "Bienvenue chez Reservas Kalawala. Cette suite d'une chambre à Playa Chiquita est pensée pour deux : un grand lit, la climatisation, une salle de bain avec une douche spacieuse, une kitchenette équipée (plaque de cuisson, micro-ondes et réfrigérateur), une table à manger et un petit espace de travail. Les portes coulissantes s'ouvrent sur un patio entouré d'un jardin tropical. Vous êtes à quelques minutes des plages de Chiquita et de Punta Uva, et tout près de Puerto Viejo. Un espace calme et soigné, pensé pour se reposer.",
+        "L'arrivée est autonome grâce à une boîte à clés : vous pouvez arriver à votre rythme à partir de 15h00.",
+        "Si vous avez besoin d'un lit parapluie pendant votre séjour, prévenez-nous à l'avance et nous l'installerons avant votre arrivée.",
+      ],
+    },
+    it: {
+      seoTitle: "Casa Lirio - Suite con Giardino per Due a Playa Chiquita",
+      seoDescription:
+        "Suite con una camera da letto per due a Playa Chiquita, con aria condizionata, letto grande, angolo cottura attrezzato e patio privato circondato da un giardino tropicale. A pochi minuti dalle spiagge di Chiquita e Punta Uva.",
+      heading: "Casa Lirio",
+      featureName: "Casa Lirio",
+      checkIn: "15:00",
+      checkOut: "12:00 (mezzogiorno)",
+      paragraphs: [
+        "Benvenuto su Reservas Kalawala. Questa suite con una camera da letto a Playa Chiquita è pensata per due persone: letto grande, aria condizionata, bagno con doccia spaziosa, angolo cottura attrezzato (piastra, microonde e frigorifero), tavolo da pranzo e un piccolo angolo di lavoro. Le porte scorrevoli si aprono su un patio circondato da un giardino tropicale. Sei a pochi minuti dalle spiagge di Chiquita e Punta Uva, e vicino a Puerto Viejo. Uno spazio tranquillo e curato, pensato per riposare.",
+        "Il check-in è autonomo con cassetta portachiavi, così puoi arrivare con calma a partire dalle 15:00.",
+        "Se ti serve una culla durante il soggiorno, avvisaci in anticipo e la faremo trovare pronta al tuo arrivo.",
+      ],
+    },
+    de: {
+      seoTitle: "Casa Lirio – Gartensuite für zwei in Playa Chiquita",
+      seoDescription:
+        "Suite mit einem Schlafzimmer für zwei in Playa Chiquita mit Klimaanlage, großem Bett, ausgestatteter Küchenzeile und privater Terrasse inmitten eines tropischen Gartens. Wenige Minuten von den Stränden Chiquita und Punta Uva.",
+      heading: "Casa Lirio",
+      featureName: "Haus Lirio",
+      checkIn: "15:00 Uhr",
+      checkOut: "12:00 Uhr (Mittag)",
+      paragraphs: [
+        "Willkommen bei Reservas Kalawala. Diese Suite mit einem Schlafzimmer in Playa Chiquita ist für zwei gemacht: ein großes Bett, Klimaanlage, ein Bad mit geräumiger Dusche, eine ausgestattete Küchenzeile (Kochfeld, Mikrowelle und Kühlschrank), ein Esstisch und ein kleiner Arbeitsplatz. Schiebetüren öffnen sich zu einer Terrasse, umgeben von tropischem Garten. Die Strände Chiquita und Punta Uva sind nur wenige Minuten entfernt, Puerto Viejo liegt ganz in der Nähe. Ein ruhiger, gepflegter Ort zum Ausruhen.",
+        "Der Check-in erfolgt selbstständig über einen Schlüsselsafe, so kannst du ab 15:00 Uhr ganz in deinem Tempo ankommen.",
+        "Wenn du während deines Aufenthalts ein Reisebett brauchst, sag uns bitte vorher Bescheid, dann steht es bei deiner Ankunft bereit.",
+      ],
+    },
+    he: {
+      seoTitle: "Casa Lirio - סוויטה עם גינה לזוג בפלאיה צ׳יקיטה",
+      seoDescription:
+        "סוויטה עם חדר שינה אחד לשניים בפלאיה צ׳יקיטה, עם מיזוג אוויר, מיטה גדולה, מטבחון מאובזר ופטיו פרטי מוקף גינה טרופית. דקות ספורות מחופי צ׳יקיטה ופונטה אובה.",
+      heading: "Casa Lirio",
+      featureName: "בית Lirio",
+      checkIn: "15:00",
+      checkOut: "12:00 בצהריים",
+      paragraphs: [
+        "ברוכים הבאים ל-Reservas Kalawala. הסוויטה הזו עם חדר שינה אחד בפלאיה צ׳יקיטה נועדה לשניים: מיטה גדולה, מיזוג אוויר, חדר רחצה עם מקלחת מרווחת, מטבחון מאובזר (כיריים, מיקרוגל ומקרר), שולחן אוכל ופינת עבודה קטנה. דלתות הזזה נפתחות לפטיו מוקף גינה טרופית. אתם במרחק דקות ספורות מחופי צ׳יקיטה ופונטה אובה, וקרוב לפוארטו ויֶחוֹ. מקום שקט ומטופח, שנועד למנוחה.",
+        "הצ׳ק-אין עצמאי עם תיבת מפתחות, כך שתוכלו להגיע בקצב שלכם החל מ-15:00.",
+        "אם תצטרכו עריסה במהלך השהות, הודיעו לנו מראש ונכין אותה לפני הגעתכם.",
+      ],
+    },
+    pt: {
+      seoTitle: "Casa Lirio - Suíte com Jardim para Dois em Playa Chiquita",
+      seoDescription:
+        "Suíte de um quarto para dois em Playa Chiquita com ar condicionado, cama grande, kitchenette equipada e pátio privativo rodeado de jardim tropical. A poucos minutos das praias de Chiquita e Punta Uva.",
+      heading: "Casa Lirio",
+      featureName: "Casa Lirio",
+      checkIn: "15h00",
+      checkOut: "12h00 (meio-dia)",
+      paragraphs: [
+        "Bem-vindo à Reservas Kalawala. Esta suíte de um quarto em Playa Chiquita foi pensada para dois: cama grande, ar condicionado, casa de banho com chuveiro amplo, kitchenette equipada (placa, micro-ondas e frigorífico), mesa de jantar e um pequeno espaço de trabalho. As portas de correr abrem para um pátio rodeado de jardim tropical. Está a poucos minutos das praias de Chiquita e Punta Uva, e perto de Puerto Viejo. Um espaço tranquilo e cuidado, pensado para descansar.",
+        "O check-in é autónomo com cofre de chaves, por isso pode chegar ao seu ritmo a partir das 15h00.",
+        "Se precisar de um berço durante a estadia, avise-nos com antecedência e deixamo-lo pronto antes da sua chegada.",
+      ],
+    },
+    hi: {
+      seoTitle: "Casa Lirio - Playa Chiquita में दो लोगों के लिए बगीचे वाला सुइट",
+      seoDescription:
+        "Playa Chiquita में दो लोगों के लिए एक बेडरूम वाला सुइट, जिसमें A/C, बड़ा बिस्तर, सुसज्जित किचनेट और उष्णकटिबंधीय बगीचे से घिरा निजी आँगन है। Chiquita और Punta Uva समुद्र तटों से कुछ ही मिनट की दूरी पर।",
+      heading: "Casa Lirio",
+      featureName: "घर Lirio",
+      checkIn: "दोपहर 3:00 बजे",
+      checkOut: "दोपहर 12:00 बजे (मध्याह्न)",
+      paragraphs: [
+        "Reservas Kalawala में आपका स्वागत है। Playa Chiquita का यह एक बेडरूम वाला सुइट दो लोगों के लिए बना है: बड़ा बिस्तर, एयर कंडीशनिंग, बड़े शावर वाला बाथरूम, सुसज्जित किचनेट (चूल्हा, माइक्रोवेव और फ्रिज), डाइनिंग टेबल और एक छोटा कार्यस्थल। स्लाइडिंग दरवाज़े उष्णकटिबंधीय बगीचे से घिरे आँगन में खुलते हैं। आप Chiquita और Punta Uva समुद्र तटों से कुछ ही मिनट और Puerto Viejo के पास हैं। आराम के लिए बना एक शांत, सुव्यवस्थित स्थान।",
+        "चेक-इन लॉकबॉक्स के साथ स्वयं होता है, इसलिए आप दोपहर 3:00 बजे के बाद अपनी सुविधा से पहुँच सकते हैं।",
+        "अगर ठहरने के दौरान आपको पालना चाहिए, तो कृपया हमें पहले से बताएँ, हम आपके पहुँचने से पहले उसे तैयार रखेंगे।",
+      ],
+    },
+    nl: {
+      seoTitle: "Casa Lirio - Tuinsuite voor Twee in Playa Chiquita",
+      seoDescription:
+        "Suite met één slaapkamer voor twee in Playa Chiquita met airco, een groot bed, een uitgeruste kitchenette en een eigen patio omringd door tropische tuin. Op een paar minuten van de stranden Chiquita en Punta Uva.",
+      heading: "Casa Lirio",
+      featureName: "Huis Lirio",
+      checkIn: "15:00",
+      checkOut: "12:00 (middag)",
+      paragraphs: [
+        "Welkom bij Reservas Kalawala. Deze suite met één slaapkamer in Playa Chiquita is gemaakt voor twee: een groot bed, airco, een badkamer met een ruime douche, een uitgeruste kitchenette (kookplaat, magnetron en koelkast), een eettafel en een kleine werkplek. Schuifdeuren openen naar een patio omringd door tropische tuin. Je bent op een paar minuten van de stranden Chiquita en Punta Uva en dicht bij Puerto Viejo. Een rustige, verzorgde plek om tot rust te komen.",
+        "Inchecken doe je zelf met een sleutelkluisje, dus je kunt vanaf 15:00 op je eigen tempo aankomen.",
+        "Heb je tijdens je verblijf een campingbedje nodig? Laat het ons van tevoren weten, dan staat het klaar bij aankomst.",
       ],
     },
   },

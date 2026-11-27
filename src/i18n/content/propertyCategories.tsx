@@ -25,9 +25,9 @@ import type { RouteKey } from '../../routes.config';
  * themselves as family/pet-friendly, central-for-couples, villa-for-couples,
  * or Punta-Uva-retreat-for-couples:
  *   Centro (5): Geco, Rana, Tucano, Pappagallo, Delfin
- *   Punta Uva / Playa Chiquita (5): Areka, Plumeria, Giulia, VillaMar, VillaCoral
+ *   Punta Uva / Playa Chiquita (6): Areka, Plumeria, Lirio, Giulia, VillaMar, VillaCoral
  *   Families (4): Rana, Geco, Giulia, Delfin
- *   Couples (6): Tucano, Pappagallo, VillaMar, VillaCoral, Areka, Plumeria
+ *   Couples (5): VillaMar, VillaCoral, Areka, Plumeria, Lirio
  *   Pet-friendly (2): Rana, Geco
  *
  * The Punta Uva spoke leads with "Punta Uva" in title/SEO copy (the
@@ -86,28 +86,28 @@ export const CATEGORY_PROPERTIES: Record<
   string[]
 > = {
   blogHousesCentro: ['Geco', 'Rana', 'Tucano', 'Pappagallo', 'Delfin'],
-  blogHousesPuntaUva: ['Areka', 'Plumeria', 'Giulia', 'VillaMar', 'VillaCoral'],
+  blogHousesPuntaUva: ['Areka', 'Plumeria', 'Lirio', 'Giulia', 'VillaMar', 'VillaCoral'],
   // Owner correction (2026-08-17): Tucano/Pappagallo are family houses, not
   // couples — moved from Couples to Families, and both are also pet-friendly
   // (no fee), though unlike Rana/Geco they don't have a fenced garden.
   blogFamilyHouses: ['Rana', 'Geco', 'Giulia', 'Delfin', 'Tucano', 'Pappagallo'],
-  blogCouplesHouses: ['VillaMar', 'VillaCoral', 'Areka', 'Plumeria'],
+  blogCouplesHouses: ['VillaMar', 'VillaCoral', 'Areka', 'Plumeria', 'Lirio'],
   blogPetFriendlyHouses: ['Rana', 'Geco', 'Tucano', 'Pappagallo'],
 };
 
-/** All 10 properties, Centro first then Punta Uva/Playa Chiquita — the hub's full grid. */
+/** All 11 properties, Centro first then Punta Uva/Playa Chiquita — the hub's full grid. */
 export const ALL_PROPERTIES: string[] = [
   'Geco', 'Rana', 'Tucano', 'Pappagallo', 'Delfin',
-  'Areka', 'Plumeria', 'Giulia', 'VillaMar', 'VillaCoral',
+  'Areka', 'Plumeria', 'Lirio', 'Giulia', 'VillaMar', 'VillaCoral',
 ];
 
 const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
   en: {
     seoTitle: 'Vacation Rentals in Puerto Viejo, Costa Rica | Kalawala',
-    seoDescription: '10 fully equipped vacation homes in Puerto Viejo de Talamanca, Costa Rica. Walk to the beach from our downtown houses or unwind near Punta Uva. Compare by neighborhood or trip type.',
+    seoDescription: '11 fully equipped vacation homes in Puerto Viejo de Talamanca, Costa Rica. Walk to the beach from our downtown houses or unwind near Punta Uva. Compare by neighborhood or trip type.',
     heading: 'Vacation Rentals in Puerto Viejo, Costa Rica',
     introParagraphs: [
-      "Kalawala runs 10 fully equipped vacation homes on Costa Rica's South Caribbean coast, split between two spots: five houses in downtown Puerto Viejo de Talamanca, and five near Punta Uva in Playa Chiquita.",
+      "Kalawala runs 11 fully equipped vacation homes on Costa Rica's South Caribbean coast, split between two spots: five houses in downtown Puerto Viejo de Talamanca, and six near Punta Uva in Playa Chiquita.",
       'Every home comes with fast WiFi, a full kitchen and direct support from us before and during your stay, without a faceless property-management app in between.',
     ],
     neighborhoodHeading: 'Browse by neighborhood',
@@ -123,19 +123,19 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
       { routeKey: 'blogCouplesHouses', title: 'Couples Retreats', description: 'Private villas with a pool and cozy houses built for two.' },
       { routeKey: 'blogPetFriendlyHouses', title: 'Pet-Friendly Houses', description: 'Bring your dog: these 4 houses welcome pets with no extra fee.' },
     ],
-    allHomesHeading: 'All 10 homes',
+    allHomesHeading: 'All 11 homes',
     ctaHeading: 'Ready to book?',
     ctaText: 'Check availability and prices for your dates.',
     homeTeaserTitle: 'Not sure which home to pick?',
-    homeTeaserText: 'Compare all 10 homes by neighborhood or trip type in one place.',
+    homeTeaserText: 'Compare all 11 homes by neighborhood or trip type in one place.',
     homeTeaserCta: 'Browse all vacation rentals →',
   },
   es: {
     seoTitle: 'Casas Vacacionales en Puerto Viejo, Costa Rica | Kalawala',
-    seoDescription: '10 casas vacacionales totalmente equipadas en Puerto Viejo de Talamanca, Costa Rica. Camina a la playa desde nuestras casas del centro o relájate cerca de Punta Uva. Compara por zona o tipo de viaje.',
+    seoDescription: '11 casas vacacionales totalmente equipadas en Puerto Viejo de Talamanca, Costa Rica. Camina a la playa desde nuestras casas del centro o relájate cerca de Punta Uva. Compara por zona o tipo de viaje.',
     heading: 'Casas Vacacionales en Puerto Viejo, Costa Rica',
     introParagraphs: [
-      'En Kalawala administramos 10 casas vacacionales totalmente equipadas en el Caribe Sur de Costa Rica, repartidas en dos zonas: cinco casas en el centro de Puerto Viejo de Talamanca y cinco cerca de Punta Uva, en Playa Chiquita.',
+      'En Kalawala administramos 11 casas vacacionales totalmente equipadas en el Caribe Sur de Costa Rica, repartidas en dos zonas: cinco casas en el centro de Puerto Viejo de Talamanca y seis cerca de Punta Uva, en Playa Chiquita.',
       'Cada casa incluye WiFi rápido, cocina completa y atención directa nuestra antes y durante tu estadía, sin una app de administración impersonal de por medio.',
     ],
     neighborhoodHeading: 'Explora por zona',
@@ -151,19 +151,19 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
       { routeKey: 'blogCouplesHouses', title: 'Casas para Parejas', description: 'Villas privadas con piscina y casas acogedoras pensadas para dos.' },
       { routeKey: 'blogPetFriendlyHouses', title: 'Casas Pet Friendly', description: 'Trae a tu perro: estas 4 casas reciben mascotas sin cargo extra.' },
     ],
-    allHomesHeading: 'Las 10 casas',
+    allHomesHeading: 'Las 11 casas',
     ctaHeading: '¿Listo para reservar?',
     ctaText: 'Consulta disponibilidad y precios para tus fechas.',
     homeTeaserTitle: '¿No sabes cuál casa elegir?',
-    homeTeaserText: 'Compara las 10 casas por zona o tipo de viaje en un solo lugar.',
+    homeTeaserText: 'Compara las 11 casas por zona o tipo de viaje en un solo lugar.',
     homeTeaserCta: 'Ver todas las casas vacacionales →',
   },
   de: {
     seoTitle: 'Ferienhäuser in Puerto Viejo, Costa Rica | Kalawala',
-    seoDescription: '10 voll ausgestattete Ferienhäuser in Puerto Viejo de Talamanca, Costa Rica. Vom Zentrum zu Fuß zum Strand oder entspannt nahe Punta Uva. Vergleiche nach Lage oder Reisetyp.',
+    seoDescription: '11 voll ausgestattete Ferienhäuser in Puerto Viejo de Talamanca, Costa Rica. Vom Zentrum zu Fuß zum Strand oder entspannt nahe Punta Uva. Vergleiche nach Lage oder Reisetyp.',
     heading: 'Ferienhäuser in Puerto Viejo, Costa Rica',
     introParagraphs: [
-      'Kalawala vermietet 10 voll ausgestattete Ferienhäuser an der karibischen Südküste Costa Ricas, verteilt auf zwei Standorte: fünf Häuser im Zentrum von Puerto Viejo de Talamanca und fünf nahe Punta Uva in Playa Chiquita.',
+      'Kalawala vermietet 11 voll ausgestattete Ferienhäuser an der karibischen Südküste Costa Ricas, verteilt auf zwei Standorte: fünf Häuser im Zentrum von Puerto Viejo de Talamanca und sechs nahe Punta Uva in Playa Chiquita.',
       'Jedes Haus verfügt über schnelles WLAN, eine komplette Küche und direkten Support von uns vor und während deines Aufenthalts, ohne anonyme Verwaltungs-App dazwischen.',
     ],
     neighborhoodHeading: 'Nach Lage durchsuchen',
@@ -179,19 +179,19 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
       { routeKey: 'blogCouplesHouses', title: 'Rückzugsorte für Paare', description: 'Private Villen mit Pool und gemütliche Häuser für zwei.' },
       { routeKey: 'blogPetFriendlyHouses', title: 'Haustierfreundliche Häuser', description: 'Bring deinen Hund mit: diese 4 Häuser heißen Haustiere ohne Extragebühr willkommen.' },
     ],
-    allHomesHeading: 'Alle 10 Häuser',
+    allHomesHeading: 'Alle 11 Häuser',
     ctaHeading: 'Bereit zu buchen?',
     ctaText: 'Prüfe Verfügbarkeit und Preise für deine Daten.',
     homeTeaserTitle: 'Nicht sicher, welches Haus passt?',
-    homeTeaserText: 'Vergleiche alle 10 Häuser nach Lage oder Reisetyp an einem Ort.',
+    homeTeaserText: 'Vergleiche alle 11 Häuser nach Lage oder Reisetyp an einem Ort.',
     homeTeaserCta: 'Alle Ferienhäuser ansehen →',
   },
   fr: {
     seoTitle: 'Locations de Vacances à Puerto Viejo, Costa Rica | Kalawala',
-    seoDescription: '10 maisons de vacances entièrement équipées à Puerto Viejo de Talamanca, Costa Rica. À pied de la plage depuis nos maisons du centre, ou au calme près de Punta Uva. Comparez par quartier ou type de séjour.',
+    seoDescription: '11 maisons de vacances entièrement équipées à Puerto Viejo de Talamanca, Costa Rica. À pied de la plage depuis nos maisons du centre, ou au calme près de Punta Uva. Comparez par quartier ou type de séjour.',
     heading: 'Locations de Vacances à Puerto Viejo, Costa Rica',
     introParagraphs: [
-      'Kalawala gère 10 maisons de vacances entièrement équipées sur la côte Caraïbe Sud du Costa Rica, réparties en deux zones : cinq maisons dans le centre de Puerto Viejo de Talamanca, et cinq près de Punta Uva, à Playa Chiquita.',
+      'Kalawala gère 11 maisons de vacances entièrement équipées sur la côte Caraïbe Sud du Costa Rica, réparties en deux zones : cinq maisons dans le centre de Puerto Viejo de Talamanca, et six près de Punta Uva, à Playa Chiquita.',
       'Chaque maison dispose d’un WiFi rapide, d’une cuisine complète et d’un accompagnement direct de notre part avant et pendant votre séjour, sans application de gestion anonyme entre nous.',
     ],
     neighborhoodHeading: 'Parcourir par quartier',
@@ -207,19 +207,19 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
       { routeKey: 'blogCouplesHouses', title: 'Refuges pour Couples', description: 'Villas privées avec piscine et maisons chaleureuses pensées pour deux.' },
       { routeKey: 'blogPetFriendlyHouses', title: 'Maisons Acceptant les Animaux', description: 'Amenez votre chien : ces 4 maisons accueillent les animaux sans supplément.' },
     ],
-    allHomesHeading: 'Les 10 maisons',
+    allHomesHeading: 'Les 11 maisons',
     ctaHeading: 'Prêt à réserver ?',
     ctaText: 'Vérifiez les disponibilités et les tarifs pour vos dates.',
     homeTeaserTitle: 'Vous ne savez pas quelle maison choisir ?',
-    homeTeaserText: 'Comparez les 10 maisons par quartier ou type de séjour en un seul endroit.',
+    homeTeaserText: 'Comparez les 11 maisons par quartier ou type de séjour en un seul endroit.',
     homeTeaserCta: 'Voir toutes les locations de vacances →',
   },
   it: {
     seoTitle: 'Case Vacanza a Puerto Viejo, Costa Rica | Kalawala',
-    seoDescription: '10 case vacanza completamente attrezzate a Puerto Viejo de Talamanca, Costa Rica. A piedi dalla spiaggia dalle case del centro, o relax vicino a Punta Uva. Confronta per zona o tipo di viaggio.',
+    seoDescription: '11 case vacanza completamente attrezzate a Puerto Viejo de Talamanca, Costa Rica. A piedi dalla spiaggia dalle case del centro, o relax vicino a Punta Uva. Confronta per zona o tipo di viaggio.',
     heading: 'Case Vacanza a Puerto Viejo, Costa Rica',
     introParagraphs: [
-      'Kalawala gestisce 10 case vacanza completamente attrezzate sulla costa caraibica meridionale del Costa Rica, divise in due zone: cinque case nel centro di Puerto Viejo de Talamanca e cinque vicino a Punta Uva, a Playa Chiquita.',
+      'Kalawala gestisce 11 case vacanza completamente attrezzate sulla costa caraibica meridionale del Costa Rica, divise in due zone: cinque case nel centro di Puerto Viejo de Talamanca e sei vicino a Punta Uva, a Playa Chiquita.',
       'Ogni casa ha WiFi veloce, cucina completa e assistenza diretta da parte nostra prima e durante il soggiorno, senza un’app di gestione anonima di mezzo.',
     ],
     neighborhoodHeading: 'Esplora per zona',
@@ -235,19 +235,19 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
       { routeKey: 'blogCouplesHouses', title: 'Rifugi per Coppie', description: 'Ville private con piscina e case accoglienti pensate per due.' },
       { routeKey: 'blogPetFriendlyHouses', title: 'Case Pet Friendly', description: 'Porta il tuo cane: queste 4 case accolgono gli animali senza costo extra.' },
     ],
-    allHomesHeading: 'Tutte le 10 case',
+    allHomesHeading: 'Tutte le 11 case',
     ctaHeading: 'Pronto a prenotare?',
     ctaText: 'Controlla disponibilità e prezzi per le tue date.',
     homeTeaserTitle: 'Non sai quale casa scegliere?',
-    homeTeaserText: 'Confronta tutte le 10 case per zona o tipo di viaggio in un unico posto.',
+    homeTeaserText: 'Confronta tutte le 11 case per zona o tipo di viaggio in un unico posto.',
     homeTeaserCta: 'Vedi tutte le case vacanza →',
   },
   pt: {
     seoTitle: 'Casas de Férias em Puerto Viejo, Costa Rica | Kalawala',
-    seoDescription: '10 casas de férias totalmente equipadas em Puerto Viejo de Talamanca, Costa Rica. A pé até a praia a partir das casas do centro, ou tranquilidade perto de Punta Uva. Compare por bairro ou tipo de viagem.',
+    seoDescription: '11 casas de férias totalmente equipadas em Puerto Viejo de Talamanca, Costa Rica. A pé até a praia a partir das casas do centro, ou tranquilidade perto de Punta Uva. Compare por bairro ou tipo de viagem.',
     heading: 'Casas de Férias em Puerto Viejo, Costa Rica',
     introParagraphs: [
-      'A Kalawala administra 10 casas de férias totalmente equipadas no Caribe Sul da Costa Rica, divididas em duas áreas: cinco casas no centro de Puerto Viejo de Talamanca e cinco perto de Punta Uva, em Playa Chiquita.',
+      'A Kalawala administra 11 casas de férias totalmente equipadas no Caribe Sul da Costa Rica, divididas em duas áreas: cinco casas no centro de Puerto Viejo de Talamanca e seis perto de Punta Uva, em Playa Chiquita.',
       'Cada casa tem WiFi rápido, cozinha completa e suporte direto nosso antes e durante a sua estadia, sem um aplicativo de gestão impessoal no meio do caminho.',
     ],
     neighborhoodHeading: 'Explore por bairro',
@@ -263,11 +263,11 @@ const vacationRentalHub: Partial<Record<Locale, VacationRentalHubContent>> = {
       { routeKey: 'blogCouplesHouses', title: 'Refúgios para Casais', description: 'Vilas privativas com piscina e casas aconchegantes pensadas para dois.' },
       { routeKey: 'blogPetFriendlyHouses', title: 'Casas Pet Friendly', description: 'Traga o seu cão: estas 4 casas recebem animais sem taxa extra.' },
     ],
-    allHomesHeading: 'As 10 casas',
+    allHomesHeading: 'As 11 casas',
     ctaHeading: 'Pronto para reservar?',
     ctaText: 'Consulte disponibilidade e preços para as suas datas.',
     homeTeaserTitle: 'Não sabe qual casa escolher?',
-    homeTeaserText: 'Compare as 10 casas por bairro ou tipo de viagem num só lugar.',
+    homeTeaserText: 'Compare as 11 casas por bairro ou tipo de viagem num só lugar.',
     homeTeaserCta: 'Ver todas as casas de férias →',
   },
 };
@@ -359,79 +359,79 @@ const housesCentro: Partial<Record<Locale, PropertyCategoryContent>> = {
 
 const housesPuntaUva: Partial<Record<Locale, PropertyCategoryContent>> = {
   en: {
-    seoTitle: '5 Vacation Homes Near Punta Uva, Puerto Viejo',
-    seoDescription: '5 fully equipped vacation homes in Playa Chiquita, a 2-minute drive from Punta Uva beach and walking distance to Playa Chiquita. Villas with pool and cozy retreats for couples and families.',
+    seoTitle: '6 Vacation Homes Near Punta Uva, Puerto Viejo',
+    seoDescription: '6 fully equipped vacation homes in Playa Chiquita, a 2-minute drive from Punta Uva beach and walking distance to Playa Chiquita. Villas with pool and cozy retreats for couples and families.',
     heading: 'Vacation Homes Near Punta Uva',
     introParagraphs: [
-      "These 5 homes are in Playa Chiquita, a short 2-minute drive from Punta Uva (one of the South Caribbean's calmest, most swimmable beaches) and an easy walk to Playa Chiquita's own beach.",
+      "These 6 homes are in Playa Chiquita, a short 2-minute drive from Punta Uva (one of the South Caribbean's calmest, most swimmable beaches) and an easy walk to Playa Chiquita's own beach.",
       'The area is quieter than downtown Puerto Viejo: jungle sounds and a slower pace, with a rental car or bike recommended to get around.',
     ],
-    gridHeading: 'Our 5 homes near Punta Uva',
+    gridHeading: 'Our 6 homes near Punta Uva',
     backToHubLabel: 'See all vacation homes in Puerto Viejo →',
     ctaHeading: 'Ready to book?',
     ctaText: 'Check availability and prices for your dates.',
   },
   es: {
-    seoTitle: '5 Casas Vacacionales cerca de Punta Uva, Puerto Viejo',
-    seoDescription: '5 casas vacacionales totalmente equipadas en Playa Chiquita, a 2 minutos en carro de la playa de Punta Uva y a poca distancia caminando de Playa Chiquita. Villas con piscina y refugios acogedores.',
+    seoTitle: '6 Casas Vacacionales cerca de Punta Uva, Puerto Viejo',
+    seoDescription: '6 casas vacacionales totalmente equipadas en Playa Chiquita, a 2 minutos en carro de la playa de Punta Uva y a poca distancia caminando de Playa Chiquita. Villas con piscina y refugios acogedores.',
     heading: 'Casas Vacacionales cerca de Punta Uva',
     introParagraphs: [
-      'Estas 5 casas están en Playa Chiquita, a solo 2 minutos en carro de Punta Uva (una de las playas más tranquilas y aptas para nadar del Caribe Sur) y a poca distancia caminando de la propia playa de Playa Chiquita.',
+      'Estas 6 casas están en Playa Chiquita, a solo 2 minutos en carro de Punta Uva (una de las playas más tranquilas y aptas para nadar del Caribe Sur) y a poca distancia caminando de la propia playa de Playa Chiquita.',
       'La zona es más tranquila que el centro de Puerto Viejo: sonidos de selva y un ritmo más lento, así que recomendamos carro o bicicleta para moverte.',
     ],
-    gridHeading: 'Nuestras 5 casas cerca de Punta Uva',
+    gridHeading: 'Nuestras 6 casas cerca de Punta Uva',
     backToHubLabel: 'Ver todas las casas vacacionales en Puerto Viejo →',
     ctaHeading: '¿Listo para reservar?',
     ctaText: 'Consulta disponibilidad y precios para tus fechas.',
   },
   de: {
-    seoTitle: '5 Ferienhäuser nahe Punta Uva, Puerto Viejo',
-    seoDescription: '5 voll ausgestattete Ferienhäuser in Playa Chiquita, 2 Autominuten vom Strand Punta Uva und fußläufig zu Playa Chiquita. Villen mit Pool und gemütliche Rückzugsorte für Paare und Familien.',
+    seoTitle: '6 Ferienhäuser nahe Punta Uva, Puerto Viejo',
+    seoDescription: '6 voll ausgestattete Ferienhäuser in Playa Chiquita, 2 Autominuten vom Strand Punta Uva und fußläufig zu Playa Chiquita. Villen mit Pool und gemütliche Rückzugsorte für Paare und Familien.',
     heading: 'Ferienhäuser nahe Punta Uva',
     introParagraphs: [
-      'Diese 5 Häuser liegen in Playa Chiquita, nur 2 Autominuten von Punta Uva entfernt (einem der ruhigsten, am besten zum Schwimmen geeigneten Strände der Südkaribik) und einen kurzen Spaziergang vom Strand von Playa Chiquita selbst.',
+      'Diese 6 Häuser liegen in Playa Chiquita, nur 2 Autominuten von Punta Uva entfernt (einem der ruhigsten, am besten zum Schwimmen geeigneten Strände der Südkaribik) und einen kurzen Spaziergang vom Strand von Playa Chiquita selbst.',
       'Die Gegend ist ruhiger als das Zentrum von Puerto Viejo: Dschungelgeräusche und ein langsameres Tempo, ein Mietwagen oder Fahrrad wird zur Fortbewegung empfohlen.',
     ],
-    gridHeading: 'Unsere 5 Häuser nahe Punta Uva',
+    gridHeading: 'Unsere 6 Häuser nahe Punta Uva',
     backToHubLabel: 'Alle Ferienhäuser in Puerto Viejo ansehen →',
     ctaHeading: 'Bereit zu buchen?',
     ctaText: 'Prüfe Verfügbarkeit und Preise für deine Daten.',
   },
   fr: {
-    seoTitle: '5 Maisons de Vacances près de Punta Uva, Puerto Viejo',
-    seoDescription: '5 maisons de vacances entièrement équipées à Playa Chiquita, à 2 minutes en voiture de la plage de Punta Uva et à distance de marche de Playa Chiquita. Villas avec piscine et refuges chaleureux.',
+    seoTitle: '6 Maisons de Vacances près de Punta Uva, Puerto Viejo',
+    seoDescription: '6 maisons de vacances entièrement équipées à Playa Chiquita, à 2 minutes en voiture de la plage de Punta Uva et à distance de marche de Playa Chiquita. Villas avec piscine et refuges chaleureux.',
     heading: 'Maisons de Vacances près de Punta Uva',
     introParagraphs: [
-      'Ces 5 maisons se trouvent à Playa Chiquita, à seulement 2 minutes en voiture de Punta Uva (l’une des plages les plus calmes et les plus propices à la baignade de la côte Caraïbe Sud) et à distance de marche de la plage de Playa Chiquita elle-même.',
+      'Ces 6 maisons se trouvent à Playa Chiquita, à seulement 2 minutes en voiture de Punta Uva (l’une des plages les plus calmes et les plus propices à la baignade de la côte Caraïbe Sud) et à distance de marche de la plage de Playa Chiquita elle-même.',
       'Le quartier est plus calme que le centre de Puerto Viejo : sons de la jungle et rythme plus lent, une voiture de location ou un vélo est recommandé pour se déplacer.',
     ],
-    gridHeading: 'Nos 5 maisons près de Punta Uva',
+    gridHeading: 'Nos 6 maisons près de Punta Uva',
     backToHubLabel: 'Voir toutes les maisons de vacances à Puerto Viejo →',
     ctaHeading: 'Prêt à réserver ?',
     ctaText: 'Vérifiez les disponibilités et les tarifs pour vos dates.',
   },
   it: {
-    seoTitle: '5 Case Vacanza vicino a Punta Uva, Puerto Viejo',
-    seoDescription: '5 case vacanza completamente attrezzate a Playa Chiquita, a 2 minuti in auto dalla spiaggia di Punta Uva e a pochi passi da Playa Chiquita. Ville con piscina e rifugi accoglienti.',
+    seoTitle: '6 Case Vacanza vicino a Punta Uva, Puerto Viejo',
+    seoDescription: '6 case vacanza completamente attrezzate a Playa Chiquita, a 2 minuti in auto dalla spiaggia di Punta Uva e a pochi passi da Playa Chiquita. Ville con piscina e rifugi accoglienti.',
     heading: 'Case Vacanza vicino a Punta Uva',
     introParagraphs: [
-      'Queste 5 case si trovano a Playa Chiquita, a soli 2 minuti in auto da Punta Uva (una delle spiagge più tranquille e balneabili del Caribe Sud) e a pochi passi dalla spiaggia di Playa Chiquita stessa.',
+      'Queste 6 case si trovano a Playa Chiquita, a soli 2 minuti in auto da Punta Uva (una delle spiagge più tranquille e balneabili del Caribe Sud) e a pochi passi dalla spiaggia di Playa Chiquita stessa.',
       'La zona è più tranquilla del centro di Puerto Viejo: suoni della giungla e un ritmo più lento, consigliata un’auto a noleggio o una bici per muoversi.',
     ],
-    gridHeading: 'Le nostre 5 case vicino a Punta Uva',
+    gridHeading: 'Le nostre 6 case vicino a Punta Uva',
     backToHubLabel: 'Vedi tutte le case vacanza a Puerto Viejo →',
     ctaHeading: 'Pronto a prenotare?',
     ctaText: 'Controlla disponibilità e prezzi per le tue date.',
   },
   pt: {
-    seoTitle: '5 Casas de Férias perto de Punta Uva, Puerto Viejo',
-    seoDescription: '5 casas de férias totalmente equipadas em Playa Chiquita, a 2 minutos de carro da praia de Punta Uva e a poucos passos de Playa Chiquita. Vilas com piscina e refúgios aconchegantes.',
+    seoTitle: '6 Casas de Férias perto de Punta Uva, Puerto Viejo',
+    seoDescription: '6 casas de férias totalmente equipadas em Playa Chiquita, a 2 minutos de carro da praia de Punta Uva e a poucos passos de Playa Chiquita. Vilas com piscina e refúgios aconchegantes.',
     heading: 'Casas de Férias perto de Punta Uva',
     introParagraphs: [
-      'Estas 5 casas ficam em Playa Chiquita, a apenas 2 minutos de carro de Punta Uva (uma das praias mais tranquilas e próprias para nadar do Caribe Sul) e a poucos passos da própria praia de Playa Chiquita.',
+      'Estas 6 casas ficam em Playa Chiquita, a apenas 2 minutos de carro de Punta Uva (uma das praias mais tranquilas e próprias para nadar do Caribe Sul) e a poucos passos da própria praia de Playa Chiquita.',
       'A área é mais tranquila que o centro de Puerto Viejo: sons da selva e um ritmo mais lento, recomenda-se um carro alugado ou bicicleta para se locomover.',
     ],
-    gridHeading: 'As nossas 5 casas perto de Punta Uva',
+    gridHeading: 'As nossas 6 casas perto de Punta Uva',
     backToHubLabel: 'Ver todas as casas de férias em Puerto Viejo →',
     ctaHeading: 'Pronto para reservar?',
     ctaText: 'Consulte disponibilidade e preços para as suas datas.',
@@ -522,11 +522,11 @@ const familyHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
 const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   en: {
     seoTitle: 'Romantic Vacation Rentals for Couples in Puerto Viejo',
-    seoDescription: '4 vacation rentals in Puerto Viejo, Costa Rica built for two: private villas with a pool near Punta Uva, plus cozy retreats in the same area.',
+    seoDescription: '5 vacation rentals in Puerto Viejo, Costa Rica built for two: private villas with a pool near Punta Uva, plus cozy retreats in the same area.',
     heading: 'Couples Retreats in Puerto Viejo',
     introParagraphs: [
-      'Four of our ten homes are sized and set up for two: Villa Mar and Villa Coral are private villas with their own pool near Punta Uva, and Casa Areka and Casa Plumeria are cozy retreats in the same area.',
-      "Pick a villa if you want a pool of your own, or one of the two cozy retreats if you'd rather keep things simple.",
+      'Five of our eleven homes are sized and set up for two: Villa Mar and Villa Coral are private villas with their own pool near Punta Uva, and Casa Areka, Casa Plumeria and Casa Lirio are cozy retreats in the same area.',
+      "Pick a villa if you want a pool of your own, or one of the three cozy retreats if you'd rather keep things simple.",
     ],
     gridHeading: 'Homes built for two',
     backToHubLabel: 'See all vacation homes in Puerto Viejo →',
@@ -535,11 +535,11 @@ const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   es: {
     seoTitle: 'Casas Vacacionales Románticas para Parejas en Puerto Viejo',
-    seoDescription: '4 casas vacacionales en Puerto Viejo, Costa Rica pensadas para dos: villas privadas con piscina cerca de Punta Uva y refugios acogedores en la misma zona.',
+    seoDescription: '5 casas vacacionales en Puerto Viejo, Costa Rica pensadas para dos: villas privadas con piscina cerca de Punta Uva y refugios acogedores en la misma zona.',
     heading: 'Casas para Parejas en Puerto Viejo',
     introParagraphs: [
-      'Cuatro de nuestras diez casas están pensadas para dos personas: Villa Mar y Villa Coral son villas privadas con piscina propia cerca de Punta Uva, y Casa Areka y Casa Plumeria son refugios acogedores en la misma zona.',
-      'Elige una villa si quieres piscina propia, o uno de los dos refugios acogedores si prefieres algo más sencillo.',
+      'Cinco de nuestras once casas están pensadas para dos personas: Villa Mar y Villa Coral son villas privadas con piscina propia cerca de Punta Uva, y Casa Areka, Casa Plumeria y Casa Lirio son refugios acogedores en la misma zona.',
+      'Elige una villa si quieres piscina propia, o uno de los tres refugios acogedores si prefieres algo más sencillo.',
     ],
     gridHeading: 'Casas pensadas para dos',
     backToHubLabel: 'Ver todas las casas vacacionales en Puerto Viejo →',
@@ -548,11 +548,11 @@ const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   de: {
     seoTitle: 'Romantische Ferienunterkünfte für Paare in Puerto Viejo',
-    seoDescription: '4 Ferienunterkünfte in Puerto Viejo, Costa Rica für zwei: private Villen mit Pool nahe Punta Uva sowie gemütliche Rückzugsorte in derselben Gegend.',
+    seoDescription: '5 Ferienunterkünfte in Puerto Viejo, Costa Rica für zwei: private Villen mit Pool nahe Punta Uva sowie gemütliche Rückzugsorte in derselben Gegend.',
     heading: 'Rückzugsorte für Paare in Puerto Viejo',
     introParagraphs: [
-      'Vier unserer zehn Häuser sind für zwei Personen ausgelegt: Villa Mar und Villa Coral sind private Villen mit eigenem Pool nahe Punta Uva, und Casa Areka und Casa Plumeria sind gemütliche Rückzugsorte in derselben Gegend.',
-      'Wähle eine Villa, wenn du einen eigenen Pool möchtest, oder einen der beiden gemütlichen Rückzugsorte, wenn du es lieber einfach magst.',
+      'Fünf unserer elf Häuser sind für zwei Personen ausgelegt: Villa Mar und Villa Coral sind private Villen mit eigenem Pool nahe Punta Uva, und Casa Areka, Casa Plumeria und Casa Lirio sind gemütliche Rückzugsorte in derselben Gegend.',
+      'Wähle eine Villa, wenn du einen eigenen Pool möchtest, oder einen der drei gemütlichen Rückzugsorte, wenn du es lieber einfach magst.',
     ],
     gridHeading: 'Häuser für zwei',
     backToHubLabel: 'Alle Ferienhäuser in Puerto Viejo ansehen →',
@@ -561,11 +561,11 @@ const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   fr: {
     seoTitle: 'Locations de Vacances Romantiques pour Couples à Puerto Viejo',
-    seoDescription: '4 locations de vacances à Puerto Viejo, Costa Rica conçues pour deux : villas privées avec piscine près de Punta Uva et refuges chaleureux dans le même secteur.',
+    seoDescription: '5 locations de vacances à Puerto Viejo, Costa Rica conçues pour deux : villas privées avec piscine près de Punta Uva et refuges chaleureux dans le même secteur.',
     heading: 'Refuges pour Couples à Puerto Viejo',
     introParagraphs: [
-      'Quatre de nos dix maisons sont conçues pour deux personnes : Villa Mar et Villa Coral sont des villas privées avec piscine propre près de Punta Uva, et Casa Areka et Casa Plumeria sont des refuges chaleureux dans le même secteur.',
-      'Choisissez une villa si vous voulez une piscine privée, ou l’un des deux refuges chaleureux pour rester simple.',
+      'Cinq de nos onze maisons sont conçues pour deux personnes : Villa Mar et Villa Coral sont des villas privées avec piscine propre près de Punta Uva, et Casa Areka, Casa Plumeria et Casa Lirio sont des refuges chaleureux dans le même secteur.',
+      'Choisissez une villa si vous voulez une piscine privée, ou l’un des trois refuges chaleureux pour rester simple.',
     ],
     gridHeading: 'Des maisons pensées pour deux',
     backToHubLabel: 'Voir toutes les maisons de vacances à Puerto Viejo →',
@@ -574,11 +574,11 @@ const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   it: {
     seoTitle: 'Case Vacanza Romantiche per Coppie a Puerto Viejo',
-    seoDescription: '4 case vacanza a Puerto Viejo, Costa Rica pensate per due: ville private con piscina vicino a Punta Uva e rifugi accoglienti nella stessa zona.',
+    seoDescription: '5 case vacanza a Puerto Viejo, Costa Rica pensate per due: ville private con piscina vicino a Punta Uva e rifugi accoglienti nella stessa zona.',
     heading: 'Rifugi per Coppie a Puerto Viejo',
     introParagraphs: [
-      'Quattro delle nostre dieci case sono pensate per due persone: Villa Mar e Villa Coral sono ville private con piscina propria vicino a Punta Uva, e Casa Areka e Casa Plumeria sono rifugi accoglienti nella stessa zona.',
-      'Scegli una villa se desideri una piscina privata, o uno dei due rifugi accoglienti se preferisci qualcosa di più semplice.',
+      'Cinque delle nostre undici case sono pensate per due persone: Villa Mar e Villa Coral sono ville private con piscina propria vicino a Punta Uva, e Casa Areka, Casa Plumeria e Casa Lirio sono rifugi accoglienti nella stessa zona.',
+      'Scegli una villa se desideri una piscina privata, o uno dei tre rifugi accoglienti se preferisci qualcosa di più semplice.',
     ],
     gridHeading: 'Case pensate per due',
     backToHubLabel: 'Vedi tutte le case vacanza a Puerto Viejo →',
@@ -587,11 +587,11 @@ const couplesHouses: Partial<Record<Locale, PropertyCategoryContent>> = {
   },
   pt: {
     seoTitle: 'Casas de Férias Românticas para Casais em Puerto Viejo',
-    seoDescription: '4 casas de férias em Puerto Viejo, Costa Rica pensadas para dois: vilas privativas com piscina perto de Punta Uva e refúgios aconchegantes na mesma área.',
+    seoDescription: '5 casas de férias em Puerto Viejo, Costa Rica pensadas para dois: vilas privativas com piscina perto de Punta Uva e refúgios aconchegantes na mesma área.',
     heading: 'Refúgios para Casais em Puerto Viejo',
     introParagraphs: [
-      'Quatro das nossas dez casas são pensadas para duas pessoas: Villa Mar e Villa Coral são vilas privativas com piscina própria perto de Punta Uva, e Casa Areka e Casa Plumeria são refúgios aconchegantes na mesma área.',
-      'Escolha uma vila se quer piscina própria, ou um dos dois refúgios aconchegantes se prefere algo mais simples.',
+      'Cinco das nossas onze casas são pensadas para duas pessoas: Villa Mar e Villa Coral são vilas privativas com piscina própria perto de Punta Uva, e Casa Areka, Casa Plumeria e Casa Lirio são refúgios aconchegantes na mesma área.',
+      'Escolha uma vila se quer piscina própria, ou um dos três refúgios aconchegantes se prefere algo mais simples.',
     ],
     gridHeading: 'Casas pensadas para dois',
     backToHubLabel: 'Ver todas as casas de férias em Puerto Viejo →',

@@ -55,7 +55,7 @@ const XELION_BANK: BankAccount = {
   dolaresIban: "CR71010200009629385281",
 };
 
-/** Properties managed under AO DIMME (VillaMar, VillaCoral, Areka, Plumeria, Giulia, Delfin). */
+/** Properties managed under AO DIMME (VillaMar, VillaCoral, Areka, Plumeria, Giulia, Lirio, Delfin). */
 const DIMME_BANK: BankAccount = {
   accountHolder: "AO DIMME",
   colonesIban: "CR84010200009660483247",

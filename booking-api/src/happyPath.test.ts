@@ -443,3 +443,87 @@ test("tracking identifiers captured at search survive through to the hold", asyn
     fbc: "fb.1.1700000000000.abc123",
   });
 });
+
+/**
+ * Casa Lirio (Smoobu apartment 3591242) end to end, dry run: every Smoobu and
+ * PayPal call is mocked, so nothing is booked anywhere. Proves the catalog
+ * wiring — search returns Lirio for 2 guests, and the hold blocks dates on
+ * apartment 3591242 specifically, not on some other house.
+ */
+test("Lirio dry run: search → hold → paypal order → capture targets Smoobu apartment 3591242", async () => {
+  const LIRIO_APARTMENT_ID = 3591242;
+  const smoobuCalls: { method: string; pathname: string; body: any }[] = [];
+  global.fetch = jest.fn(async (url: string | URL, init?: RequestInit) => {
+    const { hostname, pathname } = new URL(url.toString());
+    if (hostname === "login.smoobu.com") {
+      smoobuCalls.push({
+        method: (init?.method ?? "GET").toUpperCase(),
+        pathname,
+        body: typeof init?.body === "string" ? JSON.parse(init.body) : undefined,
+      });
+      if (pathname === "/booking/checkApartmentAvailability") {
+        return jsonResp({
+          availableApartments: [LIRIO_APARTMENT_ID],
+          prices: { [String(LIRIO_APARTMENT_ID)]: { price: 316, currency: "USD" } },
+          errorMessages: {},
+        });
+      }
+      if (pathname === "/api/reservations") {
+        return jsonResp({ id: 9900042 });
+      }
+    }
+    if (hostname === "api-m.sandbox.paypal.com") {
+      if (pathname === "/v1/oauth2/token") return jsonResp(PAYPAL_TOKEN);
+      if (pathname === "/v2/checkout/orders") return jsonResp(PAYPAL_ORDER);
+      if (pathname.endsWith("/capture")) return jsonResp(PAYPAL_CAPTURE);
+    }
+    return jsonResp({ detail: "unexpected call to " + pathname }, { status: 500 });
+  }) as typeof fetch;
+  const handler = createBookingApiHandler(config);
+
+  // Search: Smoobu is asked about Lirio's apartment, and Lirio comes back.
+  const searchResp = await handler(searchEvent());
+  expect(searchResp.statusCode).toBe(200);
+  const { bookingSessionId, quoteId, properties } = JSON.parse(searchResp.body);
+  const availabilityCall = smoobuCalls.find((c) => c.pathname === "/booking/checkApartmentAvailability");
+  expect(availabilityCall?.body.apartments).toContain(LIRIO_APARTMENT_ID);
+  expect(properties).toHaveLength(1);
+  expect(properties[0]).toMatchObject({
+    propertyId: "d82e8c11-7b76-4061-bddf-df6256ac6b07",
+    slug: "Lirio",
+    name: "Casa Lirio",
+  });
+
+  // Hold: the Smoobu blocking reservation is created on apartment 3591242.
+  const holdResp = await handler(
+    holdEvent({
+      quoteId,
+      bookingSessionId,
+      propertyId: properties[0].propertyId,
+      paymentMethod: "paypal",
+      guest: { firstName: "Dry", lastName: "Run", email: "dryrun@kalawala.test", phone: "+50688000002", country: "CR" },
+      portalPassword: "hunter2-horse-battery",
+      termsAccepted: true,
+    })
+  );
+  expect(holdResp.statusCode).toBe(200);
+  expect(JSON.parse(holdResp.body)).toMatchObject({ booking: { status: "hold_active" }, nextAction: "create_paypal_order" });
+  const reservationCalls = smoobuCalls.filter((c) => c.method === "POST" && c.pathname === "/api/reservations");
+  expect(reservationCalls).toHaveLength(1);
+  expect(reservationCalls[0].body).toMatchObject({
+    apartmentId: LIRIO_APARTMENT_ID,
+    arrivalDate: "2099-08-01",
+    departureDate: "2099-08-05",
+  });
+
+  // PayPal order + capture (mocked) confirm the booking.
+  expect((await handler(orderEvent(bookingSessionId))).statusCode).toBe(200);
+  const captureResp = await handler(captureEvent(bookingSessionId));
+  expect(captureResp.statusCode).toBe(200);
+  expect(JSON.parse(captureResp.body)).toMatchObject({ booking: { bookingSessionId, status: "booking_confirmed" } });
+
+  // No Smoobu call anywhere in the flow touched a different apartment.
+  for (const call of smoobuCalls) {
+    if (call.body?.apartmentId !== undefined) expect(call.body.apartmentId).toBe(LIRIO_APARTMENT_ID);
+  }
+});

@@ -39,7 +39,7 @@ function main() {
   // Find all .md files (excluding ES versions and index.html.md to keep it focused)
   const mdFiles = [
     'Geco.md', 'Rana.md', 'Tucano.md', 'Pappagallo.md', 'Delfin.md',
-    'Areka.md', 'Giulia.md', 'Plumeria.md', 'VillaMar.md', 'VillaCoral.md',
+    'Areka.md', 'Giulia.md', 'Plumeria.md', 'Lirio.md', 'VillaMar.md', 'VillaCoral.md',
     'twodaysinpuertoviejo.md', 'gettingtogandoca.md', 'puertoviejobyplane.md',
     'travellingtopuertoviejo.md', 'TenHoursInPuerto.md', 'bushours.md',
     'cahuitaparkwhattodo.md', 'indigenousTravelPV.md', 'bestTimeToVisitPuerto.md',

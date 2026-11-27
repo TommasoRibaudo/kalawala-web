@@ -14,6 +14,7 @@
     { "key": "areka", "chunk": "route-areka", "slugs": { "en": "areka", "es": "areka" } },
     { "key": "giulia", "chunk": "route-giulia", "slugs": { "en": "giulia", "es": "giulia" } },
     { "key": "plumeria", "chunk": "route-plumeria", "slugs": { "en": "plumeria", "es": "plumeria" } },
+    { "key": "lirio", "chunk": "route-lirio", "slugs": { "en": "lirio", "es": "lirio" } },
     { "key": "villamar", "chunk": "route-villamar", "slugs": { "en": "villamar", "es": "villamar" } },
     { "key": "villacoral", "chunk": "route-villacoral", "slugs": { "en": "villacoral", "es": "villacoral" } },
     { "key": "blog", "chunk": "route-blog", "slugs": { "en": "blog", "es": "blog" } },

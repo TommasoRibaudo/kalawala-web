@@ -43,6 +43,10 @@ const LEGACY_IDS = {
   areka: 'Areka',
   giulia: 'Giulia',
   plumeria: 'Plumeria',
+  // Lirio postdates the frozen baseline above, but booking-api's emails link
+  // English listings as /{Slug} (propertyCatalog.ts listingUrlForLanguage),
+  // so /Lirio needs the same redirect every other house gets.
+  lirio: 'Lirio',
   villamar: 'VillaMar',
   villacoral: 'VillaCoral',
   blog: 'blog',

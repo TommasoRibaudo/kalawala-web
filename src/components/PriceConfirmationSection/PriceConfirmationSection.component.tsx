@@ -73,20 +73,25 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
   // it (see `localizePrice`), so this headline agrees with the calendar and the
   // checkout total to within the rate's rounding.
   const currency = current.data?.currency ?? next.data?.currency ?? 'USD';
+  //
+  // Until the live rate loads, the static `config.price` is the fallback. A
+  // property without one (rates managed only in Smoobu) shows no headline
+  // price at all rather than a made-up figure.
   const localized =
     liveLowestCents !== null
       ? localizePrice(liveLowestCents, currency, language, rates, { hideZeroCents: true })
-      : localizePrice(config.price.usd * 100, 'USD', language, rates, { hideZeroCents: true });
+      : config.price
+        ? localizePrice(config.price.usd * 100, 'USD', language, rates, { hideZeroCents: true })
+        : null;
   const withEstimateMark = (figure: { text: string; estimate: boolean }) =>
     figure.estimate ? `≈ ${figure.text}` : figure.text;
-  const priceLabel = withEstimateMark(localized.primary);
 
   const priceMessages = getMessages(locale).price;
   const tooltipText = priceMessages.tooltip;
 
-  const priceText = (
+  const priceText = localized && (
     <>
-      {priceMessages.fromPerNight(priceLabel)}{' '}
+      {priceMessages.fromPerNight(withEstimateMark(localized.primary))}{' '}
       <span className="average-indicator">
         <span className="info-icon">ⓘ</span>
         <span className="tooltip">{tooltipText}</span>
@@ -99,9 +104,11 @@ const PriceConfirmationSection: React.FC<PriceConfirmationSectionProps> = ({
 
   return (
     <div className="price-confirmation-section">
-      <div className="price-display">
-        {priceText}
-      </div>
+      {priceText && (
+        <div className="price-display">
+          {priceText}
+        </div>
+      )}
       <div className="confirmation-badge">
         <InstantConfirmationBadge locale={locale} />
       </div>

@@ -11,6 +11,22 @@ import { PropertyMarketingContent } from '../types';
 describe('Property Marketing Configuration', () => {
   // Get all property keys from the configuration
   const propertyKeys = Object.keys(PROPERTY_MARKETING_CONFIG);
+  // `price` is an optional static fallback. Lirio deliberately has none (its
+  // rates come only from Smoobu); every other property still carries one.
+  const UNPRICED_KEYS = ['Lirio'];
+  const pricedKeys = propertyKeys.filter((key) => !UNPRICED_KEYS.includes(key));
+
+  test.each(pricedKeys)('static fallback price is well-formed for %s', (propertyKey) => {
+    const price = PROPERTY_MARKETING_CONFIG[propertyKey].price;
+    expect(price).toEqual({ crc: expect.any(Number), usd: expect.any(Number) });
+    expect(price!.crc).toBeGreaterThan(0);
+    expect(price!.usd).toBeGreaterThan(0);
+  });
+
+  test.each(UNPRICED_KEYS)('%s has no static fallback price', (propertyKey) => {
+    expect(PROPERTY_MARKETING_CONFIG[propertyKey]).toBeDefined();
+    expect(PROPERTY_MARKETING_CONFIG[propertyKey].price).toBeUndefined();
+  });
   
   /**
    * Property 4: Property Content Configuration Mapping
@@ -39,14 +55,7 @@ describe('Property Marketing Configuration', () => {
     expect(config.descriptiveTitle.en.length).toBeGreaterThan(0);
     expect(config.descriptiveTitle.es!.length).toBeGreaterThan(0);
     
-    // Verify price structure
-    expect(config.price).toBeDefined();
-    expect(config.price.crc).toBeDefined();
-    expect(config.price.usd).toBeDefined();
-    expect(typeof config.price.crc).toBe('number');
-    expect(typeof config.price.usd).toBe('number');
-    expect(config.price.crc).toBeGreaterThan(0);
-    expect(config.price.usd).toBeGreaterThan(0);
+    // Price structure is checked separately (pricedKeys / UNPRICED_KEYS above).
     
     // Verify social statement structure
     expect(config.socialStatement).toBeDefined();
@@ -87,7 +96,7 @@ describe('Property Marketing Configuration', () => {
     const expectedProperties = [
       'Rana', 'Geco', 'Tucano', 'Pappagallo', 
       'VillaMar', 'VillaCoral', 'Areka', 'Plumeria', 
-      'Giulia', 'Delfin'
+      'Giulia', 'Delfin', 'Lirio'
     ];
     
     expectedProperties.forEach(propertyKey => {
@@ -107,10 +116,6 @@ describe('Property Marketing Configuration', () => {
           en: expect.any(String),
           es: expect.any(String)
         },
-        price: {
-          crc: expect.any(Number),
-          usd: expect.any(Number)
-        },
         socialStatement: {
           en: expect.any(String),
           es: expect.any(String)
@@ -124,17 +129,17 @@ describe('Property Marketing Configuration', () => {
   });
 
   test('Price values are reasonable and consistent', () => {
-    propertyKeys.forEach(propertyKey => {
-      const config = PROPERTY_MARKETING_CONFIG[propertyKey];
+    pricedKeys.forEach(propertyKey => {
+      const price = PROPERTY_MARKETING_CONFIG[propertyKey].price!;
       
       // Verify prices are within reasonable ranges
-      expect(config.price.crc).toBeGreaterThan(30000); // Minimum reasonable price in CRC
-      expect(config.price.crc).toBeLessThan(200000); // Maximum reasonable price in CRC
-      expect(config.price.usd).toBeGreaterThan(50); // Minimum reasonable price in USD
-      expect(config.price.usd).toBeLessThan(400); // Maximum reasonable price in USD
+      expect(price.crc).toBeGreaterThan(30000); // Minimum reasonable price in CRC
+      expect(price.crc).toBeLessThan(200000); // Maximum reasonable price in CRC
+      expect(price.usd).toBeGreaterThan(50); // Minimum reasonable price in USD
+      expect(price.usd).toBeLessThan(400); // Maximum reasonable price in USD
       
       // Verify USD/CRC ratio is approximately correct (around 500-600 CRC per USD)
-      const ratio = config.price.crc / config.price.usd;
+      const ratio = price.crc / price.usd;
       expect(ratio).toBeGreaterThan(400); // Minimum reasonable exchange rate
       expect(ratio).toBeLessThan(700); // Maximum reasonable exchange rate
     });

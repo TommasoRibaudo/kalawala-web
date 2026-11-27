@@ -56,7 +56,7 @@ import { PROPERTY_MARKETING_CONFIG, RECOMMENDATION_REASONS } from '../../../util
 const NON_ENGLISH_LOCALES = RELEASED_LOCALES.filter((locale) => locale !== 'en');
 
 const LISTING_KEYS: ListingKey[] = [
-  'Areka', 'Delfin', 'Geco', 'Giulia', 'Pappagallo',
+  'Areka', 'Delfin', 'Geco', 'Giulia', 'Lirio', 'Pappagallo',
   'Plumeria', 'Rana', 'Tucano', 'VillaCoral', 'VillaMar',
 ];
 

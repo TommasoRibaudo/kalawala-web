@@ -21,6 +21,7 @@ const SLUGS = [
   'Giulia',
   'Areka',
   'Plumeria',
+  'Lirio',
   'VillaCoral',
   'VillaMar',
 ];

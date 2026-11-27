@@ -42,6 +42,10 @@ export const NamSnippet: ListingType[] = [
         name: 'Plumeria',
         mainImage: "https://lh3.googleusercontent.com/d/1b2x2aVIjqlSws4KePOS_NVb4NItGsra1=w1000"
     },
+    {
+        name: 'Lirio',
+        mainImage: "https://lh3.googleusercontent.com/d/1a3HkaDeqSTwUOXsIBjwj84KrYqP6jPSL=w1000"
+    },
 ]
 export const VillaSnippet: ListingType[] = [
     {
@@ -798,6 +802,80 @@ export const ArekaImageDescriptionsES: IImageDescription[] = [
     }
 ];
 
+export const LirioImageDescriptions: IImageDescription[] = [
+    {
+        roomType: "Bedroom",
+        roomDescription: "Large bed and A/C for cool, quiet nights.",
+        imageLink: "https://lh3.googleusercontent.com/d/1a3HkaDeqSTwUOXsIBjwj84KrYqP6jPSL=w1000"
+    },
+    {
+        roomType: "Living Area",
+        roomDescription: "Sliding doors open onto the private patio and tropical garden.",
+        imageLink: "https://lh3.googleusercontent.com/d/1WMbue6nmM5OHO0mHhnrKSn2IAtU5UrDu=w1000"
+    },
+    {
+        roomType: "Kitchenette",
+        roomDescription: "Stovetop, microwave, fridge and coffee maker included.",
+        imageLink: "https://lh3.googleusercontent.com/d/1sf_ijj_uY5SM3OP1fhz7ugAav2eF7Mgk=w1000"
+    },
+    {
+        roomType: "Dining Area",
+        roomDescription: "",
+        imageLink: "https://lh3.googleusercontent.com/d/1YeWt3WIfOn0qgF_SlUo1Zx0LT9ZV9uDc=w1000"
+    },
+    {
+        roomType: "Workspace",
+        roomDescription: "A small desk if you need to get some work done.",
+        imageLink: "https://lh3.googleusercontent.com/d/12ftdBpj4b8wv9ucq1y7LzaqMRqw7Q0-5=w1000"
+    },
+    {
+        roomType: "Bathroom",
+        roomDescription: "We always provide towels and toiletries.",
+        imageLink: "https://lh3.googleusercontent.com/d/1WaBFny3dFW2J9UzWut4Iyz5CYZB2ParF=w1000"
+    },
+    {
+        roomType: "Bathroom",
+        roomDescription: "Spacious shower with hot water.",
+        imageLink: "https://lh3.googleusercontent.com/d/13wXLiz5MHFPfdTM-KDg7gOSZe-7wjVu8=w1000"
+    }
+];
+export const LirioImageDescriptionsES: IImageDescription[] = [
+    {
+        roomType: "Dormitorio",
+        roomDescription: "Cama grande y A/C para noches frescas y tranquilas.",
+        imageLink: "https://lh3.googleusercontent.com/d/1a3HkaDeqSTwUOXsIBjwj84KrYqP6jPSL=w1000"
+    },
+    {
+        roomType: "Sala de Estar",
+        roomDescription: "Las puertas corredizas abren al patio privado y al jardín tropical.",
+        imageLink: "https://lh3.googleusercontent.com/d/1WMbue6nmM5OHO0mHhnrKSn2IAtU5UrDu=w1000"
+    },
+    {
+        roomType: "Cocineta",
+        roomDescription: "Placa, microondas, refrigeradora y cafetera incluidos.",
+        imageLink: "https://lh3.googleusercontent.com/d/1sf_ijj_uY5SM3OP1fhz7ugAav2eF7Mgk=w1000"
+    },
+    {
+        roomType: "Comedor",
+        roomDescription: "",
+        imageLink: "https://lh3.googleusercontent.com/d/1YeWt3WIfOn0qgF_SlUo1Zx0LT9ZV9uDc=w1000"
+    },
+    {
+        roomType: "Rincón de Trabajo",
+        roomDescription: "Un pequeño escritorio por si necesitas trabajar.",
+        imageLink: "https://lh3.googleusercontent.com/d/12ftdBpj4b8wv9ucq1y7LzaqMRqw7Q0-5=w1000"
+    },
+    {
+        roomType: "Baño",
+        roomDescription: "Siempre proporcionamos toallas y artículos de aseo.",
+        imageLink: "https://lh3.googleusercontent.com/d/1WaBFny3dFW2J9UzWut4Iyz5CYZB2ParF=w1000"
+    },
+    {
+        roomType: "Baño",
+        roomDescription: "Ducha amplia con agua caliente.",
+        imageLink: "https://lh3.googleusercontent.com/d/13wXLiz5MHFPfdTM-KDg7gOSZe-7wjVu8=w1000"
+    }
+];
 export const PlumeriaImageDescriptions: IImageDescription[] = [
     {
         roomType: "Bedroom",
@@ -1848,6 +1926,39 @@ export const NamDataList: HouseDataType[] = [
         ],
     },
 
+    {
+        name: "Casa Lirio",
+        guestNumber: 2,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 11,
+        houseLangCode: "Lirio",
+        parking: false,
+        image: "https://lh3.googleusercontent.com/d/1a3HkaDeqSTwUOXsIBjwj84KrYqP6jPSL=w1000",
+        amenities: [
+            {
+                name: "Private Equipped Bathroom",
+                icon: "bath"
+            },
+            {
+                name: "Private Equipped Kitchenette",
+                icon: "kitchen"
+            },
+            {
+                name: "A/C",
+                icon: "ac"
+            },
+            {
+                name: "WiFi",
+                icon: "wifi"
+            },
+            {
+                name: "Private unfenced Parking",
+                icon: "parking"
+            }
+        ],
+    },
 ]
 
 export const NamDataListES: HouseDataType[] = [
@@ -1951,6 +2062,39 @@ export const NamDataListES: HouseDataType[] = [
         ],
     },
 
+    {
+        name: "Casa Lirio",
+        guestNumber: 2,
+        location: "Playa Chiquita, Puerto Viejo de Talamanca, Limón, Costa Rica",
+        description: "",
+        neighborhood: "",
+        houseCode: 11,
+        houseLangCode: "LirioES",
+        parking: false,
+        image: "https://lh3.googleusercontent.com/d/1a3HkaDeqSTwUOXsIBjwj84KrYqP6jPSL=w1000",
+        amenities: [
+            {
+                name: "Baño Privado Equipado",
+                icon: "bath"
+            },
+            {
+                name: "Cocineta Privada Equipada",
+                icon: "kitchen"
+            },
+            {
+                name: "A/C",
+                icon: "ac"
+            },
+            {
+                name: "WiFi",
+                icon: "wifi"
+            },
+            {
+                name: "Parqueo Privado Sin Cerca",
+                icon: "parking"
+            }
+        ],
+    },
 ]
 
 /**
@@ -1970,6 +2114,7 @@ export const PROPERTY_DISPLAY_NAMES: Record<string, string> = {
     Areka: 'Casa Areka',
     Plumeria: 'Casa Plumeria',
     Giulia: 'Casa Giulia',
+    Lirio: 'Casa Lirio',
     Delfin: 'Casa Delfines',
 };
 
@@ -1985,7 +2130,7 @@ export const PROPERTY_DISPLAY_NAMES: Record<string, string> = {
 //     and Pappagallo descriptions, which spell both out)
 //   Delfin — 2 bedrooms, 2 bathrooms ("2 bathrooms" in the description)
 //   Giulia — 2 bedrooms, 2 bathrooms ("2 private bathrooms" in the description)
-//   Areka / Plumeria / Villa Mar / Villa Coral — 1 bedroom, 1 bathroom
+//   Areka / Plumeria / Lirio / Villa Mar / Villa Coral — 1 bedroom, 1 bathroom
 export const PROPERTY_CAPACITY: Record<string, PropertyCapacity> = {
     Geco: { bedrooms: 2, bathrooms: 1, maxGuests: 5 },
     Rana: { bedrooms: 2, bathrooms: 1, maxGuests: 5 },
@@ -1995,6 +2140,7 @@ export const PROPERTY_CAPACITY: Record<string, PropertyCapacity> = {
     Giulia: { bedrooms: 2, bathrooms: 2, maxGuests: 4 },
     Areka: { bedrooms: 1, bathrooms: 1, maxGuests: 2 },
     Plumeria: { bedrooms: 1, bathrooms: 1, maxGuests: 2 },
+    Lirio: { bedrooms: 1, bathrooms: 1, maxGuests: 2 },
     VillaMar: { bedrooms: 1, bathrooms: 1, maxGuests: 2 },
     VillaCoral: { bedrooms: 1, bathrooms: 1, maxGuests: 2 },
 };
@@ -2819,6 +2965,100 @@ export const PROPERTY_MARKETING_CONFIG: Record<string, PropertyMarketingContent>
             ]
         }
     },
+    'Lirio': {
+        propertyKey: 'Lirio',
+        descriptiveTitle: {
+            en: 'Garden suite for two, minutes from Punta Uva',
+            es: 'Suite con jardín para dos, a minutos de Punta Uva',
+            de: 'Gartensuite für zwei, wenige Minuten von Punta Uva',
+            fr: 'Suite avec jardin pour deux, à quelques minutes de Punta Uva',
+            it: 'Suite con giardino per due, a pochi minuti da Punta Uva',
+            pt: 'Suíte com jardim para dois, a poucos minutos de Punta Uva',
+            he: 'סוויטה עם גינה לשניים, דקות ספורות מפונטה אובה',
+            hi: 'दो लोगों के लिए बगीचे वाला सुइट, Punta Uva से कुछ ही मिनट',
+            nl: 'Tuinsuite voor twee, op een paar minuten van Punta Uva'
+        },
+        // No static `price` on purpose: Lirio's rates are managed in Smoobu
+        // (PriceLabs), and PriceConfirmationSection shows the live lowest rate
+        // from the booking-api calendar. Without a fallback figure the
+        // headline price simply stays hidden until that live rate arrives.
+        socialStatement: {
+            en: 'Chosen for its quiet garden patio',
+            es: 'Elegida por su tranquilo patio con jardín',
+            de: 'Ausgewählt wegen seiner ruhigen Gartenterrasse',
+            fr: 'Choisi pour son patio paisible donnant sur le jardin',
+            it: 'Scelto per il suo tranquillo patio sul giardino',
+            pt: 'Escolhido pelo seu pátio tranquilo com jardim',
+            he: 'נבחרה בזכות הפטיו השקט מול הגינה',
+            hi: 'इसके शांत बगीचे वाले आँगन के कारण चुना गया',
+            nl: 'Gekozen vanwege de rustige tuinpatio'
+        },
+        featureHighlights: {
+            en: [
+                '🏖️ Minutes from Chiquita and Punta Uva beaches',
+                '💑 One-bedroom suite made for two',
+                '❄️ A/C and a large bed',
+                '🌿 Private patio with tropical garden',
+                '💻 WiFi and a small workspace'
+            ],
+            es: [
+                '🏖️ A minutos de las playas Chiquita y Punta Uva',
+                '💑 Suite de un dormitorio pensada para dos',
+                '❄️ A/C y cama grande',
+                '🌿 Patio privado con jardín tropical',
+                '💻 WiFi y rincón de trabajo'
+            ],
+            de: [
+                '🏖️ Wenige Minuten von den Stränden Chiquita und Punta Uva',
+                '💑 Suite mit einem Schlafzimmer für zwei',
+                '❄️ Klimaanlage und großes Bett',
+                '🌿 Private Terrasse mit tropischem Garten',
+                '💻 WLAN und kleiner Arbeitsplatz'
+            ],
+            fr: [
+                '🏖️ À quelques minutes des plages de Chiquita et Punta Uva',
+                '💑 Suite d’une chambre pensée pour deux',
+                '❄️ Climatisation et grand lit',
+                '🌿 Patio privé avec jardin tropical',
+                '💻 WiFi et petit espace de travail'
+            ],
+            it: [
+                '🏖️ A pochi minuti dalle spiagge di Chiquita e Punta Uva',
+                '💑 Suite con una camera pensata per due',
+                '❄️ Aria condizionata e letto grande',
+                '🌿 Patio privato con giardino tropicale',
+                '💻 WiFi e un piccolo angolo di lavoro'
+            ],
+            pt: [
+                '🏖️ A poucos minutos das praias de Chiquita e Punta Uva',
+                '💑 Suíte de um quarto pensada para dois',
+                '❄️ Ar condicionado e cama grande',
+                '🌿 Pátio privativo com jardim tropical',
+                '💻 Wi-Fi e um pequeno espaço de trabalho'
+            ],
+            he: [
+                '🏖️ דקות ספורות מחופי צ׳יקיטה ופונטה אובה',
+                '💑 סוויטה עם חדר שינה אחד שנועדה לשניים',
+                '❄️ מיזוג אוויר ומיטה גדולה',
+                '🌿 פטיו פרטי עם גינה טרופית',
+                '💻 WiFi ופינת עבודה קטנה'
+            ],
+            hi: [
+                '🏖️ Chiquita और Punta Uva समुद्र तटों से कुछ ही मिनट',
+                '💑 दो लोगों के लिए एक बेडरूम वाला सुइट',
+                '❄️ A/C और बड़ा बिस्तर',
+                '🌿 उष्णकटिबंधीय बगीचे के साथ निजी आँगन',
+                '💻 वाई-फाई और छोटा कार्यस्थल'
+            ],
+            nl: [
+                '🏖️ Op een paar minuten van de stranden Chiquita en Punta Uva',
+                '💑 Suite met één slaapkamer, gemaakt voor twee',
+                '❄️ Airco en een groot bed',
+                '🌿 Eigen patio met tropische tuin',
+                '💻 Wifi en een kleine werkplek'
+            ]
+        }
+    },
     'Delfin': {
         propertyKey: 'Delfin',
         descriptiveTitle: {
@@ -3099,6 +3339,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
   { key: 'thingsToDo', routeKey: 'blogThingsToDo' },
   { key: 'wildlife', routeKey: 'blogWildlife' },
   { key: 'food', routeKey: 'blogFood' },
+  { key: 'cahuitaLimon', routeKey: 'blogCahuitaLimon' },
 ];
 
 /**

@@ -52,11 +52,11 @@ import routesManifest from './routes.manifest.json';
 
 export type RouteKey =
   | 'home' | 'book' | 'bookReturn' | 'bookConfirmed' | 'portal' | 'portalDetail'
-  | 'geco' | 'rana' | 'tucano' | 'pappagallo' | 'delfin' | 'areka' | 'giulia' | 'plumeria' | 'villamar' | 'villacoral'
+  | 'geco' | 'rana' | 'tucano' | 'pappagallo' | 'delfin' | 'areka' | 'giulia' | 'plumeria' | 'lirio' | 'villamar' | 'villacoral'
   | 'blog' | 'blogTwodays' | 'blogGandoca' | 'blogSanjose' | 'blogByplane' | 'blogTenhours' | 'blogBushours' | 'blogCahuitapark' | 'blogIndigenous' | 'blogBesttime' | 'blogHiddengems' | 'blogWeather'
   | 'blogWeatherJan' | 'blogWeatherFeb' | 'blogWeatherMar' | 'blogWeatherApr' | 'blogWeatherMay' | 'blogWeatherJun' | 'blogWeatherJul' | 'blogWeatherAug'
   | 'blogWeatherSep' | 'blogWeatherOct' | 'blogWeatherNov' | 'blogWeatherDec' | 'blogSanjoseOptions'
-  | 'blogGandocaRefuge' | 'blogBeaches' | 'blogBocas' | 'blogThingsToDo' | 'blogWildlife' | 'blogFood'
+  | 'blogGandocaRefuge' | 'blogBeaches' | 'blogBocas' | 'blogThingsToDo' | 'blogWildlife' | 'blogFood' | 'blogCahuitaLimon'
   | 'blogVacationRentals' | 'blogHousesCentro' | 'blogHousesPuntaUva' | 'blogFamilyHouses' | 'blogCouplesHouses' | 'blogPetFriendlyHouses'
   | 'success' | 'privacy' | 'chatbotPrivacy';
 
@@ -99,6 +99,7 @@ export const LOADERS: Record<RouteKey, () => Promise<{ default: ComponentType<an
   areka: () => import(/* webpackChunkName: "route-areka" */ './pages/Listing/staticPages/ListingAreka.page'),
   giulia: () => import(/* webpackChunkName: "route-giulia" */ './pages/Listing/staticPages/ListingGiulia.page'),
   plumeria: () => import(/* webpackChunkName: "route-plumeria" */ './pages/Listing/staticPages/ListingPlumeria.page'),
+  lirio: () => import(/* webpackChunkName: "route-lirio" */ './pages/Listing/staticPages/ListingLirio.page'),
   villamar: () => import(/* webpackChunkName: "route-villamar" */ './pages/Listing/staticPages/ListingVillaMar.page'),
   villacoral: () => import(/* webpackChunkName: "route-villacoral" */ './pages/Listing/staticPages/ListingVillaCoral.page'),
   blog: () => import(/* webpackChunkName: "route-blog" */ './pages/Blog/BlogIndex.page'),
@@ -132,6 +133,7 @@ export const LOADERS: Record<RouteKey, () => Promise<{ default: ComponentType<an
   blogThingsToDo: () => import(/* webpackChunkName: "route-things-to-do-puerto-viejo" */ './pages/Blog/staticPages/ThingsToDoPuertoViejo'),
   blogWildlife: () => import(/* webpackChunkName: "route-wildlife-puerto-viejo" */ './pages/Blog/staticPages/WildlifeSpotting'),
   blogFood: () => import(/* webpackChunkName: "route-where-to-eat-puerto-viejo" */ './pages/Blog/staticPages/WhereToEat'),
+  blogCahuitaLimon: () => import(/* webpackChunkName: "route-puerto-viejo-to-cahuita-and-limon" */ './pages/Blog/staticPages/CahuitaLimonTransport'),
   blogVacationRentals: () => import(/* webpackChunkName: "route-vacation-rentals-puerto-viejo" */ './pages/Blog/staticPages/VacationRentalsHub'),
   blogHousesCentro: () => import(/* webpackChunkName: "route-puerto-viejo-centro-houses" */ './pages/Blog/staticPages/HousesCentro'),
   blogHousesPuntaUva: () => import(/* webpackChunkName: "route-punta-uva-vacation-homes" */ './pages/Blog/staticPages/HousesPuntaUva'),

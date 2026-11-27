@@ -22,6 +22,8 @@ import {
   GiuliaImageDescriptionsES,
   PlumeriaImageDescriptions,
   PlumeriaImageDescriptionsES,
+  LirioImageDescriptions,
+  LirioImageDescriptionsES,
 } from '../utils/constants';
 import type { IImageDescription } from '../utils/constants';
 import { GUEST_REVIEWS } from '../components/GuestReviews/reviewsData';
@@ -161,6 +163,19 @@ const PROPERTY_META: Record<ListingKey, PropertyStructuredDataMeta> = {
     checkinTime: '15:00',
     checkoutTime: '12:00',
   },
+  Lirio: {
+    routeKey: 'lirio',
+    name: 'Casa Lirio',
+    additionalType: 'House',
+    addressLocality: 'Playa Chiquita, Puerto Viejo de Talamanca',
+    streetAddress: 'Musa Villas, behind Arena Blanca',
+    // Owner describes it as one "large bed" without naming the size; Queen
+    // matches Areka/Plumeria in the same compound. Confirm if it is a King.
+    bed: [{ numberOfBeds: 1, typeOfBed: 'Queen' }],
+    petsAllowed: false,
+    checkinTime: '15:00',
+    checkoutTime: '12:00',
+  },
   VillaMar: {
     routeKey: 'villamar',
     name: 'Villa Mar',
@@ -199,6 +214,7 @@ const PROPERTY_IMAGES: Record<ListingKey, { en: IImageDescription[]; es?: IImage
   Areka: { en: ArekaImageDescriptions, es: ArekaImageDescriptionsES },
   Giulia: { en: GiuliaImageDescriptions, es: GiuliaImageDescriptionsES },
   Plumeria: { en: PlumeriaImageDescriptions, es: PlumeriaImageDescriptionsES },
+  Lirio: { en: LirioImageDescriptions, es: LirioImageDescriptionsES },
   VillaMar: { en: VillaMarImageDescriptions },
   VillaCoral: { en: VillaCoralImageDescriptions },
 };
@@ -230,6 +246,7 @@ const GUEST_REVIEWS_KEY: Record<ListingKey, string> = {
   Areka: 'AREKA',
   Giulia: 'GIULIA',
   Plumeria: 'PLUMERIA',
+  Lirio: 'LIRIO',
   VillaMar: 'VILLA MAR',
   VillaCoral: 'VILLA CORAL',
 };
@@ -327,11 +344,12 @@ export function vacationRentalJsonLd(key: ListingKey, locale: Locale) {
     checkoutTime: meta.checkoutTime,
     containsPlace,
     tourBookingPage: url,
-    offers: {
-      '@type': 'Offer',
-      priceCurrency: 'USD',
-      price: marketing.price.usd,
-    },
+    // Omitted for a property with no static fallback price (Lirio): its
+    // rates live only in Smoobu, and a stale hardcoded Offer price would be
+    // worse for rich results than none.
+    ...(marketing.price
+      ? { offers: { '@type': 'Offer', priceCurrency: 'USD', price: marketing.price.usd } }
+      : {}),
     ...(review.length ? { review } : {}),
     ...(aggregateRating ? { aggregateRating } : {}),
   };

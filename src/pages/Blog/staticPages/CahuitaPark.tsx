@@ -86,6 +86,9 @@ const CahuitaPark = () => {
                         <h3><strong>{content.enterHeading}</strong></h3>
                         <p></p>
                         {content.enterParagraphs.map((p, i) => <p key={i}>{p}</p>)}
+                        <p>
+                            <Link to={pathForKey('blogCahuitaLimon', locale)}><strong>{internalLinkLabel('blogCahuitaLimon', locale)}</strong></Link>
+                        </p>
 
                         <br />
                         {/* Stay Recommendation Component - positioned in middle of article */}

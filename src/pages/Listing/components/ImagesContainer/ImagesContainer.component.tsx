@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Row } from "react-bootstrap";
 import ImageWithSkeleton from '../../../../components/ImageWithSkeleton/ImageWithSkeleton.component';
 import './ImagesContainer.style.scss'
-import { gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions, ArekaImageDescriptions, ArekaImageDescriptionsES, GiuliaImageDescriptions, GiuliaImageDescriptionsES, PlumeriaImageDescriptions, PlumeriaImageDescriptionsES, delfinImageDescriptions, delfinImageDescriptionsES } from '../../../../utils/constants';
+import { gecoImageDescriptions, IImageDescription, pappagalloImageDescriptions, ranaImageDescriptions, tucanoImageDescriptions, VillaCoralImageDescriptions, VillaMarImageDescriptions, ArekaImageDescriptions, ArekaImageDescriptionsES, GiuliaImageDescriptions, GiuliaImageDescriptionsES, PlumeriaImageDescriptions, PlumeriaImageDescriptionsES, LirioImageDescriptions, LirioImageDescriptionsES, delfinImageDescriptions, delfinImageDescriptionsES } from '../../../../utils/constants';
 
 
 interface IImagesContainer {
@@ -88,6 +88,14 @@ const ImagesContainer = ({ showModal, houseName }: IImagesContainer) => {
       break;
     case "PlumeriaES":
       images = PlumeriaImageDescriptionsES;
+      imageSnippet = [0, 1, 2, 3, 4];
+      break;
+    case "Lirio":
+      images = LirioImageDescriptions;
+      imageSnippet = [0, 1, 2, 3, 4];
+      break;
+    case "LirioES":
+      images = LirioImageDescriptionsES;
       imageSnippet = [0, 1, 2, 3, 4];
       break;
     case "Delfin":

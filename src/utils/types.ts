@@ -42,7 +42,11 @@ export interface PropertyCapacity {
 export interface PropertyMarketingContent {
     propertyKey: string;           // e.g., 'Rana', 'RanaES'
     descriptiveTitle: LocalizedValue<string>;
-    price: {
+    // Static fallback "from" price, shown only until the live calendar rate
+    // loads. Optional: a property whose rates live entirely in Smoobu (Lirio)
+    // leaves it out, and the headline price stays hidden until the live rate
+    // arrives instead of showing a hardcoded figure.
+    price?: {
         crc: number;                 // e.g., 75000
         usd: number;                 // e.g., 150
     };

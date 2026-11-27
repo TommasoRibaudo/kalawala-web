@@ -61,6 +61,7 @@ import {
   VillaCoralImageDescriptions, VillaCoralImageDescriptionsES,
   ArekaImageDescriptions, ArekaImageDescriptionsES,
   PlumeriaImageDescriptions, PlumeriaImageDescriptionsES,
+  LirioImageDescriptions, LirioImageDescriptionsES,
   GiuliaImageDescriptions, GiuliaImageDescriptionsES,
   delfinImageDescriptions, delfinImageDescriptionsES,
 } from '../utils/constants';
@@ -170,6 +171,7 @@ const PROPERTY_GALLERY_IMAGES: Record<string, { en: IImageDescription[]; es: IIm
   VillaCoral: { en: VillaCoralImageDescriptions, es: VillaCoralImageDescriptionsES },
   Areka: { en: ArekaImageDescriptions, es: ArekaImageDescriptionsES },
   Plumeria: { en: PlumeriaImageDescriptions, es: PlumeriaImageDescriptionsES },
+  Lirio: { en: LirioImageDescriptions, es: LirioImageDescriptionsES },
   Giulia: { en: GiuliaImageDescriptions, es: GiuliaImageDescriptionsES },
   Delfin: { en: delfinImageDescriptions, es: delfinImageDescriptionsES },
 };

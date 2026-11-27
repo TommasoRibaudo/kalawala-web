@@ -17,6 +17,10 @@ const EXPECTED: Record<
     streetAddress: string;
     imageCount: number;
     bedCount: number;
+    /** Guest reviews in reviewsData.ts. 3 everywhere except a brand-new listing. */
+    reviewCount?: number;
+    /** False when the property has no static fallback price (no Offer emitted). */
+    hasOffer?: boolean;
   }
 > = {
   Geco: { additionalType: 'House', addressLocality: TOWN_LOCALITY, streetAddress: TOWN_STREET, imageCount: 8, bedCount: 3 },
@@ -27,6 +31,7 @@ const EXPECTED: Record<
   Areka: { additionalType: 'House', addressLocality: PLAYA_CHIQUITA_LOCALITY, streetAddress: PLAYA_CHIQUITA_STREET, imageCount: 9, bedCount: 1 },
   Giulia: { additionalType: 'House', addressLocality: PLAYA_CHIQUITA_LOCALITY, streetAddress: PLAYA_CHIQUITA_STREET, imageCount: 9, bedCount: 1 },
   Plumeria: { additionalType: 'House', addressLocality: PLAYA_CHIQUITA_LOCALITY, streetAddress: PLAYA_CHIQUITA_STREET, imageCount: 6, bedCount: 1 },
+  Lirio: { additionalType: 'House', addressLocality: PLAYA_CHIQUITA_LOCALITY, streetAddress: PLAYA_CHIQUITA_STREET, imageCount: 7, bedCount: 1, reviewCount: 0, hasOffer: false },
   VillaMar: { additionalType: 'Villa', addressLocality: PLAYA_CHIQUITA_LOCALITY, streetAddress: PLAYA_CHIQUITA_STREET, imageCount: 7, bedCount: 1 },
   VillaCoral: { additionalType: 'Villa', addressLocality: PLAYA_CHIQUITA_LOCALITY, streetAddress: PLAYA_CHIQUITA_STREET, imageCount: 7, bedCount: 1 },
 };
@@ -60,19 +65,27 @@ describe('vacationRentalJsonLd', () => {
       expect(Array.isArray(jsonLd.image)).toBe(true);
       expect(jsonLd.image).toHaveLength(expected.imageCount);
 
-      expect(Array.isArray(jsonLd.review)).toBe(true);
-      expect(jsonLd.review).toHaveLength(3);
-      jsonLd.review.forEach((r: any) => {
+      // A brand-new listing (Lirio) has no reviews yet: neither field may be
+      // emitted, since an empty review list or a zero-count AggregateRating
+      // is invalid structured data.
+      const reviewCount = expected.reviewCount ?? 3;
+      expect(jsonLd.review ?? []).toHaveLength(reviewCount);
+      (jsonLd.review ?? []).forEach((r: any) => {
         expect(r.datePublished).toMatch(/^\d{4}-\d{2}-\d{2}$/);
         expect(r.reviewRating.ratingValue).toBe(5);
       });
+      expect(jsonLd.aggregateRating).toEqual(
+        reviewCount === 0
+          ? undefined
+          : { '@type': 'AggregateRating', ratingValue: 5, reviewCount, bestRating: 5 },
+      );
 
-      expect(jsonLd.aggregateRating).toEqual({
-        '@type': 'AggregateRating',
-        ratingValue: 5,
-        reviewCount: 3,
-        bestRating: 5,
-      });
+      // No Offer for a property without a static fallback price (Lirio).
+      expect(jsonLd.offers).toEqual(
+        expected.hasOffer === false
+          ? undefined
+          : expect.objectContaining({ '@type': 'Offer', priceCurrency: 'USD' }),
+      );
 
       expect(jsonLd.containsPlace.amenityFeature.length).toBeGreaterThan(0);
     });
